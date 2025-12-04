@@ -14,6 +14,7 @@ import {
     Palette, Save, RotateCcw, Upload, Eye, Loader2, CheckCircle
 } from 'lucide-react';
 import { toast } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
 
 const presetThemes = [
     { name: 'Default Blue', primary: '#3b82f6', secondary: '#06b6d4', sidebar: '#0f172a' },
@@ -78,8 +79,12 @@ export default function Appearance() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['theme-settings'] });
             setSaveSuccess(true);
+            toast.success('Theme settings saved successfully!');
             setTimeout(() => setSaveSuccess(false), 3000);
         },
+        onError: (error) => {
+            toast.error('Failed to save settings: ' + error.message);
+        }
     });
 
     const applyPreset = (preset) => {
@@ -93,8 +98,10 @@ export default function Appearance() {
             try {
                 const { file_url } = await base44.integrations.Core.UploadFile({ file });
                 setSettings(prev => ({ ...prev, [field]: file_url }));
+                toast.success(`${field === 'logo_url' ? 'Logo' : 'Favicon'} uploaded successfully!`);
             } catch (error) {
                 console.error('Upload failed:', error);
+                toast.error('Upload failed: ' + error.message);
             }
             setUploading(null);
         }
@@ -102,6 +109,7 @@ export default function Appearance() {
 
     return (
         <div className="min-h-screen bg-slate-50">
+            <Toaster position="top-right" />
             <Sidebar collapsed={sidebarCollapsed} currentPage="Appearance" />
             <div className={cn("transition-all duration-300", sidebarCollapsed ? "ml-16" : "ml-56")}>
                 <TopHeader onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} />
