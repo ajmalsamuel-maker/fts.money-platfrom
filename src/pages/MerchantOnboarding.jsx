@@ -7,20 +7,27 @@ import Sidebar from '@/components/dashboard/Sidebar';
 import TopHeader from '@/components/dashboard/TopHeader';
 import OnboardingProgress from '@/components/onboarding/OnboardingProgress';
 import BusinessDetailsStep from '@/components/onboarding/BusinessDetailsStep';
+import LEIVerificationStep from '@/components/onboarding/LEIVerificationStep';
 import ContactInfoStep from '@/components/onboarding/ContactInfoStep';
-import ComplianceStep from '@/components/onboarding/ComplianceStep';
+import KYBVerificationStep from '@/components/onboarding/KYBVerificationStep';
+import AMLScreeningStep from '@/components/onboarding/AMLScreeningStep';
 import BankDetailsStep from '@/components/onboarding/BankDetailsStep';
-import RiskAssessmentStep from '@/components/onboarding/RiskAssessmentStep';
+import ReviewSubmitStep from '@/components/onboarding/ReviewSubmitStep';
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { 
     ChevronLeft, 
     ChevronRight, 
     Check,
     Loader2,
-    CreditCard
+    CreditCard,
+    Send,
+    AlertTriangle
 } from 'lucide-react';
+
+const TOTAL_STEPS = 7;
 
 export default function MerchantOnboarding() {
     const navigate = useNavigate();
@@ -29,13 +36,15 @@ export default function MerchantOnboarding() {
     const [currentStep, setCurrentStep] = useState(1);
     const [completedSteps, setCompletedSteps] = useState([]);
     const [errors, setErrors] = useState({});
+    const [isSubmitting, setIsSubmitting] = useState(false);
     
     const [formData, setFormData] = useState({
         business: {},
+        lei: {},
         contacts: {},
-        compliance: {},
+        kyb: {},
+        aml: {},
         bank: {},
-        risk: {}
     });
 
     const createMerchantMutation = useMutation({
@@ -44,7 +53,7 @@ export default function MerchantOnboarding() {
                 merchant_id: `MID-${Date.now()}`,
                 business_name: data.business.legal_name,
                 trading_name: data.business.trading_name,
-                status: 'pending',
+                status: determineInitialStatus(data),
                 category: data.business.industry,
                 country: data.business.country,
                 contact_name: data.contacts.contacts?.[0]?.full_name,
@@ -52,18 +61,83 @@ export default function MerchantOnboarding() {
                 contact_phone: data.contacts.contacts?.[0]?.phone,
                 website: data.business.website,
                 address: data.business.business_address,
-                risk_level: 'medium',
+                // LEI fields
+                lei: data.lei.lei,
+                vlei: data.lei.vlei,
+                lei_status: data.lei.lei_status,
+                lei_verified_date: data.lei.lei_verified_date,
+                // KYB fields
+                kyb_status: data.kyb.kyb_status,
+                kyb_provider: 'thekyb',
+                kyb_reference_id: data.kyb.kyb_reference_id,
+                // AML fields
+                aml_status: data.aml.aml_status,
+                aml_provider: 'amlwatcher',
+                aml_last_check: data.aml.aml_completed_at,
+                aml_risk_score: data.aml.aml_risk_score,
+                // Other fields
+                risk_level: determineRiskLevel(data),
                 settlement_period: data.bank.settlement_period,
-                processing_volume: getVolumeValue(data.risk.monthly_volume),
+                processing_volume: getVolumeValue(data.business.expected_volume),
                 fee_rate: 2.5,
             };
-            return base44.entities.Merchant.create(merchantData);
+            
+            const merchant = await base44.entities.Merchant.create(merchantData);
+            
+            // Send notification to compliance if there are alerts
+            if (data.aml.aml_alerts?.length > 0 || data.kyb.kyb_status === 'pending_review') {
+                await notifyCompliance(merchant, data);
+            }
+            
+            return merchant;
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['merchants'] });
             navigate(createPageUrl('Merchants'));
         }
     });
+
+    const determineInitialStatus = (data) => {
+        if (data.kyb.kyb_status === 'rejected' || data.aml.aml_status === 'flagged') {
+            return 'suspended';
+        }
+        if (data.kyb.kyb_status === 'approved' && data.aml.aml_status === 'clear' && data.lei.lei_status === 'verified') {
+            return 'active';
+        }
+        return 'pending';
+    };
+
+    const determineRiskLevel = (data) => {
+        const riskScore = data.aml.aml_risk_score || 0;
+        if (riskScore >= 50) return 'high';
+        if (riskScore >= 25) return 'medium';
+        return 'low';
+    };
+
+    const notifyCompliance = async (merchant, data) => {
+        try {
+            await base44.integrations.Core.SendEmail({
+                to: 'compliance@paymenthub.com',
+                subject: `[Action Required] New Merchant Review: ${merchant.business_name}`,
+                body: `
+                    A new merchant application requires compliance review.
+                    
+                    Merchant: ${merchant.business_name}
+                    MID: ${merchant.merchant_id}
+                    
+                    KYB Status: ${data.kyb.kyb_status}
+                    AML Status: ${data.aml.aml_status}
+                    AML Risk Score: ${data.aml.aml_risk_score || 0}/100
+                    
+                    ${data.aml.aml_alerts?.length > 0 ? `AML Alerts: ${data.aml.aml_alerts.length} alerts detected` : ''}
+                    
+                    Please review this application in the compliance dashboard.
+                `
+            });
+        } catch (error) {
+            console.log('Compliance notification simulated');
+        }
+    };
 
     const getVolumeValue = (range) => {
         const values = {
@@ -93,53 +167,56 @@ export default function MerchantOnboarding() {
         }
         
         if (step === 2) {
-            const contacts = formData.contacts.contacts || [];
-            const contactErrors = [];
-            
-            contacts.forEach((contact, index) => {
-                const errs = {};
-                if (!contact.full_name) errs.full_name = 'Full name is required';
-                if (!contact.role) errs.role = 'Role is required';
-                if (!contact.email) errs.email = 'Email is required';
-                else if (!/\S+@\S+\.\S+/.test(contact.email)) errs.email = 'Invalid email format';
-                if (!contact.phone) errs.phone = 'Phone is required';
-                
-                if (contact.is_primary) {
-                    if (!contact.date_of_birth) errs.date_of_birth = 'Date of birth is required';
-                    if (!contact.nationality) errs.nationality = 'Nationality is required';
-                }
-                
-                if (Object.keys(errs).length > 0) {
-                    contactErrors[index] = errs;
-                }
-            });
-            
-            if (contactErrors.length > 0) {
-                newErrors.contacts = contactErrors;
+            // LEI is optional but if provided must be valid
+            if (formData.lei.lei && formData.lei.lei.length !== 20) {
+                newErrors.lei = 'LEI must be exactly 20 characters';
             }
         }
         
         if (step === 3) {
-            const data = formData.compliance;
-            const requiredDocs = ['certificate_of_incorporation', 'business_license', 'proof_of_address', 'director_id', 'shareholder_register'];
-            const docErrors = {};
-            
-            requiredDocs.forEach(docId => {
-                if (!data.documents?.[docId]) {
-                    docErrors[docId] = 'This document is required';
+            const contacts = formData.contacts.contacts || [];
+            if (contacts.length === 0) {
+                newErrors.contacts = [{ full_name: 'At least one contact is required' }];
+            } else {
+                const contactErrors = [];
+                contacts.forEach((contact, index) => {
+                    const errs = {};
+                    if (!contact.full_name) errs.full_name = 'Full name is required';
+                    if (!contact.role) errs.role = 'Role is required';
+                    if (!contact.email) errs.email = 'Email is required';
+                    else if (!/\S+@\S+\.\S+/.test(contact.email)) errs.email = 'Invalid email format';
+                    if (!contact.phone) errs.phone = 'Phone is required';
+                    
+                    if (contact.is_primary) {
+                        if (!contact.date_of_birth) errs.date_of_birth = 'Date of birth is required';
+                        if (!contact.nationality) errs.nationality = 'Nationality is required';
+                    }
+                    
+                    if (Object.keys(errs).length > 0) {
+                        contactErrors[index] = errs;
+                    }
+                });
+                if (contactErrors.length > 0) {
+                    newErrors.contacts = contactErrors;
                 }
-            });
-            
-            if (Object.keys(docErrors).length > 0) {
-                newErrors.documents = docErrors;
-            }
-            
-            if (!data.declarations?.beneficial_owners || !data.declarations?.no_sanctions || !data.declarations?.accurate_info) {
-                newErrors.declarations = 'All declarations must be acknowledged';
             }
         }
         
         if (step === 4) {
+            // KYB verification - warn if not completed
+            if (!formData.kyb.kyb_status || formData.kyb.kyb_status === 'not_started') {
+                // Allow to proceed but show warning
+            }
+        }
+        
+        if (step === 5) {
+            // AML screening - warn if not completed
+            if (!formData.aml.aml_status || formData.aml.aml_status === 'not_started') {
+                // Allow to proceed but show warning
+            }
+        }
+        
+        if (step === 6) {
             const data = formData.bank;
             if (!data.account_holder_name) newErrors.account_holder_name = 'Account holder name is required';
             if (!data.bank_name) newErrors.bank_name = 'Bank name is required';
@@ -148,15 +225,6 @@ export default function MerchantOnboarding() {
             if (!data.swift_code) newErrors.swift_code = 'SWIFT code is required';
             if (!data.settlement_currency) newErrors.settlement_currency = 'Settlement currency is required';
             if (!data.settlement_period) newErrors.settlement_period = 'Settlement period is required';
-        }
-        
-        if (step === 5) {
-            const data = formData.risk;
-            if (!data.monthly_volume) newErrors.monthly_volume = 'Monthly volume is required';
-            if (!data.avg_ticket) newErrors.avg_ticket = 'Average ticket is required';
-            if (!data.transaction_type) newErrors.transaction_type = 'Transaction type is required';
-            if (!data.sales_channel) newErrors.sales_channel = 'Sales channel is required';
-            if (!data.has_previous_processing) newErrors.has_previous_processing = 'This field is required';
         }
         
         return newErrors;
@@ -173,7 +241,7 @@ export default function MerchantOnboarding() {
         setErrors({});
         setCompletedSteps(prev => [...new Set([...prev, currentStep])]);
         
-        if (currentStep < 5) {
+        if (currentStep < TOTAL_STEPS) {
             setCurrentStep(currentStep + 1);
         }
     };
@@ -185,23 +253,33 @@ export default function MerchantOnboarding() {
         }
     };
 
-    const handleSubmit = () => {
-        const stepErrors = validateStep(currentStep);
-        
-        if (Object.keys(stepErrors).length > 0) {
-            setErrors(stepErrors);
-            return;
+    const handleSubmit = async () => {
+        setIsSubmitting(true);
+        try {
+            await createMerchantMutation.mutateAsync(formData);
+        } catch (error) {
+            console.error('Submission error:', error);
         }
-        
-        createMerchantMutation.mutate(formData);
+        setIsSubmitting(false);
     };
 
     const updateStepData = (step, data) => {
-        const keys = ['', 'business', 'contacts', 'compliance', 'bank', 'risk'];
+        const keys = ['', 'business', 'lei', 'contacts', 'kyb', 'aml', 'bank', 'review'];
         setFormData(prev => ({
             ...prev,
             [keys[step]]: data
         }));
+    };
+
+    const canProceed = () => {
+        // Check if KYB and AML are at least started for steps 4 and 5
+        if (currentStep === 4) {
+            return formData.kyb.kyb_status && formData.kyb.kyb_status !== 'not_started';
+        }
+        if (currentStep === 5) {
+            return formData.aml.aml_status && formData.aml.aml_status !== 'not_started';
+        }
+        return true;
     };
 
     const renderStep = () => {
@@ -216,56 +294,67 @@ export default function MerchantOnboarding() {
                 );
             case 2:
                 return (
-                    <ContactInfoStep 
-                        data={formData.contacts} 
+                    <LEIVerificationStep 
+                        data={formData.lei} 
                         onChange={(data) => updateStepData(2, data)}
                         errors={errors}
+                        businessData={formData.business}
                     />
                 );
             case 3:
                 return (
-                    <ComplianceStep 
-                        data={formData.compliance} 
+                    <ContactInfoStep 
+                        data={formData.contacts} 
                         onChange={(data) => updateStepData(3, data)}
                         errors={errors}
                     />
                 );
             case 4:
                 return (
-                    <BankDetailsStep 
-                        data={formData.bank} 
+                    <KYBVerificationStep 
+                        data={formData.kyb} 
                         onChange={(data) => updateStepData(4, data)}
                         errors={errors}
+                        businessData={formData.business}
+                        contactData={formData.contacts}
                     />
                 );
             case 5:
                 return (
-                    <RiskAssessmentStep 
-                        data={formData.risk} 
+                    <AMLScreeningStep 
+                        data={formData.aml} 
                         onChange={(data) => updateStepData(5, data)}
                         errors={errors}
+                        businessData={formData.business}
+                        contactData={formData.contacts}
                     />
+                );
+            case 6:
+                return (
+                    <BankDetailsStep 
+                        data={formData.bank} 
+                        onChange={(data) => updateStepData(6, data)}
+                        errors={errors}
+                    />
+                );
+            case 7:
+                return (
+                    <ReviewSubmitStep formData={formData} />
                 );
             default:
                 return null;
         }
     };
 
+    const showVerificationWarning = (currentStep === 4 && (!formData.kyb.kyb_status || formData.kyb.kyb_status === 'not_started')) ||
+                                    (currentStep === 5 && (!formData.aml.aml_status || formData.aml.aml_status === 'not_started'));
+
     return (
         <div className="min-h-screen bg-slate-50">
-            <Sidebar 
-                collapsed={sidebarCollapsed} 
-                currentPage="Merchants"
-            />
+            <Sidebar collapsed={sidebarCollapsed} currentPage="Merchants" />
             
-            <div className={cn(
-                "transition-all duration-300",
-                sidebarCollapsed ? "ml-20" : "ml-64"
-            )}>
-                <TopHeader 
-                    onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
-                    collapsed={sidebarCollapsed}
-                />
+            <div className={cn("transition-all duration-300", sidebarCollapsed ? "ml-20" : "ml-64")}>
+                <TopHeader onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} collapsed={sidebarCollapsed} />
                 
                 <main className="p-6">
                     {/* Header */}
@@ -276,7 +365,7 @@ export default function MerchantOnboarding() {
                             </div>
                             <div>
                                 <h1 className="text-2xl font-bold text-slate-900">Merchant Onboarding</h1>
-                                <p className="text-slate-500">Complete the application to start processing payments</p>
+                                <p className="text-slate-500">Complete the application with automated KYC/AML verification</p>
                             </div>
                         </div>
                     </div>
@@ -286,6 +375,7 @@ export default function MerchantOnboarding() {
                         <OnboardingProgress 
                             currentStep={currentStep} 
                             completedSteps={completedSteps}
+                            totalSteps={TOTAL_STEPS}
                         />
                     </Card>
 
@@ -293,6 +383,16 @@ export default function MerchantOnboarding() {
                     <Card className="p-6 mb-6">
                         {renderStep()}
                     </Card>
+
+                    {/* Verification Warning */}
+                    {showVerificationWarning && (
+                        <Alert className="mb-6 bg-amber-50 border-amber-200">
+                            <AlertTriangle className="h-4 w-4 text-amber-600" />
+                            <AlertDescription className="text-amber-700">
+                                Please complete the verification process before proceeding. This is required for compliance.
+                            </AlertDescription>
+                        </Alert>
+                    )}
 
                     {/* Navigation Buttons */}
                     <div className="flex items-center justify-between">
@@ -311,8 +411,12 @@ export default function MerchantOnboarding() {
                                 Save as Draft
                             </Button>
                             
-                            {currentStep < 5 ? (
-                                <Button onClick={handleNext} className="gap-2 bg-blue-600 hover:bg-blue-700">
+                            {currentStep < TOTAL_STEPS ? (
+                                <Button 
+                                    onClick={handleNext} 
+                                    className="gap-2 bg-blue-600 hover:bg-blue-700"
+                                    disabled={!canProceed() && (currentStep === 4 || currentStep === 5)}
+                                >
                                     Continue
                                     <ChevronRight className="h-4 w-4" />
                                 </Button>
@@ -320,12 +424,12 @@ export default function MerchantOnboarding() {
                                 <Button 
                                     onClick={handleSubmit} 
                                     className="gap-2 bg-emerald-600 hover:bg-emerald-700"
-                                    disabled={createMerchantMutation.isPending}
+                                    disabled={isSubmitting || createMerchantMutation.isPending}
                                 >
-                                    {createMerchantMutation.isPending ? (
+                                    {isSubmitting || createMerchantMutation.isPending ? (
                                         <Loader2 className="h-4 w-4 animate-spin" />
                                     ) : (
-                                        <Check className="h-4 w-4" />
+                                        <Send className="h-4 w-4" />
                                     )}
                                     Submit Application
                                 </Button>

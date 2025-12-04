@@ -4,17 +4,21 @@ import { Check } from 'lucide-react';
 
 const steps = [
     { id: 1, name: 'Business Details', description: 'Company information' },
-    { id: 2, name: 'Contact Info', description: 'Primary contacts' },
-    { id: 3, name: 'Compliance', description: 'KYC/AML documents' },
-    { id: 4, name: 'Bank Details', description: 'Settlement accounts' },
-    { id: 5, name: 'Risk Assessment', description: 'Business evaluation' },
+    { id: 2, name: 'LEI Verification', description: 'Legal Entity Identifier' },
+    { id: 3, name: 'Contact Info', description: 'Primary contacts' },
+    { id: 4, name: 'KYB Verification', description: 'TheKYB integration' },
+    { id: 5, name: 'AML Screening', description: 'AMLWatcher check' },
+    { id: 6, name: 'Bank Details', description: 'Settlement accounts' },
+    { id: 7, name: 'Review & Submit', description: 'Final review' },
 ];
 
-export default function OnboardingProgress({ currentStep, completedSteps }) {
+export default function OnboardingProgress({ currentStep, completedSteps, totalSteps = 7 }) {
+    const displaySteps = steps.slice(0, totalSteps);
+    
     return (
         <div className="w-full">
-            <div className="hidden md:flex items-center justify-between">
-                {steps.map((step, idx) => (
+            <div className="hidden lg:flex items-center justify-between">
+                {displaySteps.map((step, idx) => (
                     <React.Fragment key={step.id}>
                         <div className="flex flex-col items-center">
                             <div className={cn(
@@ -41,9 +45,9 @@ export default function OnboardingProgress({ currentStep, completedSteps }) {
                                 <p className="text-xs text-slate-400">{step.description}</p>
                             </div>
                         </div>
-                        {idx < steps.length - 1 && (
+                        {idx < displaySteps.length - 1 && (
                             <div className={cn(
-                                "flex-1 h-0.5 mx-4",
+                                "flex-1 h-0.5 mx-2",
                                 completedSteps.includes(step.id) ? "bg-emerald-500" : "bg-slate-200"
                             )} />
                         )}
@@ -52,19 +56,19 @@ export default function OnboardingProgress({ currentStep, completedSteps }) {
             </div>
             
             {/* Mobile Progress */}
-            <div className="md:hidden">
+            <div className="lg:hidden">
                 <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-medium text-slate-600">
-                        Step {currentStep} of {steps.length}
+                        Step {currentStep} of {displaySteps.length}
                     </span>
                     <span className="text-sm text-slate-500">
-                        {steps[currentStep - 1]?.name}
+                        {displaySteps[currentStep - 1]?.name}
                     </span>
                 </div>
                 <div className="w-full bg-slate-200 rounded-full h-2">
                     <div 
                         className="bg-blue-600 h-2 rounded-full transition-all"
-                        style={{ width: `${(currentStep / steps.length) * 100}%` }}
+                        style={{ width: `${(currentStep / displaySteps.length) * 100}%` }}
                     />
                 </div>
             </div>
