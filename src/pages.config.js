@@ -1,4 +1,3 @@
-import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import Transactions from './pages/Transactions';
 import Merchants from './pages/Merchants';
@@ -8,7 +7,6 @@ import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
-    "Home": Home,
     "Dashboard": Dashboard,
     "Transactions": Transactions,
     "Merchants": Merchants,
@@ -17,7 +15,7 @@ export const PAGES = {
 }
 
 export const pagesConfig = {
-    mainPage: "Home",
+    mainPage: "Dashboard",
     Pages: PAGES,
     Layout: __Layout,
 };
