@@ -31,6 +31,7 @@ import MerchantMIDs from './pages/MerchantMIDs';
 import Reconciliation from './pages/Reconciliation';
 import AutomatedPayouts from './pages/AutomatedPayouts';
 import AdvancedReports from './pages/AdvancedReports';
+import DatabaseSetup from './pages/DatabaseSetup';
 import __Layout from './Layout.jsx';
 
 
@@ -68,6 +69,7 @@ export const PAGES = {
     "Reconciliation": Reconciliation,
     "AutomatedPayouts": AutomatedPayouts,
     "AdvancedReports": AdvancedReports,
+    "DatabaseSetup": DatabaseSetup,
 }
 
 export const pagesConfig = {
