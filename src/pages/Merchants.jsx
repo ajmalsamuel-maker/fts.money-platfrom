@@ -59,6 +59,8 @@ import {
     Shield
 } from 'lucide-react';
 import SelfOnboardingUrlGenerator from '@/components/merchants/SelfOnboardingUrlGenerator';
+import { usePermissions } from '@/components/auth/usePermissions';
+import { PermissionGate } from '@/components/auth/PermissionGate';
 
 const statusConfig = {
     active: { label: 'Active', className: 'bg-emerald-100 text-emerald-700 border-emerald-200' },
@@ -90,6 +92,7 @@ export default function Merchants() {
     });
 
     const queryClient = useQueryClient();
+    const { can } = usePermissions();
 
     const { data: merchants = [], isLoading } = useQuery({
         queryKey: ['merchants'],
@@ -151,20 +154,24 @@ export default function Merchants() {
                             <p className="text-slate-500">Manage your merchant accounts</p>
                         </div>
                         <div className="flex items-center gap-2">
-                            <Button 
-                                variant="outline" 
-                                className="gap-2"
-                                onClick={() => setShowOnboardingLinkDialog(true)}
-                            >
-                                <Link2 className="h-4 w-4" />
-                                Generate Onboarding Link
-                            </Button>
-                            <Link to={createPageUrl('MerchantOnboarding')}>
-                                <Button className="gap-2 bg-blue-600 hover:bg-blue-700">
-                                    <Plus className="h-4 w-4" />
-                                    Add Merchant
+                            <PermissionGate permission="CREATE_MERCHANTS">
+                                <Button 
+                                    variant="outline" 
+                                    className="gap-2"
+                                    onClick={() => setShowOnboardingLinkDialog(true)}
+                                >
+                                    <Link2 className="h-4 w-4" />
+                                    Generate Onboarding Link
                                 </Button>
-                            </Link>
+                            </PermissionGate>
+                            <PermissionGate permission="CREATE_MERCHANTS">
+                                <Link to={createPageUrl('MerchantOnboarding')}>
+                                    <Button className="gap-2 bg-blue-600 hover:bg-blue-700">
+                                        <Plus className="h-4 w-4" />
+                                        Add Merchant
+                                    </Button>
+                                </Link>
+                            </PermissionGate>
                         </div>
                     </div>
                         <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
@@ -413,15 +420,21 @@ export default function Merchants() {
                                                                     <Eye className="h-4 w-4 mr-2" />
                                                                     View Details
                                                                 </DropdownMenuItem>
-                                                                <DropdownMenuItem>
-                                                                    <Edit className="h-4 w-4 mr-2" />
-                                                                    Edit
-                                                                </DropdownMenuItem>
-                                                                <DropdownMenuSeparator />
-                                                                <DropdownMenuItem className="text-red-600">
-                                                                    <Trash2 className="h-4 w-4 mr-2" />
-                                                                    Delete
-                                                                </DropdownMenuItem>
+                                                                {can('EDIT_MERCHANTS') && (
+                                                                    <DropdownMenuItem>
+                                                                        <Edit className="h-4 w-4 mr-2" />
+                                                                        Edit
+                                                                    </DropdownMenuItem>
+                                                                )}
+                                                                {can('DELETE_MERCHANTS') && (
+                                                                    <>
+                                                                        <DropdownMenuSeparator />
+                                                                        <DropdownMenuItem className="text-red-600">
+                                                                            <Trash2 className="h-4 w-4 mr-2" />
+                                                                            Delete
+                                                                        </DropdownMenuItem>
+                                                                    </>
+                                                                )}
                                                             </DropdownMenuContent>
                                                         </DropdownMenu>
                                                     </TableCell>
