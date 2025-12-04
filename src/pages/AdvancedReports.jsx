@@ -24,6 +24,7 @@ import {
     Download, FileText, TrendingUp, TrendingDown, DollarSign, Percent, 
     BarChart3, PieChart as PieChartIcon, Activity, Filter, Calendar
 } from 'lucide-react';
+import { toast } from "sonner";
 
 const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
 
@@ -168,14 +169,29 @@ export default function AdvancedReports() {
     }, [filteredTxns, pnlData]);
 
     const exportCSV = (data, filename) => {
+        if (!data || data.length === 0) {
+            toast.error('No data to export');
+            return;
+        }
         const headers = Object.keys(data[0] || {});
-        const csv = [headers.join(','), ...data.map(row => headers.map(h => row[h]).join(','))].join('\n');
-        const blob = new Blob([csv], { type: 'text/csv' });
+        const csv = [headers.join(','), ...data.map(row => headers.map(h => {
+            const val = row[h];
+            // Handle values with commas or quotes
+            if (typeof val === 'string' && (val.includes(',') || val.includes('"'))) {
+                return `"${val.replace(/"/g, '""')}"`;
+            }
+            return val;
+        }).join(','))].join('\n');
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
         a.download = `${filename}_${format(new Date(), 'yyyyMMdd')}.csv`;
+        document.body.appendChild(a);
         a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        toast.success(`Downloaded ${filename}_${format(new Date(), 'yyyyMMdd')}.csv`);
     };
 
     return (
@@ -191,8 +207,11 @@ export default function AdvancedReports() {
                             <p className="text-slate-500">P&L, volume analytics, and customizable reports</p>
                         </div>
                         <div className="flex gap-2">
+                            <Button variant="outline" className="gap-2" onClick={() => exportCSV(volumeStats, 'volume_report')}>
+                                <Download className="h-4 w-4" /> Volume Report
+                            </Button>
                             <Button variant="outline" className="gap-2" onClick={() => exportCSV(pnlData, 'pnl_report')}>
-                                <Download className="h-4 w-4" /> Export CSV
+                                <Download className="h-4 w-4" /> P&L Report
                             </Button>
                         </div>
                     </div>
