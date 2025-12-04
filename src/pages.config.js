@@ -21,6 +21,9 @@ import Approvals from './pages/Approvals';
 import Appearance from './pages/Appearance';
 import VirtualTerminals from './pages/VirtualTerminals';
 import MerchantUsers from './pages/MerchantUsers';
+import Balances from './pages/Balances';
+import Reports from './pages/Reports';
+import Payouts from './pages/Payouts';
 import __Layout from './Layout.jsx';
 
 
@@ -48,6 +51,9 @@ export const PAGES = {
     "Appearance": Appearance,
     "VirtualTerminals": VirtualTerminals,
     "MerchantUsers": MerchantUsers,
+    "Balances": Balances,
+    "Reports": Reports,
+    "Payouts": Payouts,
 }
 
 export const pagesConfig = {

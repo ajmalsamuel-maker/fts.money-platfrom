@@ -24,22 +24,46 @@ import {
 } from 'lucide-react';
 
 const apmProviders = [
-    { id: 'alipay', name: 'Alipay', region: 'China', logo: '🅰️', color: 'bg-blue-500' },
-    { id: 'wechat_pay', name: 'WeChat Pay', region: 'China', logo: '💬', color: 'bg-green-500' },
-    { id: 'paypal', name: 'PayPal', region: 'Global', logo: '🅿️', color: 'bg-blue-600' },
-    { id: 'apple_pay', name: 'Apple Pay', region: 'Global', logo: '🍎', color: 'bg-slate-900' },
-    { id: 'google_pay', name: 'Google Pay', region: 'Global', logo: '🔵', color: 'bg-white border' },
-    { id: 'klarna', name: 'Klarna', region: 'Europe', logo: '🟣', color: 'bg-pink-500' },
-    { id: 'afterpay', name: 'Afterpay', region: 'Global', logo: '🟢', color: 'bg-teal-500' },
-    { id: 'grab_pay', name: 'GrabPay', region: 'Southeast Asia', logo: '🟢', color: 'bg-green-600' },
-    { id: 'paynow', name: 'PayNow', region: 'Singapore', logo: '🔴', color: 'bg-red-500' },
-    { id: 'ideal', name: 'iDEAL', region: 'Netherlands', logo: '🏦', color: 'bg-pink-600' },
-    { id: 'giropay', name: 'Giropay', region: 'Germany', logo: '🏦', color: 'bg-blue-800' },
-    { id: 'sofort', name: 'Sofort', region: 'Europe', logo: '🏦', color: 'bg-pink-400' },
-    { id: 'pix', name: 'PIX', region: 'Brazil', logo: '🇧🇷', color: 'bg-teal-400' },
-    { id: 'upi', name: 'UPI', region: 'India', logo: '🇮🇳', color: 'bg-green-700' },
-    { id: 'paytm', name: 'Paytm', region: 'India', logo: '💳', color: 'bg-blue-400' },
-    { id: 'promptpay', name: 'PromptPay', region: 'Thailand', logo: '🇹🇭', color: 'bg-blue-700' },
+    // Digital Wallets
+    { id: 'alipay', name: 'Alipay', region: 'China', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Alipay_logo.svg/120px-Alipay_logo.svg.png', color: 'bg-blue-500', category: 'wallets' },
+    { id: 'wechat_pay', name: 'WeChat Pay', region: 'China', logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/a/a0/WeChat_Pay_logo.svg/120px-WeChat_Pay_logo.svg.png', color: 'bg-green-500', category: 'wallets' },
+    { id: 'paypal', name: 'PayPal', region: 'Global', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/PayPal.svg/120px-PayPal.svg.png', color: 'bg-blue-600', category: 'wallets' },
+    { id: 'apple_pay', name: 'Apple Pay', region: 'Global', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Apple_Pay_logo.svg/120px-Apple_Pay_logo.svg.png', color: 'bg-slate-900', category: 'wallets' },
+    { id: 'google_pay', name: 'Google Pay', region: 'Global', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Google_Pay_Logo.svg/120px-Google_Pay_Logo.svg.png', color: 'bg-white border', category: 'wallets' },
+    { id: 'samsung_pay', name: 'Samsung Pay', region: 'Global', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Samsung_Pay_Logo.svg/120px-Samsung_Pay_Logo.svg.png', color: 'bg-blue-700', category: 'wallets' },
+    { id: 'grab_pay', name: 'GrabPay', region: 'Southeast Asia', logo: '🟢', color: 'bg-green-600', category: 'wallets' },
+    // BNPL
+    { id: 'klarna', name: 'Klarna', region: 'Europe', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Klarna_Logo_black.svg/120px-Klarna_Logo_black.svg.png', color: 'bg-pink-500', category: 'bnpl' },
+    { id: 'afterpay', name: 'Afterpay', region: 'Global', logo: '🟢', color: 'bg-teal-500', category: 'bnpl' },
+    { id: 'affirm', name: 'Affirm', region: 'US', logo: '💳', color: 'bg-blue-600', category: 'bnpl' },
+    { id: 'clearpay', name: 'Clearpay', region: 'UK', logo: '💳', color: 'bg-teal-600', category: 'bnpl' },
+    // Bank Transfers
+    { id: 'ideal', name: 'iDEAL', region: 'Netherlands', logo: '🏦', color: 'bg-pink-600', category: 'bank' },
+    { id: 'giropay', name: 'Giropay', region: 'Germany', logo: '🏦', color: 'bg-blue-800', category: 'bank' },
+    { id: 'sofort', name: 'Sofort', region: 'Europe', logo: '🏦', color: 'bg-pink-400', category: 'bank' },
+    { id: 'pix', name: 'PIX', region: 'Brazil', logo: '🇧🇷', color: 'bg-teal-400', category: 'bank' },
+    { id: 'upi', name: 'UPI', region: 'India', logo: '🇮🇳', color: 'bg-green-700', category: 'bank' },
+    { id: 'paynow', name: 'PayNow', region: 'Singapore', logo: '🔴', color: 'bg-red-500', category: 'bank' },
+    { id: 'promptpay', name: 'PromptPay', region: 'Thailand', logo: '🇹🇭', color: 'bg-blue-700', category: 'bank' },
+    { id: 'bancontact', name: 'Bancontact', region: 'Belgium', logo: '🏦', color: 'bg-blue-500', category: 'bank' },
+    { id: 'eps', name: 'EPS', region: 'Austria', logo: '🏦', color: 'bg-red-600', category: 'bank' },
+    // Crypto
+    { id: 'usdt', name: 'USDT (Tether)', region: 'Global', logo: 'https://cryptologos.cc/logos/tether-usdt-logo.png?v=026', color: 'bg-emerald-500', category: 'crypto' },
+    { id: 'usdc', name: 'USDC', region: 'Global', logo: 'https://cryptologos.cc/logos/usd-coin-usdc-logo.png?v=026', color: 'bg-blue-500', category: 'crypto' },
+    { id: 'btc', name: 'Bitcoin (BTC)', region: 'Global', logo: 'https://cryptologos.cc/logos/bitcoin-btc-logo.png?v=026', color: 'bg-orange-500', category: 'crypto' },
+    { id: 'eth', name: 'Ethereum (ETH)', region: 'Global', logo: 'https://cryptologos.cc/logos/ethereum-eth-logo.png?v=026', color: 'bg-purple-500', category: 'crypto' },
+    { id: 'bnb', name: 'BNB', region: 'Global', logo: 'https://cryptologos.cc/logos/bnb-bnb-logo.png?v=026', color: 'bg-yellow-500', category: 'crypto' },
+    { id: 'sol', name: 'Solana (SOL)', region: 'Global', logo: 'https://cryptologos.cc/logos/solana-sol-logo.png?v=026', color: 'bg-gradient-to-r from-purple-500 to-cyan-500', category: 'crypto' },
+    { id: 'xrp', name: 'XRP', region: 'Global', logo: 'https://cryptologos.cc/logos/xrp-xrp-logo.png?v=026', color: 'bg-slate-700', category: 'crypto' },
+    { id: 'dai', name: 'DAI', region: 'Global', logo: 'https://cryptologos.cc/logos/multi-collateral-dai-dai-logo.png?v=026', color: 'bg-amber-500', category: 'crypto' },
+    { id: 'busd', name: 'BUSD', region: 'Global', logo: 'https://cryptologos.cc/logos/binance-usd-busd-logo.png?v=026', color: 'bg-yellow-400', category: 'crypto' },
+    // Local Methods
+    { id: 'paytm', name: 'Paytm', region: 'India', logo: '💳', color: 'bg-blue-400', category: 'local' },
+    { id: 'gcash', name: 'GCash', region: 'Philippines', logo: '💳', color: 'bg-blue-600', category: 'local' },
+    { id: 'maya', name: 'Maya', region: 'Philippines', logo: '💳', color: 'bg-green-500', category: 'local' },
+    { id: 'dana', name: 'DANA', region: 'Indonesia', logo: '💳', color: 'bg-blue-500', category: 'local' },
+    { id: 'ovo', name: 'OVO', region: 'Indonesia', logo: '💳', color: 'bg-purple-600', category: 'local' },
+    { id: 'truemoney', name: 'TrueMoney', region: 'Thailand', logo: '💳', color: 'bg-orange-500', category: 'local' },
 ];
 
 export default function APMOnboarding() {
@@ -60,10 +84,7 @@ export default function APMOnboarding() {
 
     const filteredProviders = apmProviders.filter(p => {
         const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
-        const matchesTab = activeTab === 'all' || 
-            (activeTab === 'wallets' && ['alipay', 'wechat_pay', 'apple_pay', 'google_pay', 'paypal', 'grab_pay'].includes(p.id)) ||
-            (activeTab === 'bnpl' && ['klarna', 'afterpay'].includes(p.id)) ||
-            (activeTab === 'bank' && ['ideal', 'giropay', 'sofort', 'pix', 'upi', 'paynow', 'promptpay'].includes(p.id));
+        const matchesTab = activeTab === 'all' || p.category === activeTab;
         return matchesSearch && matchesTab;
     });
 
@@ -132,7 +153,9 @@ export default function APMOnboarding() {
                                         <TabsTrigger value="all">All</TabsTrigger>
                                         <TabsTrigger value="wallets">Wallets</TabsTrigger>
                                         <TabsTrigger value="bnpl">BNPL</TabsTrigger>
-                                        <TabsTrigger value="bank">Bank Transfers</TabsTrigger>
+                                        <TabsTrigger value="bank">Bank</TabsTrigger>
+                                        <TabsTrigger value="crypto">Crypto</TabsTrigger>
+                                        <TabsTrigger value="local">Local</TabsTrigger>
                                     </TabsList>
                                 </Tabs>
                             </div>
@@ -148,12 +171,16 @@ export default function APMOnboarding() {
                                         <CardContent className="p-4">
                                             <div className="flex items-center justify-between mb-3">
                                                 <div className="flex items-center gap-3">
-                                                    <span className="text-2xl">{apm.logo}</span>
+                                                    {apm.logo?.startsWith('http') ? (
+                                                        <img src={apm.logo} alt={apm.name} className="w-8 h-8 object-contain" onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }} />
+                                                    ) : null}
+                                                    <span className={cn("text-2xl", apm.logo?.startsWith('http') && "hidden")}>{apm.logo?.startsWith('http') ? '💳' : apm.logo}</span>
                                                     <div>
                                                         <h3 className="font-semibold">{apm.name}</h3>
                                                         <p className="text-xs text-slate-500">{apm.region}</p>
                                                     </div>
                                                 </div>
+                                                <Badge variant="outline" className="text-xs">{apm.category}</Badge>
                                             </div>
                                             <Button variant="outline" className="w-full gap-2" size="sm">
                                                 <Settings className="h-4 w-4" />

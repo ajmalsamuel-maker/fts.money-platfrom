@@ -9,10 +9,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { 
-    Palette, Save, RotateCcw, Upload, Eye, Sun, Moon
+    Palette, Save, RotateCcw, Upload, Eye, Loader2, CheckCircle
 } from 'lucide-react';
+import { toast } from "sonner";
 
 const presetThemes = [
     { name: 'Default Blue', primary: '#3b82f6', secondary: '#06b6d4', sidebar: '#0f172a' },
@@ -25,6 +26,8 @@ const presetThemes = [
 
 export default function Appearance() {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+    const [uploading, setUploading] = useState(null);
+    const [saveSuccess, setSaveSuccess] = useState(false);
     const queryClient = useQueryClient();
     
     const [settings, setSettings] = useState({
@@ -40,7 +43,7 @@ export default function Appearance() {
         compact_sidebar: false,
     });
 
-    const { data: savedSettings } = useQuery({
+    const { data: savedSettings, isLoading } = useQuery({
         queryKey: ['theme-settings'],
         queryFn: async () => {
             const list = await base44.entities.ThemeSettings.list();
@@ -49,7 +52,20 @@ export default function Appearance() {
     });
 
     useEffect(() => {
-        if (savedSettings) setSettings(prev => ({ ...prev, ...savedSettings }));
+        if (savedSettings) {
+            setSettings({
+                company_name: savedSettings.company_name || 'PaymentHub',
+                primary_color: savedSettings.primary_color || '#3b82f6',
+                secondary_color: savedSettings.secondary_color || '#06b6d4',
+                accent_color: savedSettings.accent_color || '#8b5cf6',
+                sidebar_bg: savedSettings.sidebar_bg || '#0f172a',
+                sidebar_text: savedSettings.sidebar_text || '#94a3b8',
+                logo_url: savedSettings.logo_url || '',
+                favicon_url: savedSettings.favicon_url || '',
+                dark_mode: savedSettings.dark_mode || false,
+                compact_sidebar: savedSettings.compact_sidebar || false,
+            });
+        }
     }, [savedSettings]);
 
     const saveMutation = useMutation({
@@ -59,7 +75,11 @@ export default function Appearance() {
             }
             return base44.entities.ThemeSettings.create({ ...data, name: 'default' });
         },
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: ['theme-settings'] }),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['theme-settings'] });
+            setSaveSuccess(true);
+            setTimeout(() => setSaveSuccess(false), 3000);
+        },
     });
 
     const applyPreset = (preset) => {
@@ -69,12 +89,14 @@ export default function Appearance() {
     const handleUpload = async (e, field) => {
         const file = e.target.files[0];
         if (file) {
+            setUploading(field);
             try {
                 const { file_url } = await base44.integrations.Core.UploadFile({ file });
                 setSettings(prev => ({ ...prev, [field]: file_url }));
             } catch (error) {
-                console.error('Upload failed');
+                console.error('Upload failed:', error);
             }
+            setUploading(null);
         }
     };
 
@@ -91,7 +113,10 @@ export default function Appearance() {
                         </div>
                         <div className="flex gap-2">
                             <Button variant="outline" onClick={() => setSettings({ company_name: 'PaymentHub', primary_color: '#3b82f6', secondary_color: '#06b6d4', accent_color: '#8b5cf6', sidebar_bg: '#0f172a', sidebar_text: '#94a3b8', logo_url: '', favicon_url: '', dark_mode: false, compact_sidebar: false })}><RotateCcw className="h-4 w-4 mr-2" />Reset</Button>
-                            <Button onClick={() => saveMutation.mutate(settings)} className="gap-2"><Save className="h-4 w-4" />Save Changes</Button>
+                            <Button onClick={() => saveMutation.mutate(settings)} disabled={saveMutation.isPending} className="gap-2">
+                                {saveMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : saveSuccess ? <CheckCircle className="h-4 w-4" /> : <Save className="h-4 w-4" />}
+                                {saveSuccess ? 'Saved!' : 'Save Changes'}
+                            </Button>
                         </div>
                     </div>
 
@@ -107,21 +132,35 @@ export default function Appearance() {
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="space-y-2">
                                             <Label>Logo</Label>
+                                            {settings.logo_url && (
+                                                <div className="mb-2 p-2 bg-slate-100 rounded-lg inline-block">
+                                                    <img src={settings.logo_url} alt="Logo preview" className="h-10 max-w-32 object-contain" />
+                                                </div>
+                                            )}
                                             <div className="flex gap-2">
-                                                <Input value={settings.logo_url} onChange={(e) => setSettings(p => ({ ...p, logo_url: e.target.value }))} placeholder="Logo URL" />
+                                                <Input value={settings.logo_url} onChange={(e) => setSettings(p => ({ ...p, logo_url: e.target.value }))} placeholder="Logo URL or upload" />
                                                 <label className="cursor-pointer">
                                                     <input type="file" accept="image/*" className="hidden" onChange={(e) => handleUpload(e, 'logo_url')} />
-                                                    <Button variant="outline" size="icon" asChild><span><Upload className="h-4 w-4" /></span></Button>
+                                                    <Button variant="outline" size="icon" disabled={uploading === 'logo_url'} asChild>
+                                                        <span>{uploading === 'logo_url' ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}</span>
+                                                    </Button>
                                                 </label>
                                             </div>
                                         </div>
                                         <div className="space-y-2">
                                             <Label>Favicon</Label>
+                                            {settings.favicon_url && (
+                                                <div className="mb-2 p-2 bg-slate-100 rounded-lg inline-block">
+                                                    <img src={settings.favicon_url} alt="Favicon preview" className="h-8 w-8 object-contain" />
+                                                </div>
+                                            )}
                                             <div className="flex gap-2">
-                                                <Input value={settings.favicon_url} onChange={(e) => setSettings(p => ({ ...p, favicon_url: e.target.value }))} placeholder="Favicon URL" />
+                                                <Input value={settings.favicon_url} onChange={(e) => setSettings(p => ({ ...p, favicon_url: e.target.value }))} placeholder="Favicon URL or upload" />
                                                 <label className="cursor-pointer">
                                                     <input type="file" accept="image/*" className="hidden" onChange={(e) => handleUpload(e, 'favicon_url')} />
-                                                    <Button variant="outline" size="icon" asChild><span><Upload className="h-4 w-4" /></span></Button>
+                                                    <Button variant="outline" size="icon" disabled={uploading === 'favicon_url'} asChild>
+                                                        <span>{uploading === 'favicon_url' ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}</span>
+                                                    </Button>
                                                 </label>
                                             </div>
                                         </div>
