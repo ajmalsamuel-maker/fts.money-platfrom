@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { base44 } from '@/api/base44Client';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
+import { ROLE_CONFIG } from '@/components/auth/permissions';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -21,11 +24,33 @@ import {
     Sun,
     ChevronDown,
     Globe,
-    Building2
+    Building2,
+    Shield
 } from 'lucide-react';
 
 export default function TopHeader({ onToggleSidebar, collapsed }) {
     const [searchQuery, setSearchQuery] = useState('');
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        const loadUser = async () => {
+            try {
+                const currentUser = await base44.auth.me();
+                setUser(currentUser);
+            } catch (err) {
+                // User not logged in
+            }
+        };
+        loadUser();
+    }, []);
+
+    const userRole = user?.app_role || 'viewer';
+    const roleConfig = ROLE_CONFIG[userRole] || ROLE_CONFIG.viewer;
+    const userInitials = user?.full_name?.split(' ').map(n => n[0]).join('').toUpperCase() || user?.email?.charAt(0)?.toUpperCase() || 'U';
+
+    const handleLogout = () => {
+        base44.auth.logout();
+    };
 
     return (
         <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-30">
@@ -142,27 +167,36 @@ export default function TopHeader({ onToggleSidebar, collapsed }) {
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className="gap-2 ml-2">
                             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white text-sm font-medium">
-                                SP
+                                {userInitials}
                             </div>
                             <div className="hidden md:block text-left">
-                                <p className="text-sm font-medium text-slate-900">Service Provider</p>
-                                <p className="text-xs text-slate-500">Admin</p>
+                                <p className="text-sm font-medium text-slate-900">{user?.full_name || 'User'}</p>
+                                <p className="text-xs text-slate-500 flex items-center gap-1">
+                                    <Shield className="h-3 w-3" />
+                                    {roleConfig.label}
+                                </p>
                             </div>
                             <ChevronDown className="h-4 w-4 text-slate-400" />
                         </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuContent align="end" className="w-64">
                         <DropdownMenuLabel>
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white font-medium">
-                                    SP
+                                    {userInitials}
                                 </div>
-                                <div>
-                                    <p className="font-medium">Service Provider</p>
-                                    <p className="text-xs text-slate-500">admin@provider.com</p>
+                                <div className="flex-1">
+                                    <p className="font-medium">{user?.full_name || 'User'}</p>
+                                    <p className="text-xs text-slate-500">{user?.email || ''}</p>
                                 </div>
                             </div>
                         </DropdownMenuLabel>
+                        <div className="px-2 py-2">
+                            <Badge className={cn("text-xs", roleConfig.bgColor, roleConfig.textColor)}>
+                                {roleConfig.label}
+                            </Badge>
+                            <p className="text-xs text-slate-500 mt-1">{roleConfig.description}</p>
+                        </div>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem>
                             <Building2 className="h-4 w-4 mr-2" />
@@ -177,7 +211,7 @@ export default function TopHeader({ onToggleSidebar, collapsed }) {
                             Settings
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-red-600">
+                        <DropdownMenuItem className="text-red-600" onClick={handleLogout}>
                             <LogOut className="h-4 w-4 mr-2" />
                             Logout
                         </DropdownMenuItem>
