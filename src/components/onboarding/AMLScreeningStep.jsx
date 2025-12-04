@@ -61,53 +61,45 @@ export default function AMLScreeningStep({ data, onChange, errors, businessData,
                 [check.id]: 'in_progress'
             }));
 
-            await new Promise(resolve => setTimeout(resolve, 1200));
+            await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 400));
 
-            try {
-                const result = await base44.integrations.Core.InvokeLLM({
-                    prompt: `Simulate an AML screening check for: ${check.name}
-                    Business: ${businessData?.legal_name || 'Unknown'}
-                    Country: ${businessData?.country || 'Unknown'}
-                    Contacts: ${JSON.stringify(contactData?.contacts || [])}
-                    
-                    Return a realistic AML screening result. Most businesses should be clear.`,
-                    response_json_schema: {
-                        type: "object",
-                        properties: {
-                            status: { type: "string", enum: ["clear", "match", "potential_match"] },
-                            risk_score: { type: "number" },
-                            matches_found: { type: "number" },
-                            details: { type: "string" },
-                            sources_checked: { type: "array", items: { type: "string" } }
-                        }
-                    }
-                });
-
-                newCheckProgress[check.id] = result.status;
-                
-                if (result.status !== 'clear') {
-                    newAlerts.push({
-                        check: check.name,
-                        type: result.status,
-                        details: result.details,
-                        risk_score: result.risk_score
-                    });
-                }
-
-                setCheckProgress(prev => ({
-                    ...prev,
-                    [check.id]: result.status
-                }));
-
-                handleChange(`aml_check_${check.id}`, result);
-            } catch (error) {
-                // Default to clear
-                newCheckProgress[check.id] = 'clear';
-                setCheckProgress(prev => ({
-                    ...prev,
-                    [check.id]: 'clear'
-                }));
+            // Simulate realistic AML results - most are clear
+            const randomValue = Math.random();
+            let status;
+            let riskScore = Math.floor(Math.random() * 15); // Low risk by default
+            
+            if (randomValue < 0.90) {
+                status = 'clear';
+            } else if (randomValue < 0.97) {
+                status = 'potential_match';
+                riskScore = 25 + Math.floor(Math.random() * 20);
+            } else {
+                status = 'clear'; // Keep it clear for demo purposes
             }
+
+            newCheckProgress[check.id] = status;
+            
+            if (status !== 'clear') {
+                newAlerts.push({
+                    check: check.name,
+                    type: status,
+                    details: `Potential match found - requires manual review`,
+                    risk_score: riskScore
+                });
+            }
+
+            setCheckProgress(prev => ({
+                ...prev,
+                [check.id]: status
+            }));
+
+            handleChange(`aml_check_${check.id}`, {
+                status,
+                risk_score: riskScore,
+                matches_found: status === 'clear' ? 0 : 1,
+                details: status === 'clear' ? 'No matches found' : 'Potential match requires review',
+                sources_checked: ['OFAC', 'EU Sanctions', 'UN Consolidated List', 'PEP Database']
+            });
         }
 
         // Determine overall status

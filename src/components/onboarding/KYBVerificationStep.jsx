@@ -44,6 +44,8 @@ export default function KYBVerificationStep({ data, onChange, errors, businessDa
         handleChange('kyb_initiated_at', new Date().toISOString());
         setOverallStatus('in_progress');
 
+        const newCheckProgress = {};
+
         // Simulate TheKYB API verification process
         for (let i = 0; i < kybChecks.length; i++) {
             const check = kybChecks[i];
@@ -55,48 +57,40 @@ export default function KYBVerificationStep({ data, onChange, errors, businessDa
             }));
 
             // Simulate API call delay
-            await new Promise(resolve => setTimeout(resolve, 1500));
+            await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 500));
 
-            // Use LLM to simulate verification result
-            try {
-                const result = await base44.integrations.Core.InvokeLLM({
-                    prompt: `Simulate a KYB verification check for: ${check.name}
-                    Business: ${businessData?.legal_name || 'Unknown'}
-                    Country: ${businessData?.country || 'Unknown'}
-                    Registration Number: ${businessData?.registration_number || 'Unknown'}
-                    
-                    Return a realistic verification result.`,
-                    response_json_schema: {
-                        type: "object",
-                        properties: {
-                            status: { type: "string", enum: ["passed", "failed", "needs_review"] },
-                            confidence_score: { type: "number" },
-                            details: { type: "string" },
-                            data_sources: { type: "array", items: { type: "string" } }
-                        }
-                    }
-                });
-
-                setCheckProgress(prev => ({
-                    ...prev,
-                    [check.id]: result.status === 'passed' ? 'passed' : result.status
-                }));
-
-                handleChange(`kyb_check_${check.id}`, result);
-            } catch (error) {
-                // Fallback - mark as passed
-                setCheckProgress(prev => ({
-                    ...prev,
-                    [check.id]: 'passed'
-                }));
+            // Simulate realistic verification - most checks pass
+            const randomValue = Math.random();
+            let status;
+            if (randomValue < 0.85) {
+                status = 'passed';
+            } else if (randomValue < 0.95) {
+                status = 'needs_review';
+            } else {
+                status = 'passed'; // Keep high success rate for demo
             }
+
+            newCheckProgress[check.id] = status;
+
+            setCheckProgress(prev => ({
+                ...prev,
+                [check.id]: status
+            }));
+
+            handleChange(`kyb_check_${check.id}`, {
+                status,
+                confidence_score: 85 + Math.floor(Math.random() * 15),
+                details: `${check.name} verification completed successfully`,
+                data_sources: ['Official Registry', 'Credit Bureau', 'Public Records']
+            });
         }
 
-        // Determine overall status
-        const allPassed = Object.values(checkProgress).every(s => s === 'passed');
-        const hasFailed = Object.values(checkProgress).some(s => s === 'failed');
+        // Determine overall status based on collected results
+        const allPassed = Object.values(newCheckProgress).every(s => s === 'passed');
+        const hasFailed = Object.values(newCheckProgress).some(s => s === 'failed');
+        const hasReview = Object.values(newCheckProgress).some(s => s === 'needs_review');
         
-        const finalStatus = hasFailed ? 'rejected' : allPassed ? 'approved' : 'pending_review';
+        const finalStatus = hasFailed ? 'rejected' : hasReview ? 'pending_review' : 'approved';
         
         setOverallStatus(finalStatus);
         handleChange('kyb_status', finalStatus);

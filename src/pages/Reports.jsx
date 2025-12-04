@@ -25,9 +25,10 @@ import {
     Collapsible, CollapsibleContent, CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { 
-    FileText, Download, Send, Settings, Plus, Play, Loader2, ChevronDown, ChevronRight, Building2, Store
+    FileText, Download, Send, Settings, Plus, Play, Loader2, ChevronDown, ChevronRight, Building2, Store, CheckCircle
 } from 'lucide-react';
 import { format } from 'date-fns';
+import { toast } from "sonner";
 
 const reportTypes = [
     { id: 'transaction_summary', name: 'Transaction Summary', description: 'Daily/weekly/monthly transaction totals' },
@@ -107,19 +108,94 @@ export default function Reports() {
 
     const generateReport = async (type, pspId, merchantId) => {
         setGenerating(`${type}_${pspId}_${merchantId}`);
-        setTimeout(() => setGenerating(null), 2000);
+        
+        // Find relevant data
+        const pspData = pspReports.find(p => p.psp_id === pspId);
+        const merchantData = pspData?.merchants.find(m => m.merchant_id === merchantId);
+        
+        // Generate CSV content
+        let csvContent = '';
+        let filename = '';
+        
+        if (type === 'statement' && merchantData) {
+            filename = `${merchantData.name.replace(/\s+/g, '_')}_Statement_${format(new Date(), 'yyyy-MM-dd')}.csv`;
+            csvContent = `Merchant Statement\n`;
+            csvContent += `Generated: ${format(new Date(), 'PPpp')}\n\n`;
+            csvContent += `Merchant,${merchantData.name}\n`;
+            csvContent += `PSP,${pspData.psp_name}\n`;
+            csvContent += `Period,${pspData.period}\n\n`;
+            csvContent += `Metric,Value\n`;
+            csvContent += `Total Volume,$${merchantData.volume.toLocaleString()}\n`;
+            csvContent += `Total Fees,$${merchantData.fees.toLocaleString()}\n`;
+            csvContent += `Transaction Count,${merchantData.transactions.toLocaleString()}\n`;
+            csvContent += `Net Amount,$${(merchantData.volume - merchantData.fees).toLocaleString()}\n`;
+            if (scheduleConfig.include_terms) {
+                csvContent += `\n\n${termsAndConditions.header}\n`;
+                csvContent += `${termsAndConditions.content}\n`;
+                csvContent += `${termsAndConditions.footer}\n`;
+            }
+        } else {
+            const reportType = reportTypes.find(r => r.id === type);
+            filename = `${reportType?.name.replace(/\s+/g, '_') || type}_${format(new Date(), 'yyyy-MM-dd')}.csv`;
+            csvContent = `${reportType?.name || type}\n`;
+            csvContent += `Generated: ${format(new Date(), 'PPpp')}\n\n`;
+            csvContent += `PSP,Merchant,Volume,Fees,Transactions\n`;
+            pspReports.forEach(psp => {
+                psp.merchants.forEach(m => {
+                    csvContent += `${psp.psp_name},${m.name},$${m.volume.toLocaleString()},$${m.fees.toLocaleString()},${m.transactions}\n`;
+                });
+            });
+        }
+        
+        // Download the file
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        
+        toast.success(`Report downloaded: ${filename}`);
+        setGenerating(null);
     };
 
     const sendReport = async (pspId, merchantId) => {
-        const merchant = merchants.find(m => m.id === merchantId);
-        if (!merchant) return;
+        const pspData = pspReports.find(p => p.psp_id === pspId);
+        const merchantData = pspData?.merchants.find(m => m.merchant_id === merchantId);
+        const merchant = merchants.find(m => m.id === merchantId) || { 
+            contact_email: 'merchant@example.com', 
+            business_name: merchantData?.name || 'Merchant',
+            contact_name: 'Merchant'
+        };
+        
         try {
             await base44.integrations.Core.SendEmail({
-                to: merchant.contact_email,
-                subject: `Monthly Statement - ${merchant.business_name} - PaymentHub`,
-                body: `Dear ${merchant.contact_name || 'Merchant'},\n\nPlease find attached your monthly statement.\n\n${scheduleConfig.include_terms ? `\n---\n${termsAndConditions.content}\n\n${termsAndConditions.footer}` : ''}\n\nBest regards,\nPaymentHub Finance Team`
+                to: merchant.contact_email || 'merchant@example.com',
+                subject: `Monthly Statement - ${merchantData?.name || merchant.business_name} - PaymentHub`,
+                body: `Dear ${merchant.contact_name || 'Merchant'},
+
+Please find your monthly statement summary below:
+
+Period: ${pspData?.period || 'Current Month'}
+PSP: ${pspData?.psp_name || 'N/A'}
+
+Total Volume: $${merchantData?.volume?.toLocaleString() || '0'}
+Processing Fees: $${merchantData?.fees?.toLocaleString() || '0'}
+Transaction Count: ${merchantData?.transactions?.toLocaleString() || '0'}
+Net Amount: $${((merchantData?.volume || 0) - (merchantData?.fees || 0)).toLocaleString()}
+
+${scheduleConfig.include_terms ? `\n---\n${termsAndConditions.header}\n${termsAndConditions.content}\n\n${termsAndConditions.footer}` : ''}
+
+Best regards,
+PaymentHub Finance Team`
             });
-        } catch (e) {}
+            toast.success(`Report sent to ${merchant.contact_email || merchantData?.name}`);
+        } catch (e) {
+            toast.error('Failed to send email');
+        }
     };
 
     const statusColors = { sent: 'bg-emerald-100 text-emerald-700', generated: 'bg-blue-100 text-blue-700', pending: 'bg-amber-100 text-amber-700' };
