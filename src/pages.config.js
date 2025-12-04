@@ -11,6 +11,10 @@ import Compliance from './pages/Compliance';
 import PaymentOrchestration from './pages/PaymentOrchestration';
 import Chargebacks from './pages/Chargebacks';
 import MerchantSelfOnboarding from './pages/MerchantSelfOnboarding';
+import MerchantCredentials from './pages/MerchantCredentials';
+import AcquirerOnboarding from './pages/AcquirerOnboarding';
+import APMOnboarding from './pages/APMOnboarding';
+import AIDisputeResolution from './pages/AIDisputeResolution';
 import __Layout from './Layout.jsx';
 
 
@@ -28,6 +32,10 @@ export const PAGES = {
     "PaymentOrchestration": PaymentOrchestration,
     "Chargebacks": Chargebacks,
     "MerchantSelfOnboarding": MerchantSelfOnboarding,
+    "MerchantCredentials": MerchantCredentials,
+    "AcquirerOnboarding": AcquirerOnboarding,
+    "APMOnboarding": APMOnboarding,
+    "AIDisputeResolution": AIDisputeResolution,
 }
 
 export const pagesConfig = {

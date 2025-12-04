@@ -24,7 +24,12 @@ import {
     Key,
     Bell,
     HelpCircle,
-    LogOut
+    LogOut,
+    UserPlus,
+    Landmark,
+    Smartphone,
+    Brain,
+    Zap
 } from 'lucide-react';
 
 const menuItems = [
@@ -42,12 +47,16 @@ const menuItems = [
             { icon: Receipt, label: 'Settlements', path: 'Settlements' },
             { icon: Repeat, label: 'Chargebacks', path: 'Chargebacks' },
             { icon: AlertTriangle, label: 'Disputes', path: 'Disputes' },
+            { icon: Brain, label: 'AI Dispute Resolution', path: 'AIDisputeResolution' },
         ]
     },
     {
         group: 'Onboarding',
         items: [
-            { icon: Users, label: 'Self Onboarding', path: 'MerchantSelfOnboarding' },
+            { icon: Store, label: 'Merchant Onboarding', path: 'MerchantOnboarding' },
+            { icon: UserPlus, label: 'Self Onboarding', path: 'MerchantSelfOnboarding' },
+            { icon: Landmark, label: 'Acquirer Onboarding', path: 'AcquirerOnboarding' },
+            { icon: Smartphone, label: 'APM Onboarding', path: 'APMOnboarding' },
         ]
     },
     {
@@ -55,7 +64,7 @@ const menuItems = [
         items: [
             { icon: Store, label: 'Merchants', path: 'Merchants' },
             { icon: Terminal, label: 'Terminals', path: 'Terminals' },
-            { icon: Building2, label: 'Acquirers', path: 'Acquirers' },
+            { icon: Key, label: 'API Credentials', path: 'MerchantCredentials' },
         ]
     },
     {
@@ -76,6 +85,7 @@ const menuItems = [
     {
         group: 'Configuration',
         items: [
+            { icon: Zap, label: 'Smart Orchestration', path: 'SmartOrchestration' },
             { icon: Globe, label: 'Payment Orchestration', path: 'PaymentOrchestration' },
             { icon: Key, label: 'API Keys', path: 'ApiKeys' },
             { icon: Bell, label: 'Webhooks', path: 'Webhooks' },
@@ -102,7 +112,6 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
             "fixed left-0 top-0 h-screen bg-slate-900 text-white z-40 transition-all duration-300 flex flex-col",
             collapsed ? "w-20" : "w-64"
         )}>
-            {/* Logo */}
             <div className="h-16 flex items-center justify-center border-b border-slate-800 px-4">
                 {collapsed ? (
                     <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
@@ -121,7 +130,6 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                 )}
             </div>
 
-            {/* Navigation */}
             <nav className="flex-1 overflow-y-auto py-4 px-3">
                 {menuItems.map((group, groupIdx) => (
                     <div key={groupIdx} className="mb-4">
@@ -164,7 +172,6 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                 ))}
             </nav>
 
-            {/* Footer */}
             <div className="border-t border-slate-800 p-3">
                 <Link
                     to="#"
