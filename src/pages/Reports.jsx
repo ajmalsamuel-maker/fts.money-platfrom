@@ -106,6 +106,59 @@ export default function Reports() {
 
     const togglePSP = (pspId) => setExpandedPSPs(prev => ({ ...prev, [pspId]: !prev[pspId] }));
 
+    const generatePSPReport = (psp) => {
+        const filename = `${psp.psp_name.replace(/\s+/g, '_')}_Report_${format(new Date(), 'yyyy-MM-dd')}.csv`;
+        let csvContent = `PSP Report: ${psp.psp_name}\n`;
+        csvContent += `Generated: ${format(new Date(), 'PPpp')}\n`;
+        csvContent += `Period: ${psp.period}\n\n`;
+        csvContent += `Summary\n`;
+        csvContent += `Total Volume,$${psp.total_volume.toLocaleString()}\n`;
+        csvContent += `Total Fees,$${psp.total_fees.toLocaleString()}\n`;
+        csvContent += `Total Transactions,${psp.total_transactions.toLocaleString()}\n\n`;
+        csvContent += `Merchant Breakdown\n`;
+        csvContent += `Merchant,Volume,Fees,Transactions,Status\n`;
+        psp.merchants.forEach(m => {
+            csvContent += `${m.name},$${m.volume.toLocaleString()},$${m.fees.toLocaleString()},${m.transactions},${m.status}\n`;
+        });
+        
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        toast.success(`Downloaded ${filename}`);
+    };
+
+    const generateMerchantCombinedReport = (merchantName, merchantData) => {
+        const filename = `${merchantName.replace(/\s+/g, '_')}_Combined_Report_${format(new Date(), 'yyyy-MM-dd')}.csv`;
+        let csvContent = `Combined Merchant Report: ${merchantName}\n`;
+        csvContent += `Generated: ${format(new Date(), 'PPpp')}\n\n`;
+        csvContent += `PSP Breakdown\n`;
+        csvContent += `PSP,Volume,Fees,Transactions\n`;
+        merchantData.forEach(m => {
+            csvContent += `${m.psp},$${m.volume.toLocaleString()},$${m.fees.toLocaleString()},${m.transactions}\n`;
+        });
+        csvContent += `\nTotals\n`;
+        csvContent += `Total Volume,$${merchantData.reduce((s, m) => s + m.volume, 0).toLocaleString()}\n`;
+        csvContent += `Total Fees,$${merchantData.reduce((s, m) => s + m.fees, 0).toLocaleString()}\n`;
+        csvContent += `Total Transactions,${merchantData.reduce((s, m) => s + m.transactions, 0).toLocaleString()}\n`;
+        
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        toast.success(`Downloaded ${filename}`);
+    };
+
     const generateReport = async (type, pspId, merchantId) => {
         setGenerating(`${type}_${pspId}_${merchantId}`);
         
@@ -246,7 +299,7 @@ PaymentHub Finance Team`
                                                                 <div><p className="text-xs text-slate-500">Volume</p><p className="font-semibold">${(psp.total_volume / 1000).toFixed(0)}K</p></div>
                                                                 <div><p className="text-xs text-slate-500">Fees</p><p className="font-semibold text-blue-600">${psp.total_fees.toLocaleString()}</p></div>
                                                                 <div><p className="text-xs text-slate-500">Transactions</p><p className="font-semibold">{psp.total_transactions.toLocaleString()}</p></div>
-                                                                <Button variant="outline" size="sm" className="gap-1"><Download className="h-3 w-3" />PSP Report</Button>
+                                                                <Button variant="outline" size="sm" className="gap-1" onClick={(e) => { e.stopPropagation(); generatePSPReport(psp); }}><Download className="h-3 w-3" />PSP Report</Button>
                                                             </div>
                                                         </div>
                                                     </CollapsibleTrigger>
@@ -291,7 +344,7 @@ PaymentHub Finance Team`
                                                             <TableCell><div className="flex gap-1">{merchantData.map(m => <Badge key={m.psp} variant="outline" className="text-xs">{m.psp}</Badge>)}</div></TableCell>
                                                             <TableCell className="text-right font-semibold">${merchantData.reduce((s, m) => s + m.volume, 0).toLocaleString()}</TableCell>
                                                             <TableCell className="text-right text-blue-600">${merchantData.reduce((s, m) => s + m.fees, 0).toLocaleString()}</TableCell>
-                                                            <TableCell><Button variant="outline" size="sm" className="gap-1"><Download className="h-3 w-3" />Combined</Button></TableCell>
+                                                            <TableCell><Button variant="outline" size="sm" className="gap-1" onClick={() => generateMerchantCombinedReport(merchantName, merchantData)}><Download className="h-3 w-3" />Combined</Button></TableCell>
                                                         </TableRow>
                                                     );
                                                 })}
