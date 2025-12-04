@@ -41,6 +41,8 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Label } from "@/components/ui/label";
+import { Link } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
 import { 
     Search, 
     Plus, 
@@ -144,11 +146,16 @@ export default function Merchants() {
                             <h1 className="text-2xl font-bold text-slate-900">Merchants</h1>
                             <p className="text-slate-500">Manage your merchant accounts</p>
                         </div>
+                        <Link to={createPageUrl('MerchantOnboarding')}>
+                            <Button className="gap-2 bg-blue-600 hover:bg-blue-700">
+                                <Plus className="h-4 w-4" />
+                                Add Merchant
+                            </Button>
+                        </Link>
                         <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
                             <DialogTrigger asChild>
-                                <Button className="gap-2 bg-blue-600 hover:bg-blue-700">
-                                    <Plus className="h-4 w-4" />
-                                    Add Merchant
+                                <Button variant="outline" className="gap-2">
+                                    Quick Add
                                 </Button>
                             </DialogTrigger>
                             <DialogContent className="max-w-2xl">
