@@ -24,6 +24,8 @@ import MerchantUsers from './pages/MerchantUsers';
 import Balances from './pages/Balances';
 import Reports from './pages/Reports';
 import Payouts from './pages/Payouts';
+import PaymentProviders from './pages/PaymentProviders';
+import BuyRates from './pages/BuyRates';
 import __Layout from './Layout.jsx';
 
 
@@ -54,6 +56,8 @@ export const PAGES = {
     "Balances": Balances,
     "Reports": Reports,
     "Payouts": Payouts,
+    "PaymentProviders": PaymentProviders,
+    "BuyRates": BuyRates,
 }
 
 export const pagesConfig = {
