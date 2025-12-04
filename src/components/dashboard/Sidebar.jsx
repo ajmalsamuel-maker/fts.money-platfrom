@@ -35,7 +35,10 @@ import {
     CheckSquare,
     Palette,
     UserCog,
-    Monitor
+    Monitor,
+    DollarSign,
+    Percent,
+    Building
 } from 'lucide-react';
 
 const menuItems = [
@@ -81,6 +84,9 @@ const menuItems = [
             { icon: Wallet, label: 'Balances', path: 'Balances', permission: 'VIEW_BALANCES' },
             { icon: FileText, label: 'Reports', path: 'Reports', permission: 'VIEW_REPORTS' },
             { icon: CreditCard, label: 'Payouts', path: 'Payouts', permission: 'VIEW_PAYOUTS' },
+            { icon: Building, label: 'Providers', path: 'PaymentProviders', permission: 'VIEW_BALANCES' },
+            { icon: Percent, label: 'Buy Rates', path: 'BuyRates', permission: 'VIEW_BALANCES' },
+            { icon: DollarSign, label: 'Merchant Pricing', path: 'MerchantPricing', permission: 'VIEW_BALANCES' },
         ]
     },
     {
