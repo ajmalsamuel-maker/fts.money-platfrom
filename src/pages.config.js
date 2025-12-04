@@ -27,6 +27,7 @@ import Payouts from './pages/Payouts';
 import PaymentProviders from './pages/PaymentProviders';
 import BuyRates from './pages/BuyRates';
 import MerchantPricing from './pages/MerchantPricing';
+import MerchantMIDs from './pages/MerchantMIDs';
 import __Layout from './Layout.jsx';
 
 
@@ -60,6 +61,7 @@ export const PAGES = {
     "PaymentProviders": PaymentProviders,
     "BuyRates": BuyRates,
     "MerchantPricing": MerchantPricing,
+    "MerchantMIDs": MerchantMIDs,
 }
 
 export const pagesConfig = {
