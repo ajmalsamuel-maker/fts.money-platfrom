@@ -15,6 +15,7 @@ import MerchantCredentials from './pages/MerchantCredentials';
 import AcquirerOnboarding from './pages/AcquirerOnboarding';
 import APMOnboarding from './pages/APMOnboarding';
 import AIDisputeResolution from './pages/AIDisputeResolution';
+import SmartOrchestration from './pages/SmartOrchestration';
 import __Layout from './Layout.jsx';
 
 
@@ -36,6 +37,7 @@ export const PAGES = {
     "AcquirerOnboarding": AcquirerOnboarding,
     "APMOnboarding": APMOnboarding,
     "AIDisputeResolution": AIDisputeResolution,
+    "SmartOrchestration": SmartOrchestration,
 }
 
 export const pagesConfig = {
