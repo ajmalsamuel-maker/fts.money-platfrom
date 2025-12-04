@@ -24,10 +24,8 @@ import {
     Receipt,
     Globe,
     Key,
-    Bell,
     HelpCircle,
     LogOut,
-    UserPlus,
     Landmark,
     Smartphone,
     Brain,
@@ -38,7 +36,8 @@ import {
     Monitor,
     DollarSign,
     Percent,
-    Building
+    Building,
+    ArrowUpDown
 } from 'lucide-react';
 
 const menuItems = [
