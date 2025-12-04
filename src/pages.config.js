@@ -28,6 +28,9 @@ import PaymentProviders from './pages/PaymentProviders';
 import BuyRates from './pages/BuyRates';
 import MerchantPricing from './pages/MerchantPricing';
 import MerchantMIDs from './pages/MerchantMIDs';
+import Reconciliation from './pages/Reconciliation';
+import AutomatedPayouts from './pages/AutomatedPayouts';
+import AdvancedReports from './pages/AdvancedReports';
 import __Layout from './Layout.jsx';
 
 
@@ -62,6 +65,9 @@ export const PAGES = {
     "BuyRates": BuyRates,
     "MerchantPricing": MerchantPricing,
     "MerchantMIDs": MerchantMIDs,
+    "Reconciliation": Reconciliation,
+    "AutomatedPayouts": AutomatedPayouts,
+    "AdvancedReports": AdvancedReports,
 }
 
 export const pagesConfig = {
