@@ -107,6 +107,7 @@ const menuItems = [
             { icon: UserCog, label: 'User Management', path: 'UserManagement', permission: 'VIEW_USERS' },
             { icon: Palette, label: 'Appearance', path: 'Appearance', permission: 'VIEW_APPEARANCE' },
             { icon: Settings, label: 'Settings', path: 'Settings', permission: 'VIEW_SETTINGS' },
+            { icon: Landmark, label: 'Database Setup', path: 'DatabaseSetup', permission: 'VIEW_SETTINGS' },
         ]
     },
 ];
