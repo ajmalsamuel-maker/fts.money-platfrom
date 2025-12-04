@@ -45,6 +45,12 @@ const menuItems = [
         ]
     },
     {
+        group: 'Onboarding',
+        items: [
+            { icon: Users, label: 'Self Onboarding', path: 'MerchantSelfOnboarding' },
+        ]
+    },
+    {
         group: 'Merchant Management',
         items: [
             { icon: Store, label: 'Merchants', path: 'Merchants' },

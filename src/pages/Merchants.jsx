@@ -150,20 +150,23 @@ export default function Merchants() {
                             <h1 className="text-2xl font-bold text-slate-900">Merchants</h1>
                             <p className="text-slate-500">Manage your merchant accounts</p>
                         </div>
-                        <Button 
-                            variant="outline" 
-                            className="gap-2"
-                            onClick={() => setShowOnboardingLinkDialog(true)}
-                        >
-                            <Link2 className="h-4 w-4" />
-                            Generate Onboarding Link
-                        </Button>
-                        <Link to={createPageUrl('MerchantOnboarding')}>
-                            <Button className="gap-2 bg-blue-600 hover:bg-blue-700">
-                                <Plus className="h-4 w-4" />
-                                Add Merchant
+                        <div className="flex items-center gap-2">
+                            <Button 
+                                variant="outline" 
+                                className="gap-2"
+                                onClick={() => setShowOnboardingLinkDialog(true)}
+                            >
+                                <Link2 className="h-4 w-4" />
+                                Generate Onboarding Link
                             </Button>
-                        </Link>
+                            <Link to={createPageUrl('MerchantOnboarding')}>
+                                <Button className="gap-2 bg-blue-600 hover:bg-blue-700">
+                                    <Plus className="h-4 w-4" />
+                                    Add Merchant
+                                </Button>
+                            </Link>
+                        </div>
+                    </div>
                         <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
                             <DialogTrigger asChild>
                                 <Button variant="outline" className="gap-2">
@@ -270,7 +273,6 @@ export default function Merchants() {
                                 </DialogFooter>
                             </DialogContent>
                         </Dialog>
-                    </div>
 
                     {/* Stats Cards */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
@@ -433,6 +435,11 @@ export default function Merchants() {
                     </Card>
                 </main>
             </div>
+
+            <SelfOnboardingUrlGenerator 
+                open={showOnboardingLinkDialog}
+                onOpenChange={setShowOnboardingLinkDialog}
+            />
         </div>
     );
 }
