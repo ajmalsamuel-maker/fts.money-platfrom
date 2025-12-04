@@ -31,6 +31,7 @@ import {
 export default function TopHeader({ onToggleSidebar, collapsed }) {
     const [searchQuery, setSearchQuery] = useState('');
     const [user, setUser] = useState(null);
+    const [themeSettings, setThemeSettings] = useState(null);
 
     useEffect(() => {
         const loadUser = async () => {
@@ -43,6 +44,23 @@ export default function TopHeader({ onToggleSidebar, collapsed }) {
         };
         loadUser();
     }, []);
+
+    useEffect(() => {
+        const loadTheme = async () => {
+            try {
+                const settings = await base44.entities.ThemeSettings.list();
+                if (settings && settings.length > 0) {
+                    setThemeSettings(settings[0]);
+                }
+            } catch (err) {
+                // Theme settings not available
+            }
+        };
+        loadTheme();
+    }, []);
+
+    const primaryColor = themeSettings?.primary_color || '#3b82f6';
+    const secondaryColor = themeSettings?.secondary_color || '#06b6d4';
 
     const userRole = user?.app_role || 'viewer';
     const roleConfig = ROLE_CONFIG[userRole] || ROLE_CONFIG.viewer;
@@ -166,9 +184,12 @@ export default function TopHeader({ onToggleSidebar, collapsed }) {
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className="gap-2 ml-2">
-                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white text-sm font-medium">
-                                {userInitials}
-                            </div>
+                            <div 
+                                        className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium"
+                                        style={{ background: `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})` }}
+                                    >
+                                        {userInitials}
+                                    </div>
                             <div className="hidden md:block text-left">
                                 <p className="text-sm font-medium text-slate-900">{user?.full_name || 'User'}</p>
                                 <p className="text-xs text-slate-500 flex items-center gap-1">
@@ -182,7 +203,10 @@ export default function TopHeader({ onToggleSidebar, collapsed }) {
                     <DropdownMenuContent align="end" className="w-64">
                         <DropdownMenuLabel>
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white font-medium">
+                                <div 
+                                    className="w-10 h-10 rounded-full flex items-center justify-center text-white font-medium"
+                                    style={{ background: `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})` }}
+                                >
                                     {userInitials}
                                 </div>
                                 <div className="flex-1">
