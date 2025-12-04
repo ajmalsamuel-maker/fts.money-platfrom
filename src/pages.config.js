@@ -3,6 +3,7 @@ import Transactions from './pages/Transactions';
 import Merchants from './pages/Merchants';
 import Terminals from './pages/Terminals';
 import Settlements from './pages/Settlements';
+import MerchantOnboarding from './pages/MerchantOnboarding';
 import __Layout from './Layout.jsx';
 
 
@@ -12,6 +13,7 @@ export const PAGES = {
     "Merchants": Merchants,
     "Terminals": Terminals,
     "Settlements": Settlements,
+    "MerchantOnboarding": MerchantOnboarding,
 }
 
 export const pagesConfig = {
