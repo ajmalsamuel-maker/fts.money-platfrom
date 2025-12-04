@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { cn } from "@/lib/utils";
+import { base44 } from '@/api/base44Client';
+import { hasPermission, ROLE_CONFIG } from '@/components/auth/permissions';
+import { Badge } from "@/components/ui/badge";
 import { 
     LayoutDashboard, 
     ArrowLeftRight, 
@@ -39,73 +42,101 @@ const menuItems = [
     {
         group: 'Overview',
         items: [
-            { icon: LayoutDashboard, label: 'Dashboard', path: 'Dashboard' },
-            { icon: BarChart3, label: 'Analytics', path: 'Analytics' },
+            { icon: LayoutDashboard, label: 'Dashboard', path: 'Dashboard', permission: 'VIEW_DASHBOARD' },
+            { icon: BarChart3, label: 'Analytics', path: 'Analytics', permission: 'VIEW_ANALYTICS' },
         ]
     },
     {
         group: 'Transactions',
         items: [
-            { icon: ArrowLeftRight, label: 'Transactions', path: 'Transactions' },
-            { icon: Receipt, label: 'Settlements', path: 'Settlements' },
-            { icon: Repeat, label: 'Chargebacks', path: 'Chargebacks' },
-            { icon: AlertTriangle, label: 'Disputes', path: 'Disputes' },
-            { icon: Brain, label: 'AI Disputes', path: 'AIDisputeResolution' },
+            { icon: ArrowLeftRight, label: 'Transactions', path: 'Transactions', permission: 'VIEW_TRANSACTIONS' },
+            { icon: Receipt, label: 'Settlements', path: 'Settlements', permission: 'VIEW_SETTLEMENTS' },
+            { icon: Repeat, label: 'Chargebacks', path: 'Chargebacks', permission: 'VIEW_CHARGEBACKS' },
+            { icon: AlertTriangle, label: 'Disputes', path: 'Disputes', permission: 'VIEW_DISPUTES' },
+            { icon: Brain, label: 'AI Disputes', path: 'AIDisputeResolution', permission: 'VIEW_DISPUTES' },
         ]
     },
     {
         group: 'Onboarding',
         items: [
-            { icon: Store, label: 'Merchant', path: 'MerchantOnboarding' },
-            { icon: Landmark, label: 'Acquirer', path: 'AcquirerOnboarding' },
-            { icon: Smartphone, label: 'APM', path: 'APMOnboarding' },
-            { icon: CheckSquare, label: 'Approvals', path: 'Approvals' },
+            { icon: Store, label: 'Merchant', path: 'MerchantOnboarding', permission: 'VIEW_ONBOARDING' },
+            { icon: Landmark, label: 'Acquirer', path: 'AcquirerOnboarding', permission: 'VIEW_ONBOARDING' },
+            { icon: Smartphone, label: 'APM', path: 'APMOnboarding', permission: 'VIEW_ONBOARDING' },
+            { icon: CheckSquare, label: 'Approvals', path: 'Approvals', permission: 'APPROVE_ONBOARDING' },
         ]
     },
     {
         group: 'Merchants',
         items: [
-            { icon: Store, label: 'All Merchants', path: 'Merchants' },
-            { icon: Terminal, label: 'Terminals', path: 'Terminals' },
-            { icon: Monitor, label: 'Virtual Terminals', path: 'VirtualTerminals' },
-            { icon: Key, label: 'API Credentials', path: 'MerchantCredentials' },
-            { icon: Users, label: 'Merchant Users', path: 'MerchantUsers' },
+            { icon: Store, label: 'All Merchants', path: 'Merchants', permission: 'VIEW_MERCHANTS' },
+            { icon: Terminal, label: 'Terminals', path: 'Terminals', permission: 'VIEW_TERMINALS' },
+            { icon: Monitor, label: 'Virtual Terminals', path: 'VirtualTerminals', permission: 'VIEW_TERMINALS' },
+            { icon: Key, label: 'API Credentials', path: 'MerchantCredentials', permission: 'VIEW_CREDENTIALS' },
+            { icon: Users, label: 'Merchant Users', path: 'MerchantUsers', permission: 'VIEW_USERS' },
         ]
     },
     {
         group: 'Finance',
         items: [
-            { icon: Wallet, label: 'Balances', path: 'Balances' },
-            { icon: FileText, label: 'Reports', path: 'Reports' },
-            { icon: CreditCard, label: 'Payouts', path: 'Payouts' },
+            { icon: Wallet, label: 'Balances', path: 'Balances', permission: 'VIEW_BALANCES' },
+            { icon: FileText, label: 'Reports', path: 'Reports', permission: 'VIEW_REPORTS' },
+            { icon: CreditCard, label: 'Payouts', path: 'Payouts', permission: 'VIEW_PAYOUTS' },
         ]
     },
     {
         group: 'Risk',
         items: [
-            { icon: Shield, label: 'Fraud Prevention', path: 'FraudPrevention' },
-            { icon: Users, label: 'Compliance', path: 'Compliance' },
+            { icon: Shield, label: 'Fraud Prevention', path: 'FraudPrevention', permission: 'VIEW_FRAUD_PREVENTION' },
+            { icon: Users, label: 'Compliance', path: 'Compliance', permission: 'VIEW_COMPLIANCE' },
         ]
     },
     {
         group: 'Configuration',
         items: [
-            { icon: Zap, label: 'Smart Routing', path: 'SmartOrchestration' },
-            { icon: Globe, label: 'Orchestration', path: 'PaymentOrchestration' },
-            { icon: UserCog, label: 'User Management', path: 'UserManagement' },
-            { icon: Palette, label: 'Appearance', path: 'Appearance' },
-            { icon: Settings, label: 'Settings', path: 'Settings' },
+            { icon: Zap, label: 'Smart Routing', path: 'SmartOrchestration', permission: 'VIEW_ROUTING' },
+            { icon: Globe, label: 'Orchestration', path: 'PaymentOrchestration', permission: 'VIEW_ORCHESTRATION' },
+            { icon: UserCog, label: 'User Management', path: 'UserManagement', permission: 'VIEW_USERS' },
+            { icon: Palette, label: 'Appearance', path: 'Appearance', permission: 'VIEW_APPEARANCE' },
+            { icon: Settings, label: 'Settings', path: 'Settings', permission: 'VIEW_SETTINGS' },
         ]
     },
 ];
 
 export default function Sidebar({ collapsed, onToggle, currentPage }) {
     const [expandedGroups, setExpandedGroups] = useState(menuItems.map(g => g.group));
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        const loadUser = async () => {
+            try {
+                const currentUser = await base44.auth.me();
+                setUser(currentUser);
+            } catch (err) {
+                // User not logged in
+            }
+        };
+        loadUser();
+    }, []);
+
+    const userRole = user?.app_role || 'viewer';
+    const roleConfig = ROLE_CONFIG[userRole] || ROLE_CONFIG.viewer;
 
     const toggleGroup = (group) => {
         setExpandedGroups(prev => 
             prev.includes(group) ? prev.filter(g => g !== group) : [...prev, group]
         );
+    };
+
+    // Filter menu items based on user permissions
+    const filteredMenuItems = menuItems.map(group => ({
+        ...group,
+        items: group.items.filter(item => 
+            !item.permission || hasPermission(userRole, item.permission)
+        )
+    })).filter(group => group.items.length > 0);
+
+    const handleLogout = () => {
+        base44.auth.logout();
     };
 
     return (
@@ -131,8 +162,19 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                 )}
             </div>
 
+            {/* Role Badge */}
+            {!collapsed && user && (
+                <div className="px-3 py-2 border-b border-slate-800">
+                    <div className="flex items-center gap-2">
+                        <Badge className={cn("text-[10px]", roleConfig.bgColor, roleConfig.textColor)}>
+                            {roleConfig.label}
+                        </Badge>
+                    </div>
+                </div>
+            )}
+
             <nav className="flex-1 overflow-y-auto py-2 px-2">
-                {menuItems.map((group, groupIdx) => (
+                {filteredMenuItems.map((group, groupIdx) => (
                     <div key={groupIdx} className="mb-2">
                         {!collapsed && (
                             <button
@@ -174,7 +216,10 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                     <HelpCircle className="h-4 w-4" />
                     {!collapsed && <span>Help</span>}
                 </Link>
-                <button className={cn("w-full flex items-center gap-2 px-2 py-2 rounded-md text-red-400 hover:text-red-300 hover:bg-red-500/10 text-xs", collapsed && "justify-center")}>
+                <button 
+                    onClick={handleLogout}
+                    className={cn("w-full flex items-center gap-2 px-2 py-2 rounded-md text-red-400 hover:text-red-300 hover:bg-red-500/10 text-xs", collapsed && "justify-center")}
+                >
                     <LogOut className="h-4 w-4" />
                     {!collapsed && <span>Logout</span>}
                 </button>
