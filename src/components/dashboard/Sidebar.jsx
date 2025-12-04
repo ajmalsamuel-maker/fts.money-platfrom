@@ -37,7 +37,8 @@ import {
     DollarSign,
     Percent,
     Building,
-    ArrowUpDown
+    ArrowUpDown,
+    Database
 } from 'lucide-react';
 
 const menuItems = [
