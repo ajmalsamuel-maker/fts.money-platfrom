@@ -42,6 +42,8 @@ import {
     ChevronLeft,
     ChevronRight
 } from 'lucide-react';
+import { usePermissions } from '@/components/auth/usePermissions';
+import { PermissionGate } from '@/components/auth/PermissionGate';
 
 const statusConfig = {
     approved: { label: 'Approved', className: 'bg-emerald-100 text-emerald-700 border-emerald-200' },
@@ -67,6 +69,7 @@ export default function Transactions() {
     const [statusFilter, setStatusFilter] = useState('all');
     const [typeFilter, setTypeFilter] = useState('all');
     const [page, setPage] = useState(1);
+    const { can } = usePermissions();
 
     const { data: transactions = [], isLoading } = useQuery({
         queryKey: ['all-transactions'],
@@ -106,10 +109,12 @@ export default function Transactions() {
                             <h1 className="text-2xl font-bold text-slate-900">Transactions</h1>
                             <p className="text-slate-500">View and manage all payment transactions</p>
                         </div>
-                        <Button className="gap-2 bg-blue-600 hover:bg-blue-700">
-                            <Download className="h-4 w-4" />
-                            Export
-                        </Button>
+                        <PermissionGate permission="EXPORT_REPORTS">
+                            <Button className="gap-2 bg-blue-600 hover:bg-blue-700">
+                                <Download className="h-4 w-4" />
+                                Export
+                            </Button>
+                        </PermissionGate>
                     </div>
 
                     {/* Filters */}
@@ -251,14 +256,18 @@ export default function Transactions() {
                                                                     <Eye className="h-4 w-4 mr-2" />
                                                                     View Details
                                                                 </DropdownMenuItem>
-                                                                <DropdownMenuItem>
-                                                                    <RefreshCw className="h-4 w-4 mr-2" />
-                                                                    Refund
-                                                                </DropdownMenuItem>
-                                                                <DropdownMenuItem className="text-red-600">
-                                                                    <Ban className="h-4 w-4 mr-2" />
-                                                                    Void
-                                                                </DropdownMenuItem>
+                                                                <PermissionGate permission="REFUND_TRANSACTIONS">
+                                                                    <DropdownMenuItem>
+                                                                        <RefreshCw className="h-4 w-4 mr-2" />
+                                                                        Refund
+                                                                    </DropdownMenuItem>
+                                                                </PermissionGate>
+                                                                <PermissionGate permission="VOID_TRANSACTIONS">
+                                                                    <DropdownMenuItem className="text-red-600">
+                                                                        <Ban className="h-4 w-4 mr-2" />
+                                                                        Void
+                                                                    </DropdownMenuItem>
+                                                                </PermissionGate>
                                                             </DropdownMenuContent>
                                                         </DropdownMenu>
                                                     </TableCell>
