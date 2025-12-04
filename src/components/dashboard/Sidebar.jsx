@@ -72,6 +72,7 @@ const menuItems = [
         items: [
             { icon: Store, label: 'All Merchants', path: 'Merchants', permission: 'VIEW_MERCHANTS' },
             { icon: CreditCard, label: 'Merchant MIDs', path: 'MerchantMIDs', permission: 'VIEW_MERCHANTS' },
+            { icon: Database, label: 'MIDs (PostgreSQL)', path: 'MerchantMIDsDB', permission: 'VIEW_MERCHANTS' },
             { icon: Terminal, label: 'Terminals', path: 'Terminals', permission: 'VIEW_TERMINALS' },
             { icon: Monitor, label: 'Virtual Terminals', path: 'VirtualTerminals', permission: 'VIEW_TERMINALS' },
             { icon: Key, label: 'API Credentials', path: 'MerchantCredentials', permission: 'VIEW_CREDENTIALS' },
