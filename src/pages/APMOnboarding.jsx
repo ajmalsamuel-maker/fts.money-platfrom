@@ -11,6 +11,9 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import {
+    Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
+} from "@/components/ui/dialog";
 import { 
     Smartphone, 
     Globe, 
@@ -20,7 +23,9 @@ import {
     ExternalLink,
     Settings,
     Key,
-    Shield
+    Shield,
+    Plus,
+    Upload
 } from 'lucide-react';
 
 const apmProviders = [
@@ -72,6 +77,10 @@ export default function APMOnboarding() {
     const [configuring, setConfiguring] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [activeTab, setActiveTab] = useState('all');
+    const [showAddCustom, setShowAddCustom] = useState(false);
+    const [customProviders, setCustomProviders] = useState([]);
+    const [newProvider, setNewProvider] = useState({ name: '', region: '', category: 'local', logo: '', color: 'bg-slate-500' });
+    const [uploadingLogo, setUploadingLogo] = useState(false);
     const [credentials, setCredentials] = useState({
         app_id: '',
         app_secret: '',
@@ -81,8 +90,32 @@ export default function APMOnboarding() {
         webhook_url: '',
     });
     const queryClient = useQueryClient();
+    
+    const allProviders = [...apmProviders, ...customProviders];
 
-    const filteredProviders = apmProviders.filter(p => {
+    const handleLogoUpload = async (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setUploadingLogo(true);
+            try {
+                const { file_url } = await base44.integrations.Core.UploadFile({ file });
+                setNewProvider(p => ({ ...p, logo: file_url }));
+            } catch (error) {
+                console.error('Upload failed');
+            }
+            setUploadingLogo(false);
+        }
+    };
+
+    const addCustomProvider = () => {
+        if (newProvider.name) {
+            setCustomProviders(prev => [...prev, { ...newProvider, id: `custom_${Date.now()}` }]);
+            setShowAddCustom(false);
+            setNewProvider({ name: '', region: '', category: 'local', logo: '', color: 'bg-slate-500' });
+        }
+    };
+
+    const filteredProviders = allProviders.filter(p => {
         const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
         const matchesTab = activeTab === 'all' || p.category === activeTab;
         return matchesSearch && matchesTab;
@@ -131,9 +164,12 @@ export default function APMOnboarding() {
                 <TopHeader onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} collapsed={sidebarCollapsed} />
                 
                 <main className="p-6">
-                    <div className="mb-6">
-                        <h1 className="text-2xl font-bold text-slate-900">Alternative Payment Methods</h1>
-                        <p className="text-slate-500">Connect digital wallets, BNPL providers, and local payment methods</p>
+                    <div className="flex items-center justify-between mb-6">
+                        <div>
+                            <h1 className="text-2xl font-bold text-slate-900">Alternative Payment Methods</h1>
+                            <p className="text-slate-500">Connect digital wallets, BNPL, crypto, and local payment methods</p>
+                        </div>
+                        <Button onClick={() => setShowAddCustom(true)} className="gap-2"><Plus className="h-4 w-4" />Add Custom APM</Button>
                     </div>
 
                     {!configuring ? (
@@ -273,6 +309,53 @@ export default function APMOnboarding() {
                             </CardContent>
                         </Card>
                     )}
+                    {/* Add Custom APM Dialog */}
+                    <Dialog open={showAddCustom} onOpenChange={setShowAddCustom}>
+                        <DialogContent>
+                            <DialogHeader><DialogTitle>Add Custom Payment Method</DialogTitle></DialogHeader>
+                            <div className="space-y-4">
+                                <div className="space-y-2">
+                                    <Label>Provider Name *</Label>
+                                    <Input value={newProvider.name} onChange={(e) => setNewProvider(p => ({ ...p, name: e.target.value }))} placeholder="e.g., LocalPay" />
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <Label>Region</Label>
+                                        <Input value={newProvider.region} onChange={(e) => setNewProvider(p => ({ ...p, region: e.target.value }))} placeholder="e.g., Asia" />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>Category</Label>
+                                        <select value={newProvider.category} onChange={(e) => setNewProvider(p => ({ ...p, category: e.target.value }))} className="w-full border rounded-md p-2">
+                                            <option value="wallets">Wallets</option>
+                                            <option value="bnpl">BNPL</option>
+                                            <option value="bank">Bank Transfer</option>
+                                            <option value="crypto">Crypto</option>
+                                            <option value="local">Local</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Logo</Label>
+                                    {newProvider.logo && (
+                                        <div className="mb-2"><img src={newProvider.logo} alt="Logo preview" className="h-12 object-contain" /></div>
+                                    )}
+                                    <div className="flex gap-2">
+                                        <Input value={newProvider.logo} onChange={(e) => setNewProvider(p => ({ ...p, logo: e.target.value }))} placeholder="Logo URL" />
+                                        <label className="cursor-pointer">
+                                            <input type="file" accept="image/*" className="hidden" onChange={handleLogoUpload} />
+                                            <Button variant="outline" size="icon" disabled={uploadingLogo} asChild>
+                                                <span>{uploadingLogo ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}</span>
+                                            </Button>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <DialogFooter>
+                                <Button variant="outline" onClick={() => setShowAddCustom(false)}>Cancel</Button>
+                                <Button onClick={addCustomProvider} disabled={!newProvider.name}>Add Provider</Button>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
                 </main>
             </div>
         </div>
