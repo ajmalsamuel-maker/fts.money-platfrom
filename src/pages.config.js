@@ -9,6 +9,8 @@ import Disputes from './pages/Disputes';
 import FraudPrevention from './pages/FraudPrevention';
 import Compliance from './pages/Compliance';
 import PaymentOrchestration from './pages/PaymentOrchestration';
+import Chargebacks from './pages/Chargebacks';
+import MerchantSelfOnboarding from './pages/MerchantSelfOnboarding';
 import __Layout from './Layout.jsx';
 
 
@@ -24,6 +26,8 @@ export const PAGES = {
     "FraudPrevention": FraudPrevention,
     "Compliance": Compliance,
     "PaymentOrchestration": PaymentOrchestration,
+    "Chargebacks": Chargebacks,
+    "MerchantSelfOnboarding": MerchantSelfOnboarding,
 }
 
 export const pagesConfig = {

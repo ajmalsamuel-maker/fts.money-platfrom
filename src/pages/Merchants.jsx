@@ -54,8 +54,11 @@ import {
     Globe,
     Mail,
     Phone,
-    Building2
+    Building2,
+    Link2,
+    Shield
 } from 'lucide-react';
+import SelfOnboardingUrlGenerator from '@/components/merchants/SelfOnboardingUrlGenerator';
 
 const statusConfig = {
     active: { label: 'Active', className: 'bg-emerald-100 text-emerald-700 border-emerald-200' },
@@ -75,6 +78,7 @@ export default function Merchants() {
     const [searchQuery, setSearchQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
     const [showAddDialog, setShowAddDialog] = useState(false);
+    const [showOnboardingLinkDialog, setShowOnboardingLinkDialog] = useState(false);
     const [newMerchant, setNewMerchant] = useState({
         business_name: '',
         trading_name: '',
@@ -146,6 +150,14 @@ export default function Merchants() {
                             <h1 className="text-2xl font-bold text-slate-900">Merchants</h1>
                             <p className="text-slate-500">Manage your merchant accounts</p>
                         </div>
+                        <Button 
+                            variant="outline" 
+                            className="gap-2"
+                            onClick={() => setShowOnboardingLinkDialog(true)}
+                        >
+                            <Link2 className="h-4 w-4" />
+                            Generate Onboarding Link
+                        </Button>
                         <Link to={createPageUrl('MerchantOnboarding')}>
                             <Button className="gap-2 bg-blue-600 hover:bg-blue-700">
                                 <Plus className="h-4 w-4" />
