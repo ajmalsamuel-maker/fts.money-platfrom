@@ -11,8 +11,11 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
     Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
+import {
+    Collapsible, CollapsibleContent, CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { 
-    Wallet, TrendingUp, TrendingDown, ArrowUpRight, ArrowDownRight, RefreshCw, Download, Filter, DollarSign, Euro, PoundSterling, Bitcoin
+    Wallet, TrendingUp, RefreshCw, Download, DollarSign, Euro, ChevronDown, ChevronRight, Building2, Store, Bitcoin
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
@@ -23,33 +26,72 @@ const mockBalanceData = [
     { date: '2024-01-30', balance: 1680000 },
 ];
 
-const currencyIcons = { USD: DollarSign, EUR: Euro, GBP: PoundSterling, BTC: Bitcoin };
-
 export default function Balances() {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+    const [expandedPSPs, setExpandedPSPs] = useState({});
+    const [activeView, setActiveView] = useState('psp');
+
+    const { data: processors = [] } = useQuery({
+        queryKey: ['payment-processors'],
+        queryFn: () => base44.entities.PaymentProcessor.list(),
+    });
 
     const { data: merchants = [] } = useQuery({
         queryKey: ['merchants'],
-        queryFn: () => base44.entities.Merchant.list('-created_date'),
+        queryFn: () => base44.entities.Merchant.list(),
     });
 
-    const balances = [
-        { currency: 'USD', available: 1680450.32, pending: 245000.00, reserved: 50000.00, icon: DollarSign, color: 'text-emerald-600' },
-        { currency: 'EUR', available: 856230.18, pending: 125000.00, reserved: 25000.00, icon: Euro, color: 'text-blue-600' },
-        { currency: 'GBP', available: 423150.75, pending: 75000.00, reserved: 15000.00, icon: PoundSterling, color: 'text-purple-600' },
-        { currency: 'USDT', available: 520000.00, pending: 45000.00, reserved: 10000.00, icon: Bitcoin, color: 'text-teal-600' },
-        { currency: 'USDC', available: 380000.00, pending: 32000.00, reserved: 8000.00, icon: Bitcoin, color: 'text-blue-500' },
+    // Mock PSP-level balances with merchant breakdown
+    const pspBalances = [
+        {
+            psp_id: 'psp_stripe', psp_name: 'Stripe', currency: 'USD',
+            total_available: 1250000, total_pending: 180000, total_reserved: 45000, total_fees: 32500,
+            merchants: [
+                { merchant_id: 'm1', name: 'TechCorp Solutions', available: 450000, pending: 65000, reserved: 15000, fees: 11700, volume: 520000, transactions: 3420 },
+                { merchant_id: 'm2', name: 'Global Retail Inc', available: 380000, pending: 55000, reserved: 12000, fees: 9880, volume: 435000, transactions: 2890 },
+                { merchant_id: 'm3', name: 'GameZone Entertainment', available: 420000, pending: 60000, reserved: 18000, fees: 10920, volume: 498000, transactions: 4120 },
+            ]
+        },
+        {
+            psp_id: 'psp_adyen', psp_name: 'Adyen', currency: 'USD',
+            total_available: 890000, total_pending: 120000, total_reserved: 30000, total_fees: 23140,
+            merchants: [
+                { merchant_id: 'm1', name: 'TechCorp Solutions', available: 280000, pending: 40000, reserved: 10000, fees: 7280, volume: 320000, transactions: 2100 },
+                { merchant_id: 'm4', name: 'Fashion Forward', available: 310000, pending: 45000, reserved: 12000, fees: 8060, volume: 355000, transactions: 2340 },
+                { merchant_id: 'm5', name: 'Digital Services Ltd', available: 300000, pending: 35000, reserved: 8000, fees: 7800, volume: 335000, transactions: 2200 },
+            ]
+        },
+        {
+            psp_id: 'psp_checkout', psp_name: 'Checkout.com', currency: 'EUR',
+            total_available: 650000, total_pending: 85000, total_reserved: 22000, total_fees: 16900,
+            merchants: [
+                { merchant_id: 'm2', name: 'Global Retail Inc', available: 350000, pending: 45000, reserved: 12000, fees: 9100, volume: 395000, transactions: 2600 },
+                { merchant_id: 'm6', name: 'Euro Commerce GmbH', available: 300000, pending: 40000, reserved: 10000, fees: 7800, volume: 340000, transactions: 2240 },
+            ]
+        },
+        {
+            psp_id: 'psp_crypto', psp_name: 'CryptoPayments', currency: 'USDT',
+            total_available: 520000, total_pending: 45000, total_reserved: 10000, total_fees: 5200,
+            merchants: [
+                { merchant_id: 'm7', name: 'Crypto Exchange Co', available: 320000, pending: 25000, reserved: 6000, fees: 3200, volume: 345000, transactions: 1850 },
+                { merchant_id: 'm8', name: 'Web3 Services', available: 200000, pending: 20000, reserved: 4000, fees: 2000, volume: 220000, transactions: 1200 },
+            ]
+        },
     ];
 
-    const recentTransactions = [
-        { id: 'TXN001', type: 'credit', amount: 25000, currency: 'USD', description: 'Settlement - Batch #1234', date: new Date(), status: 'completed' },
-        { id: 'TXN002', type: 'debit', amount: 15000, currency: 'USD', description: 'Payout - Merchant ABC', date: new Date(Date.now() - 3600000), status: 'completed' },
-        { id: 'TXN003', type: 'credit', amount: 8500, currency: 'EUR', description: 'Settlement - Batch #1235', date: new Date(Date.now() - 7200000), status: 'pending' },
-        { id: 'TXN004', type: 'debit', amount: 5000, currency: 'GBP', description: 'Fee Deduction', date: new Date(Date.now() - 10800000), status: 'completed' },
-        { id: 'TXN005', type: 'credit', amount: 12000, currency: 'USDT', description: 'Crypto Settlement', date: new Date(Date.now() - 14400000), status: 'completed' },
-    ];
+    const togglePSP = (pspId) => {
+        setExpandedPSPs(prev => ({ ...prev, [pspId]: !prev[pspId] }));
+    };
 
-    const totalBalance = balances.reduce((sum, b) => sum + b.available, 0);
+    const totalAvailable = pspBalances.reduce((s, p) => s + p.total_available, 0);
+    const totalPending = pspBalances.reduce((s, p) => s + p.total_pending, 0);
+    const totalReserved = pspBalances.reduce((s, p) => s + p.total_reserved, 0);
+    const totalFees = pspBalances.reduce((s, p) => s + p.total_fees, 0);
+
+    const getCurrencySymbol = (currency) => {
+        const symbols = { USD: '$', EUR: '€', GBP: '£', USDT: '$', USDC: '$' };
+        return symbols[currency] || currency;
+    };
 
     return (
         <div className="min-h-screen bg-slate-50">
@@ -58,9 +100,9 @@ export default function Balances() {
                 <TopHeader onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} />
                 <main className="p-6">
                     <div className="flex items-center justify-between mb-6">
-                        <div><h1 className="text-2xl font-bold">Account Balances</h1><p className="text-slate-500">Multi-currency balance management</p></div>
+                        <div><h1 className="text-2xl font-bold">Account Balances</h1><p className="text-slate-500">PSP and merchant-level balance aggregation</p></div>
                         <div className="flex gap-2">
-                            <Button variant="outline" className="gap-2"><RefreshCw className="h-4 w-4" />Refresh</Button>
+                            <Button variant="outline" className="gap-2"><RefreshCw className="h-4 w-4" />Reconcile</Button>
                             <Button variant="outline" className="gap-2"><Download className="h-4 w-4" />Export</Button>
                         </div>
                     </div>
@@ -69,32 +111,32 @@ export default function Balances() {
                     <div className="grid md:grid-cols-4 gap-4 mb-6">
                         <Card className="p-4 bg-gradient-to-br from-emerald-500 to-emerald-600 text-white">
                             <p className="text-sm opacity-80">Total Available</p>
-                            <p className="text-3xl font-bold">${(totalBalance / 1000000).toFixed(2)}M</p>
-                            <div className="flex items-center gap-1 mt-2 text-sm"><TrendingUp className="h-4 w-4" />+12.5% from last month</div>
+                            <p className="text-3xl font-bold">${(totalAvailable / 1000000).toFixed(2)}M</p>
+                            <p className="text-xs opacity-70 mt-1">Across {pspBalances.length} PSPs</p>
                         </Card>
                         <Card className="p-4">
                             <p className="text-sm text-slate-500">Pending Settlement</p>
-                            <p className="text-2xl font-bold text-amber-600">${(balances.reduce((s, b) => s + b.pending, 0) / 1000).toFixed(0)}K</p>
-                            <p className="text-xs text-slate-400 mt-1">Across all currencies</p>
+                            <p className="text-2xl font-bold text-amber-600">${(totalPending / 1000).toFixed(0)}K</p>
+                            <p className="text-xs text-slate-400 mt-1">Awaiting clearing</p>
                         </Card>
                         <Card className="p-4">
                             <p className="text-sm text-slate-500">Reserved</p>
-                            <p className="text-2xl font-bold text-slate-600">${(balances.reduce((s, b) => s + b.reserved, 0) / 1000).toFixed(0)}K</p>
+                            <p className="text-2xl font-bold text-slate-600">${(totalReserved / 1000).toFixed(0)}K</p>
                             <p className="text-xs text-slate-400 mt-1">Chargeback reserve</p>
                         </Card>
                         <Card className="p-4">
-                            <p className="text-sm text-slate-500">Active Currencies</p>
-                            <p className="text-2xl font-bold">{balances.length}</p>
-                            <p className="text-xs text-slate-400 mt-1">Fiat + Crypto</p>
+                            <p className="text-sm text-slate-500">Fees Collected</p>
+                            <p className="text-2xl font-bold text-blue-600">${(totalFees / 1000).toFixed(0)}K</p>
+                            <p className="text-xs text-slate-400 mt-1">This period</p>
                         </Card>
                     </div>
 
-                    <div className="grid lg:grid-cols-3 gap-6">
+                    <div className="grid lg:grid-cols-3 gap-6 mb-6">
                         {/* Balance Chart */}
                         <Card className="lg:col-span-2">
-                            <CardHeader><CardTitle>Balance Trend (USD)</CardTitle></CardHeader>
+                            <CardHeader><CardTitle>Balance Trend (All PSPs)</CardTitle></CardHeader>
                             <CardContent>
-                                <ResponsiveContainer width="100%" height={250}>
+                                <ResponsiveContainer width="100%" height={220}>
                                     <AreaChart data={mockBalanceData}>
                                         <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                                         <XAxis dataKey="date" tickFormatter={(d) => format(new Date(d), 'MMM d')} stroke="#94a3b8" fontSize={12} />
@@ -106,58 +148,114 @@ export default function Balances() {
                             </CardContent>
                         </Card>
 
-                        {/* Currency Breakdown */}
+                        {/* PSP Summary */}
                         <Card>
-                            <CardHeader><CardTitle>By Currency</CardTitle></CardHeader>
+                            <CardHeader><CardTitle>By PSP</CardTitle></CardHeader>
                             <CardContent className="space-y-3">
-                                {balances.map((bal) => {
-                                    const Icon = bal.icon;
-                                    return (
-                                        <div key={bal.currency} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-                                            <div className="flex items-center gap-3">
-                                                <div className={cn("w-8 h-8 rounded-full bg-white flex items-center justify-center", bal.color)}>
-                                                    <Icon className="h-4 w-4" />
-                                                </div>
-                                                <div>
-                                                    <p className="font-semibold">{bal.currency}</p>
-                                                    <p className="text-xs text-slate-500">Available</p>
-                                                </div>
+                                {pspBalances.map((psp) => (
+                                    <div key={psp.psp_id} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center">
+                                                <Building2 className="h-4 w-4 text-slate-600" />
                                             </div>
-                                            <p className="font-bold">{bal.currency === 'USD' || bal.currency === 'USDT' || bal.currency === 'USDC' ? '$' : bal.currency === 'EUR' ? '€' : '£'}{bal.available.toLocaleString()}</p>
+                                            <div>
+                                                <p className="font-semibold text-sm">{psp.psp_name}</p>
+                                                <p className="text-xs text-slate-500">{psp.merchants.length} merchants</p>
+                                            </div>
                                         </div>
-                                    );
-                                })}
+                                        <div className="text-right">
+                                            <p className="font-bold">{getCurrencySymbol(psp.currency)}{(psp.total_available / 1000).toFixed(0)}K</p>
+                                            <p className="text-xs text-slate-500">{psp.currency}</p>
+                                        </div>
+                                    </div>
+                                ))}
                             </CardContent>
                         </Card>
                     </div>
 
-                    {/* Recent Transactions */}
-                    <Card className="mt-6">
-                        <CardHeader><CardTitle>Recent Balance Movements</CardTitle></CardHeader>
+                    {/* PSP & Merchant Breakdown */}
+                    <Card>
+                        <CardHeader>
+                            <div className="flex items-center justify-between">
+                                <CardTitle>PSP & Merchant Breakdown</CardTitle>
+                                <Tabs value={activeView} onValueChange={setActiveView}>
+                                    <TabsList><TabsTrigger value="psp">By PSP</TabsTrigger><TabsTrigger value="merchant">By Merchant</TabsTrigger></TabsList>
+                                </Tabs>
+                            </div>
+                        </CardHeader>
                         <CardContent className="p-0">
-                            <Table>
-                                <TableHeader><TableRow><TableHead>Transaction</TableHead><TableHead>Description</TableHead><TableHead>Amount</TableHead><TableHead>Status</TableHead><TableHead>Date</TableHead></TableRow></TableHeader>
-                                <TableBody>
-                                    {recentTransactions.map((txn) => (
-                                        <TableRow key={txn.id}>
-                                            <TableCell>
-                                                <div className="flex items-center gap-2">
-                                                    <div className={cn("w-8 h-8 rounded-full flex items-center justify-center", txn.type === 'credit' ? "bg-emerald-100" : "bg-red-100")}>
-                                                        {txn.type === 'credit' ? <ArrowDownRight className="h-4 w-4 text-emerald-600" /> : <ArrowUpRight className="h-4 w-4 text-red-600" />}
+                            {activeView === 'psp' ? (
+                                <div className="divide-y">
+                                    {pspBalances.map((psp) => (
+                                        <Collapsible key={psp.psp_id} open={expandedPSPs[psp.psp_id]} onOpenChange={() => togglePSP(psp.psp_id)}>
+                                            <CollapsibleTrigger className="w-full">
+                                                <div className="flex items-center justify-between p-4 hover:bg-slate-50">
+                                                    <div className="flex items-center gap-3">
+                                                        {expandedPSPs[psp.psp_id] ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                                                        <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center"><Building2 className="h-5 w-5 text-blue-600" /></div>
+                                                        <div className="text-left">
+                                                            <p className="font-semibold">{psp.psp_name}</p>
+                                                            <p className="text-xs text-slate-500">{psp.merchants.length} merchants · {psp.currency}</p>
+                                                        </div>
                                                     </div>
-                                                    <span className="font-mono text-sm">{txn.id}</span>
+                                                    <div className="flex items-center gap-8 text-right">
+                                                        <div><p className="text-xs text-slate-500">Available</p><p className="font-semibold text-emerald-600">{getCurrencySymbol(psp.currency)}{psp.total_available.toLocaleString()}</p></div>
+                                                        <div><p className="text-xs text-slate-500">Pending</p><p className="font-semibold text-amber-600">{getCurrencySymbol(psp.currency)}{psp.total_pending.toLocaleString()}</p></div>
+                                                        <div><p className="text-xs text-slate-500">Fees</p><p className="font-semibold text-blue-600">{getCurrencySymbol(psp.currency)}{psp.total_fees.toLocaleString()}</p></div>
+                                                    </div>
                                                 </div>
-                                            </TableCell>
-                                            <TableCell>{txn.description}</TableCell>
-                                            <TableCell className={cn("font-semibold", txn.type === 'credit' ? "text-emerald-600" : "text-red-600")}>
-                                                {txn.type === 'credit' ? '+' : '-'}{txn.currency === 'USD' || txn.currency === 'USDT' ? '$' : txn.currency === 'EUR' ? '€' : '£'}{txn.amount.toLocaleString()}
-                                            </TableCell>
-                                            <TableCell><Badge className={txn.status === 'completed' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}>{txn.status}</Badge></TableCell>
-                                            <TableCell className="text-slate-500">{format(txn.date, 'MMM d, HH:mm')}</TableCell>
-                                        </TableRow>
+                                            </CollapsibleTrigger>
+                                            <CollapsibleContent>
+                                                <div className="bg-slate-50 border-t">
+                                                    <Table>
+                                                        <TableHeader>
+                                                            <TableRow className="bg-slate-100"><TableHead>Merchant</TableHead><TableHead className="text-right">Volume</TableHead><TableHead className="text-right">Available</TableHead><TableHead className="text-right">Pending</TableHead><TableHead className="text-right">Reserved</TableHead><TableHead className="text-right">Fees</TableHead><TableHead className="text-right">TXN Count</TableHead></TableRow>
+                                                        </TableHeader>
+                                                        <TableBody>
+                                                            {psp.merchants.map((m) => (
+                                                                <TableRow key={m.merchant_id}>
+                                                                    <TableCell>
+                                                                        <div className="flex items-center gap-2"><Store className="h-4 w-4 text-slate-400" /><span className="font-medium">{m.name}</span></div>
+                                                                    </TableCell>
+                                                                    <TableCell className="text-right">{getCurrencySymbol(psp.currency)}{m.volume.toLocaleString()}</TableCell>
+                                                                    <TableCell className="text-right text-emerald-600">{getCurrencySymbol(psp.currency)}{m.available.toLocaleString()}</TableCell>
+                                                                    <TableCell className="text-right text-amber-600">{getCurrencySymbol(psp.currency)}{m.pending.toLocaleString()}</TableCell>
+                                                                    <TableCell className="text-right">{getCurrencySymbol(psp.currency)}{m.reserved.toLocaleString()}</TableCell>
+                                                                    <TableCell className="text-right text-blue-600">{getCurrencySymbol(psp.currency)}{m.fees.toLocaleString()}</TableCell>
+                                                                    <TableCell className="text-right">{m.transactions.toLocaleString()}</TableCell>
+                                                                </TableRow>
+                                                            ))}
+                                                        </TableBody>
+                                                    </Table>
+                                                </div>
+                                            </CollapsibleContent>
+                                        </Collapsible>
                                     ))}
-                                </TableBody>
-                            </Table>
+                                </div>
+                            ) : (
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow><TableHead>Merchant</TableHead><TableHead>PSPs</TableHead><TableHead className="text-right">Total Available</TableHead><TableHead className="text-right">Total Pending</TableHead><TableHead className="text-right">Total Fees</TableHead></TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {[...new Set(pspBalances.flatMap(p => p.merchants.map(m => m.name)))].map((merchantName) => {
+                                            const merchantData = pspBalances.flatMap(p => p.merchants.filter(m => m.name === merchantName).map(m => ({ ...m, psp: p.psp_name, currency: p.currency })));
+                                            const totalAvail = merchantData.reduce((s, m) => s + m.available, 0);
+                                            const totalPend = merchantData.reduce((s, m) => s + m.pending, 0);
+                                            const totalFee = merchantData.reduce((s, m) => s + m.fees, 0);
+                                            return (
+                                                <TableRow key={merchantName}>
+                                                    <TableCell><div className="flex items-center gap-2"><Store className="h-4 w-4 text-slate-400" /><span className="font-medium">{merchantName}</span></div></TableCell>
+                                                    <TableCell><div className="flex gap-1">{merchantData.map(m => <Badge key={m.psp} variant="outline" className="text-xs">{m.psp}</Badge>)}</div></TableCell>
+                                                    <TableCell className="text-right text-emerald-600 font-semibold">${totalAvail.toLocaleString()}</TableCell>
+                                                    <TableCell className="text-right text-amber-600">${totalPend.toLocaleString()}</TableCell>
+                                                    <TableCell className="text-right text-blue-600">${totalFee.toLocaleString()}</TableCell>
+                                                </TableRow>
+                                            );
+                                        })}
+                                    </TableBody>
+                                </Table>
+                            )}
                         </CardContent>
                     </Card>
                 </main>
