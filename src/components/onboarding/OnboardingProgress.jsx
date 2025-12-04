@@ -9,7 +9,8 @@ const steps = [
     { id: 4, name: 'KYB Verification', description: 'TheKYB integration' },
     { id: 5, name: 'AML Screening', description: 'AMLWatcher check' },
     { id: 6, name: 'Bank Details', description: 'Settlement accounts' },
-    { id: 7, name: 'Review & Submit', description: 'Final review' },
+    { id: 7, name: 'Pricing', description: 'Fee structure' },
+    { id: 8, name: 'Review & Submit', description: 'Final review' },
 ];
 
 export default function OnboardingProgress({ currentStep, completedSteps, totalSteps = 7 }) {

@@ -12,6 +12,7 @@ import ContactInfoStep from '@/components/onboarding/ContactInfoStep';
 import KYBVerificationStep from '@/components/onboarding/KYBVerificationStep';
 import AMLScreeningStep from '@/components/onboarding/AMLScreeningStep';
 import BankDetailsStep from '@/components/onboarding/BankDetailsStep';
+import PricingStep from '@/components/onboarding/PricingStep';
 import ReviewSubmitStep from '@/components/onboarding/ReviewSubmitStep';
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -27,7 +28,7 @@ import {
     AlertTriangle
 } from 'lucide-react';
 
-const TOTAL_STEPS = 7;
+const TOTAL_STEPS = 8;
 
 export default function MerchantOnboarding() {
     const navigate = useNavigate();
@@ -45,6 +46,7 @@ export default function MerchantOnboarding() {
         kyb: {},
         aml: {},
         bank: {},
+        pricing: {},
     });
 
     const createMerchantMutation = useMutation({
@@ -217,18 +219,22 @@ export default function MerchantOnboarding() {
         }
         
         if (step === 6) {
-            const data = formData.bank;
-            if (!data.account_holder_name) newErrors.account_holder_name = 'Account holder name is required';
-            if (!data.bank_name) newErrors.bank_name = 'Bank name is required';
-            if (!data.account_number) newErrors.account_number = 'Account number is required';
-            if (!data.routing_number) newErrors.routing_number = 'Routing number is required';
-            if (!data.swift_code) newErrors.swift_code = 'SWIFT code is required';
-            if (!data.settlement_currency) newErrors.settlement_currency = 'Settlement currency is required';
-            if (!data.settlement_period) newErrors.settlement_period = 'Settlement period is required';
-        }
-        
-        return newErrors;
-    };
+              const data = formData.bank;
+              if (!data.account_holder_name) newErrors.account_holder_name = 'Account holder name is required';
+              if (!data.bank_name) newErrors.bank_name = 'Bank name is required';
+              if (!data.account_number) newErrors.account_number = 'Account number is required';
+              if (!data.routing_number) newErrors.routing_number = 'Routing number is required';
+              if (!data.swift_code) newErrors.swift_code = 'SWIFT code is required';
+              if (!data.settlement_currency) newErrors.settlement_currency = 'Settlement currency is required';
+              if (!data.settlement_period) newErrors.settlement_period = 'Settlement period is required';
+          }
+
+          if (step === 7) {
+              // Pricing is optional but recommended
+          }
+
+          return newErrors;
+        };
 
     const handleNext = () => {
         const stepErrors = validateStep(currentStep);
@@ -264,7 +270,7 @@ export default function MerchantOnboarding() {
     };
 
     const updateStepData = (step, data) => {
-        const keys = ['', 'business', 'lei', 'contacts', 'kyb', 'aml', 'bank', 'review'];
+        const keys = ['', 'business', 'lei', 'contacts', 'kyb', 'aml', 'bank', 'pricing', 'review'];
         setFormData(prev => ({
             ...prev,
             [keys[step]]: data
@@ -330,17 +336,25 @@ export default function MerchantOnboarding() {
                     />
                 );
             case 6:
-                return (
-                    <BankDetailsStep 
-                        data={formData.bank} 
-                        onChange={(data) => updateStepData(6, data)}
-                        errors={errors}
-                    />
-                );
-            case 7:
-                return (
-                    <ReviewSubmitStep formData={formData} />
-                );
+                  return (
+                      <BankDetailsStep 
+                          data={formData.bank} 
+                          onChange={(data) => updateStepData(6, data)}
+                          errors={errors}
+                      />
+                  );
+              case 7:
+                  return (
+                      <PricingStep 
+                          data={formData.pricing} 
+                          onChange={(data) => updateStepData(7, data)}
+                          errors={errors}
+                      />
+                  );
+              case 8:
+                  return (
+                      <ReviewSubmitStep formData={formData} />
+                  );
             default:
                 return null;
         }
