@@ -117,6 +117,7 @@ const menuItems = [
 export default function Sidebar({ collapsed, onToggle, currentPage }) {
     const [expandedGroups, setExpandedGroups] = useState(menuItems.map(g => g.group));
     const [user, setUser] = useState(null);
+    const [themeSettings, setThemeSettings] = useState(null);
 
     useEffect(() => {
         const loadUser = async () => {
@@ -128,6 +129,20 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
             }
         };
         loadUser();
+    }, []);
+
+    useEffect(() => {
+        const loadTheme = async () => {
+            try {
+                const settings = await base44.entities.ThemeSettings.list();
+                if (settings && settings.length > 0) {
+                    setThemeSettings(settings[0]);
+                }
+            } catch (err) {
+                // Theme settings not available
+            }
+        };
+        loadTheme();
     }, []);
 
     const userRole = user?.app_role || 'viewer';
@@ -151,24 +166,48 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
         base44.auth.logout();
     };
 
+    const sidebarBg = themeSettings?.sidebar_bg || '#0f172a';
+    const sidebarText = themeSettings?.sidebar_text || '#94a3b8';
+    const primaryColor = themeSettings?.primary_color || '#3b82f6';
+    const secondaryColor = themeSettings?.secondary_color || '#06b6d4';
+    const companyName = themeSettings?.company_name || 'PaymentHub';
+    const logoUrl = themeSettings?.logo_url;
+
     return (
-        <aside className={cn(
-            "fixed left-0 top-0 h-screen bg-slate-900 text-white z-40 transition-all duration-300 flex flex-col",
-            collapsed ? "w-16" : "w-56"
-        )}>
-            <div className="h-14 flex items-center justify-center border-b border-slate-800 px-3">
+        <aside 
+            className={cn(
+                "fixed left-0 top-0 h-screen text-white z-40 transition-all duration-300 flex flex-col",
+                collapsed ? "w-16" : "w-56"
+            )}
+            style={{ backgroundColor: sidebarBg }}
+        >
+            <div className="h-14 flex items-center justify-center border-b border-white/10 px-3">
                 {collapsed ? (
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
-                        <CreditCard className="h-4 w-4 text-white" />
-                    </div>
-                ) : (
-                    <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
+                    logoUrl ? (
+                        <img src={logoUrl} alt="Logo" className="h-8 w-8 object-contain rounded-lg" />
+                    ) : (
+                        <div 
+                            className="w-8 h-8 rounded-lg flex items-center justify-center"
+                            style={{ background: `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})` }}
+                        >
                             <CreditCard className="h-4 w-4 text-white" />
                         </div>
+                    )
+                ) : (
+                    <div className="flex items-center gap-2">
+                        {logoUrl ? (
+                            <img src={logoUrl} alt="Logo" className="h-8 w-8 object-contain rounded-lg" />
+                        ) : (
+                            <div 
+                                className="w-8 h-8 rounded-lg flex items-center justify-center"
+                                style={{ background: `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})` }}
+                            >
+                                <CreditCard className="h-4 w-4 text-white" />
+                            </div>
+                        )}
                         <div>
-                            <h1 className="font-bold text-sm">PaymentHub</h1>
-                            <p className="text-[10px] text-slate-400">Gateway Admin</p>
+                            <h1 className="font-bold text-sm" style={{ color: '#ffffff' }}>{companyName}</h1>
+                            <p className="text-[10px]" style={{ color: sidebarText }}>Gateway Admin</p>
                         </div>
                     </div>
                 )}
@@ -206,11 +245,12 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                                         to={createPageUrl(item.path)}
                                         className={cn(
                                             "flex items-center gap-2 px-2 py-2 rounded-md transition-all text-xs",
-                                            currentPage === item.path
-                                                ? "bg-gradient-to-r from-blue-600 to-cyan-600 text-white"
-                                                : "text-slate-400 hover:text-white hover:bg-slate-800",
                                             collapsed && "justify-center"
                                         )}
+                                        style={currentPage === item.path 
+                                            ? { background: `linear-gradient(to right, ${primaryColor}, ${secondaryColor})`, color: '#ffffff' }
+                                            : { color: sidebarText }
+                                        }
                                         title={collapsed ? item.label : undefined}
                                     >
                                         <item.icon className="h-4 w-4 flex-shrink-0" />
@@ -223,8 +263,8 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                 ))}
             </nav>
 
-            <div className="border-t border-slate-800 p-2">
-                <Link to="#" className={cn("flex items-center gap-2 px-2 py-2 rounded-md text-slate-400 hover:text-white hover:bg-slate-800 text-xs", collapsed && "justify-center")}>
+            <div className="border-t border-white/10 p-2">
+                <Link to="#" className={cn("flex items-center gap-2 px-2 py-2 rounded-md hover:bg-white/10 text-xs", collapsed && "justify-center")} style={{ color: sidebarText }}>
                     <HelpCircle className="h-4 w-4" />
                     {!collapsed && <span>Help</span>}
                 </Link>
