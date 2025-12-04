@@ -33,6 +33,7 @@ import AutomatedPayouts from './pages/AutomatedPayouts';
 import AdvancedReports from './pages/AdvancedReports';
 import DatabaseSetup from './pages/DatabaseSetup';
 import MerchantMIDsDB from './pages/MerchantMIDsDB';
+import Settings from './pages/Settings';
 import __Layout from './Layout.jsx';
 
 
@@ -72,6 +73,7 @@ export const PAGES = {
     "AdvancedReports": AdvancedReports,
     "DatabaseSetup": DatabaseSetup,
     "MerchantMIDsDB": MerchantMIDsDB,
+    "Settings": Settings,
 }
 
 export const pagesConfig = {
