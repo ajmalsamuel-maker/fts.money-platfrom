@@ -16,6 +16,11 @@ import AcquirerOnboarding from './pages/AcquirerOnboarding';
 import APMOnboarding from './pages/APMOnboarding';
 import AIDisputeResolution from './pages/AIDisputeResolution';
 import SmartOrchestration from './pages/SmartOrchestration';
+import UserManagement from './pages/UserManagement';
+import Approvals from './pages/Approvals';
+import Appearance from './pages/Appearance';
+import VirtualTerminals from './pages/VirtualTerminals';
+import MerchantUsers from './pages/MerchantUsers';
 import __Layout from './Layout.jsx';
 
 
@@ -38,6 +43,11 @@ export const PAGES = {
     "APMOnboarding": APMOnboarding,
     "AIDisputeResolution": AIDisputeResolution,
     "SmartOrchestration": SmartOrchestration,
+    "UserManagement": UserManagement,
+    "Approvals": Approvals,
+    "Appearance": Appearance,
+    "VirtualTerminals": VirtualTerminals,
+    "MerchantUsers": MerchantUsers,
 }
 
 export const pagesConfig = {
