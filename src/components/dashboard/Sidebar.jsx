@@ -84,7 +84,10 @@ const menuItems = [
         items: [
             { icon: Wallet, label: 'Balances', path: 'Balances', permission: 'VIEW_BALANCES' },
             { icon: FileText, label: 'Reports', path: 'Reports', permission: 'VIEW_REPORTS' },
+            { icon: BarChart3, label: 'Advanced Reports', path: 'AdvancedReports', permission: 'VIEW_REPORTS' },
             { icon: CreditCard, label: 'Payouts', path: 'Payouts', permission: 'VIEW_PAYOUTS' },
+            { icon: DollarSign, label: 'Auto Payouts', path: 'AutomatedPayouts', permission: 'VIEW_PAYOUTS' },
+            { icon: Repeat, label: 'Reconciliation', path: 'Reconciliation', permission: 'VIEW_BALANCES' },
             { icon: Building, label: 'Providers', path: 'PaymentProviders', permission: 'VIEW_BALANCES' },
             { icon: Percent, label: 'Buy Rates', path: 'BuyRates', permission: 'VIEW_BALANCES' },
             { icon: DollarSign, label: 'Merchant Pricing', path: 'MerchantPricing', permission: 'VIEW_BALANCES' },
