@@ -145,6 +145,21 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
         loadTheme();
     }, []);
 
+    const [pspSettings, setPspSettings] = useState(null);
+    useEffect(() => {
+        const loadPspSettings = async () => {
+            try {
+                const settings = await base44.entities.PSPSettings.list();
+                if (settings && settings.length > 0) {
+                    setPspSettings(settings[0]);
+                }
+            } catch (err) {
+                // PSP settings not available
+            }
+        };
+        loadPspSettings();
+    }, []);
+
     const userRole = user?.app_role || 'viewer';
     const roleConfig = ROLE_CONFIG[userRole] || ROLE_CONFIG.viewer;
 
@@ -170,7 +185,7 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
     const sidebarText = themeSettings?.sidebar_text || '#94a3b8';
     const primaryColor = themeSettings?.primary_color || '#3b82f6';
     const secondaryColor = themeSettings?.secondary_color || '#06b6d4';
-    const companyName = themeSettings?.company_name || 'PaymentHub';
+    const companyName = pspSettings?.company_name || themeSettings?.company_name || 'PaymentHub';
     const logoUrl = themeSettings?.logo_url;
 
     return (
