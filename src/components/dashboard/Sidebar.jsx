@@ -70,7 +70,7 @@ const menuItems = [
     {
         group: 'Configuration',
         items: [
-            { icon: Globe, label: 'Routing Rules', path: 'RoutingRules' },
+            { icon: Globe, label: 'Payment Orchestration', path: 'PaymentOrchestration' },
             { icon: Key, label: 'API Keys', path: 'ApiKeys' },
             { icon: Bell, label: 'Webhooks', path: 'Webhooks' },
             { icon: Settings, label: 'Settings', path: 'Settings' },

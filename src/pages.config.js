@@ -8,6 +8,7 @@ import Analytics from './pages/Analytics';
 import Disputes from './pages/Disputes';
 import FraudPrevention from './pages/FraudPrevention';
 import Compliance from './pages/Compliance';
+import PaymentOrchestration from './pages/PaymentOrchestration';
 import __Layout from './Layout.jsx';
 
 
@@ -22,6 +23,7 @@ export const PAGES = {
     "Disputes": Disputes,
     "FraudPrevention": FraudPrevention,
     "Compliance": Compliance,
+    "PaymentOrchestration": PaymentOrchestration,
 }
 
 export const pagesConfig = {
