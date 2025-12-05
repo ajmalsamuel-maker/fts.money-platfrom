@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
+import { getStaffSession, staffLogout } from '@/components/auth/useStaffAuth';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -37,6 +38,17 @@ export default function TopHeader({ onToggleSidebar, collapsed }) {
     const [helpOpen, setHelpOpen] = useState(false);
 
     useEffect(() => {
+        // First check for staff session
+        const staffSession = getStaffSession();
+        if (staffSession) {
+            setUser({
+                full_name: staffSession.full_name,
+                email: staffSession.email,
+                app_role: staffSession.role
+            });
+            return;
+        }
+
         const loadUser = async () => {
             try {
                 const currentUser = await base44.auth.me();
@@ -70,6 +82,11 @@ export default function TopHeader({ onToggleSidebar, collapsed }) {
     const userInitials = user?.full_name?.split(' ').map(n => n[0]).join('').toUpperCase() || user?.email?.charAt(0)?.toUpperCase() || 'U';
 
     const handleLogout = () => {
+        const staffSession = getStaffSession();
+        if (staffSession) {
+            staffLogout();
+            return;
+        }
         base44.auth.logout();
     };
 

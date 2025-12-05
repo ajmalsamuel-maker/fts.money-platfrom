@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { cn } from "@/lib/utils";
 import { base44 } from '@/api/base44Client';
 import { hasPermission, ROLE_CONFIG } from '@/components/auth/permissions';
+import { getStaffSession, staffLogout } from '@/components/auth/useStaffAuth';
 import { Badge } from "@/components/ui/badge";
 import { 
     LayoutDashboard, 
@@ -128,6 +129,18 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
     const [activeGroup, setActiveGroup] = useState(null);
 
     useEffect(() => {
+        // First check for staff session
+        const staffSession = getStaffSession();
+        if (staffSession) {
+            setUser({
+                full_name: staffSession.full_name,
+                email: staffSession.email,
+                app_role: staffSession.role
+            });
+            return;
+        }
+        
+        // Fallback to base44 auth
         const loadUser = async () => {
             try {
                 const currentUser = await base44.auth.me();
@@ -175,6 +188,12 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
     })).filter(group => group.items.length > 0);
 
     const handleLogout = () => {
+        // Check if using staff session
+        const staffSession = getStaffSession();
+        if (staffSession) {
+            staffLogout();
+            return;
+        }
         base44.auth.logout();
     };
 
