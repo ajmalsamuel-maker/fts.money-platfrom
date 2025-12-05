@@ -60,6 +60,7 @@ import {
     RefreshCw
 } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
+import RealTimeFraudDetection from '@/components/fraud/RealTimeFraudDetection';
 
 const severityConfig = {
     low: { label: 'Low', className: 'bg-blue-100 text-blue-700', color: '#3b82f6' },
@@ -213,10 +214,19 @@ export default function FraudPrevention() {
 
                     <Tabs value={activeTab} onValueChange={setActiveTab}>
                         <TabsList className="mb-6">
+                            <TabsTrigger value="realtime">Real-Time Detection</TabsTrigger>
                             <TabsTrigger value="alerts">Risk Alerts</TabsTrigger>
                             <TabsTrigger value="rules">Fraud Rules</TabsTrigger>
                             <TabsTrigger value="analytics">Analytics</TabsTrigger>
                         </TabsList>
+
+                        <TabsContent value="realtime">
+                            <RealTimeFraudDetection 
+                                onAlertClick={(alert) => {
+                                    setActiveTab('alerts');
+                                }}
+                            />
+                        </TabsContent>
 
                         <TabsContent value="alerts">
                             {/* Filters */}

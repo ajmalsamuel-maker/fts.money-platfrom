@@ -11,6 +11,7 @@ import CompanyStructureStep from '@/components/onboarding/CompanyStructureStep';
 import LEIVerificationStep from '@/components/onboarding/LEIVerificationStep';
 import ContactInfoStep from '@/components/onboarding/ContactInfoStep';
 import DocumentUploadStep from '@/components/onboarding/DocumentUploadStep';
+import AIDocumentVerification from '@/components/onboarding/AIDocumentVerification';
 import KYBVerificationStep from '@/components/onboarding/KYBVerificationStep';
 import AMLScreeningStep from '@/components/onboarding/AMLScreeningStep';
 import BankDetailsStep from '@/components/onboarding/BankDetailsStep';
@@ -359,12 +360,26 @@ export default function MerchantOnboarding() {
                 );
             case 5:
                 return (
-                    <DocumentUploadStep 
-                        data={formData.documents} 
-                        onChange={(data) => updateStepData(5, data)}
-                        errors={errors}
-                        merchantType={formData.business?.business_type}
-                    />
+                    <div className="space-y-6">
+                        <DocumentUploadStep 
+                            data={formData.documents} 
+                            onChange={(data) => updateStepData(5, data)}
+                            errors={errors}
+                            merchantType={formData.business?.business_type}
+                        />
+                        {formData.documents?.documents && Object.keys(formData.documents.documents).length > 0 && (
+                            <AIDocumentVerification 
+                                documents={formData.documents.documents}
+                                businessData={formData.business}
+                                onVerificationComplete={(result) => {
+                                    updateStepData(5, { 
+                                        ...formData.documents, 
+                                        aiVerification: result 
+                                    });
+                                }}
+                            />
+                        )}
+                    </div>
                 );
             case 6:
                 return (

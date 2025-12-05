@@ -189,7 +189,18 @@ export default function MerchantSelfOnboarding() {
                     </div>
                     <h1 className="text-2xl font-bold text-slate-900 mb-2">Application Submitted!</h1>
                     <p className="text-slate-500 mb-4">Your merchant application has been received. We'll review it and send your API credentials once approved.</p>
-                    <Badge className="bg-blue-100 text-blue-700">Estimated review time: 1-2 business days</Badge>
+                    <Badge className="bg-blue-100 text-blue-700 mb-4">Estimated review time: 1-2 business days</Badge>
+                    <div className="mt-4 p-4 bg-slate-50 rounded-lg">
+                        <p className="text-sm text-slate-600 mb-2">Track your application status:</p>
+                        <Button 
+                            variant="outline" 
+                            className="gap-2"
+                            onClick={() => window.location.href = `MerchantPortal?mid=${formData.business?.merchant_id || ''}`}
+                        >
+                            <ExternalLink className="h-4 w-4" />
+                            Open Merchant Portal
+                        </Button>
+                    </div>
                 </Card>
             </div>
         );
