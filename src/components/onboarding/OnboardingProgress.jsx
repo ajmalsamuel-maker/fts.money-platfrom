@@ -6,11 +6,12 @@ const steps = [
     { id: 1, name: 'Business Details', description: 'Company information' },
     { id: 2, name: 'LEI Verification', description: 'Legal Entity Identifier' },
     { id: 3, name: 'Contact Info', description: 'Primary contacts' },
-    { id: 4, name: 'KYB Verification', description: 'TheKYB integration' },
-    { id: 5, name: 'AML Screening', description: 'AMLWatcher check' },
-    { id: 6, name: 'Bank Details', description: 'Settlement accounts' },
-    { id: 7, name: 'Pricing', description: 'Fee structure' },
-    { id: 8, name: 'Review & Submit', description: 'Final review' },
+    { id: 4, name: 'Documents', description: 'KYC documents' },
+    { id: 5, name: 'KYB Verification', description: 'TheKYB integration' },
+    { id: 6, name: 'AML Screening', description: 'AMLWatcher check' },
+    { id: 7, name: 'Bank Details', description: 'Settlement accounts' },
+    { id: 8, name: 'Pricing', description: 'Fee structure' },
+    { id: 9, name: 'Review & Submit', description: 'Final review' },
 ];
 
 export default function OnboardingProgress({ currentStep, completedSteps, totalSteps = 7 }) {
