@@ -37,6 +37,7 @@ import Settings from './pages/Settings';
 import AuditLogs from './pages/AuditLogs';
 import MerchantAnalytics from './pages/MerchantAnalytics';
 import MerchantPortal from './pages/MerchantPortal';
+import StaffLogin from './pages/StaffLogin';
 import __Layout from './Layout.jsx';
 
 
@@ -80,6 +81,7 @@ export const PAGES = {
     "AuditLogs": AuditLogs,
     "MerchantAnalytics": MerchantAnalytics,
     "MerchantPortal": MerchantPortal,
+    "StaffLogin": StaffLogin,
 }
 
 export const pagesConfig = {
