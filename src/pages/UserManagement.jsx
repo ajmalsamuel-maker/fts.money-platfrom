@@ -95,12 +95,12 @@ export default function UserManagement() {
 
     const { data: users = [], isLoading } = useQuery({
         queryKey: ['all-users'],
-        queryFn: () => base44.entities.User.list('-created_date'),
+        queryFn: () => base44.entities.AppUser.list('-created_date'),
         enabled: can('VIEW_USERS'),
     });
 
     const updateUserMutation = useMutation({
-        mutationFn: ({ userId, data }) => base44.entities.User.update(userId, data),
+        mutationFn: ({ userId, data }) => base44.entities.AppUser.update(userId, data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['all-users'] });
             setShowRoleDialog(false);
@@ -110,13 +110,14 @@ export default function UserManagement() {
 
     const inviteUserMutation = useMutation({
         mutationFn: async (userData) => {
-            // In a real app, this would send an invitation email
-            // For now, we'll create a user record
-            const user = await base44.entities.User.create({
+            // Create a user record in AppUser entity
+            const user = await base44.entities.AppUser.create({
+                user_id: `USR-${Date.now()}`,
                 email: userData.email,
                 full_name: userData.full_name,
-                app_role: userData.app_role,
-                department: userData.department
+                role: userData.app_role,
+                department: userData.department,
+                status: 'pending'
             });
             await AuditLogger.logUserCreated(user, currentUser);
             return user;
@@ -125,10 +126,10 @@ export default function UserManagement() {
             queryClient.invalidateQueries({ queryKey: ['all-users'] });
             setShowAddUserDialog(false);
             setNewUser({ email: '', full_name: '', app_role: 'viewer', department: '' });
-            toast.success('User invited successfully');
+            toast.success('User created successfully');
         },
         onError: (error) => {
-            toast.error('Failed to invite user: ' + error.message);
+            toast.error('Failed to create user: ' + error.message);
         }
     });
 
@@ -136,7 +137,8 @@ export default function UserManagement() {
         const matchesSearch = !searchQuery || 
             u.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
             u.email?.toLowerCase().includes(searchQuery.toLowerCase());
-        const matchesRole = roleFilter === 'all' || u.app_role === roleFilter;
+        const userRole = u.role || u.app_role || 'viewer';
+        const matchesRole = roleFilter === 'all' || userRole === roleFilter;
         return matchesSearch && matchesRole;
     });
 
@@ -146,7 +148,7 @@ export default function UserManagement() {
 
     const confirmAndChangeRole = async () => {
         if (confirmRoleChange) {
-            const oldRole = confirmRoleChange.user.app_role || 'viewer';
+            const oldRole = confirmRoleChange.user.role || confirmRoleChange.user.app_role || 'viewer';
             await AuditLogger.logUserRoleChanged(
                 confirmRoleChange.user,
                 oldRole,
@@ -155,7 +157,7 @@ export default function UserManagement() {
             );
             updateUserMutation.mutate({
                 userId: confirmRoleChange.user.id,
-                data: { app_role: confirmRoleChange.newRole }
+                data: { role: confirmRoleChange.newRole }
             });
         }
     };
@@ -209,9 +211,9 @@ export default function UserManagement() {
 
     const roleStats = {
         total: users.length,
-        admin: users.filter(u => u.app_role === 'admin').length,
-        editor: users.filter(u => u.app_role === 'editor').length,
-        viewer: users.filter(u => (u.app_role === 'viewer' || !u.app_role)).length,
+        admin: users.filter(u => (u.role || u.app_role) === 'admin').length,
+        editor: users.filter(u => (u.role || u.app_role) === 'editor').length,
+        viewer: users.filter(u => ((u.role || u.app_role) === 'viewer' || (!u.role && !u.app_role))).length,
     };
 
     return (
@@ -375,7 +377,7 @@ export default function UserManagement() {
                                             </TableRow>
                                         ) : (
                                             filteredUsers.map((user) => {
-                                                const role = user.app_role || 'viewer';
+                                                const role = user.role || user.app_role || 'viewer';
                                                 const config = ROLE_CONFIG[role] || ROLE_CONFIG.viewer;
                                                 const isCurrentUser = user.id === currentUser?.id;
 
@@ -468,19 +470,19 @@ export default function UserManagement() {
                                 onClick={() => handleRoleChange(selectedUser, key)}
                                 className={cn(
                                     "w-full p-4 rounded-lg border-2 text-left transition-all",
-                                    selectedUser?.app_role === key || (!selectedUser?.app_role && key === 'viewer')
+                                    (selectedUser?.role || selectedUser?.app_role) === key || (!(selectedUser?.role || selectedUser?.app_role) && key === 'viewer')
                                         ? "border-blue-500 bg-blue-50"
                                         : "border-slate-200 hover:border-slate-300 hover:bg-slate-50"
-                                )}
-                            >
-                                <div className="flex items-center justify-between">
+                                    )}
+                                    >
+                                    <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-3">
                                         <Badge className={cn(config.bgColor, config.textColor)}>
                                             {config.label}
                                         </Badge>
                                         <span className="text-sm text-slate-600">{config.description}</span>
                                     </div>
-                                    {(selectedUser?.app_role === key || (!selectedUser?.app_role && key === 'viewer')) && (
+                                    {((selectedUser?.role || selectedUser?.app_role) === key || (!(selectedUser?.role || selectedUser?.app_role) && key === 'viewer')) && (
                                         <Check className="h-5 w-5 text-blue-600" />
                                     )}
                                 </div>
