@@ -83,6 +83,8 @@ export default function UserManagement() {
     const [roleFilter, setRoleFilter] = useState('all');
     const [selectedUser, setSelectedUser] = useState(null);
     const [showRoleDialog, setShowRoleDialog] = useState(false);
+    const [showPasswordDialog, setShowPasswordDialog] = useState(false);
+    const [passwordData, setPasswordData] = useState({ password: '', confirmPassword: '' });
     const [showPermissionsDialog, setShowPermissionsDialog] = useState(false);
     const [confirmRoleChange, setConfirmRoleChange] = useState(null);
     const [showAddUserDialog, setShowAddUserDialog] = useState(false);
@@ -445,6 +447,10 @@ export default function UserManagement() {
                                                                             <Shield className="h-4 w-4 mr-2" />
                                                                             Change Role
                                                                         </DropdownMenuItem>
+                                                                        <DropdownMenuItem onClick={() => { setSelectedUser(user); setPasswordData({ password: '', confirmPassword: '' }); setShowPasswordDialog(true); }}>
+                                                                            <KeyRound className="h-4 w-4 mr-2" />
+                                                                            Set Password
+                                                                        </DropdownMenuItem>
                                                                     </DropdownMenuContent>
                                                                 </DropdownMenu>
                                                             )}
@@ -635,6 +641,74 @@ export default function UserManagement() {
                             </TableBody>
                         </Table>
                     </div>
+                </DialogContent>
+            </Dialog>
+
+            {/* Set Password Dialog */}
+            <Dialog open={showPasswordDialog} onOpenChange={setShowPasswordDialog}>
+                <DialogContent className="max-w-md">
+                    <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2">
+                            <KeyRound className="h-5 w-5 text-blue-600" />
+                            Set Password
+                        </DialogTitle>
+                        <DialogDescription>
+                            Set a new password for {selectedUser?.full_name || selectedUser?.email}
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4 py-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="new_password">New Password *</Label>
+                            <Input
+                                id="new_password"
+                                type="password"
+                                value={passwordData.password}
+                                onChange={(e) => setPasswordData({ ...passwordData, password: e.target.value })}
+                                placeholder="Minimum 8 characters"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="confirm_new_password">Confirm Password *</Label>
+                            <Input
+                                id="confirm_new_password"
+                                type="password"
+                                value={passwordData.confirmPassword}
+                                onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
+                                placeholder="Re-enter password"
+                            />
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setShowPasswordDialog(false)}>
+                            Cancel
+                        </Button>
+                        <Button 
+                            onClick={async () => {
+                                if (!passwordData.password || passwordData.password.length < 8) {
+                                    toast.error('Password must be at least 8 characters');
+                                    return;
+                                }
+                                if (passwordData.password !== passwordData.confirmPassword) {
+                                    toast.error('Passwords do not match');
+                                    return;
+                                }
+                                try {
+                                    await base44.entities.AppUser.update(selectedUser.id, {
+                                        password_hash: passwordData.password,
+                                        must_change_password: false
+                                    });
+                                    toast.success('Password updated successfully');
+                                    setShowPasswordDialog(false);
+                                    setPasswordData({ password: '', confirmPassword: '' });
+                                } catch (error) {
+                                    toast.error('Failed to update password: ' + error.message);
+                                }
+                            }}
+                        >
+                            <KeyRound className="h-4 w-4 mr-2" />
+                            Update Password
+                        </Button>
+                    </DialogFooter>
                 </DialogContent>
             </Dialog>
 
