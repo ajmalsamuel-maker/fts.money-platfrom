@@ -34,6 +34,7 @@ import AdvancedReports from './pages/AdvancedReports';
 import DatabaseSetup from './pages/DatabaseSetup';
 import MerchantMIDsDB from './pages/MerchantMIDsDB';
 import Settings from './pages/Settings';
+import AuditLogs from './pages/AuditLogs';
 import __Layout from './Layout.jsx';
 
 
@@ -74,6 +75,7 @@ export const PAGES = {
     "DatabaseSetup": DatabaseSetup,
     "MerchantMIDsDB": MerchantMIDsDB,
     "Settings": Settings,
+    "AuditLogs": AuditLogs,
 }
 
 export const pagesConfig = {
