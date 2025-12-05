@@ -111,7 +111,7 @@ export default function Appearance() {
         <div className="min-h-screen bg-slate-50">
             <Toaster position="top-right" />
             <Sidebar collapsed={sidebarCollapsed} currentPage="Appearance" />
-            <div className={cn("transition-all duration-300", sidebarCollapsed ? "ml-16" : "ml-56")}>
+            <div className={cn("transition-all duration-300", "ml-64")}>
                 <TopHeader onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} />
                 <main className="p-6">
                     <div className="flex items-center justify-between mb-6">
