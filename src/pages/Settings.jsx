@@ -104,7 +104,7 @@ export default function Settings() {
         <div className="min-h-screen bg-slate-50">
             <Toaster position="top-right" />
             <Sidebar collapsed={sidebarCollapsed} currentPage="Settings" />
-            <div className={cn("transition-all duration-300", sidebarCollapsed ? "ml-20" : "ml-64")}>
+            <div className={cn("transition-all duration-300", "ml-64")}>
                 <TopHeader onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} collapsed={sidebarCollapsed} />
                 
                 <main className="p-6">
