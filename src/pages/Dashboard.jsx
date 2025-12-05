@@ -9,18 +9,25 @@ import VolumeChart from '@/components/dashboard/VolumeChart';
 import SuccessRateChart from '@/components/dashboard/SuccessRateChart';
 import TopMerchants from '@/components/dashboard/TopMerchants';
 import PaymentMethodsChart from '@/components/dashboard/PaymentMethodsChart';
+import TPSCounter from '@/components/dashboard/TPSCounter';
+import PaymentNews from '@/components/dashboard/PaymentNews';
+import ExchangeRates from '@/components/dashboard/ExchangeRates';
+import BusinessMetrics from '@/components/dashboard/BusinessMetrics';
+import HelpPanel from '@/components/dashboard/HelpPanel';
 import { 
     DollarSign, 
     ArrowLeftRight, 
     TrendingUp, 
     Store,
-    RefreshCw
+    RefreshCw,
+    HelpCircle
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export default function Dashboard() {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+    const [helpOpen, setHelpOpen] = useState(false);
 
     const { data: transactions = [] } = useQuery({
         queryKey: ['transactions'],
@@ -95,14 +102,28 @@ export default function Dashboard() {
                             <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
                             <p className="text-slate-500">Welcome back! Here's what's happening today.</p>
                         </div>
-                        <Button variant="outline" className="gap-2">
-                            <RefreshCw className="h-4 w-4" />
-                            Refresh
-                        </Button>
+                        <div className="flex items-center gap-2">
+                            <Button variant="outline" className="gap-2" onClick={() => setHelpOpen(true)}>
+                                <HelpCircle className="h-4 w-4" />
+                                Help
+                            </Button>
+                            <Button variant="outline" className="gap-2">
+                                <RefreshCw className="h-4 w-4" />
+                                Refresh
+                            </Button>
+                        </div>
                     </div>
 
                     {/* Stats Cards */}
                     <StatsCards stats={stats} />
+
+                    {/* TPS and Business Metrics Row */}
+                    <div className="grid lg:grid-cols-4 gap-6 mt-6">
+                        <TPSCounter />
+                        <div className="lg:col-span-3">
+                            <BusinessMetrics />
+                        </div>
+                    </div>
 
                     {/* Charts Row */}
                     <div className="grid lg:grid-cols-3 gap-6 mt-6">
@@ -120,10 +141,15 @@ export default function Dashboard() {
                         <TopMerchants />
                     </div>
 
-                    {/* Payment Methods */}
-                    <div className="mt-6">
+                    {/* News, Exchange Rates, and Payment Methods Row */}
+                    <div className="grid lg:grid-cols-3 gap-6 mt-6">
+                        <PaymentNews />
+                        <ExchangeRates />
                         <PaymentMethodsChart />
                     </div>
+
+                    {/* Help Panel */}
+                    <HelpPanel open={helpOpen} onOpenChange={setHelpOpen} />
                 </main>
             </div>
         </div>
