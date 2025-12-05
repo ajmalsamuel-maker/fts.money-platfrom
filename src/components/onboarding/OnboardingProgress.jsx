@@ -26,10 +26,10 @@ export default function OnboardingProgress({ currentStep, completedSteps, totalS
                             <div className={cn(
                                 "w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all",
                                 completedSteps.includes(step.id)
-                                    ? "bg-emerald-500 border-emerald-500 text-white"
+                                    ? "bg-[#54F0E4] border-[#54F0E4] text-[#000044]"
                                     : currentStep === step.id
-                                        ? "bg-blue-600 border-blue-600 text-white"
-                                        : "bg-white border-slate-300 text-slate-400"
+                                        ? "bg-[#003EFF] border-[#003EFF] text-white"
+                                        : "bg-white border-[#99C1FC] text-[#000044]/40"
                             )}>
                                 {completedSteps.includes(step.id) ? (
                                     <Check className="h-5 w-5" />
@@ -40,17 +40,17 @@ export default function OnboardingProgress({ currentStep, completedSteps, totalS
                             <div className="mt-2 text-center">
                                 <p className={cn(
                                     "text-sm font-medium",
-                                    currentStep === step.id ? "text-blue-600" : "text-slate-600"
+                                    currentStep === step.id ? "text-[#003EFF]" : "text-[#000044]"
                                 )}>
                                     {step.name}
                                 </p>
-                                <p className="text-xs text-slate-400">{step.description}</p>
+                                <p className="text-xs text-[#000044]/50">{step.description}</p>
                             </div>
                         </div>
                         {idx < displaySteps.length - 1 && (
                             <div className={cn(
                                 "flex-1 h-0.5 mx-2",
-                                completedSteps.includes(step.id) ? "bg-emerald-500" : "bg-slate-200"
+                                completedSteps.includes(step.id) ? "bg-[#54F0E4]" : "bg-[#99C1FC]/30"
                             )} />
                         )}
                     </React.Fragment>
@@ -60,16 +60,16 @@ export default function OnboardingProgress({ currentStep, completedSteps, totalS
             {/* Mobile Progress */}
             <div className="lg:hidden">
                 <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-slate-600">
+                    <span className="text-sm font-medium text-[#000044]">
                         Step {currentStep} of {displaySteps.length}
                     </span>
-                    <span className="text-sm text-slate-500">
+                    <span className="text-sm text-[#000044]/60">
                         {displaySteps[currentStep - 1]?.name}
                     </span>
                 </div>
-                <div className="w-full bg-slate-200 rounded-full h-2">
+                <div className="w-full bg-[#99C1FC]/30 rounded-full h-2">
                     <div 
-                        className="bg-blue-600 h-2 rounded-full transition-all"
+                        className="bg-gradient-to-r from-[#003EFF] to-[#54F0E4] h-2 rounded-full transition-all"
                         style={{ width: `${(currentStep / displaySteps.length) * 100}%` }}
                     />
                 </div>

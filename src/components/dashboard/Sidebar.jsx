@@ -39,6 +39,16 @@ import {
     Database
 } from 'lucide-react';
 
+// FTS.Money Brand Colors
+const FTS_COLORS = {
+    navy: '#000044',
+    royalBlue: '#003EFF',
+    aqua: '#54F0E4',
+    sky: '#99C1FC',
+    seaFoam: '#C4F3EF',
+    mist: '#F5F8FF',
+};
+
 const menuItems = [
     {
         group: 'Overview',
@@ -176,11 +186,11 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
         base44.auth.logout();
     };
 
-    const sidebarBg = themeSettings?.sidebar_bg || '#0f172a';
-    const sidebarText = themeSettings?.sidebar_text || '#94a3b8';
-    const primaryColor = themeSettings?.primary_color || '#3b82f6';
-    const secondaryColor = themeSettings?.secondary_color || '#06b6d4';
-    const companyName = pspSettings?.company_name || themeSettings?.company_name || 'PaymentHub';
+    const sidebarBg = themeSettings?.sidebar_bg || FTS_COLORS.navy;
+    const sidebarText = themeSettings?.sidebar_text || FTS_COLORS.sky;
+    const primaryColor = themeSettings?.primary_color || FTS_COLORS.royalBlue;
+    const secondaryColor = themeSettings?.secondary_color || FTS_COLORS.aqua;
+    const companyName = pspSettings?.company_name || themeSettings?.company_name || 'FTS.Money';
     const logoUrl = themeSettings?.logo_url;
 
     const activeGroupData = filteredMenuItems.find(g => g.group === activeGroup);
@@ -195,10 +205,10 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                 className="h-full flex flex-col w-16"
                 style={{ backgroundColor: sidebarBg }}
             >
-                {/* Branding - Lighter Background */}
+                {/* Branding - FTS.Money Style */}
                 <div 
                     className="h-16 flex items-center justify-center border-b"
-                    style={{ backgroundColor: '#374151', borderColor: 'rgba(255,255,255,0.1)' }}
+                    style={{ backgroundColor: FTS_COLORS.royalBlue, borderColor: 'rgba(255,255,255,0.1)' }}
                 >
                     {logoUrl ? (
                         <img src={logoUrl} alt="Logo" className="h-9 w-9 object-contain rounded-lg" />
@@ -229,7 +239,7 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                                             ? "text-white" 
                                             : "hover:bg-white/10"
                                     )}
-                                    style={(isHovered || isCurrentGroup) ? { backgroundColor: '#4b5563' } : { color: sidebarText }}
+                                    style={(isHovered || isCurrentGroup) ? { backgroundColor: FTS_COLORS.royalBlue } : { color: sidebarText }}
                                     title={group.group}
                                 >
                                     <GroupIcon className="h-5 w-5" />
@@ -263,12 +273,12 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
             {activeGroupData && (
                 <aside 
                     className="h-full w-48 border-r flex flex-col"
-                    style={{ backgroundColor: '#1e293b', borderColor: 'rgba(255,255,255,0.1)' }}
+                    style={{ backgroundColor: '#000033', borderColor: 'rgba(255,255,255,0.1)' }}
                 >
                     {/* Group Header */}
                     <div 
                         className="h-16 flex items-center px-4 border-b"
-                        style={{ backgroundColor: '#374151', borderColor: 'rgba(255,255,255,0.1)' }}
+                        style={{ backgroundColor: FTS_COLORS.royalBlue, borderColor: 'rgba(255,255,255,0.1)' }}
                     >
                         <div>
                             <h2 className="font-semibold text-white text-sm">{companyName}</h2>
@@ -298,7 +308,7 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                                             "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-sm"
                                         )}
                                         style={isActive 
-                                            ? { backgroundColor: '#4b5563', color: '#ffffff' }
+                                            ? { backgroundColor: FTS_COLORS.royalBlue, color: '#ffffff' }
                                             : { color: sidebarText }
                                         }
                                     >
