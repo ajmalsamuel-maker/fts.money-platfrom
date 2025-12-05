@@ -27,7 +27,9 @@ import {
 import { 
     FileText, Download, Send, Settings, Plus, Play, Loader2, ChevronDown, ChevronRight, Building2, Store, CheckCircle
 } from 'lucide-react';
-import { format } from 'date-fns';
+import { format, subDays } from 'date-fns';
+import ReportFilters from '@/components/reports/ReportFilters';
+import ReportGenerator from '@/components/reports/ReportGenerator';
 import { toast } from "sonner";
 
 const reportTypes = [
@@ -46,6 +48,9 @@ export default function Reports() {
     const [generating, setGenerating] = useState(null);
     const [expandedPSPs, setExpandedPSPs] = useState({});
     const [activeView, setActiveView] = useState('psp');
+    const [dateRange, setDateRange] = useState({ from: subDays(new Date(), 30), to: new Date() });
+    const [selectedMerchant, setSelectedMerchant] = useState('all');
+    const [selectedProvider, setSelectedProvider] = useState('all');
 
     const [scheduleConfig, setScheduleConfig] = useState({
         report_type: 'merchant_statement', frequency: 'monthly', psp_id: 'all', merchant_id: 'all',
@@ -256,7 +261,7 @@ PaymentHub Finance Team`
     return (
         <div className="min-h-screen bg-slate-50">
             <Sidebar collapsed={sidebarCollapsed} currentPage="Reports" />
-            <div className={cn("transition-all duration-300", sidebarCollapsed ? "ml-16" : "ml-56")}>
+            <div className={cn("transition-all duration-300", "ml-64")}>
                 <TopHeader onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} />
                 <main className="p-6">
                     <div className="flex items-center justify-between mb-6">
@@ -356,20 +361,26 @@ PaymentHub Finance Team`
                         </TabsContent>
 
                         <TabsContent value="generate" className="mt-4">
-                            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                {reportTypes.map((report) => (
-                                    <Card key={report.id} className="hover:shadow-md transition-shadow">
-                                        <CardContent className="p-4">
-                                            <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center mb-3"><FileText className="h-5 w-5 text-blue-600" /></div>
-                                            <h3 className="font-semibold mb-1">{report.name}</h3>
-                                            <p className="text-sm text-slate-500 mb-4">{report.description}</p>
-                                            <Button size="sm" variant="outline" className="w-full gap-1" onClick={() => generateReport(report.id, 'all', 'all')} disabled={generating === `${report.id}_all_all`}>
-                                                {generating === `${report.id}_all_all` ? <Loader2 className="h-3 w-3 animate-spin" /> : <Play className="h-3 w-3" />}Generate
-                                            </Button>
-                                        </CardContent>
-                                    </Card>
-                                ))}
-                            </div>
+                            <ReportFilters
+                                dateRange={dateRange}
+                                onDateRangeChange={setDateRange}
+                                merchant={selectedMerchant}
+                                onMerchantChange={setSelectedMerchant}
+                                merchants={merchants}
+                                provider={selectedProvider}
+                                onProviderChange={setSelectedProvider}
+                                providers={processors}
+                                onReset={() => {
+                                    setDateRange({ from: subDays(new Date(), 30), to: new Date() });
+                                    setSelectedMerchant('all');
+                                    setSelectedProvider('all');
+                                }}
+                            />
+                            <ReportGenerator 
+                                dateRange={dateRange}
+                                merchant={selectedMerchant}
+                                provider={selectedProvider}
+                            />
                         </TabsContent>
 
                         <TabsContent value="scheduled" className="mt-4">
