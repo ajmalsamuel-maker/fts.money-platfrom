@@ -114,35 +114,35 @@ export default function Dashboard() {
                         </div>
                     </div>
 
-                    {/* Stats Cards */}
-                    <StatsCards stats={stats} />
-
-                    {/* TPS and Business Metrics Row */}
-                    <div className="grid lg:grid-cols-4 gap-6 mt-6">
-                        <TPSCounter />
-                        <div className="lg:col-span-3">
-                            <BusinessMetrics />
+                    {/* Stats Cards + TPS */}
+                    <div className="grid lg:grid-cols-5 gap-4">
+                        <div className="lg:col-span-4">
+                            <StatsCards stats={stats} />
                         </div>
+                        <TPSCounter />
                     </div>
 
-                    {/* Charts Row */}
-                    <div className="grid lg:grid-cols-3 gap-6 mt-6">
+                    {/* Charts and Business Metrics Row */}
+                    <div className="grid lg:grid-cols-4 gap-4 mt-4">
                         <div className="lg:col-span-2">
                             <VolumeChart />
                         </div>
                         <SuccessRateChart />
+                        <BusinessMetrics />
                     </div>
 
-                    {/* Second Row */}
-                    <div className="grid lg:grid-cols-3 gap-6 mt-6">
+                    {/* Transactions, Merchants, and News Row */}
+                    <div className="grid lg:grid-cols-3 gap-4 mt-4">
                         <div className="lg:col-span-2">
                             <TransactionTable transactions={transactions} />
                         </div>
-                        <TopMerchants />
+                        <div className="space-y-4">
+                            <TopMerchants />
+                        </div>
                     </div>
 
                     {/* News, Exchange Rates, and Payment Methods Row */}
-                    <div className="grid lg:grid-cols-3 gap-6 mt-6">
+                    <div className="grid lg:grid-cols-3 gap-4 mt-4">
                         <PaymentNews />
                         <ExchangeRates />
                         <PaymentMethodsChart />
