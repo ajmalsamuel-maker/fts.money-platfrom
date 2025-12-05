@@ -112,6 +112,7 @@ const menuItems = [
             { icon: Zap, label: 'Smart Routing', path: 'SmartOrchestration', permission: 'VIEW_ROUTING' },
             { icon: Globe, label: 'Orchestration', path: 'PaymentOrchestration', permission: 'VIEW_ORCHESTRATION' },
             { icon: UserCog, label: 'User Management', path: 'UserManagement', permission: 'VIEW_USERS' },
+            { icon: Shield, label: 'Audit Logs', path: 'AuditLogs', permission: 'VIEW_USERS' },
             { icon: Palette, label: 'Appearance', path: 'Appearance', permission: 'VIEW_APPEARANCE' },
             { icon: Settings, label: 'Settings', path: 'Settings', permission: 'VIEW_SETTINGS' },
             { icon: Landmark, label: 'Database Setup', path: 'DatabaseSetup', permission: 'VIEW_SETTINGS' },
