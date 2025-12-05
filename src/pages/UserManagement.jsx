@@ -62,8 +62,17 @@ import {
     Mail,
     Clock,
     Building2,
-    Check
+    Check,
+    Plus,
+    Loader2,
+    Save,
+    X
 } from 'lucide-react';
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { toast } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
+import { AuditLogger } from '@/components/audit/AuditLogger';
 import { usePermissions } from '@/components/auth/usePermissions';
 import { AccessDenied } from '@/components/auth/PermissionGate';
 import { ROLE_CONFIG, PERMISSIONS } from '@/components/auth/permissions';
@@ -76,6 +85,10 @@ export default function UserManagement() {
     const [showRoleDialog, setShowRoleDialog] = useState(false);
     const [showPermissionsDialog, setShowPermissionsDialog] = useState(false);
     const [confirmRoleChange, setConfirmRoleChange] = useState(null);
+    const [showAddUserDialog, setShowAddUserDialog] = useState(false);
+    const [newUser, setNewUser] = useState({ email: '', full_name: '', app_role: 'viewer', department: '' });
+    const [editingPermissions, setEditingPermissions] = useState(false);
+    const [permissionMatrix, setPermissionMatrix] = useState({...PERMISSIONS});
 
     const queryClient = useQueryClient();
     const { can, loading: permLoading, userRole, user: currentUser } = usePermissions();
@@ -95,6 +108,30 @@ export default function UserManagement() {
         },
     });
 
+    const inviteUserMutation = useMutation({
+        mutationFn: async (userData) => {
+            // In a real app, this would send an invitation email
+            // For now, we'll create a user record
+            const user = await base44.entities.User.create({
+                email: userData.email,
+                full_name: userData.full_name,
+                app_role: userData.app_role,
+                department: userData.department
+            });
+            await AuditLogger.logUserCreated(user, currentUser);
+            return user;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['all-users'] });
+            setShowAddUserDialog(false);
+            setNewUser({ email: '', full_name: '', app_role: 'viewer', department: '' });
+            toast.success('User invited successfully');
+        },
+        onError: (error) => {
+            toast.error('Failed to invite user: ' + error.message);
+        }
+    });
+
     const filteredUsers = users.filter(u => {
         const matchesSearch = !searchQuery || 
             u.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -107,13 +144,45 @@ export default function UserManagement() {
         setConfirmRoleChange({ user, newRole });
     };
 
-    const confirmAndChangeRole = () => {
+    const confirmAndChangeRole = async () => {
         if (confirmRoleChange) {
+            const oldRole = confirmRoleChange.user.app_role || 'viewer';
+            await AuditLogger.logUserRoleChanged(
+                confirmRoleChange.user,
+                oldRole,
+                confirmRoleChange.newRole,
+                currentUser
+            );
             updateUserMutation.mutate({
                 userId: confirmRoleChange.user.id,
                 data: { app_role: confirmRoleChange.newRole }
             });
         }
+    };
+
+    const handleInviteUser = () => {
+        if (!newUser.email || !newUser.full_name) {
+            toast.error('Please fill in all required fields');
+            return;
+        }
+        inviteUserMutation.mutate(newUser);
+    };
+
+    const togglePermission = (permission, role) => {
+        setPermissionMatrix(prev => {
+            const roles = [...prev[permission]];
+            if (roles.includes(role)) {
+                return { ...prev, [permission]: roles.filter(r => r !== role) };
+            } else {
+                return { ...prev, [permission]: [...roles, role] };
+            }
+        });
+    };
+
+    const savePermissions = async () => {
+        await AuditLogger.logPermissionChanged('PERMISSION_MATRIX', PERMISSIONS, permissionMatrix, currentUser);
+        toast.success('Permissions updated successfully');
+        setEditingPermissions(false);
     };
 
     if (permLoading) {
@@ -153,20 +222,32 @@ export default function UserManagement() {
                 <TopHeader onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} collapsed={sidebarCollapsed} />
                 
                 <main className="p-6">
+                    <Toaster position="top-right" />
                     {/* Page Header */}
                     <div className="flex items-center justify-between mb-6">
                         <div>
                             <h1 className="text-2xl font-bold text-slate-900">User Management</h1>
                             <p className="text-slate-500">Manage user roles and permissions</p>
                         </div>
-                        <Button 
-                            variant="outline" 
-                            className="gap-2"
-                            onClick={() => setShowPermissionsDialog(true)}
-                        >
-                            <KeyRound className="h-4 w-4" />
-                            View Permissions Matrix
-                        </Button>
+                        <div className="flex items-center gap-2">
+                            <Button 
+                                variant="outline" 
+                                className="gap-2"
+                                onClick={() => setShowPermissionsDialog(true)}
+                            >
+                                <KeyRound className="h-4 w-4" />
+                                Permissions Matrix
+                            </Button>
+                            {can('MANAGE_USERS') && (
+                                <Button 
+                                    className="gap-2"
+                                    onClick={() => setShowAddUserDialog(true)}
+                                >
+                                    <Plus className="h-4 w-4" />
+                                    Add User
+                                </Button>
+                            )}
+                        </div>
                     </div>
 
                     {/* Role Stats */}
@@ -443,12 +524,40 @@ export default function UserManagement() {
             <Dialog open={showPermissionsDialog} onOpenChange={setShowPermissionsDialog}>
                 <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
                     <DialogHeader>
-                        <DialogTitle className="flex items-center gap-2">
-                            <KeyRound className="h-5 w-5 text-blue-600" />
-                            Permissions Matrix
+                        <DialogTitle className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                                <KeyRound className="h-5 w-5 text-blue-600" />
+                                Permissions Matrix
+                            </div>
+                            {can('MANAGE_USERS') && (
+                                <Button 
+                                    variant={editingPermissions ? "default" : "outline"}
+                                    size="sm"
+                                    onClick={() => {
+                                        if (editingPermissions) {
+                                            savePermissions();
+                                        } else {
+                                            setEditingPermissions(true);
+                                        }
+                                    }}
+                                    className="gap-1"
+                                >
+                                    {editingPermissions ? (
+                                        <>
+                                            <Save className="h-4 w-4" />
+                                            Save
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Pencil className="h-4 w-4" />
+                                            Edit
+                                        </>
+                                    )}
+                                </Button>
+                            )}
                         </DialogTitle>
                         <DialogDescription>
-                            Overview of what each role can access
+                            {editingPermissions ? 'Click on checkboxes to modify permissions' : 'Overview of what each role can access'}
                         </DialogDescription>
                     </DialogHeader>
                     <div className="py-4">
@@ -468,27 +577,42 @@ export default function UserManagement() {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {Object.entries(PERMISSIONS).map(([permission, roles]) => (
+                                {Object.entries(editingPermissions ? permissionMatrix : PERMISSIONS).map(([permission, roles]) => (
                                     <TableRow key={permission}>
                                         <TableCell className="font-medium text-sm">
                                             {permission.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase())}
                                         </TableCell>
                                         <TableCell className="text-center">
-                                            {roles.includes('admin') ? (
+                                            {editingPermissions ? (
+                                                <Checkbox 
+                                                    checked={roles.includes('admin')}
+                                                    onCheckedChange={() => togglePermission(permission, 'admin')}
+                                                />
+                                            ) : roles.includes('admin') ? (
                                                 <Check className="h-4 w-4 text-emerald-500 mx-auto" />
                                             ) : (
                                                 <span className="text-slate-300">—</span>
                                             )}
                                         </TableCell>
                                         <TableCell className="text-center">
-                                            {roles.includes('editor') ? (
+                                            {editingPermissions ? (
+                                                <Checkbox 
+                                                    checked={roles.includes('editor')}
+                                                    onCheckedChange={() => togglePermission(permission, 'editor')}
+                                                />
+                                            ) : roles.includes('editor') ? (
                                                 <Check className="h-4 w-4 text-emerald-500 mx-auto" />
                                             ) : (
                                                 <span className="text-slate-300">—</span>
                                             )}
                                         </TableCell>
                                         <TableCell className="text-center">
-                                            {roles.includes('viewer') ? (
+                                            {editingPermissions ? (
+                                                <Checkbox 
+                                                    checked={roles.includes('viewer')}
+                                                    onCheckedChange={() => togglePermission(permission, 'viewer')}
+                                                />
+                                            ) : roles.includes('viewer') ? (
                                                 <Check className="h-4 w-4 text-emerald-500 mx-auto" />
                                             ) : (
                                                 <span className="text-slate-300">—</span>
@@ -499,6 +623,97 @@ export default function UserManagement() {
                             </TableBody>
                         </Table>
                     </div>
+                </DialogContent>
+            </Dialog>
+
+            {/* Add User Dialog */}
+            <Dialog open={showAddUserDialog} onOpenChange={setShowAddUserDialog}>
+                <DialogContent className="max-w-md">
+                    <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2">
+                            <Plus className="h-5 w-5 text-blue-600" />
+                            Add New User
+                        </DialogTitle>
+                        <DialogDescription>
+                            Invite a new user to the platform
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4 py-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="full_name">Full Name *</Label>
+                            <Input
+                                id="full_name"
+                                value={newUser.full_name}
+                                onChange={(e) => setNewUser({ ...newUser, full_name: e.target.value })}
+                                placeholder="John Doe"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="email">Email Address *</Label>
+                            <Input
+                                id="email"
+                                type="email"
+                                value={newUser.email}
+                                onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+                                placeholder="john@example.com"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="department">Department</Label>
+                            <Input
+                                id="department"
+                                value={newUser.department}
+                                onChange={(e) => setNewUser({ ...newUser, department: e.target.value })}
+                                placeholder="e.g., Operations, Finance"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Role</Label>
+                            <div className="space-y-2">
+                                {Object.entries(ROLE_CONFIG).map(([key, config]) => (
+                                    <button
+                                        key={key}
+                                        type="button"
+                                        onClick={() => setNewUser({ ...newUser, app_role: key })}
+                                        className={cn(
+                                            "w-full p-3 rounded-lg border-2 text-left transition-all",
+                                            newUser.app_role === key
+                                                ? "border-blue-500 bg-blue-50"
+                                                : "border-slate-200 hover:border-slate-300"
+                                        )}
+                                    >
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-2">
+                                                <Badge className={cn(config.bgColor, config.textColor)}>
+                                                    {config.label}
+                                                </Badge>
+                                                <span className="text-sm text-slate-600">{config.description}</span>
+                                            </div>
+                                            {newUser.app_role === key && (
+                                                <Check className="h-5 w-5 text-blue-600" />
+                                            )}
+                                        </div>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setShowAddUserDialog(false)}>
+                            Cancel
+                        </Button>
+                        <Button 
+                            onClick={handleInviteUser}
+                            disabled={inviteUserMutation.isPending}
+                        >
+                            {inviteUserMutation.isPending ? (
+                                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                            ) : (
+                                <Plus className="h-4 w-4 mr-2" />
+                            )}
+                            Add User
+                        </Button>
+                    </DialogFooter>
                 </DialogContent>
             </Dialog>
         </div>
