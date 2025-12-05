@@ -8,6 +8,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
     Search, 
     LayoutDashboard, 
@@ -41,10 +42,24 @@ import {
     UserCog,
     ChevronRight,
     ExternalLink,
-    BookOpen
+    BookOpen,
+    Lock,
+    FileCheck,
+    Scale,
+    AlertCircle,
+    ClipboardCheck,
+    Network,
+    Server,
+    Eye,
+    Activity,
+    Fingerprint,
+    ShieldCheck,
+    Award,
+    GraduationCap
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
 
+// Platform Help Sections
 const helpSections = [
     {
         category: 'Overview',
@@ -179,12 +194,12 @@ const helpSections = [
 **10-Step Workflow:**
 1. **Business Details**: Company information, MCC code, industry
 2. **Company Structure**: Ownership, directors, UBOs based on entity type
-3. **LEI Verification**: Legal Entity Identifier validation
+3. **LEI Verification**: Legal Entity Identifier validation via GLEIF
 4. **Contact Information**: Primary contacts and key personnel
 5. **Document Upload**: KYC documents with validation
 6. **KYB Verification**: Automated business verification via TheKYB
 7. **AML Screening**: Anti-money laundering checks via AMLWatcher
-8. **Bank Details**: Settlement account configuration
+8. **Bank Details**: Settlement account configuration with IBAN validation
 9. **Pricing**: Fee structure and rate setup
 10. **Review & Submit**: Final review and submission
 
@@ -203,7 +218,8 @@ const helpSections = [
 • **Certification**: Manage certification requirements
 • **BIN Configuration**: Configure BIN routing
 • **Settlement Accounts**: Link bank accounts for settlements
-• **API Integration**: Configure API credentials and endpoints`,
+• **API Integration**: Configure API credentials and endpoints
+• **Testing**: Sandbox environment for integration testing`,
                 keywords: ['acquirer', 'bank', 'processor', 'integration']
             },
             {
@@ -212,11 +228,12 @@ const helpSections = [
                 description: 'Add alternative payment methods.',
                 content: `Integrate alternative payment methods:
 
-• **Digital Wallets**: Apple Pay, Google Pay, PayPal
-• **Bank Transfers**: ACH, SEPA, Faster Payments
-• **Buy Now Pay Later**: Klarna, Affirm, Afterpay
-• **Regional Methods**: iDEAL, Bancontact, POLi, and more
-• **Cryptocurrency**: Bitcoin, Ethereum integrations`,
+• **Digital Wallets**: Apple Pay, Google Pay, Samsung Pay, PayPal
+• **Bank Transfers**: ACH, SEPA, Faster Payments, BACS
+• **Buy Now Pay Later**: Klarna, Affirm, Afterpay, ClearPay
+• **Regional Methods**: iDEAL, Bancontact, POLi, GiroPay, Sofort
+• **Cryptocurrency**: Bitcoin, Ethereum, stablecoin integrations
+• **Real-Time Payments**: FedNow, RTP, Instant SEPA`,
                 keywords: ['apm', 'alternative payments', 'wallets', 'bnpl']
             },
             {
@@ -229,7 +246,8 @@ const helpSections = [
 • **Request Types**: Merchant onboarding, terminal creation, user access
 • **Workflow**: Multi-level approval based on risk and value
 • **Audit Trail**: Complete history of all approvals and rejections
-• **Bulk Actions**: Approve or reject multiple items at once`,
+• **Bulk Actions**: Approve or reject multiple items at once
+• **SLA Tracking**: Monitor approval turnaround times`,
                 keywords: ['approvals', 'workflow', 'pending', 'review']
             }
         ]
@@ -251,6 +269,7 @@ const helpSections = [
   - Processing volume
   - Fee structure
   - Risk level
+  - LEI/vLEI status
 • **Actions**: Activate, suspend, or terminate merchants
 • **Performance**: Transaction volume and success rates
 • **Documents**: Access uploaded KYC documents`,
@@ -266,7 +285,8 @@ const helpSections = [
 • **Configuration**: Terminal types, transaction types, currencies
 • **Provider Mapping**: Link MIDs to payment providers
 • **Status Management**: Activate, deactivate, or suspend MIDs
-• **Fee Configuration**: Set processing fees per MID`,
+• **Fee Configuration**: Set processing fees per MID
+• **Database Integration**: PostgreSQL-backed MID storage`,
                 keywords: ['mid', 'merchant id', 'configuration', 'terminal']
             },
             {
@@ -279,7 +299,8 @@ const helpSections = [
 • **Deployment**: Ship and activate terminals
 • **Firmware**: Monitor and update firmware versions
 • **Diagnostics**: View terminal health and connectivity
-• **Reporting**: Per-terminal transaction reports`,
+• **Reporting**: Per-terminal transaction reports
+• **TMS Integration**: Terminal Management System connectivity`,
                 keywords: ['terminals', 'pos', 'devices', 'hardware']
             },
             {
@@ -291,8 +312,9 @@ const helpSections = [
 • **Create Terminals**: Set up web-based payment forms
 • **Customization**: Branding and field configuration
 • **Access Control**: User permissions per terminal
-• **Transaction Types**: Sale, auth, refund capabilities
-• **Limits**: Set daily and per-transaction limits`,
+• **Transaction Types**: Sale, auth, refund, void capabilities
+• **Limits**: Set daily and per-transaction limits
+• **3DS Integration**: Secure customer authentication`,
                 keywords: ['virtual terminal', 'web', 'moto', 'keyed']
             },
             {
@@ -304,8 +326,9 @@ const helpSections = [
 • **API Keys**: Generate and manage API keys
 • **Webhooks**: Configure callback URLs
 • **IP Whitelisting**: Restrict access by IP
-• **Key Rotation**: Schedule automatic key rotation
-• **Usage Logs**: Monitor API usage and errors`,
+• **Key Rotation**: Schedule automatic key rotation (PCI requirement)
+• **Usage Logs**: Monitor API usage and errors
+• **OAuth2**: OAuth 2.0 token-based authentication`,
                 keywords: ['api', 'credentials', 'keys', 'authentication', 'webhooks']
             },
             {
@@ -317,8 +340,9 @@ const helpSections = [
 • **User Accounts**: Create and manage merchant users
 • **Roles**: Admin, Manager, Operator, Viewer
 • **Permissions**: Granular access control
-• **Two-Factor Auth**: Enforce 2FA for security
-• **Activity Logs**: Track user actions`,
+• **Two-Factor Auth**: Enforce 2FA for security (PCI 8.4.2)
+• **Activity Logs**: Track user actions for audit
+• **Session Management**: Automatic timeout and lockout`,
                 keywords: ['users', 'access', 'permissions', 'roles']
             }
         ]
@@ -337,7 +361,8 @@ const helpSections = [
 • **Merchant Balances**: Individual merchant balances
 • **Reserve Funds**: Chargeback and rolling reserves
 • **Pending Settlements**: Upcoming payouts
-• **Historical Data**: Balance trends over time`,
+• **Historical Data**: Balance trends over time
+• **Multi-Currency**: Support for multiple currencies`,
                 keywords: ['balances', 'funds', 'reserves', 'money']
             },
             {
@@ -355,7 +380,8 @@ const helpSections = [
   - Settlement reports
   - Chargeback reports
   - Fee reports
-  - Merchant statements`,
+  - Merchant statements
+• **PCI Compliance Reports**: Audit-ready documentation`,
                 keywords: ['reports', 'export', 'statements', 'financial']
             },
             {
@@ -369,7 +395,8 @@ const helpSections = [
 • **Volume Analysis**: Transaction volume trends
 • **Success Rates**: Approval rate analytics
 • **Chargeback Analysis**: Ratios and trends
-• **Comparison**: Period-over-period comparisons`,
+• **Comparison**: Period-over-period comparisons
+• **Margin Analysis**: Buy rate vs sell rate margins`,
                 keywords: ['advanced reports', 'pnl', 'profit', 'loss', 'analytics']
             },
             {
@@ -382,7 +409,8 @@ const helpSections = [
 • **Batch Processing**: Process multiple payouts at once
 • **Bank Files**: Generate NACHA/SEPA/BACS files
 • **Status Tracking**: Track payout status in real-time
-• **Confirmation**: Settlement confirmation reports`,
+• **Confirmation**: Settlement confirmation reports
+• **Dual Control**: Maker-checker approval workflow`,
                 keywords: ['payouts', 'disbursements', 'bank transfer']
             },
             {
@@ -395,7 +423,8 @@ const helpSections = [
 • **Rules**: Threshold-based or time-based triggers
 • **Reserves**: Automatic reserve calculations
 • **Notifications**: Email alerts for payouts
-• **Exceptions**: Handle failed payouts automatically`,
+• **Exceptions**: Handle failed payouts automatically
+• **Audit Trail**: Complete payout history`,
                 keywords: ['automation', 'scheduled', 'automatic payouts']
             },
             {
@@ -404,11 +433,12 @@ const helpSections = [
                 description: 'Match transactions with bank records.',
                 content: `Transaction reconciliation:
 
-• **Import Files**: Upload bank statements
+• **Import Files**: Upload bank statements (MT940, CSV, BAI2)
 • **Auto-Match**: Automatic transaction matching
 • **Exceptions**: Handle unmatched items
 • **Reports**: Reconciliation status reports
-• **Audit**: Complete reconciliation history`,
+• **Audit**: Complete reconciliation history
+• **Daily Balancing**: Ensure transaction integrity`,
                 keywords: ['reconciliation', 'matching', 'bank', 'statements']
             },
             {
@@ -421,7 +451,8 @@ const helpSections = [
 • **Configuration**: API credentials and settings
 • **Status**: Real-time provider availability
 • **Routing**: Configure routing preferences
-• **Fees**: Provider fee schedules`,
+• **Fees**: Provider fee schedules
+• **Health Monitoring**: Track uptime and latency`,
                 keywords: ['providers', 'processors', 'gateways', 'acquirers']
             },
             {
@@ -434,7 +465,8 @@ const helpSections = [
 • **Interchange**: Track interchange rates
 • **Scheme Fees**: Visa/Mastercard scheme fees
 • **Effective Dates**: Rate change scheduling
-• **History**: Rate change audit trail`,
+• **History**: Rate change audit trail
+• **IC++ Support**: Interchange plus plus pricing`,
                 keywords: ['buy rates', 'interchange', 'pricing', 'costs']
             },
             {
@@ -443,11 +475,12 @@ const helpSections = [
                 description: 'Set merchant fee structures.',
                 content: `Merchant pricing configuration:
 
-• **Pricing Models**: Flat rate, interchange++, tiered
+• **Pricing Models**: Flat rate, interchange++, tiered, blended
 • **Fee Types**: Transaction fees, monthly fees, setup fees
 • **MID-Level Pricing**: Different rates per MID
 • **Margin Calculation**: Automatic margin calculations
-• **Statements**: Generate merchant fee statements`,
+• **Statements**: Generate merchant fee statements
+• **Currency Conversion**: DCC and MCP fees`,
                 keywords: ['pricing', 'fees', 'rates', 'margin', 'mdr']
             }
         ]
@@ -466,9 +499,10 @@ const helpSections = [
 • **Rules Engine**: Configure fraud detection rules
 • **Velocity Checks**: Monitor transaction patterns
 • **Block Lists**: Manage blocked cards, IPs, emails
-• **3D Secure**: Configure 3DS authentication
+• **3D Secure**: Configure 3DS 2.0 authentication
 • **Machine Learning**: AI-powered fraud detection
-• **Alerts**: Real-time fraud alerts and notifications`,
+• **Alerts**: Real-time fraud alerts and notifications
+• **Device Fingerprinting**: Track device characteristics`,
                 keywords: ['fraud', 'risk', 'prevention', 'rules', '3ds']
             },
             {
@@ -479,10 +513,11 @@ const helpSections = [
 
 • **KYC Management**: Know Your Customer documentation
 • **AML Monitoring**: Anti-money laundering screening
-• **PCI Compliance**: PCI-DSS compliance tracking
+• **PCI DSS 4.0.1**: PCI compliance tracking
 • **GDPR**: Data privacy management
-• **Audit Logs**: Complete audit trail
-• **SAR Filing**: Suspicious activity reporting`,
+• **Audit Logs**: Complete audit trail (PCI 10.x)
+• **SAR Filing**: Suspicious activity reporting
+• **Sanctions Screening**: OFAC, EU, UN sanctions lists`,
                 keywords: ['compliance', 'kyc', 'aml', 'pci', 'gdpr', 'regulatory']
             }
         ]
@@ -518,8 +553,9 @@ const helpSections = [
 • **Provider Management**: Connect multiple processors
 • **Dynamic Routing**: Real-time routing decisions
 • **Fallback Logic**: Automatic retry on decline
-• **Tokenization**: Secure card storage
-• **Network Tokens**: Visa/MC network tokenization`,
+• **Tokenization**: Secure card storage (PCI scope reduction)
+• **Network Tokens**: Visa/MC network tokenization
+• **Unified API**: Single integration for all providers`,
                 keywords: ['orchestration', 'providers', 'routing', 'tokens']
             },
             {
@@ -530,17 +566,29 @@ const helpSections = [
 
 • **User Accounts**: Create and manage users
 • **Roles**: 
-  - Super Admin: Full access
-  - Admin: Administrative access
-  - Compliance Officer: Compliance functions
-  - Operations: Day-to-day operations
-  - Finance: Financial reports and payouts
-  - Support: Read-only transaction access
-  - Viewer: Dashboard only
-• **Permissions**: Granular permission control
-• **SSO**: Single sign-on integration
-• **Activity Logs**: User action audit trail`,
+  - Administrator: Full access
+  - Editor: Modify data, limited settings
+  - Viewer: Read-only access
+• **Permissions**: Granular permission control with matrix editor
+• **Password Policy**: Strong password requirements (PCI 8.3)
+• **Activity Logs**: User action audit trail
+• **Add User**: Invite new users with role assignment`,
                 keywords: ['users', 'roles', 'permissions', 'access', 'admin']
+            },
+            {
+                title: 'Audit Logs',
+                icon: Shield,
+                description: 'PCI-compliant activity logging.',
+                content: `Complete audit trail (PCI DSS Requirement 10):
+
+• **Event Categories**: Authentication, authorization, transactions, configuration
+• **Severity Levels**: Info, warning, critical
+• **PCI Relevant**: Flag events for compliance audits
+• **Search & Filter**: Find specific events quickly
+• **Export**: Download logs for external analysis
+• **Retention**: Configurable retention periods (1-7 years)
+• **Immutable**: Logs cannot be modified or deleted`,
+                keywords: ['audit', 'logs', 'pci', 'compliance', 'tracking']
             },
             {
                 title: 'Appearance',
@@ -578,8 +626,944 @@ const helpSections = [
 • **Connection Test**: Verify database connectivity
 • **Schema Setup**: Initialize database tables
 • **Migrations**: Run database migrations
-• **Backup**: Database backup configuration`,
+• **Backup**: Database backup configuration
+• **Encryption**: Data-at-rest encryption (PCI 3.5)`,
                 keywords: ['database', 'postgresql', 'setup', 'connection']
+            }
+        ]
+    }
+];
+
+// PCI DSS 4.0.1 Compliance Knowledge Base
+const pciDssContent = [
+    {
+        category: 'Build and Maintain a Secure Network',
+        icon: Network,
+        items: [
+            {
+                title: 'Requirement 1: Network Security Controls',
+                icon: Shield,
+                description: 'Install and maintain network security controls.',
+                content: `**PCI DSS 4.0.1 Requirement 1**: Network Security Controls
+
+This platform implements:
+
+• **1.1 Network Security Policies**: Documented security policies and procedures
+• **1.2 Network Security Controls Configuration**:
+  - Firewall and router configurations reviewed quarterly
+  - All inbound/outbound traffic restricted to necessary communications
+  - Cardholder data environment (CDE) isolated from public networks
+
+• **1.3 Network Access Restricted**:
+  - DMZ implementation between internet and systems storing cardholder data
+  - Anti-spoofing measures implemented
+  - Outbound traffic from CDE limited to authorized destinations
+
+• **1.4 Network Connections**:
+  - Personal firewall software on all portable computing devices
+  - Network segmentation to reduce scope
+
+• **1.5 Risks to CDE Addressed**:
+  - Trusted and untrusted networks identified and documented`,
+                keywords: ['firewall', 'network', 'security', 'dmz', 'segmentation']
+            },
+            {
+                title: 'Requirement 2: Secure Configurations',
+                icon: Settings,
+                description: 'Apply secure configurations to all system components.',
+                content: `**PCI DSS 4.0.1 Requirement 2**: Secure Configurations
+
+This platform implements:
+
+• **2.1 Secure Configuration Processes**:
+  - Configuration standards for all system components
+  - Default passwords changed before deployment
+  - Unnecessary services disabled
+
+• **2.2 System Components Configured Securely**:
+  - Only necessary services, protocols, daemons enabled
+  - Security parameters configured to prevent misuse
+  - System hardening based on industry standards (CIS benchmarks)
+
+• **2.3 Wireless Environments Secured**:
+  - Strong encryption for wireless authentication and transmission
+  - Default wireless settings changed
+
+**Implementation in Platform:**
+  - All API endpoints use TLS 1.2+
+  - Database connections encrypted
+  - Session tokens rotated automatically
+  - Secure headers implemented (CSP, HSTS, X-Frame-Options)`,
+                keywords: ['configuration', 'hardening', 'encryption', 'tls', 'secure']
+            }
+        ]
+    },
+    {
+        category: 'Protect Account Data',
+        icon: Lock,
+        items: [
+            {
+                title: 'Requirement 3: Protect Stored Account Data',
+                icon: Database,
+                description: 'Protect stored account data.',
+                content: `**PCI DSS 4.0.1 Requirement 3**: Protect Stored Account Data
+
+This platform implements:
+
+• **3.1 Account Data Storage Minimized**:
+  - Data retention policies implemented
+  - Cardholder data purged when no longer needed
+  - Quarterly review of stored data
+
+• **3.2 Sensitive Authentication Data Not Stored**:
+  - Full track data never stored after authorization
+  - CVV/CVC never stored
+  - PIN data never stored
+
+• **3.3 Primary Account Number (PAN) Protected**:
+  - PAN displayed only with first 6 and last 4 digits
+  - Full PAN accessible only on need-to-know basis
+
+• **3.4 PAN Rendered Unreadable**:
+  - One-way hashing (SHA-256 with salt)
+  - Truncation
+  - Index tokens (tokenization)
+  - Strong cryptography with key management
+
+• **3.5 - 3.7 Cryptographic Key Management**:
+  - Key management procedures documented
+  - Cryptographic keys stored securely
+  - Key rotation procedures in place`,
+                keywords: ['storage', 'encryption', 'pan', 'tokenization', 'cvv']
+            },
+            {
+                title: 'Requirement 4: Protect Data in Transit',
+                icon: Globe,
+                description: 'Protect cardholder data during transmission.',
+                content: `**PCI DSS 4.0.1 Requirement 4**: Protect Data in Transit
+
+This platform implements:
+
+• **4.1 Strong Cryptography Protocols**:
+  - TLS 1.2 or higher for all data transmission
+  - SSL and early TLS disabled
+  - Strong cipher suites only
+
+• **4.2 PAN Protected During Transmission**:
+  - End-to-end encryption
+  - Never sent via end-user messaging (email, SMS)
+  - Point-to-point encryption (P2PE) for card-present
+
+**Platform Implementation:**
+  - All API calls require HTTPS
+  - Certificate validation enforced
+  - HSTS enabled with preload
+  - Perfect Forward Secrecy (PFS) enabled
+  - Certificate transparency monitoring`,
+                keywords: ['transmission', 'tls', 'encryption', 'https', 'transit']
+            }
+        ]
+    },
+    {
+        category: 'Maintain a Vulnerability Management Program',
+        icon: AlertCircle,
+        items: [
+            {
+                title: 'Requirement 5: Protect Against Malware',
+                icon: Shield,
+                description: 'Protect all systems against malware.',
+                content: `**PCI DSS 4.0.1 Requirement 5**: Malware Protection
+
+This platform implements:
+
+• **5.1 Processes to Protect Against Malware**:
+  - Anti-malware solutions deployed
+  - Regular malware scans
+  - Malware definitions updated automatically
+
+• **5.2 Malware Prevented or Detected**:
+  - Active monitoring and alerting
+  - Behavioral analysis
+  - Automatic quarantine
+
+• **5.3 Anti-Malware Mechanisms Active**:
+  - Anti-malware cannot be disabled by users
+  - Logs retained and reviewed
+
+• **5.4 Anti-Phishing Mechanisms**:
+  - Email security controls
+  - URL filtering
+  - User awareness training`,
+                keywords: ['malware', 'antivirus', 'protection', 'security']
+            },
+            {
+                title: 'Requirement 6: Secure Systems and Software',
+                icon: Server,
+                description: 'Develop and maintain secure systems and software.',
+                content: `**PCI DSS 4.0.1 Requirement 6**: Secure Development
+
+This platform implements:
+
+• **6.1 Security Vulnerabilities Identified and Addressed**:
+  - Vulnerability scanning monthly
+  - Critical vulnerabilities patched within 30 days
+  - CVE monitoring
+
+• **6.2 Bespoke and Custom Software Secured**:
+  - Secure development lifecycle (SDLC)
+  - Code reviews for security
+  - OWASP Top 10 addressed
+
+• **6.3 Security Vulnerabilities Identified and Addressed**:
+  - Penetration testing annually
+  - Web application firewall (WAF) deployed
+
+• **6.4 Public-Facing Web Applications Protected**:
+  - Input validation
+  - Output encoding
+  - SQL injection prevention
+  - XSS prevention
+
+• **6.5 Changes Managed Securely**:
+  - Change management procedures
+  - Testing before production deployment
+  - Rollback procedures`,
+                keywords: ['development', 'sdlc', 'vulnerabilities', 'patching', 'owasp']
+            }
+        ]
+    },
+    {
+        category: 'Implement Strong Access Control',
+        icon: Fingerprint,
+        items: [
+            {
+                title: 'Requirement 7: Restrict Access',
+                icon: Lock,
+                description: 'Restrict access to system components and data.',
+                content: `**PCI DSS 4.0.1 Requirement 7**: Access Restriction
+
+This platform implements:
+
+• **7.1 Access Limited to Business Need**:
+  - Role-based access control (RBAC)
+  - Least privilege principle
+  - Access requests require approval
+
+• **7.2 Access Appropriately Defined**:
+  - Access control systems in place
+  - Default deny-all setting
+  - Access based on job classification
+
+• **7.3 Access Managed via Access Control System**:
+  - Centralized access management
+  - Regular access reviews
+  - Automatic access revocation on role change
+
+**Platform Implementation:**
+  - Three-tier role system (Admin, Editor, Viewer)
+  - Permission matrix with granular controls
+  - Access logged in audit trail`,
+                keywords: ['access control', 'rbac', 'least privilege', 'authorization']
+            },
+            {
+                title: 'Requirement 8: Identify Users and Authenticate',
+                icon: Users,
+                description: 'Identify users and authenticate access.',
+                content: `**PCI DSS 4.0.1 Requirement 8**: User Authentication
+
+This platform implements:
+
+• **8.1 User Identification Processes**:
+  - Unique user IDs for all users
+  - No shared or generic accounts
+  - User lifecycle management
+
+• **8.2 User Identification Managed**:
+  - Immediate revocation on termination
+  - Inactive accounts disabled after 90 days
+  - Access reviewed quarterly
+
+• **8.3 Strong Authentication**:
+  - Minimum 12-character passwords (8.3.6)
+  - Complexity requirements
+  - Password history (last 4 passwords)
+  - Account lockout after 10 failed attempts
+
+• **8.4 Multi-Factor Authentication**:
+  - MFA required for all admin access (8.4.2)
+  - MFA required for remote access
+  - MFA for all access to CDE
+
+• **8.5 MFA Systems Configured**:
+  - MFA cannot be bypassed
+  - At least two different authentication factors
+
+• **8.6 Authentication Mechanisms**:
+  - Session timeout after 15 minutes of inactivity
+  - Secure session tokens
+  - Session invalidation on logout`,
+                keywords: ['authentication', 'mfa', '2fa', 'password', 'identity']
+            },
+            {
+                title: 'Requirement 9: Physical Access',
+                icon: Building,
+                description: 'Restrict physical access to cardholder data.',
+                content: `**PCI DSS 4.0.1 Requirement 9**: Physical Security
+
+For cloud-hosted platforms:
+
+• **9.1 Physical Access Controls**:
+  - Data center physical security
+  - Visitor management
+  - Badge access systems
+
+• **9.2 Physical Access Managed**:
+  - Access logs maintained
+  - Video surveillance
+  - Visitor escorts required
+
+• **9.3 Physical Access Authorized**:
+  - Access authorization process
+  - Access reviews
+
+• **9.4 Media Physically Secured**:
+  - Media storage secure
+  - Media disposal procedures
+  - Encryption of portable media
+
+• **9.5 Point of Interaction (POI) Devices**:
+  - Device inventory maintained
+  - Periodic inspection
+  - Tamper-evident controls`,
+                keywords: ['physical', 'data center', 'access', 'media']
+            }
+        ]
+    },
+    {
+        category: 'Monitor and Test Networks',
+        icon: Activity,
+        items: [
+            {
+                title: 'Requirement 10: Log and Monitor Access',
+                icon: Eye,
+                description: 'Log and monitor all access to network resources.',
+                content: `**PCI DSS 4.0.1 Requirement 10**: Logging and Monitoring
+
+This platform implements:
+
+• **10.1 Audit Trail Processes**:
+  - All access to cardholder data logged
+  - All administrative actions logged
+  - Centralized log management
+
+• **10.2 Audit Logs Implemented**:
+  - User access to cardholder data
+  - Actions by administrators
+  - Invalid access attempts
+  - Changes to audit logs
+  - Creation/deletion of system objects
+
+• **10.3 Audit Logs Protected**:
+  - Logs cannot be modified
+  - Access to logs limited
+  - Logs backed up to secure location
+
+• **10.4 Audit Logs Reviewed**:
+  - Daily log review
+  - Automated alerting on anomalies
+  - Correlation of events
+
+• **10.5 Audit Log Retention**:
+  - 1 year retention minimum
+  - 3 months immediately available
+  - Secure archive for older logs
+
+• **10.6 Time Synchronization**:
+  - NTP time synchronization
+  - Consistent timestamps across systems
+
+• **10.7 Failures Detected and Reported**:
+  - Critical security control failures detected
+  - Immediate alert on failures
+  - Response procedures documented
+
+**Platform Implementation:**
+  - Comprehensive Audit Logs page
+  - PCI-relevant event flagging
+  - 7-year retention for PCI events
+  - Real-time alerting for critical events`,
+                keywords: ['logging', 'monitoring', 'audit', 'siem', 'alerts']
+            },
+            {
+                title: 'Requirement 11: Test Security Regularly',
+                icon: CheckSquare,
+                description: 'Test security of systems and networks regularly.',
+                content: `**PCI DSS 4.0.1 Requirement 11**: Security Testing
+
+This platform implements:
+
+• **11.1 Wireless Access Points Identified**:
+  - Quarterly wireless scans
+  - Rogue AP detection
+
+• **11.2 Vulnerabilities Identified and Addressed**:
+  - Internal vulnerability scans quarterly
+  - External ASV scans quarterly
+  - Scans after significant changes
+
+• **11.3 External and Internal Penetration Testing**:
+  - Annual penetration testing
+  - After significant infrastructure changes
+  - Network and application layer testing
+
+• **11.4 Intrusion Detection/Prevention**:
+  - IDS/IPS at network perimeter
+  - Alerts on suspicious activity
+  - Regular signature updates
+
+• **11.5 Network Intrusions Detected**:
+  - File integrity monitoring (FIM)
+  - Critical file monitoring
+  - Configuration change detection
+
+• **11.6 Unauthorized Changes Detected**:
+  - Change detection mechanisms
+  - Weekly comparisons
+  - Alert on unauthorized changes`,
+                keywords: ['testing', 'penetration', 'vulnerability', 'scanning', 'ids']
+            }
+        ]
+    },
+    {
+        category: 'Maintain an Information Security Policy',
+        icon: FileCheck,
+        items: [
+            {
+                title: 'Requirement 12: Information Security Policy',
+                icon: FileText,
+                description: 'Support security with organizational policies.',
+                content: `**PCI DSS 4.0.1 Requirement 12**: Security Policies
+
+This platform supports:
+
+• **12.1 Information Security Policy**:
+  - Comprehensive security policy
+  - Annual review and update
+  - Executive approval
+
+• **12.2 Acceptable Use Policies**:
+  - Documented acceptable use
+  - Employee acknowledgment
+  - Regular training
+
+• **12.3 Risks Formally Identified**:
+  - Annual risk assessment
+  - Risk treatment plans
+  - Targeted risk analysis for new technologies
+
+• **12.4 PCI DSS Responsibilities**:
+  - Roles and responsibilities defined
+  - Quarterly reviews of compliance
+
+• **12.5 PCI DSS Scope Documented**:
+  - Annual scope validation
+  - Scope documented with diagram
+  - All in-scope systems identified
+
+• **12.6 Security Awareness Program**:
+  - Security awareness training
+  - Annual training for all personnel
+  - Phishing awareness
+
+• **12.7 Personnel Screened**:
+  - Background checks for CDE access
+  - Pre-employment screening
+
+• **12.8 Third-Party Service Providers**:
+  - TPSP list maintained
+  - Due diligence before engagement
+  - Written agreements
+  - Monitor TPSP PCI compliance
+
+• **12.9 TPSPs Support Customer Compliance**:
+  - Responsibilities clearly defined
+  - Compliance attestations obtained
+
+• **12.10 Incident Response Plan**:
+  - Documented incident response plan
+  - Annual testing
+  - 24/7 monitoring and response
+  - Containment and eradication procedures`,
+                keywords: ['policy', 'security', 'training', 'incident', 'tpsp']
+            }
+        ]
+    }
+];
+
+// ISO Standards Knowledge Base
+const isoContent = [
+    {
+        category: 'ISO/IEC 27001:2022',
+        icon: ShieldCheck,
+        items: [
+            {
+                title: 'Information Security Management System',
+                icon: Shield,
+                description: 'ISO 27001 ISMS framework overview.',
+                content: `**ISO/IEC 27001:2022**: Information Security Management
+
+This platform aligns with ISO 27001 requirements:
+
+**Context of the Organization (Clause 4)**:
+• Understanding the organization and its context
+• Interested parties' needs and expectations
+• ISMS scope definition
+• ISMS processes established
+
+**Leadership (Clause 5)**:
+• Management commitment demonstrated
+• Information security policy established
+• Roles, responsibilities, and authorities assigned
+
+**Planning (Clause 6)**:
+• Risk assessment process defined
+• Risk treatment applied
+• Information security objectives set
+• Changes planned and controlled
+
+**Support (Clause 7)**:
+• Resources provided
+• Competence ensured
+• Awareness program implemented
+• Communication processes defined
+• Documented information controlled
+
+**Operation (Clause 8)**:
+• Operational planning and control
+• Information security risk assessment
+• Risk treatment plan implementation
+
+**Performance Evaluation (Clause 9)**:
+• Monitoring, measurement, analysis, evaluation
+• Internal audits conducted
+• Management reviews performed
+
+**Improvement (Clause 10)**:
+• Nonconformities addressed
+• Continual improvement pursued`,
+                keywords: ['iso27001', 'isms', 'security', 'management', 'framework']
+            },
+            {
+                title: 'Annex A Controls',
+                icon: ClipboardCheck,
+                description: 'ISO 27001 Annex A security controls.',
+                content: `**ISO 27001:2022 Annex A Controls** (93 Controls in 4 Themes)
+
+**Organizational Controls (37 controls)**:
+• 5.1 - Policies for information security
+• 5.2 - Information security roles and responsibilities
+• 5.3 - Segregation of duties
+• 5.7 - Threat intelligence
+• 5.15 - Access control
+• 5.23 - Information security for cloud services
+• 5.29 - Information security during disruption
+• 5.30 - ICT readiness for business continuity
+
+**People Controls (8 controls)**:
+• 6.1 - Screening
+• 6.2 - Terms and conditions of employment
+• 6.3 - Information security awareness, education and training
+• 6.5 - Responsibilities after termination
+
+**Physical Controls (14 controls)**:
+• 7.1 - Physical security perimeters
+• 7.4 - Physical security monitoring
+• 7.8 - Equipment siting and protection
+• 7.10 - Storage media
+
+**Technological Controls (34 controls)**:
+• 8.1 - User end point devices
+• 8.5 - Secure authentication
+• 8.9 - Configuration management
+• 8.12 - Data leakage prevention
+• 8.15 - Logging
+• 8.16 - Monitoring activities
+• 8.24 - Use of cryptography
+• 8.28 - Secure coding`,
+                keywords: ['controls', 'annex a', 'security controls', 'implementation']
+            }
+        ]
+    },
+    {
+        category: 'ISO/IEC 20000-1:2018',
+        icon: Activity,
+        items: [
+            {
+                title: 'IT Service Management System',
+                icon: Server,
+                description: 'ISO 20000 SMS for IT services.',
+                content: `**ISO/IEC 20000-1:2018**: Service Management System
+
+This platform implements service management practices:
+
+**Service Portfolio (Clause 8.2)**:
+• Service catalog maintained
+• Service descriptions documented
+• Service level agreements (SLAs) defined
+
+**Relationship and Agreement (Clause 8.3)**:
+• Business relationship management
+• Supplier management
+• Service level management
+
+**Supply and Demand (Clause 8.4)**:
+• Capacity management
+• Demand management
+• Service continuity management
+
+**Service Design, Build and Transition (Clause 8.5)**:
+• Change management
+• Service design and transition
+• Release and deployment management
+
+**Resolution and Fulfillment (Clause 8.6)**:
+• Incident management
+• Service request management
+• Problem management
+
+**Service Assurance (Clause 8.7)**:
+• Service availability management
+• Service continuity management
+• Information security management`,
+                keywords: ['iso20000', 'itil', 'service management', 'itsm']
+            },
+            {
+                title: 'Workflow Management',
+                icon: Zap,
+                description: 'ISO 20000 workflow and process management.',
+                content: `**Workflow Management Best Practices**
+
+This platform implements ISO 20000-aligned workflows:
+
+**Change Management**:
+• All changes logged and tracked
+• Risk assessment for each change
+• CAB (Change Advisory Board) review for major changes
+• Post-implementation review
+
+**Incident Management**:
+• Incident logging and categorization
+• Priority assignment (P1-P4)
+• Escalation procedures
+• Resolution tracking
+• Root cause analysis
+
+**Problem Management**:
+• Problem identification from recurring incidents
+• Known error database
+• Workaround documentation
+• Permanent fix implementation
+
+**Release Management**:
+• Release planning and scheduling
+• Testing requirements
+• Deployment procedures
+• Rollback procedures
+
+**Configuration Management**:
+• Configuration item (CI) inventory
+• Relationship mapping
+• Baseline management
+• Configuration audits
+
+**Knowledge Management**:
+• Knowledge base articles
+• Self-service portal
+• FAQ documentation
+• Training materials`,
+                keywords: ['workflow', 'change', 'incident', 'problem', 'release']
+            }
+        ]
+    },
+    {
+        category: 'Industry Standards',
+        icon: Award,
+        items: [
+            {
+                title: 'Card Scheme Requirements',
+                icon: CreditCard,
+                description: 'Visa, Mastercard, and other scheme requirements.',
+                content: `**Card Scheme Compliance Requirements**
+
+**Visa Core Rules**:
+• Registration with Visa as a payment facilitator
+• Annual PCI DSS validation
+• Chargeback thresholds: 
+  - Standard: 1.00% of transactions
+  - Excessive: 1.50% of transactions
+• Fraud thresholds monitored
+• VFMP (Visa Fraud Monitoring Program) compliance
+
+**Mastercard Standards**:
+• Registration as a Payment Facilitator or SDP
+• Quarterly network access device compliance
+• Chargeback thresholds:
+  - Standard: 1.00% of transactions
+  - Excessive: 1.50% of transactions
+• ECP (Excessive Chargeback Program) monitoring
+• MATCH list compliance
+
+**3D Secure 2.0**:
+• EMV 3DS protocol support
+• SCA (Strong Customer Authentication) for EU
+• Challenge and frictionless flows
+• Device fingerprinting
+• Risk-based authentication
+
+**Network Tokenization**:
+• Visa Token Service (VTS)
+• Mastercard Digital Enablement Service (MDES)
+• Token lifecycle management
+• Token requestor registration`,
+                keywords: ['visa', 'mastercard', '3ds', 'tokens', 'scheme']
+            },
+            {
+                title: 'Regional Regulations',
+                icon: Globe,
+                description: 'Regional payment regulations and compliance.',
+                content: `**Regional Regulatory Compliance**
+
+**PSD2 / PSD3 (Europe)**:
+• Strong Customer Authentication (SCA)
+• Open Banking API compliance
+• TPP (Third Party Provider) registration
+• Transaction monitoring requirements
+• Consumer protection rules
+
+**GDPR (Europe)**:
+• Data subject rights
+• Consent management
+• Data Processing Agreements
+• Privacy by design
+• 72-hour breach notification
+
+**UK Payment Services Regulations**:
+• FCA authorization/registration
+• Safeguarding requirements
+• Consumer duty obligations
+
+**US Regulations**:
+• State money transmitter licenses
+• FinCEN registration (MSB)
+• OFAC sanctions compliance
+• Reg E consumer protections
+• Nacha Operating Rules
+
+**APAC Regulations**:
+• MAS (Singapore) Payment Services Act
+• Hong Kong SVFAS
+• Australia AFSL/APRA
+• Japan Payment Services Act
+
+**AML/CFT Requirements**:
+• Customer due diligence (CDD)
+• Enhanced due diligence (EDD)
+• Suspicious activity reporting (SAR)
+• Transaction monitoring
+• Sanctions screening`,
+                keywords: ['psd2', 'gdpr', 'aml', 'regulations', 'compliance']
+            }
+        ]
+    },
+    {
+        category: 'Industry Knowledge',
+        icon: GraduationCap,
+        items: [
+            {
+                title: 'Payment Processing Basics',
+                icon: CreditCard,
+                description: 'How card payments work.',
+                content: `**Card Payment Processing Flow**
+
+**Authorization Flow**:
+1. **Cardholder** presents card at POS or online
+2. **Merchant** sends authorization request
+3. **Acquirer** receives and forwards to network
+4. **Card Network** (Visa/MC) routes to issuer
+5. **Issuer** approves/declines based on:
+   - Available credit/funds
+   - Fraud rules
+   - Card status
+6. **Response** travels back through chain
+7. **Merchant** receives approval code
+
+**Clearing and Settlement**:
+1. **Batch Close**: Merchant submits daily batch
+2. **Clearing**: Network calculates interchange
+3. **Settlement**: Funds transferred between banks
+4. **Funding**: Acquirer pays merchant (T+1, T+2)
+
+**Key Participants**:
+• **Cardholder**: Consumer using the card
+• **Merchant**: Business accepting payment
+• **Acquirer**: Merchant's bank
+• **Issuer**: Card-issuing bank
+• **Card Network**: Visa, Mastercard, etc.
+• **PSP/Payment Facilitator**: Platform like this one
+
+**Fee Types**:
+• **Interchange**: Paid to issuer (~1.5-2.5%)
+• **Scheme Fees**: Paid to card network (~0.1-0.3%)
+• **Acquirer Markup**: Processing margin
+• **MDR**: Total merchant discount rate`,
+                keywords: ['processing', 'authorization', 'settlement', 'interchange']
+            },
+            {
+                title: 'Chargeback Management',
+                icon: AlertTriangle,
+                description: 'Understanding and managing chargebacks.',
+                content: `**Chargeback Process and Management**
+
+**Chargeback Lifecycle**:
+1. **Retrieval/RDR**: Information request (optional)
+2. **First Chargeback**: Issuer files dispute
+3. **Representment**: Merchant contests with evidence
+4. **Pre-Arbitration**: Second-level dispute
+5. **Arbitration**: Network makes final decision
+
+**Common Reason Codes**:
+
+**Visa**:
+• 10.4 - Fraud - Card Absent Environment
+• 11.1 - Card Recovery Bulletin
+• 12.6 - Duplicate Processing
+• 13.1 - Merchandise/Services Not Received
+• 13.7 - Cancelled Merchandise/Services
+
+**Mastercard**:
+• 4837 - No Cardholder Authorization
+• 4853 - Goods/Services Not Provided
+• 4863 - Cardholder Doesn't Recognize
+
+**Evidence to Fight Chargebacks**:
+• Proof of delivery (signed receipt, tracking)
+• Customer communication records
+• IP address and device fingerprint
+• AVS/CVV verification results
+• 3DS authentication proof
+• Terms and conditions acceptance
+
+**Prevention Strategies**:
+• Clear billing descriptors
+• Excellent customer service
+• Easy refund process
+• Fraud screening
+• Address verification
+• 3D Secure implementation`,
+                keywords: ['chargebacks', 'disputes', 'reason codes', 'evidence']
+            },
+            {
+                title: 'Risk and Fraud',
+                icon: Shield,
+                description: 'Fraud types and prevention strategies.',
+                content: `**Fraud Types and Prevention**
+
+**Card-Not-Present (CNP) Fraud**:
+• Stolen card credentials used online
+• Account takeover attacks
+• Phishing and social engineering
+
+**Card-Present Fraud**:
+• Counterfeit cards (skimming)
+• Lost/stolen physical cards
+• Card-present fallback fraud
+
+**Friendly Fraud**:
+• Customer disputes legitimate purchase
+• Buyer's remorse
+• Family fraud
+
+**First-Party Fraud**:
+• Cardholder's own fraud
+• Never intends to pay
+• Identity manipulation
+
+**Prevention Tools**:
+
+**Velocity Checks**:
+• Transaction frequency limits
+• Amount thresholds
+• Card usage patterns
+
+**Device Fingerprinting**:
+• Browser characteristics
+• Device ID tracking
+• Behavioral analysis
+
+**Address Verification (AVS)**:
+• Billing address matching
+• Postal code verification
+
+**Card Security Code (CVV/CVC)**:
+• 3-4 digit code verification
+• Not stored (PCI requirement)
+
+**3D Secure 2.0**:
+• Risk-based authentication
+• Liability shift to issuer
+• Reduced fraud rates
+
+**Machine Learning**:
+• Real-time scoring
+• Pattern recognition
+• Adaptive rules`,
+                keywords: ['fraud', 'risk', 'prevention', 'avs', 'cvv', '3ds']
+            },
+            {
+                title: 'Industry Glossary',
+                icon: BookOpen,
+                description: 'Common payment industry terms.',
+                content: `**Payment Industry Glossary**
+
+**A-D**:
+• **ACH**: Automated Clearing House
+• **Acquirer**: Bank that processes card payments for merchants
+• **AVS**: Address Verification Service
+• **BIN**: Bank Identification Number (first 6-8 digits)
+• **Chargeback**: Transaction reversal by issuer
+• **CNP**: Card Not Present transaction
+• **CVV/CVC**: Card Verification Value/Code
+
+**E-I**:
+• **EMV**: Europay, Mastercard, Visa (chip cards)
+• **FBO**: For Benefit Of (account structure)
+• **Interchange**: Fee paid to card issuer
+• **ISO**: Independent Sales Organization
+• **Issuer**: Bank that issues cards to consumers
+
+**M-P**:
+• **MCC**: Merchant Category Code
+• **MDR**: Merchant Discount Rate
+• **MID**: Merchant Identification Number
+• **P2PE**: Point-to-Point Encryption
+• **PAN**: Primary Account Number
+• **PayFac**: Payment Facilitator
+• **PCI DSS**: Payment Card Industry Data Security Standard
+• **PSP**: Payment Service Provider
+
+**R-T**:
+• **RDR**: Rapid Dispute Resolution
+• **Representment**: Merchant's dispute response
+• **SCA**: Strong Customer Authentication
+• **Settlement**: Movement of funds between parties
+• **TID**: Terminal Identification Number
+• **Tokenization**: Replacing PAN with token
+
+**V-Z**:
+• **VFMP**: Visa Fraud Monitoring Program
+• **3DS**: 3D Secure (authentication protocol)
+• **4-party model**: Cardholder, Merchant, Issuer, Acquirer`,
+                keywords: ['glossary', 'terms', 'definitions', 'acronyms']
             }
         ]
     }
@@ -588,8 +1572,9 @@ const helpSections = [
 export default function HelpPanel({ open, onOpenChange }) {
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedItem, setSelectedItem] = useState(null);
+    const [activeTab, setActiveTab] = useState('platform');
 
-    const filteredSections = helpSections.map(section => ({
+    const filterItems = (sections) => sections.map(section => ({
         ...section,
         items: section.items.filter(item => 
             item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -598,128 +1583,169 @@ export default function HelpPanel({ open, onOpenChange }) {
         )
     })).filter(section => section.items.length > 0);
 
+    const filteredPlatformSections = filterItems(helpSections);
+    const filteredPciSections = filterItems(pciDssContent);
+    const filteredIsoSections = filterItems(isoContent);
+
+    const currentSections = activeTab === 'platform' ? filteredPlatformSections : 
+                           activeTab === 'pci' ? filteredPciSections : filteredIsoSections;
+
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-4xl max-h-[85vh]">
+            <DialogContent className="max-w-5xl max-h-[90vh]">
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
                         <BookOpen className="h-5 w-5 text-blue-600" />
-                        Help Center
+                        Help Center & Knowledge Base
                     </DialogTitle>
                 </DialogHeader>
 
-                <div className="flex gap-4 h-[60vh]">
-                    {/* Left Panel - Navigation */}
-                    <div className="w-1/3 border-r pr-4">
-                        <div className="relative mb-4">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                            <Input
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                placeholder="Search help topics..."
-                                className="pl-10"
-                            />
+                <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-2">
+                    <TabsList className="grid w-full grid-cols-3">
+                        <TabsTrigger value="platform" className="gap-2">
+                            <LayoutDashboard className="h-4 w-4" />
+                            Platform Guide
+                        </TabsTrigger>
+                        <TabsTrigger value="pci" className="gap-2">
+                            <Shield className="h-4 w-4" />
+                            PCI DSS 4.0.1
+                        </TabsTrigger>
+                        <TabsTrigger value="iso" className="gap-2">
+                            <Award className="h-4 w-4" />
+                            ISO & Industry
+                        </TabsTrigger>
+                    </TabsList>
+
+                    <div className="flex gap-4 h-[60vh] mt-4">
+                        {/* Left Panel - Navigation */}
+                        <div className="w-1/3 border-r pr-4">
+                            <div className="relative mb-4">
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                                <Input
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    placeholder="Search help topics..."
+                                    className="pl-10"
+                                />
+                            </div>
+
+                            <ScrollArea className="h-[calc(100%-60px)]">
+                                <div className="space-y-4">
+                                    {currentSections.map((section, idx) => {
+                                        const SectionIcon = section.icon;
+                                        return (
+                                            <div key={idx}>
+                                                <div className="flex items-center gap-2 mb-2 text-sm font-semibold text-slate-600">
+                                                    <SectionIcon className="h-4 w-4" />
+                                                    {section.category}
+                                                </div>
+                                                <div className="space-y-1 ml-6">
+                                                    {section.items.map((item, itemIdx) => {
+                                                        const ItemIcon = item.icon;
+                                                        const isSelected = selectedItem?.title === item.title;
+                                                        return (
+                                                            <button
+                                                                key={itemIdx}
+                                                                onClick={() => setSelectedItem(item)}
+                                                                className={cn(
+                                                                    "w-full text-left p-2 rounded-lg flex items-center gap-2 text-sm transition-colors",
+                                                                    isSelected 
+                                                                        ? "bg-blue-100 text-blue-700" 
+                                                                        : "hover:bg-slate-100 text-slate-700"
+                                                                )}
+                                                            >
+                                                                <ItemIcon className="h-4 w-4 flex-shrink-0" />
+                                                                <span className="truncate">{item.title}</span>
+                                                                <ChevronRight className="h-4 w-4 ml-auto flex-shrink-0 opacity-50" />
+                                                            </button>
+                                                        );
+                                                    })}
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </ScrollArea>
                         </div>
 
-                        <ScrollArea className="h-[calc(100%-60px)]">
-                            <div className="space-y-4">
-                                {filteredSections.map((section, idx) => {
-                                    const SectionIcon = section.icon;
-                                    return (
-                                        <div key={idx}>
-                                            <div className="flex items-center gap-2 mb-2 text-sm font-semibold text-slate-600">
-                                                <SectionIcon className="h-4 w-4" />
-                                                {section.category}
+                        {/* Right Panel - Content */}
+                        <div className="w-2/3 pl-4">
+                            <ScrollArea className="h-full">
+                                {selectedItem ? (
+                                    <div>
+                                        <div className="flex items-center gap-3 mb-4">
+                                            {React.createElement(selectedItem.icon, { className: "h-6 w-6 text-blue-600" })}
+                                            <div>
+                                                <h3 className="text-xl font-semibold text-slate-900">{selectedItem.title}</h3>
+                                                <p className="text-sm text-slate-500">{selectedItem.description}</p>
                                             </div>
-                                            <div className="space-y-1 ml-6">
-                                                {section.items.map((item, itemIdx) => {
-                                                    const ItemIcon = item.icon;
-                                                    const isSelected = selectedItem?.title === item.title;
+                                        </div>
+
+                                        <div className="prose prose-sm max-w-none">
+                                            {selectedItem.content.split('\n').map((line, i) => {
+                                                if (line.startsWith('**') && line.endsWith('**')) {
+                                                    return <h4 key={i} className="font-bold text-slate-900 mt-4 mb-2 text-base">{line.replace(/\*\*/g, '')}</h4>;
+                                                }
+                                                if (line.match(/^\*\*[^*]+\*\*:/)) {
+                                                    const [title, ...rest] = line.split('**:');
+                                                    const cleanTitle = title.replace(/\*\*/g, '');
                                                     return (
-                                                        <button
-                                                            key={itemIdx}
-                                                            onClick={() => setSelectedItem(item)}
-                                                            className={cn(
-                                                                "w-full text-left p-2 rounded-lg flex items-center gap-2 text-sm transition-colors",
-                                                                isSelected 
-                                                                    ? "bg-blue-100 text-blue-700" 
-                                                                    : "hover:bg-slate-100 text-slate-700"
-                                                            )}
-                                                        >
-                                                            <ItemIcon className="h-4 w-4 flex-shrink-0" />
-                                                            <span className="truncate">{item.title}</span>
-                                                            <ChevronRight className="h-4 w-4 ml-auto flex-shrink-0 opacity-50" />
-                                                        </button>
+                                                        <p key={i} className="my-1">
+                                                            <span className="font-semibold text-slate-800">{cleanTitle}:</span>
+                                                            <span className="text-slate-600">{rest.join(':')}</span>
+                                                        </p>
                                                     );
-                                                })}
+                                                }
+                                                if (line.startsWith('• **')) {
+                                                    const match = line.match(/^• \*\*([^*]+)\*\*:?\s*(.*)/);
+                                                    if (match) {
+                                                        return (
+                                                            <p key={i} className="ml-4 my-1">
+                                                                <span className="font-medium text-slate-800">• {match[1]}</span>
+                                                                {match[2] && <span className="text-slate-600">: {match[2]}</span>}
+                                                            </p>
+                                                        );
+                                                    }
+                                                }
+                                                if (line.startsWith('• ') || line.startsWith('- ')) {
+                                                    return <p key={i} className="ml-4 my-1 text-slate-600">{line}</p>;
+                                                }
+                                                if (line.trim().match(/^\d+\./)) {
+                                                    return <p key={i} className="ml-4 my-1 text-slate-600">{line}</p>;
+                                                }
+                                                if (line.trim()) {
+                                                    return <p key={i} className="my-2 text-slate-700">{line}</p>;
+                                                }
+                                                return <br key={i} />;
+                                            })}
+                                        </div>
+
+                                        <div className="mt-6 pt-4 border-t flex flex-wrap gap-2">
+                                            {selectedItem.keywords.map((keyword, i) => (
+                                                <Badge key={i} variant="secondary" className="text-xs">
+                                                    {keyword}
+                                                </Badge>
+                                            ))}
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="h-full flex items-center justify-center text-slate-500">
+                                        <div className="text-center">
+                                            <BookOpen className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                                            <p>Select a topic to view help content</p>
+                                            <p className="text-sm mt-1">Or use search to find what you need</p>
+                                            <div className="mt-4 flex flex-wrap justify-center gap-2">
+                                                <Badge variant="outline">PCI DSS 4.0.1</Badge>
+                                                <Badge variant="outline">ISO 27001:2022</Badge>
+                                                <Badge variant="outline">ISO 20000-1:2018</Badge>
                                             </div>
                                         </div>
-                                    );
-                                })}
-                            </div>
-                        </ScrollArea>
+                                    </div>
+                                )}
+                            </ScrollArea>
+                        </div>
                     </div>
-
-                    {/* Right Panel - Content */}
-                    <div className="w-2/3 pl-4">
-                        <ScrollArea className="h-full">
-                            {selectedItem ? (
-                                <div>
-                                    <div className="flex items-center gap-3 mb-4">
-                                        {React.createElement(selectedItem.icon, { className: "h-6 w-6 text-blue-600" })}
-                                        <div>
-                                            <h3 className="text-xl font-semibold text-slate-900">{selectedItem.title}</h3>
-                                            <p className="text-sm text-slate-500">{selectedItem.description}</p>
-                                        </div>
-                                    </div>
-
-                                    <div className="prose prose-sm max-w-none">
-                                        {selectedItem.content.split('\n').map((line, i) => {
-                                            if (line.startsWith('**') && line.endsWith('**')) {
-                                                return <h4 key={i} className="font-semibold text-slate-900 mt-4 mb-2">{line.replace(/\*\*/g, '')}</h4>;
-                                            }
-                                            if (line.startsWith('• **')) {
-                                                const [title, ...rest] = line.substring(4).split('**:');
-                                                return (
-                                                    <p key={i} className="ml-4 my-1">
-                                                        <span className="font-medium text-slate-800">• {title}:</span>
-                                                        <span className="text-slate-600">{rest.join('')}</span>
-                                                    </p>
-                                                );
-                                            }
-                                            if (line.startsWith('• ') || line.startsWith('- ')) {
-                                                return <p key={i} className="ml-4 my-1 text-slate-600">{line}</p>;
-                                            }
-                                            if (line.trim().match(/^\d+\./)) {
-                                                return <p key={i} className="ml-4 my-1 text-slate-600">{line}</p>;
-                                            }
-                                            if (line.trim()) {
-                                                return <p key={i} className="my-2 text-slate-700">{line}</p>;
-                                            }
-                                            return <br key={i} />;
-                                        })}
-                                    </div>
-
-                                    <div className="mt-6 pt-4 border-t flex flex-wrap gap-2">
-                                        {selectedItem.keywords.map((keyword, i) => (
-                                            <Badge key={i} variant="secondary" className="text-xs">
-                                                {keyword}
-                                            </Badge>
-                                        ))}
-                                    </div>
-                                </div>
-                            ) : (
-                                <div className="h-full flex items-center justify-center text-slate-500">
-                                    <div className="text-center">
-                                        <BookOpen className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                                        <p>Select a topic to view help content</p>
-                                        <p className="text-sm mt-1">Or use search to find what you need</p>
-                                    </div>
-                                </div>
-                            )}
-                        </ScrollArea>
-                    </div>
-                </div>
+                </Tabs>
             </DialogContent>
         </Dialog>
     );
