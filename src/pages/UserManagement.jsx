@@ -86,7 +86,7 @@ export default function UserManagement() {
     const [showPermissionsDialog, setShowPermissionsDialog] = useState(false);
     const [confirmRoleChange, setConfirmRoleChange] = useState(null);
     const [showAddUserDialog, setShowAddUserDialog] = useState(false);
-    const [newUser, setNewUser] = useState({ email: '', full_name: '', app_role: 'viewer', department: '' });
+    const [newUser, setNewUser] = useState({ email: '', full_name: '', app_role: 'viewer', department: '', password: '', confirmPassword: '' });
     const [editingPermissions, setEditingPermissions] = useState(false);
     const [permissionMatrix, setPermissionMatrix] = useState({...PERMISSIONS});
 
@@ -117,7 +117,9 @@ export default function UserManagement() {
                 full_name: userData.full_name,
                 role: userData.app_role,
                 department: userData.department,
-                status: 'pending'
+                status: 'active',
+                password_hash: userData.password, // In production, hash this server-side
+                must_change_password: false
             });
             await AuditLogger.logUserCreated(user, currentUser);
             return user;
@@ -125,7 +127,7 @@ export default function UserManagement() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['all-users'] });
             setShowAddUserDialog(false);
-            setNewUser({ email: '', full_name: '', app_role: 'viewer', department: '' });
+            setNewUser({ email: '', full_name: '', app_role: 'viewer', department: '', password: '', confirmPassword: '' });
             toast.success('User created successfully');
         },
         onError: (error) => {
@@ -165,6 +167,14 @@ export default function UserManagement() {
     const handleInviteUser = () => {
         if (!newUser.email || !newUser.full_name) {
             toast.error('Please fill in all required fields');
+            return;
+        }
+        if (!newUser.password || newUser.password.length < 8) {
+            toast.error('Password must be at least 8 characters');
+            return;
+        }
+        if (newUser.password !== newUser.confirmPassword) {
+            toast.error('Passwords do not match');
             return;
         }
         inviteUserMutation.mutate(newUser);
@@ -667,6 +677,26 @@ export default function UserManagement() {
                                 value={newUser.department}
                                 onChange={(e) => setNewUser({ ...newUser, department: e.target.value })}
                                 placeholder="e.g., Operations, Finance"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="password">Password *</Label>
+                            <Input
+                                id="password"
+                                type="password"
+                                value={newUser.password}
+                                onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
+                                placeholder="Minimum 8 characters"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="confirmPassword">Confirm Password *</Label>
+                            <Input
+                                id="confirmPassword"
+                                type="password"
+                                value={newUser.confirmPassword}
+                                onChange={(e) => setNewUser({ ...newUser, confirmPassword: e.target.value })}
+                                placeholder="Re-enter password"
                             />
                         </div>
                         <div className="space-y-2">
