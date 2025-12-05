@@ -59,8 +59,8 @@ export default function TopHeader({ onToggleSidebar, collapsed }) {
         loadTheme();
     }, []);
 
-    const primaryColor = themeSettings?.primary_color || '#003EFF';
-    const secondaryColor = themeSettings?.secondary_color || '#54F0E4';
+    const primaryColor = themeSettings?.primary_color || '#3b82f6';
+    const secondaryColor = themeSettings?.secondary_color || '#06b6d4';
 
     const userRole = user?.app_role || 'viewer';
     const roleConfig = ROLE_CONFIG[userRole] || ROLE_CONFIG.viewer;

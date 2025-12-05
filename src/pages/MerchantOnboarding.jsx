@@ -385,7 +385,7 @@ export default function MerchantOnboarding() {
                                     (currentStep === 6 && (!formData.aml.aml_status || formData.aml.aml_status === 'not_started'));
 
     return (
-        <div className="min-h-screen bg-[#F5F8FF]">
+        <div className="min-h-screen bg-slate-50">
             <Sidebar collapsed={sidebarCollapsed} currentPage="Merchants" />
             
             <div className={cn("transition-all duration-300", "ml-64")}>
@@ -395,12 +395,12 @@ export default function MerchantOnboarding() {
                     {/* Header */}
                     <div className="mb-6">
                         <div className="flex items-center gap-3 mb-2">
-                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#003EFF] to-[#54F0E4] flex items-center justify-center">
+                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
                                 <CreditCard className="h-5 w-5 text-white" />
                             </div>
                             <div>
-                                <h1 className="text-2xl font-bold text-[#000044]">Merchant Onboarding</h1>
-                                <p className="text-[#000044]/60">Complete the application with automated KYC/AML verification</p>
+                                <h1 className="text-2xl font-bold text-slate-900">Merchant Onboarding</h1>
+                                <p className="text-slate-500">Complete the application with automated KYC/AML verification</p>
                             </div>
                         </div>
                     </div>
@@ -449,7 +449,7 @@ export default function MerchantOnboarding() {
                             {currentStep < TOTAL_STEPS ? (
                                 <Button 
                                     onClick={handleNext} 
-                                    className="gap-2 bg-[#003EFF] hover:bg-[#0035d4]"
+                                    className="gap-2 bg-blue-600 hover:bg-blue-700"
                                     disabled={!canProceed() && (currentStep === 5 || currentStep === 6)}
                                 >
                                     Continue
@@ -458,7 +458,7 @@ export default function MerchantOnboarding() {
                             ) : (
                                 <Button 
                                     onClick={handleSubmit} 
-                                    className="gap-2 bg-[#003EFF] hover:bg-[#0035d4]"
+                                    className="gap-2 bg-emerald-600 hover:bg-emerald-700"
                                     disabled={isSubmitting || createMerchantMutation.isPending}
                                 >
                                     {isSubmitting || createMerchantMutation.isPending ? (
