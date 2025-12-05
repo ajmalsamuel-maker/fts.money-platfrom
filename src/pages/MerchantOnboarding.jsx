@@ -7,6 +7,7 @@ import Sidebar from '@/components/dashboard/Sidebar';
 import TopHeader from '@/components/dashboard/TopHeader';
 import OnboardingProgress from '@/components/onboarding/OnboardingProgress';
 import BusinessDetailsStep from '@/components/onboarding/BusinessDetailsStep';
+import CompanyStructureStep from '@/components/onboarding/CompanyStructureStep';
 import LEIVerificationStep from '@/components/onboarding/LEIVerificationStep';
 import ContactInfoStep from '@/components/onboarding/ContactInfoStep';
 import DocumentUploadStep from '@/components/onboarding/DocumentUploadStep';
@@ -29,7 +30,7 @@ import {
     AlertTriangle
 } from 'lucide-react';
 
-const TOTAL_STEPS = 9;
+const TOTAL_STEPS = 10;
 
 export default function MerchantOnboarding() {
     const navigate = useNavigate();
@@ -42,6 +43,7 @@ export default function MerchantOnboarding() {
     
     const [formData, setFormData] = useState({
         business: {},
+        structure: {},
         lei: {},
         contacts: {},
         documents: {},
@@ -171,13 +173,32 @@ export default function MerchantOnboarding() {
         }
         
         if (step === 2) {
+            // Company Structure validation based on business type
+            const businessType = formData.business?.business_type;
+            const structure = formData.structure;
+            
+            if (businessType === 'sole_proprietorship') {
+                if (!structure.owner_full_name) newErrors.owner_full_name = 'Owner name is required';
+                if (!structure.owner_dob) newErrors.owner_dob = 'Date of birth is required';
+            } else if (businessType === 'partnership') {
+                if (!structure.partnership_type) newErrors.partnership_type = 'Partnership type is required';
+                if (!structure.managing_partner) newErrors.managing_partner = 'Managing partner is required';
+            } else if (businessType === 'llc') {
+                if (!structure.llc_type) newErrors.llc_type = 'LLC type is required';
+                if (!structure.managing_member) newErrors.managing_member = 'Managing member is required';
+            } else if (businessType === 'corporation') {
+                if (!structure.corporation_type) newErrors.corporation_type = 'Corporation type is required';
+            }
+        }
+
+        if (step === 3) {
             // LEI is optional but if provided must be valid
             if (formData.lei.lei && formData.lei.lei.length !== 20) {
                 newErrors.lei = 'LEI must be exactly 20 characters';
             }
         }
         
-        if (step === 3) {
+        if (step === 4) {
             const contacts = formData.contacts.contacts || [];
             if (contacts.length === 0) {
                 newErrors.contacts = [{ full_name: 'At least one contact is required' }];
@@ -206,7 +227,7 @@ export default function MerchantOnboarding() {
             }
         }
         
-        if (step === 4) {
+        if (step === 5) {
             // Document upload validation
             const docs = formData.documents?.documents || {};
             const requiredDocs = ['certificate_incorporation', 'business_license', 'director_id', 'proof_of_address', 'bank_statement'];
@@ -216,7 +237,7 @@ export default function MerchantOnboarding() {
             }
         }
 
-        if (step === 5) {
+        if (step === 6) {
             // KYB verification - warn if not completed
             if (!formData.kyb.kyb_status || formData.kyb.kyb_status === 'not_started') {
                 // Allow to proceed but show warning
@@ -230,7 +251,7 @@ export default function MerchantOnboarding() {
             }
         }
         
-        if (step === 7) {
+        if (step === 8) {
               const data = formData.bank;
               if (!data.account_holder_name) newErrors.account_holder_name = 'Account holder name is required';
               if (!data.bank_name) newErrors.bank_name = 'Bank name is required';
@@ -241,7 +262,7 @@ export default function MerchantOnboarding() {
               if (!data.settlement_period) newErrors.settlement_period = 'Settlement period is required';
           }
 
-          if (step === 7) {
+          if (step === 9) {
               // Pricing is optional but recommended
           }
 
@@ -282,7 +303,7 @@ export default function MerchantOnboarding() {
     };
 
     const updateStepData = (step, data) => {
-        const keys = ['', 'business', 'lei', 'contacts', 'documents', 'kyb', 'aml', 'bank', 'pricing', 'review'];
+        const keys = ['', 'business', 'structure', 'lei', 'contacts', 'documents', 'kyb', 'aml', 'bank', 'pricing', 'review'];
         setFormData(prev => ({
             ...prev,
             [keys[step]]: data
@@ -290,11 +311,11 @@ export default function MerchantOnboarding() {
     };
 
     const canProceed = () => {
-        // Check if KYB and AML are at least started for steps 5 and 6
-        if (currentStep === 5) {
+        // Check if KYB and AML are at least started for steps 6 and 7
+        if (currentStep === 6) {
             return formData.kyb.kyb_status && formData.kyb.kyb_status !== 'not_started';
         }
-        if (currentStep === 6) {
+        if (currentStep === 7) {
             return formData.aml.aml_status && formData.aml.aml_status !== 'not_started';
         }
         return true;
@@ -312,44 +333,43 @@ export default function MerchantOnboarding() {
                 );
             case 2:
                 return (
-                    <LEIVerificationStep 
-                        data={formData.lei} 
+                    <CompanyStructureStep 
+                        data={formData.structure} 
                         onChange={(data) => updateStepData(2, data)}
                         errors={errors}
-                        businessData={formData.business}
+                        businessType={formData.business?.business_type}
                     />
                 );
             case 3:
                 return (
-                    <ContactInfoStep 
-                        data={formData.contacts} 
+                    <LEIVerificationStep 
+                        data={formData.lei} 
                         onChange={(data) => updateStepData(3, data)}
                         errors={errors}
+                        businessData={formData.business}
                     />
                 );
             case 4:
                 return (
-                    <DocumentUploadStep 
-                        data={formData.documents} 
+                    <ContactInfoStep 
+                        data={formData.contacts} 
                         onChange={(data) => updateStepData(4, data)}
                         errors={errors}
-                        merchantType={formData.business?.business_type}
                     />
                 );
             case 5:
                 return (
-                    <KYBVerificationStep 
-                        data={formData.kyb} 
+                    <DocumentUploadStep 
+                        data={formData.documents} 
                         onChange={(data) => updateStepData(5, data)}
                         errors={errors}
-                        businessData={formData.business}
-                        contactData={formData.contacts}
+                        merchantType={formData.business?.business_type}
                     />
                 );
             case 6:
                 return (
-                    <AMLScreeningStep 
-                        data={formData.aml} 
+                    <KYBVerificationStep 
+                        data={formData.kyb} 
                         onChange={(data) => updateStepData(6, data)}
                         errors={errors}
                         businessData={formData.business}
@@ -357,22 +377,32 @@ export default function MerchantOnboarding() {
                     />
                 );
             case 7:
+                return (
+                    <AMLScreeningStep 
+                        data={formData.aml} 
+                        onChange={(data) => updateStepData(7, data)}
+                        errors={errors}
+                        businessData={formData.business}
+                        contactData={formData.contacts}
+                    />
+                );
+            case 8:
                   return (
                       <BankDetailsStep 
                           data={formData.bank} 
-                          onChange={(data) => updateStepData(7, data)}
-                          errors={errors}
-                      />
-                  );
-              case 8:
-                  return (
-                      <PricingStep 
-                          data={formData.pricing} 
                           onChange={(data) => updateStepData(8, data)}
                           errors={errors}
                       />
                   );
               case 9:
+                  return (
+                      <PricingStep 
+                          data={formData.pricing} 
+                          onChange={(data) => updateStepData(9, data)}
+                          errors={errors}
+                      />
+                  );
+              case 10:
                   return (
                       <ReviewSubmitStep formData={formData} />
                   );
@@ -381,8 +411,8 @@ export default function MerchantOnboarding() {
         }
     };
 
-    const showVerificationWarning = (currentStep === 5 && (!formData.kyb.kyb_status || formData.kyb.kyb_status === 'not_started')) ||
-                                    (currentStep === 6 && (!formData.aml.aml_status || formData.aml.aml_status === 'not_started'));
+    const showVerificationWarning = (currentStep === 6 && (!formData.kyb.kyb_status || formData.kyb.kyb_status === 'not_started')) ||
+                                    (currentStep === 7 && (!formData.aml.aml_status || formData.aml.aml_status === 'not_started'));
 
     return (
         <div className="min-h-screen bg-slate-50">
@@ -450,7 +480,7 @@ export default function MerchantOnboarding() {
                                 <Button 
                                     onClick={handleNext} 
                                     className="gap-2 bg-blue-600 hover:bg-blue-700"
-                                    disabled={!canProceed() && (currentStep === 5 || currentStep === 6)}
+                                    disabled={!canProceed() && (currentStep === 6 || currentStep === 7)}
                                 >
                                     Continue
                                     <ChevronRight className="h-4 w-4" />
