@@ -159,13 +159,8 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
         loadPspSettings();
     }, []);
 
-    // Set active group based on current page
-    useEffect(() => {
-        const group = menuItems.find(g => g.items.some(item => item.path === currentPage));
-        if (group) {
-            setActiveGroup(group.group);
-        }
-    }, [currentPage]);
+    // Set active group based on current page (for highlighting only, not for showing submenu)
+    const currentGroupName = menuItems.find(g => g.items.some(item => item.path === currentPage))?.group;
 
     const userRole = user?.app_role || 'viewer';
     const roleConfig = ROLE_CONFIG[userRole] || ROLE_CONFIG.viewer;
@@ -191,7 +186,10 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
     const activeGroupData = filteredMenuItems.find(g => g.group === activeGroup);
 
     return (
-        <div className="fixed left-0 top-0 h-screen z-40 flex">
+        <div 
+            className="fixed left-0 top-0 h-screen z-40 flex"
+            onMouseLeave={() => setActiveGroup(null)}
+        >
             {/* Main Menu Column */}
             <aside 
                 className="h-full flex flex-col w-16"
@@ -219,18 +217,19 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                     <div className="space-y-1">
                         {filteredMenuItems.map((group) => {
                             const GroupIcon = group.icon;
-                            const isActive = activeGroup === group.group;
+                            const isHovered = activeGroup === group.group;
+                            const isCurrentGroup = currentGroupName === group.group;
                             return (
                                 <button
                                     key={group.group}
-                                    onClick={() => setActiveGroup(group.group)}
+                                    onMouseEnter={() => setActiveGroup(group.group)}
                                     className={cn(
                                         "w-full flex flex-col items-center justify-center py-3 px-1 rounded-lg transition-all",
-                                        isActive 
+                                        (isHovered || isCurrentGroup)
                                             ? "text-white" 
                                             : "hover:bg-white/10"
                                     )}
-                                    style={isActive ? { backgroundColor: '#4b5563' } : { color: sidebarText }}
+                                    style={(isHovered || isCurrentGroup) ? { backgroundColor: '#4b5563' } : { color: sidebarText }}
                                     title={group.group}
                                 >
                                     <GroupIcon className="h-5 w-5" />
