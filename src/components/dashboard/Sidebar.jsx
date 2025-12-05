@@ -15,8 +15,6 @@ import {
     Settings,
     Users,
     Shield,
-    ChevronDown,
-    ChevronRight,
     BarChart3,
     Terminal,
     AlertTriangle,
@@ -44,6 +42,7 @@ import {
 const menuItems = [
     {
         group: 'Overview',
+        icon: LayoutDashboard,
         items: [
             { icon: LayoutDashboard, label: 'Dashboard', path: 'Dashboard', permission: 'VIEW_DASHBOARD' },
             { icon: BarChart3, label: 'Analytics', path: 'Analytics', permission: 'VIEW_ANALYTICS' },
@@ -51,6 +50,7 @@ const menuItems = [
     },
     {
         group: 'Transactions',
+        icon: ArrowLeftRight,
         items: [
             { icon: ArrowLeftRight, label: 'Transactions', path: 'Transactions', permission: 'VIEW_TRANSACTIONS' },
             { icon: Receipt, label: 'Settlements', path: 'Settlements', permission: 'VIEW_SETTLEMENTS' },
@@ -61,6 +61,7 @@ const menuItems = [
     },
     {
         group: 'Onboarding',
+        icon: CheckSquare,
         items: [
             { icon: Store, label: 'Merchant', path: 'MerchantOnboarding', permission: 'VIEW_ONBOARDING' },
             { icon: Landmark, label: 'Acquirer', path: 'AcquirerOnboarding', permission: 'VIEW_ONBOARDING' },
@@ -70,6 +71,7 @@ const menuItems = [
     },
     {
         group: 'Merchants',
+        icon: Store,
         items: [
             { icon: Store, label: 'All Merchants', path: 'Merchants', permission: 'VIEW_MERCHANTS' },
             { icon: CreditCard, label: 'Merchant MIDs', path: 'MerchantMIDs', permission: 'VIEW_MERCHANTS' },
@@ -82,6 +84,7 @@ const menuItems = [
     },
     {
         group: 'Finance',
+        icon: Wallet,
         items: [
             { icon: Wallet, label: 'Balances', path: 'Balances', permission: 'VIEW_BALANCES' },
             { icon: FileText, label: 'Reports', path: 'Reports', permission: 'VIEW_REPORTS' },
@@ -96,6 +99,7 @@ const menuItems = [
     },
     {
         group: 'Risk',
+        icon: Shield,
         items: [
             { icon: Shield, label: 'Fraud Prevention', path: 'FraudPrevention', permission: 'VIEW_FRAUD_PREVENTION' },
             { icon: Users, label: 'Compliance', path: 'Compliance', permission: 'VIEW_COMPLIANCE' },
@@ -103,6 +107,7 @@ const menuItems = [
     },
     {
         group: 'Configuration',
+        icon: Settings,
         items: [
             { icon: Zap, label: 'Smart Routing', path: 'SmartOrchestration', permission: 'VIEW_ROUTING' },
             { icon: Globe, label: 'Orchestration', path: 'PaymentOrchestration', permission: 'VIEW_ORCHESTRATION' },
@@ -115,18 +120,17 @@ const menuItems = [
 ];
 
 export default function Sidebar({ collapsed, onToggle, currentPage }) {
-    const [expandedGroups, setExpandedGroups] = useState(menuItems.map(g => g.group));
     const [user, setUser] = useState(null);
     const [themeSettings, setThemeSettings] = useState(null);
+    const [pspSettings, setPspSettings] = useState(null);
+    const [activeGroup, setActiveGroup] = useState(null);
 
     useEffect(() => {
         const loadUser = async () => {
             try {
                 const currentUser = await base44.auth.me();
                 setUser(currentUser);
-            } catch (err) {
-                // User not logged in
-            }
+            } catch (err) {}
         };
         loadUser();
     }, []);
@@ -138,14 +142,11 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                 if (settings && settings.length > 0) {
                     setThemeSettings(settings[0]);
                 }
-            } catch (err) {
-                // Theme settings not available
-            }
+            } catch (err) {}
         };
         loadTheme();
     }, []);
 
-    const [pspSettings, setPspSettings] = useState(null);
     useEffect(() => {
         const loadPspSettings = async () => {
             try {
@@ -153,23 +154,22 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                 if (settings && settings.length > 0) {
                     setPspSettings(settings[0]);
                 }
-            } catch (err) {
-                // PSP settings not available
-            }
+            } catch (err) {}
         };
         loadPspSettings();
     }, []);
 
+    // Set active group based on current page
+    useEffect(() => {
+        const group = menuItems.find(g => g.items.some(item => item.path === currentPage));
+        if (group) {
+            setActiveGroup(group.group);
+        }
+    }, [currentPage]);
+
     const userRole = user?.app_role || 'viewer';
     const roleConfig = ROLE_CONFIG[userRole] || ROLE_CONFIG.viewer;
 
-    const toggleGroup = (group) => {
-        setExpandedGroups(prev => 
-            prev.includes(group) ? prev.filter(g => g !== group) : [...prev, group]
-        );
-    };
-
-    // Filter menu items based on user permissions
     const filteredMenuItems = menuItems.map(group => ({
         ...group,
         items: group.items.filter(item => 
@@ -188,109 +188,130 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
     const companyName = pspSettings?.company_name || themeSettings?.company_name || 'PaymentHub';
     const logoUrl = themeSettings?.logo_url;
 
+    const activeGroupData = filteredMenuItems.find(g => g.group === activeGroup);
+
     return (
-        <aside 
-            className={cn(
-                "fixed left-0 top-0 h-screen text-white z-40 transition-all duration-300 flex flex-col",
-                collapsed ? "w-16" : "w-56"
-            )}
-            style={{ backgroundColor: sidebarBg }}
-        >
-            <div className="h-14 flex items-center justify-center border-b border-white/10 px-3">
-                {collapsed ? (
-                    logoUrl ? (
-                        <img src={logoUrl} alt="Logo" className="h-8 w-8 object-contain rounded-lg" />
+        <div className="fixed left-0 top-0 h-screen z-40 flex">
+            {/* Main Menu Column */}
+            <aside 
+                className="h-full flex flex-col w-16"
+                style={{ backgroundColor: sidebarBg }}
+            >
+                {/* Branding - Lighter Background */}
+                <div 
+                    className="h-16 flex items-center justify-center border-b"
+                    style={{ backgroundColor: '#374151', borderColor: 'rgba(255,255,255,0.1)' }}
+                >
+                    {logoUrl ? (
+                        <img src={logoUrl} alt="Logo" className="h-9 w-9 object-contain rounded-lg" />
                     ) : (
                         <div 
-                            className="w-8 h-8 rounded-lg flex items-center justify-center"
+                            className="w-9 h-9 rounded-lg flex items-center justify-center"
                             style={{ background: `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})` }}
                         >
-                            <CreditCard className="h-4 w-4 text-white" />
+                            <CreditCard className="h-5 w-5 text-white" />
                         </div>
-                    )
-                ) : (
-                    <div className="flex items-center gap-2">
-                        {logoUrl ? (
-                            <img src={logoUrl} alt="Logo" className="h-8 w-8 object-contain rounded-lg" />
-                        ) : (
-                            <div 
-                                className="w-8 h-8 rounded-lg flex items-center justify-center"
-                                style={{ background: `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})` }}
-                            >
-                                <CreditCard className="h-4 w-4 text-white" />
-                            </div>
-                        )}
-                        <div>
-                            <h1 className="font-bold text-sm" style={{ color: '#ffffff' }}>{companyName}</h1>
-                            <p className="text-[10px]" style={{ color: sidebarText }}>Gateway Admin</p>
-                        </div>
-                    </div>
-                )}
-            </div>
-
-            {/* Role Badge */}
-            {!collapsed && user && (
-                <div className="px-3 py-2 border-b border-slate-800">
-                    <div className="flex items-center gap-2">
-                        <Badge className={cn("text-[10px]", roleConfig.bgColor, roleConfig.textColor)}>
-                            {roleConfig.label}
-                        </Badge>
-                    </div>
+                    )}
                 </div>
-            )}
 
-            <nav className="flex-1 overflow-y-auto py-2 px-2">
-                {filteredMenuItems.map((group, groupIdx) => (
-                    <div key={groupIdx} className="mb-2">
-                        {!collapsed && (
-                            <button
-                                onClick={() => toggleGroup(group.group)}
-                                className="w-full flex items-center justify-between px-2 py-1.5 text-[10px] font-semibold text-slate-500 uppercase tracking-wider hover:text-slate-300"
-                            >
-                                {group.group}
-                                {expandedGroups.includes(group.group) ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
-                            </button>
-                        )}
-                        
-                        {(collapsed || expandedGroups.includes(group.group)) && (
-                            <div className="space-y-0.5">
-                                {group.items.map((item, itemIdx) => (
+                {/* Main Menu Items */}
+                <nav className="flex-1 overflow-y-auto py-3 px-2">
+                    <div className="space-y-1">
+                        {filteredMenuItems.map((group) => {
+                            const GroupIcon = group.icon;
+                            const isActive = activeGroup === group.group;
+                            return (
+                                <button
+                                    key={group.group}
+                                    onClick={() => setActiveGroup(group.group)}
+                                    className={cn(
+                                        "w-full flex flex-col items-center justify-center py-3 px-1 rounded-lg transition-all",
+                                        isActive 
+                                            ? "text-white" 
+                                            : "hover:bg-white/10"
+                                    )}
+                                    style={isActive ? { backgroundColor: '#4b5563' } : { color: sidebarText }}
+                                    title={group.group}
+                                >
+                                    <GroupIcon className="h-5 w-5" />
+                                    <span className="text-[9px] mt-1 text-center leading-tight">{group.group}</span>
+                                </button>
+                            );
+                        })}
+                    </div>
+                </nav>
+
+                {/* Bottom Actions */}
+                <div className="border-t p-2 space-y-1" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
+                    <button
+                        className="w-full flex items-center justify-center py-2 rounded-lg hover:bg-white/10 transition-all"
+                        style={{ color: sidebarText }}
+                        title="Help"
+                    >
+                        <HelpCircle className="h-5 w-5" />
+                    </button>
+                    <button 
+                        onClick={handleLogout}
+                        className="w-full flex items-center justify-center py-2 rounded-lg text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all"
+                        title="Logout"
+                    >
+                        <LogOut className="h-5 w-5" />
+                    </button>
+                </div>
+            </aside>
+
+            {/* Submenu Panel */}
+            {activeGroupData && (
+                <aside 
+                    className="h-full w-48 border-r flex flex-col"
+                    style={{ backgroundColor: '#1e293b', borderColor: 'rgba(255,255,255,0.1)' }}
+                >
+                    {/* Group Header */}
+                    <div 
+                        className="h-16 flex items-center px-4 border-b"
+                        style={{ backgroundColor: '#374151', borderColor: 'rgba(255,255,255,0.1)' }}
+                    >
+                        <div>
+                            <h2 className="font-semibold text-white text-sm">{companyName}</h2>
+                            <p className="text-[10px]" style={{ color: sidebarText }}>{activeGroup}</p>
+                        </div>
+                    </div>
+
+                    {/* Role Badge */}
+                    {user && (
+                        <div className="px-3 py-2 border-b" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
+                            <Badge className={cn("text-[10px]", roleConfig.bgColor, roleConfig.textColor)}>
+                                {roleConfig.label}
+                            </Badge>
+                        </div>
+                    )}
+
+                    {/* Submenu Items */}
+                    <nav className="flex-1 overflow-y-auto py-3 px-2">
+                        <div className="space-y-1">
+                            {activeGroupData.items.map((item) => {
+                                const isActive = currentPage === item.path;
+                                return (
                                     <Link
-                                        key={itemIdx}
+                                        key={item.path}
                                         to={createPageUrl(item.path)}
                                         className={cn(
-                                            "flex items-center gap-2 px-2 py-2 rounded-md transition-all text-xs",
-                                            collapsed && "justify-center"
+                                            "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-sm"
                                         )}
-                                        style={currentPage === item.path 
-                                            ? { background: `linear-gradient(to right, ${primaryColor}, ${secondaryColor})`, color: '#ffffff' }
+                                        style={isActive 
+                                            ? { backgroundColor: '#4b5563', color: '#ffffff' }
                                             : { color: sidebarText }
                                         }
-                                        title={collapsed ? item.label : undefined}
                                     >
                                         <item.icon className="h-4 w-4 flex-shrink-0" />
-                                        {!collapsed && <span>{item.label}</span>}
+                                        <span>{item.label}</span>
                                     </Link>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                ))}
-            </nav>
-
-            <div className="border-t border-white/10 p-2">
-                <Link to="#" className={cn("flex items-center gap-2 px-2 py-2 rounded-md hover:bg-white/10 text-xs", collapsed && "justify-center")} style={{ color: sidebarText }}>
-                    <HelpCircle className="h-4 w-4" />
-                    {!collapsed && <span>Help</span>}
-                </Link>
-                <button 
-                    onClick={handleLogout}
-                    className={cn("w-full flex items-center gap-2 px-2 py-2 rounded-md text-red-400 hover:text-red-300 hover:bg-red-500/10 text-xs", collapsed && "justify-center")}
-                >
-                    <LogOut className="h-4 w-4" />
-                    {!collapsed && <span>Logout</span>}
-                </button>
-            </div>
-        </aside>
+                                );
+                            })}
+                        </div>
+                    </nav>
+                </aside>
+            )}
+        </div>
     );
 }
