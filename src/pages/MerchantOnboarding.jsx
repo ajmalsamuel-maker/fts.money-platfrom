@@ -244,7 +244,7 @@ export default function MerchantOnboarding() {
             }
         }
         
-        if (step === 6) {
+        if (step === 7) {
             // AML screening - warn if not completed
             if (!formData.aml.aml_status || formData.aml.aml_status === 'not_started') {
                 // Allow to proceed but show warning
