@@ -25,13 +25,16 @@ import {
     ChevronDown,
     Globe,
     Building2,
-    Shield
+    Shield,
+    HelpCircle
 } from 'lucide-react';
+import HelpPanel from './HelpPanel';
 
 export default function TopHeader({ onToggleSidebar, collapsed }) {
     const [searchQuery, setSearchQuery] = useState('');
     const [user, setUser] = useState(null);
     const [themeSettings, setThemeSettings] = useState(null);
+    const [helpOpen, setHelpOpen] = useState(false);
 
     useEffect(() => {
         const loadUser = async () => {
@@ -132,6 +135,16 @@ export default function TopHeader({ onToggleSidebar, collapsed }) {
                         <p className="text-sm font-semibold text-emerald-600">98.7%</p>
                     </div>
                 </div>
+
+                {/* Help Button */}
+                <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="text-slate-600"
+                    onClick={() => setHelpOpen(true)}
+                >
+                    <HelpCircle className="h-5 w-5" />
+                </Button>
 
                 {/* Language Selector */}
                 <DropdownMenu>
@@ -240,8 +253,11 @@ export default function TopHeader({ onToggleSidebar, collapsed }) {
                             Logout
                         </DropdownMenuItem>
                     </DropdownMenuContent>
-                </DropdownMenu>
-            </div>
-        </header>
-    );
-}
+                    </DropdownMenu>
+                    </div>
+
+                    {/* Help Panel */}
+                    <HelpPanel open={helpOpen} onOpenChange={setHelpOpen} />
+                    </header>
+                    );
+                    }
