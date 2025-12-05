@@ -26,25 +26,25 @@ export default function SuccessRateChart() {
     const approvalRate = ((data[0].value / total) * 100).toFixed(2);
 
     return (
-        <Card>
+        <Card className="h-full">
             <CardHeader className="pb-2">
-                <CardTitle className="text-lg font-semibold">Transaction Status</CardTitle>
-                <p className="text-sm text-slate-500">
+                <CardTitle className="text-sm font-semibold">Transaction Status</CardTitle>
+                <p className="text-xs text-slate-500">
                     Approval Rate: <span className="font-semibold text-emerald-600">{approvalRate}%</span>
                 </p>
             </CardHeader>
             <CardContent>
-                <div className="h-64">
+                <div className="h-52">
                     <ResponsiveContainer width="100%" height="100%">
                         <PieChart>
                             <Pie
                                 data={data}
                                 cx="50%"
-                                cy="50%"
+                                cy="45%"
                                 labelLine={false}
                                 label={renderCustomizedLabel}
-                                outerRadius={90}
-                                innerRadius={50}
+                                outerRadius={70}
+                                innerRadius={40}
                                 dataKey="value"
                                 strokeWidth={2}
                                 stroke="#fff"
@@ -60,8 +60,9 @@ export default function SuccessRateChart() {
                             <Legend 
                                 verticalAlign="bottom"
                                 iconType="circle"
+                                iconSize={8}
                                 formatter={(value, entry) => (
-                                    <span className="text-sm text-slate-600">
+                                    <span className="text-xs text-slate-600">
                                         {value} ({entry.payload.value.toLocaleString()})
                                     </span>
                                 )}

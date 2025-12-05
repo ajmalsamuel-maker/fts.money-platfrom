@@ -15,47 +15,47 @@ const merchants = [
 
 export default function TopMerchants() {
     return (
-        <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-4">
-                <CardTitle className="text-lg font-semibold">Top Merchants</CardTitle>
-                <Button variant="ghost" size="sm" className="text-blue-600">
+        <Card className="h-full">
+            <CardHeader className="flex flex-row items-center justify-between pb-2 pt-4">
+                <CardTitle className="text-sm font-semibold">Top Merchants</CardTitle>
+                <Button variant="ghost" size="sm" className="text-blue-600 h-7 text-xs">
                     View All
-                    <ExternalLink className="h-4 w-4 ml-1" />
+                    <ExternalLink className="h-3 w-3 ml-1" />
                 </Button>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-2 pt-0">
                 {merchants.map((merchant, idx) => (
-                    <div key={idx} className="flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 transition-colors">
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-100 to-cyan-100 flex items-center justify-center text-blue-600 font-semibold">
+                    <div key={idx} className="flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 transition-colors">
+                        <div className="flex items-center gap-2">
+                            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-100 to-cyan-100 flex items-center justify-center text-blue-600 font-semibold text-xs">
                                 {idx + 1}
                             </div>
                             <div>
-                                <div className="flex items-center gap-2">
-                                    <p className="font-medium text-slate-900">{merchant.name}</p>
+                                <div className="flex items-center gap-1.5">
+                                    <p className="font-medium text-slate-900 text-sm">{merchant.name}</p>
                                     {merchant.status === 'pending' && (
-                                        <Badge variant="outline" className="text-xs bg-amber-50 text-amber-700 border-amber-200">
+                                        <Badge variant="outline" className="text-[9px] px-1 py-0 bg-amber-50 text-amber-700 border-amber-200">
                                             Pending
                                         </Badge>
                                     )}
                                 </div>
-                                <p className="text-sm text-slate-500">
-                                    {merchant.transactions.toLocaleString()} transactions
+                                <p className="text-xs text-slate-500">
+                                    {merchant.transactions.toLocaleString()} txns
                                 </p>
                             </div>
                         </div>
                         <div className="text-right">
-                            <p className="font-semibold text-slate-900">
+                            <p className="font-semibold text-slate-900 text-sm">
                                 ${merchant.volume.toLocaleString()}
                             </p>
                             <div className={cn(
-                                "flex items-center justify-end gap-1 text-sm",
+                                "flex items-center justify-end gap-0.5 text-xs",
                                 merchant.change >= 0 ? "text-emerald-600" : "text-red-600"
                             )}>
                                 {merchant.change >= 0 ? (
-                                    <TrendingUp className="h-3 w-3" />
+                                    <TrendingUp className="h-2.5 w-2.5" />
                                 ) : (
-                                    <TrendingDown className="h-3 w-3" />
+                                    <TrendingDown className="h-2.5 w-2.5" />
                                 )}
                                 {Math.abs(merchant.change)}%
                             </div>
