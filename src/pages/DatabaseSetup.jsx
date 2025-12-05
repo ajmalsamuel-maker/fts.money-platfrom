@@ -25,20 +25,15 @@ export default function DatabaseSetup() {
     const [loading, setLoading] = useState({});
     const [error, setError] = useState(null);
 
+    const [dbStats, setDbStats] = useState(null);
+
     const schemas = [
         {
-            id: 'mids',
-            name: 'Merchant MIDs',
-            description: 'MID management tables with indexes',
-            function: 'dbMids',
-            tables: ['merchants', 'payment_providers', 'merchant_mids']
-        },
-        {
-            id: 'transactions',
-            name: 'Transactions',
-            description: 'Transaction processing and history',
-            function: 'dbTransactions',
-            tables: ['transactions']
+            id: 'all',
+            name: 'Complete Production Schema',
+            description: 'All tables for PSP platform with indexes',
+            function: 'dbCore',
+            tables: ['merchants', 'transactions', 'chargebacks', 'settlements', 'payouts', 'risk_alerts', 'audit_logs', 'terminals', 'routing_rules', 'buy_rates', 'merchant_pricing', 'payment_providers', 'merchant_mids']
         }
     ];
 
@@ -48,11 +43,12 @@ export default function DatabaseSetup() {
         
         try {
             const response = await base44.functions.invoke(schema.function, {
-                action: 'initSchema'
+                action: 'initAllSchemas'
             });
             
             if (response.data?.success) {
                 setStatus(prev => ({ ...prev, [schema.id]: 'success' }));
+                await loadStats();
             } else {
                 setStatus(prev => ({ ...prev, [schema.id]: 'error' }));
                 setError(response.data?.error || 'Failed to initialize schema');
@@ -62,6 +58,17 @@ export default function DatabaseSetup() {
             setError(err.message);
         } finally {
             setLoading(prev => ({ ...prev, [schema.id]: false }));
+        }
+    };
+
+    const loadStats = async () => {
+        try {
+            const response = await base44.functions.invoke('dbCore', { action: 'getStats' });
+            if (response.data?.success) {
+                setDbStats(response.data.data);
+            }
+        } catch (err) {
+            console.error('Failed to load stats:', err);
         }
     };
 
@@ -76,12 +83,13 @@ export default function DatabaseSetup() {
         setError(null);
         
         try {
-            const response = await base44.functions.invoke('dbMids', {
-                action: 'list'
+            const response = await base44.functions.invoke('dbCore', {
+                action: 'testConnection'
             });
             
-            if (response.data?.success !== undefined) {
-                setStatus(prev => ({ ...prev, connection: 'success' }));
+            if (response.data?.success) {
+                setStatus(prev => ({ ...prev, connection: 'success', serverTime: response.data.serverTime, pgVersion: response.data.version }));
+                await loadStats();
             } else {
                 setStatus(prev => ({ ...prev, connection: 'error' }));
                 setError('Connection test failed');
@@ -120,14 +128,14 @@ export default function DatabaseSetup() {
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
                                 <Server className="h-5 w-5" />
-                                Database Connection
+                                Neon PostgreSQL Connection
                             </CardTitle>
                             <CardDescription>
-                                Test your PostgreSQL connection before initializing schemas
+                                Production database connection status
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <div className="flex items-center gap-4">
+                            <div className="flex items-center gap-4 mb-4">
                                 <Button 
                                     onClick={testConnection}
                                     disabled={loading.connection}
@@ -138,7 +146,7 @@ export default function DatabaseSetup() {
                                 {status.connection === 'success' && (
                                     <Badge className="bg-green-100 text-green-700">
                                         <CheckCircle2 className="h-3 w-3 mr-1" />
-                                        Connected
+                                        Connected to Neon
                                     </Badge>
                                 )}
                                 {status.connection === 'error' && (
@@ -148,6 +156,35 @@ export default function DatabaseSetup() {
                                     </Badge>
                                 )}
                             </div>
+                            {status.serverTime && (
+                                <div className="p-3 bg-slate-50 rounded-lg text-sm">
+                                    <p className="text-slate-600">Server Time: <span className="font-mono">{new Date(status.serverTime).toLocaleString()}</span></p>
+                                </div>
+                            )}
+                            {dbStats && (
+                                <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mt-4">
+                                    <div className="p-3 bg-blue-50 rounded-lg text-center">
+                                        <p className="text-2xl font-bold text-blue-600">{dbStats.merchant_count || 0}</p>
+                                        <p className="text-xs text-blue-700">Merchants</p>
+                                    </div>
+                                    <div className="p-3 bg-emerald-50 rounded-lg text-center">
+                                        <p className="text-2xl font-bold text-emerald-600">{dbStats.transaction_count || 0}</p>
+                                        <p className="text-xs text-emerald-700">Transactions</p>
+                                    </div>
+                                    <div className="p-3 bg-amber-50 rounded-lg text-center">
+                                        <p className="text-2xl font-bold text-amber-600">{dbStats.chargeback_count || 0}</p>
+                                        <p className="text-xs text-amber-700">Chargebacks</p>
+                                    </div>
+                                    <div className="p-3 bg-red-50 rounded-lg text-center">
+                                        <p className="text-2xl font-bold text-red-600">{dbStats.open_alerts || 0}</p>
+                                        <p className="text-xs text-red-700">Open Alerts</p>
+                                    </div>
+                                    <div className="p-3 bg-purple-50 rounded-lg text-center">
+                                        <p className="text-2xl font-bold text-purple-600">${Number(dbStats.total_volume || 0).toLocaleString()}</p>
+                                        <p className="text-xs text-purple-700">Total Volume</p>
+                                    </div>
+                                </div>
+                            )}
                         </CardContent>
                     </Card>
 
@@ -245,15 +282,18 @@ export default function DatabaseSetup() {
                                 </code>
                             </div>
 
-                            <div className="mt-4 p-4 bg-amber-50 rounded-lg">
-                                <h4 className="font-medium text-amber-900 mb-2">Recommended Providers:</h4>
-                                <ul className="list-disc list-inside text-amber-800 text-sm">
-                                    <li><strong>Supabase</strong> - Free tier available, easy setup</li>
-                                    <li><strong>Neon</strong> - Serverless Postgres, generous free tier</li>
-                                    <li><strong>Railway</strong> - Simple deployment</li>
-                                    <li><strong>AWS RDS</strong> - Enterprise-grade</li>
-                                    <li><strong>CockroachDB</strong> - Distributed, multi-region</li>
-                                </ul>
+                            <div className="mt-4 p-4 bg-emerald-50 rounded-lg">
+                                <h4 className="font-medium text-emerald-900 mb-2">✓ Connected to Neon PostgreSQL</h4>
+                                <p className="text-emerald-800 text-sm">Your production database is configured and ready for use. All platform data will be stored in Neon's serverless PostgreSQL.</p>
+                            </div>
+
+                            <div className="mt-4 p-4 bg-purple-50 rounded-lg">
+                                <h4 className="font-medium text-purple-900 mb-2">Production Tables:</h4>
+                                <div className="flex flex-wrap gap-2 mt-2">
+                                    {['merchants', 'transactions', 'chargebacks', 'settlements', 'payouts', 'risk_alerts', 'audit_logs', 'terminals', 'routing_rules', 'buy_rates', 'merchant_pricing'].map(table => (
+                                        <Badge key={table} variant="outline" className="bg-white">{table}</Badge>
+                                    ))}
+                                </div>
                             </div>
                         </CardContent>
                     </Card>
