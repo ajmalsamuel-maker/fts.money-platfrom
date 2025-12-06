@@ -77,6 +77,7 @@ const menuItems = [
         items: [
             { icon: Store, label: 'All Merchants', path: 'Merchants', permission: 'VIEW_MERCHANTS' },
             { icon: BarChart3, label: 'Merchant Analytics', path: 'MerchantAnalytics', permission: 'VIEW_MERCHANTS' },
+            { icon: Brain, label: 'AI Insights', path: 'AIMerchantInsights', permission: 'VIEW_MERCHANTS' },
             { icon: CreditCard, label: 'Merchant MIDs', path: 'MerchantMIDs', permission: 'VIEW_MERCHANTS' },
             { icon: Database, label: 'MIDs (PostgreSQL)', path: 'MerchantMIDsDB', permission: 'VIEW_MERCHANTS' },
             { icon: Terminal, label: 'Terminals', path: 'Terminals', permission: 'VIEW_TERMINALS' },
