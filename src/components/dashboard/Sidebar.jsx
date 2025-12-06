@@ -6,6 +6,7 @@ import { base44 } from '@/api/base44Client';
 import { hasPermission, ROLE_CONFIG } from '@/components/auth/permissions';
 import { getStaffSession, staffLogout } from '@/components/auth/useStaffAuth';
 import { Badge } from "@/components/ui/badge";
+import HelpPanel from './HelpPanel';
 import { 
     LayoutDashboard, 
     ArrowLeftRight, 
@@ -127,6 +128,7 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
     const [themeSettings, setThemeSettings] = useState(null);
     const [pspSettings, setPspSettings] = useState(null);
     const [activeGroup, setActiveGroup] = useState(null);
+    const [helpOpen, setHelpOpen] = useState(false);
 
     useEffect(() => {
         // First check for staff session
@@ -264,6 +266,7 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                 {/* Bottom Actions */}
                 <div className="border-t p-2 space-y-1" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
                     <button
+                        onClick={() => setHelpOpen(true)}
                         className="w-full flex items-center justify-center py-2 rounded-lg hover:bg-white/10 transition-all"
                         style={{ color: sidebarText }}
                         title="Help"
@@ -278,6 +281,8 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                         <LogOut className="h-5 w-5" />
                     </button>
                 </div>
+                
+                <HelpPanel open={helpOpen} onOpenChange={setHelpOpen} />
             </aside>
 
             {/* Submenu Panel */}
