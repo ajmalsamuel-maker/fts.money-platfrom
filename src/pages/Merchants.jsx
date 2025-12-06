@@ -61,6 +61,8 @@ import {
 import SelfOnboardingUrlGenerator from '@/components/merchants/SelfOnboardingUrlGenerator';
 import { usePermissions } from '@/components/auth/usePermissions';
 import { PermissionGate } from '@/components/auth/PermissionGate';
+import { createMerchantUsers } from '@/components/merchants/MerchantUserProvisioning';
+import { toast } from 'sonner';
 
 const statusConfig = {
     active: { label: 'Active', className: 'bg-emerald-100 text-emerald-700 border-emerald-200' },
@@ -97,6 +99,34 @@ export default function Merchants() {
     const { data: merchants = [], isLoading } = useQuery({
         queryKey: ['merchants'],
         queryFn: () => base44.entities.Merchant.list('-created_date'),
+    });
+
+    const updateStatusMutation = useMutation({
+        mutationFn: async ({ merchantId, newStatus, merchant }) => {
+            await base44.entities.Merchant.update(merchantId, { status: newStatus });
+            
+            // If approving merchant, provision users
+            if (newStatus === 'active' && merchant.status !== 'active') {
+                try {
+                    // Get merchant contacts (assume primary contact from merchant data)
+                    const contacts = [{
+                        email: merchant.contact_email,
+                        full_name: merchant.contact_name,
+                        phone: merchant.contact_phone,
+                        is_primary: true
+                    }];
+                    
+                    await createMerchantUsers(merchant, contacts);
+                    toast.success('Merchant activated and user credentials sent');
+                } catch (error) {
+                    console.error('Failed to provision users:', error);
+                    toast.error('Merchant activated but user provisioning failed');
+                }
+            }
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['merchants'] });
+        },
     });
 
     const createMutation = useMutation({
@@ -421,10 +451,24 @@ export default function Merchants() {
                                                                     View Details
                                                                 </DropdownMenuItem>
                                                                 {can('EDIT_MERCHANTS') && (
-                                                                    <DropdownMenuItem>
-                                                                        <Edit className="h-4 w-4 mr-2" />
-                                                                        Edit
-                                                                    </DropdownMenuItem>
+                                                                    <>
+                                                                        <DropdownMenuItem>
+                                                                            <Edit className="h-4 w-4 mr-2" />
+                                                                            Edit
+                                                                        </DropdownMenuItem>
+                                                                        {merchant.status === 'pending' && (
+                                                                            <DropdownMenuItem
+                                                                                onClick={() => updateStatusMutation.mutate({
+                                                                                    merchantId: merchant.id,
+                                                                                    newStatus: 'active',
+                                                                                    merchant
+                                                                                })}
+                                                                            >
+                                                                                <Shield className="h-4 w-4 mr-2" />
+                                                                                Approve & Provision Users
+                                                                            </DropdownMenuItem>
+                                                                        )}
+                                                                    </>
                                                                 )}
                                                                 {can('DELETE_MERCHANTS') && (
                                                                     <>

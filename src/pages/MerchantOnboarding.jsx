@@ -30,6 +30,8 @@ import {
     Send,
     AlertTriangle
 } from 'lucide-react';
+import { createMerchantUsers } from '@/components/merchants/MerchantUserProvisioning';
+import { toast } from 'sonner';
 
 const TOTAL_STEPS = 10;
 
@@ -90,6 +92,17 @@ export default function MerchantOnboarding() {
             };
             
             const merchant = await base44.entities.Merchant.create(merchantData);
+            
+            // Auto-create merchant user accounts if merchant is approved
+            if (merchant.status === 'active' && data.contacts.contacts?.length > 0) {
+                try {
+                    await createMerchantUsers(merchant, data.contacts.contacts);
+                    toast.success('Merchant users created and welcome emails sent');
+                } catch (error) {
+                    console.error('Failed to create merchant users:', error);
+                    toast.error('Merchant created but user provisioning failed');
+                }
+            }
             
             // Send notification to compliance if there are alerts
             if (data.aml.aml_alerts?.length > 0 || data.kyb.kyb_status === 'pending_review') {
