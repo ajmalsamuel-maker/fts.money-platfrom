@@ -209,15 +209,28 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
     const activeGroupData = filteredMenuItems.find(g => g.group === activeGroup);
 
     return (
-        <div 
-            className="fixed left-0 top-0 h-screen z-40 flex"
-            onMouseLeave={() => setActiveGroup(null)}
-        >
-            {/* Main Menu Column */}
-            <aside 
-                className="h-full flex flex-col w-16"
-                style={{ backgroundColor: sidebarBg }}
+        <>
+            {/* Mobile Overlay */}
+            {collapsed === false && (
+                <div 
+                    className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+                    onClick={() => onToggle && onToggle()}
+                />
+            )}
+            
+            <div 
+                className={cn(
+                    "fixed left-0 top-0 h-screen z-40 flex transition-transform duration-300",
+                    "lg:translate-x-0",
+                    collapsed ? "-translate-x-full" : "translate-x-0"
+                )}
+                onMouseLeave={() => setActiveGroup(null)}
             >
+                {/* Main Menu Column */}
+                <aside 
+                    className="h-full flex flex-col w-16"
+                    style={{ backgroundColor: sidebarBg }}
+                >
                 {/* Branding - Lighter Background */}
                 <div 
                     className="h-16 flex items-center justify-center border-b"
@@ -338,5 +351,6 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                 </aside>
             )}
         </div>
+        </>
     );
 }

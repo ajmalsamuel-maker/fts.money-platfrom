@@ -91,8 +91,8 @@ export default function TopHeader({ onToggleSidebar, collapsed }) {
     };
 
     return (
-        <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-30">
-            <div className="flex items-center gap-4">
+        <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-3 sm:px-6 sticky top-0 z-30">
+            <div className="flex items-center gap-2 sm:gap-4">
                 <Button 
                     variant="ghost" 
                     size="icon"
@@ -102,12 +102,12 @@ export default function TopHeader({ onToggleSidebar, collapsed }) {
                     <Menu className="h-5 w-5" />
                 </Button>
 
-                {/* Breadcrumb / Environment Selector */}
+                {/* Breadcrumb / Environment Selector - Hidden on small screens */}
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button variant="outline" className="gap-2">
+                        <Button variant="outline" className="gap-2 hidden sm:flex">
                             <div className="w-2 h-2 rounded-full bg-emerald-500" />
-                            <span>Production</span>
+                            <span className="hidden md:inline">Production</span>
                             <ChevronDown className="h-4 w-4" />
                         </Button>
                     </DropdownMenuTrigger>
@@ -127,22 +127,22 @@ export default function TopHeader({ onToggleSidebar, collapsed }) {
                     </DropdownMenuContent>
                 </DropdownMenu>
 
-                {/* Search */}
-                <div className="relative hidden md:block">
+                {/* Search - Hidden on mobile */}
+                <div className="relative hidden lg:block">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                     <Input
                         type="text"
                         placeholder="Search transactions, merchants..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="pl-10 w-80 bg-slate-50 border-slate-200 focus:bg-white"
+                        className="pl-10 w-64 xl:w-80 bg-slate-50 border-slate-200 focus:bg-white"
                     />
                 </div>
             </div>
 
-            <div className="flex items-center gap-2">
-                {/* Quick Stats */}
-                <div className="hidden lg:flex items-center gap-4 mr-4 pr-4 border-r border-slate-200">
+            <div className="flex items-center gap-1 sm:gap-2">
+                {/* Quick Stats - Hidden on mobile/tablet */}
+                <div className="hidden xl:flex items-center gap-4 mr-4 pr-4 border-r border-slate-200">
                     <div className="text-right">
                         <p className="text-xs text-slate-500">Today's Volume</p>
                         <p className="text-sm font-semibold text-slate-900">$2,458,320</p>
@@ -153,20 +153,20 @@ export default function TopHeader({ onToggleSidebar, collapsed }) {
                     </div>
                 </div>
 
-                {/* Help Button */}
+                {/* Help Button - Hidden on mobile */}
                 <Button 
                     variant="ghost" 
                     size="icon" 
-                    className="text-slate-600"
+                    className="text-slate-600 hidden sm:flex"
                     onClick={() => setHelpOpen(true)}
                 >
                     <HelpCircle className="h-5 w-5" />
                 </Button>
 
-                {/* Language Selector */}
+                {/* Language Selector - Hidden on mobile */}
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="text-slate-600">
+                        <Button variant="ghost" size="icon" className="text-slate-600 hidden md:flex">
                             <Globe className="h-5 w-5" />
                         </Button>
                     </DropdownMenuTrigger>
@@ -213,21 +213,21 @@ export default function TopHeader({ onToggleSidebar, collapsed }) {
                 {/* User Menu */}
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="gap-2 ml-2">
+                        <Button variant="ghost" className="gap-2 ml-1 sm:ml-2 px-2 sm:px-4">
                             <div 
-                                        className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium"
-                                        style={{ background: `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})` }}
-                                    >
-                                        {userInitials}
-                                    </div>
-                            <div className="hidden md:block text-left">
+                                className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-medium"
+                                style={{ background: `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})` }}
+                            >
+                                {userInitials}
+                            </div>
+                            <div className="hidden lg:block text-left">
                                 <p className="text-sm font-medium text-slate-900">{user?.full_name || 'User'}</p>
                                 <p className="text-xs text-slate-500 flex items-center gap-1">
                                     <Shield className="h-3 w-3" />
                                     {roleConfig.label}
                                 </p>
                             </div>
-                            <ChevronDown className="h-4 w-4 text-slate-400" />
+                            <ChevronDown className="h-4 w-4 text-slate-400 hidden sm:block" />
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-64">

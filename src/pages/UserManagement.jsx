@@ -230,20 +230,20 @@ export default function UserManagement() {
 
     return (
         <div className="min-h-screen bg-slate-50">
-            <Sidebar collapsed={sidebarCollapsed} currentPage="UserManagement" />
+            <Sidebar collapsed={sidebarCollapsed} onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} currentPage="UserManagement" />
             
-            <div className={cn("transition-all duration-300", sidebarCollapsed ? "ml-20" : "ml-64")}>
+            <div className={cn("transition-all duration-300", "lg:ml-16", sidebarCollapsed && "ml-0")}>
                 <TopHeader onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} collapsed={sidebarCollapsed} />
                 
-                <main className="p-6">
+                <main className="p-3 sm:p-6">
                     <Toaster position="top-right" />
                     {/* Page Header */}
-                    <div className="flex items-center justify-between mb-6">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                         <div>
-                            <h1 className="text-2xl font-bold text-slate-900">User Management</h1>
-                            <p className="text-slate-500">Manage user roles and permissions</p>
+                            <h1 className="text-xl sm:text-2xl font-bold text-slate-900">User Management</h1>
+                            <p className="text-sm sm:text-base text-slate-500">Manage user roles and permissions</p>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 flex-wrap">
                             <Button 
                                 variant="outline" 
                                 className="gap-2"
@@ -265,7 +265,7 @@ export default function UserManagement() {
                     </div>
 
                     {/* Role Stats */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4 mb-6">
                         <Card className="p-4 border-l-4 border-l-slate-400">
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center">
@@ -330,9 +330,9 @@ export default function UserManagement() {
 
                     {/* Filters */}
                     <Card className="mb-6">
-                        <CardContent className="p-4">
-                            <div className="flex flex-wrap items-center gap-4">
-                                <div className="relative flex-1 min-w-[250px]">
+                        <CardContent className="p-3 sm:p-4">
+                            <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3 sm:gap-4">
+                                <div className="relative flex-1 min-w-[200px]">
                                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                                     <Input
                                         placeholder="Search users by name or email..."
@@ -342,7 +342,7 @@ export default function UserManagement() {
                                     />
                                 </div>
                                 <Select value={roleFilter} onValueChange={setRoleFilter}>
-                                    <SelectTrigger className="w-40">
+                                    <SelectTrigger className="w-full sm:w-40">
                                         <SelectValue placeholder="Filter by role" />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -358,8 +358,8 @@ export default function UserManagement() {
 
                     {/* Users Table */}
                     <Card>
-                        <CardHeader className="border-b">
-                            <CardTitle className="text-lg flex items-center gap-2">
+                        <CardHeader className="border-b p-4">
+                            <CardTitle className="text-base sm:text-lg flex items-center gap-2">
                                 <UserCog className="h-5 w-5 text-slate-400" />
                                 User Accounts
                                 <Badge variant="secondary" className="ml-2">
@@ -368,7 +368,7 @@ export default function UserManagement() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="p-0">
-                            <div className="overflow-x-auto">
+                            <div className="overflow-x-auto -mx-3 sm:mx-0">
                                 <Table>
                                     <TableHeader>
                                         <TableRow className="bg-slate-50">
