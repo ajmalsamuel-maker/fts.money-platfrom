@@ -1681,42 +1681,71 @@ export default function HelpPanel({ open, onOpenChange }) {
                                             </div>
                                         </div>
 
-                                        <div className="prose prose-sm max-w-none">
+                                        <div className="prose prose-sm max-w-none prose-headings:text-slate-900 prose-headings:font-semibold">
                                             {selectedItem.content.split('\n').map((line, i) => {
-                                                if (line.startsWith('**') && line.endsWith('**')) {
-                                                    return <h4 key={i} className="font-bold text-slate-900 mt-4 mb-2 text-base">{line.replace(/\*\*/g, '')}</h4>;
+                                                // Main section headers (e.g., **PCI DSS 4.0.1 Requirement 1**)
+                                                if (line.startsWith('**') && line.endsWith('**') && !line.includes(':')) {
+                                                    return (
+                                                        <h3 key={i} className="text-lg font-bold text-slate-900 mt-6 mb-3 pb-2 border-b border-slate-200">
+                                                            {line.replace(/\*\*/g, '')}
+                                                        </h3>
+                                                    );
                                                 }
+                                                
+                                                // Subsection headers with colons (e.g., **1.1 Network Security Policies**: text)
                                                 if (line.match(/^\*\*[^*]+\*\*:/)) {
                                                     const [title, ...rest] = line.split('**:');
                                                     const cleanTitle = title.replace(/\*\*/g, '');
                                                     return (
-                                                        <p key={i} className="my-1">
-                                                            <span className="font-semibold text-slate-800">{cleanTitle}:</span>
-                                                            <span className="text-slate-600">{rest.join(':')}</span>
-                                                        </p>
+                                                        <div key={i} className="my-3">
+                                                            <h4 className="font-semibold text-slate-900 text-base mb-1">{cleanTitle}:</h4>
+                                                            {rest.join(':') && <p className="text-slate-600 leading-relaxed">{rest.join(':')}</p>}
+                                                        </div>
                                                     );
                                                 }
+                                                
+                                                // Bold bullet points with optional text (e.g., • **Item**: description)
                                                 if (line.startsWith('• **')) {
                                                     const match = line.match(/^• \*\*([^*]+)\*\*:?\s*(.*)/);
                                                     if (match) {
                                                         return (
-                                                            <p key={i} className="ml-4 my-1">
-                                                                <span className="font-medium text-slate-800">• {match[1]}</span>
-                                                                {match[2] && <span className="text-slate-600">: {match[2]}</span>}
-                                                            </p>
+                                                            <div key={i} className="flex gap-2 my-2">
+                                                                <span className="text-slate-600 flex-shrink-0">•</span>
+                                                                <div>
+                                                                    <span className="font-semibold text-slate-900">{match[1]}</span>
+                                                                    {match[2] && <span className="text-slate-600">: {match[2]}</span>}
+                                                                </div>
+                                                            </div>
                                                         );
                                                     }
                                                 }
+                                                
+                                                // Regular bullet points
                                                 if (line.startsWith('• ') || line.startsWith('- ')) {
-                                                    return <p key={i} className="ml-4 my-1 text-slate-600">{line}</p>;
+                                                    return (
+                                                        <div key={i} className="flex gap-2 my-1.5">
+                                                            <span className="text-slate-600 flex-shrink-0">{line[0]}</span>
+                                                            <span className="text-slate-600 leading-relaxed">{line.slice(2)}</span>
+                                                        </div>
+                                                    );
                                                 }
+                                                
+                                                // Numbered lists
                                                 if (line.trim().match(/^\d+\./)) {
-                                                    return <p key={i} className="ml-4 my-1 text-slate-600">{line}</p>;
+                                                    return (
+                                                        <div key={i} className="my-1.5 ml-1">
+                                                            <span className="text-slate-600 leading-relaxed">{line}</span>
+                                                        </div>
+                                                    );
                                                 }
+                                                
+                                                // Regular paragraphs
                                                 if (line.trim()) {
-                                                    return <p key={i} className="my-2 text-slate-700">{line}</p>;
+                                                    return <p key={i} className="my-2.5 text-slate-700 leading-relaxed">{line}</p>;
                                                 }
-                                                return <br key={i} />;
+                                                
+                                                // Empty lines
+                                                return <div key={i} className="h-2" />;
                                             })}
                                         </div>
 
