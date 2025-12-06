@@ -88,61 +88,68 @@ export default function Dashboard() {
             
             <div className={cn(
                 "transition-all duration-300",
-                sidebarCollapsed ? "ml-20" : "ml-64"
+                "lg:ml-16",
+                sidebarCollapsed && "ml-0"
             )}>
                 <TopHeader 
                     onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
                     collapsed={sidebarCollapsed}
                 />
                 
-                <main className="p-6">
+                <main className="p-3 sm:p-6">
                     {/* Page Header */}
-                    <div className="flex items-center justify-between mb-6">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                         <div>
-                            <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
-                            <p className="text-slate-500">Welcome back! Here's what's happening today.</p>
+                            <h1 className="text-xl sm:text-2xl font-bold text-slate-900">Dashboard</h1>
+                            <p className="text-sm sm:text-base text-slate-500">Welcome back! Here's what's happening today.</p>
                         </div>
                         <div className="flex items-center gap-2">
-                            <Button variant="outline" className="gap-2" onClick={() => setHelpOpen(true)}>
+                            <Button variant="outline" className="gap-2 text-sm" onClick={() => setHelpOpen(true)}>
                                 <HelpCircle className="h-4 w-4" />
-                                Help
+                                <span className="hidden sm:inline">Help</span>
                             </Button>
-                            <Button variant="outline" className="gap-2">
+                            <Button variant="outline" className="gap-2 text-sm">
                                 <RefreshCw className="h-4 w-4" />
-                                Refresh
+                                <span className="hidden sm:inline">Refresh</span>
                             </Button>
                         </div>
                     </div>
 
                     {/* Stats Cards + TPS */}
-                    <div className="grid lg:grid-cols-5 gap-4">
-                        <div className="lg:col-span-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
+                        <div className="sm:col-span-2 lg:col-span-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                             <StatsCards stats={stats} />
                         </div>
-                        <TPSCounter />
+                        <div className="sm:col-span-2 lg:col-span-1">
+                            <TPSCounter />
+                        </div>
                     </div>
 
                     {/* Charts and Business Metrics Row */}
-                    <div className="grid lg:grid-cols-4 gap-4 mt-4">
-                        <div className="lg:col-span-2">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mt-3 sm:mt-4">
+                        <div className="md:col-span-2">
                             <VolumeChart />
                         </div>
-                        <SuccessRateChart />
-                        <BusinessMetrics />
+                        <div className="md:col-span-1">
+                            <SuccessRateChart />
+                        </div>
+                        <div className="md:col-span-1">
+                            <BusinessMetrics />
+                        </div>
                     </div>
 
                     {/* Transactions, Merchants, and News Row */}
-                    <div className="grid lg:grid-cols-3 gap-4 mt-4">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4 mt-3 sm:mt-4">
                         <div className="lg:col-span-2">
                             <TransactionTable transactions={transactions} />
                         </div>
-                        <div className="space-y-4">
+                        <div className="space-y-3 sm:space-y-4">
                             <TopMerchants />
                         </div>
                     </div>
 
                     {/* News, Exchange Rates, and Payment Methods Row */}
-                    <div className="grid lg:grid-cols-3 gap-4 mt-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mt-3 sm:mt-4">
                         <PaymentNews />
                         <ExchangeRates />
                         <PaymentMethodsChart />
