@@ -5,7 +5,7 @@ import { TrendingUp, TrendingDown } from 'lucide-react';
 
 export default function StatsCards({ stats }) {
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <>
             {stats.map((stat, idx) => (
                 <Card key={idx} className="p-5 hover:shadow-md transition-shadow">
                     <div className="flex items-start justify-between">
@@ -36,6 +36,6 @@ export default function StatsCards({ stats }) {
                     </div>
                 </Card>
             ))}
-        </div>
+        </>
     );
 }

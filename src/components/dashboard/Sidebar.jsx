@@ -229,7 +229,7 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
             >
                 {/* Main Menu Column */}
                 <aside 
-                    className="h-full flex flex-col w-16"
+                    className="h-full flex flex-col w-20"
                     style={{ backgroundColor: sidebarBg }}
                 >
                 {/* Branding - Lighter Background */}
@@ -238,15 +238,15 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                     style={{ backgroundColor: '#374151', borderColor: 'rgba(255,255,255,0.1)' }}
                 >
                     {logoUrl ? (
-                        <img src={logoUrl} alt="Logo" className="h-9 w-9 object-contain rounded-lg" />
-                    ) : (
-                        <div 
-                            className="w-9 h-9 rounded-lg flex items-center justify-center"
-                            style={{ background: `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})` }}
-                        >
-                            <CreditCard className="h-5 w-5 text-white" />
-                        </div>
-                    )}
+                            <img src={logoUrl} alt="Logo" className="h-12 w-12 object-contain rounded-lg" />
+                        ) : (
+                            <div 
+                                className="w-12 h-12 rounded-lg flex items-center justify-center"
+                                style={{ background: `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})` }}
+                            >
+                                <CreditCard className="h-6 w-6 text-white" />
+                            </div>
+                        )}
                 </div>
 
                 {/* Main Menu Items */}
@@ -302,7 +302,7 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
             {/* Submenu Panel */}
             {activeGroupData && (
                 <aside 
-                    className="h-full w-48 border-r flex flex-col"
+                    className="h-full w-56 border-r flex flex-col"
                     style={{ backgroundColor: '#1e293b', borderColor: 'rgba(255,255,255,0.1)' }}
                 >
                     {/* Group Header */}

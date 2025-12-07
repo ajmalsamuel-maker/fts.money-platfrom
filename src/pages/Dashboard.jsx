@@ -88,7 +88,7 @@ export default function Dashboard() {
             
             <div className={cn(
                 "transition-all duration-300",
-                "lg:ml-16",
+                "lg:ml-20",
                 sidebarCollapsed && "ml-0"
             )}>
                 <TopHeader 
@@ -117,9 +117,7 @@ export default function Dashboard() {
 
                     {/* Stats Cards + TPS */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
-                        <div className="sm:col-span-2 lg:col-span-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-                            <StatsCards stats={stats} />
-                        </div>
+                        <StatsCards stats={stats} />
                         <div className="sm:col-span-2 lg:col-span-1">
                             <TPSCounter />
                         </div>
