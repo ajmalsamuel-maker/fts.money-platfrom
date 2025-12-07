@@ -32,52 +32,258 @@ import {
     Info,
     CheckCircle,
     Clock,
-    Send
+    Send,
+    Mail,
+    QrCode,
+    Smartphone,
+    FileText,
+    Upload,
+    X,
+    DollarSign,
+    Fingerprint,
+    Globe,
+    MapPin
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
+import BusinessDetailsStep from '@/components/onboarding/BusinessDetailsStep';
+import CompanyStructureStep from '@/components/onboarding/CompanyStructureStep';
+import LEIVerificationStep from '@/components/onboarding/LEIVerificationStep';
+import ContactInfoStep from '@/components/onboarding/ContactInfoStep';
+import DocumentUploadStep from '@/components/onboarding/DocumentUploadStep';
+import KYBVerificationStep from '@/components/onboarding/KYBVerificationStep';
+import AMLScreeningStep from '@/components/onboarding/AMLScreeningStep';
+import BankDetailsStep from '@/components/onboarding/BankDetailsStep';
+import PricingStep from '@/components/onboarding/PricingStep';
+import ReviewSubmitStep from '@/components/onboarding/ReviewSubmitStep';
+import OnboardingProgress from '@/components/onboarding/OnboardingProgress';
 
 const steps = [
-    { id: 1, name: 'Business Details', icon: Building2 },
-    { id: 2, name: 'Contact Info', icon: Users },
-    { id: 3, name: 'KYB Verification', icon: Shield },
-    { id: 4, name: 'Bank Details', icon: Landmark },
-    { id: 5, name: 'AML Screening', icon: AlertTriangle },
+    { id: 1, name: 'Business Details', icon: Building2, component: 'BusinessDetailsStep' },
+    { id: 2, name: 'Company Structure', icon: Users, component: 'CompanyStructureStep' },
+    { id: 3, name: 'LEI Verification', icon: Globe, component: 'LEIVerificationStep' },
+    { id: 4, name: 'Contact Info', icon: Users, component: 'ContactInfoStep' },
+    { id: 5, name: 'Documents', icon: FileText, component: 'DocumentUploadStep' },
+    { id: 6, name: 'KYB Verification', icon: Shield, component: 'KYBVerificationStep' },
+    { id: 7, name: 'AML Screening', icon: AlertTriangle, component: 'AMLScreeningStep' },
+    { id: 8, name: 'Bank Details', icon: Landmark, component: 'BankDetailsStep' },
+    { id: 9, name: 'Pricing', icon: DollarSign, component: 'PricingStep' },
+    { id: 10, name: 'Review & Submit', icon: Check, component: 'ReviewSubmitStep' },
 ];
 
 export default function MerchantSelfOnboarding() {
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('token');
+    const email = urlParams.get('email');
+    const qr = urlParams.get('qr');
     const navigate = useNavigate();
-    const [currentStep, setCurrentStep] = useState(1);
+    
+    const [authMethod, setAuthMethod] = useState(null); // 'token', 'email', 'qr', 'sms'
+    const [isAuthenticating, setIsAuthenticating] = useState(false);
+    const [authEmail, setAuthEmail] = useState('');
+    const [authPhone, setAuthPhone] = useState('');
+    const [verificationCode, setVerificationCode] = useState('');
+    const [showCodeInput, setShowCodeInput] = useState(false);
+    const [qrCode, setQrCode] = useState('');
     const [isValidToken, setIsValidToken] = useState(null);
-    const [kybStatus, setKybStatus] = useState('not_started');
-    const [amlStatus, setAmlStatus] = useState('not_started');
+    const [currentStep, setCurrentStep] = useState(1);
+    const [completedSteps, setCompletedSteps] = useState([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitSuccess, setSubmitSuccess] = useState(false);
     const [errors, setErrors] = useState({});
+    const [merchantId, setMerchantId] = useState('');
     
     const [formData, setFormData] = useState({
-        business: {},
-        contacts: {},
-        bank: {},
+        business: {
+            legal_name: '',
+            trading_name: '',
+            entity_type: '',
+            registration_number: '',
+            vat_number: '',
+            incorporation_date: '',
+            country: '',
+            website: '',
+            mcc_code: '',
+            business_description: '',
+            lei: '',
+            address_line1: '',
+            address_line2: '',
+            city: '',
+            state: '',
+            postal_code: '',
+            expected_monthly_volume: '',
+            expected_avg_transaction: '',
+        },
+        companyStructure: {
+            shareholders: [],
+            directors: [],
+            ubos: [],
+        },
+        contacts: {
+            full_name: '',
+            email: '',
+            phone: '',
+            role: '',
+            secondary_name: '',
+            secondary_email: '',
+            secondary_phone: '',
+            secondary_role: '',
+        },
+        documents: {
+            incorporation_certificate: null,
+            business_license: null,
+            proof_of_address: null,
+            directors_id: [],
+            shareholders_id: [],
+        },
+        bank: {
+            account_holder: '',
+            bank_name: '',
+            account_number: '',
+            swift_code: '',
+            iban: '',
+            currency: 'USD',
+            bank_address: '',
+        },
+        pricing: {
+            pricing_model: 'interchange_plus',
+            card_present_rate: '',
+            card_not_present_rate: '',
+            monthly_fee: '',
+            setup_fee: '',
+        },
+        kyb: {
+            status: 'not_started',
+            provider: 'thekyb',
+            reference_id: '',
+        },
+        aml: {
+            status: 'not_started',
+            provider: 'amlwatcher',
+            risk_score: null,
+        },
+        lei_verification: {
+            status: 'not_started',
+            verified_date: null,
+        },
     });
 
     useEffect(() => {
-        // Allow access without token for testing, or validate token
         if (token) {
+            validateToken(token);
+        } else if (email) {
+            setAuthMethod('email');
+            setAuthEmail(email);
             setIsValidToken(true);
+        } else if (qr) {
+            validateQRCode(qr);
         } else {
-            // Allow access without token for direct navigation
-            setIsValidToken(true);
+            // Show authentication options
+            setIsValidToken(false);
         }
-    }, [token]);
+    }, [token, email, qr]);
+
+    const validateToken = async (tokenValue) => {
+        setIsAuthenticating(true);
+        try {
+            const merchants = await base44.entities.Merchant.filter({ onboarding_token: tokenValue });
+            if (merchants && merchants.length > 0) {
+                setIsValidToken(true);
+                setAuthMethod('token');
+                // Pre-fill any existing data
+                const merchant = merchants[0];
+                if (merchant.business_name) {
+                    setFormData(prev => ({
+                        ...prev,
+                        business: { ...prev.business, legal_name: merchant.business_name }
+                    }));
+                }
+            } else {
+                setIsValidToken(false);
+            }
+        } catch (error) {
+            setIsValidToken(false);
+        }
+        setIsAuthenticating(false);
+    };
+
+    const validateQRCode = async (qrValue) => {
+        setIsAuthenticating(true);
+        try {
+            // Decode QR and validate
+            const merchants = await base44.entities.Merchant.filter({ merchant_id: qrValue });
+            if (merchants && merchants.length > 0) {
+                setIsValidToken(true);
+                setAuthMethod('qr');
+                setQrCode(qrValue);
+            } else {
+                setIsValidToken(false);
+            }
+        } catch (error) {
+            setIsValidToken(false);
+        }
+        setIsAuthenticating(false);
+    };
+
+    const sendMagicLink = async () => {
+        if (!authEmail) return;
+        setIsAuthenticating(true);
+        try {
+            const magicToken = `MLT-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+            const magicLink = `${window.location.origin}${createPageUrl('MerchantSelfOnboarding')}?token=${magicToken}&email=${encodeURIComponent(authEmail)}`;
+            
+            await base44.integrations.Core.SendEmail({
+                to: authEmail,
+                subject: 'Complete Your Merchant Onboarding - PaymentHub',
+                body: `Click the link below to complete your merchant onboarding:\n\n${magicLink}\n\nThis link is valid for 24 hours.\n\nIf you didn't request this, please ignore this email.`
+            });
+            
+            setShowCodeInput(false);
+            alert('Magic link sent! Check your email to continue.');
+        } catch (error) {
+            alert('Failed to send magic link. Please try again.');
+        }
+        setIsAuthenticating(false);
+    };
+
+    const sendSMSCode = async () => {
+        if (!authPhone) return;
+        setIsAuthenticating(true);
+        try {
+            const code = Math.floor(100000 + Math.random() * 900000).toString();
+            // Store code temporarily (in production, use secure backend)
+            sessionStorage.setItem('sms_code', code);
+            
+            // In production, integrate with SMS provider (Twilio, SNS, etc.)
+            alert(`SMS Code sent to ${authPhone}: ${code}`);
+            setShowCodeInput(true);
+        } catch (error) {
+            alert('Failed to send SMS. Please try again.');
+        }
+        setIsAuthenticating(false);
+    };
+
+    const verifySMSCode = () => {
+        const storedCode = sessionStorage.getItem('sms_code');
+        if (verificationCode === storedCode) {
+            setIsValidToken(true);
+            setAuthMethod('sms');
+            sessionStorage.removeItem('sms_code');
+        } else {
+            alert('Invalid code. Please try again.');
+        }
+    };
+
+    const generateQRCode = async () => {
+        const qrData = `QR-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        setQrCode(qrData);
+        // In production, generate actual QR code image using library like qrcode.react
+    };
 
     const handleChange = (section, field, value) => {
         setFormData(prev => ({
             ...prev,
             [section]: { ...prev[section], [field]: value }
         }));
-        // Clear error when field is updated
         if (errors[field]) {
             setErrors(prev => ({ ...prev, [field]: null }));
         }
@@ -85,94 +291,338 @@ export default function MerchantSelfOnboarding() {
 
     const validateStep = (step) => {
         const newErrors = {};
+        
         if (step === 1) {
             if (!formData.business.legal_name) newErrors.legal_name = 'Required';
+            if (!formData.business.entity_type) newErrors.entity_type = 'Required';
             if (!formData.business.registration_number) newErrors.registration_number = 'Required';
-            if (!formData.business.address) newErrors.address = 'Required';
+            if (!formData.business.country) newErrors.country = 'Required';
+            if (!formData.business.mcc_code) newErrors.mcc_code = 'Required';
         }
+        
         if (step === 2) {
+            if (!formData.companyStructure.directors || formData.companyStructure.directors.length === 0) {
+                newErrors.directors = 'At least one director required';
+            }
+        }
+        
+        if (step === 4) {
             if (!formData.contacts.full_name) newErrors.full_name = 'Required';
             if (!formData.contacts.email) newErrors.email = 'Required';
             if (!formData.contacts.phone) newErrors.phone = 'Required';
-            if (!formData.contacts.role) newErrors.role = 'Required';
         }
-        if (step === 4) {
+        
+        if (step === 8) {
             if (!formData.bank.account_holder) newErrors.account_holder = 'Required';
             if (!formData.bank.bank_name) newErrors.bank_name = 'Required';
-            if (!formData.bank.account_number) newErrors.account_number = 'Required';
-            if (!formData.bank.swift_code) newErrors.swift_code = 'Required';
+            if (!formData.bank.account_number && !formData.bank.iban) {
+                newErrors.account_number = 'Account number or IBAN required';
+            }
         }
+        
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
 
-    const initiateKYB = async () => {
-        setKybStatus('in_progress');
-        try {
-            await base44.integrations.Core.InvokeLLM({
-                prompt: `Simulate KYB verification for: ${formData.business.legal_name}`,
-                response_json_schema: { type: "object", properties: { status: { type: "string" } } }
-            });
-        } catch (e) {}
-        setTimeout(() => setKybStatus('pending_review'), 2000);
-    };
-
-    const initiateAML = async () => {
-        setAmlStatus('in_progress');
-        try {
-            await base44.integrations.Core.InvokeLLM({
-                prompt: `Simulate AML screening for: ${formData.business.legal_name}`,
-                response_json_schema: { type: "object", properties: { status: { type: "string" } } }
-            });
-        } catch (e) {}
-        setTimeout(() => setAmlStatus('clear'), 2000);
-    };
-
     const handleNext = () => {
         if (validateStep(currentStep)) {
-            if (currentStep < 5) {
+            if (!completedSteps.includes(currentStep)) {
+                setCompletedSteps([...completedSteps, currentStep]);
+            }
+            if (currentStep < 10) {
                 setCurrentStep(currentStep + 1);
             }
+        }
+    };
+
+    const handleBack = () => {
+        if (currentStep > 1) {
+            setCurrentStep(currentStep - 1);
+        }
+    };
+
+    const handleStepClick = (stepId) => {
+        if (completedSteps.includes(stepId - 1) || stepId === 1) {
+            setCurrentStep(stepId);
         }
     };
 
     const handleSubmit = async () => {
         setIsSubmitting(true);
         try {
+            const newMerchantId = `MID-${Date.now()}`;
+            
             const merchant = await base44.entities.Merchant.create({
-                merchant_id: `MID-${Date.now()}`,
+                merchant_id: newMerchantId,
                 business_name: formData.business.legal_name,
                 trading_name: formData.business.trading_name,
                 status: 'pending',
+                category: getCategoryFromMCC(formData.business.mcc_code),
+                mcc_code: formData.business.mcc_code,
+                country: formData.business.country,
                 contact_name: formData.contacts.full_name,
                 contact_email: formData.contacts.email,
                 contact_phone: formData.contacts.phone,
-                address: formData.business.address,
+                address: `${formData.business.address_line1}, ${formData.business.city}, ${formData.business.state} ${formData.business.postal_code}`,
+                website: formData.business.website,
                 lei: formData.business.lei,
-                kyb_status: kybStatus === 'pending_review' ? 'pending_review' : 'in_progress',
-                aml_status: amlStatus === 'clear' ? 'clear' : 'monitoring',
-                kyb_provider: 'thekyb',
-                aml_provider: 'amlwatcher',
+                lei_status: formData.lei_verification.status === 'verified' ? 'verified' : 'pending',
+                kyb_status: formData.kyb.status,
+                kyb_provider: formData.kyb.provider,
+                kyb_reference_id: formData.kyb.reference_id,
+                aml_status: formData.aml.status,
+                aml_provider: formData.aml.provider,
+                aml_risk_score: formData.aml.risk_score,
                 onboarding_token: token,
+                risk_level: calculateRiskLevel(formData),
+                processing_volume: parseVolume(formData.business.expected_monthly_volume),
+                fee_rate: parseFloat(formData.pricing.card_not_present_rate) || 2.5,
             });
 
-            // Send notification
-            try {
-                await base44.integrations.Core.SendEmail({
-                    to: formData.contacts.email,
-                    subject: 'Merchant Application Received - PaymentHub',
-                    body: `Dear ${formData.contacts.full_name},\n\nYour merchant application for ${formData.business.legal_name} has been received and is under review.\n\nYour Merchant ID: ${merchant.merchant_id}\n\nYou will receive your API credentials once approved.\n\nBest regards,\nPaymentHub Team`
-                });
-            } catch (e) {}
+            setMerchantId(newMerchantId);
+
+            // Send confirmation email
+            await base44.integrations.Core.SendEmail({
+                to: formData.contacts.email,
+                subject: 'Merchant Application Received - PaymentHub',
+                body: `Dear ${formData.contacts.full_name},
+
+Your merchant application for ${formData.business.legal_name} has been successfully submitted and is now under review.
+
+Merchant ID: ${newMerchantId}
+Submitted: ${new Date().toLocaleString()}
+
+What happens next:
+1. KYB Verification Review (1-2 business days)
+2. AML Screening Confirmation
+3. Compliance Approval
+4. API Credentials Delivery
+
+You will receive your API credentials and merchant portal access once your application is approved.
+
+Estimated review time: 2-3 business days
+
+Thank you for choosing PaymentHub!
+
+Best regards,
+The PaymentHub Team`
+            });
 
             setSubmitSuccess(true);
         } catch (error) {
             console.error('Submission error:', error);
+            alert('Failed to submit application. Please try again.');
         }
         setIsSubmitting(false);
     };
 
-    if (isValidToken === null) {
+    const getCategoryFromMCC = (mcc) => {
+        if (!mcc) return 'other';
+        const code = parseInt(mcc);
+        if (code >= 5000 && code <= 5999) return 'retail';
+        if (code >= 7000 && code <= 7999) return 'services';
+        if (code >= 4000 && code <= 4799) return 'travel';
+        return 'ecommerce';
+    };
+
+    const parseVolume = (volumeString) => {
+        if (!volumeString) return 0;
+        return parseFloat(volumeString.replace(/[^0-9.]/g, '')) || 0;
+    };
+
+    const calculateRiskLevel = (data) => {
+        let score = 0;
+        
+        if (data.aml.risk_score > 70) score += 2;
+        else if (data.aml.risk_score > 50) score += 1;
+        
+        const volume = parseVolume(data.business.expected_monthly_volume);
+        if (volume > 100000) score += 1;
+        
+        const highRiskMCCs = ['7995', '5816', '6051'];
+        if (highRiskMCCs.includes(data.business.mcc_code)) score += 2;
+        
+        if (score >= 3) return 'high';
+        if (score >= 1) return 'medium';
+        return 'low';
+    };
+
+    // Authentication Screen
+    if (isValidToken === false && !authMethod) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-50 flex items-center justify-center p-4">
+                <Card className="max-w-2xl w-full p-8">
+                    <div className="text-center mb-8">
+                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center mx-auto mb-4">
+                            <CreditCard className="h-8 w-8 text-white" />
+                        </div>
+                        <h1 className="text-3xl font-bold text-slate-900 mb-2">Merchant Onboarding</h1>
+                        <p className="text-slate-600">Choose your preferred method to get started</p>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-4 mb-6">
+                        <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer border-2 hover:border-blue-500" onClick={() => setAuthMethod('email')}>
+                            <Mail className="h-8 w-8 text-blue-600 mb-3" />
+                            <h3 className="font-semibold text-lg mb-2">Magic Link via Email</h3>
+                            <p className="text-sm text-slate-600">Receive a secure link to complete onboarding</p>
+                        </Card>
+
+                        <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer border-2 hover:border-purple-500" onClick={() => setAuthMethod('sms')}>
+                            <Smartphone className="h-8 w-8 text-purple-600 mb-3" />
+                            <h3 className="font-semibold text-lg mb-2">SMS Verification</h3>
+                            <p className="text-sm text-slate-600">Get a code sent to your mobile phone</p>
+                        </Card>
+
+                        <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer border-2 hover:border-emerald-500" onClick={generateQRCode}>
+                            <QrCode className="h-8 w-8 text-emerald-600 mb-3" />
+                            <h3 className="font-semibold text-lg mb-2">QR Code</h3>
+                            <p className="text-sm text-slate-600">Scan QR code with your mobile device</p>
+                        </Card>
+
+                        <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer border-2 hover:border-amber-500" onClick={() => setAuthMethod('biometric')}>
+                            <Fingerprint className="h-8 w-8 text-amber-600 mb-3" />
+                            <h3 className="font-semibold text-lg mb-2">Biometric Auth</h3>
+                            <p className="text-sm text-slate-600">Use fingerprint or face ID (mobile)</p>
+                        </Card>
+                    </div>
+
+                    <Alert>
+                        <Info className="h-4 w-4" />
+                        <AlertDescription>
+                            <strong>Have an invitation link?</strong> Check your email or SMS for a direct access link.
+                        </AlertDescription>
+                    </Alert>
+                </Card>
+            </div>
+        );
+    }
+
+    // Email Magic Link
+    if (authMethod === 'email' && !isValidToken) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-50 flex items-center justify-center p-4">
+                <Card className="max-w-md w-full p-8">
+                    <Button variant="ghost" onClick={() => setAuthMethod(null)} className="mb-4">
+                        <ChevronLeft className="h-4 w-4 mr-2" />Back
+                    </Button>
+                    <Mail className="h-12 w-12 text-blue-600 mx-auto mb-4" />
+                    <h2 className="text-2xl font-bold text-center mb-2">Magic Link</h2>
+                    <p className="text-slate-600 text-center mb-6">Enter your email to receive a secure access link</p>
+                    
+                    <div className="space-y-4">
+                        <div>
+                            <Label>Email Address</Label>
+                            <Input 
+                                type="email" 
+                                value={authEmail} 
+                                onChange={(e) => setAuthEmail(e.target.value)}
+                                placeholder="your@email.com"
+                            />
+                        </div>
+                        <Button onClick={sendMagicLink} disabled={isAuthenticating || !authEmail} className="w-full">
+                            {isAuthenticating ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Send className="h-4 w-4 mr-2" />}
+                            Send Magic Link
+                        </Button>
+                    </div>
+                </Card>
+            </div>
+        );
+    }
+
+    // SMS Verification
+    if (authMethod === 'sms' && !isValidToken) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-50 flex items-center justify-center p-4">
+                <Card className="max-w-md w-full p-8">
+                    <Button variant="ghost" onClick={() => setAuthMethod(null)} className="mb-4">
+                        <ChevronLeft className="h-4 w-4 mr-2" />Back
+                    </Button>
+                    <Smartphone className="h-12 w-12 text-purple-600 mx-auto mb-4" />
+                    <h2 className="text-2xl font-bold text-center mb-2">SMS Verification</h2>
+                    <p className="text-slate-600 text-center mb-6">
+                        {showCodeInput ? 'Enter the 6-digit code sent to your phone' : 'Enter your phone number'}
+                    </p>
+                    
+                    <div className="space-y-4">
+                        {!showCodeInput ? (
+                            <>
+                                <div>
+                                    <Label>Phone Number</Label>
+                                    <Input 
+                                        type="tel" 
+                                        value={authPhone} 
+                                        onChange={(e) => setAuthPhone(e.target.value)}
+                                        placeholder="+1 234 567 8900"
+                                    />
+                                </div>
+                                <Button onClick={sendSMSCode} disabled={isAuthenticating || !authPhone} className="w-full">
+                                    {isAuthenticating ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Send className="h-4 w-4 mr-2" />}
+                                    Send Code
+                                </Button>
+                            </>
+                        ) : (
+                            <>
+                                <div>
+                                    <Label>Verification Code</Label>
+                                    <Input 
+                                        value={verificationCode} 
+                                        onChange={(e) => setVerificationCode(e.target.value)}
+                                        placeholder="000000"
+                                        maxLength={6}
+                                        className="text-center text-2xl tracking-widest font-mono"
+                                    />
+                                </div>
+                                <Button onClick={verifySMSCode} disabled={verificationCode.length !== 6} className="w-full">
+                                    <Check className="h-4 w-4 mr-2" />
+                                    Verify Code
+                                </Button>
+                                <Button variant="ghost" onClick={() => setShowCodeInput(false)} className="w-full">
+                                    Use Different Number
+                                </Button>
+                            </>
+                        )}
+                    </div>
+                </Card>
+            </div>
+        );
+    }
+
+    // QR Code Display
+    if (qrCode && !isValidToken) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-50 flex items-center justify-center p-4">
+                <Card className="max-w-md w-full p-8 text-center">
+                    <Button variant="ghost" onClick={() => { setQrCode(''); setAuthMethod(null); }} className="mb-4">
+                        <ChevronLeft className="h-4 w-4 mr-2" />Back
+                    </Button>
+                    <QrCode className="h-12 w-12 text-emerald-600 mx-auto mb-4" />
+                    <h2 className="text-2xl font-bold mb-2">Scan QR Code</h2>
+                    <p className="text-slate-600 mb-6">Use your mobile device to scan and continue</p>
+                    
+                    <div className="w-64 h-64 bg-white border-4 border-slate-200 rounded-lg mx-auto mb-6 flex items-center justify-center">
+                        <div className="text-center">
+                            <QrCode className="h-32 w-32 text-slate-300 mx-auto mb-2" />
+                            <p className="text-xs text-slate-400 font-mono">{qrCode}</p>
+                        </div>
+                    </div>
+                    
+                    <Alert>
+                        <Info className="h-4 w-4" />
+                        <AlertDescription className="text-left">
+                            <strong>How to use:</strong>
+                            <ol className="list-decimal list-inside mt-2 text-sm space-y-1">
+                                <li>Open camera on your mobile device</li>
+                                <li>Point at the QR code above</li>
+                                <li>Tap the notification to continue</li>
+                            </ol>
+                        </AlertDescription>
+                    </Alert>
+                </Card>
+            </div>
+        );
+    }
+
+    if (isAuthenticating) {
         return (
             <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center">
                 <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
@@ -183,23 +633,60 @@ export default function MerchantSelfOnboarding() {
     if (submitSuccess) {
         return (
             <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-4">
-                <Card className="max-w-md w-full p-8 text-center">
-                    <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-4">
-                        <CheckCircle className="h-8 w-8 text-emerald-600" />
-                    </div>
-                    <h1 className="text-2xl font-bold text-slate-900 mb-2">Application Submitted!</h1>
-                    <p className="text-slate-500 mb-4">Your merchant application has been received. We'll review it and send your API credentials once approved.</p>
-                    <Badge className="bg-blue-100 text-blue-700 mb-4">Estimated review time: 1-2 business days</Badge>
-                    <div className="mt-4 p-4 bg-slate-50 rounded-lg">
-                        <p className="text-sm text-slate-600 mb-2">Track your application status:</p>
-                        <Button 
-                            variant="outline" 
-                            className="gap-2"
-                            onClick={() => window.location.href = `MerchantPortal?mid=${formData.business?.merchant_id || ''}`}
-                        >
-                            <ExternalLink className="h-4 w-4" />
-                            Open Merchant Portal
-                        </Button>
+                <Card className="max-w-2xl w-full p-8">
+                    <div className="text-center">
+                        <div className="w-20 h-20 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-6">
+                            <CheckCircle className="h-10 w-10 text-emerald-600" />
+                        </div>
+                        <h1 className="text-3xl font-bold text-slate-900 mb-3">Application Submitted Successfully!</h1>
+                        <p className="text-lg text-slate-600 mb-6">
+                            Your merchant application for <strong>{formData.business.legal_name}</strong> has been received.
+                        </p>
+                        
+                        <Card className="p-6 bg-blue-50 border-blue-200 mb-6">
+                            <div className="grid md:grid-cols-2 gap-4 text-left">
+                                <div>
+                                    <p className="text-sm text-slate-600">Merchant ID</p>
+                                    <p className="font-mono font-semibold text-slate-900">{merchantId}</p>
+                                </div>
+                                <div>
+                                    <p className="text-sm text-slate-600">Application Date</p>
+                                    <p className="font-semibold text-slate-900">{new Date().toLocaleDateString()}</p>
+                                </div>
+                                <div>
+                                    <p className="text-sm text-slate-600">Review Status</p>
+                                    <Badge className="bg-amber-100 text-amber-700">Under Review</Badge>
+                                </div>
+                                <div>
+                                    <p className="text-sm text-slate-600">Estimated Time</p>
+                                    <p className="font-semibold text-slate-900">2-3 Business Days</p>
+                                </div>
+                            </div>
+                        </Card>
+
+                        <Alert className="mb-6 text-left">
+                            <Clock className="h-4 w-4" />
+                            <AlertDescription>
+                                <strong>What happens next:</strong>
+                                <ol className="list-decimal list-inside mt-2 space-y-1">
+                                    <li>KYB Verification Review</li>
+                                    <li>AML Screening Confirmation</li>
+                                    <li>Compliance Team Approval</li>
+                                    <li>API Credentials & Portal Access Delivery</li>
+                                </ol>
+                            </AlertDescription>
+                        </Alert>
+
+                        <div className="flex gap-3 justify-center">
+                            <Button variant="outline" onClick={() => window.print()}>
+                                <FileText className="h-4 w-4 mr-2" />
+                                Print Confirmation
+                            </Button>
+                            <Button onClick={() => window.location.href = createPageUrl('MerchantLogin')}>
+                                <ExternalLink className="h-4 w-4 mr-2" />
+                                Go to Merchant Portal
+                            </Button>
+                        </div>
                     </div>
                 </Card>
             </div>
@@ -207,292 +694,166 @@ export default function MerchantSelfOnboarding() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-            <header className="bg-white border-b border-slate-200 py-4">
-                <div className="max-w-4xl mx-auto px-4 flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
-                        <CreditCard className="h-5 w-5 text-white" />
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-50">
+            <header className="bg-white border-b border-slate-200 py-4 sticky top-0 z-10">
+                <div className="max-w-6xl mx-auto px-4 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
+                            <CreditCard className="h-5 w-5 text-white" />
+                        </div>
+                        <div>
+                            <h1 className="font-bold text-slate-900">PaymentHub</h1>
+                            <p className="text-xs text-slate-500">Merchant Onboarding Portal</p>
+                        </div>
                     </div>
-                    <div>
-                        <h1 className="font-bold text-slate-900">PaymentHub</h1>
-                        <p className="text-xs text-slate-500">Merchant Onboarding</p>
-                    </div>
+                    <Badge variant="outline" className="hidden sm:flex">
+                        Step {currentStep} of {steps.length}
+                    </Badge>
                 </div>
             </header>
 
-            <main className="max-w-4xl mx-auto px-4 py-8">
-                <Card className="p-6 mb-6">
-                    <div className="flex items-center justify-between mb-4">
-                        {steps.map((step, idx) => (
-                            <React.Fragment key={step.id}>
-                                <div className="flex flex-col items-center">
-                                    <div className={cn(
-                                        "w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all",
-                                        currentStep > step.id ? "bg-emerald-500 border-emerald-500 text-white" :
-                                        currentStep === step.id ? "bg-blue-600 border-blue-600 text-white" :
-                                        "bg-white border-slate-300 text-slate-400"
-                                    )}>
-                                        {currentStep > step.id ? <Check className="h-5 w-5" /> : <step.icon className="h-5 w-5" />}
-                                    </div>
-                                    <p className={cn("text-xs mt-2 text-center hidden sm:block", currentStep === step.id ? "text-blue-600 font-medium" : "text-slate-500")}>
-                                        {step.name}
-                                    </p>
-                                </div>
-                                {idx < steps.length - 1 && (
-                                    <div className={cn("flex-1 h-0.5 mx-2", currentStep > step.id ? "bg-emerald-500" : "bg-slate-200")} />
-                                )}
-                            </React.Fragment>
-                        ))}
-                    </div>
-                </Card>
+            <main className="max-w-6xl mx-auto px-4 py-8">
+                <OnboardingProgress 
+                    steps={steps}
+                    currentStep={currentStep}
+                    completedSteps={completedSteps}
+                    onStepClick={handleStepClick}
+                />
 
-                <Card className="p-6 mb-6">
+                <Card className="p-6 md:p-8 mb-6 min-h-[500px]">
                     {currentStep === 1 && (
-                        <div className="space-y-6">
-                            <h2 className="text-xl font-semibold">Business Details</h2>
-                            <div className="grid md:grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label>Legal Business Name *</Label>
-                                    <Input 
-                                        value={formData.business.legal_name || ''} 
-                                        onChange={(e) => handleChange('business', 'legal_name', e.target.value)} 
-                                        placeholder="Enter legal name"
-                                        className={errors.legal_name ? 'border-red-500' : ''}
-                                    />
-                                    {errors.legal_name && <p className="text-xs text-red-500">{errors.legal_name}</p>}
-                                </div>
-                                <div className="space-y-2">
-                                    <Label>Trading Name</Label>
-                                    <Input value={formData.business.trading_name || ''} onChange={(e) => handleChange('business', 'trading_name', e.target.value)} placeholder="DBA name" />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label>Registration Number *</Label>
-                                    <Input 
-                                        value={formData.business.registration_number || ''} 
-                                        onChange={(e) => handleChange('business', 'registration_number', e.target.value)} 
-                                        placeholder="Company registration"
-                                        className={errors.registration_number ? 'border-red-500' : ''}
-                                    />
-                                    {errors.registration_number && <p className="text-xs text-red-500">{errors.registration_number}</p>}
-                                </div>
-                                <div className="space-y-2">
-                                    <Label>LEI (Legal Entity Identifier)</Label>
-                                    <Input value={formData.business.lei || ''} onChange={(e) => handleChange('business', 'lei', e.target.value.toUpperCase())} placeholder="20-character LEI" maxLength={20} className="font-mono" />
-                                </div>
-                                <div className="md:col-span-2 space-y-2">
-                                    <Label>Business Address *</Label>
-                                    <Textarea 
-                                        value={formData.business.address || ''} 
-                                        onChange={(e) => handleChange('business', 'address', e.target.value)} 
-                                        placeholder="Full business address"
-                                        className={errors.address ? 'border-red-500' : ''}
-                                    />
-                                    {errors.address && <p className="text-xs text-red-500">{errors.address}</p>}
-                                </div>
-                            </div>
-                        </div>
+                        <BusinessDetailsStep 
+                            formData={formData.business}
+                            onChange={(field, value) => handleChange('business', field, value)}
+                            errors={errors}
+                        />
                     )}
-
+                    
                     {currentStep === 2 && (
-                        <div className="space-y-6">
-                            <h2 className="text-xl font-semibold">Contact Information</h2>
-                            <div className="grid md:grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label>Full Name *</Label>
-                                    <Input 
-                                        value={formData.contacts.full_name || ''} 
-                                        onChange={(e) => handleChange('contacts', 'full_name', e.target.value)} 
-                                        placeholder="Primary contact name"
-                                        className={errors.full_name ? 'border-red-500' : ''}
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label>Role *</Label>
-                                    <Select value={formData.contacts.role || ''} onValueChange={(val) => handleChange('contacts', 'role', val)}>
-                                        <SelectTrigger className={errors.role ? 'border-red-500' : ''}><SelectValue placeholder="Select role" /></SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="owner">Owner</SelectItem>
-                                            <SelectItem value="ceo">CEO</SelectItem>
-                                            <SelectItem value="cfo">CFO</SelectItem>
-                                            <SelectItem value="director">Director</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                                <div className="space-y-2">
-                                    <Label>Email *</Label>
-                                    <Input 
-                                        type="email" 
-                                        value={formData.contacts.email || ''} 
-                                        onChange={(e) => handleChange('contacts', 'email', e.target.value)} 
-                                        placeholder="email@company.com"
-                                        className={errors.email ? 'border-red-500' : ''}
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label>Phone *</Label>
-                                    <Input 
-                                        value={formData.contacts.phone || ''} 
-                                        onChange={(e) => handleChange('contacts', 'phone', e.target.value)} 
-                                        placeholder="+1 234 567 8900"
-                                        className={errors.phone ? 'border-red-500' : ''}
-                                    />
-                                </div>
-                            </div>
-                        </div>
+                        <CompanyStructureStep 
+                            formData={formData.companyStructure}
+                            entityType={formData.business.entity_type}
+                            onChange={(field, value) => handleChange('companyStructure', field, value)}
+                            errors={errors}
+                        />
                     )}
-
+                    
                     {currentStep === 3 && (
-                        <div className="space-y-6">
-                            <h2 className="text-xl font-semibold">KYB Verification</h2>
-                            <Alert>
-                                <Info className="h-4 w-4" />
-                                <AlertDescription>
-                                    We partner with <a href="https://thekyb.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 font-medium">TheKYB</a> for business verification.
-                                </AlertDescription>
-                            </Alert>
-
-                            <Card className={cn("p-6 border-2", kybStatus === 'pending_review' ? "border-amber-200 bg-amber-50" : kybStatus === 'approved' ? "border-emerald-200 bg-emerald-50" : "")}>
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-4">
-                                        <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center", 
-                                            kybStatus === 'approved' ? "bg-emerald-100" : kybStatus === 'pending_review' ? "bg-amber-100" : "bg-blue-100"
-                                        )}>
-                                            {kybStatus === 'in_progress' ? (
-                                                <Loader2 className="h-6 w-6 text-blue-600 animate-spin" />
-                                            ) : kybStatus === 'approved' ? (
-                                                <CheckCircle className="h-6 w-6 text-emerald-600" />
-                                            ) : kybStatus === 'pending_review' ? (
-                                                <Clock className="h-6 w-6 text-amber-600" />
-                                            ) : (
-                                                <Shield className="h-6 w-6 text-blue-600" />
-                                            )}
-                                        </div>
-                                        <div>
-                                            <p className="font-medium">Know Your Business (KYB)</p>
-                                            <p className="text-sm text-slate-500">Powered by TheKYB.com</p>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        {kybStatus === 'not_started' && (
-                                            <Button onClick={initiateKYB} className="gap-2">
-                                                <ExternalLink className="h-4 w-4" />Start Verification
-                                            </Button>
-                                        )}
-                                        {kybStatus === 'in_progress' && <Badge>Processing...</Badge>}
-                                        {kybStatus === 'pending_review' && <Badge className="bg-amber-100 text-amber-700">Pending Review</Badge>}
-                                        {kybStatus === 'approved' && <Badge className="bg-emerald-100 text-emerald-700">Verified</Badge>}
-                                    </div>
-                                </div>
-                            </Card>
-                        </div>
+                        <LEIVerificationStep 
+                            formData={formData.lei_verification}
+                            lei={formData.business.lei}
+                            businessName={formData.business.legal_name}
+                            onChange={(field, value) => handleChange('lei_verification', field, value)}
+                        />
                     )}
-
+                    
                     {currentStep === 4 && (
-                        <div className="space-y-6">
-                            <h2 className="text-xl font-semibold">Bank Details</h2>
-                            <div className="grid md:grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label>Account Holder Name *</Label>
-                                    <Input 
-                                        value={formData.bank.account_holder || ''} 
-                                        onChange={(e) => handleChange('bank', 'account_holder', e.target.value)} 
-                                        placeholder="Name on account"
-                                        className={errors.account_holder ? 'border-red-500' : ''}
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label>Bank Name *</Label>
-                                    <Input 
-                                        value={formData.bank.bank_name || ''} 
-                                        onChange={(e) => handleChange('bank', 'bank_name', e.target.value)} 
-                                        placeholder="Bank name"
-                                        className={errors.bank_name ? 'border-red-500' : ''}
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label>Account Number / IBAN *</Label>
-                                    <Input 
-                                        value={formData.bank.account_number || ''} 
-                                        onChange={(e) => handleChange('bank', 'account_number', e.target.value)} 
-                                        placeholder="Account number"
-                                        className={errors.account_number ? 'border-red-500' : ''}
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label>SWIFT / BIC Code *</Label>
-                                    <Input 
-                                        value={formData.bank.swift_code || ''} 
-                                        onChange={(e) => handleChange('bank', 'swift_code', e.target.value.toUpperCase())} 
-                                        placeholder="SWIFT code"
-                                        className={errors.swift_code ? 'border-red-500' : ''}
-                                    />
-                                </div>
-                            </div>
-                        </div>
+                        <ContactInfoStep 
+                            formData={formData.contacts}
+                            onChange={(field, value) => handleChange('contacts', field, value)}
+                            errors={errors}
+                        />
                     )}
-
+                    
                     {currentStep === 5 && (
-                        <div className="space-y-6">
-                            <h2 className="text-xl font-semibold">AML Screening</h2>
-                            <Alert>
-                                <Info className="h-4 w-4" />
-                                <AlertDescription>
-                                    We use <a href="https://amlwatcher.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 font-medium">AMLWatcher</a> for AML monitoring.
-                                </AlertDescription>
-                            </Alert>
-
-                            <Card className={cn("p-6 border-2", amlStatus === 'clear' ? "border-emerald-200 bg-emerald-50" : "")}>
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-4">
-                                        <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center", amlStatus === 'clear' ? "bg-emerald-100" : "bg-purple-100")}>
-                                            {amlStatus === 'in_progress' ? (
-                                                <Loader2 className="h-6 w-6 text-purple-600 animate-spin" />
-                                            ) : amlStatus === 'clear' ? (
-                                                <CheckCircle className="h-6 w-6 text-emerald-600" />
-                                            ) : (
-                                                <AlertTriangle className="h-6 w-6 text-purple-600" />
-                                            )}
-                                        </div>
-                                        <div>
-                                            <p className="font-medium">AML Screening</p>
-                                            <p className="text-sm text-slate-500">Powered by AMLWatcher</p>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        {amlStatus === 'not_started' && (
-                                            <Button onClick={initiateAML} className="gap-2" variant="outline">
-                                                <ExternalLink className="h-4 w-4" />Run Screening
-                                            </Button>
-                                        )}
-                                        {amlStatus === 'in_progress' && <Badge>Screening...</Badge>}
-                                        {amlStatus === 'clear' && <Badge className="bg-emerald-100 text-emerald-700">Clear</Badge>}
-                                    </div>
-                                </div>
-                            </Card>
-                        </div>
+                        <DocumentUploadStep 
+                            formData={formData.documents}
+                            onChange={(field, value) => handleChange('documents', field, value)}
+                            entityType={formData.business.entity_type}
+                        />
+                    )}
+                    
+                    {currentStep === 6 && (
+                        <KYBVerificationStep 
+                            formData={formData.kyb}
+                            businessData={formData.business}
+                            onChange={(field, value) => handleChange('kyb', field, value)}
+                        />
+                    )}
+                    
+                    {currentStep === 7 && (
+                        <AMLScreeningStep 
+                            formData={formData.aml}
+                            businessData={formData.business}
+                            onChange={(field, value) => handleChange('aml', field, value)}
+                        />
+                    )}
+                    
+                    {currentStep === 8 && (
+                        <BankDetailsStep 
+                            formData={formData.bank}
+                            onChange={(field, value) => handleChange('bank', field, value)}
+                            errors={errors}
+                        />
+                    )}
+                    
+                    {currentStep === 9 && (
+                        <PricingStep 
+                            formData={formData.pricing}
+                            onChange={(field, value) => handleChange('pricing', field, value)}
+                            businessVolume={formData.business.expected_monthly_volume}
+                        />
+                    )}
+                    
+                    {currentStep === 10 && (
+                        <ReviewSubmitStep 
+                            formData={formData}
+                            onEdit={(step) => setCurrentStep(step)}
+                        />
                     )}
                 </Card>
 
-                <div className="flex justify-between">
-                    <Button variant="outline" onClick={() => setCurrentStep(s => s - 1)} disabled={currentStep === 1} className="gap-2">
-                        <ChevronLeft className="h-4 w-4" />Back
+                <div className="flex justify-between items-center">
+                    <Button 
+                        variant="outline" 
+                        onClick={handleBack} 
+                        disabled={currentStep === 1}
+                        className="gap-2"
+                    >
+                        <ChevronLeft className="h-4 w-4" />
+                        Back
                     </Button>
-                    {currentStep < 5 ? (
-                        <Button onClick={handleNext} className="gap-2 bg-blue-600 hover:bg-blue-700">
-                            Continue<ChevronRight className="h-4 w-4" />
-                        </Button>
-                    ) : (
-                        <Button 
-                            onClick={handleSubmit} 
-                            className="gap-2 bg-emerald-600 hover:bg-emerald-700" 
-                            disabled={isSubmitting || (kybStatus !== 'pending_review' && kybStatus !== 'approved')}
-                        >
-                            {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-                            Submit Application
-                        </Button>
-                    )}
+                    
+                    <div className="flex gap-3">
+                        {currentStep < 10 ? (
+                            <Button 
+                                onClick={handleNext} 
+                                className="gap-2 bg-blue-600 hover:bg-blue-700"
+                            >
+                                Continue
+                                <ChevronRight className="h-4 w-4" />
+                            </Button>
+                        ) : (
+                            <Button 
+                                onClick={handleSubmit} 
+                                className="gap-2 bg-emerald-600 hover:bg-emerald-700" 
+                                disabled={isSubmitting}
+                            >
+                                {isSubmitting ? (
+                                    <>
+                                        <Loader2 className="h-4 w-4 animate-spin" />
+                                        Submitting...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Send className="h-4 w-4" />
+                                        Submit Application
+                                    </>
+                                )}
+                            </Button>
+                        )}
+                    </div>
                 </div>
             </main>
+
+            <footer className="bg-white border-t border-slate-200 py-6 mt-12">
+                <div className="max-w-6xl mx-auto px-4 text-center text-sm text-slate-600">
+                    <p className="mb-2">Need help? Contact our support team at support@paymenthub.com</p>
+                    <p className="text-xs text-slate-400">
+                        © 2024 PaymentHub. All rights reserved. | Secure onboarding powered by 256-bit encryption
+                    </p>
+                </div>
+            </footer>
         </div>
     );
 }
