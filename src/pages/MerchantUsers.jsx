@@ -20,7 +20,7 @@ import {
     Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import { 
-    Users, Plus, Search, Key, Mail, Copy, Check, Eye, EyeOff, Loader2
+    Users, Plus, Search, Key, Mail, Copy, Check, Eye, EyeOff, Loader2, CheckCircle, XCircle
 } from 'lucide-react';
 
 export default function MerchantUsers() {
@@ -77,6 +77,11 @@ export default function MerchantUsers() {
         }
     });
 
+    const updateStatusMutation = useMutation({
+        mutationFn: ({ id, status }) => base44.entities.MerchantUser.update(id, { status }),
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: ['merchant-users'] })
+    });
+
     const copyToClipboard = (text) => { navigator.clipboard.writeText(text); setCopied(true); setTimeout(() => setCopied(false), 2000); };
 
     const filteredUsers = users.filter(u => {
@@ -123,7 +128,25 @@ export default function MerchantUsers() {
                                             <TableCell><Badge variant="outline">{user.role}</Badge></TableCell>
                                             <TableCell><Badge className={user.status === 'active' ? 'bg-emerald-100 text-emerald-700' : user.status === 'pending' ? 'bg-amber-100 text-amber-700' : 'bg-slate-100'}>{user.status}</Badge></TableCell>
                                             <TableCell>{user.two_factor_enabled ? <Badge className="bg-emerald-100 text-emerald-700">Enabled</Badge> : <Badge variant="outline">Off</Badge>}</TableCell>
-                                            <TableCell><Button variant="ghost" size="sm" className="gap-1"><Key className="h-3 w-3" />Reset</Button></TableCell>
+                                            <TableCell>
+                                                <div className="flex gap-1">
+                                                    {user.status === 'pending' && (
+                                                        <Button variant="ghost" size="sm" className="gap-1 text-emerald-600 hover:text-emerald-700" onClick={() => updateStatusMutation.mutate({ id: user.id, status: 'active' })}>
+                                                            <CheckCircle className="h-3 w-3" />Approve
+                                                        </Button>
+                                                    )}
+                                                    {user.status === 'active' && (
+                                                        <Button variant="ghost" size="sm" className="gap-1 text-red-600 hover:text-red-700" onClick={() => updateStatusMutation.mutate({ id: user.id, status: 'inactive' })}>
+                                                            <XCircle className="h-3 w-3" />Deactivate
+                                                        </Button>
+                                                    )}
+                                                    {user.status === 'inactive' && (
+                                                        <Button variant="ghost" size="sm" className="gap-1 text-emerald-600 hover:text-emerald-700" onClick={() => updateStatusMutation.mutate({ id: user.id, status: 'active' })}>
+                                                            <CheckCircle className="h-3 w-3" />Activate
+                                                        </Button>
+                                                    )}
+                                                </div>
+                                            </TableCell>
                                         </TableRow>
                                     ))}
                                 </TableBody>
