@@ -636,6 +636,368 @@ Beyond the reversed transaction amount, chargebacks incur:
 • **Recommendation Engine**: Get actionable recommendations for each case
 • **Learning System**: System improves based on historical outcomes`,
                 keywords: ['ai', 'artificial intelligence', 'automation', 'disputes']
+            },
+            {
+                title: 'Recurring Payments & Subscriptions',
+                icon: Repeat,
+                description: 'Advanced subscription management with AI lifecycle capabilities.',
+                content: `The Recurring Payments module provides enterprise-grade subscription billing and management with AI-powered lifecycle optimization, flexible billing configurations, and intelligent dunning management.
+
+**Overview:**
+
+Recurring payments are automated, periodic charges that enable subscription-based business models. This platform supports four primary plan types:
+
+• **Subscription**: Fixed recurring charges (e.g., monthly SaaS fees)
+• **Installment**: Fixed payment schedule to pay off a balance
+• **Scheduled**: Custom payment schedules (e.g., quarterly, bi-annual)
+• **Usage-Based**: Variable billing based on consumption metrics
+
+**Core Features:**
+
+• **Multi-Tab Interface**:
+  - **Subscriptions Tab**: Create and manage all recurring payment plans
+  - **AI Lifecycle Tab**: AI-driven churn prediction and retention automation
+  - **Flexible Billing Tab**: Advanced billing configurations and proration
+  - **Dunning Tab**: Failed payment recovery with customizable retry logic
+
+• **Subscription Creation and Management**:
+  - Create subscriptions for any merchant with full customer details
+  - Configure frequency: Daily, weekly, monthly, quarterly, yearly, or custom intervals
+  - Set interval counts (e.g., every 2 months, every 3 weeks)
+  - Define total cycles for finite subscriptions or leave indefinite
+  - Multi-currency support (USD, EUR, GBP, and more)
+  - Automatic next payment date calculation based on frequency
+  - Real-time status management: Active, Paused, Cancelled, Completed, Pending, Dunning
+  - AI-managed flag for subscriptions under autonomous AI control
+
+• **Payment Method Tokenization**:
+  - Secure storage of payment method tokens
+  - PCI-compliant card information handling
+  - Support for multiple payment methods per customer
+  - Automatic payment method expiration handling
+  - Update payment method workflows
+
+• **Lifecycle Tracking**:
+  - Cycles completed vs total cycles monitoring
+  - Total amount paid tracking
+  - Last payment date and next payment date visibility
+  - Failed payment count for risk assessment
+  - Complete payment history per subscription
+
+• **ISO 20022 Compliance**:
+  - Structured payment data for recurring payments
+  - Payment IDs and instruction IDs for traceability
+  - Purpose code "SUBC" for subscription classification
+  - End-to-end transaction identification
+
+**AI Lifecycle Management:**
+
+Transform subscription management with predictive analytics and automated retention strategies.
+
+• **Churn Risk Prediction**:
+  - **AI-Powered Analysis**: Machine learning models analyze multiple factors to predict churn probability
+  - **Risk Scoring**: Each subscription receives a churn risk score from 0-1 (0% to 100%)
+  - **Risk Factors Identification**: AI identifies 3-5 specific factors contributing to churn risk
+  - **Real-Time Analysis**: Run churn analysis on-demand for all active subscriptions
+  - **Multi-Factor Assessment**:
+    * Customer engagement patterns
+    * Payment history and failed payment count
+    * Cycles completed vs expected lifecycle
+    * Total amount paid and value realization
+    * Frequency of customer support interactions
+    * Usage patterns for usage-based subscriptions
+
+• **Risk Segmentation**:
+  - **High Risk (60%+ churn probability)**: Red alert, immediate action required
+  - **Medium Risk (30-60% churn probability)**: Yellow warning, proactive retention
+  - **Healthy (<30% churn probability)**: Green status, maintain engagement
+  - Dashboard displays counts and breakdown by risk category
+
+• **Automated Retention Offers**:
+  - **AI Recommendation Engine**: AI suggests optimal retention offer type and value
+  - **Offer Types**:
+    * **Discount**: Percentage or fixed amount reduction (e.g., "20% off next 3 months")
+    * **Free Trial Extension**: Additional free service period
+    * **Feature Upgrade**: Access to premium features at current price
+    * **Custom**: Tailored offers based on customer segment
+  - **Offer Lifecycle**:
+    * AI generates offer with 7-day expiration
+    * One-click application from the interface
+    * Automatic customer email notification with offer details
+    * Tracking of applied offers and customer responses
+  - **Personalization**: Offers tailored to individual customer behavior and value
+
+• **Proactive Communication**:
+  - Automated retention offer emails with personalized messaging
+  - Professional email templates explaining the special offer
+  - Clear call-to-action for customers to accept
+  - Expiration urgency to drive timely response
+
+• **Analytics and Insights**:
+  - Total at-risk subscriptions count
+  - Churn risk distribution visualization
+  - Retention offer effectiveness tracking
+  - Recovery rate monitoring
+  - Financial impact of churn prevention
+
+• **Best Practices**:
+  - Run churn analysis weekly or monthly depending on subscription volume
+  - Act on high-risk subscriptions within 24-48 hours
+  - Test different retention offer types to optimize effectiveness
+  - Monitor customer response to retention offers
+  - Combine automated offers with personalized outreach for high-value customers
+  - Use churn factors to improve product and service quality
+
+**Flexible Billing Configuration:**
+
+Advanced billing customization to support complex subscription scenarios and business models.
+
+• **Proration Management**:
+  - **Enable/Disable Proration**: Toggle prorated charges for partial billing periods
+  - **Automatic Calculations**: System automatically calculates prorated amounts
+  - **Use Cases**:
+    * Mid-cycle plan upgrades/downgrades
+    * Subscription start/end dates that don't align with billing cycles
+    * Credit calculations for service interruptions
+  - **Example Calculation**:
+    * Full monthly amount: $100
+    * Days remaining in month: 15 out of 30
+    * Prorated charge: $50
+    * Customer savings: $50
+  - **Visual Examples**: Real-time proration calculation display in the UI
+  - **Fairness**: Ensures customers only pay for service they receive
+
+• **Custom Billing Cycles**:
+  - **Billing Anchor Types**:
+    * **Subscription Start Date**: Billing occurs on subscription anniversary
+    * **Fixed Day of Month**: All customers billed on same day (e.g., 1st or 15th)
+    * **Custom Schedule**: Define unique billing schedule per subscription
+  - **Fixed Day Configuration**:
+    * Select day of month (1-31) for billing
+    * Automatic handling of months with fewer days (e.g., February 30 → Feb 28/29)
+    * Consistent cash flow management for merchants
+  - **Current Configuration Display**: Shows active billing settings and next billing date
+  - **Change Management**: Preview impact of billing cycle changes before applying
+
+• **Usage-Based Billing**:
+  - **Metrics Tracking**:
+    * **API Calls**: Charge based on API usage volume
+    * **Transactions**: Bill per transaction processed
+    * **Storage (GB)**: Charge for data storage consumption
+    * **Bandwidth (GB)**: Bill for data transfer
+    * **Active Users**: Charge per user seat or MAU
+    * Custom metrics can be defined per business model
+  - **Billing Triggers**:
+    * **Threshold-Based**: Trigger billing when usage exceeds defined threshold
+    * **Real-Time Monitoring**: Track usage against thresholds continuously
+    * **Overage Billing**: Automatically bill for usage exceeding included allowance
+  - **Billing Methods**:
+    * **Per Unit**: Fixed price per unit consumed (e.g., $0.01 per API call)
+    * **Tiered Pricing**: Different rates for different usage tiers
+      - Example: 0-1000 calls: $0.02 each, 1001-5000: $0.015 each, 5000+: $0.01 each
+    * **Volume Discounts**: Lower effective rate as volume increases
+      - Example: Pay for highest tier rate across all usage
+  - **Usage Examples**: UI displays billing calculations based on current configuration
+  - **Predictable + Variable**: Combine base subscription fee with usage charges
+
+• **Configuration Workflow**:
+  1. Select subscription to configure billing
+  2. Choose billing anchor type and set parameters
+  3. Enable proration if needed for mid-cycle changes
+  4. Define usage metrics and thresholds for usage-based billing
+  5. Select billing method (per unit, tiered, volume)
+  6. Preview billing examples and impacts
+  7. Save configuration and apply to subscription
+  8. Automatic application on next billing cycle
+
+• **Business Value**:
+  - Support diverse pricing models and customer segments
+  - Align billing with value delivery (usage-based)
+  - Reduce billing disputes with transparent proration
+  - Improve cash flow predictability with fixed billing days
+  - Scale pricing with customer growth and usage
+  - Competitive differentiation through flexible billing options
+
+**Dunning Management:**
+
+Intelligent failed payment recovery system that maximizes collection rates while maintaining positive customer relationships.
+
+• **What is Dunning?**:
+  - **Definition**: Dunning is the automated process of recovering failed payments through systematic retry attempts and customer communications
+  - **Importance**: Failed payments are the #1 cause of involuntary churn in subscription businesses
+  - **Recovery Rates**: Proper dunning can recover 40-70% of failed payments
+  - **Customer Experience**: Well-designed dunning maintains positive relationships while collecting payment
+
+• **Dunning Workflow Overview**:
+  1. Payment fails due to insufficient funds, expired card, or technical issue
+  2. Subscription status changes to "dunning"
+  3. Automatic retry scheduled based on retry policy
+  4. Customer receives notification about failed payment
+  5. System retries payment according to schedule
+  6. Additional notifications sent before each retry
+  7. If successful: Subscription returns to "active" status
+  8. If all retries fail: Escalation or cancellation per policy
+
+• **Retry Schedule Configuration**:
+  - **Customizable Schedule**: Define exactly when to retry failed payments
+  - **Standard Configuration**: Four retry attempts with configurable days between
+  - **Example Default Schedule**:
+    * First retry: 1 day after failure
+    * Second retry: 3 days after first retry (4 days total)
+    * Third retry: 7 days after second retry (11 days total)
+    * Final retry: 14 days after third retry (25 days total)
+  - **Flexibility**: Adjust intervals based on your business model and customer base
+  - **Best Practices**:
+    * Retry quickly at first (1-2 days) to catch temporary issues
+    * Space out later retries to give customers time to resolve issues
+    * Consider payday cycles (weekly, bi-weekly, monthly)
+    * Balance recovery vs customer annoyance
+
+• **Active Dunning Dashboard**:
+  - **Real-Time View**: See all subscriptions currently in dunning status
+  - **Key Information Per Subscription**:
+    * Customer name and email
+    * Subscription amount and currency
+    * Failed payment count (total failures, not just current dunning cycle)
+    * Current retry attempt number (e.g., "2 / 4")
+    * Next scheduled retry date
+    * Communications sent (timeline of notifications)
+  - **Priority Indicators**: Red border for high-priority/high-value subscriptions
+  - **Action Buttons**:
+    * **Retry Now**: Immediately attempt payment outside regular schedule
+    * Useful when customer confirms they've updated payment method
+  - **Status Tracking**: Visual indication of dunning progression
+  - **Bulk Operations**: View all failing subscriptions at once for proactive management
+
+• **Communication Templates**:
+  - **Three-Tier Email System**:
+  
+  **First Failure Notification**:
+    * Subject: "Payment Failed - Action Required"
+    * Tone: Friendly and helpful
+    * Content: Informs customer of failure, provides update payment link
+    * CTA: Update payment method
+    * Timing: Sent immediately after first failure
+  
+  **Second Attempt Notification**:
+    * Subject: "Second Notice - Payment Failed"
+    * Tone: More urgent but still professional
+    * Content: Reminds of previous failure, warns of potential service interruption
+    * CTA: Update payment method urgently
+    * Timing: Sent 1 day before second retry attempt
+  
+  **Final Warning Notification**:
+    * Subject: "Final Notice - Subscription at Risk"
+    * Tone: Serious and urgent
+    * Content: Last chance before cancellation, 48-hour warning
+    * CTA: Update immediately to avoid service interruption
+    * Timing: Sent 1 day before final retry attempt
+
+• **Template Customization**:
+  - **Variable Placeholders**:
+    * {{customer_name}}: Personalizes email with customer's name
+    * {{amount}}: Shows specific amount that failed
+    * {{payment_link}}: Secure link to update payment method
+  - **Edit Subject and Body**: Full customization of all email content
+  - **Brand Alignment**: Match email tone and messaging to your brand
+  - **Multiple Languages**: Create templates for different languages/regions
+  - **A/B Testing**: Test different messaging to optimize recovery rates
+
+• **Dunning State Tracking**:
+  - **Current Attempt**: Which retry attempt (1, 2, 3, 4) is active
+  - **Next Retry Date**: When the next payment attempt will occur
+  - **Communications Log**: Complete history of all notifications sent
+    * Communication type (first failure, second attempt, final warning)
+    * Timestamp of when sent
+    * Template ID used
+    * Delivery confirmation
+  - **Escalation Status**: Flag for subscriptions that have moved to escalation
+  - **Customer Interactions**: Track customer responses and payment method updates
+
+• **Smart Retry Logic**:
+  - **Decline Reason Analysis**: Adjust retry timing based on specific decline codes
+    * Insufficient funds: Retry after typical payday
+    * Expired card: No point retrying, request update immediately
+    * Technical failure: Retry quickly
+    * Fraud block: Contact customer before retry
+  - **Time-of-Day Optimization**: Schedule retries for times with highest success rates
+  - **Payment Method Fallback**: If customer has multiple payment methods, try alternates
+
+• **Escalation Management**:
+  - **Automatic Escalation**: Subscriptions escalated after all retries fail
+  - **Escalation Actions**:
+    * Suspend service/access
+    * Assign to account manager for personal outreach
+    * Offer payment plan or hardship options
+    * Begin collection process
+  - **Escalation Tracking**: Monitor subscriptions in escalation status
+  - **Resolution Workflows**: Structured process for handling escalated cases
+
+• **Analytics and Reporting**:
+  - **Recovery Rates**: Track percentage of failed payments successfully recovered
+  - **Optimal Retry Timing**: Analyze which retry intervals are most effective
+  - **Communication Effectiveness**: Measure open rates and customer responses
+  - **Financial Impact**: Calculate revenue saved through dunning
+  - **Churn Attribution**: Identify involuntary vs voluntary churn
+  - **Decline Reason Trends**: Monitor common payment failure reasons
+
+• **Best Practices for Dunning Success**:
+  - **Act Fast**: First retry within 24 hours captures ~60% of recoverable failures
+  - **Clear Communication**: Explain exactly what happened and what customer needs to do
+  - **Easy Fix**: Provide one-click payment method update links
+  - **Maintain Service**: Consider grace period before service suspension
+  - **Personal Touch**: High-value customers get personal outreach alongside automation
+  - **Card Updater**: Use automatic card update services to prevent expiration failures
+  - **Proactive Monitoring**: Send alerts before card expiration
+  - **Testing**: Regularly test dunning emails and update links
+  - **Optimize Schedule**: Use data to refine retry timing for your specific customer base
+
+• **Preventing Dunning Issues**:
+  - Verify payment method before subscription start
+  - Send pre-billing reminders to customers
+  - Implement automatic card updating services
+  - Provide self-service payment method management
+  - Monitor card expiration dates proactively
+  - Educate customers about keeping payment info current
+
+**Integration with Platform Features:**
+
+• **Merchant Isolation**: Each merchant's subscriptions managed independently
+• **Transaction Linking**: Every recurring payment creates a transaction record
+• **Settlement Integration**: Recurring payments flow through standard settlement process
+• **Reporting**: Recurring revenue reporting separate from one-time transactions
+• **Analytics**: MRR (Monthly Recurring Revenue), churn rate, LTV calculations
+• **API Access**: Full API support for creating and managing subscriptions programmatically
+
+**Use Cases:**
+
+• **SaaS Providers**: Monthly or annual software subscription billing
+• **Membership Sites**: Recurring membership dues with multiple tiers
+• **Content Platforms**: Subscription access to content libraries
+• **Service Businesses**: Recurring service contracts (maintenance, support)
+• **E-commerce**: Subscribe-and-save programs for consumable products
+• **Utilities**: Monthly billing for services with variable usage
+• **Education**: Course or training subscriptions with installment options
+• **Healthcare**: Recurring treatment or wellness program payments
+
+**Security and Compliance:**
+
+• **PCI DSS Compliance**: Tokenized card storage, never store CVV
+• **ISO 20022 Standards**: Structured payment data for cross-border subscriptions
+• **SCA (3DS)**: Support for strong customer authentication on recurring payments
+• **Data Privacy**: GDPR-compliant customer data handling
+• **Audit Trail**: Complete history of all subscription changes and payments
+
+**Operational Efficiency:**
+
+• **Automation**: Reduces manual intervention for recurring billing
+• **Scalability**: Handle thousands of subscriptions with minimal overhead
+• **Cash Flow**: Predictable recurring revenue streams
+• **Customer Lifetime Value**: Maximize LTV through retention and dunning
+• **Reduced Churn**: AI lifecycle management proactively retains customers
+
+This comprehensive recurring payments system transforms subscription management from a manual, error-prone process into an intelligent, automated revenue engine that maximizes customer lifetime value and minimizes involuntary churn.`,
+                keywords: ['recurring', 'subscriptions', 'billing', 'ai lifecycle', 'churn', 'retention', 'dunning', 'proration', 'usage-based', 'flexible billing']
             }
         ]
     },
