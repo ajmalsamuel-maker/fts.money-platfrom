@@ -11,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import {
-    Building2,
+    Building,
     Mail,
     Phone,
     Globe,
@@ -47,7 +47,7 @@ export default function MerchantDetailsDialog({ merchant, open, onOpenChange }) 
                 <DialogHeader>
                     <div className="flex items-start gap-4">
                         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
-                            <Building2 className="h-6 w-6 text-white" />
+                            <Building className="h-6 w-6 text-white" />
                         </div>
                         <div className="flex-1">
                             <DialogTitle className="text-xl mb-2">{merchant.business_name}</DialogTitle>
@@ -107,7 +107,7 @@ export default function MerchantDetailsDialog({ merchant, open, onOpenChange }) 
                             <div className="space-y-3">
                                 {merchant.contact_name && (
                                     <div className="flex items-center gap-3">
-                                        <Building2 className="h-4 w-4 text-slate-400" />
+                                        <Building className="h-4 w-4 text-slate-400" />
                                         <span>{merchant.contact_name}</span>
                                     </div>
                                 )}
