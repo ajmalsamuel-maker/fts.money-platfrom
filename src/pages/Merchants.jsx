@@ -55,7 +55,7 @@ import {
     Globe,
     Mail,
     Phone,
-    Building2,
+    Building,
     Link2,
     Shield
 } from 'lucide-react';
