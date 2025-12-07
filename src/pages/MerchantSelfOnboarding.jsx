@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/select";
 import { 
     CreditCard, 
-    Building2,
+    Building,
     Users,
     Shield,
     Landmark,
@@ -59,7 +59,7 @@ import OnboardingProgress from '@/components/onboarding/OnboardingProgress';
 import { getOnboardingInvitationEmail, getApplicationReceivedEmail } from '@/components/onboarding/EmailTemplates';
 
 const steps = [
-    { id: 1, name: 'Business Details', icon: Building2, component: 'BusinessDetailsStep' },
+    { id: 1, name: 'Business Details', icon: Building, component: 'BusinessDetailsStep' },
     { id: 2, name: 'Company Structure', icon: Users, component: 'CompanyStructureStep' },
     { id: 3, name: 'LEI Verification', icon: Globe, component: 'LEIVerificationStep' },
     { id: 4, name: 'Contact Info', icon: Users, component: 'ContactInfoStep' },
