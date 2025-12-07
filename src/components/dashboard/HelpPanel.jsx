@@ -151,11 +151,15 @@ const helpSections = [
 
 **Best Practices:**
 - Review dashboard daily at business start
-- Set up alerts for critical metrics (high decline rate, unusual volume)
+- Monitor MRR trends weekly for subscription health
+- Set up alerts for critical metrics (high decline rate, unusual volume, MRR decline)
 - Monitor TPS during peak periods
+- Track AI agent performance and accuracy daily
 - Compare metrics week-over-week to identify trends
-- Investigate any sudden changes in success rates
-- Keep chargeback ratio below 0.9% (well below the 1% threshold)`,
+- Investigate any sudden changes in success rates or churn rates
+- Keep chargeback ratio below 0.9% (well below the 1% threshold)
+- Act on AI insights and recommendations promptly
+- Review recurring payment failed payment rates weekly`,
                 keywords: ['overview', 'statistics', 'volume', 'tps', 'real-time']
             },
             {
