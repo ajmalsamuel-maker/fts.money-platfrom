@@ -234,50 +234,380 @@ const helpSections = [
                 title: 'Transactions',
                 icon: ArrowLeftRight,
                 description: 'View and manage all payment transactions.',
-                content: `The Transactions page is your primary tool for transaction management:
+                content: `The Transactions page is your primary operational hub for monitoring and managing all payment transactions flowing through your platform. This is where you'll spend most of your time handling day-to-day payment operations.
 
-• **Search & Filter**: Find transactions by ID, amount, merchant, status, date range
-• **Transaction Details**: Click any transaction to see full details including:
-  - Customer information
-  - Payment method details
-  - Authorization codes
-  - 3DS status
-  - Risk scores
-• **Actions**: Refund, void, or capture transactions
-• **Export**: Download transaction data for reconciliation
-• **Real-time Updates**: Transactions appear immediately as they're processed`,
+**Core Functionality:**
+
+• **Advanced Search & Filtering**:
+  - Search by transaction ID, authorization code, or order reference
+  - Filter by merchant name or ID
+  - Amount range filters (e.g., transactions between $100-$500)
+  - Status filters: Approved, Declined, Pending, Refunded, Voided
+  - Date range picker with presets (today, last 7 days, last 30 days, custom)
+  - Payment method filter (Visa, Mastercard, Amex, wallets, etc.)
+  - Card type filter (credit, debit, prepaid)
+  - Customer email or name search
+  - Country/region filter for international analysis
+  - Combine multiple filters for precise results
+
+• **Transaction Details View**:
+  Click any transaction row to see comprehensive details:
+  - **Customer Information**: Name, email, billing address, IP address
+  - **Payment Method**: Card brand, last 4 digits, card type, expiry
+  - **Authorization Details**: Auth code, response code, processor reference
+  - **Security Verification**: AVS result, CVV check, 3DS status and version
+  - **Risk Assessment**: Fraud score, risk level, velocity check results
+  - **Transaction Timeline**: Authorization time, capture time, settlement status
+  - **Merchant Details**: Which merchant processed this transaction
+  - **Metadata**: Custom fields, order ID, description
+
+• **Transaction Actions**:
+  - **Refund**: Issue full or partial refunds with reason codes
+  - **Void**: Cancel transactions before settlement (must be same day)
+  - **Capture**: For pre-authorized transactions, capture the funds
+  - **Hold**: Place suspicious transactions on hold for review
+  - **Notes**: Add internal notes for record keeping
+  - All actions create audit trail entries
+
+• **Bulk Operations**:
+  - Export filtered transactions to CSV for reconciliation
+  - Download transaction data for accounting systems
+  - Generate batch reports for specific date ranges
+  - Process multiple refunds simultaneously
+
+• **Real-time Updates**:
+  - Transaction list auto-refreshes every 30 seconds
+  - WebSocket connection for instant updates
+  - No need to manually refresh the page
+  - Push notifications for critical transactions
+
+• **Status Indicators**:
+  - **Approved** (Green): Successfully authorized and captured
+  - **Pending** (Yellow): Awaiting capture or settlement
+  - **Declined** (Red): Authorization failed - see reason code
+  - **Refunded** (Blue): Full or partial refund processed
+  - **Voided** (Gray): Transaction cancelled before settlement
+
+**Transaction Lifecycle:**
+
+1. **Authorization**: Card validated, funds reserved (appears as Pending)
+2. **Capture**: Funds marked for settlement (status: Approved)
+3. **Settlement**: Funds transferred to merchant account (typically T+1 or T+2)
+4. **Refund/Void**: Optional reversal of transaction
+
+**Common Use Cases:**
+
+1. **Investigating Customer Complaints**: Search by email or transaction ID to find the transaction, review details, and issue refund if needed
+
+2. **Daily Reconciliation**: Export approved transactions for the day and match against bank deposits
+
+3. **Fraud Investigation**: Filter high-risk transactions, review device fingerprints and IP addresses
+
+4. **Dispute Preparation**: Locate disputed transactions and gather evidence (AVS, CVV, 3DS proof)
+
+5. **Performance Monitoring**: Filter by merchant to review their transaction success rates
+
+**Best Practices:**
+- Check pending transactions daily and capture or void as needed
+- Investigate declined transactions to identify patterns
+- Use notes feature to document customer conversations
+- Export transaction data weekly for bookkeeping
+- Monitor for duplicate transactions (same amount, card, time)
+- Review high-value transactions manually for fraud prevention`,
                 keywords: ['transactions', 'payments', 'search', 'filter', 'refund', 'void']
             },
             {
                 title: 'Settlements',
                 icon: Receipt,
                 description: 'Track and manage merchant settlements.',
-                content: `Manage the settlement process for your merchants:
+                content: `The Settlements page manages the critical process of paying out merchants for their processed transactions. This is where gross transaction amounts are calculated, fees are deducted, and net amounts are prepared for bank transfer.
 
-• **Settlement Batches**: View pending and completed settlement batches
-• **Settlement Reports**: Generate detailed settlement reports
-• **Reconciliation**: Match settlements with bank deposits
-• **Adjustments**: Apply fees, chargebacks, and reserves
-• **Payment Files**: Generate NACHA/SEPA files for bank transfers
-• **Settlement Schedule**: Configure T+1, T+2, or custom settlement periods`,
+**Settlement Process Overview:**
+
+Settlements typically occur on a T+1 or T+2 schedule:
+- **T+0**: Same-day settlement (premium service, higher fees)
+- **T+1**: Settlement next business day (most common)
+- **T+2**: Settlement in two business days (standard)
+- **T+7**: Weekly settlement (for high-risk merchants)
+
+**Core Functionality:**
+
+• **Settlement Batches**:
+  - View all settlement batches with status indicators
+  - **Pending**: Awaiting approval or processing
+  - **Processing**: Currently being prepared for bank transfer
+  - **Completed**: Funds sent to merchant
+  - **Failed**: Settlement attempt failed (bank rejection, insufficient funds)
+  - Each batch includes: Date range, merchant, gross amount, fees, net amount
+  - Batch reference numbers for tracking and reconciliation
+
+• **Detailed Settlement Reports**:
+  Generate comprehensive reports showing:
+  - **Gross Volume**: Total transaction amount processed
+  - **Transaction Fees**: MDR (Merchant Discount Rate) charges
+  - **Interchange Fees**: Cost of card processing
+  - **Scheme Fees**: Visa/Mastercard network fees
+  - **Chargeback Deductions**: Amounts held for chargebacks
+  - **Refunds**: Deducted from settlement
+  - **Rolling Reserves**: Percentage held for risk protection
+  - **Adjustments**: Manual adjustments (credits/debits)
+  - **Net Settlement**: Final amount to be paid
+  - Transaction-by-transaction breakdown available
+
+• **Reconciliation Tools**:
+  - Match settlement batches with bank deposits
+  - Upload bank statements (MT940, CSV, BAI2 formats)
+  - Automatic matching based on amount and date
+  - Flag discrepancies for investigation
+  - Reconciliation status dashboard (matched, unmatched, pending)
+  - Historical reconciliation records
+
+• **Fee and Adjustment Management**:
+  - Apply transaction fees based on pricing agreements
+  - Add manual adjustments (e.g., technology fees, monthly fees)
+  - Chargeback deductions automatically calculated
+  - Rolling reserve calculations (e.g., 10% held for 180 days)
+  - Reserve release scheduling
+  - Currency conversion fees for multi-currency
+
+• **Payment File Generation**:
+  - **NACHA/ACH**: For US bank transfers
+  - **SEPA**: For European bank transfers
+  - **BACS**: For UK bank transfers
+  - **Wire Transfer**: For international or large amounts
+  - Files formatted per banking standards
+  - Secure file transmission to banking partners
+  - Confirmation of file receipt and processing
+
+• **Settlement Schedule Configuration**:
+  - Set individual merchant settlement schedules
+  - Configure minimum payout thresholds (e.g., don't pay until $100 accumulated)
+  - Set maximum payout amounts per settlement
+  - Define reserve percentages and hold periods
+  - Weekend/holiday handling rules
+  - Automatic vs manual approval workflows
+
+**Settlement Calculation Example:**
+
+**Gross Volume**: $10,000
+**Less Transaction Fees (2.5%)**: -$250
+**Less Refunds**: -$500
+**Less Chargebacks**: -$100
+**Less Rolling Reserve (10%)**: -$1,000
+**Plus Reserve Release**: +$800
+**Less Monthly Fee**: -$50
+**Net Settlement**: **$8,900**
+
+**Settlement Workflow:**
+
+1. **Batch Creation**: System automatically creates batch at end of settlement period
+2. **Fee Calculation**: All fees and adjustments applied
+3. **Reserve Hold**: Rolling reserve percentage held
+4. **Approval**: Batch reviewed and approved (auto or manual)
+5. **File Generation**: Payment file created in required format
+6. **Bank Submission**: File sent to banking partner
+7. **Confirmation**: Bank confirms receipt and processing
+8. **Funding**: Merchant receives funds in bank account
+9. **Notification**: Merchant receives settlement report via email
+
+**Security and Compliance:**
+
+- Dual approval required for settlements over $10,000
+- All settlement actions logged in audit trail
+- Segregation of duties (maker-checker)
+- Secure file transmission (SFTP, encrypted)
+- PCI DSS compliant (no card data in settlement files)
+
+**Common Issues and Resolution:**
+
+- **Failed Settlement**: Bank rejected due to invalid account details - verify merchant bank info
+- **Reconciliation Mismatch**: Amount doesn't match - check for currency conversion or fees
+- **Delayed Funding**: Holiday or weekend delay - communicate with merchant
+- **Insufficient Balance**: PSP doesn't have funds - check reserve calculations
+- **Reserve Disputes**: Merchant questions hold - explain terms and release schedule
+
+**Best Practices:**
+- Process settlements daily to maintain merchant cash flow
+- Reconcile within 24 hours of bank confirmation
+- Communicate settlement schedules clearly to merchants
+- Review large settlements manually before processing
+- Maintain adequate reserves for chargebacks
+- Automate where possible to reduce manual errors
+- Keep merchants informed with automated settlement notifications`,
                 keywords: ['settlements', 'payouts', 'batches', 'reconciliation']
             },
             {
                 title: 'Chargebacks',
                 icon: Repeat,
                 description: 'Handle chargeback cases and disputes.',
-                content: `Complete chargeback lifecycle management:
+                content: `The Chargebacks page provides comprehensive tools for managing one of the most challenging aspects of payment processing. Effective chargeback management protects your revenue and helps merchants stay within card network thresholds.
 
-• **Case Management**: Track all chargeback cases from receipt to resolution
-• **Response Workflow**: 
-  - Receive notification
-  - Gather evidence
-  - Submit representment
-  - Track outcome
-• **Document Upload**: Attach evidence and supporting documents
-• **Deadline Tracking**: Never miss a response deadline
-• **Analytics**: Monitor chargeback ratios by merchant, reason code, and card type
-• **Alerts**: Get notified when merchants approach threshold limits`,
+**Understanding Chargebacks:**
+
+A chargeback is a transaction reversal initiated by the cardholder's issuing bank. The merchant's account is debited, and funds are returned to the cardholder. Chargebacks were designed for consumer protection but are often abused (friendly fraud).
+
+**Critical Thresholds:**
+- **Standard**: 0.9% of transactions (aim to stay below this)
+- **Early Warning**: 1.0% of transactions (monitoring programs triggered)
+- **Excessive**: 1.5% of transactions (fines and potential termination)
+- **Severe**: 2.0% or higher (likely merchant termination)
+
+**Complete Case Management:**
+
+• **Chargeback Dashboard**:
+  - View all open, pending, won, and lost cases
+  - Status indicators with color coding
+  - Days remaining to respond prominently displayed
+  - Filter by merchant, reason code, amount, date
+  - Quick stats: Total cases, win rate, average case value
+  - Alert banners for merchants approaching thresholds
+
+• **Case Lifecycle Tracking**:
+  1. **Received**: Chargeback notification received from acquirer
+  2. **Under Review**: Case being analyzed for response viability
+  3. **Evidence Gathering**: Collecting documents to fight the chargeback
+  4. **Submitted**: Representment sent to issuer
+  5. **Awaiting Decision**: Issuer reviewing evidence
+  6. **Won**: Merchant prevails, funds returned
+  7. **Lost**: Issuer sides with cardholder
+  8. **Pre-Arbitration**: Case escalated beyond first chargeback
+  9. **Arbitration**: Card network makes final binding decision
+
+• **Response Workflow**:
+  **Step 1 - Receive Notification**:
+  - Email alert sent immediately to merchant and ops team
+  - Case appears in dashboard with countdown timer
+  - Reason code and description provided
+  - Original transaction details attached
+  
+  **Step 2 - Analyze Viability**:
+  - Review reason code and cardholder claim
+  - Check transaction details (AVS, CVV, 3DS)
+  - Assess win probability (our AI can help)
+  - Decide: Accept (issue refund) or Fight (representment)
+  
+  **Step 3 - Gather Evidence**:
+  - Proof of delivery (tracking, signature)
+  - Customer communication (emails, chat logs)
+  - Terms and conditions with customer acceptance
+  - AVS and CVV match results
+  - 3D Secure authentication proof
+  - IP address and device fingerprint
+  - Photographs of delivered product
+  - Customer account history showing no prior complaints
+  
+  **Step 4 - Submit Representment**:
+  - Upload all evidence documents
+  - Write rebuttal letter addressing reason code
+  - System packages evidence per card network requirements
+  - Submit before deadline (typically 7-20 days)
+  
+  **Step 5 - Track Outcome**:
+  - Monitor case status for issuer decision
+  - Receive notification of outcome (30-90 days typical)
+  - If won: Funds returned to merchant
+  - If lost: Funds remain with cardholder, fees assessed
+
+• **Document Management**:
+  - Drag-and-drop file upload (PDF, JPG, PNG)
+  - Support for multiple documents per case
+  - Automatic file naming and organization
+  - Preview documents before submission
+  - Document checklist based on reason code
+  - File size limits: 10MB per document, 50MB per case
+
+• **Deadline Management**:
+  - Countdown timer on each case showing days/hours remaining
+  - Email reminders at 7 days, 3 days, and 1 day before deadline
+  - Push notifications for urgent deadlines
+  - Auto-escalation if no action taken within threshold
+  - Deadline extensions can be requested (rarely granted)
+
+• **Chargeback Analytics**:
+  - **Chargeback Ratio Calculator**: Real-time ratio by merchant
+  - **Reason Code Distribution**: See most common dispute reasons
+  - **Win/Loss Rates**: Track representment success
+  - **Financial Impact**: Total funds lost to chargebacks
+  - **Trends**: Identify increasing chargeback merchants
+  - **Benchmarking**: Compare against industry averages
+  - **Forecasting**: Predict future chargeback volumes
+
+• **Merchant Threshold Alerts**:
+  - Automatic alerts when merchant approaches 0.9%
+  - Escalating alerts at 1.0% and 1.5%
+  - Merchant warning emails with action plans
+  - Recommend mitigation strategies
+  - Consider suspension for chronic offenders
+
+**Common Reason Codes:**
+
+**Fraud (No Authorization)**:
+- Visa 10.4: Card-Absent Fraud
+- MC 4863: Cardholder Doesn't Recognize
+- **Win Strategy**: Prove 3DS authentication, AVS/CVV match, delivery confirmation
+
+**Service/Merchandise Issues**:
+- Visa 13.1: Merchandise/Services Not Received
+- MC 4853: Goods Not Provided
+- **Win Strategy**: Tracking showing delivery, signature, customer communication
+
+**Processing Errors**:
+- Visa 12.6: Duplicate Processing
+- MC 4834: Duplicate Processing
+- **Win Strategy**: Prove transactions were different (different dates, amounts, items)
+
+**Cancelled Services**:
+- Visa 13.7: Cancelled Merchandise/Services
+- MC 4853: Goods/Services Cancelled
+- **Win Strategy**: Terms showing no-refund policy, proof service still active
+
+**Chargeback Prevention Strategies:**
+
+1. **Clear Communication**:
+   - Use recognizable billing descriptor
+   - Send order confirmations immediately
+   - Provide tracking information proactively
+   - Make refund policy clear before purchase
+
+2. **Strong Authentication**:
+   - Implement 3D Secure 2.0 for liability shift
+   - Verify AVS and CVV on all transactions
+   - Use device fingerprinting for fraud detection
+
+3. **Excellent Customer Service**:
+   - Make refunds easy to obtain
+   - Respond to customer inquiries within 24 hours
+   - Resolve issues before they become chargebacks
+
+4. **Delivery Confirmation**:
+   - Require signature for high-value items
+   - Use tracked shipping with insurance
+   - Photograph items before shipping
+
+5. **Documentation**:
+   - Keep detailed records of all transactions
+   - Save customer communication
+   - Maintain terms and conditions with timestamps
+
+**Financial Impact:**
+
+Beyond the reversed transaction amount, chargebacks incur:
+- **Chargeback Fee**: $20-$100 per case (non-refundable even if won)
+- **Representment Fee**: Additional $15-$50 to fight
+- **Arbitration Fee**: $500+ if escalated
+- **Lost Product**: If physical goods shipped
+- **Time Cost**: Hours spent gathering evidence
+- **Potential Penalties**: Fines if exceeding thresholds
+- **Account Termination**: Risk of losing processing ability
+
+**Best Practices:**
+- Respond to all chargebacks within 3 days of receipt
+- Fight chargebacks you can win (fraud with 3DS, duplicate errors)
+- Accept chargebacks for service issues (cheaper than fighting)
+- Keep evidence organized and easily accessible
+- Train merchants on chargeback prevention
+- Monitor ratios weekly and take early action
+- Use RDR (Rapid Dispute Resolution) when available to avoid formal chargebacks`,
                 keywords: ['chargebacks', 'disputes', 'representment', 'evidence']
             },
             {
