@@ -325,13 +325,7 @@ export default function MerchantOnboarding() {
     };
 
     const canProceed = () => {
-        // Check if KYB and AML are at least started for steps 6 and 7
-        if (currentStep === 6) {
-            return formData.kyb.kyb_status && formData.kyb.kyb_status !== 'not_started';
-        }
-        if (currentStep === 7) {
-            return formData.aml.aml_status && formData.aml.aml_status !== 'not_started';
-        }
+        // Allow proceeding through all steps (real integrations will be added later)
         return true;
     };
 
@@ -477,15 +471,7 @@ export default function MerchantOnboarding() {
                         {renderStep()}
                     </Card>
 
-                    {/* Verification Warning */}
-                    {showVerificationWarning && (
-                        <Alert className="mb-6 bg-amber-50 border-amber-200">
-                            <AlertTriangle className="h-4 w-4 text-amber-600" />
-                            <AlertDescription className="text-amber-700">
-                                Please complete the verification process before proceeding. This is required for compliance.
-                            </AlertDescription>
-                        </Alert>
-                    )}
+
 
                     {/* Navigation Buttons */}
                     <div className="flex items-center justify-between">
@@ -508,7 +494,6 @@ export default function MerchantOnboarding() {
                                 <Button 
                                     onClick={handleNext} 
                                     className="gap-2 bg-blue-600 hover:bg-blue-700"
-                                    disabled={!canProceed() && (currentStep === 6 || currentStep === 7)}
                                 >
                                     Continue
                                     <ChevronRight className="h-4 w-4" />
