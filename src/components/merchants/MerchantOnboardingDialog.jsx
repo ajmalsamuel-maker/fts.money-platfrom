@@ -5,7 +5,19 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ChevronLeft, ChevronRight, Check, Building2, FileText, Shield, AlertTriangle } from 'lucide-react';
+import { 
+    ChevronLeft, 
+    ChevronRight, 
+    Check, 
+    Building2, 
+    FileText, 
+    Shield, 
+    AlertTriangle,
+    Users,
+    Landmark,
+    Globe,
+    DollarSign
+} from 'lucide-react';
 import { cn } from "@/lib/utils";
 import OnboardingProgress from '../onboarding/OnboardingProgress';
 import BusinessDetailsStep from '../onboarding/BusinessDetailsStep';
