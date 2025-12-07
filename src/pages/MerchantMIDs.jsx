@@ -24,7 +24,8 @@ import {
     DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { 
-    Search, Plus, MoreHorizontal, Edit, Trash2, CreditCard, Store, Terminal
+    Search, Plus, MoreHorizontal, Edit, Trash2, CreditCard, Store, Terminal, 
+    ChevronLeft, ChevronRight, CheckCircle, XCircle, Filter
 } from 'lucide-react';
 
 const terminalTypeLabels = {
@@ -56,8 +57,11 @@ export default function MerchantMIDs() {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [merchantFilter, setMerchantFilter] = useState('all');
+    const [statusFilter, setStatusFilter] = useState('all');
     const [showDialog, setShowDialog] = useState(false);
     const [editingMID, setEditingMID] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
     const [formData, setFormData] = useState({
         merchant_id: '', merchant_name: '', mid: '',
         provider_id: '', provider_name: '', terminal_type: 'ecommerce',
@@ -167,8 +171,17 @@ export default function MerchantMIDs() {
             m.merchant_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
             m.provider_name?.toLowerCase().includes(searchQuery.toLowerCase());
         const matchesMerchant = merchantFilter === 'all' || m.merchant_id === merchantFilter;
-        return matchesSearch && matchesMerchant;
+        const matchesStatus = statusFilter === 'all' || m.status === statusFilter;
+        return matchesSearch && matchesMerchant && matchesStatus;
     });
+
+    const totalPages = Math.ceil(filteredMIDs.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const paginatedMIDs = filteredMIDs.slice(startIndex, startIndex + itemsPerPage);
+
+    const handleQuickStatusChange = (mid, newStatus) => {
+        updateMutation.mutate({ id: mid.id, data: { ...mid, status: newStatus } });
+    };
 
     return (
         <div className="min-h-screen bg-slate-50">
@@ -213,13 +226,23 @@ export default function MerchantMIDs() {
                             <div className="flex flex-wrap items-center gap-4">
                                 <div className="relative flex-1 min-w-[250px]">
                                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                                    <Input placeholder="Search MIDs..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pl-10" />
+                                    <Input placeholder="Search MIDs..." value={searchQuery} onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }} className="pl-10" />
                                 </div>
-                                <Select value={merchantFilter} onValueChange={setMerchantFilter}>
+                                <Select value={merchantFilter} onValueChange={(val) => { setMerchantFilter(val); setCurrentPage(1); }}>
                                     <SelectTrigger className="w-48"><SelectValue placeholder="Merchant" /></SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="all">All Merchants</SelectItem>
                                         {merchants.map(m => <SelectItem key={m.id} value={m.id}>{m.business_name}</SelectItem>)}
+                                    </SelectContent>
+                                </Select>
+                                <Select value={statusFilter} onValueChange={(val) => { setStatusFilter(val); setCurrentPage(1); }}>
+                                    <SelectTrigger className="w-36"><SelectValue placeholder="Status" /></SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">All Status</SelectItem>
+                                        <SelectItem value="active">Active</SelectItem>
+                                        <SelectItem value="pending">Pending</SelectItem>
+                                        <SelectItem value="inactive">Inactive</SelectItem>
+                                        <SelectItem value="suspended">Suspended</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
@@ -245,14 +268,14 @@ export default function MerchantMIDs() {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {filteredMIDs.length === 0 ? (
+                                    {paginatedMIDs.length === 0 ? (
                                         <TableRow>
                                             <TableCell colSpan={7} className="text-center py-12 text-slate-500">
                                                 {isLoading ? 'Loading...' : 'No MIDs found'}
                                             </TableCell>
                                         </TableRow>
                                     ) : (
-                                        filteredMIDs.map((mid) => (
+                                        paginatedMIDs.map((mid) => (
                                             <TableRow key={mid.id}>
                                                 <TableCell>
                                                     <span className="font-mono font-medium text-blue-600">{mid.mid}</span>
@@ -284,6 +307,12 @@ export default function MerchantMIDs() {
                                                         </DropdownMenuTrigger>
                                                         <DropdownMenuContent align="end">
                                                             <DropdownMenuItem onClick={() => handleEdit(mid)}><Edit className="h-4 w-4 mr-2" />Edit</DropdownMenuItem>
+                                                            {mid.status !== 'active' && (
+                                                                <DropdownMenuItem onClick={() => handleQuickStatusChange(mid, 'active')}><CheckCircle className="h-4 w-4 mr-2" />Activate</DropdownMenuItem>
+                                                            )}
+                                                            {mid.status !== 'inactive' && (
+                                                                <DropdownMenuItem onClick={() => handleQuickStatusChange(mid, 'inactive')}><XCircle className="h-4 w-4 mr-2" />Deactivate</DropdownMenuItem>
+                                                            )}
                                                             <DropdownMenuItem className="text-red-600" onClick={() => deleteMutation.mutate(mid.id)}><Trash2 className="h-4 w-4 mr-2" />Delete</DropdownMenuItem>
                                                         </DropdownMenuContent>
                                                     </DropdownMenu>
@@ -294,6 +323,69 @@ export default function MerchantMIDs() {
                                 </TableBody>
                             </Table>
                         </CardContent>
+                        {filteredMIDs.length > 0 && (
+                            <div className="border-t p-4">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-4">
+                                        <p className="text-sm text-slate-600">
+                                            Showing {startIndex + 1} to {Math.min(startIndex + itemsPerPage, filteredMIDs.length)} of {filteredMIDs.length} MIDs
+                                        </p>
+                                        <Select value={itemsPerPage.toString()} onValueChange={(val) => { setItemsPerPage(Number(val)); setCurrentPage(1); }}>
+                                            <SelectTrigger className="w-32"><SelectValue /></SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="10">10 per page</SelectItem>
+                                                <SelectItem value="25">25 per page</SelectItem>
+                                                <SelectItem value="50">50 per page</SelectItem>
+                                                <SelectItem value="100">100 per page</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <Button 
+                                            variant="outline" 
+                                            size="sm"
+                                            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                                            disabled={currentPage === 1}
+                                        >
+                                            <ChevronLeft className="h-4 w-4" />
+                                        </Button>
+                                        <div className="flex items-center gap-1">
+                                            {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                                                let pageNum;
+                                                if (totalPages <= 5) {
+                                                    pageNum = i + 1;
+                                                } else if (currentPage <= 3) {
+                                                    pageNum = i + 1;
+                                                } else if (currentPage >= totalPages - 2) {
+                                                    pageNum = totalPages - 4 + i;
+                                                } else {
+                                                    pageNum = currentPage - 2 + i;
+                                                }
+                                                return (
+                                                    <Button
+                                                        key={pageNum}
+                                                        variant={currentPage === pageNum ? "default" : "outline"}
+                                                        size="sm"
+                                                        className="w-9"
+                                                        onClick={() => setCurrentPage(pageNum)}
+                                                    >
+                                                        {pageNum}
+                                                    </Button>
+                                                );
+                                            })}
+                                        </div>
+                                        <Button 
+                                            variant="outline" 
+                                            size="sm"
+                                            onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                                            disabled={currentPage === totalPages}
+                                        >
+                                            <ChevronRight className="h-4 w-4" />
+                                        </Button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </Card>
                 </main>
             </div>
