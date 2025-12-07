@@ -32,6 +32,7 @@ import {
 } from 'lucide-react';
 import { createMerchantUsers } from '@/components/merchants/MerchantUserProvisioning';
 import { toast } from 'sonner';
+import { sendStageCompletionEmail, getNextStepsText, sendApplicationSubmittedEmail } from '@/components/onboarding/StepCompletionNotifications';
 
 const TOTAL_STEPS = 10;
 
@@ -43,6 +44,24 @@ export default function MerchantOnboarding() {
     const [completedSteps, setCompletedSteps] = useState([]);
     const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [pspSettings, setPspSettings] = useState(null);
+    const [themeSettings, setThemeSettings] = useState(null);
+
+    React.useEffect(() => {
+        const loadSettings = async () => {
+            try {
+                const [psp, theme] = await Promise.all([
+                    base44.entities.PSPSettings.list(),
+                    base44.entities.ThemeSettings.list()
+                ]);
+                if (psp && psp.length > 0) setPspSettings(psp[0]);
+                if (theme && theme.length > 0) setThemeSettings(theme[0]);
+            } catch (error) {
+                console.error('Failed to load settings');
+            }
+        };
+        loadSettings();
+    }, []);
     
     const [formData, setFormData] = useState({
         business: {},
@@ -283,7 +302,7 @@ export default function MerchantOnboarding() {
           return newErrors;
         };
 
-    const handleNext = () => {
+    const handleNext = async () => {
         const stepErrors = validateStep(currentStep);
         
         if (Object.keys(stepErrors).length > 0) {
@@ -293,6 +312,36 @@ export default function MerchantOnboarding() {
         
         setErrors({});
         setCompletedSteps(prev => [...new Set([...prev, currentStep])]);
+        
+        // Send stage completion email
+        const primaryContact = formData.contacts?.contacts?.[0];
+        if (primaryContact?.email) {
+            const stageNames = {
+                1: 'Business Information',
+                2: 'Company Structure',
+                3: 'LEI Verification',
+                4: 'Contact Information',
+                5: 'Document Upload',
+                6: 'KYB Verification',
+                7: 'AML Screening',
+                8: 'Banking Details',
+                9: 'Pricing Configuration'
+            };
+            
+            await sendStageCompletionEmail({
+                recipientEmail: primaryContact.email,
+                recipientName: primaryContact.full_name || 'Valued Partner',
+                businessName: formData.business?.legal_name || 'Your Business',
+                stageName: stageNames[currentStep],
+                stageNumber: currentStep,
+                totalStages: TOTAL_STEPS,
+                nextSteps: getNextStepsText(currentStep),
+                companyName: pspSettings?.company_name,
+                logoUrl: themeSettings?.logo_url,
+                primaryColor: themeSettings?.primary_color,
+                supportEmail: pspSettings?.support_email
+            });
+        }
         
         if (currentStep < TOTAL_STEPS) {
             setCurrentStep(currentStep + 1);
@@ -309,9 +358,27 @@ export default function MerchantOnboarding() {
     const handleSubmit = async () => {
         setIsSubmitting(true);
         try {
-            await createMerchantMutation.mutateAsync(formData);
+            const merchant = await createMerchantMutation.mutateAsync(formData);
+            
+            // Send final application submitted email
+            const primaryContact = formData.contacts?.contacts?.[0];
+            if (primaryContact?.email && merchant?.merchant_id) {
+                await sendApplicationSubmittedEmail({
+                    recipientEmail: primaryContact.email,
+                    recipientName: primaryContact.full_name || 'Valued Partner',
+                    businessName: formData.business?.legal_name || 'Your Business',
+                    merchantId: merchant.merchant_id,
+                    companyName: pspSettings?.company_name,
+                    logoUrl: themeSettings?.logo_url,
+                    primaryColor: themeSettings?.primary_color,
+                    supportEmail: pspSettings?.support_email
+                });
+            }
+            
+            toast.success('Merchant application submitted successfully!');
         } catch (error) {
             console.error('Submission error:', error);
+            toast.error('Failed to submit application. Please try again.');
         }
         setIsSubmitting(false);
     };
