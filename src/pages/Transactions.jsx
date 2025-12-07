@@ -171,7 +171,8 @@ export default function Transactions() {
             
             <div className={cn(
                 "transition-all duration-300",
-                sidebarCollapsed ? "ml-20" : "ml-64"
+                "lg:ml-20",
+                sidebarCollapsed && "ml-0"
             )}>
                 <TopHeader 
                     onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
