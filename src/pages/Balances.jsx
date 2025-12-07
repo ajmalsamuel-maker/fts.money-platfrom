@@ -15,7 +15,7 @@ import {
     Collapsible, CollapsibleContent, CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { 
-    Wallet, TrendingUp, RefreshCw, Download, DollarSign, Euro, ChevronDown, ChevronRight, Building2, Store, Bitcoin
+    Wallet, TrendingUp, RefreshCw, Download, DollarSign, Euro, ChevronDown, ChevronRight, Building2, Store, Bitcoin, Repeat
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
@@ -39,6 +39,11 @@ export default function Balances() {
     const { data: merchants = [] } = useQuery({
         queryKey: ['merchants'],
         queryFn: () => base44.entities.Merchant.list(),
+    });
+
+    const { data: subscriptions = [] } = useQuery({
+        queryKey: ['subscriptions-balances'],
+        queryFn: () => base44.entities.RecurringPayment.filter({ status: 'active' }),
     });
 
     // Mock PSP-level balances with merchant breakdown
@@ -88,6 +93,14 @@ export default function Balances() {
     const totalReserved = pspBalances.reduce((s, p) => s + p.total_reserved, 0);
     const totalFees = pspBalances.reduce((s, p) => s + p.total_fees, 0);
 
+    const mrr = subscriptions.reduce((sum, sub) => {
+        const monthlyAmount = sub.frequency === 'monthly' ? sub.amount :
+                             sub.frequency === 'yearly' ? sub.amount / 12 :
+                             sub.frequency === 'quarterly' ? sub.amount / 3 : sub.amount;
+        return sum + monthlyAmount;
+    }, 0);
+    const arr = mrr * 12;
+
     const getCurrencySymbol = (currency) => {
         const symbols = { USD: '$', EUR: '€', GBP: '£', USDT: '$', USDC: '$' };
         return symbols[currency] || currency;
@@ -108,7 +121,7 @@ export default function Balances() {
                     </div>
 
                     {/* Summary Cards */}
-                    <div className="grid md:grid-cols-4 gap-4 mb-6">
+                    <div className="grid md:grid-cols-4 gap-4 mb-4">
                         <Card className="p-4 bg-gradient-to-br from-emerald-500 to-emerald-600 text-white">
                             <p className="text-sm opacity-80">Total Available</p>
                             <p className="text-3xl font-bold">${(totalAvailable / 1000000).toFixed(2)}M</p>
@@ -128,6 +141,27 @@ export default function Balances() {
                             <p className="text-sm text-slate-500">Fees Collected</p>
                             <p className="text-2xl font-bold text-blue-600">${(totalFees / 1000).toFixed(0)}K</p>
                             <p className="text-xs text-slate-400 mt-1">This period</p>
+                        </Card>
+                    </div>
+
+                    {/* Recurring Revenue Cards */}
+                    <div className="grid md:grid-cols-3 gap-4 mb-6">
+                        <Card className="p-4 bg-gradient-to-br from-purple-500 to-purple-600 text-white">
+                            <p className="text-sm opacity-80">Monthly Recurring Revenue</p>
+                            <p className="text-3xl font-bold">${(mrr / 1000).toFixed(1)}K</p>
+                            <p className="text-xs opacity-70 mt-1">{subscriptions.length} active subscriptions</p>
+                        </Card>
+                        <Card className="p-4">
+                            <p className="text-sm text-slate-500">Annual Run Rate (ARR)</p>
+                            <p className="text-2xl font-bold text-purple-600">${(arr / 1000).toFixed(1)}K</p>
+                            <p className="text-xs text-slate-400 mt-1">MRR × 12</p>
+                        </Card>
+                        <Card className="p-4">
+                            <p className="text-sm text-slate-500">Revenue at Risk</p>
+                            <p className="text-2xl font-bold text-amber-600">
+                                ${(subscriptions.filter(s => s.status === 'dunning').reduce((sum, s) => sum + s.amount, 0) / 1000).toFixed(1)}K
+                            </p>
+                            <p className="text-xs text-slate-400 mt-1">Failed payments in dunning</p>
                         </Card>
                     </div>
 

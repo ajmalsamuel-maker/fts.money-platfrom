@@ -14,6 +14,9 @@ import PaymentNews from '@/components/dashboard/PaymentNews';
 import ExchangeRates from '@/components/dashboard/ExchangeRates';
 import BusinessMetrics from '@/components/dashboard/BusinessMetrics';
 import HelpPanel from '@/components/dashboard/HelpPanel';
+import RecurringRevenueCard from '@/components/dashboard/RecurringRevenueCard';
+import AIPerformanceCard from '@/components/dashboard/AIPerformanceCard';
+import SubscriptionHealthCard from '@/components/dashboard/SubscriptionHealthCard';
 import { 
     DollarSign, 
     ArrowLeftRight, 
@@ -115,12 +118,17 @@ export default function Dashboard() {
                         </div>
                     </div>
 
-                    {/* Stats Cards + TPS */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
+                    {/* Stats Cards */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                         <StatsCards stats={stats} />
-                        <div className="sm:col-span-2 lg:col-span-1">
-                            <TPSCounter />
-                        </div>
+                    </div>
+
+                    {/* Recurring & AI Metrics */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mt-3 sm:mt-4">
+                        <RecurringRevenueCard />
+                        <SubscriptionHealthCard />
+                        <AIPerformanceCard />
+                        <TPSCounter />
                     </div>
 
                     {/* Charts and Business Metrics Row */}

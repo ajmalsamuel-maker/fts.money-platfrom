@@ -43,7 +43,9 @@ import {
     Globe,
     Calendar,
     Download,
-    RefreshCw
+    RefreshCw,
+    Repeat,
+    Brain
 } from 'lucide-react';
 
 const generateTimeSeriesData = (days) => {
@@ -103,12 +105,34 @@ export default function Analytics() {
         queryFn: () => base44.entities.Transaction.list('-created_date', 100),
     });
 
+    const { data: subscriptions = [] } = useQuery({
+        queryKey: ['subscriptions-analytics'],
+        queryFn: () => base44.entities.RecurringPayment.list(),
+    });
+
+    const { data: aiDecisions = [] } = useQuery({
+        queryKey: ['ai-decisions-analytics'],
+        queryFn: () => base44.entities.AIPaymentDecision.list('-created_date', 100),
+    });
+
     const timeSeriesData = generateTimeSeriesData(period === '7d' ? 7 : period === '30d' ? 30 : 90);
 
     const totalVolume = timeSeriesData.reduce((sum, d) => sum + d.volume, 0);
     const totalTransactions = timeSeriesData.reduce((sum, d) => sum + d.transactions, 0);
     const avgApprovalRate = (timeSeriesData.reduce((sum, d) => sum + d.approved, 0) / totalTransactions * 100).toFixed(1);
     const totalChargebacks = timeSeriesData.reduce((sum, d) => sum + d.chargebacks, 0);
+    
+    const activeSubscriptions = subscriptions.filter(s => s.status === 'active').length;
+    const mrr = subscriptions.filter(s => s.status === 'active').reduce((sum, sub) => {
+        const monthlyAmount = sub.frequency === 'monthly' ? sub.amount :
+                             sub.frequency === 'yearly' ? sub.amount / 12 :
+                             sub.frequency === 'quarterly' ? sub.amount / 3 : sub.amount;
+        return sum + monthlyAmount;
+    }, 0);
+    
+    const aiSuccessRate = aiDecisions.length > 0 
+        ? (aiDecisions.filter(d => d.outcome === 'successful').length / aiDecisions.length * 100).toFixed(1) 
+        : 0;
 
     return (
         <div className="min-h-screen bg-slate-50">
@@ -149,8 +173,8 @@ export default function Analytics() {
                         </div>
                     </div>
 
-                    {/* KPI Cards */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                    {/* KPI Cards - Row 1 */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
                         <Card className="p-5">
                             <div className="flex items-start justify-between">
                                 <div>
@@ -208,6 +232,55 @@ export default function Analytics() {
                                 </div>
                                 <div className="w-12 h-12 rounded-xl bg-red-50 flex items-center justify-center">
                                     <AlertTriangle className="h-6 w-6 text-red-600" />
+                                </div>
+                            </div>
+                        </Card>
+                    </div>
+
+                    {/* Recurring & AI KPI Cards */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                        <Card className="p-5">
+                            <div className="flex items-start justify-between">
+                                <div>
+                                    <p className="text-sm text-slate-500">Active Subscriptions</p>
+                                    <p className="text-2xl font-bold text-slate-900">{activeSubscriptions}</p>
+                                    <div className="flex items-center gap-1 mt-1 text-purple-600 text-sm">
+                                        MRR: ${(mrr / 1000).toFixed(1)}K
+                                    </div>
+                                </div>
+                                <div className="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center">
+                                    <Repeat className="h-6 w-6 text-purple-600" />
+                                </div>
+                            </div>
+                        </Card>
+                        <Card className="p-5">
+                            <div className="flex items-start justify-between">
+                                <div>
+                                    <p className="text-sm text-slate-500">AI Decisions</p>
+                                    <p className="text-2xl font-bold text-slate-900">{aiDecisions.length}</p>
+                                    <div className="flex items-center gap-1 mt-1 text-emerald-600 text-sm">
+                                        <TrendingUp className="h-4 w-4" />
+                                        {aiSuccessRate}% success
+                                    </div>
+                                </div>
+                                <div className="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center">
+                                    <Brain className="h-6 w-6 text-indigo-600" />
+                                </div>
+                            </div>
+                        </Card>
+                        <Card className="p-5">
+                            <div className="flex items-start justify-between">
+                                <div>
+                                    <p className="text-sm text-slate-500">Failed Payments</p>
+                                    <p className="text-2xl font-bold text-slate-900">
+                                        {subscriptions.filter(s => s.status === 'dunning').length}
+                                    </p>
+                                    <div className="flex items-center gap-1 mt-1 text-amber-600 text-sm">
+                                        In dunning
+                                    </div>
+                                </div>
+                                <div className="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center">
+                                    <AlertTriangle className="h-6 w-6 text-amber-600" />
                                 </div>
                             </div>
                         </Card>

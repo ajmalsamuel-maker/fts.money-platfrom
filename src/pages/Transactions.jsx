@@ -61,6 +61,7 @@ const typeConfig = {
     chargeback: { label: 'Chargeback', className: 'bg-red-50 text-red-700' },
     payout: { label: 'Payout', className: 'bg-blue-50 text-blue-700' },
     transfer: { label: 'Transfer', className: 'bg-purple-50 text-purple-700' },
+    recurring: { label: 'Recurring', className: 'bg-purple-50 text-purple-700' },
 };
 
 export default function Transactions() {
@@ -74,6 +75,11 @@ export default function Transactions() {
     const { data: transactions = [], isLoading } = useQuery({
         queryKey: ['all-transactions'],
         queryFn: () => base44.entities.Transaction.list('-created_date', 50),
+    });
+
+    const { data: aiDecisions = [] } = useQuery({
+        queryKey: ['ai-decisions-txn'],
+        queryFn: () => base44.entities.AIPaymentDecision.list('-created_date', 100),
     });
 
     const filteredTransactions = transactions.filter(txn => {
@@ -191,6 +197,7 @@ export default function Transactions() {
                                             <TableHead className="font-semibold">Amount</TableHead>
                                             <TableHead className="font-semibold">Method</TableHead>
                                             <TableHead className="font-semibold">Status</TableHead>
+                                            <TableHead className="font-semibold">AI</TableHead>
                                             <TableHead className="font-semibold w-12"></TableHead>
                                         </TableRow>
                                     </TableHeader>
@@ -202,7 +209,9 @@ export default function Transactions() {
                                                 </TableCell>
                                             </TableRow>
                                         ) : (
-                                            filteredTransactions.map((txn) => (
+                                            filteredTransactions.map((txn) => {
+                                                const aiDecision = aiDecisions.find(d => d.transaction_id === txn.transaction_id);
+                                                return (
                                                 <TableRow key={txn.id} className="hover:bg-slate-50/50">
                                                     <TableCell>
                                                         <span className="font-mono text-sm text-blue-600">
@@ -245,6 +254,13 @@ export default function Transactions() {
                                                         </Badge>
                                                     </TableCell>
                                                     <TableCell>
+                                                        {aiDecision && (
+                                                            <Badge variant="outline" className="text-xs bg-indigo-50 text-indigo-700" title={`AI: ${aiDecision.decision_type} (${(aiDecision.confidence_score * 100).toFixed(0)}%)`}>
+                                                                AI {(aiDecision.confidence_score * 100).toFixed(0)}%
+                                                            </Badge>
+                                                        )}
+                                                    </TableCell>
+                                                    <TableCell>
                                                         <DropdownMenu>
                                                             <DropdownMenuTrigger asChild>
                                                                 <Button variant="ghost" size="icon" className="h-8 w-8">
@@ -272,7 +288,7 @@ export default function Transactions() {
                                                         </DropdownMenu>
                                                     </TableCell>
                                                 </TableRow>
-                                            ))
+                                            );})
                                         )}
                                     </TableBody>
                                 </Table>
