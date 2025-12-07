@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import Sidebar from '@/components/dashboard/Sidebar';
 import TopHeader from '@/components/dashboard/TopHeader';
+import UniversalComplianceCheck from '@/components/onboarding/UniversalComplianceCheck';
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -73,7 +74,8 @@ export default function AcquirerOnboarding() {
             transaction_fee_percent: '',
             fixed_fee: '',
             chargeback_fee: '',
-        }
+        },
+        compliance: null
     });
 
     const handleChange = (field, value) => {
@@ -140,7 +142,7 @@ export default function AcquirerOnboarding() {
 
                     {/* Progress Steps */}
                     <div className="flex items-center gap-4 mb-8">
-                        {['Basic Info', 'Networks & Coverage', 'API Configuration', 'Complete'].map((s, idx) => (
+                        {['Basic Info', 'Networks & Coverage', 'Compliance', 'API Configuration', 'Complete'].map((s, idx) => (
                             <React.Fragment key={idx}>
                                 <div className={cn(
                                     "flex items-center gap-2 px-4 py-2 rounded-full",
@@ -150,7 +152,7 @@ export default function AcquirerOnboarding() {
                                     {step > idx + 1 ? <CheckCircle className="h-4 w-4" /> : <span className="w-5 h-5 rounded-full bg-current/20 flex items-center justify-center text-xs">{idx + 1}</span>}
                                     <span className="text-sm font-medium">{s}</span>
                                 </div>
-                                {idx < 3 && <ArrowRight className="h-4 w-4 text-slate-300" />}
+                                {idx < 4 && <ArrowRight className="h-4 w-4 text-slate-300" />}
                             </React.Fragment>
                         ))}
                     </div>
@@ -258,7 +260,7 @@ export default function AcquirerOnboarding() {
                                 </div>
                                 <div className="flex gap-2">
                                     <Button variant="outline" onClick={() => setStep(1)}>Back</Button>
-                                    <Button onClick={() => setStep(3)} className="flex-1 gap-2">
+                                    <Button onClick={() => setStep(3)} className="flex-1 gap-2" disabled={formData.networks.length === 0}>
                                         Continue <ArrowRight className="h-4 w-4" />
                                     </Button>
                                 </div>
@@ -267,6 +269,23 @@ export default function AcquirerOnboarding() {
                     )}
 
                     {step === 3 && (
+                        <UniversalComplianceCheck
+                            entityData={{
+                                name: formData.name,
+                                business_name: formData.name,
+                                country: formData.countries[0] || 'US',
+                                business_type: 'acquirer',
+                                id: `ACQ-TEMP-${Date.now()}`
+                            }}
+                            entityType="acquirer"
+                            onComplete={(complianceResult) => {
+                                handleChange('compliance', complianceResult);
+                                setStep(4);
+                            }}
+                        />
+                    )}
+
+                    {step === 4 && (
                         <Card className="max-w-2xl">
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
@@ -328,7 +347,7 @@ export default function AcquirerOnboarding() {
                                     ))}
                                 </div>
                                 <div className="flex gap-2 pt-4">
-                                    <Button variant="outline" onClick={() => setStep(2)}>Back</Button>
+                                    <Button variant="outline" onClick={() => setStep(3)}>Back</Button>
                                     <Button onClick={handleSubmit} className="flex-1 gap-2" disabled={isSubmitting}>
                                         {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle className="h-4 w-4" />}
                                         Complete Setup
