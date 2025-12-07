@@ -38,7 +38,9 @@ import {
     Percent,
     Building,
     ArrowUpDown,
-    Database
+    Database,
+    Headphones,
+    Scale
 } from 'lucide-react';
 
 const menuItems = [
