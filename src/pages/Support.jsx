@@ -27,8 +27,12 @@ import { cn } from "@/lib/utils";
 
 export default function Support() {
     const [pspSettings, setPspSettings] = useState(null);
+    const [user, setUser] = useState(null);
     const [showForm, setShowForm] = useState(false);
+    const [selectedTicket, setSelectedTicket] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
+    const [filterStatus, setFilterStatus] = useState('all');
+    const [responseText, setResponseText] = useState('');
     const [formData, setFormData] = useState({
         subject: '',
         description: '',
@@ -43,22 +47,34 @@ export default function Support() {
     const queryClient = useQueryClient();
 
     useEffect(() => {
-        const loadSettings = async () => {
+        const loadData = async () => {
             try {
-                const settings = await base44.entities.PSPSettings.list();
+                const [settings, currentUser] = await Promise.all([
+                    base44.entities.PSPSettings.list(),
+                    base44.auth.me().catch(() => null)
+                ]);
                 if (settings && settings.length > 0) {
                     setPspSettings(settings[0]);
                 }
+                setUser(currentUser);
             } catch (error) {
-                console.error('Failed to load PSP settings');
+                console.error('Failed to load data');
             }
         };
-        loadSettings();
+        loadData();
     }, []);
 
     const { data: tickets = [], isLoading } = useQuery({
         queryKey: ['support-tickets'],
-        queryFn: () => base44.entities.SupportTicket.list('-created_date', 50)
+        queryFn: async () => {
+            const allTickets = await base44.entities.SupportTicket.list('-created_date', 100);
+            // If user is not admin, only show their tickets
+            if (user && user.app_role !== 'admin') {
+                return allTickets.filter(t => t.requester_email === user.email);
+            }
+            return allTickets;
+        },
+        enabled: !!user
     });
 
     const createTicketMutation = useMutation({
@@ -82,7 +98,18 @@ export default function Support() {
                 requester_phone: '',
                 merchant_id: ''
             });
-            alert('✓ Support ticket created successfully! We\'ll get back to you soon.');
+            alert('✓ Support ticket created successfully! We\'ll respond within our SLA timeframe.');
+        }
+    });
+
+    const updateTicketMutation = useMutation({
+        mutationFn: ({ ticketId, updates }) => {
+            return base44.entities.SupportTicket.update(ticketId, updates);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries(['support-tickets']);
+            setSelectedTicket(null);
+            setResponseText('');
         }
     });
 
@@ -95,8 +122,63 @@ export default function Support() {
         createTicketMutation.mutate(formData);
     };
 
+    const handleStatusChange = (ticket, newStatus) => {
+        updateTicketMutation.mutate({
+            ticketId: ticket.id,
+            updates: { 
+                status: newStatus,
+                ...(newStatus === 'resolved' && { resolved_date: new Date().toISOString() })
+            }
+        });
+    };
+
+    const handleAssign = (ticket, assignee) => {
+        updateTicketMutation.mutate({
+            ticketId: ticket.id,
+            updates: { assigned_to: assignee, status: 'in_progress' }
+        });
+    };
+
+    const handleAddResponse = (ticket) => {
+        if (!responseText.trim()) return;
+        
+        const currentNotes = ticket.resolution_notes || '';
+        const timestamp = new Date().toLocaleString();
+        const newNote = `[${timestamp}] ${user?.full_name || user?.email}: ${responseText}`;
+        const updatedNotes = currentNotes ? `${currentNotes}\n\n${newNote}` : newNote;
+        
+        updateTicketMutation.mutate({
+            ticketId: ticket.id,
+            updates: { 
+                resolution_notes: updatedNotes,
+                status: ticket.status === 'open' ? 'in_progress' : ticket.status
+            }
+        });
+    };
+
+    const getSLATimeframe = (priority) => {
+        const sla = {
+            urgent: { response: '1 hour', resolution: '4 hours' },
+            high: { response: '4 hours', resolution: '24 hours' },
+            medium: { response: '12 hours', resolution: '3 days' },
+            low: { response: '24 hours', resolution: '5 days' }
+        };
+        return sla[priority] || sla.medium;
+    };
+
+    const getTimeSinceCreation = (createdDate) => {
+        const now = new Date();
+        const created = new Date(createdDate);
+        const hours = Math.floor((now - created) / (1000 * 60 * 60));
+        if (hours < 1) return 'Just now';
+        if (hours < 24) return `${hours}h ago`;
+        const days = Math.floor(hours / 24);
+        return `${days}d ago`;
+    };
+
     const companyName = pspSettings?.company_name || 'netXhub.tech';
     const supportEmail = pspSettings?.support_email || 'support@netxhub.tech';
+    const isAdmin = user?.app_role === 'admin';
 
     const statusColors = {
         open: 'bg-blue-100 text-blue-700',
@@ -113,11 +195,13 @@ export default function Support() {
         urgent: 'bg-red-100 text-red-700'
     };
 
-    const filteredTickets = tickets.filter(ticket =>
-        ticket.subject?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        ticket.ticket_id?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        ticket.description?.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const filteredTickets = tickets.filter(ticket => {
+        const matchesSearch = ticket.subject?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            ticket.ticket_id?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            ticket.description?.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesStatus = filterStatus === 'all' || ticket.status === filterStatus;
+        return matchesSearch && matchesStatus;
+    });
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
@@ -324,16 +408,31 @@ export default function Support() {
                 {/* Tickets List */}
                 <Card>
                     <CardHeader>
-                        <div className="flex items-center justify-between">
-                            <CardTitle>Your Support Tickets</CardTitle>
-                            <div className="relative">
-                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                                <Input
-                                    placeholder="Search tickets..."
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="pl-9 w-64"
-                                />
+                        <div className="flex items-center justify-between flex-wrap gap-4">
+                            <CardTitle>{isAdmin ? 'All Support Tickets' : 'Your Support Tickets'}</CardTitle>
+                            <div className="flex items-center gap-3">
+                                <Select value={filterStatus} onValueChange={setFilterStatus}>
+                                    <SelectTrigger className="w-40">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">All Status</SelectItem>
+                                        <SelectItem value="open">Open</SelectItem>
+                                        <SelectItem value="in_progress">In Progress</SelectItem>
+                                        <SelectItem value="waiting_for_customer">Waiting</SelectItem>
+                                        <SelectItem value="resolved">Resolved</SelectItem>
+                                        <SelectItem value="closed">Closed</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <div className="relative">
+                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                                    <Input
+                                        placeholder="Search tickets..."
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        className="pl-9 w-64"
+                                    />
+                                </div>
                             </div>
                         </div>
                     </CardHeader>
@@ -350,37 +449,180 @@ export default function Support() {
                             </div>
                         ) : (
                             <div className="space-y-4">
-                                {filteredTickets.map((ticket) => (
-                                    <div key={ticket.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
-                                        <div className="flex items-start justify-between mb-2">
-                                            <div className="flex-1">
-                                                <div className="flex items-center gap-2 mb-1">
-                                                    <span className="font-mono text-sm text-slate-500">{ticket.ticket_id}</span>
-                                                    <Badge className={statusColors[ticket.status]}>
-                                                        {ticket.status.replace('_', ' ')}
-                                                    </Badge>
-                                                    <Badge variant="outline" className={priorityColors[ticket.priority]}>
-                                                        {ticket.priority}
-                                                    </Badge>
+                                {filteredTickets.map((ticket) => {
+                                    const sla = getSLATimeframe(ticket.priority);
+                                    return (
+                                        <div 
+                                            key={ticket.id} 
+                                            className="border rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer"
+                                            onClick={() => setSelectedTicket(ticket)}
+                                        >
+                                            <div className="flex items-start justify-between mb-2">
+                                                <div className="flex-1">
+                                                    <div className="flex items-center gap-2 mb-2 flex-wrap">
+                                                        <span className="font-mono text-sm font-semibold text-slate-700">{ticket.ticket_id}</span>
+                                                        <Badge className={statusColors[ticket.status]}>
+                                                            {ticket.status.replace('_', ' ')}
+                                                        </Badge>
+                                                        <Badge variant="outline" className={priorityColors[ticket.priority]}>
+                                                            {ticket.priority}
+                                                        </Badge>
+                                                        <span className="text-xs text-slate-500">SLA: {sla.response}</span>
+                                                    </div>
+                                                    <h3 className="font-semibold text-slate-900 mb-1">{ticket.subject}</h3>
+                                                    <p className="text-sm text-slate-600 line-clamp-2">{ticket.description}</p>
                                                 </div>
-                                                <h3 className="font-semibold text-slate-900 mb-1">{ticket.subject}</h3>
-                                                <p className="text-sm text-slate-600 line-clamp-2">{ticket.description}</p>
+                                            </div>
+                                            <div className="flex items-center gap-4 text-xs text-slate-500 mt-3 flex-wrap">
+                                                <span className="flex items-center gap-1">
+                                                    <Clock className="h-3 w-3" />
+                                                    {getTimeSinceCreation(ticket.created_date)}
+                                                </span>
+                                                <span className="capitalize">{ticket.category}</span>
+                                                {ticket.requester_name && <span>From: {ticket.requester_name}</span>}
+                                                {ticket.assigned_to && <span>Assigned: {ticket.assigned_to}</span>}
                                             </div>
                                         </div>
-                                        <div className="flex items-center gap-4 text-xs text-slate-500 mt-3">
-                                            <span className="flex items-center gap-1">
-                                                <Clock className="h-3 w-3" />
-                                                {new Date(ticket.created_date).toLocaleDateString()}
-                                            </span>
-                                            <span>{ticket.category}</span>
-                                            {ticket.assigned_to && <span>Assigned to: {ticket.assigned_to}</span>}
-                                        </div>
-                                    </div>
-                                ))}
+                                    );
+                                })}
                             </div>
                         )}
                     </CardContent>
                 </Card>
+
+                {/* Ticket Detail Modal */}
+                {selectedTicket && (
+                    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setSelectedTicket(null)}>
+                        <Card className="max-w-3xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+                            <CardHeader className="border-b">
+                                <div className="flex items-start justify-between">
+                                    <div className="flex-1">
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <span className="font-mono text-sm font-semibold">{selectedTicket.ticket_id}</span>
+                                            <Badge className={statusColors[selectedTicket.status]}>
+                                                {selectedTicket.status.replace('_', ' ')}
+                                            </Badge>
+                                            <Badge className={priorityColors[selectedTicket.priority]}>
+                                                {selectedTicket.priority}
+                                            </Badge>
+                                        </div>
+                                        <h2 className="text-xl font-bold text-slate-900">{selectedTicket.subject}</h2>
+                                    </div>
+                                    <Button variant="ghost" size="icon" onClick={() => setSelectedTicket(null)}>
+                                        <X className="h-4 w-4" />
+                                    </Button>
+                                </div>
+                            </CardHeader>
+                            <CardContent className="pt-6 space-y-6">
+                                {/* Ticket Info */}
+                                <div className="grid md:grid-cols-2 gap-4 p-4 bg-slate-50 rounded-lg">
+                                    <div>
+                                        <p className="text-xs text-slate-500">Requester</p>
+                                        <p className="font-medium">{selectedTicket.requester_name}</p>
+                                        <p className="text-sm text-slate-600">{selectedTicket.requester_email}</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-slate-500">Created</p>
+                                        <p className="font-medium">{new Date(selectedTicket.created_date).toLocaleString()}</p>
+                                        <p className="text-xs text-slate-600">{getTimeSinceCreation(selectedTicket.created_date)}</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-slate-500">Category</p>
+                                        <p className="font-medium capitalize">{selectedTicket.category}</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-slate-500">SLA</p>
+                                        <p className="font-medium">{getSLATimeframe(selectedTicket.priority).response} response</p>
+                                    </div>
+                                </div>
+
+                                {/* Description */}
+                                <div>
+                                    <h3 className="font-semibold mb-2">Description</h3>
+                                    <p className="text-slate-700 whitespace-pre-wrap">{selectedTicket.description}</p>
+                                </div>
+
+                                {/* Resolution Notes / Communication History */}
+                                {selectedTicket.resolution_notes && (
+                                    <div>
+                                        <h3 className="font-semibold mb-2">Communication History</h3>
+                                        <div className="bg-slate-50 rounded-lg p-4 space-y-3">
+                                            {selectedTicket.resolution_notes.split('\n\n').map((note, idx) => (
+                                                <div key={idx} className="text-sm border-l-2 border-blue-400 pl-3">
+                                                    <p className="text-slate-700 whitespace-pre-wrap">{note}</p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Admin Actions */}
+                                {isAdmin && selectedTicket.status !== 'closed' && (
+                                    <div className="border-t pt-6 space-y-4">
+                                        <h3 className="font-semibold">Admin Actions</h3>
+                                        
+                                        {/* Add Response */}
+                                        <div>
+                                            <Label>Add Response</Label>
+                                            <Textarea
+                                                value={responseText}
+                                                onChange={(e) => setResponseText(e.target.value)}
+                                                placeholder="Type your response to the customer..."
+                                                rows={4}
+                                                className="mt-1"
+                                            />
+                                            <Button 
+                                                onClick={() => handleAddResponse(selectedTicket)}
+                                                className="mt-2"
+                                                disabled={!responseText.trim()}
+                                            >
+                                                <Send className="h-4 w-4 mr-2" />
+                                                Send Response
+                                            </Button>
+                                        </div>
+
+                                        {/* Status & Assignment */}
+                                        <div className="flex gap-3 flex-wrap">
+                                            <Select 
+                                                value={selectedTicket.status} 
+                                                onValueChange={(value) => handleStatusChange(selectedTicket, value)}
+                                            >
+                                                <SelectTrigger className="w-48">
+                                                    <SelectValue />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="open">Open</SelectItem>
+                                                    <SelectItem value="in_progress">In Progress</SelectItem>
+                                                    <SelectItem value="waiting_for_customer">Waiting for Customer</SelectItem>
+                                                    <SelectItem value="resolved">Resolved</SelectItem>
+                                                    <SelectItem value="closed">Closed</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+
+                                            {!selectedTicket.assigned_to && (
+                                                <Button 
+                                                    variant="outline"
+                                                    onClick={() => handleAssign(selectedTicket, user?.full_name || user?.email)}
+                                                >
+                                                    Assign to Me
+                                                </Button>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {selectedTicket.resolved_date && (
+                                    <Alert className="bg-green-50 border-green-200">
+                                        <CheckCircle className="h-4 w-4 text-green-600" />
+                                        <AlertDescription>
+                                            Resolved on {new Date(selectedTicket.resolved_date).toLocaleString()}
+                                        </AlertDescription>
+                                    </Alert>
+                                )}
+                            </CardContent>
+                        </Card>
+                    </div>
+                )}
 
                 {/* FAQ Section */}
                 <div className="mt-8">
