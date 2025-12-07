@@ -104,7 +104,11 @@ export default function Merchants() {
 
     const updateStatusMutation = useMutation({
         mutationFn: async ({ merchantId, newStatus, merchant }) => {
-            await base44.entities.Merchant.update(merchantId, { status: newStatus });
+            const oldStatus = merchant.status;
+            const updated = await base44.entities.Merchant.update(merchantId, { status: newStatus });
+            
+            // Audit log
+            await AuditLogger.logMerchantStatusChanged({ ...merchant, id: merchantId }, oldStatus, newStatus);
             
             // If approving merchant, provision users
             if (newStatus === 'active' && merchant.status !== 'active') {
@@ -124,6 +128,8 @@ export default function Merchants() {
                     toast.error('Merchant activated but user provisioning failed');
                 }
             }
+            
+            return updated;
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['merchants'] });
@@ -131,12 +137,19 @@ export default function Merchants() {
     });
 
     const createMutation = useMutation({
-        mutationFn: (data) => base44.entities.Merchant.create({
-            ...data,
-            merchant_id: `MID-${Date.now()}`,
-            status: 'pending',
-            risk_level: 'medium',
-        }),
+        mutationFn: async (data) => {
+            const merchant = await base44.entities.Merchant.create({
+                ...data,
+                merchant_id: `MID-${Date.now()}`,
+                status: 'pending',
+                risk_level: 'medium',
+            });
+            
+            // Audit log
+            await AuditLogger.logMerchantCreated(merchant);
+            
+            return merchant;
+        },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['merchants'] });
             setShowAddDialog(false);
