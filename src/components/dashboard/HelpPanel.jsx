@@ -1867,9 +1867,20 @@ export default function HelpPanel({ open, onOpenChange }) {
                                                     );
                                                 }
                                                 
-                                                // Regular paragraphs
+                                                // Regular paragraphs - handle inline bold
                                                 if (line.trim()) {
-                                                    return <p key={i} className="my-2.5 text-slate-700 leading-relaxed">{line}</p>;
+                                                    // Replace **text** with bold spans
+                                                    const parts = line.split(/(\*\*[^*]+\*\*)/g);
+                                                    return (
+                                                        <p key={i} className="my-2.5 text-slate-700 leading-relaxed">
+                                                            {parts.map((part, j) => {
+                                                                if (part.startsWith('**') && part.endsWith('**')) {
+                                                                    return <strong key={j} className="font-semibold text-slate-900">{part.replace(/\*\*/g, '')}</strong>;
+                                                                }
+                                                                return part;
+                                                            })}
+                                                        </p>
+                                                    );
                                                 }
                                                 
                                                 // Empty lines
