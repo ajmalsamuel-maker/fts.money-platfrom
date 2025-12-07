@@ -29,12 +29,9 @@ export default function PublicSupport() {
     useEffect(() => {
         const loadSettings = async () => {
             try {
-                const [psp, theme] = await Promise.all([
-                    base44.entities.PSPSettings.list(),
-                    base44.entities.ThemeSettings.list()
-                ]);
-                if (psp && psp.length > 0) setPspSettings(psp[0]);
-                if (theme && theme.length > 0) setThemeSettings(theme[0]);
+                const response = await base44.functions.invoke('publicSupport');
+                if (response.data.pspSettings) setPspSettings(response.data.pspSettings);
+                if (response.data.themeSettings) setThemeSettings(response.data.themeSettings);
             } catch (error) {
                 console.error('Failed to load settings');
             }
@@ -43,14 +40,10 @@ export default function PublicSupport() {
     }, []);
 
     const createTicketMutation = useMutation({
-        mutationFn: (ticketData) => {
-            const newTicketId = `TKT-${Date.now()}`;
-            setTicketId(newTicketId);
-            return base44.entities.SupportTicket.create({
-                ...ticketData,
-                ticket_id: newTicketId,
-                status: 'open'
-            });
+        mutationFn: async (ticketData) => {
+            const response = await base44.functions.invoke('publicSupport', ticketData);
+            setTicketId(response.data.ticketId);
+            return response;
         },
         onSuccess: () => {
             setSubmitted(true);
