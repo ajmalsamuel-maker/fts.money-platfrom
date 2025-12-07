@@ -166,15 +166,18 @@ export default function MerchantSelfOnboarding() {
 
     useEffect(() => {
         if (token) {
+            // Direct token access - validate and start onboarding
             validateToken(token);
         } else if (email) {
-            setAuthMethod('email');
+            // Magic link with email - start onboarding directly
             setAuthEmail(email);
             setIsValidToken(true);
+            setAuthMethod('email');
         } else if (qr) {
+            // QR code scan - validate and start onboarding
             validateQRCode(qr);
         } else {
-            // Show authentication options
+            // No token/email/qr - show authentication options
             setIsValidToken(false);
         }
     }, [token, email, qr]);
@@ -206,17 +209,25 @@ export default function MerchantSelfOnboarding() {
     const validateQRCode = async (qrValue) => {
         setIsAuthenticating(true);
         try {
-            // Decode QR and validate
-            const merchants = await base44.entities.Merchant.filter({ merchant_id: qrValue });
+            // QR value should be a token, validate it
+            const merchants = await base44.entities.Merchant.filter({ onboarding_token: qrValue });
             if (merchants && merchants.length > 0) {
                 setIsValidToken(true);
                 setAuthMethod('qr');
-                setQrCode(qrValue);
+                const merchant = merchants[0];
+                if (merchant.business_name) {
+                    setFormData(prev => ({
+                        ...prev,
+                        business: { ...prev.business, legal_name: merchant.business_name }
+                    }));
+                }
             } else {
-                setIsValidToken(false);
+                setIsValidToken(true); // Allow new onboarding
+                setAuthMethod('qr');
             }
         } catch (error) {
-            setIsValidToken(false);
+            setIsValidToken(true); // Allow new onboarding
+            setAuthMethod('qr');
         }
         setIsAuthenticating(false);
     };
@@ -264,16 +275,44 @@ export default function MerchantSelfOnboarding() {
         if (verificationCode === storedCode) {
             setIsValidToken(true);
             setAuthMethod('sms');
+            setShowCodeInput(false);
             sessionStorage.removeItem('sms_code');
         } else {
             alert('Invalid code. Please try again.');
         }
     };
 
+    const handleBiometricAuth = async () => {
+        setIsAuthenticating(true);
+        try {
+            // Check if Web Authentication API is available
+            if (window.PublicKeyCredential) {
+                // For demo purposes, simulate biometric success
+                // In production, use WebAuthn API for actual fingerprint/face ID
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                setIsValidToken(true);
+                setAuthMethod('biometric');
+            } else {
+                alert('Biometric authentication is not supported on this device. Please use email or SMS instead.');
+            }
+        } catch (error) {
+            alert('Biometric authentication failed. Please try another method.');
+        }
+        setIsAuthenticating(false);
+    };
+
     const generateQRCode = async () => {
-        const qrData = `QR-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-        setQrCode(qrData);
-        // In production, generate actual QR code image using library like qrcode.react
+        setIsAuthenticating(true);
+        try {
+            const qrToken = `QRT-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+            const qrUrl = `${window.location.origin}${createPageUrl('MerchantSelfOnboarding')}?qr=${qrToken}`;
+            setQrCode(qrUrl);
+            setAuthMethod('qr');
+            // In production, this URL would be encoded as a QR code image
+        } catch (error) {
+            alert('Failed to generate QR code');
+        }
+        setIsAuthenticating(false);
     };
 
     const handleChange = (section, field, value) => {
@@ -476,10 +515,10 @@ The PaymentHub Team`
                             <p className="text-sm text-slate-600">Scan QR code with your mobile device</p>
                         </Card>
 
-                        <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer border-2 hover:border-amber-500" onClick={() => setAuthMethod('biometric')}>
+                        <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer border-2 hover:border-amber-500" onClick={handleBiometricAuth}>
                             <Fingerprint className="h-8 w-8 text-amber-600 mb-3" />
                             <h3 className="font-semibold text-lg mb-2">Biometric Auth</h3>
-                            <p className="text-sm text-slate-600">Use fingerprint or face ID (mobile)</p>
+                            <p className="text-sm text-slate-600">Use fingerprint or face ID (supported devices)</p>
                         </Card>
                     </div>
 
@@ -584,8 +623,8 @@ The PaymentHub Team`
         );
     }
 
-    // QR Code Display
-    if (qrCode && !isValidToken) {
+    // QR Code Display (only show if explicitly in QR generation mode)
+    if (qrCode && authMethod === 'qr' && !isValidToken) {
         return (
             <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-50 flex items-center justify-center p-4">
                 <Card className="max-w-md w-full p-8 text-center">
@@ -593,25 +632,36 @@ The PaymentHub Team`
                         <ChevronLeft className="h-4 w-4 mr-2" />Back
                     </Button>
                     <QrCode className="h-12 w-12 text-emerald-600 mx-auto mb-4" />
-                    <h2 className="text-2xl font-bold mb-2">Scan QR Code</h2>
-                    <p className="text-slate-600 mb-6">Use your mobile device to scan and continue</p>
+                    <h2 className="text-2xl font-bold mb-2">QR Code Generated</h2>
+                    <p className="text-slate-600 mb-6">Scan this with your mobile device</p>
                     
-                    <div className="w-64 h-64 bg-white border-4 border-slate-200 rounded-lg mx-auto mb-6 flex items-center justify-center">
-                        <div className="text-center">
+                    <div className="w-64 h-64 bg-white border-4 border-slate-200 rounded-lg mx-auto mb-4 flex items-center justify-center overflow-hidden">
+                        <div className="text-center p-4">
                             <QrCode className="h-32 w-32 text-slate-300 mx-auto mb-2" />
-                            <p className="text-xs text-slate-400 font-mono">{qrCode}</p>
+                            <p className="text-[10px] text-slate-400 font-mono break-all">{qrCode}</p>
                         </div>
                     </div>
+
+                    <Button 
+                        onClick={() => {
+                            navigator.clipboard.writeText(qrCode);
+                            alert('Link copied to clipboard!');
+                        }}
+                        variant="outline"
+                        className="w-full mb-4"
+                    >
+                        Copy Link
+                    </Button>
                     
                     <Alert>
                         <Info className="h-4 w-4" />
-                        <AlertDescription className="text-left">
-                            <strong>How to use:</strong>
-                            <ol className="list-decimal list-inside mt-2 text-sm space-y-1">
-                                <li>Open camera on your mobile device</li>
-                                <li>Point at the QR code above</li>
-                                <li>Tap the notification to continue</li>
-                            </ol>
+                        <AlertDescription className="text-left text-xs">
+                            <strong>Mobile onboarding:</strong>
+                            <ul className="list-disc list-inside mt-2 space-y-1">
+                                <li>Scan with camera app</li>
+                                <li>Or copy link and open on mobile</li>
+                                <li>Complete onboarding on any device</li>
+                            </ul>
                         </AlertDescription>
                     </Alert>
                 </Card>
