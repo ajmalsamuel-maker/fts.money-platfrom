@@ -45,6 +45,7 @@ import MerchantChangePassword from './pages/MerchantChangePassword';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 import Support from './pages/Support';
+import PublicSupport from './pages/PublicSupport';
 import __Layout from './Layout.jsx';
 
 
@@ -96,6 +97,7 @@ export const PAGES = {
     "PrivacyPolicy": PrivacyPolicy,
     "TermsOfService": TermsOfService,
     "Support": Support,
+    "PublicSupport": PublicSupport,
 }
 
 export const pagesConfig = {

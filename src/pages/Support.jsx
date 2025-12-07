@@ -212,14 +212,19 @@ export default function Support() {
                         <div className="flex items-center gap-3">
                             <Headphones className="h-10 w-10 text-blue-600" />
                             <div>
-                                <h1 className="text-3xl font-bold text-slate-900">Support Center</h1>
-                                <p className="text-slate-600">{companyName}</p>
+                                <h1 className="text-3xl font-bold text-slate-900">Support Center - Admin</h1>
+                                <p className="text-slate-600">{companyName} - Ticket Management</p>
                             </div>
                         </div>
-                        <Button onClick={() => setShowForm(true)} className="bg-blue-600 hover:bg-blue-700">
-                            <Plus className="h-4 w-4 mr-2" />
-                            New Ticket
-                        </Button>
+                        <div className="flex gap-3">
+                            <Button variant="outline" onClick={() => window.open('https://netxhub.tech/support', '_blank')}>
+                                Public Support Page
+                            </Button>
+                            <Button onClick={() => setShowForm(true)} className="bg-blue-600 hover:bg-blue-700">
+                                <Plus className="h-4 w-4 mr-2" />
+                                New Ticket
+                            </Button>
+                        </div>
                     </div>
                 </div>
             </div>
