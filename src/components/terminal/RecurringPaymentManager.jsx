@@ -15,6 +15,10 @@ import {
 } from "@/components/ui/select";
 import { Repeat, Plus, Pause, Play, StopCircle, Calendar } from 'lucide-react';
 import { toast } from 'sonner';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import AILifecycleManager from '@/components/recurring/AILifecycleManager';
+import FlexibleBillingConfig from '@/components/recurring/FlexibleBillingConfig';
+import DunningManager from '@/components/recurring/DunningManager';
 
 export default function RecurringPaymentManager({ merchants }) {
     const [showCreateDialog, setShowCreateDialog] = useState(false);
@@ -189,7 +193,33 @@ export default function RecurringPaymentManager({ merchants }) {
                         </CardContent>
                     </Card>
                 ))}
-            </div>
+                        </div>
+                    </div>
+                </TabsContent>
+
+                <TabsContent value="lifecycle">
+                    <AILifecycleManager />
+                </TabsContent>
+
+                <TabsContent value="billing">
+                    {recurringPayments.length > 0 ? (
+                        <FlexibleBillingConfig 
+                            subscription={recurringPayments[0]}
+                            onUpdate={() => queryClient.invalidateQueries({ queryKey: ['recurring-payments'] })}
+                        />
+                    ) : (
+                        <Card>
+                            <CardContent className="p-8 text-center">
+                                <p className="text-slate-500">Create a subscription first to configure billing</p>
+                            </CardContent>
+                        </Card>
+                    )}
+                </TabsContent>
+
+                <TabsContent value="dunning">
+                    <DunningManager />
+                </TabsContent>
+            </Tabs>
 
             <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
                 <DialogContent className="max-w-2xl">
