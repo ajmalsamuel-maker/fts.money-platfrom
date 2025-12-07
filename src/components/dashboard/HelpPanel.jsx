@@ -2141,25 +2141,37 @@ export default function HelpPanel({ open, onOpenChange }) {
 
                                         <div className="prose prose-sm max-w-none prose-headings:text-slate-900 prose-headings:font-semibold">
                                             {selectedItem.content.split('\n').map((line, i) => {
+                                                // Helper function to render text with bold formatting
+                                                const renderTextWithBold = (text) => {
+                                                    const parts = text.split(/(\*\*[^*]+\*\*)/g);
+                                                    return parts.map((part, j) => {
+                                                        if (part.startsWith('**') && part.endsWith('**')) {
+                                                            return <strong key={j} className="font-semibold text-slate-900">{part.slice(2, -2)}</strong>;
+                                                        }
+                                                        return <span key={j}>{part}</span>;
+                                                    });
+                                                };
+                                                
                                                 // Main section headers (e.g., **PCI DSS 4.0.1 Requirement 1**)
                                                 if (line.startsWith('**') && line.endsWith('**') && !line.includes(':')) {
                                                     return (
                                                         <h3 key={i} className="text-lg font-bold text-slate-900 mt-6 mb-3 pb-2 border-b border-slate-200">
-                                                            {line.replace(/\*\*/g, '')}
+                                                            {line.slice(2, -2)}
                                                         </h3>
                                                     );
                                                 }
                                                 
                                                 // Subsection headers with colons (e.g., **1.1 Network Security Policies**: text)
                                                 if (line.match(/^\*\*[^*]+\*\*:/)) {
-                                                    const [title, ...rest] = line.split('**:');
-                                                    const cleanTitle = title.replace(/\*\*/g, '');
-                                                    return (
-                                                        <div key={i} className="my-3">
-                                                            <h4 className="font-semibold text-slate-900 text-base mb-1">{cleanTitle}:</h4>
-                                                            {rest.join(':') && <p className="text-slate-600 leading-relaxed">{rest.join(':')}</p>}
-                                                        </div>
-                                                    );
+                                                    const match = line.match(/^\*\*([^*]+)\*\*:\s*(.*)/);
+                                                    if (match) {
+                                                        return (
+                                                            <div key={i} className="my-3">
+                                                                <h4 className="font-semibold text-slate-900 text-base mb-1">{match[1]}:</h4>
+                                                                {match[2] && <p className="text-slate-600 leading-relaxed">{renderTextWithBold(match[2])}</p>}
+                                                            </div>
+                                                        );
+                                                    }
                                                 }
                                                 
                                                 // Bold bullet points with optional text (e.g., • **Item**: description)
@@ -2169,9 +2181,9 @@ export default function HelpPanel({ open, onOpenChange }) {
                                                         return (
                                                             <div key={i} className="flex gap-2 my-2">
                                                                 <span className="text-slate-600 flex-shrink-0">•</span>
-                                                                <div>
+                                                                <div className="text-slate-600">
                                                                     <span className="font-semibold text-slate-900">{match[1]}</span>
-                                                                    {match[2] && <span className="text-slate-600">: {match[2]}</span>}
+                                                                    {match[2] && <span>: {renderTextWithBold(match[2])}</span>}
                                                                 </div>
                                                             </div>
                                                         );
@@ -2183,7 +2195,7 @@ export default function HelpPanel({ open, onOpenChange }) {
                                                     return (
                                                         <div key={i} className="flex gap-2 my-1.5">
                                                             <span className="text-slate-600 flex-shrink-0">{line[0]}</span>
-                                                            <span className="text-slate-600 leading-relaxed">{line.slice(2)}</span>
+                                                            <span className="text-slate-600 leading-relaxed">{renderTextWithBold(line.slice(2))}</span>
                                                         </div>
                                                     );
                                                 }
@@ -2192,23 +2204,16 @@ export default function HelpPanel({ open, onOpenChange }) {
                                                 if (line.trim().match(/^\d+\./)) {
                                                     return (
                                                         <div key={i} className="my-1.5 ml-1">
-                                                            <span className="text-slate-600 leading-relaxed">{line}</span>
+                                                            <span className="text-slate-600 leading-relaxed">{renderTextWithBold(line)}</span>
                                                         </div>
                                                     );
                                                 }
                                                 
                                                 // Regular paragraphs - handle inline bold
                                                 if (line.trim()) {
-                                                    // Replace **text** with bold spans
-                                                    const parts = line.split(/(\*\*[^*]+\*\*)/g);
                                                     return (
                                                         <p key={i} className="my-2.5 text-slate-700 leading-relaxed">
-                                                            {parts.map((part, j) => {
-                                                                if (part.startsWith('**') && part.endsWith('**')) {
-                                                                    return <strong key={j} className="font-semibold text-slate-900">{part.replace(/\*\*/g, '')}</strong>;
-                                                                }
-                                                                return part;
-                                                            })}
+                                                            {renderTextWithBold(line)}
                                                         </p>
                                                     );
                                                 }
