@@ -18,6 +18,7 @@ import { toast } from 'sonner';
 export default function InvoiceGenerator({ merchants }) {
     const [formData, setFormData] = useState({
         merchant_id: '',
+        template_id: '',
         customer_name: '',
         customer_email: '',
         customer_address: '',
@@ -32,6 +33,14 @@ export default function InvoiceGenerator({ merchants }) {
     });
 
     const queryClient = useQueryClient();
+
+    const { data: templates = [] } = useQuery({
+        queryKey: ['invoice-templates', formData.merchant_id],
+        queryFn: () => formData.merchant_id ? 
+            base44.entities.InvoiceTemplate.filter({ merchant_id: formData.merchant_id }) : 
+            Promise.resolve([]),
+        enabled: !!formData.merchant_id
+    });
 
     const createInvoiceMutation = useMutation({
         mutationFn: async (data) => {
@@ -201,6 +210,23 @@ export default function InvoiceGenerator({ merchants }) {
                         </SelectContent>
                     </Select>
                 </div>
+                <div className="space-y-2">
+                    <Label>Invoice Template</Label>
+                    <Select value={formData.template_id} onValueChange={(val) => setFormData({...formData, template_id: val})}>
+                        <SelectTrigger>
+                            <SelectValue placeholder="Use default template" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value={null}>Default Template</SelectItem>
+                            {templates.map(t => (
+                                <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                     <Label>Payment Terms</Label>
                     <Select value={formData.payment_terms} onValueChange={(val) => setFormData({...formData, payment_terms: val})}>

@@ -32,6 +32,7 @@ import { toast } from 'sonner';
 import InvoiceGenerator from '@/components/terminal/InvoiceGenerator';
 import PaymentLinkGenerator from '@/components/terminal/PaymentLinkGenerator';
 import PaymentForm from '@/components/terminal/PaymentForm';
+import InvoiceTemplateManager from '@/components/terminal/InvoiceTemplateManager';
 
 export default function VirtualTerminal() {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -85,7 +86,7 @@ export default function VirtualTerminal() {
                                 </CardHeader>
                                 <CardContent className="p-6">
                                     <Tabs value={activeTab} onValueChange={setActiveTab}>
-                                        <TabsList className="grid w-full grid-cols-3 mb-6">
+                                        <TabsList className="grid w-full grid-cols-4 mb-6">
                                             <TabsTrigger value="payment" className="gap-2">
                                                 <CreditCard className="h-4 w-4" />
                                                 <span className="hidden sm:inline">Quick Payment</span>
@@ -97,6 +98,10 @@ export default function VirtualTerminal() {
                                             <TabsTrigger value="link" className="gap-2">
                                                 <Link2 className="h-4 w-4" />
                                                 <span className="hidden sm:inline">Payment Link</span>
+                                            </TabsTrigger>
+                                            <TabsTrigger value="templates" className="gap-2">
+                                                <FileText className="h-4 w-4" />
+                                                <span className="hidden sm:inline">Templates</span>
                                             </TabsTrigger>
                                         </TabsList>
 
@@ -110,6 +115,10 @@ export default function VirtualTerminal() {
 
                                         <TabsContent value="link">
                                             <PaymentLinkGenerator merchants={merchants} />
+                                        </TabsContent>
+
+                                        <TabsContent value="templates">
+                                            <InvoiceTemplateManager merchantId={merchants[0]?.id} />
                                         </TabsContent>
                                     </Tabs>
                                 </CardContent>
