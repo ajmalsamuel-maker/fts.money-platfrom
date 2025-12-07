@@ -1,13 +1,14 @@
-import { createClient } from 'npm:@base44/sdk@0.8.4';
+import pg from 'npm:pg@8.11.3';
+
+const { Pool } = pg;
+
+const pool = new Pool({
+    connectionString: Deno.env.get("DATABASE_URL"),
+    ssl: { rejectUnauthorized: false }
+});
 
 Deno.serve(async (req) => {
     try {
-        // Use service role client for unauthenticated merchant login
-        const base44 = createClient({
-            appId: Deno.env.get('BASE44_APP_ID'),
-            serviceRoleKey: Deno.env.get('BASE44_SERVICE_ROLE_KEY')
-        });
-        
         const body = await req.json();
         const { action, email, password, user_id, new_password } = body;
 
