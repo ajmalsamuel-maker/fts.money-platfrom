@@ -25,13 +25,14 @@ import {
 } from 'lucide-react';
 
 export default function MerchantDashboard() {
-    const { session, loading, isAuthenticated, logout } = useMerchantAuth();
+    const { user, loading, isAuthenticated, logout } = useMerchantAuth();
     const navigate = useNavigate();
     const [stats, setStats] = useState({
         totalVolume: 0,
         totalTransactions: 0,
         successRate: 0,
-        pendingSettlement: 0
+        pendingSettlement: 0,
+        merchantName: ''
     });
 
     useEffect(() => {
@@ -41,36 +42,40 @@ export default function MerchantDashboard() {
     }, [loading, isAuthenticated, navigate]);
 
     useEffect(() => {
-        if (session?.merchant_id) {
+        if (user) {
             loadMerchantStats();
         }
-    }, [session]);
+    }, [user]);
 
     const loadMerchantStats = async () => {
         try {
-            const { data: result } = await base44.functions.invoke('dbCore', {
-                action: 'query',
-                sql: `
-                    SELECT 
-                        COUNT(*) as total_transactions,
-                        COALESCE(SUM(amount), 0) as total_volume,
-                        COALESCE(AVG(CASE WHEN status = 'approved' THEN 1 ELSE 0 END) * 100, 0) as success_rate,
-                        COALESCE(SUM(CASE WHEN status = 'approved' AND settlement_date IS NULL THEN amount ELSE 0 END), 0) as pending_settlement
-                    FROM transactions
-                    WHERE merchant_id = $1
-                `,
-                params: [session.merchant_id]
-            });
-
-            if (result.rows && result.rows.length > 0) {
-                const row = result.rows[0];
-                setStats({
-                    totalVolume: parseFloat(row.total_volume) || 0,
-                    totalTransactions: parseInt(row.total_transactions) || 0,
-                    successRate: parseFloat(row.success_rate) || 0,
-                    pendingSettlement: parseFloat(row.pending_settlement) || 0
-                });
+            // Find merchant by contact email
+            const merchants = await base44.entities.Merchant.filter({ contact_email: user.email });
+            if (!merchants || merchants.length === 0) {
+                console.error('Merchant not found');
+                return;
             }
+            
+            const merchant = merchants[0];
+            
+            // Get transactions for this merchant
+            const transactions = await base44.entities.Transaction.filter({ merchant_id: merchant.merchant_id });
+            
+            // Calculate stats
+            const totalVolume = transactions.reduce((sum, t) => sum + (t.amount || 0), 0);
+            const successfulTxns = transactions.filter(t => t.status === 'approved' || t.status === 'settled');
+            const successRate = transactions.length > 0 ? (successfulTxns.length / transactions.length * 100) : 0;
+            const pendingSettlement = transactions
+                .filter(t => t.status === 'approved' && !t.settlement_date)
+                .reduce((sum, t) => sum + (t.net_amount || t.amount || 0), 0);
+
+            setStats({
+                totalVolume,
+                totalTransactions: transactions.length,
+                successRate,
+                pendingSettlement,
+                merchantName: merchant.business_name
+            });
         } catch (error) {
             console.error('Failed to load stats:', error);
         }
@@ -84,7 +89,7 @@ export default function MerchantDashboard() {
         );
     }
 
-    if (!session) return null;
+    if (!user) return null;
 
     return (
         <div className="min-h-screen bg-slate-50">
@@ -96,7 +101,7 @@ export default function MerchantDashboard() {
                             <CreditCard className="h-5 w-5 text-white" />
                         </div>
                         <div>
-                            <h1 className="text-xl font-bold text-slate-900">{session.merchant_name}</h1>
+                            <h1 className="text-xl font-bold text-slate-900">{stats.merchantName || 'Merchant Portal'}</h1>
                             <p className="text-sm text-slate-500">Merchant Portal</p>
                         </div>
                     </div>
@@ -105,16 +110,16 @@ export default function MerchantDashboard() {
                         <DropdownMenuTrigger asChild>
                             <Button variant="ghost" className="gap-2">
                                 <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white text-sm font-medium">
-                                    {session.full_name?.charAt(0) || 'M'}
+                                    {user.full_name?.charAt(0) || 'M'}
                                 </div>
-                                <span className="hidden sm:inline">{session.full_name}</span>
+                                <span className="hidden sm:inline">{user.full_name}</span>
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-56">
                             <div className="px-2 py-2">
-                                <p className="font-medium">{session.full_name}</p>
-                                <p className="text-sm text-slate-500">{session.email}</p>
-                                <Badge className="mt-1 text-xs">{session.role}</Badge>
+                                <p className="font-medium">{user.full_name}</p>
+                                <p className="text-sm text-slate-500">{user.email}</p>
+                                <Badge className="mt-1 text-xs">{user.role}</Badge>
                             </div>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem>
@@ -136,7 +141,7 @@ export default function MerchantDashboard() {
                 <div className="max-w-7xl mx-auto">
                     <div className="mb-6">
                         <h2 className="text-2xl font-bold text-slate-900">Dashboard</h2>
-                        <p className="text-slate-500">Welcome back, {session.full_name}</p>
+                        <p className="text-slate-500">Welcome back, {user.full_name}</p>
                     </div>
 
                     {/* Stats Grid */}
