@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Progress } from "@/components/ui/progress";
 import { 
+    Building2, 
     CheckCircle, 
     XCircle, 
     Clock, 
@@ -15,8 +16,7 @@ import {
     Users,
     FileText,
     Search,
-    Shield,
-    Building
+    Shield
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { base44 } from '@/api/base44Client';
@@ -152,7 +152,7 @@ export default function KYBVerificationStep({ data, onChange, errors, businessDa
         <div className="space-y-6">
             <div className="flex items-center gap-3 mb-6">
                 <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
-                    <Building className="h-6 w-6 text-blue-600" />
+                    <Building2 className="h-6 w-6 text-blue-600" />
                 </div>
                 <div className="flex-1">
                     <h2 className="text-xl font-semibold text-slate-900">KYB Verification</h2>

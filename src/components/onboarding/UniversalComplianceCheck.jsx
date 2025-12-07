@@ -8,6 +8,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { base44 } from '@/api/base44Client';
 import {
     Shield,
+    Building2,
     CheckCircle,
     XCircle,
     AlertTriangle,
@@ -18,8 +19,7 @@ import {
     UserX,
     FileWarning,
     ExternalLink,
-    Info,
-    Building
+    Info
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
 
@@ -38,7 +38,7 @@ export default function UniversalComplianceCheck({
     const [isVerifying, setIsVerifying] = useState(false);
 
     const kybChecks = [
-        { id: 'company_registry', name: 'Company Registry Verification', icon: Building },
+        { id: 'company_registry', name: 'Company Registry Verification', icon: Building2 },
         { id: 'ubo_identification', name: 'UBO Identification', icon: UserX },
         { id: 'director_verification', name: 'Director Verification', icon: UserX },
         { id: 'address_verification', name: 'Address Verification', icon: Globe },
@@ -190,7 +190,7 @@ export default function UniversalComplianceCheck({
                             {kybStatus === 'not_started' && (
                                 <div className="text-center py-8">
                                     <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-4">
-                                        <Building className="h-8 w-8 text-blue-600" />
+                                        <Building2 className="h-8 w-8 text-blue-600" />
                                     </div>
                                     <h3 className="font-semibold text-lg mb-2">Start KYB Verification</h3>
                                     <p className="text-slate-500 mb-6 max-w-md mx-auto">
