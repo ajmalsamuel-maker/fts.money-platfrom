@@ -166,21 +166,16 @@ export default function MerchantSelfOnboarding() {
 
     useEffect(() => {
         if (token) {
-            // Direct token access - validate and start onboarding
+            // Valid onboarding token in URL - start onboarding
             validateToken(token);
-        } else if (email) {
-            // Magic link with email - start onboarding directly
-            setAuthEmail(email);
-            setIsValidToken(true);
-            setAuthMethod('email');
         } else if (qr) {
-            // QR code scan - validate and start onboarding
-            validateQRCode(qr);
+            // QR code contains the token - validate and start onboarding
+            validateToken(qr);
         } else {
-            // No token/email/qr - show authentication options
+            // No token - merchant needs to request invitation
             setIsValidToken(false);
         }
-    }, [token, email, qr]);
+    }, [token, qr]);
 
     const validateToken = async (tokenValue) => {
         setIsAuthenticating(true);
