@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { format } from 'date-fns';
 import Sidebar from '@/components/dashboard/Sidebar';
@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
+import { toast } from 'sonner';
 import {
     Table,
     TableBody,
@@ -49,7 +50,9 @@ import {
     Download,
     RefreshCw,
     UserCheck,
-    Ban
+    Ban,
+    Zap,
+    Loader2
 } from 'lucide-react';
 
 const kycStatusConfig = {
@@ -89,6 +92,7 @@ export default function Compliance() {
     const [activeTab, setActiveTab] = useState('merchants');
     const [searchQuery, setSearchQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
+    const [isScanning, setIsScanning] = useState(false);
 
     const { data: merchants = [] } = useQuery({
         queryKey: ['merchants'],
@@ -106,6 +110,57 @@ export default function Compliance() {
     const pendingKyc = merchants.filter(m => m.status === 'pending').length;
     const approvedMerchants = merchants.filter(m => m.status === 'active').length;
     const highRiskMerchants = merchants.filter(m => m.risk_level === 'high').length;
+
+    const scanAllMerchantsMutation = useMutation({
+        mutationFn: async () => {
+            const response = await base44.functions.invoke('complianceMonitor', {
+                action: 'scan_all'
+            });
+            return response.data;
+        },
+        onSuccess: (data) => {
+            const alertCount = data.results?.length || 0;
+            if (alertCount > 0) {
+                toast.success(`Compliance scan complete: ${alertCount} alert(s) created`);
+            } else {
+                toast.success('Compliance scan complete: No issues detected');
+            }
+        },
+        onError: (error) => {
+            toast.error('Failed to run compliance scan');
+            console.error('Scan error:', error);
+        }
+    });
+
+    const checkMerchantMutation = useMutation({
+        mutationFn: async (merchantId) => {
+            const response = await base44.functions.invoke('complianceMonitor', {
+                action: 'check_merchant',
+                merchant_id: merchantId
+            });
+            return response.data;
+        },
+        onSuccess: (data, merchantId) => {
+            if (data.issues?.length > 0) {
+                toast.warning(`${data.issues.length} compliance issue(s) detected`);
+            } else {
+                toast.success('No compliance issues detected');
+            }
+        }
+    });
+
+    const handleScanAll = async () => {
+        setIsScanning(true);
+        try {
+            await scanAllMerchantsMutation.mutateAsync();
+        } finally {
+            setIsScanning(false);
+        }
+    };
+
+    const handleCheckMerchant = async (merchantId) => {
+        await checkMerchantMutation.mutateAsync(merchantId);
+    };
 
     return (
         <div className="min-h-screen bg-slate-50">
@@ -126,9 +181,22 @@ export default function Compliance() {
                                 <Download className="h-4 w-4" />
                                 Export
                             </Button>
-                            <Button className="gap-2 bg-blue-600 hover:bg-blue-700">
-                                <RefreshCw className="h-4 w-4" />
-                                Run Screening
+                            <Button 
+                                onClick={handleScanAll}
+                                disabled={isScanning || scanAllMerchantsMutation.isPending}
+                                className="gap-2 bg-blue-600 hover:bg-blue-700"
+                            >
+                                {isScanning || scanAllMerchantsMutation.isPending ? (
+                                    <>
+                                        <Loader2 className="h-4 w-4 animate-spin" />
+                                        Scanning...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Zap className="h-4 w-4" />
+                                        Auto-Scan All Merchants
+                                    </>
+                                )}
                             </Button>
                         </div>
                     </div>
@@ -286,6 +354,9 @@ export default function Compliance() {
                                                                     </DropdownMenuItem>
                                                                     <DropdownMenuItem>
                                                                         <FileText className="h-4 w-4 mr-2" />Documents
+                                                                    </DropdownMenuItem>
+                                                                    <DropdownMenuItem onClick={() => handleCheckMerchant(merchant.merchant_id)}>
+                                                                        <Zap className="h-4 w-4 mr-2" />Check Compliance
                                                                     </DropdownMenuItem>
                                                                     <DropdownMenuItem>
                                                                         <RefreshCw className="h-4 w-4 mr-2" />Re-screen
