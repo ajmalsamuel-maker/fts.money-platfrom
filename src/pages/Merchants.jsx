@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { format } from 'date-fns';
+import { AuditLogger } from '@/components/audit/AuditLogger';
 import Sidebar from '@/components/dashboard/Sidebar';
 import TopHeader from '@/components/dashboard/TopHeader';
 import { cn } from "@/lib/utils";

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { format } from 'date-fns';
+import { AuditLogger } from '@/components/audit/AuditLogger';
 import Sidebar from '@/components/dashboard/Sidebar';
 import TopHeader from '@/components/dashboard/TopHeader';
 import { cn } from "@/lib/utils";
@@ -78,6 +79,9 @@ export default function MerchantUsers() {
                 must_change_password: true
             });
             
+            // Audit log
+            await AuditLogger.logMerchantUserCreated(user);
+            
             // Send credentials email
             try {
                 await base44.integrations.Core.SendEmail({
@@ -98,12 +102,28 @@ export default function MerchantUsers() {
     });
 
     const updateStatusMutation = useMutation({
-        mutationFn: ({ id, status }) => base44.entities.MerchantUser.update(id, { status }),
+        mutationFn: async ({ id, status }) => {
+            const user = users.find(u => u.id === id);
+            const oldStatus = user?.status;
+            await base44.entities.MerchantUser.update(id, { status });
+            await AuditLogger.logMerchantUserStatusChanged({ ...user, id }, oldStatus, status);
+            return { id, status };
+        },
         onSuccess: () => queryClient.invalidateQueries({ queryKey: ['merchant-users'] })
     });
 
     const updateUserMutation = useMutation({
-        mutationFn: ({ id, data }) => base44.entities.MerchantUser.update(id, data),
+        mutationFn: async ({ id, data }) => {
+            const user = users.find(u => u.id === id);
+            
+            // Check if role changed
+            if (data.role && user.role !== data.role) {
+                await AuditLogger.logMerchantUserRoleChanged({ ...user, id }, user.role, data.role);
+            }
+            
+            await base44.entities.MerchantUser.update(id, data);
+            return { id, data };
+        },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['merchant-users'] });
             setShowDetailsDialog(null);
@@ -113,11 +133,15 @@ export default function MerchantUsers() {
 
     const resetPasswordMutation = useMutation({
         mutationFn: async ({ id, email, full_name }) => {
+            const user = users.find(u => u.id === id);
             const tempPassword = `Reset${Math.random().toString(36).slice(2, 10)}!`;
             await base44.entities.MerchantUser.update(id, { 
                 temp_password: tempPassword,
                 must_change_password: true 
             });
+            
+            // Audit log
+            await AuditLogger.logMerchantUserPasswordReset({ ...user, id, email, full_name });
             
             try {
                 await base44.integrations.Core.SendEmail({
@@ -147,7 +171,11 @@ export default function MerchantUsers() {
     });
 
     const deleteUserMutation = useMutation({
-        mutationFn: (id) => base44.entities.MerchantUser.delete(id),
+        mutationFn: async (id) => {
+            const user = users.find(u => u.id === id);
+            await AuditLogger.logMerchantUserDeleted({ ...user, id });
+            await base44.entities.MerchantUser.delete(id);
+        },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['merchant-users'] });
             setShowDetailsDialog(null);
@@ -155,7 +183,11 @@ export default function MerchantUsers() {
     });
 
     const toggle2FAMutation = useMutation({
-        mutationFn: ({ id, enabled }) => base44.entities.MerchantUser.update(id, { two_factor_enabled: enabled }),
+        mutationFn: async ({ id, enabled }) => {
+            const user = users.find(u => u.id === id);
+            await base44.entities.MerchantUser.update(id, { two_factor_enabled: enabled });
+            await AuditLogger.logMerchantUser2FAToggled({ ...user, id }, enabled);
+        },
         onSuccess: () => queryClient.invalidateQueries({ queryKey: ['merchant-users'] })
     });
 

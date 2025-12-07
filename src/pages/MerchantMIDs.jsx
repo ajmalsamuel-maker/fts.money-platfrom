@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { format } from 'date-fns';
+import { AuditLogger } from '@/components/audit/AuditLogger';
 import Sidebar from '@/components/dashboard/Sidebar';
 import TopHeader from '@/components/dashboard/TopHeader';
 import { cn } from "@/lib/utils";
@@ -90,27 +91,54 @@ export default function MerchantMIDs() {
     });
 
     const createMutation = useMutation({
-        mutationFn: (data) => base44.entities.MerchantMID.create(data),
+        mutationFn: async (data) => {
+            const mid = await base44.entities.MerchantMID.create(data);
+            await AuditLogger.logMerchantMIDCreated(mid);
+            return mid;
+        },
         onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['merchant-mids'] }); resetForm(); },
     });
 
     const updateMutation = useMutation({
-        mutationFn: ({ id, data }) => base44.entities.MerchantMID.update(id, data),
+        mutationFn: async ({ id, data }) => {
+            const oldMID = mids.find(m => m.id === id);
+            const mid = await base44.entities.MerchantMID.update(id, data);
+            
+            // Check if status changed
+            if (oldMID?.status !== data.status) {
+                await AuditLogger.logMerchantMIDStatusChanged(mid, oldMID.status, data.status);
+            } else {
+                await AuditLogger.logMerchantMIDUpdated(mid, oldMID);
+            }
+            return mid;
+        },
         onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['merchant-mids'] }); resetForm(); },
     });
 
     const deleteMutation = useMutation({
-        mutationFn: (id) => base44.entities.MerchantMID.delete(id),
+        mutationFn: async (id) => {
+            const mid = mids.find(m => m.id === id);
+            await AuditLogger.logMerchantMIDDeleted(mid);
+            await base44.entities.MerchantMID.delete(id);
+        },
         onSuccess: () => queryClient.invalidateQueries({ queryKey: ['merchant-mids'] }),
     });
 
     const bulkUpdateMutation = useMutation({
         mutationFn: async ({ ids, status }) => {
+            const selectedMIDsData = ids.map(id => mids.find(m => m.id === id)).filter(Boolean);
+            
             const updates = ids.map(id => {
                 const mid = mids.find(m => m.id === id);
                 return base44.entities.MerchantMID.update(id, { ...mid, status });
             });
-            return Promise.all(updates);
+            
+            await Promise.all(updates);
+            
+            // Audit log for bulk update
+            await AuditLogger.logMerchantMIDBulkStatusUpdate(selectedMIDsData, status);
+            
+            return updates;
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['merchant-mids'] });

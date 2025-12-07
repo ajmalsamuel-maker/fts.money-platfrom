@@ -133,15 +133,220 @@ export const AuditLogger = {
     },
 
     // Merchant events
-    async logMerchant(merchant, action, user) {
+    async logMerchantCreated(merchant) {
         return this.log({
-            eventType: `merchant_${action}`,
+            eventType: 'merchant_created',
             category: 'merchant',
-            action: action.toUpperCase(),
-            description: `Merchant ${merchant.business_name} ${action} by ${user?.email}`,
+            action: 'CREATE',
+            description: `Merchant ${merchant.business_name} created`,
             targetEntity: 'Merchant',
             targetId: merchant.id,
-            pciRelevant: action === 'approved' || action === 'suspended'
+            newValue: { business_name: merchant.business_name, merchant_id: merchant.merchant_id, status: merchant.status },
+            pciRelevant: true,
+            severity: 'info'
+        });
+    },
+
+    async logMerchantUpdated(merchant, oldData) {
+        return this.log({
+            eventType: 'merchant_updated',
+            category: 'merchant',
+            action: 'UPDATE',
+            description: `Merchant ${merchant.business_name} updated`,
+            targetEntity: 'Merchant',
+            targetId: merchant.id,
+            oldValue: oldData,
+            newValue: merchant,
+            pciRelevant: true,
+            severity: 'info'
+        });
+    },
+
+    async logMerchantStatusChanged(merchant, oldStatus, newStatus) {
+        return this.log({
+            eventType: 'merchant_updated',
+            category: 'merchant',
+            action: 'CHANGE_STATUS',
+            description: `Merchant ${merchant.business_name} status changed from ${oldStatus} to ${newStatus}`,
+            targetEntity: 'Merchant',
+            targetId: merchant.id,
+            oldValue: { status: oldStatus },
+            newValue: { status: newStatus },
+            pciRelevant: true,
+            severity: 'warning'
+        });
+    },
+
+    async logMerchantDeleted(merchant) {
+        return this.log({
+            eventType: 'merchant_deleted',
+            category: 'merchant',
+            action: 'DELETE',
+            description: `Merchant ${merchant.business_name} deleted`,
+            targetEntity: 'Merchant',
+            targetId: merchant.id,
+            oldValue: merchant,
+            pciRelevant: true,
+            severity: 'critical'
+        });
+    },
+
+    // Merchant User events
+    async logMerchantUserCreated(user) {
+        return this.log({
+            eventType: 'user_created',
+            category: 'user_management',
+            action: 'CREATE_MERCHANT_USER',
+            description: `Merchant user ${user.email} created for ${user.merchant_name}`,
+            targetEntity: 'MerchantUser',
+            targetId: user.id,
+            newValue: { email: user.email, role: user.role, merchant_id: user.merchant_id },
+            pciRelevant: true,
+            severity: 'info'
+        });
+    },
+
+    async logMerchantUserStatusChanged(user, oldStatus, newStatus) {
+        return this.log({
+            eventType: 'user_updated',
+            category: 'user_management',
+            action: 'CHANGE_STATUS',
+            description: `Merchant user ${user.email} status changed from ${oldStatus} to ${newStatus}`,
+            targetEntity: 'MerchantUser',
+            targetId: user.id,
+            oldValue: { status: oldStatus },
+            newValue: { status: newStatus },
+            pciRelevant: true,
+            severity: 'warning'
+        });
+    },
+
+    async logMerchantUserRoleChanged(user, oldRole, newRole) {
+        return this.log({
+            eventType: 'user_role_changed',
+            category: 'user_management',
+            action: 'CHANGE_ROLE',
+            description: `Merchant user ${user.email} role changed from ${oldRole} to ${newRole}`,
+            targetEntity: 'MerchantUser',
+            targetId: user.id,
+            oldValue: { role: oldRole },
+            newValue: { role: newRole },
+            pciRelevant: true,
+            severity: 'warning'
+        });
+    },
+
+    async logMerchantUserPasswordReset(user) {
+        return this.log({
+            eventType: 'password_reset',
+            category: 'user_management',
+            action: 'RESET_PASSWORD',
+            description: `Password reset for merchant user ${user.email}`,
+            targetEntity: 'MerchantUser',
+            targetId: user.id,
+            pciRelevant: true,
+            severity: 'warning'
+        });
+    },
+
+    async logMerchantUser2FAToggled(user, enabled) {
+        return this.log({
+            eventType: 'user_updated',
+            category: 'security',
+            action: enabled ? 'ENABLE_2FA' : 'DISABLE_2FA',
+            description: `2FA ${enabled ? 'enabled' : 'disabled'} for merchant user ${user.email}`,
+            targetEntity: 'MerchantUser',
+            targetId: user.id,
+            newValue: { two_factor_enabled: enabled },
+            pciRelevant: true,
+            severity: 'warning'
+        });
+    },
+
+    async logMerchantUserDeleted(user) {
+        return this.log({
+            eventType: 'user_deleted',
+            category: 'user_management',
+            action: 'DELETE',
+            description: `Merchant user ${user.email} deleted`,
+            targetEntity: 'MerchantUser',
+            targetId: user.id,
+            oldValue: { email: user.email, merchant_name: user.merchant_name },
+            pciRelevant: true,
+            severity: 'critical'
+        });
+    },
+
+    // Merchant MID events
+    async logMerchantMIDCreated(mid) {
+        return this.log({
+            eventType: 'terminal_created',
+            category: 'merchant',
+            action: 'CREATE_MID',
+            description: `MID ${mid.mid} created for ${mid.merchant_name}`,
+            targetEntity: 'MerchantMID',
+            targetId: mid.id,
+            newValue: { mid: mid.mid, merchant_name: mid.merchant_name, provider_name: mid.provider_name },
+            pciRelevant: true,
+            severity: 'info'
+        });
+    },
+
+    async logMerchantMIDUpdated(mid, oldData) {
+        return this.log({
+            eventType: 'terminal_updated',
+            category: 'merchant',
+            action: 'UPDATE_MID',
+            description: `MID ${mid.mid} updated for ${mid.merchant_name}`,
+            targetEntity: 'MerchantMID',
+            targetId: mid.id,
+            oldValue: oldData,
+            newValue: mid,
+            pciRelevant: true,
+            severity: 'info'
+        });
+    },
+
+    async logMerchantMIDStatusChanged(mid, oldStatus, newStatus) {
+        return this.log({
+            eventType: 'terminal_updated',
+            category: 'merchant',
+            action: 'CHANGE_MID_STATUS',
+            description: `MID ${mid.mid} status changed from ${oldStatus} to ${newStatus}`,
+            targetEntity: 'MerchantMID',
+            targetId: mid.id,
+            oldValue: { status: oldStatus },
+            newValue: { status: newStatus },
+            pciRelevant: true,
+            severity: 'warning'
+        });
+    },
+
+    async logMerchantMIDBulkStatusUpdate(mids, newStatus) {
+        return this.log({
+            eventType: 'terminal_updated',
+            category: 'merchant',
+            action: 'BULK_UPDATE_MID_STATUS',
+            description: `Bulk status update: ${mids.length} MIDs changed to ${newStatus}`,
+            targetEntity: 'MerchantMID',
+            targetId: 'bulk',
+            newValue: { count: mids.length, status: newStatus, mids: mids.map(m => m.mid) },
+            pciRelevant: true,
+            severity: 'warning'
+        });
+    },
+
+    async logMerchantMIDDeleted(mid) {
+        return this.log({
+            eventType: 'terminal_deleted',
+            category: 'merchant',
+            action: 'DELETE_MID',
+            description: `MID ${mid.mid} deleted for ${mid.merchant_name}`,
+            targetEntity: 'MerchantMID',
+            targetId: mid.id,
+            oldValue: mid,
+            pciRelevant: true,
+            severity: 'critical'
         });
     },
 
