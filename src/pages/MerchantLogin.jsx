@@ -30,22 +30,29 @@ export default function MerchantLogin() {
         setLoading(true);
 
         try {
-            const response = await base44.functions.invoke('merchantAuth', {
-                action: 'login',
-                email,
-                password
+            const functionUrl = `https://base44.app/api/apps/${import.meta.env.VITE_BASE44_APP_ID}/functions/merchantAuth`;
+            const response = await fetch(functionUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'login',
+                    email,
+                    password
+                })
             });
 
-            if (response.data.success) {
-                login(response.data.session);
+            const data = await response.json();
+
+            if (data.success) {
+                login(data.session);
                 
-                if (response.data.must_change_password) {
+                if (data.must_change_password) {
                     navigate(createPageUrl('MerchantChangePassword'));
                 } else {
                     navigate(createPageUrl('MerchantDashboard'));
                 }
             } else {
-                setError(response.data.error || 'Login failed');
+                setError(data.error || 'Login failed');
             }
         } catch (err) {
             setError('Login failed. Please check your credentials.');
