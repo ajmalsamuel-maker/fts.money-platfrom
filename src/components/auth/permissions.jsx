@@ -33,6 +33,14 @@ export const ROLE_CONFIG = {
         bgColor: 'bg-purple-100',
         textColor: 'text-purple-700',
         borderColor: 'border-purple-200'
+    },
+    merchant: {
+        label: 'Merchant',
+        description: 'Access to merchant portal only',
+        color: 'blue',
+        bgColor: 'bg-blue-100',
+        textColor: 'text-blue-700',
+        borderColor: 'border-blue-200'
     }
 };
 
