@@ -21,6 +21,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import NLPPaymentProcessor from '@/components/ai/NLPPaymentProcessor';
 import HumanReviewQueue from '@/components/ai/HumanReviewQueue';
 import AnomalyDetectionMonitor from '@/components/ai/AnomalyDetectionMonitor';
+import EnhancedReviewInterface from '@/components/ai/EnhancedReviewInterface';
+import OverrideAnalytics from '@/components/ai/OverrideAnalytics';
 
 const agentTypes = [
     { value: 'approval', label: 'Payment Approval', icon: Shield, color: 'text-emerald-600' },
@@ -81,11 +83,13 @@ export default function AIPaymentAgentManager({ merchantId }) {
     return (
         <div className="space-y-6">
             <Tabs defaultValue="agents" className="w-full">
-                <TabsList className="grid w-full grid-cols-4 mb-6">
+                <TabsList className="grid w-full grid-cols-6 mb-6">
                     <TabsTrigger value="agents">Agents</TabsTrigger>
-                    <TabsTrigger value="nlp">NLP Processing</TabsTrigger>
-                    <TabsTrigger value="review">Human Review</TabsTrigger>
-                    <TabsTrigger value="anomaly">Anomaly Detection</TabsTrigger>
+                    <TabsTrigger value="nlp">NLP</TabsTrigger>
+                    <TabsTrigger value="review">Review Queue</TabsTrigger>
+                    <TabsTrigger value="enhanced">Enhanced Review</TabsTrigger>
+                    <TabsTrigger value="analytics">Analytics</TabsTrigger>
+                    <TabsTrigger value="anomaly">Anomaly</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="agents">
@@ -167,6 +171,14 @@ export default function AIPaymentAgentManager({ merchantId }) {
 
                 <TabsContent value="review">
                     <HumanReviewQueue />
+                </TabsContent>
+
+                <TabsContent value="enhanced">
+                    <EnhancedReviewInterface />
+                </TabsContent>
+
+                <TabsContent value="analytics">
+                    <OverrideAnalytics />
                 </TabsContent>
 
                 <TabsContent value="anomaly">
