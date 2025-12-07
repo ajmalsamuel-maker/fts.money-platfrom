@@ -17,7 +17,8 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const { action, data } = await req.json();
+        const body = await req.json();
+        const { action, sql, params, data } = body;
 
         switch (action) {
             case 'initAllSchemas': {
@@ -207,6 +208,26 @@ Deno.serve(async (req) => {
                         updated_at TIMESTAMPTZ DEFAULT NOW()
                     );
 
+                    -- Merchant Users
+                    CREATE TABLE IF NOT EXISTS merchant_users (
+                        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                        merchant_id VARCHAR(255) NOT NULL,
+                        merchant_name VARCHAR(255),
+                        email VARCHAR(255) UNIQUE NOT NULL,
+                        full_name VARCHAR(255) NOT NULL,
+                        role VARCHAR(20) DEFAULT 'viewer',
+                        status VARCHAR(20) DEFAULT 'pending',
+                        permissions TEXT[],
+                        allowed_terminals TEXT[],
+                        phone VARCHAR(50),
+                        temp_password VARCHAR(255),
+                        must_change_password BOOLEAN DEFAULT TRUE,
+                        two_factor_enabled BOOLEAN DEFAULT FALSE,
+                        last_login TIMESTAMPTZ,
+                        created_at TIMESTAMPTZ DEFAULT NOW(),
+                        updated_at TIMESTAMPTZ DEFAULT NOW()
+                    );
+
                     -- Audit Logs
                     CREATE TABLE IF NOT EXISTS audit_logs (
                         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -375,6 +396,8 @@ Deno.serve(async (req) => {
                     CREATE INDEX IF NOT EXISTS idx_payouts_merchant ON payouts(merchant_id);
                     CREATE INDEX IF NOT EXISTS idx_mids_merchant ON merchant_mids(merchant_id);
                     CREATE INDEX IF NOT EXISTS idx_mids_status ON merchant_mids(status);
+                    CREATE INDEX IF NOT EXISTS idx_merchant_users_email ON merchant_users(email);
+                    CREATE INDEX IF NOT EXISTS idx_merchant_users_merchant ON merchant_users(merchant_id);
                 `);
                 return Response.json({ success: true, message: 'All schemas initialized for production' });
             }
@@ -398,6 +421,16 @@ Deno.serve(async (req) => {
                         (SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE status = 'approved') as total_volume
                 `);
                 return Response.json({ success: true, data: stats.rows[0] });
+            }
+
+            case 'query': {
+                const result = await pool.query(sql, params || []);
+                return Response.json({ success: true, data: result });
+            }
+
+            case 'execute': {
+                await pool.query(sql, params || []);
+                return Response.json({ success: true });
             }
 
             default:
