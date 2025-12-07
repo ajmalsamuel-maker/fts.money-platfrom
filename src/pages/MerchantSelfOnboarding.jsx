@@ -56,6 +56,7 @@ import BankDetailsStep from '@/components/onboarding/BankDetailsStep';
 import PricingStep from '@/components/onboarding/PricingStep';
 import ReviewSubmitStep from '@/components/onboarding/ReviewSubmitStep';
 import OnboardingProgress from '@/components/onboarding/OnboardingProgress';
+import { getOnboardingInvitationEmail, getApplicationReceivedEmail } from '@/components/onboarding/EmailTemplates';
 
 const steps = [
     { id: 1, name: 'Business Details', icon: Building2, component: 'BusinessDetailsStep' },
@@ -80,6 +81,8 @@ export default function MerchantSelfOnboarding() {
     const [invitationEmail, setInvitationEmail] = useState('');
     const [isAuthenticating, setIsAuthenticating] = useState(false);
     const [isValidToken, setIsValidToken] = useState(null);
+    const [pspSettings, setPspSettings] = useState(null);
+    const [themeSettings, setThemeSettings] = useState(null);
     const [currentStep, setCurrentStep] = useState(1);
     const [completedSteps, setCompletedSteps] = useState([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -160,6 +163,21 @@ export default function MerchantSelfOnboarding() {
     });
 
     useEffect(() => {
+        // Load PSP and theme settings
+        const loadSettings = async () => {
+            try {
+                const [psp, theme] = await Promise.all([
+                    base44.entities.PSPSettings.list(),
+                    base44.entities.ThemeSettings.list()
+                ]);
+                if (psp && psp.length > 0) setPspSettings(psp[0]);
+                if (theme && theme.length > 0) setThemeSettings(theme[0]);
+            } catch (error) {
+                console.error('Failed to load settings:', error);
+            }
+        };
+        loadSettings();
+
         if (token || qr) {
             // Direct access via token in URL or QR code
             validateToken(token || qr);
@@ -212,57 +230,27 @@ export default function MerchantSelfOnboarding() {
             const onboardingToken = `OBT-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
             const onboardingUrl = `${window.location.origin}${createPageUrl('MerchantSelfOnboarding')}?token=${onboardingToken}`;
             
-            // Send invitation email with link and QR code URL
+            // Get email template with PSP branding
+            const emailTemplate = getOnboardingInvitationEmail({
+                recipientEmail: invitationEmail,
+                onboardingUrl,
+                companyName: pspSettings?.company_name || 'netXhub.tech',
+                logoUrl: themeSettings?.logo_url || null,
+                primaryColor: themeSettings?.primary_color || '#3b82f6',
+                supportEmail: pspSettings?.support_email || 'support@netxhub.tech'
+            });
+            
+            // Send invitation email
             await base44.integrations.Core.SendEmail({
                 to: invitationEmail,
-                subject: 'Your Merchant Onboarding Invitation - PaymentHub',
-                body: `
-<!DOCTYPE html>
-<html>
-<body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-    <div style="background: linear-gradient(135deg, #3b82f6, #06b6d4); padding: 30px; border-radius: 10px; text-align: center; margin-bottom: 30px;">
-        <h1 style="color: white; margin: 0;">Welcome to PaymentHub</h1>
-        <p style="color: white; margin: 10px 0 0 0;">Merchant Onboarding Invitation</p>
-    </div>
-    
-    <p>You have been invited to complete your merchant application with PaymentHub.</p>
-    <p>This secure onboarding link is valid for <strong>12 hours</strong>.</p>
-    
-    <div style="margin: 30px 0;">
-        <h3>Option 1: Click the Button</h3>
-        <div style="text-align: center;">
-            <a href="${onboardingUrl}" style="background: #3b82f6; color: white; padding: 15px 30px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: bold;">
-                Start Onboarding Now
-            </a>
-        </div>
-    </div>
-    
-    <div style="margin: 30px 0; padding: 20px; background: #f8fafc; border-radius: 6px;">
-        <h3 style="margin-top: 0;">Option 2: Scan QR Code</h3>
-        <p style="margin-bottom: 10px;">Scan this link with your mobile device:</p>
-        <div style="background: white; padding: 15px; border-radius: 6px; word-break: break-all; font-size: 12px; font-family: monospace;">
-            ${onboardingUrl}
-        </div>
-        <p style="margin-top: 10px; font-size: 12px; color: #64748b;">In a production environment, this would display as a scannable QR code image.</p>
-    </div>
-    
-    <div style="margin: 30px 0; padding: 15px; background: #fef3c7; border-left: 4px solid #f59e0b; border-radius: 4px;">
-        <p style="margin: 0; color: #92400e;"><strong>Important:</strong> This invitation link expires in 12 hours. If you need a new invitation, please contact our support team.</p>
-    </div>
-    
-    <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #e2e8f0; text-align: center; color: #64748b; font-size: 12px;">
-        <p>© 2024 PaymentHub. All rights reserved.</p>
-        <p>If you didn't request this invitation, please ignore this email.</p>
-    </div>
-</body>
-</html>
-                `
+                subject: emailTemplate.subject,
+                body: emailTemplate.htmlBody
             });
             
             alert('✓ Invitation sent successfully! Please check your email inbox (and spam folder).');
             setInvitationEmail('');
         } catch (error) {
-            alert('Failed to send invitation. Please try again or contact support.');
+            alert('Failed to send invitation. Please try again or contact support@netxhub.tech');
         }
         setIsAuthenticating(false);
     };
@@ -370,30 +358,21 @@ export default function MerchantSelfOnboarding() {
             setMerchantId(newMerchantId);
 
             // Send confirmation email
+            const confirmationEmail = getApplicationReceivedEmail({
+                recipientName: formData.contacts.full_name,
+                recipientEmail: formData.contacts.email,
+                businessName: formData.business.legal_name,
+                merchantId: newMerchantId,
+                companyName: pspSettings?.company_name || 'netXhub.tech',
+                logoUrl: themeSettings?.logo_url || null,
+                primaryColor: themeSettings?.primary_color || '#3b82f6',
+                supportEmail: pspSettings?.support_email || 'support@netxhub.tech'
+            });
+
             await base44.integrations.Core.SendEmail({
                 to: formData.contacts.email,
-                subject: 'Merchant Application Received - PaymentHub',
-                body: `Dear ${formData.contacts.full_name},
-
-Your merchant application for ${formData.business.legal_name} has been successfully submitted and is now under review.
-
-Merchant ID: ${newMerchantId}
-Submitted: ${new Date().toLocaleString()}
-
-What happens next:
-1. KYB Verification Review (1-2 business days)
-2. AML Screening Confirmation
-3. Compliance Approval
-4. API Credentials Delivery
-
-You will receive your API credentials and merchant portal access once your application is approved.
-
-Estimated review time: 2-3 business days
-
-Thank you for choosing PaymentHub!
-
-Best regards,
-The PaymentHub Team`
+                subject: confirmationEmail.subject,
+                body: confirmationEmail.htmlBody
             });
 
             setSubmitSuccess(true);
@@ -496,6 +475,9 @@ The PaymentHub Team`
                     <div className="mt-6 pt-6 border-t text-center">
                         <p className="text-sm text-slate-600">
                             Already have an invitation? Check your email inbox.
+                        </p>
+                        <p className="text-xs text-slate-500 mt-2">
+                            Need help? Contact <a href="mailto:support@netxhub.tech" className="text-blue-600 hover:underline">support@netxhub.tech</a>
                         </p>
                     </div>
                 </Card>
@@ -731,10 +713,15 @@ The PaymentHub Team`
 
             <footer className="bg-white border-t border-slate-200 py-6 mt-12">
                 <div className="max-w-6xl mx-auto px-4 text-center text-sm text-slate-600">
-                    <p className="mb-2">Need help? Contact our support team at support@paymenthub.com</p>
-                    <p className="text-xs text-slate-400">
-                        © 2024 PaymentHub. All rights reserved. | Secure onboarding powered by 256-bit encryption
+                    <p className="mb-2">Need help? Contact our support team at <a href="mailto:support@netxhub.tech" className="text-blue-600 hover:underline">support@netxhub.tech</a></p>
+                    <p className="text-xs text-slate-400 mb-2">
+                        © {new Date().getFullYear()} {pspSettings?.company_name || 'netXhub.tech'}. All rights reserved.
                     </p>
+                    <div className="flex justify-center gap-4 text-xs">
+                        <a href="https://netxhub.tech/privacy" className="text-slate-500 hover:text-blue-600">Privacy Policy</a>
+                        <a href="https://netxhub.tech/terms" className="text-slate-500 hover:text-blue-600">Terms of Service</a>
+                        <a href="https://netxhub.tech/support" className="text-slate-500 hover:text-blue-600">Support</a>
+                    </div>
                 </div>
             </footer>
         </div>
