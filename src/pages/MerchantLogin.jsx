@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { base44 } from '@/api/base44Client';
-import { useMerchantAuth } from '@/components/auth/useMerchantAuth';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,13 +15,20 @@ export default function MerchantLogin() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    const { session, login } = useMerchantAuth();
 
     useEffect(() => {
-        if (session) {
-            navigate(createPageUrl('MerchantDashboard'));
-        }
-    }, [session, navigate]);
+        const checkAuth = async () => {
+            try {
+                const user = await base44.auth.me();
+                if (user && user.role === 'merchant') {
+                    navigate(createPageUrl('MerchantDashboard'));
+                }
+            } catch (err) {
+                // Not logged in
+            }
+        };
+        checkAuth();
+    }, [navigate]);
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -30,30 +36,16 @@ export default function MerchantLogin() {
         setLoading(true);
 
         try {
-            const functionUrl = `https://base44.app/api/apps/${import.meta.env.VITE_BASE44_APP_ID}/functions/merchantAuth`;
-            const response = await fetch(functionUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    action: 'login',
-                    email,
-                    password
-                })
-            });
-
-            const data = await response.json();
-
-            if (data.success) {
-                login(data.session);
-                
-                if (data.must_change_password) {
-                    navigate(createPageUrl('MerchantChangePassword'));
-                } else {
-                    navigate(createPageUrl('MerchantDashboard'));
-                }
-            } else {
-                setError(data.error || 'Login failed');
+            await base44.auth.login(email, password);
+            const user = await base44.auth.me();
+            
+            if (user.role !== 'merchant') {
+                await base44.auth.logout();
+                setError('Invalid merchant credentials');
+                return;
             }
+            
+            navigate(createPageUrl('MerchantDashboard'));
         } catch (err) {
             setError('Login failed. Please check your credentials.');
         } finally {
