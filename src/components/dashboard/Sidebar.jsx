@@ -123,7 +123,16 @@ const menuItems = [
             { icon: Landmark, label: 'Database Setup', path: 'DatabaseSetup', permission: 'VIEW_SETTINGS' },
         ]
     },
-];
+    {
+        group: 'Resources',
+        icon: HelpCircle,
+        items: [
+            { icon: Headphones, label: 'Support Center', path: 'Support', permission: 'VIEW_DASHBOARD' },
+            { icon: Shield, label: 'Privacy Policy', path: 'PrivacyPolicy', permission: 'VIEW_DASHBOARD' },
+            { icon: Scale, label: 'Terms of Service', path: 'TermsOfService', permission: 'VIEW_DASHBOARD' },
+        ]
+    },
+    ];
 
 export default function Sidebar({ collapsed, onToggle, currentPage }) {
     const [user, setUser] = useState(null);
