@@ -1753,9 +1753,294 @@ This comprehensive Virtual Terminal transforms payment operations from a simple 
         ]
     },
     {
-        category: 'Configuration',
-        icon: Settings,
+        category: 'AI & Automation',
+        icon: Brain,
         items: [
+            {
+                title: 'AI Automation Platform',
+                icon: Brain,
+                description: 'Centralized AI and automation management.',
+                content: `The AI Automation Platform serves as the central hub for managing AI-powered payment agents and automated recurring payment systems across your entire platform.
+
+    **Overview:**
+
+    This dedicated page provides platform-level oversight and configuration for all AI and automation capabilities, separate from merchant-specific payment processing. It's designed for PSP administrators to monitor, configure, and optimize AI agents and recurring payment infrastructure at scale.
+
+    **Platform Structure:**
+
+    The AI Automation Platform features a two-tab interface:
+
+    **1. AI Payment Agents Tab:**
+
+    Manage all AI payment agents across the platform with comprehensive oversight:
+
+    • **Platform Statistics Dashboard**:
+    - **Active Agents**: Total count of active AI agents
+    - **Decisions Made**: Cumulative AI decisions across all agents
+    - **Active Recurring Payments**: Total subscriptions under management
+    - **Total Merchants**: Number of merchants using AI features
+
+    • **Agent Overview Grid**:
+    Each agent card displays:
+    - **Agent Name**: Custom name (e.g., "Fraud Guardian", "Route Master")
+    - **Agent Type**: 
+    * Payment Approval: Autonomous approval/decline decisions
+    * Smart Routing: Intelligent transaction routing
+    * Fraud Detection: Real-time fraud analysis
+    * Subscription Manager: Automated subscription lifecycle
+    * Dispute Handler: Chargeback management assistance
+    - **Status Badge**:
+    * Active: Fully operational and making decisions
+    * Learning: Training mode, observing but not acting autonomously
+    * Inactive: Disabled, not processing
+    - **Configuration Details**:
+    * Confidence Threshold: Minimum confidence for autonomous action (e.g., 85%)
+    * Auto-Approve Limit: Maximum transaction amount for autonomous approval
+    * Decisions Count: Total decisions made by this agent
+    * Accuracy Rate: Success rate of agent decisions
+
+    • **Agent Types Explained**:
+
+    **Payment Approval Agent**:
+    - Analyzes transactions in real-time
+    - Makes approve/decline decisions
+    - Considers: Amount, merchant history, customer profile, risk factors
+    - Flags low-confidence decisions for human review
+    - Use case: High-volume merchants need instant approval decisions
+
+    **Smart Routing Agent**:
+    - Selects optimal payment processor for each transaction
+    - Considers: Success rates, costs, latency, geographic factors
+    - Optimizes for approval rates or lowest cost
+    - Use case: Multi-processor environment requiring intelligent routing
+
+    **Fraud Detection Agent**:
+    - Identifies suspicious transaction patterns
+    - Analyzes: Device fingerprints, velocity, behavioral anomalies
+    - Assigns risk scores and fraud probability
+    - Use case: Reducing fraud losses while minimizing false positives
+
+    **Subscription Manager Agent**:
+    - Predicts subscription churn risk
+    - Generates retention offers automatically
+    - Manages failed payment recovery
+    - Use case: SaaS platforms with high subscription volumes
+
+    **Dispute Handler Agent**:
+    - Analyzes chargeback cases
+    - Recommends fight or accept decisions
+    - Generates evidence packages
+    - Predicts win probability
+    - Use case: Merchants with high chargeback volumes
+
+    • **Agent Creation Workflow**:
+    1. Click "New Agent" button
+    2. Configure agent details:
+    - Agent name (descriptive, user-friendly)
+    - Agent type (select from five types)
+    - Confidence threshold slider (50-99%)
+    - Auto-approve limit ($ amount)
+    - Learning mode toggle
+    - Merchant assignment (platform-wide or specific merchants)
+    3. Review configuration
+    4. Create agent
+    5. Agent enters learning mode by default
+    6. Monitor performance and accuracy
+    7. Adjust thresholds based on results
+    8. Activate for autonomous operation
+
+    • **Agent Configuration**:
+    - **Confidence Threshold**: 
+    * Lower threshold (60-75%): More autonomous decisions, higher risk
+    * Medium threshold (76-85%): Balanced automation
+    * High threshold (86-99%): Conservative, flags more for review
+    - **Auto-Approve Limit**:
+    * Set maximum transaction amount for autonomous approval
+    * Higher amounts always flagged for human review
+    * Adjust based on risk appetite
+    - **Learning Mode**:
+    * On: Agent observes and learns, doesn't make autonomous decisions
+    * Off: Agent makes autonomous decisions within parameters
+    * Recommendation: Start in learning mode, monitor for 2-4 weeks
+
+    • **Agent Performance Metrics**:
+    - Total decisions made
+    - Accuracy rate (correct decisions / total decisions)
+    - Human override rate
+    - Average confidence score
+    - Processing time per decision
+    - Financial impact (fraud prevented, approvals increased)
+
+    • **Multi-Agent Orchestration**:
+    - Multiple agents can work together
+    - Sequential processing (fraud check → approval → routing)
+    - Parallel processing (multiple fraud models)
+    - Agent priority configuration
+    - Conflict resolution rules
+
+    **2. Recurring Payments Tab:**
+
+    Platform-level recurring payment system configuration and monitoring:
+
+    • **Global Recurring Payment Settings**:
+    - Default retry schedules
+    - Standard dunning templates
+    - Platform-wide billing configurations
+    - Compliance settings (ISO 20022, PSD2)
+
+    • **Platform-Wide Metrics**:
+    - Total active subscriptions
+    - Monthly recurring revenue (MRR)
+    - Churn rate
+    - Failed payment rate
+    - Average subscription value
+    - Revenue at risk
+
+    • **Dunning Configuration**:
+    - Set default retry schedules for all merchants
+    - Configure platform email templates
+    - Establish escalation workflows
+    - Define grace periods
+
+    • **Lifecycle Management Settings**:
+    - Churn analysis frequency
+    - Retention offer templates
+    - AI training parameters
+    - Communication preferences
+
+    • **Merchant-Specific Overrides**:
+    - Allow merchants to customize their settings
+    - Override platform defaults
+    - Per-merchant dunning rules
+    - Custom retry schedules
+
+    **Integration with Merchant Operations:**
+
+    • **Separation of Concerns**:
+    - **AI Automation Platform**: Platform-level agent configuration and global recurring payment settings
+    - **Virtual Terminal**: Merchant-specific payment processing, invoicing, and subscription creation
+
+    • **Data Flow**:
+    - Agents configured on AI platform apply to transactions processed via Virtual Terminal
+    - Global recurring payment settings cascade to merchant subscriptions
+    - Merchant-specific overrides respected
+
+    • **Permission Structure**:
+    - **Platform Admins**: Full access to AI Automation Platform
+    - **Merchants**: Access their subscriptions via Virtual Terminal
+    - **API Integration**: Programmatic access to both platforms
+
+    **Platform vs Merchant Agents:**
+
+    • **Platform-Wide Agents**:
+    - Apply to all merchants (or specified subset)
+    - Managed by PSP admin team
+    - Consistent rules across platform
+    - Use case: Fraud detection, compliance checks
+
+    • **Merchant-Specific Agents**:
+    - Configured per merchant
+    - Merchant can customize (with limits)
+    - Tailored to merchant's business model
+    - Use case: Merchant-specific approval logic
+
+    **AI Training and Improvement:**
+
+    • **Learning Process**:
+    - Agents start in learning mode
+    - Observe transactions and human decisions
+    - Build model of successful patterns
+    - Gradually increase confidence
+    - Transition to autonomous mode
+
+    • **Continuous Improvement**:
+    - Human feedback loop
+    - A/B testing different models
+    - Periodic retraining
+    - Version management
+    - Performance benchmarking
+
+    **Use Cases by Business Type:**
+
+    • **Payment Facilitators**:
+    - Deploy fraud detection agents for all sub-merchants
+    - Routing agents to optimize approval rates
+    - Platform-wide chargeback management
+
+    • **SaaS Platforms**:
+    - Subscription lifecycle agents for all customers
+    - Churn prediction and prevention
+    - Automated dunning across all subscriptions
+
+    • **High-Risk Merchants**:
+    - Aggressive fraud detection
+    - Manual review for high-value transactions
+    - Conservative approval thresholds
+
+    • **High-Volume Merchants**:
+    - Maximize automation to handle scale
+    - High confidence thresholds
+    - Focus on efficiency over manual review
+
+    **Best Practices:**
+
+    • **Start Conservative**:
+    - Begin with high confidence thresholds
+    - Use learning mode extensively
+    - Gradually increase autonomy
+
+    • **Monitor Continuously**:
+    - Daily review of agent performance
+    - Weekly accuracy analysis
+    - Monthly threshold adjustments
+
+    • **Provide Feedback**:
+    - Review flagged decisions promptly
+    - Provide feedback on agent decisions
+    - Document edge cases
+
+    • **Test Before Deploying**:
+    - A/B test new agents
+    - Shadow mode before going live
+    - Gradual rollout to merchants
+
+    • **Document Everything**:
+    - Agent configuration rationale
+    - Threshold adjustment reasons
+    - Performance benchmarks
+    - Incident postmortems
+
+    **Security and Compliance:**
+
+    • **Audit Trail**: All agent decisions logged
+    • **Explainability**: AI provides reasoning for decisions
+    • **Human Oversight**: Ability to review and override
+    • **Data Privacy**: GDPR-compliant data handling
+    • **Access Controls**: Role-based permissions
+
+    **ROI and Business Value:**
+
+    • **Cost Savings**:
+    - Reduced manual review labor
+    - Fewer fraud losses
+    - Lower chargeback costs
+    - Decreased churn
+
+    • **Revenue Growth**:
+    - Higher approval rates
+    - Better customer experience
+    - Increased subscription retention
+    - Faster transaction processing
+
+    • **Operational Efficiency**:
+    - 24/7 automated decision-making
+    - Consistent rule application
+    - Scalable to any volume
+    - Real-time processing
+
+    This AI Automation Platform transforms payment operations from reactive manual processes to proactive intelligent systems that continuously learn and improve, delivering superior results at scale.`,
+                keywords: ['ai platform', 'automation', 'agents', 'recurring', 'centralized', 'management']
+            },
             {
                 title: 'Smart Routing',
                 icon: Zap,
