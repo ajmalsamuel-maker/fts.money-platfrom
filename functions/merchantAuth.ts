@@ -15,49 +15,39 @@ Deno.serve(async (req) => {
         if (action === 'login') {
             console.log('Login attempt for:', email);
             
-            // Query PostgreSQL for merchant user
-            const response = await base44.functions.invoke('dbCore', {
-                action: 'query',
-                sql: `
-                    SELECT id, merchant_id, merchant_name, email, full_name, role, status, 
-                           temp_password, must_change_password, two_factor_enabled, last_login,
-                           permissions, allowed_terminals, phone
-                    FROM merchant_users 
-                    WHERE email = $1 AND status = 'active'
-                `,
-                params: [email]
-            });
+            // Query PostgreSQL for merchant user directly
+            const result = await pool.query(`
+                SELECT id, merchant_id, merchant_name, email, full_name, role, status, 
+                       temp_password, must_change_password, two_factor_enabled, last_login,
+                       permissions, allowed_terminals, phone
+                FROM merchant_users 
+                WHERE email = $1 AND status = 'active'
+            `, [email]);
 
-            console.log('DB Response:', response);
+            console.log('DB Query result:', result.rows.length, 'rows');
 
-            if (!response.data || !response.data.data || !response.data.data.rows || response.data.data.rows.length === 0) {
+            if (!result.rows || result.rows.length === 0) {
                 console.log('User not found in database');
                 return Response.json({ 
                     success: false, 
-                    error: 'Invalid credentials',
-                    debug: 'User not found or not active'
+                    error: 'Invalid credentials'
                 }, { status: 401 });
             }
 
-            const user = response.data.data.rows[0];
-            console.log('User found:', user.email, 'Status:', user.status);
+            const user = result.rows[0];
+            console.log('User found:', user.email);
 
-            // Check password (temp_password for now, in production use proper hashing)
+            // Check password
             if (user.temp_password !== password) {
                 console.log('Password mismatch');
                 return Response.json({ 
                     success: false, 
-                    error: 'Invalid credentials',
-                    debug: 'Password incorrect'
+                    error: 'Invalid credentials'
                 }, { status: 401 });
             }
 
             // Update last login
-            await base44.functions.invoke('dbCore', {
-                action: 'execute',
-                sql: `UPDATE merchant_users SET last_login = NOW() WHERE id = $1`,
-                params: [user.id]
-            });
+            await pool.query('UPDATE merchant_users SET last_login = NOW() WHERE id = $1', [user.id]);
 
             // Create session token
             const session = {
@@ -82,16 +72,12 @@ Deno.serve(async (req) => {
 
         if (action === 'validate') {
             // Validate session by checking if user still exists and is active
-            const { data: result } = await base44.functions.invoke('dbCore', {
-                action: 'query',
-                sql: `
-                    SELECT id, merchant_id, merchant_name, email, full_name, role, status,
-                           permissions, must_change_password
-                    FROM merchant_users 
-                    WHERE id = $1 AND status = 'active'
-                `,
-                params: [user_id]
-            });
+            const result = await pool.query(`
+                SELECT id, merchant_id, merchant_name, email, full_name, role, status,
+                       permissions, must_change_password
+                FROM merchant_users 
+                WHERE id = $1 AND status = 'active'
+            `, [user_id]);
 
             if (!result.rows || result.rows.length === 0) {
                 return Response.json({ 
@@ -108,15 +94,11 @@ Deno.serve(async (req) => {
 
         if (action === 'change_password') {
             // Update password and clear must_change_password flag
-            await base44.functions.invoke('dbCore', {
-                action: 'execute',
-                sql: `
-                    UPDATE merchant_users 
-                    SET temp_password = $1, must_change_password = false 
-                    WHERE id = $2
-                `,
-                params: [new_password, user_id]
-            });
+            await pool.query(`
+                UPDATE merchant_users 
+                SET temp_password = $1, must_change_password = false 
+                WHERE id = $2
+            `, [new_password, user_id]);
 
             return Response.json({ success: true });
         }
