@@ -37,6 +37,7 @@ import {
     Monitor,
     DollarSign,
     Percent,
+    Building,
     ArrowUpDown,
     Database,
     Headphones,
