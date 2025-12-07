@@ -64,6 +64,8 @@ import { usePermissions } from '@/components/auth/usePermissions';
 import { PermissionGate } from '@/components/auth/PermissionGate';
 import { createMerchantUsers } from '@/components/merchants/MerchantUserProvisioning';
 import { toast } from 'sonner';
+import MerchantDetailsDialog from '@/components/merchants/MerchantDetailsDialog';
+import MerchantEditDialog from '@/components/merchants/MerchantEditDialog';
 
 const statusConfig = {
     active: { label: 'Active', className: 'bg-emerald-100 text-emerald-700 border-emerald-200' },
@@ -84,6 +86,9 @@ export default function Merchants() {
     const [statusFilter, setStatusFilter] = useState('all');
     const [showAddDialog, setShowAddDialog] = useState(false);
     const [showOnboardingLinkDialog, setShowOnboardingLinkDialog] = useState(false);
+    const [selectedMerchant, setSelectedMerchant] = useState(null);
+    const [showDetailsDialog, setShowDetailsDialog] = useState(false);
+    const [showEditDialog, setShowEditDialog] = useState(false);
     const [newMerchant, setNewMerchant] = useState({
         business_name: '',
         trading_name: '',
@@ -164,6 +169,34 @@ export default function Merchants() {
             });
         },
     });
+
+    const updateMerchantMutation = useMutation({
+        mutationFn: async ({ merchantId, data }) => {
+            const updated = await base44.entities.Merchant.update(merchantId, data);
+            await AuditLogger.logMerchantUpdated(updated);
+            return updated;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['merchants'] });
+            setShowEditDialog(false);
+            setSelectedMerchant(null);
+            toast.success('Merchant updated successfully');
+        },
+    });
+
+    const handleViewDetails = (merchant) => {
+        setSelectedMerchant(merchant);
+        setShowDetailsDialog(true);
+    };
+
+    const handleEditMerchant = (merchant) => {
+        setSelectedMerchant(merchant);
+        setShowEditDialog(true);
+    };
+
+    const handleSaveMerchant = (data) => {
+        updateMerchantMutation.mutate({ merchantId: selectedMerchant.id, data });
+    };
 
     const filteredMerchants = merchants.filter(m => {
         const matchesSearch = !searchQuery || 
@@ -460,13 +493,13 @@ export default function Merchants() {
                                                                 </Button>
                                                             </DropdownMenuTrigger>
                                                             <DropdownMenuContent align="end">
-                                                                <DropdownMenuItem>
+                                                                <DropdownMenuItem onClick={() => handleViewDetails(merchant)}>
                                                                     <Eye className="h-4 w-4 mr-2" />
                                                                     View Details
                                                                 </DropdownMenuItem>
                                                                 {can('EDIT_MERCHANTS') && (
                                                                     <>
-                                                                        <DropdownMenuItem>
+                                                                        <DropdownMenuItem onClick={() => handleEditMerchant(merchant)}>
                                                                             <Edit className="h-4 w-4 mr-2" />
                                                                             Edit
                                                                         </DropdownMenuItem>
@@ -510,6 +543,19 @@ export default function Merchants() {
             <SelfOnboardingUrlGenerator 
                 open={showOnboardingLinkDialog}
                 onOpenChange={setShowOnboardingLinkDialog}
+            />
+
+            <MerchantDetailsDialog
+                merchant={selectedMerchant}
+                open={showDetailsDialog}
+                onOpenChange={setShowDetailsDialog}
+            />
+
+            <MerchantEditDialog
+                merchant={selectedMerchant}
+                open={showEditDialog}
+                onOpenChange={setShowEditDialog}
+                onSave={handleSaveMerchant}
             />
         </div>
     );
