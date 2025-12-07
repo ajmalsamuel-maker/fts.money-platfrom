@@ -64,8 +64,7 @@ import { usePermissions } from '@/components/auth/usePermissions';
 import { PermissionGate } from '@/components/auth/PermissionGate';
 import { createMerchantUsers } from '@/components/merchants/MerchantUserProvisioning';
 import { toast } from 'sonner';
-import MerchantDetailsDialog from '@/components/merchants/MerchantDetailsDialog';
-import MerchantEditDialog from '@/components/merchants/MerchantEditDialog';
+import MerchantOnboardingDialog from '@/components/merchants/MerchantOnboardingDialog';
 
 const statusConfig = {
     active: { label: 'Active', className: 'bg-emerald-100 text-emerald-700 border-emerald-200' },
@@ -87,8 +86,8 @@ export default function Merchants() {
     const [showAddDialog, setShowAddDialog] = useState(false);
     const [showOnboardingLinkDialog, setShowOnboardingLinkDialog] = useState(false);
     const [selectedMerchant, setSelectedMerchant] = useState(null);
-    const [showDetailsDialog, setShowDetailsDialog] = useState(false);
-    const [showEditDialog, setShowEditDialog] = useState(false);
+    const [showOnboardingDialog, setShowOnboardingDialog] = useState(false);
+    const [onboardingMode, setOnboardingMode] = useState('view'); // 'view' or 'edit'
     const [newMerchant, setNewMerchant] = useState({
         business_name: '',
         trading_name: '',
@@ -178,7 +177,7 @@ export default function Merchants() {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['merchants'] });
-            setShowEditDialog(false);
+            setShowOnboardingDialog(false);
             setSelectedMerchant(null);
             toast.success('Merchant updated successfully');
         },
@@ -186,12 +185,14 @@ export default function Merchants() {
 
     const handleViewDetails = (merchant) => {
         setSelectedMerchant(merchant);
-        setShowDetailsDialog(true);
+        setOnboardingMode('view');
+        setShowOnboardingDialog(true);
     };
 
     const handleEditMerchant = (merchant) => {
         setSelectedMerchant(merchant);
-        setShowEditDialog(true);
+        setOnboardingMode('edit');
+        setShowOnboardingDialog(true);
     };
 
     const handleSaveMerchant = (data) => {
@@ -545,17 +546,12 @@ export default function Merchants() {
                 onOpenChange={setShowOnboardingLinkDialog}
             />
 
-            <MerchantDetailsDialog
+            <MerchantOnboardingDialog
                 merchant={selectedMerchant}
-                open={showDetailsDialog}
-                onOpenChange={setShowDetailsDialog}
-            />
-
-            <MerchantEditDialog
-                merchant={selectedMerchant}
-                open={showEditDialog}
-                onOpenChange={setShowEditDialog}
+                open={showOnboardingDialog}
+                onOpenChange={setShowOnboardingDialog}
                 onSave={handleSaveMerchant}
+                mode={onboardingMode}
             />
         </div>
     );
