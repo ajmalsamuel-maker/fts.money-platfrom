@@ -96,22 +96,19 @@ export default function MerchantSelfOnboarding() {
         business: {
             legal_name: '',
             trading_name: '',
-            entity_type: '',
+            business_type: '',
             registration_number: '',
-            vat_number: '',
+            tax_id: '',
             incorporation_date: '',
             country: '',
             website: '',
             mcc_code: '',
             business_description: '',
+            business_address: '',
             lei: '',
-            address_line1: '',
-            address_line2: '',
-            city: '',
-            state: '',
-            postal_code: '',
-            expected_monthly_volume: '',
-            expected_avg_transaction: '',
+            expected_volume: '',
+            avg_ticket: '',
+            industry: '',
         },
         companyStructure: {
             shareholders: [],
@@ -294,7 +291,7 @@ export default function MerchantSelfOnboarding() {
         
         if (step === 1) {
             if (!formData.business.legal_name) newErrors.legal_name = 'Required';
-            if (!formData.business.entity_type) newErrors.entity_type = 'Required';
+            if (!formData.business.business_type) newErrors.business_type = 'Required';
             if (!formData.business.registration_number) newErrors.registration_number = 'Required';
             if (!formData.business.country) newErrors.country = 'Required';
             if (!formData.business.mcc_code) newErrors.mcc_code = 'Required';
@@ -723,17 +720,17 @@ The PaymentHub Team`
                 <Card className="p-6 md:p-8 mb-6 min-h-[500px]">
                     {currentStep === 1 && (
                         <BusinessDetailsStep 
-                            formData={formData.business}
-                            onChange={(field, value) => handleChange('business', field, value)}
+                            data={formData.business}
+                            onChange={(updatedData) => setFormData(prev => ({ ...prev, business: updatedData }))}
                             errors={errors}
                         />
                     )}
                     
                     {currentStep === 2 && (
                         <CompanyStructureStep 
-                            formData={formData.companyStructure}
-                            entityType={formData.business.entity_type}
-                            onChange={(field, value) => handleChange('companyStructure', field, value)}
+                            data={formData.companyStructure}
+                            businessType={formData.business.business_type}
+                            onChange={(updatedData) => setFormData(prev => ({ ...prev, companyStructure: updatedData }))}
                             errors={errors}
                         />
                     )}
