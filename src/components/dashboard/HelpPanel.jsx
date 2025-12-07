@@ -1126,16 +1126,426 @@ This comprehensive recurring payments system transforms subscription management 
             {
                 title: 'Virtual Terminals',
                 icon: Monitor,
-                description: 'Web-based payment terminals.',
-                content: `Virtual terminal configuration:
+                description: 'Web-based payment terminals with AI and automation.',
+                content: `The Virtual Terminal is a comprehensive web-based payment processing interface that enables merchants to accept payments manually, generate professional invoices, create payment links, and leverage AI-powered payment intelligence.
 
-• **Create Terminals**: Set up web-based payment forms
-• **Customization**: Branding and field configuration
-• **Access Control**: User permissions per terminal
-• **Transaction Types**: Sale, auth, refund, void capabilities
-• **Limits**: Set daily and per-transaction limits
-• **3DS Integration**: Secure customer authentication`,
-                keywords: ['virtual terminal', 'web', 'moto', 'keyed']
+**Overview:**
+
+Virtual Terminals replace physical card terminals with a web-based interface for processing card-not-present transactions. Our platform extends this concept with invoice generation, payment link creation, template management, AI payment agents, and recurring payment management - providing a complete payment operations hub.
+
+**Core Functionality:**
+
+The Virtual Terminal page features a tabbed interface with six main sections:
+
+**1. Payment Tab - Direct Payment Processing**:
+
+Process manual card transactions through a secure web form:
+
+• **Merchant Selection**: Choose which merchant is processing the payment
+• **Payment Details**:
+  - Amount input with currency selection
+  - Transaction description/reference
+  - Order ID or invoice number
+• **Customer Information**:
+  - Customer name (required)
+  - Email address for receipt
+  - Phone number (optional)
+  - Billing address details
+• **Card Details** (PCI-compliant entry):
+  - Card number (tokenized, never stored in full)
+  - Expiration date (MM/YY format)
+  - CVV/CVC code (never stored per PCI DSS)
+  - Cardholder name
+• **Security Features**:
+  - Real-time card validation
+  - CVV verification
+  - Address Verification Service (AVS)
+  - 3D Secure authentication when available
+• **Processing**:
+  - Submit button with processing indicator
+  - Real-time authorization response
+  - Success/decline messaging
+  - Transaction receipt generation
+  - Email receipt to customer
+• **Transaction Types**:
+  - Sale: Immediate authorization and capture
+  - Auth only: Reserve funds, capture later
+  - Refund: Return funds to previous transaction
+  - Void: Cancel same-day transaction before settlement
+
+**Use Cases for Payment Tab**:
+- MOTO (Mail Order / Telephone Order) transactions
+- In-person payments where POS terminal unavailable
+- Manual processing of emailed/faxed card details (with proper documentation)
+- Processing payments for walk-in customers
+- Emergency payment processing when regular systems are down
+
+**2. Invoice Tab - Professional Invoice Generation**:
+
+Create and send professional, branded invoices with integrated payment:
+
+• **Invoice Creation**:
+  - **Merchant Selection**: Choose invoicing merchant
+  - **Template Selection**: Use custom or default invoice templates
+  - **Customer Details**:
+    * Full name
+    * Email address (required for sending)
+    * Physical address for billing
+  - **Payment Terms**:
+    * Due on Receipt
+    * Net 15 (due in 15 days)
+    * Net 30 (due in 30 days)
+    * Net 60 (due in 60 days)
+    * Net 90 (due in 90 days)
+
+• **Line Items Management**:
+  - **Add Multiple Items**:
+    * Item description
+    * Quantity
+    * Unit price
+    * Tax rate (percentage)
+    * Automatic line total calculation
+  - **Add/Remove Items**: Dynamic line item management
+  - **Item Organization**: Drag-and-drop reordering
+  - **Calculations**:
+    * Subtotal: Sum of all line items before tax
+    * Tax amount: Calculated per line item
+    * Total amount: Grand total with all taxes
+
+• **Additional Details**:
+  - **Notes Field**: Custom message or payment instructions
+  - **Terms and Conditions**: Default or custom terms
+  - **Purchase Order Number**: Customer PO reference
+  - **Due Date**: Automatically calculated based on payment terms
+
+• **Invoice Features**:
+  - **Automatic Invoice Numbering**: Sequential INV-XXXXXX format
+  - **Payment Link Embedded**: Secure one-click payment link
+  - **Email Delivery**: Professional HTML email with invoice details
+  - **PDF Attachment**: Formatted PDF invoice attached to email
+  - **Status Tracking**:
+    * Draft: Invoice created but not sent
+    * Sent: Delivered to customer
+    * Viewed: Customer opened invoice
+    * Paid: Payment received
+    * Overdue: Past due date
+    * Cancelled: Invoice voided
+
+• **ISO 20022 Compliance**:
+  - Structured invoice data with payment IDs
+  - End-to-end identification for traceability
+  - Creditor and debtor information
+  - Remittance information standards
+  - Purpose code "INVC" for invoice payments
+
+• **Invoice Workflow**:
+  1. Create invoice with all line items
+  2. Review total and details
+  3. Click "Create & Send Invoice"
+  4. System generates unique invoice number
+  5. Creates embedded payment link (30-day expiration)
+  6. Sends professional email to customer
+  7. Customer receives email with invoice details
+  8. Customer clicks payment link
+  9. Pays invoice online securely
+  10. Merchant receives payment notification
+  11. Invoice status updates to "Paid"
+
+**3. Payment Links Tab - Shareable Payment URLs**:
+
+Generate secure payment links that can be shared via any channel:
+
+• **Link Creation**:
+  - **Merchant Selection**: Choose merchant for payment
+  - **Link Title**: Descriptive name (e.g., "Website Development - Phase 1")
+  - **Description**: Detailed explanation of payment purpose
+  - **Amount Configuration**:
+    * Fixed Amount: Specific payment amount
+    * Allow Custom Amount: Let customers enter amount
+    * Min/Max Amount: Set boundaries for custom amounts
+  - **Currency**: USD, EUR, GBP, etc.
+  - **Expiration**:
+    * Set expiration date/time
+    * Or leave active indefinitely
+  - **Usage Limits**:
+    * Single use: Link deactivates after one payment
+    * Multiple use: Link can be used many times
+    * Max uses: Set specific number of allowed uses
+
+• **Link Features**:
+  - **Short Code Generation**: Easy-to-share alphanumeric code
+  - **Full URL**: Complete payment link URL
+  - **QR Code**: Scannable QR code for mobile payments
+  - **Branded Page**: Custom-branded payment page
+  - **Share Options**:
+    * Copy link button
+    * QR code download
+    * Email link
+    * SMS link (if configured)
+    * Social media sharing
+
+• **Link Management**:
+  - View all active links
+  - Track usage count
+  - See payment status
+  - Deactivate/expire links
+  - Renew expired links
+  - Analytics per link
+
+• **Use Cases**:
+  - Quick payment requests via email
+  - Social media payment collection
+  - QR code payments for physical locations
+  - Bill splitting among groups
+  - Freelancer/contractor invoicing
+  - Event ticket sales
+  - Donation collection
+  - Membership payments
+
+**4. Templates Tab - Invoice Template Management**:
+
+Create and manage professional invoice templates for consistent branding:
+
+• **Template Creation**:
+  - **Template Name**: Internal reference name
+  - **Set as Default**: Option to make primary template
+  - **Layout Styles**:
+    * Classic: Traditional business invoice
+    * Modern: Clean, contemporary design
+    * Minimal: Simplistic, uncluttered
+    * Professional: Corporate formal style
+
+• **Branding Customization**:
+  - **Logo Upload**: Company logo image
+  - **Company Name**: Legal or trading name
+  - **Color Scheme**:
+    * Primary color: Main brand color
+    * Secondary color: Accent color
+  - **Font Selection**: Typography choices
+
+• **Header Configuration**:
+  - Show/hide company logo
+  - Show/hide company name
+  - Custom header text
+  - Header layout options
+
+• **Field Configuration**:
+  - Toggle fields on/off:
+    * Invoice number (always on)
+    * Issue date (always on)
+    * Due date
+    * Payment terms
+    * Tax ID/VAT number
+    * Purchase order number
+    * Custom reference numbers
+  - **Custom Fields**:
+    * Add unlimited custom fields
+    * Define field label and default value
+    * Position custom fields in layout
+
+• **Footer Configuration**:
+  - **Payment Instructions**: Bank details, payment methods accepted
+  - **Terms and Conditions**: Standard terms text
+  - **Thank You Message**: Personalized closing
+  - **Contact Information**: Support email, phone, address
+
+• **Email Settings**:
+  - **Subject Line Template**: Customize email subject
+  - **Body Template**: Email message customization
+  - **Variables Available**:
+    * {{customer_name}}
+    * {{invoice_number}}
+    * {{amount}}
+    * {{due_date}}
+  - **Copy to Merchant**: Toggle sending copy to merchant
+
+• **Template Preview**:
+  - Real-time preview as you customize
+  - Sample data for visualization
+  - Desktop and mobile preview
+  - Export preview as PDF
+
+• **Template Management**:
+  - Create multiple templates for different use cases
+  - Duplicate existing templates
+  - Edit or delete templates
+  - Set default template per merchant
+
+**5. AI Agents Tab - Intelligent Payment Processing**:
+
+Leverage AI for automated payment decision-making and natural language processing:
+
+• **AI Agent Manager**:
+  - **View All Agents**: See configured AI payment agents
+  - **Agent Types**:
+    * Payment Approval: Automated transaction approval/decline
+    * Smart Routing: Intelligent processor routing
+    * Fraud Detection: Real-time fraud analysis
+    * Subscription Manager: Automated subscription lifecycle
+    * Dispute Handler: Intelligent chargeback management
+  - **Agent Configuration**:
+    * Name and description
+    * Confidence threshold (e.g., 85% minimum)
+    * Auto-approve limits
+    * Learning mode (on/off)
+  - **Agent Metrics**:
+    * Decisions made
+    * Accuracy rate
+    * Autonomous vs flagged decisions
+
+• **NLP Payment Processor**:
+  - **Natural Language Interface**: Process payments using plain English
+  - **Example Instructions**:
+    * "Charge John Smith $150 for consulting services"
+    * "Subscribe Sarah Johnson to the pro plan at $99/month"
+    * "Refund transaction #TXN-123456"
+  - **AI Parsing**: LLM extracts structured data from text
+  - **Confidence Scoring**: AI confidence in understanding intent
+  - **Review & Confirm**: Human review before execution
+  - **Execution**: Automatic transaction or subscription creation
+
+• **Human Review Queue**:
+  - **Flagged Decisions**: AI decisions requiring human oversight
+  - **Decision Details**:
+    * AI reasoning
+    * Confidence score
+    * Transaction details
+    * Risk factors
+  - **Review Actions**:
+    * Approve AI decision
+    * Reject AI decision
+    * Modify and approve
+  - **Feedback Loop**: Human reviews improve AI accuracy
+
+• **Enhanced Review Interface**:
+  - **Detailed Analysis**: Deep dive into flagged transactions
+  - **Multiple Tabs**:
+    * Overview: Summary of the flag
+    * Transaction: Full transaction details
+    * AI Analysis: AI's reasoning and factors
+    * Review Form: Action selection and notes
+  - **Actions**:
+    * Approve: Accept AI recommendation
+    * Reject: Override AI decision
+    * Modify & Approve: Adjust amount/terms and approve
+  - **Audit Trail**: Complete record of reviews and overrides
+
+• **Override Analytics**:
+  - **Performance Metrics**:
+    * Total reviews conducted
+    * Approval rate
+    * Modification rate
+    * Average review time
+  - **Top Override Reasons**: Most common reasons for human intervention
+  - **Flag Reason Distribution**: Why transactions get flagged
+  - **Insights**: Actionable recommendations to improve AI
+  - **Trends**: Historical performance over time
+
+• **Anomaly Detection Monitor**:
+  - **AI-Powered Scanning**: Detect unusual patterns beyond standard fraud rules
+  - **Scan Triggers**: Manual or scheduled scans
+  - **Analysis Scope**: Recent 100 transactions per merchant
+  - **Detected Anomalies**:
+    * Pattern anomalies (unusual spending patterns)
+    * Velocity anomalies (sudden volume spikes)
+    * Geographic anomalies (unexpected locations)
+    * Amount anomalies (unusual transaction sizes)
+  - **Severity Levels**:
+    * Critical: Immediate action required
+    * High: Review within 24 hours
+    * Medium: Monitor closely
+  - **Recommendations**: AI suggests mitigation actions
+  - **Metrics**:
+    * Transactions analyzed
+    * Anomalies detected
+    * Critical issues count
+
+**6. Recurring Payments Tab - Subscription Management**:
+
+(See "Recurring Payments & Subscriptions" help topic for comprehensive details)
+
+• **Subscription Creation**: Set up recurring billing plans
+• **AI Lifecycle**: Churn prediction and retention automation
+• **Flexible Billing**: Proration, custom cycles, usage-based billing
+• **Dunning Management**: Failed payment recovery workflows
+
+**Security and Compliance:**
+
+• **PCI DSS Compliant**:
+  - No full card numbers stored
+  - Tokenization for recurring billing
+  - CVV never stored
+  - Encrypted transmission (TLS 1.2+)
+  - Secure browser-based entry
+
+• **Fraud Prevention**:
+  - AVS verification
+  - CVV verification
+  - Device fingerprinting
+  - Velocity checks
+  - IP geolocation
+  - AI risk scoring
+
+• **3D Secure Support**:
+  - EMV 3DS 2.0 protocol
+  - Challenge and frictionless flows
+  - SCA compliance (Europe)
+  - Liability shift protection
+
+• **Access Controls**:
+  - Role-based permissions
+  - Audit logging of all actions
+  - Session timeout
+  - IP whitelisting option
+
+**Best Practices:**
+
+• **For Payment Processing**:
+  - Always verify customer identity before processing MOTO
+  - Document authorization (email, phone recording, signature)
+  - Use AVS and CVV for all card-not-present transactions
+  - Enable 3DS when available for liability protection
+  - Keep detailed notes on each transaction
+
+• **For Invoicing**:
+  - Send invoices promptly after service delivery
+  - Include detailed line items for transparency
+  - Set clear payment terms and due dates
+  - Follow up on overdue invoices systematically
+  - Offer multiple payment options
+
+• **For Payment Links**:
+  - Use descriptive titles that clearly indicate purpose
+  - Set expiration dates for time-sensitive payments
+  - Track link usage to prevent abuse
+  - Expire links after payment received for single-use scenarios
+
+• **For Templates**:
+  - Create templates for different customer segments
+  - Keep branding consistent across all invoices
+  - Include all necessary legal and tax information
+  - Test templates before rolling out to customers
+
+• **For AI Agents**:
+  - Start in learning mode to train the AI
+  - Review flagged decisions promptly
+  - Provide feedback to improve accuracy
+  - Set conservative thresholds initially
+  - Monitor agent performance regularly
+
+**Performance Metrics:**
+
+Track virtual terminal effectiveness with key metrics:
+- Transaction volume and value
+- Approval rates
+- Decline reasons
+- Invoice payment rates
+- Payment link conversion rates
+- Average time to payment
+- AI agent accuracy
+
+This comprehensive Virtual Terminal transforms payment operations from a simple card entry form into a complete payment acceptance, billing, and intelligence platform that scales from individual merchants to enterprise PSP operations.`,
+                keywords: ['virtual terminal', 'web', 'moto', 'keyed', 'invoice', 'payment links', 'ai', 'recurring']
             },
             {
                 title: 'API Credentials',
