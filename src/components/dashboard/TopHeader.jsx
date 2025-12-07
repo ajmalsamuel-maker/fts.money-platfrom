@@ -25,7 +25,7 @@ import {
     Sun,
     ChevronDown,
     Globe,
-    Building2,
+    Building,
     Shield,
     HelpCircle,
     Check
@@ -268,7 +268,7 @@ export default function TopHeader({ onToggleSidebar, collapsed }) {
                         </div>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem>
-                            <Building2 className="h-4 w-4 mr-2" />
+                            <Building className="h-4 w-4 mr-2" />
                             Organization
                         </DropdownMenuItem>
                         <DropdownMenuItem>

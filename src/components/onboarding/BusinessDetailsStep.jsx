@@ -10,7 +10,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { Building2, AlertCircle, CheckCircle, Info } from 'lucide-react';
+import { Building, AlertCircle, CheckCircle, Info } from 'lucide-react';
 import MCCSelector from './MCCSelector';
 import { cn } from "@/lib/utils";
 
@@ -301,7 +301,7 @@ export default function BusinessDetailsStep({ data, onChange, errors }) {
         <div className="space-y-6">
             <div className="flex items-center gap-3 mb-6">
                 <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
-                    <Building2 className="h-6 w-6 text-blue-600" />
+                    <Building className="h-6 w-6 text-blue-600" />
                 </div>
                 <div>
                     <h2 className="text-xl font-semibold text-slate-900">Business Details</h2>
