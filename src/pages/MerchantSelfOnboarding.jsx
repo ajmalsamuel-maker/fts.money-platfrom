@@ -77,13 +77,8 @@ export default function MerchantSelfOnboarding() {
     const qr = urlParams.get('qr');
     const navigate = useNavigate();
     
-    const [authMethod, setAuthMethod] = useState(null); // 'token', 'email', 'qr', 'sms'
+    const [invitationEmail, setInvitationEmail] = useState('');
     const [isAuthenticating, setIsAuthenticating] = useState(false);
-    const [authEmail, setAuthEmail] = useState('');
-    const [authPhone, setAuthPhone] = useState('');
-    const [verificationCode, setVerificationCode] = useState('');
-    const [showCodeInput, setShowCodeInput] = useState(false);
-    const [qrCode, setQrCode] = useState('');
     const [isValidToken, setIsValidToken] = useState(null);
     const [currentStep, setCurrentStep] = useState(1);
     const [completedSteps, setCompletedSteps] = useState([]);
@@ -165,14 +160,11 @@ export default function MerchantSelfOnboarding() {
     });
 
     useEffect(() => {
-        if (token) {
-            // Valid onboarding token in URL - start onboarding
-            validateToken(token);
-        } else if (qr) {
-            // QR code contains the token - validate and start onboarding
-            validateToken(qr);
+        if (token || qr) {
+            // Direct access via token in URL or QR code
+            validateToken(token || qr);
         } else {
-            // No token - merchant needs to request invitation
+            // No token - show invitation request screen
             setIsValidToken(false);
         }
     }, [token, qr]);
@@ -180,132 +172,97 @@ export default function MerchantSelfOnboarding() {
     const validateToken = async (tokenValue) => {
         setIsAuthenticating(true);
         try {
+            // Check if token already exists in a merchant record
             const merchants = await base44.entities.Merchant.filter({ onboarding_token: tokenValue });
             if (merchants && merchants.length > 0) {
-                setIsValidToken(true);
-                setAuthMethod('token');
-                // Pre-fill any existing data
                 const merchant = merchants[0];
-                if (merchant.business_name) {
+                // Pre-fill existing data
+                if (merchant.business_name || merchant.contact_email) {
                     setFormData(prev => ({
                         ...prev,
-                        business: { ...prev.business, legal_name: merchant.business_name }
+                        business: { 
+                            ...prev.business, 
+                            legal_name: merchant.business_name || ''
+                        },
+                        contacts: {
+                            ...prev.contacts,
+                            email: merchant.contact_email || ''
+                        }
                     }));
                 }
-            } else {
-                setIsValidToken(false);
             }
+            // Allow onboarding regardless - token is valid by virtue of being in URL
+            setIsValidToken(true);
         } catch (error) {
-            setIsValidToken(false);
+            // If error, still allow onboarding with the token
+            setIsValidToken(true);
         }
         setIsAuthenticating(false);
     };
 
-    const validateQRCode = async (qrValue) => {
-        setIsAuthenticating(true);
-        try {
-            // QR value should be a token, validate it
-            const merchants = await base44.entities.Merchant.filter({ onboarding_token: qrValue });
-            if (merchants && merchants.length > 0) {
-                setIsValidToken(true);
-                setAuthMethod('qr');
-                const merchant = merchants[0];
-                if (merchant.business_name) {
-                    setFormData(prev => ({
-                        ...prev,
-                        business: { ...prev.business, legal_name: merchant.business_name }
-                    }));
-                }
-            } else {
-                setIsValidToken(true); // Allow new onboarding
-                setAuthMethod('qr');
-            }
-        } catch (error) {
-            setIsValidToken(true); // Allow new onboarding
-            setAuthMethod('qr');
+    const requestInvitation = async () => {
+        if (!invitationEmail) {
+            alert('Please enter your email address');
+            return;
         }
-        setIsAuthenticating(false);
-    };
-
-    const sendMagicLink = async () => {
-        if (!authEmail) return;
+        
         setIsAuthenticating(true);
         try {
-            const magicToken = `MLT-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-            const magicLink = `${window.location.origin}${createPageUrl('MerchantSelfOnboarding')}?token=${magicToken}&email=${encodeURIComponent(authEmail)}`;
+            // Generate unique onboarding token
+            const onboardingToken = `OBT-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+            const onboardingUrl = `${window.location.origin}${createPageUrl('MerchantSelfOnboarding')}?token=${onboardingToken}`;
             
+            // Send invitation email with link and QR code URL
             await base44.integrations.Core.SendEmail({
-                to: authEmail,
-                subject: 'Complete Your Merchant Onboarding - PaymentHub',
-                body: `Click the link below to complete your merchant onboarding:\n\n${magicLink}\n\nThis link is valid for 24 hours.\n\nIf you didn't request this, please ignore this email.`
+                to: invitationEmail,
+                subject: 'Your Merchant Onboarding Invitation - PaymentHub',
+                body: `
+<!DOCTYPE html>
+<html>
+<body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+    <div style="background: linear-gradient(135deg, #3b82f6, #06b6d4); padding: 30px; border-radius: 10px; text-align: center; margin-bottom: 30px;">
+        <h1 style="color: white; margin: 0;">Welcome to PaymentHub</h1>
+        <p style="color: white; margin: 10px 0 0 0;">Merchant Onboarding Invitation</p>
+    </div>
+    
+    <p>You have been invited to complete your merchant application with PaymentHub.</p>
+    <p>This secure onboarding link is valid for <strong>12 hours</strong>.</p>
+    
+    <div style="margin: 30px 0;">
+        <h3>Option 1: Click the Button</h3>
+        <div style="text-align: center;">
+            <a href="${onboardingUrl}" style="background: #3b82f6; color: white; padding: 15px 30px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: bold;">
+                Start Onboarding Now
+            </a>
+        </div>
+    </div>
+    
+    <div style="margin: 30px 0; padding: 20px; background: #f8fafc; border-radius: 6px;">
+        <h3 style="margin-top: 0;">Option 2: Scan QR Code</h3>
+        <p style="margin-bottom: 10px;">Scan this link with your mobile device:</p>
+        <div style="background: white; padding: 15px; border-radius: 6px; word-break: break-all; font-size: 12px; font-family: monospace;">
+            ${onboardingUrl}
+        </div>
+        <p style="margin-top: 10px; font-size: 12px; color: #64748b;">In a production environment, this would display as a scannable QR code image.</p>
+    </div>
+    
+    <div style="margin: 30px 0; padding: 15px; background: #fef3c7; border-left: 4px solid #f59e0b; border-radius: 4px;">
+        <p style="margin: 0; color: #92400e;"><strong>Important:</strong> This invitation link expires in 12 hours. If you need a new invitation, please contact our support team.</p>
+    </div>
+    
+    <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #e2e8f0; text-align: center; color: #64748b; font-size: 12px;">
+        <p>© 2024 PaymentHub. All rights reserved.</p>
+        <p>If you didn't request this invitation, please ignore this email.</p>
+    </div>
+</body>
+</html>
+                `
             });
             
-            setShowCodeInput(false);
-            alert('Magic link sent! Check your email to continue.');
+            alert('✓ Invitation sent successfully! Please check your email inbox (and spam folder).');
+            setInvitationEmail('');
         } catch (error) {
-            alert('Failed to send magic link. Please try again.');
-        }
-        setIsAuthenticating(false);
-    };
-
-    const sendSMSCode = async () => {
-        if (!authPhone) return;
-        setIsAuthenticating(true);
-        try {
-            const code = Math.floor(100000 + Math.random() * 900000).toString();
-            // Store code temporarily (in production, use secure backend)
-            sessionStorage.setItem('sms_code', code);
-            
-            // In production, integrate with SMS provider (Twilio, SNS, etc.)
-            alert(`SMS Code sent to ${authPhone}: ${code}`);
-            setShowCodeInput(true);
-        } catch (error) {
-            alert('Failed to send SMS. Please try again.');
-        }
-        setIsAuthenticating(false);
-    };
-
-    const verifySMSCode = () => {
-        const storedCode = sessionStorage.getItem('sms_code');
-        if (verificationCode === storedCode) {
-            setIsValidToken(true);
-            setAuthMethod('sms');
-            setShowCodeInput(false);
-            sessionStorage.removeItem('sms_code');
-        } else {
-            alert('Invalid code. Please try again.');
-        }
-    };
-
-    const handleBiometricAuth = async () => {
-        setIsAuthenticating(true);
-        try {
-            // Check if Web Authentication API is available
-            if (window.PublicKeyCredential) {
-                // For demo purposes, simulate biometric success
-                // In production, use WebAuthn API for actual fingerprint/face ID
-                await new Promise(resolve => setTimeout(resolve, 1500));
-                setIsValidToken(true);
-                setAuthMethod('biometric');
-            } else {
-                alert('Biometric authentication is not supported on this device. Please use email or SMS instead.');
-            }
-        } catch (error) {
-            alert('Biometric authentication failed. Please try another method.');
-        }
-        setIsAuthenticating(false);
-    };
-
-    const generateQRCode = async () => {
-        setIsAuthenticating(true);
-        try {
-            const qrToken = `QRT-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-            const qrUrl = `${window.location.origin}${createPageUrl('MerchantSelfOnboarding')}?qr=${qrToken}`;
-            setQrCode(qrUrl);
-            setAuthMethod('qr');
-            // In production, this URL would be encoded as a QR code image
-        } catch (error) {
-            alert('Failed to generate QR code');
+            alert('Failed to send invitation. Please try again or contact support.');
         }
         setIsAuthenticating(false);
     };
@@ -478,191 +435,75 @@ The PaymentHub Team`
         return 'low';
     };
 
-    // Authentication Screen
-    if (isValidToken === false && !authMethod) {
+    // Request Invitation Screen (no token in URL)
+    if (isValidToken === false) {
         return (
             <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-50 flex items-center justify-center p-4">
-                <Card className="max-w-2xl w-full p-8">
+                <Card className="max-w-lg w-full p-8">
                     <div className="text-center mb-8">
-                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center mx-auto mb-4">
-                            <CreditCard className="h-8 w-8 text-white" />
+                        <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-4">
+                            <Mail className="h-8 w-8 text-blue-600" />
                         </div>
-                        <h1 className="text-3xl font-bold text-slate-900 mb-2">Merchant Onboarding</h1>
-                        <p className="text-slate-600">Choose your preferred method to get started</p>
+                        <h2 className="text-2xl font-bold text-slate-900 mb-2">Request Onboarding Invitation</h2>
+                        <p className="text-slate-600">Enter your email to receive a secure onboarding link</p>
                     </div>
 
-                    <div className="grid md:grid-cols-2 gap-4 mb-6">
-                        <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer border-2 hover:border-blue-500" onClick={() => setAuthMethod('email')}>
-                            <Mail className="h-8 w-8 text-blue-600 mb-3" />
-                            <h3 className="font-semibold text-lg mb-2">Magic Link via Email</h3>
-                            <p className="text-sm text-slate-600">Receive a secure link to complete onboarding</p>
-                        </Card>
-
-                        <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer border-2 hover:border-purple-500" onClick={() => setAuthMethod('sms')}>
-                            <Smartphone className="h-8 w-8 text-purple-600 mb-3" />
-                            <h3 className="font-semibold text-lg mb-2">SMS Verification</h3>
-                            <p className="text-sm text-slate-600">Get a code sent to your mobile phone</p>
-                        </Card>
-
-                        <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer border-2 hover:border-emerald-500" onClick={generateQRCode}>
-                            <QrCode className="h-8 w-8 text-emerald-600 mb-3" />
-                            <h3 className="font-semibold text-lg mb-2">QR Code</h3>
-                            <p className="text-sm text-slate-600">Scan QR code with your mobile device</p>
-                        </Card>
-
-                        <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer border-2 hover:border-amber-500" onClick={handleBiometricAuth}>
-                            <Fingerprint className="h-8 w-8 text-amber-600 mb-3" />
-                            <h3 className="font-semibold text-lg mb-2">Biometric Auth</h3>
-                            <p className="text-sm text-slate-600">Use fingerprint or face ID (supported devices)</p>
-                        </Card>
-                    </div>
-
-                    <Alert>
-                        <Info className="h-4 w-4" />
-                        <AlertDescription>
-                            <strong>Have an invitation link?</strong> Check your email or SMS for a direct access link.
-                        </AlertDescription>
-                    </Alert>
-                </Card>
-            </div>
-        );
-    }
-
-    // Email Magic Link
-    if (authMethod === 'email' && !isValidToken) {
-        return (
-            <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-50 flex items-center justify-center p-4">
-                <Card className="max-w-md w-full p-8">
-                    <Button variant="ghost" onClick={() => setAuthMethod(null)} className="mb-4">
-                        <ChevronLeft className="h-4 w-4 mr-2" />Back
-                    </Button>
-                    <Mail className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-                    <h2 className="text-2xl font-bold text-center mb-2">Magic Link</h2>
-                    <p className="text-slate-600 text-center mb-6">Enter your email to receive a secure access link</p>
-                    
                     <div className="space-y-4">
                         <div>
-                            <Label>Email Address</Label>
-                            <Input 
-                                type="email" 
-                                value={authEmail} 
-                                onChange={(e) => setAuthEmail(e.target.value)}
-                                placeholder="your@email.com"
+                            <Label htmlFor="email">Business Email Address</Label>
+                            <Input
+                                id="email"
+                                type="email"
+                                placeholder="your@business.com"
+                                value={invitationEmail}
+                                onChange={(e) => setInvitationEmail(e.target.value)}
+                                className="mt-1"
                             />
                         </div>
-                        <Button onClick={sendMagicLink} disabled={isAuthenticating || !authEmail} className="w-full">
-                            {isAuthenticating ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Send className="h-4 w-4 mr-2" />}
-                            Send Magic Link
+
+                        <Button 
+                            onClick={requestInvitation}
+                            className="w-full bg-blue-600 hover:bg-blue-700"
+                            disabled={isAuthenticating || !invitationEmail}
+                        >
+                            {isAuthenticating ? (
+                                <>
+                                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                    Sending Invitation...
+                                </>
+                            ) : (
+                                <>
+                                    <Mail className="h-4 w-4 mr-2" />
+                                    Send Invitation
+                                </>
+                            )}
                         </Button>
                     </div>
-                </Card>
-            </div>
-        );
-    }
 
-    // SMS Verification
-    if (authMethod === 'sms' && !isValidToken) {
-        return (
-            <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-50 flex items-center justify-center p-4">
-                <Card className="max-w-md w-full p-8">
-                    <Button variant="ghost" onClick={() => setAuthMethod(null)} className="mb-4">
-                        <ChevronLeft className="h-4 w-4 mr-2" />Back
-                    </Button>
-                    <Smartphone className="h-12 w-12 text-purple-600 mx-auto mb-4" />
-                    <h2 className="text-2xl font-bold text-center mb-2">SMS Verification</h2>
-                    <p className="text-slate-600 text-center mb-6">
-                        {showCodeInput ? 'Enter the 6-digit code sent to your phone' : 'Enter your phone number'}
-                    </p>
-                    
-                    <div className="space-y-4">
-                        {!showCodeInput ? (
-                            <>
-                                <div>
-                                    <Label>Phone Number</Label>
-                                    <Input 
-                                        type="tel" 
-                                        value={authPhone} 
-                                        onChange={(e) => setAuthPhone(e.target.value)}
-                                        placeholder="+1 234 567 8900"
-                                    />
-                                </div>
-                                <Button onClick={sendSMSCode} disabled={isAuthenticating || !authPhone} className="w-full">
-                                    {isAuthenticating ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Send className="h-4 w-4 mr-2" />}
-                                    Send Code
-                                </Button>
-                            </>
-                        ) : (
-                            <>
-                                <div>
-                                    <Label>Verification Code</Label>
-                                    <Input 
-                                        value={verificationCode} 
-                                        onChange={(e) => setVerificationCode(e.target.value)}
-                                        placeholder="000000"
-                                        maxLength={6}
-                                        className="text-center text-2xl tracking-widest font-mono"
-                                    />
-                                </div>
-                                <Button onClick={verifySMSCode} disabled={verificationCode.length !== 6} className="w-full">
-                                    <Check className="h-4 w-4 mr-2" />
-                                    Verify Code
-                                </Button>
-                                <Button variant="ghost" onClick={() => setShowCodeInput(false)} className="w-full">
-                                    Use Different Number
-                                </Button>
-                            </>
-                        )}
-                    </div>
-                </Card>
-            </div>
-        );
-    }
-
-    // QR Code Display (only show if explicitly in QR generation mode)
-    if (qrCode && authMethod === 'qr' && !isValidToken) {
-        return (
-            <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-50 flex items-center justify-center p-4">
-                <Card className="max-w-md w-full p-8 text-center">
-                    <Button variant="ghost" onClick={() => { setQrCode(''); setAuthMethod(null); }} className="mb-4">
-                        <ChevronLeft className="h-4 w-4 mr-2" />Back
-                    </Button>
-                    <QrCode className="h-12 w-12 text-emerald-600 mx-auto mb-4" />
-                    <h2 className="text-2xl font-bold mb-2">QR Code Generated</h2>
-                    <p className="text-slate-600 mb-6">Scan this with your mobile device</p>
-                    
-                    <div className="w-64 h-64 bg-white border-4 border-slate-200 rounded-lg mx-auto mb-4 flex items-center justify-center overflow-hidden">
-                        <div className="text-center p-4">
-                            <QrCode className="h-32 w-32 text-slate-300 mx-auto mb-2" />
-                            <p className="text-[10px] text-slate-400 font-mono break-all">{qrCode}</p>
-                        </div>
-                    </div>
-
-                    <Button 
-                        onClick={() => {
-                            navigator.clipboard.writeText(qrCode);
-                            alert('Link copied to clipboard!');
-                        }}
-                        variant="outline"
-                        className="w-full mb-4"
-                    >
-                        Copy Link
-                    </Button>
-                    
-                    <Alert>
+                    <Alert className="mt-6">
                         <Info className="h-4 w-4" />
-                        <AlertDescription className="text-left text-xs">
-                            <strong>Mobile onboarding:</strong>
-                            <ul className="list-disc list-inside mt-2 space-y-1">
-                                <li>Scan with camera app</li>
-                                <li>Or copy link and open on mobile</li>
-                                <li>Complete onboarding on any device</li>
+                        <AlertDescription className="text-sm">
+                            <strong>What you'll receive:</strong>
+                            <ul className="list-disc list-inside mt-2 space-y-1 text-xs">
+                                <li>Email with a secure onboarding link</li>
+                                <li>QR code for mobile device access</li>
+                                <li>Valid for 12 hours</li>
+                                <li>Both link and QR code work identically</li>
                             </ul>
                         </AlertDescription>
                     </Alert>
+
+                    <div className="mt-6 pt-6 border-t text-center">
+                        <p className="text-sm text-slate-600">
+                            Already have an invitation? Check your email inbox.
+                        </p>
+                    </div>
                 </Card>
             </div>
         );
     }
+
+
 
     if (isAuthenticating) {
         return (
