@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import Sidebar from '@/components/dashboard/Sidebar';
 import TopHeader from '@/components/dashboard/TopHeader';
+import UniversalComplianceCheck from '@/components/onboarding/UniversalComplianceCheck';
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -75,6 +76,7 @@ export default function APMOnboarding() {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const [selectedAPM, setSelectedAPM] = useState(null);
     const [configuring, setConfiguring] = useState(false);
+    const [showCompliance, setShowCompliance] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [activeTab, setActiveTab] = useState('all');
     const [showAddCustom, setShowAddCustom] = useState(false);
@@ -89,6 +91,7 @@ export default function APMOnboarding() {
         private_key: '',
         webhook_url: '',
     });
+    const [complianceData, setComplianceData] = useState(null);
     const queryClient = useQueryClient();
     
     const allProviders = [...apmProviders, ...customProviders];
@@ -300,20 +303,34 @@ export default function APMOnboarding() {
                                     </Button>
                                     <Button 
                                         className="flex-1 gap-2" 
-                                        onClick={() => connectAPM.mutate()}
-                                        disabled={connectAPM.isPending}
+                                        onClick={() => { setConfiguring(false); setShowCompliance(true); }}
                                     >
-                                        {connectAPM.isPending ? (
-                                            <Loader2 className="h-4 w-4 animate-spin" />
-                                        ) : (
-                                            <CheckCircle className="h-4 w-4" />
-                                        )}
-                                        Connect {selectedAPM.name}
+                                        <Shield className="h-4 w-4" />
+                                        Continue to Compliance
                                     </Button>
                                 </div>
                             </CardContent>
                         </Card>
                     )}
+
+                    {showCompliance && selectedAPM && (
+                        <UniversalComplianceCheck
+                            entityData={{
+                                name: selectedAPM.name,
+                                business_name: selectedAPM.name,
+                                country: selectedAPM.region === 'Global' ? 'US' : 'SG',
+                                business_type: 'apm_provider',
+                                id: `APM-TEMP-${Date.now()}`
+                            }}
+                            entityType="apm_provider"
+                            onComplete={(complianceResult) => {
+                                setComplianceData(complianceResult);
+                                connectAPM.mutate();
+                                setShowCompliance(false);
+                            }}
+                        />
+                    )}
+                    
                     {/* Add Custom APM Dialog */}
                     <Dialog open={showAddCustom} onOpenChange={setShowAddCustom}>
                         <DialogContent>

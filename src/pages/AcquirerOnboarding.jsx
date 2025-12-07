@@ -118,7 +118,7 @@ export default function AcquirerOnboarding() {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['processors'] });
-            setStep(4);
+            setStep(5);
         }
     });
 
