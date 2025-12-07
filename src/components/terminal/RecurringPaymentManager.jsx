@@ -107,92 +107,102 @@ export default function RecurringPaymentManager({ merchants }) {
 
     return (
         <div className="space-y-6">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h2 className="text-xl font-semibold flex items-center gap-2">
-                        <Repeat className="h-6 w-6 text-blue-600" />
-                        Recurring Payments
-                    </h2>
-                    <p className="text-sm text-slate-500">Manage subscriptions and scheduled payments</p>
-                </div>
-                <Button onClick={() => setShowCreateDialog(true)}>
-                    <Plus className="h-4 w-4 mr-2" />
-                    New Recurring Payment
-                </Button>
-            </div>
+            <Tabs defaultValue="subscriptions" className="w-full">
+                <TabsList className="grid w-full grid-cols-4 mb-6">
+                    <TabsTrigger value="subscriptions">Subscriptions</TabsTrigger>
+                    <TabsTrigger value="lifecycle">AI Lifecycle</TabsTrigger>
+                    <TabsTrigger value="billing">Flexible Billing</TabsTrigger>
+                    <TabsTrigger value="dunning">Dunning</TabsTrigger>
+                </TabsList>
 
-            <div className="grid gap-4">
-                {recurringPayments.map((payment) => (
-                    <Card key={payment.id}>
-                        <CardContent className="p-6">
-                            <div className="flex items-start justify-between">
-                                <div className="flex-1">
-                                    <div className="flex items-center gap-3 mb-2">
-                                        <h3 className="font-semibold">{payment.customer_name}</h3>
-                                        <Badge className={getStatusColor(payment.status)}>
-                                            {payment.status}
-                                        </Badge>
-                                        {payment.ai_managed && (
-                                            <Badge variant="outline" className="bg-purple-50 text-purple-700">
-                                                AI Managed
-                                            </Badge>
-                                        )}
-                                    </div>
-                                    <p className="text-sm text-slate-500 mb-3">{payment.customer_email}</p>
-                                    
-                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                                        <div>
-                                            <p className="text-slate-500">Amount</p>
-                                            <p className="font-semibold">${payment.amount} {payment.currency}</p>
-                                        </div>
-                                        <div>
-                                            <p className="text-slate-500">Frequency</p>
-                                            <p className="font-semibold capitalize">{payment.frequency}</p>
-                                        </div>
-                                        <div>
-                                            <p className="text-slate-500">Next Payment</p>
-                                            <p className="font-semibold">{payment.next_payment_date}</p>
-                                        </div>
-                                        <div>
-                                            <p className="text-slate-500">Cycles</p>
-                                            <p className="font-semibold">
-                                                {payment.cycles_completed} / {payment.total_cycles || '∞'}
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="flex gap-2 ml-4">
-                                    {payment.status === 'active' && (
-                                        <Button 
-                                            variant="outline" 
-                                            size="sm"
-                                            onClick={() => updateStatusMutation.mutate({ id: payment.id, status: 'paused' })}
-                                        >
-                                            <Pause className="h-4 w-4" />
-                                        </Button>
-                                    )}
-                                    {payment.status === 'paused' && (
-                                        <Button 
-                                            variant="outline" 
-                                            size="sm"
-                                            onClick={() => updateStatusMutation.mutate({ id: payment.id, status: 'active' })}
-                                        >
-                                            <Play className="h-4 w-4" />
-                                        </Button>
-                                    )}
-                                    <Button 
-                                        variant="outline" 
-                                        size="sm"
-                                        onClick={() => updateStatusMutation.mutate({ id: payment.id, status: 'cancelled' })}
-                                    >
-                                        <StopCircle className="h-4 w-4 text-red-600" />
-                                    </Button>
-                                </div>
+                <TabsContent value="subscriptions">
+                    <div className="space-y-6">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <h2 className="text-xl font-semibold flex items-center gap-2">
+                                    <Repeat className="h-6 w-6 text-blue-600" />
+                                    Recurring Payments
+                                </h2>
+                                <p className="text-sm text-slate-500">Manage subscriptions and scheduled payments</p>
                             </div>
-                        </CardContent>
-                    </Card>
-                ))}
+                            <Button onClick={() => setShowCreateDialog(true)}>
+                                <Plus className="h-4 w-4 mr-2" />
+                                New Recurring Payment
+                            </Button>
+                        </div>
+
+                        <div className="grid gap-4">
+                            {recurringPayments.map((payment) => (
+                                <Card key={payment.id}>
+                                    <CardContent className="p-6">
+                                        <div className="flex items-start justify-between">
+                                            <div className="flex-1">
+                                                <div className="flex items-center gap-3 mb-2">
+                                                    <h3 className="font-semibold">{payment.customer_name}</h3>
+                                                    <Badge className={getStatusColor(payment.status)}>
+                                                        {payment.status}
+                                                    </Badge>
+                                                    {payment.ai_managed && (
+                                                        <Badge variant="outline" className="bg-purple-50 text-purple-700">
+                                                            AI Managed
+                                                        </Badge>
+                                                    )}
+                                                </div>
+                                                <p className="text-sm text-slate-500 mb-3">{payment.customer_email}</p>
+                                                
+                                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                                                    <div>
+                                                        <p className="text-slate-500">Amount</p>
+                                                        <p className="font-semibold">${payment.amount} {payment.currency}</p>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-slate-500">Frequency</p>
+                                                        <p className="font-semibold capitalize">{payment.frequency}</p>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-slate-500">Next Payment</p>
+                                                        <p className="font-semibold">{payment.next_payment_date}</p>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-slate-500">Cycles</p>
+                                                        <p className="font-semibold">
+                                                            {payment.cycles_completed} / {payment.total_cycles || '∞'}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex gap-2 ml-4">
+                                                {payment.status === 'active' && (
+                                                    <Button 
+                                                        variant="outline" 
+                                                        size="sm"
+                                                        onClick={() => updateStatusMutation.mutate({ id: payment.id, status: 'paused' })}
+                                                    >
+                                                        <Pause className="h-4 w-4" />
+                                                    </Button>
+                                                )}
+                                                {payment.status === 'paused' && (
+                                                    <Button 
+                                                        variant="outline" 
+                                                        size="sm"
+                                                        onClick={() => updateStatusMutation.mutate({ id: payment.id, status: 'active' })}
+                                                    >
+                                                        <Play className="h-4 w-4" />
+                                                    </Button>
+                                                )}
+                                                <Button 
+                                                    variant="outline" 
+                                                    size="sm"
+                                                    onClick={() => updateStatusMutation.mutate({ id: payment.id, status: 'cancelled' })}
+                                                >
+                                                    <StopCircle className="h-4 w-4 text-red-600" />
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            ))}
                         </div>
                     </div>
                 </TabsContent>
