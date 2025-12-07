@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { 
     Search, Plus, MoreHorizontal, Edit, Trash2, CreditCard, Store, Terminal, 
-    ChevronLeft, ChevronRight, CheckCircle, XCircle, Filter
+    ChevronLeft, ChevronRight, CheckCircle, XCircle, Filter, Sparkles, Loader2
 } from 'lucide-react';
 
 const terminalTypeLabels = {
@@ -58,10 +58,13 @@ export default function MerchantMIDs() {
     const [searchQuery, setSearchQuery] = useState('');
     const [merchantFilter, setMerchantFilter] = useState('all');
     const [statusFilter, setStatusFilter] = useState('all');
+    const [paymentMethodFilter, setPaymentMethodFilter] = useState('all');
     const [showDialog, setShowDialog] = useState(false);
     const [editingMID, setEditingMID] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [selectedMIDs, setSelectedMIDs] = useState([]);
+    const [isSuggestingMID, setIsSuggestingMID] = useState(false);
     const [formData, setFormData] = useState({
         merchant_id: '', merchant_name: '', mid: '',
         provider_id: '', provider_name: '', terminal_type: 'ecommerce',
@@ -99,6 +102,20 @@ export default function MerchantMIDs() {
     const deleteMutation = useMutation({
         mutationFn: (id) => base44.entities.MerchantMID.delete(id),
         onSuccess: () => queryClient.invalidateQueries({ queryKey: ['merchant-mids'] }),
+    });
+
+    const bulkUpdateMutation = useMutation({
+        mutationFn: async ({ ids, status }) => {
+            const updates = ids.map(id => {
+                const mid = mids.find(m => m.id === id);
+                return base44.entities.MerchantMID.update(id, { ...mid, status });
+            });
+            return Promise.all(updates);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['merchant-mids'] });
+            setSelectedMIDs([]);
+        }
     });
 
     const resetForm = () => {
@@ -148,6 +165,38 @@ export default function MerchantMIDs() {
         });
     };
 
+    const suggestMID = async () => {
+        if (!formData.provider_id || !formData.terminal_type) return;
+        
+        setIsSuggestingMID(true);
+        try {
+            const provider = providers.find(p => p.id === formData.provider_id);
+            const existingMIDs = mids
+                .filter(m => m.provider_id === formData.provider_id && m.terminal_type === formData.terminal_type)
+                .map(m => m.mid);
+            
+            // Generate smart MID suggestion
+            const providerPrefix = provider?.name?.substring(0, 3).toUpperCase() || 'MID';
+            const terminalPrefix = formData.terminal_type === 'ecommerce' ? 'EC' : 
+                                   formData.terminal_type === 'virtual_terminal' ? 'VT' :
+                                   formData.terminal_type === 'soft_pos' ? 'SP' :
+                                   formData.terminal_type === 'physical_terminal' ? 'PT' : 'MP';
+            
+            let suggestedMID;
+            let counter = 1;
+            do {
+                suggestedMID = `${providerPrefix}${terminalPrefix}${String(counter).padStart(6, '0')}`;
+                counter++;
+            } while (existingMIDs.includes(suggestedMID));
+            
+            setFormData({...formData, mid: suggestedMID});
+        } catch (error) {
+            console.error('Error suggesting MID:', error);
+        } finally {
+            setIsSuggestingMID(false);
+        }
+    };
+
     const toggleTransactionType = (type) => {
         const types = formData.transaction_types || [];
         if (types.includes(type)) {
@@ -172,7 +221,9 @@ export default function MerchantMIDs() {
             m.provider_name?.toLowerCase().includes(searchQuery.toLowerCase());
         const matchesMerchant = merchantFilter === 'all' || m.merchant_id === merchantFilter;
         const matchesStatus = statusFilter === 'all' || m.status === statusFilter;
-        return matchesSearch && matchesMerchant && matchesStatus;
+        const matchesPaymentMethod = paymentMethodFilter === 'all' || 
+            (m.transaction_types || []).includes(paymentMethodFilter);
+        return matchesSearch && matchesMerchant && matchesStatus && matchesPaymentMethod;
     });
 
     const totalPages = Math.ceil(filteredMIDs.length / itemsPerPage);
@@ -245,9 +296,38 @@ export default function MerchantMIDs() {
                                         <SelectItem value="suspended">Suspended</SelectItem>
                                     </SelectContent>
                                 </Select>
+                                <Select value={paymentMethodFilter} onValueChange={(val) => { setPaymentMethodFilter(val); setCurrentPage(1); }}>
+                                    <SelectTrigger className="w-44"><SelectValue placeholder="Payment Method" /></SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">All Methods</SelectItem>
+                                        {Object.entries(transactionTypeLabels).map(([key, label]) => (
+                                            <SelectItem key={key} value={key}>{label}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
                             </div>
                         </CardContent>
                     </Card>
+
+                    {/* Bulk Actions */}
+                    {selectedMIDs.length > 0 && (
+                        <Card className="mb-4 border-blue-200 bg-blue-50">
+                            <CardContent className="p-4">
+                                <div className="flex items-center justify-between">
+                                    <p className="text-sm font-medium">{selectedMIDs.length} MID(s) selected</p>
+                                    <div className="flex gap-2">
+                                        <Button size="sm" variant="outline" onClick={() => bulkUpdateMutation.mutate({ ids: selectedMIDs, status: 'active' })}>
+                                            <CheckCircle className="h-3 w-3 mr-1" />Activate All
+                                        </Button>
+                                        <Button size="sm" variant="outline" onClick={() => bulkUpdateMutation.mutate({ ids: selectedMIDs, status: 'inactive' })}>
+                                            <XCircle className="h-3 w-3 mr-1" />Deactivate All
+                                        </Button>
+                                        <Button size="sm" variant="outline" onClick={() => setSelectedMIDs([])}>Clear Selection</Button>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    )}
 
                     {/* Table */}
                     <Card>
@@ -258,6 +338,18 @@ export default function MerchantMIDs() {
                             <Table>
                                 <TableHeader>
                                     <TableRow className="bg-slate-50">
+                                        <TableHead className="w-12">
+                                            <Checkbox 
+                                                checked={selectedMIDs.length === paginatedMIDs.length && paginatedMIDs.length > 0}
+                                                onCheckedChange={(checked) => {
+                                                    if (checked) {
+                                                        setSelectedMIDs(paginatedMIDs.map(m => m.id));
+                                                    } else {
+                                                        setSelectedMIDs([]);
+                                                    }
+                                                }}
+                                            />
+                                        </TableHead>
                                         <TableHead>MID</TableHead>
                                         <TableHead>Merchant</TableHead>
                                         <TableHead>Provider</TableHead>
@@ -270,13 +362,25 @@ export default function MerchantMIDs() {
                                 <TableBody>
                                     {paginatedMIDs.length === 0 ? (
                                         <TableRow>
-                                            <TableCell colSpan={7} className="text-center py-12 text-slate-500">
+                                            <TableCell colSpan={8} className="text-center py-12 text-slate-500">
                                                 {isLoading ? 'Loading...' : 'No MIDs found'}
                                             </TableCell>
                                         </TableRow>
                                     ) : (
                                         paginatedMIDs.map((mid) => (
                                             <TableRow key={mid.id}>
+                                                <TableCell>
+                                                    <Checkbox 
+                                                        checked={selectedMIDs.includes(mid.id)}
+                                                        onCheckedChange={(checked) => {
+                                                            if (checked) {
+                                                                setSelectedMIDs([...selectedMIDs, mid.id]);
+                                                            } else {
+                                                                setSelectedMIDs(selectedMIDs.filter(id => id !== mid.id));
+                                                            }
+                                                        }}
+                                                    />
+                                                </TableCell>
                                                 <TableCell>
                                                     <span className="font-mono font-medium text-blue-600">{mid.mid}</span>
                                                 </TableCell>
@@ -410,7 +514,22 @@ export default function MerchantMIDs() {
                             </div>
                             <div className="space-y-2">
                                 <Label>MID *</Label>
-                                <Input value={formData.mid} onChange={(e) => setFormData({...formData, mid: e.target.value})} placeholder="e.g., 1234567890" />
+                                <div className="flex gap-2">
+                                    <Input value={formData.mid} onChange={(e) => setFormData({...formData, mid: e.target.value})} placeholder="e.g., 1234567890" />
+                                    <Button 
+                                        type="button"
+                                        variant="outline" 
+                                        size="icon"
+                                        onClick={suggestMID}
+                                        disabled={!formData.provider_id || !formData.terminal_type || isSuggestingMID}
+                                        title="Auto-suggest MID"
+                                    >
+                                        {isSuggestingMID ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+                                    </Button>
+                                </div>
+                                {formData.provider_id && formData.terminal_type && (
+                                    <p className="text-xs text-slate-500">Click sparkle icon to auto-generate available MID</p>
+                                )}
                             </div>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
