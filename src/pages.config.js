@@ -49,6 +49,7 @@ import PublicSupport from './pages/PublicSupport';
 import FraudMonitoring from './pages/FraudMonitoring';
 import VirtualTerminal from './pages/VirtualTerminal';
 import AIAutomationPlatform from './pages/AIAutomationPlatform';
+import MerchantSelfServicePortal from './pages/MerchantSelfServicePortal';
 import __Layout from './Layout.jsx';
 
 
@@ -104,6 +105,7 @@ export const PAGES = {
     "FraudMonitoring": FraudMonitoring,
     "VirtualTerminal": VirtualTerminal,
     "AIAutomationPlatform": AIAutomationPlatform,
+    "MerchantSelfServicePortal": MerchantSelfServicePortal,
 }
 
 export const pagesConfig = {
