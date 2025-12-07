@@ -3,8 +3,10 @@ import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Card } from "@/components/ui/card";
 import { Brain, TrendingUp } from 'lucide-react';
+import { useTranslation } from '@/components/i18n/LanguageContext';
 
 export default function AIPerformanceCard() {
+    const { t } = useTranslation();
     const { data: decisions = [] } = useQuery({
         queryKey: ['ai-decisions-stats'],
         queryFn: () => base44.entities.AIPaymentDecision.list('-created_date', 100),
@@ -23,7 +25,7 @@ export default function AIPerformanceCard() {
         <Card className="p-5">
             <div className="flex items-start justify-between">
                 <div>
-                    <p className="text-sm text-slate-500">AI Decisions Today</p>
+                    <p className="text-sm text-slate-500">{t('aiDecisionsToday')}</p>
                     <p className="text-2xl font-bold text-slate-900">{todayDecisions.length}</p>
                     <div className="flex items-center gap-1 mt-1 text-emerald-600 text-sm">
                         <TrendingUp className="h-4 w-4" />

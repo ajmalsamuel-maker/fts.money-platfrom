@@ -3,8 +3,10 @@ import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Card } from "@/components/ui/card";
 import { Users, TrendingDown } from 'lucide-react';
+import { useTranslation } from '@/components/i18n/LanguageContext';
 
 export default function SubscriptionHealthCard() {
+    const { t } = useTranslation();
     const { data: subscriptions = [] } = useQuery({
         queryKey: ['subscriptions-health'],
         queryFn: () => base44.entities.RecurringPayment.list(),
@@ -24,11 +26,11 @@ export default function SubscriptionHealthCard() {
         <Card className="p-5">
             <div className="flex items-start justify-between">
                 <div>
-                    <p className="text-sm text-slate-500">Active Subscriptions</p>
+                    <p className="text-sm text-slate-500">{t('activeSubscriptions')}</p>
                     <p className="text-2xl font-bold text-slate-900">{activeSubscriptions}</p>
                     <div className="flex items-center gap-1 mt-1 text-slate-600 text-sm">
                         <TrendingDown className="h-4 w-4" />
-                        {churnRate}% churn rate
+                        {churnRate}% {t('churnRate').toLowerCase()}
                     </div>
                 </div>
                 <div className="w-12 h-12 rounded-xl bg-cyan-50 flex items-center justify-center">

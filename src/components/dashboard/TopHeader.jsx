@@ -27,15 +27,18 @@ import {
     Globe,
     Building2,
     Shield,
-    HelpCircle
+    HelpCircle,
+    Check
 } from 'lucide-react';
 import HelpPanel from './HelpPanel';
+import { useTranslation } from '@/components/i18n/LanguageContext';
 
 export default function TopHeader({ onToggleSidebar, collapsed }) {
     const [searchQuery, setSearchQuery] = useState('');
     const [user, setUser] = useState(null);
     const [themeSettings, setThemeSettings] = useState(null);
     const [helpOpen, setHelpOpen] = useState(false);
+    const { language, setLanguage, t } = useTranslation();
 
     useEffect(() => {
         // First check for staff session
@@ -171,10 +174,22 @@ export default function TopHeader({ onToggleSidebar, collapsed }) {
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                        <DropdownMenuItem>🇺🇸 English</DropdownMenuItem>
-                        <DropdownMenuItem>🇨🇳 中文</DropdownMenuItem>
-                        <DropdownMenuItem>🇪🇸 Español</DropdownMenuItem>
-                        <DropdownMenuItem>🇫🇷 Français</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setLanguage('en')} className="gap-2">
+                            🇺🇸 English
+                            {language === 'en' && <Check className="h-4 w-4 ml-auto" />}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setLanguage('zh')} className="gap-2">
+                            🇨🇳 中文
+                            {language === 'zh' && <Check className="h-4 w-4 ml-auto" />}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setLanguage('es')} className="gap-2">
+                            🇪🇸 Español
+                            {language === 'es' && <Check className="h-4 w-4 ml-auto" />}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setLanguage('fr')} className="gap-2">
+                            🇫🇷 Français
+                            {language === 'fr' && <Check className="h-4 w-4 ml-auto" />}
+                        </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
 

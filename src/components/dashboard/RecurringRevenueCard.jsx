@@ -3,8 +3,10 @@ import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Card } from "@/components/ui/card";
 import { TrendingUp, Repeat } from 'lucide-react';
+import { useTranslation } from '@/components/i18n/LanguageContext';
 
 export default function RecurringRevenueCard() {
+    const { t } = useTranslation();
     const { data: subscriptions = [] } = useQuery({
         queryKey: ['recurring-payments-stats'],
         queryFn: () => base44.entities.RecurringPayment.filter({ status: 'active' }),
@@ -24,7 +26,7 @@ export default function RecurringRevenueCard() {
         <Card className="p-5">
             <div className="flex items-start justify-between">
                 <div>
-                    <p className="text-sm text-slate-500">Monthly Recurring Revenue</p>
+                    <p className="text-sm text-slate-500">{t('monthlyRecurringRevenue')}</p>
                     <p className="text-2xl font-bold text-slate-900">${(mrr / 1000).toFixed(1)}K</p>
                     <div className="flex items-center gap-1 mt-1 text-purple-600 text-sm">
                         <TrendingUp className="h-4 w-4" />

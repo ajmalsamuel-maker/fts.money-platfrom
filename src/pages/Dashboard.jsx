@@ -27,10 +27,12 @@ import {
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useTranslation } from '@/components/i18n/LanguageContext';
 
 export default function Dashboard() {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const [helpOpen, setHelpOpen] = useState(false);
+    const { t, language } = useTranslation();
 
     const { data: transactions = [] } = useQuery({
         queryKey: ['transactions'],
@@ -44,7 +46,7 @@ export default function Dashboard() {
 
     const stats = [
         {
-            label: "Today's Volume",
+            label: t('todaysVolume'),
             value: "$2,458,320",
             change: "+12.5%",
             changeType: "positive",
@@ -53,7 +55,7 @@ export default function Dashboard() {
             iconColor: "text-blue-600"
         },
         {
-            label: "Total Transactions",
+            label: t('totalTransactions'),
             value: "12,847",
             change: "+8.3%",
             changeType: "positive",
@@ -62,7 +64,7 @@ export default function Dashboard() {
             iconColor: "text-emerald-600"
         },
         {
-            label: "Success Rate",
+            label: t('successRate'),
             value: "98.7%",
             change: "+0.5%",
             changeType: "positive",
@@ -71,7 +73,7 @@ export default function Dashboard() {
             iconColor: "text-purple-600"
         },
         {
-            label: "Active Merchants",
+            label: t('activeMerchants'),
             value: merchants.filter(m => m.status === 'active').length || "156",
             change: "+3",
             changeType: "positive",
@@ -103,17 +105,24 @@ export default function Dashboard() {
                     {/* Page Header */}
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                         <div>
-                            <h1 className="text-xl sm:text-2xl font-bold text-slate-900">Dashboard</h1>
-                            <p className="text-sm sm:text-base text-slate-500">Welcome back! Here's what's happening today.</p>
+                            <h1 className="text-xl sm:text-2xl font-bold text-slate-900">{t('dashboard')}</h1>
+                            <p className="text-sm sm:text-base text-slate-500">
+                                {language === 'es' ? '¡Bienvenido de nuevo! Esto es lo que está pasando hoy.' :
+                                 language === 'fr' ? "Bon retour ! Voici ce qui se passe aujourd'hui." :
+                                 language === 'zh' ? '欢迎回来！这是今天的情况。' :
+                                 "Welcome back! Here's what's happening today."}
+                            </p>
                         </div>
                         <div className="flex items-center gap-2">
                             <Button variant="outline" className="gap-2 text-sm" onClick={() => setHelpOpen(true)}>
                                 <HelpCircle className="h-4 w-4" />
-                                <span className="hidden sm:inline">Help</span>
+                                <span className="hidden sm:inline">
+                                    {language === 'es' ? 'Ayuda' : language === 'fr' ? 'Aide' : language === 'zh' ? '帮助' : 'Help'}
+                                </span>
                             </Button>
                             <Button variant="outline" className="gap-2 text-sm">
                                 <RefreshCw className="h-4 w-4" />
-                                <span className="hidden sm:inline">Refresh</span>
+                                <span className="hidden sm:inline">{t('refresh')}</span>
                             </Button>
                         </div>
                     </div>
