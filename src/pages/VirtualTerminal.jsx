@@ -33,6 +33,8 @@ import InvoiceGenerator from '@/components/terminal/InvoiceGenerator';
 import PaymentLinkGenerator from '@/components/terminal/PaymentLinkGenerator';
 import PaymentForm from '@/components/terminal/PaymentForm';
 import InvoiceTemplateManager from '@/components/terminal/InvoiceTemplateManager';
+import AIPaymentAgentManager from '@/components/terminal/AIPaymentAgentManager';
+import RecurringPaymentManager from '@/components/terminal/RecurringPaymentManager';
 
 export default function VirtualTerminal() {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -86,10 +88,10 @@ export default function VirtualTerminal() {
                                 </CardHeader>
                                 <CardContent className="p-6">
                                     <Tabs value={activeTab} onValueChange={setActiveTab}>
-                                        <TabsList className="grid w-full grid-cols-4 mb-6">
+                                        <TabsList className="grid w-full grid-cols-6 mb-6">
                                             <TabsTrigger value="payment" className="gap-2">
                                                 <CreditCard className="h-4 w-4" />
-                                                <span className="hidden sm:inline">Quick Payment</span>
+                                                <span className="hidden sm:inline">Payment</span>
                                             </TabsTrigger>
                                             <TabsTrigger value="invoice" className="gap-2">
                                                 <FileText className="h-4 w-4" />
@@ -97,11 +99,19 @@ export default function VirtualTerminal() {
                                             </TabsTrigger>
                                             <TabsTrigger value="link" className="gap-2">
                                                 <Link2 className="h-4 w-4" />
-                                                <span className="hidden sm:inline">Payment Link</span>
+                                                <span className="hidden sm:inline">Link</span>
                                             </TabsTrigger>
                                             <TabsTrigger value="templates" className="gap-2">
                                                 <FileText className="h-4 w-4" />
                                                 <span className="hidden sm:inline">Templates</span>
+                                            </TabsTrigger>
+                                            <TabsTrigger value="recurring" className="gap-2">
+                                                <Send className="h-4 w-4" />
+                                                <span className="hidden sm:inline">Recurring</span>
+                                            </TabsTrigger>
+                                            <TabsTrigger value="ai-agents" className="gap-2">
+                                                <CheckCircle className="h-4 w-4" />
+                                                <span className="hidden sm:inline">AI</span>
                                             </TabsTrigger>
                                         </TabsList>
 
@@ -119,6 +129,14 @@ export default function VirtualTerminal() {
 
                                         <TabsContent value="templates">
                                             <InvoiceTemplateManager merchantId={merchants[0]?.id} />
+                                        </TabsContent>
+
+                                        <TabsContent value="recurring">
+                                            <RecurringPaymentManager merchants={merchants} />
+                                        </TabsContent>
+
+                                        <TabsContent value="ai-agents">
+                                            <AIPaymentAgentManager merchantId={merchants[0]?.id} />
                                         </TabsContent>
                                     </Tabs>
                                 </CardContent>
