@@ -44,59 +44,75 @@ export default function KYBVerificationStep({ data, onChange, errors, businessDa
         handleChange('kyb_initiated_at', new Date().toISOString());
         setOverallStatus('in_progress');
 
-        const newCheckProgress = {};
-
-        // Simulate TheKYB API verification process
-        for (let i = 0; i < kybChecks.length; i++) {
-            const check = kybChecks[i];
-            
-            // Update progress for current check
-            setCheckProgress(prev => ({
-                ...prev,
-                [check.id]: 'in_progress'
-            }));
-
-            // Simulate API call delay
-            await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 500));
-
-            // Simulate realistic verification - most checks pass
-            const randomValue = Math.random();
-            let status;
-            if (randomValue < 0.85) {
-                status = 'passed';
-            } else if (randomValue < 0.95) {
-                status = 'needs_review';
-            } else {
-                status = 'passed'; // Keep high success rate for demo
+        try {
+            // Simulate progress for UI feedback
+            for (let i = 0; i < kybChecks.length; i++) {
+                const check = kybChecks[i];
+                setCheckProgress(prev => ({
+                    ...prev,
+                    [check.id]: 'in_progress'
+                }));
+                await new Promise(resolve => setTimeout(resolve, 300));
             }
 
-            newCheckProgress[check.id] = status;
-
-            setCheckProgress(prev => ({
-                ...prev,
-                [check.id]: status
-            }));
-
-            handleChange(`kyb_check_${check.id}`, {
-                status,
-                confidence_score: 85 + Math.floor(Math.random() * 15),
-                details: `${check.name} verification completed successfully`,
-                data_sources: ['Official Registry', 'Credit Bureau', 'Public Records']
+            // Call real KYB verification API
+            const response = await base44.functions.invoke('kybVerification', {
+                company_name: businessData?.business_name || data.business_name,
+                registration_number: businessData?.registration_number || data.registration_number,
+                country: businessData?.country || data.country,
+                business_type: businessData?.business_type || data.business_type,
+                merchant_id: data.merchant_id
             });
-        }
 
-        // Determine overall status based on collected results
-        const allPassed = Object.values(newCheckProgress).every(s => s === 'passed');
-        const hasFailed = Object.values(newCheckProgress).some(s => s === 'failed');
-        const hasReview = Object.values(newCheckProgress).some(s => s === 'needs_review');
-        
-        const finalStatus = hasFailed ? 'rejected' : hasReview ? 'pending_review' : 'approved';
-        
-        setOverallStatus(finalStatus);
-        handleChange('kyb_status', finalStatus);
-        handleChange('kyb_completed_at', new Date().toISOString());
-        handleChange('kyb_reference_id', `KYB-${Date.now()}`);
-        setIsVerifying(false);
+            if (response.data?.success && response.data?.verification) {
+                const verification = response.data.verification;
+                const checks = verification.checks || {};
+
+                // Update check progress from API results
+                const newCheckProgress = {};
+                Object.keys(checks).forEach(checkKey => {
+                    newCheckProgress[checkKey] = checks[checkKey].status;
+                    handleChange(`kyb_check_${checkKey}`, checks[checkKey]);
+                });
+
+                setCheckProgress(newCheckProgress);
+                setOverallStatus(verification.kyb_status);
+                handleChange('kyb_status', verification.kyb_status);
+                handleChange('kyb_reference_id', verification.kyb_reference_id);
+                handleChange('kyb_completed_at', new Date().toISOString());
+                handleChange('company_verified', verification.company_verified);
+                
+                if (verification.company_data) {
+                    handleChange('kyb_company_data', verification.company_data);
+                }
+            } else {
+                // Verification failed or company not found
+                const verification = response.data?.verification || {};
+                setOverallStatus(verification.kyb_status || 'pending_review');
+                handleChange('kyb_status', verification.kyb_status || 'pending_review');
+                handleChange('kyb_reference_id', verification.kyb_reference_id);
+                handleChange('kyb_completed_at', new Date().toISOString());
+                
+                const checks = verification.checks || {};
+                Object.keys(checks).forEach(checkKey => {
+                    setCheckProgress(prev => ({...prev, [checkKey]: checks[checkKey].status}));
+                    handleChange(`kyb_check_${checkKey}`, checks[checkKey]);
+                });
+            }
+        } catch (error) {
+            console.error('KYB Verification Error:', error);
+            setOverallStatus('rejected');
+            handleChange('kyb_status', 'rejected');
+            
+            // Mark all checks as failed
+            const failedProgress = {};
+            kybChecks.forEach(check => {
+                failedProgress[check.id] = 'failed';
+            });
+            setCheckProgress(failedProgress);
+        } finally {
+            setIsVerifying(false);
+        }
     };
 
     const getCheckIcon = (status) => {
