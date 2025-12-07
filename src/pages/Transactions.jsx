@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { format } from 'date-fns';
 import Sidebar from '@/components/dashboard/Sidebar';
@@ -9,6 +9,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+    DialogFooter,
+} from "@/components/ui/dialog";
+import { toast } from 'sonner';
 import {
     Table,
     TableBody,
@@ -70,7 +79,12 @@ export default function Transactions() {
     const [statusFilter, setStatusFilter] = useState('all');
     const [typeFilter, setTypeFilter] = useState('all');
     const [page, setPage] = useState(1);
+    const [selectedTransaction, setSelectedTransaction] = useState(null);
+    const [viewDetailsOpen, setViewDetailsOpen] = useState(false);
+    const [refundDialogOpen, setRefundDialogOpen] = useState(false);
+    const [voidDialogOpen, setVoidDialogOpen] = useState(false);
     const { can } = usePermissions();
+    const queryClient = useQueryClient();
 
     const { data: transactions = [], isLoading } = useQuery({
         queryKey: ['all-transactions'],
@@ -91,6 +105,62 @@ export default function Transactions() {
         const matchesType = typeFilter === 'all' || txn.type === typeFilter;
         return matchesSearch && matchesStatus && matchesType;
     });
+
+    const refundMutation = useMutation({
+        mutationFn: (txn) => base44.entities.Transaction.create({
+            transaction_id: `REF-${Date.now()}`,
+            merchant_id: txn.merchant_id,
+            merchant_name: txn.merchant_name,
+            type: 'refund',
+            status: 'approved',
+            amount: txn.amount,
+            currency: txn.currency,
+            payment_method: txn.payment_method,
+            customer_email: txn.customer_email,
+            customer_name: txn.customer_name,
+            description: `Refund for ${txn.transaction_id}`,
+        }),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['all-transactions'] });
+            toast.success('Transaction refunded successfully');
+            setRefundDialogOpen(false);
+            setSelectedTransaction(null);
+        },
+        onError: () => {
+            toast.error('Failed to refund transaction');
+        }
+    });
+
+    const voidMutation = useMutation({
+        mutationFn: (txn) => base44.entities.Transaction.update(txn.id, {
+            status: 'reversed',
+            type: 'void'
+        }),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['all-transactions'] });
+            toast.success('Transaction voided successfully');
+            setVoidDialogOpen(false);
+            setSelectedTransaction(null);
+        },
+        onError: () => {
+            toast.error('Failed to void transaction');
+        }
+    });
+
+    const handleViewDetails = (txn) => {
+        setSelectedTransaction(txn);
+        setViewDetailsOpen(true);
+    };
+
+    const handleRefund = (txn) => {
+        setSelectedTransaction(txn);
+        setRefundDialogOpen(true);
+    };
+
+    const handleVoid = (txn) => {
+        setSelectedTransaction(txn);
+        setVoidDialogOpen(true);
+    };
 
     return (
         <div className="min-h-screen bg-slate-50">
@@ -268,18 +338,18 @@ export default function Transactions() {
                                                                 </Button>
                                                             </DropdownMenuTrigger>
                                                             <DropdownMenuContent align="end">
-                                                                <DropdownMenuItem>
+                                                                <DropdownMenuItem onClick={() => handleViewDetails(txn)}>
                                                                     <Eye className="h-4 w-4 mr-2" />
                                                                     View Details
                                                                 </DropdownMenuItem>
                                                                 <PermissionGate permission="REFUND_TRANSACTIONS">
-                                                                    <DropdownMenuItem>
+                                                                    <DropdownMenuItem onClick={() => handleRefund(txn)} disabled={txn.type === 'refund' || txn.status === 'reversed'}>
                                                                         <RefreshCw className="h-4 w-4 mr-2" />
                                                                         Refund
                                                                     </DropdownMenuItem>
                                                                 </PermissionGate>
                                                                 <PermissionGate permission="VOID_TRANSACTIONS">
-                                                                    <DropdownMenuItem className="text-red-600">
+                                                                    <DropdownMenuItem onClick={() => handleVoid(txn)} className="text-red-600" disabled={txn.status === 'reversed'}>
                                                                         <Ban className="h-4 w-4 mr-2" />
                                                                         Void
                                                                     </DropdownMenuItem>
@@ -313,6 +383,143 @@ export default function Transactions() {
                     </Card>
                 </main>
             </div>
+
+            {/* View Details Dialog */}
+            <Dialog open={viewDetailsOpen} onOpenChange={setViewDetailsOpen}>
+                <DialogContent className="max-w-2xl">
+                    <DialogHeader>
+                        <DialogTitle>Transaction Details</DialogTitle>
+                        <DialogDescription>
+                            {selectedTransaction?.transaction_id || `TXN-${selectedTransaction?.id?.slice(0, 8)}`}
+                        </DialogDescription>
+                    </DialogHeader>
+                    {selectedTransaction && (
+                        <div className="space-y-4">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <p className="text-sm text-slate-500">Status</p>
+                                    <Badge className={cn("mt-1", statusConfig[selectedTransaction.status]?.className)}>
+                                        {statusConfig[selectedTransaction.status]?.label}
+                                    </Badge>
+                                </div>
+                                <div>
+                                    <p className="text-sm text-slate-500">Type</p>
+                                    <Badge className={cn("mt-1", typeConfig[selectedTransaction.type]?.className)}>
+                                        {typeConfig[selectedTransaction.type]?.label}
+                                    </Badge>
+                                </div>
+                                <div>
+                                    <p className="text-sm text-slate-500">Amount</p>
+                                    <p className="font-semibold text-slate-900 mt-1">
+                                        {selectedTransaction.currency} {selectedTransaction.amount?.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                    </p>
+                                </div>
+                                <div>
+                                    <p className="text-sm text-slate-500">Date</p>
+                                    <p className="text-slate-900 mt-1">
+                                        {selectedTransaction.created_date ? format(new Date(selectedTransaction.created_date), 'MMM dd, yyyy HH:mm:ss') : '-'}
+                                    </p>
+                                </div>
+                                <div>
+                                    <p className="text-sm text-slate-500">Merchant</p>
+                                    <p className="text-slate-900 mt-1">{selectedTransaction.merchant_name || 'N/A'}</p>
+                                </div>
+                                <div>
+                                    <p className="text-sm text-slate-500">Customer</p>
+                                    <p className="text-slate-900 mt-1">{selectedTransaction.customer_email || 'N/A'}</p>
+                                </div>
+                                <div>
+                                    <p className="text-sm text-slate-500">Payment Method</p>
+                                    <p className="text-slate-900 mt-1">
+                                        {selectedTransaction.payment_method}
+                                        {selectedTransaction.card_last_four && ` •••• ${selectedTransaction.card_last_four}`}
+                                    </p>
+                                </div>
+                                <div>
+                                    <p className="text-sm text-slate-500">Auth Code</p>
+                                    <p className="text-slate-900 mt-1">{selectedTransaction.auth_code || '-'}</p>
+                                </div>
+                            </div>
+                            {selectedTransaction.description && (
+                                <div>
+                                    <p className="text-sm text-slate-500">Description</p>
+                                    <p className="text-slate-900 mt-1">{selectedTransaction.description}</p>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setViewDetailsOpen(false)}>Close</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            {/* Refund Dialog */}
+            <Dialog open={refundDialogOpen} onOpenChange={setRefundDialogOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Refund Transaction</DialogTitle>
+                        <DialogDescription>
+                            Are you sure you want to refund this transaction?
+                        </DialogDescription>
+                    </DialogHeader>
+                    {selectedTransaction && (
+                        <div className="space-y-2">
+                            <div className="flex justify-between">
+                                <span className="text-slate-500">Transaction ID:</span>
+                                <span className="font-mono">{selectedTransaction.transaction_id}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="text-slate-500">Amount:</span>
+                                <span className="font-semibold">{selectedTransaction.currency} {selectedTransaction.amount?.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                            </div>
+                        </div>
+                    )}
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setRefundDialogOpen(false)}>Cancel</Button>
+                        <Button 
+                            onClick={() => refundMutation.mutate(selectedTransaction)}
+                            disabled={refundMutation.isPending}
+                        >
+                            {refundMutation.isPending ? 'Processing...' : 'Confirm Refund'}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            {/* Void Dialog */}
+            <Dialog open={voidDialogOpen} onOpenChange={setVoidDialogOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Void Transaction</DialogTitle>
+                        <DialogDescription>
+                            Are you sure you want to void this transaction? This action cannot be undone.
+                        </DialogDescription>
+                    </DialogHeader>
+                    {selectedTransaction && (
+                        <div className="space-y-2">
+                            <div className="flex justify-between">
+                                <span className="text-slate-500">Transaction ID:</span>
+                                <span className="font-mono">{selectedTransaction.transaction_id}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="text-slate-500">Amount:</span>
+                                <span className="font-semibold">{selectedTransaction.currency} {selectedTransaction.amount?.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                            </div>
+                        </div>
+                    )}
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setVoidDialogOpen(false)}>Cancel</Button>
+                        <Button 
+                            variant="destructive"
+                            onClick={() => voidMutation.mutate(selectedTransaction)}
+                            disabled={voidMutation.isPending}
+                        >
+                            {voidMutation.isPending ? 'Processing...' : 'Confirm Void'}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }
