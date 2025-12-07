@@ -7,8 +7,10 @@ Deno.serve(async (req) => {
         const { action, email, password, user_id, new_password } = body;
 
         if (action === 'login') {
+            console.log('Login attempt for:', email);
+            
             // Query PostgreSQL for merchant user (using service role to bypass auth)
-            const { data: result } = await base44.asServiceRole.functions.invoke('dbCore', {
+            const response = await base44.asServiceRole.functions.invoke('dbCore', {
                 action: 'query',
                 sql: `
                     SELECT id, merchant_id, merchant_name, email, full_name, role, status, 
@@ -20,20 +22,27 @@ Deno.serve(async (req) => {
                 params: [email]
             });
 
-            if (!result.rows || result.rows.length === 0) {
+            console.log('DB Response:', response);
+
+            if (!response.data || !response.data.data || !response.data.data.rows || response.data.data.rows.length === 0) {
+                console.log('User not found in database');
                 return Response.json({ 
                     success: false, 
-                    error: 'Invalid credentials' 
+                    error: 'Invalid credentials',
+                    debug: 'User not found or not active'
                 }, { status: 401 });
             }
 
-            const user = result.rows[0];
+            const user = response.data.data.rows[0];
+            console.log('User found:', user.email, 'Status:', user.status);
 
             // Check password (temp_password for now, in production use proper hashing)
             if (user.temp_password !== password) {
+                console.log('Password mismatch');
                 return Response.json({ 
                     success: false, 
-                    error: 'Invalid credentials' 
+                    error: 'Invalid credentials',
+                    debug: 'Password incorrect'
                 }, { status: 401 });
             }
 
