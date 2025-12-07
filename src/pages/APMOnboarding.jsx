@@ -208,9 +208,10 @@ export default function APMOnboarding() {
                                             <div className="flex items-center justify-between mb-3">
                                                 <div className="flex items-center gap-3">
                                                     {apm.logo?.startsWith('http') ? (
-                                                        <img src={apm.logo} alt={apm.name} className="w-8 h-8 object-contain" onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }} />
-                                                    ) : null}
-                                                    <span className={cn("text-2xl", apm.logo?.startsWith('http') && "hidden")}>{apm.logo?.startsWith('http') ? '💳' : apm.logo}</span>
+                                                        <img src={apm.logo} alt={apm.name} className="w-8 h-8 object-contain" />
+                                                    ) : (
+                                                        <span className="text-2xl">{apm.logo}</span>
+                                                    )}
                                                     <div>
                                                         <h3 className="font-semibold">{apm.name}</h3>
                                                         <p className="text-xs text-slate-500">{apm.region}</p>
@@ -231,7 +232,11 @@ export default function APMOnboarding() {
                         <Card className="max-w-2xl">
                             <CardHeader>
                                 <div className="flex items-center gap-3">
-                                    <span className="text-3xl">{selectedAPM.logo}</span>
+                                    {selectedAPM.logo?.startsWith('http') ? (
+                                        <img src={selectedAPM.logo} alt={selectedAPM.name} className="w-12 h-12 object-contain" />
+                                    ) : (
+                                        <span className="text-3xl">{selectedAPM.logo}</span>
+                                    )}
                                     <div>
                                         <CardTitle>{selectedAPM.name} Configuration</CardTitle>
                                         <p className="text-sm text-slate-500">Enter your {selectedAPM.name} API credentials</p>
