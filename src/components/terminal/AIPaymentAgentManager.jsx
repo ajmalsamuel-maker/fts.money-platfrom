@@ -17,6 +17,10 @@ import {
 } from "@/components/ui/select";
 import { Brain, Plus, Settings, TrendingUp, Shield, Zap } from 'lucide-react';
 import { toast } from 'sonner';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import NLPPaymentProcessor from '@/components/ai/NLPPaymentProcessor';
+import HumanReviewQueue from '@/components/ai/HumanReviewQueue';
+import AnomalyDetectionMonitor from '@/components/ai/AnomalyDetectionMonitor';
 
 const agentTypes = [
     { value: 'approval', label: 'Payment Approval', icon: Shield, color: 'text-emerald-600' },
@@ -76,19 +80,29 @@ export default function AIPaymentAgentManager({ merchantId }) {
 
     return (
         <div className="space-y-6">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h2 className="text-xl font-semibold flex items-center gap-2">
-                        <Brain className="h-6 w-6 text-purple-600" />
-                        AI Payment Agents
-                    </h2>
-                    <p className="text-sm text-slate-500">Autonomous payment processing & decision making</p>
-                </div>
-                <Button onClick={() => setShowCreateDialog(true)}>
-                    <Plus className="h-4 w-4 mr-2" />
-                    New Agent
-                </Button>
-            </div>
+            <Tabs defaultValue="agents" className="w-full">
+                <TabsList className="grid w-full grid-cols-4 mb-6">
+                    <TabsTrigger value="agents">Agents</TabsTrigger>
+                    <TabsTrigger value="nlp">NLP Processing</TabsTrigger>
+                    <TabsTrigger value="review">Human Review</TabsTrigger>
+                    <TabsTrigger value="anomaly">Anomaly Detection</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="agents">
+                    <div className="space-y-6">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <h2 className="text-xl font-semibold flex items-center gap-2">
+                                    <Brain className="h-6 w-6 text-purple-600" />
+                                    AI Payment Agents
+                                </h2>
+                                <p className="text-sm text-slate-500">Autonomous payment processing & decision making</p>
+                            </div>
+                            <Button onClick={() => setShowCreateDialog(true)}>
+                                <Plus className="h-4 w-4 mr-2" />
+                                New Agent
+                            </Button>
+                        </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {agents.map((agent) => {
@@ -144,6 +158,21 @@ export default function AIPaymentAgentManager({ merchantId }) {
                     );
                 })}
             </div>
+                    </div>
+                </TabsContent>
+
+                <TabsContent value="nlp">
+                    <NLPPaymentProcessor merchants={[{ id: merchantId }]} />
+                </TabsContent>
+
+                <TabsContent value="review">
+                    <HumanReviewQueue />
+                </TabsContent>
+
+                <TabsContent value="anomaly">
+                    <AnomalyDetectionMonitor merchantId={merchantId} />
+                </TabsContent>
+            </Tabs>
 
             <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
                 <DialogContent className="max-w-2xl">
