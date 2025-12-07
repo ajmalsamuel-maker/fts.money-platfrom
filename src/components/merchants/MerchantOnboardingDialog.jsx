@@ -222,6 +222,8 @@ export default function MerchantOnboardingDialog({ merchant, open, onOpenChange,
                             businessData={formData}
                             contactData={formData}
                             allData={formData}
+                            businessType={formData.business_type}
+                            formData={formData}
                         />
                     </div>
 
