@@ -7,7 +7,19 @@ const pool = new Pool({
     ssl: { rejectUnauthorized: false }
 });
 
+// Public endpoint - no authentication required
 Deno.serve(async (req) => {
+    // Set CORS headers for public access
+    if (req.method === 'OPTIONS') {
+        return new Response(null, {
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'POST, OPTIONS',
+                'Access-Control-Allow-Headers': 'Content-Type',
+            }
+        });
+    }
+
     try {
         const body = await req.json();
         const { action, email, password, user_id, new_password } = body;
