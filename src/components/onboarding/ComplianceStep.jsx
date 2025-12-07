@@ -10,7 +10,8 @@ import {
     Check, 
     X, 
     AlertCircle,
-    Loader2
+    Loader2,
+    Building2
 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { cn } from "@/lib/utils";
