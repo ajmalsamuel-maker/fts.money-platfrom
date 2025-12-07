@@ -65,8 +65,8 @@ const menuItems = [
         group: 'Onboarding',
         icon: CheckSquare,
         items: [
-            { icon: Store, label: 'Merchant', path: 'MerchantOnboarding', permission: 'VIEW_ONBOARDING' },
-            { icon: Globe, label: 'Self Onboarding', path: 'MerchantSelfOnboarding', permission: 'VIEW_ONBOARDING' },
+            { icon: Store, label: 'Merchant Manual Onboarding', path: 'MerchantOnboarding', permission: 'VIEW_ONBOARDING' },
+            { icon: Globe, label: 'Merchant Self Onboarding', path: 'MerchantSelfOnboarding', permission: 'VIEW_ONBOARDING' },
             { icon: Landmark, label: 'Acquirer', path: 'AcquirerOnboarding', permission: 'VIEW_ONBOARDING' },
             { icon: Smartphone, label: 'APM', path: 'APMOnboarding', permission: 'VIEW_ONBOARDING' },
             { icon: CheckSquare, label: 'Approvals', path: 'Approvals', permission: 'APPROVE_ONBOARDING' },
