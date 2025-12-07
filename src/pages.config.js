@@ -47,6 +47,7 @@ import TermsOfService from './pages/TermsOfService';
 import Support from './pages/Support';
 import PublicSupport from './pages/PublicSupport';
 import FraudMonitoring from './pages/FraudMonitoring';
+import VirtualTerminal from './pages/VirtualTerminal';
 import __Layout from './Layout.jsx';
 
 
@@ -100,6 +101,7 @@ export const PAGES = {
     "Support": Support,
     "PublicSupport": PublicSupport,
     "FraudMonitoring": FraudMonitoring,
+    "VirtualTerminal": VirtualTerminal,
 }
 
 export const pagesConfig = {
