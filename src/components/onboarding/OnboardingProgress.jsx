@@ -1,6 +1,6 @@
 import React from 'react';
 import { cn } from "@/lib/utils";
-import { Check } from 'lucide-react';
+import { Check, Building2 } from 'lucide-react';
 
 const steps = [
     { id: 1, name: 'Business Details', description: 'Company information' },
