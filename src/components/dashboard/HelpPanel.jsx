@@ -69,31 +69,159 @@ const helpSections = [
                 title: 'Dashboard',
                 icon: LayoutDashboard,
                 description: 'Your central command center for monitoring payment operations.',
-                content: `The Dashboard provides a real-time overview of your payment processing operations:
+                content: `The Dashboard is your primary interface for monitoring and managing your payment processing operations in real-time. It provides a comprehensive overview of your business performance and operational health.
 
-• **Live TPS Counter**: Monitor transactions per second in real-time with trend indicators
-• **Key Statistics**: Today's volume, total transactions, success rate, and active merchants
-• **Volume Charts**: Visual representation of transaction volume over time
-• **Success Rate**: Track approval rates and identify issues quickly
-• **Top Merchants**: See your highest-volume merchants at a glance
-• **Payment Methods**: Distribution of payment types being processed
-• **Payment News**: Stay updated with latest industry news from The Paypers
-• **Exchange Rates**: Live currency rates for major currencies
-• **Business Metrics**: Key KPIs including chargeback ratio, decline rate, and fraud rate`,
+**Key Components:**
+
+• **Live TPS Counter**: 
+  - Displays transactions per second in real-time
+  - Shows current TPS rate with trend indicators (up/down arrows)
+  - Helps identify peak processing periods
+  - Useful for capacity planning and infrastructure scaling
+  - Normal TPS ranges vary by business size (small: 1-10, medium: 10-100, large: 100+)
+
+• **Key Statistics Cards**:
+  - **Today's Volume**: Total transaction amount processed today with percentage change vs yesterday
+  - **Total Transactions**: Count of all transactions with growth metrics
+  - **Success Rate**: Approval rate percentage - healthy rates are typically 95%+ for established merchants
+  - **Active Merchants**: Number of merchants currently processing payments
+
+• **Volume Charts**: 
+  - Visualize transaction volume trends over customizable time periods (hourly, daily, weekly, monthly)
+  - Identify peak processing times to optimize operations
+  - Compare current period with historical data
+  - Spot unusual patterns that may indicate issues or fraud
+
+• **Success Rate Tracking**: 
+  - Monitor approval rates in real-time
+  - Identify declining success rates quickly to take corrective action
+  - Compare success rates across payment methods and providers
+  - Industry benchmark: 95-98% is considered healthy
+
+• **Top Merchants Table**: 
+  - View your highest-volume merchants at a glance
+  - Monitor individual merchant performance
+  - Quick access to merchant details
+  - Identify which merchants drive the most revenue
+
+• **Payment Methods Distribution**: 
+  - Pie chart showing breakdown of payment types (Visa, Mastercard, Amex, etc.)
+  - Helps optimize payment method offerings
+  - Identify trending payment preferences
+
+• **Payment Industry News**: 
+  - Latest news from The Paypers and industry sources
+  - Stay informed about regulatory changes
+  - Learn about new payment technologies and trends
+
+• **Live Exchange Rates**: 
+  - Real-time currency rates for major currencies
+  - Essential for multi-currency processing
+  - Helps with pricing and settlement calculations
+
+• **Business Metrics KPIs**:
+  - **Chargeback Ratio**: Should be below 1% (Visa/Mastercard threshold)
+  - **Decline Rate**: Percentage of declined transactions
+  - **Fraud Rate**: Fraudulent transaction percentage
+  - Color-coded indicators (green: healthy, amber: warning, red: critical)
+
+**Best Practices:**
+- Review dashboard daily at business start
+- Set up alerts for critical metrics (high decline rate, unusual volume)
+- Monitor TPS during peak periods
+- Compare metrics week-over-week to identify trends
+- Investigate any sudden changes in success rates
+- Keep chargeback ratio below 0.9% (well below the 1% threshold)`,
                 keywords: ['overview', 'statistics', 'volume', 'tps', 'real-time']
             },
             {
                 title: 'Analytics',
                 icon: BarChart3,
                 description: 'Deep dive into your transaction data with advanced analytics.',
-                content: `The Analytics page offers comprehensive data analysis:
+                content: `The Analytics page provides powerful business intelligence tools to analyze your payment processing data in depth. Use these insights to optimize operations, identify opportunities, and make data-driven decisions.
 
-• **Transaction Trends**: Analyze patterns over custom date ranges
-• **Geographic Analysis**: See where your transactions originate
-• **Time-based Analysis**: Identify peak processing times
-• **Comparison Tools**: Compare performance across periods
-• **Export Options**: Download reports in CSV or PDF format
-• **Custom Filters**: Filter by merchant, payment method, status, and more`,
+**Core Analytics Features:**
+
+• **Transaction Trends Analysis**: 
+  - Visualize transaction patterns over custom date ranges (day, week, month, quarter, year)
+  - Compare multiple time periods side-by-side
+  - Identify seasonal patterns and growth trends
+  - Spot anomalies and unusual activity
+  - Track metrics like average transaction value, volume, and frequency
+  - Example use: Compare Q4 2024 vs Q4 2023 to measure holiday season growth
+
+• **Geographic Analysis**: 
+  - Interactive map showing transaction origins by country
+  - Heatmap visualization of high-volume regions
+  - Identify expansion opportunities in new markets
+  - Monitor fraud patterns by geography
+  - Useful for targeted marketing and regional strategy
+  - Shows conversion rates by region
+
+• **Time-based Analysis**: 
+  - Hour-of-day distribution: Identify peak processing hours
+  - Day-of-week patterns: Understand weekly transaction cycles
+  - Month-over-month trends: Track business growth
+  - Use insights for staffing decisions and system capacity planning
+  - Example: If 80% of transactions occur between 2pm-8pm, ensure adequate support coverage
+
+• **Multi-dimensional Filtering**:
+  - Filter by merchant ID or name
+  - Payment method breakdown (Visa, Mastercard, Amex, digital wallets)
+  - Transaction status (approved, declined, pending, refunded)
+  - Amount ranges (e.g., $0-$50, $50-$500, $500+)
+  - Currency type
+  - Combine multiple filters for precise analysis
+
+• **Comparison Tools**: 
+  - Period-over-period comparison (this month vs last month)
+  - Year-over-year comparison (2024 vs 2023)
+  - Benchmark against industry averages
+  - Compare multiple merchants or payment methods
+  - Growth rate calculations and projections
+
+• **Cohort Analysis**:
+  - Track merchant cohorts over time
+  - Customer lifetime value calculations
+  - Retention and churn metrics
+  - First-time vs repeat transaction analysis
+
+• **Export and Reporting**: 
+  - Export data in CSV format for Excel analysis
+  - Generate PDF reports with charts and tables
+  - Schedule automated reports (daily, weekly, monthly)
+  - API access for custom integrations
+  - Pre-built templates for common reports
+
+• **Key Performance Indicators**:
+  - Approval rate trends
+  - Average transaction value (ATV)
+  - Transactions per customer
+  - Revenue per merchant
+  - Cost per transaction
+  - Profit margins
+
+**Practical Use Cases:**
+
+1. **Identifying Growth Opportunities**: Use geographic analysis to find regions with high conversion but low volume - prime candidates for marketing investment
+
+2. **Optimizing Success Rates**: Analyze decline reasons by payment method to identify which providers need optimization
+
+3. **Fraud Detection**: Compare transaction patterns against historical baselines to spot anomalies
+
+4. **Capacity Planning**: Use time-based analysis to predict peak loads and ensure infrastructure readiness
+
+5. **Merchant Performance**: Identify top and bottom performing merchants to inform relationship management
+
+6. **Revenue Optimization**: Analyze average ticket sizes to identify upselling opportunities
+
+**Best Practices:**
+- Set aside time weekly for analytics review
+- Create custom dashboards for different stakeholder needs
+- Use filters to drill down into specific issues
+- Export data regularly for long-term trend analysis
+- Compare actual performance against forecasts
+- Share insights with relevant teams (sales, support, operations)`,
                 keywords: ['analytics', 'reports', 'trends', 'data', 'insights']
             }
         ]
