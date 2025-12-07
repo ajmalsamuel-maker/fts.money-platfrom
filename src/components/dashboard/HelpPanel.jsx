@@ -69,7 +69,7 @@ const helpSections = [
                 title: 'Dashboard',
                 icon: LayoutDashboard,
                 description: 'Your central command center for monitoring payment operations.',
-                content: `The Dashboard is your primary interface for monitoring and managing your payment processing operations in real-time. It provides a comprehensive overview of your business performance and operational health.
+                content: `The Dashboard is your primary interface for monitoring and managing your payment processing operations in real-time. It provides a comprehensive overview of your business performance, operational health, recurring revenue metrics, and AI agent performance.
 
 **Key Components:**
 
@@ -82,9 +82,13 @@ const helpSections = [
 
 • **Key Statistics Cards**:
   - **Today's Volume**: Total transaction amount processed today with percentage change vs yesterday
-  - **Total Transactions**: Count of all transactions with growth metrics
+  - **Total Transactions**: Count of all transactions (one-time + recurring) with growth metrics
   - **Success Rate**: Approval rate percentage - healthy rates are typically 95%+ for established merchants
   - **Active Merchants**: Number of merchants currently processing payments
+  - **Monthly Recurring Revenue (MRR)**: Current MRR with month-over-month growth
+  - **Active Subscriptions**: Total active subscriptions across all merchants
+  - **AI Decisions Today**: Autonomous AI decisions made today
+  - **Churn Rate**: Platform-wide subscription churn rate
 
 • **Volume Charts**: 
   - Visualize transaction volume trends over customizable time periods (hourly, daily, weekly, monthly)
@@ -123,7 +127,27 @@ const helpSections = [
   - **Chargeback Ratio**: Should be below 1% (Visa/Mastercard threshold)
   - **Decline Rate**: Percentage of declined transactions
   - **Fraud Rate**: Fraudulent transaction percentage
+  - **MRR Growth Rate**: Month-over-month MRR change percentage
+  - **Customer Churn Rate**: Percentage of subscriptions cancelled
+  - **Failed Payment Rate**: Percentage of recurring payments failing
+  - **AI Accuracy Rate**: Overall AI agent decision accuracy
   - Color-coded indicators (green: healthy, amber: warning, red: critical)
+
+• **AI Performance Dashboard**:
+  - **Active AI Agents**: Count of active agents across platform
+  - **Autonomous Decisions**: Percentage of decisions made without human review
+  - **AI Accuracy Trend**: Decision accuracy over time with trend line
+  - **Flagged for Review**: Transactions requiring human oversight
+  - **Override Rate**: Percentage of AI decisions overridden by humans
+  - **Financial Impact**: Revenue protected and costs saved by AI
+
+• **Recurring Revenue Metrics**:
+  - **MRR Chart**: Visualize MRR growth over last 12 months
+  - **MRR Movement**: New, expansion, contraction, churned MRR breakdown
+  - **ARR (Annual Run Rate)**: Current MRR × 12
+  - **Customer Lifetime Value**: Average LTV across all subscriptions
+  - **Churn Trend**: Churn rate chart over time
+  - **Revenue Retention**: Net and gross revenue retention rates
 
 **Best Practices:**
 - Review dashboard daily at business start
@@ -262,12 +286,28 @@ const helpSections = [
   - **Metadata**: Custom fields, order ID, description
 
 • **Transaction Actions**:
-  - **Refund**: Issue full or partial refunds with reason codes
+  - **Refund**: Issue full or partial refunds with reason codes (including recurring payment refunds)
   - **Void**: Cancel transactions before settlement (must be same day)
   - **Capture**: For pre-authorized transactions, capture the funds
   - **Hold**: Place suspicious transactions on hold for review
   - **Notes**: Add internal notes for record keeping
+  - **Link to Subscription**: View parent subscription for recurring payment transactions
   - All actions create audit trail entries
+
+• **Transaction Types**:
+  - **One-Time Payments**: Standard sale, auth/capture, MOTO transactions
+  - **Recurring Payments**: Automated subscription and installment transactions
+  - **Scheduled Payments**: Future-dated or scheduled one-time payments
+  - **Usage-Based Charges**: Variable billing based on consumption metrics
+  - Transaction list clearly indicates type with badges
+
+• **AI-Powered Features**:
+  - **AI Decision Indicators**: Transactions processed by AI agents show decision details
+  - **Confidence Scores**: View AI confidence level for automated approvals
+  - **Risk Analysis**: AI-generated risk scores visible on transaction details
+  - **Anomaly Flags**: AI-detected anomalies highlighted with severity levels
+  - **Decision Reasoning**: View why AI approved, declined, or flagged for review
+  - **Override Tracking**: See which AI decisions were overridden by humans and why
 
 • **Bulk Operations**:
   - Export filtered transactions to CSV for reconciliation
@@ -340,19 +380,34 @@ Settlements typically occur on a T+1 or T+2 schedule:
   - **Failed**: Settlement attempt failed (bank rejection, insufficient funds)
   - Each batch includes: Date range, merchant, gross amount, fees, net amount
   - Batch reference numbers for tracking and reconciliation
+  - **Recurring Payment Settlements**: Separate tracking for subscription revenue
+    * Monthly Recurring Revenue (MRR) calculations
+    * Subscription-based fees and charges
+    * Proration adjustments clearly itemized
+    * Usage-based billing amounts included
+    * Churn impact on settlement volumes
 
 • **Detailed Settlement Reports**:
   Generate comprehensive reports showing:
-  - **Gross Volume**: Total transaction amount processed
+  - **Gross Volume**: Total transaction amount processed (one-time + recurring)
+  - **Recurring Revenue Breakdown**: 
+    * MRR (Monthly Recurring Revenue)
+    * ARR (Annual Recurring Revenue)
+    * New subscriptions revenue
+    * Churned subscriptions impact
+    * Expansion revenue (upgrades)
+    * Contraction revenue (downgrades)
   - **Transaction Fees**: MDR (Merchant Discount Rate) charges
   - **Interchange Fees**: Cost of card processing
   - **Scheme Fees**: Visa/Mastercard network fees
-  - **Chargeback Deductions**: Amounts held for chargebacks
+  - **Chargeback Deductions**: Amounts held for chargebacks (including recurring payment chargebacks)
   - **Refunds**: Deducted from settlement
   - **Rolling Reserves**: Percentage held for risk protection
+  - **Proration Credits**: Credits for partial billing periods
   - **Adjustments**: Manual adjustments (credits/debits)
   - **Net Settlement**: Final amount to be paid
   - Transaction-by-transaction breakdown available
+  - Recurring payment schedule preview
 
 • **Reconciliation Tools**:
   - Match settlement batches with bank deposits
@@ -531,6 +586,19 @@ A chargeback is a transaction reversal initiated by the cardholder's issuing ban
   - **Trends**: Identify increasing chargeback merchants
   - **Benchmarking**: Compare against industry averages
   - **Forecasting**: Predict future chargeback volumes
+  - **Recurring Payment Chargebacks**: Specific tracking for subscription disputes
+    * Subscription cancellation disputes
+    * Service not provided claims
+    * Unauthorized recurring charges
+    * Impact on MRR and churn calculations
+
+• **AI-Powered Chargeback Assistance**:
+  - **Win Probability Prediction**: AI calculates likelihood of winning based on case details
+  - **Evidence Recommendations**: AI suggests which documents to include
+  - **Response Generation**: AI drafts response letters based on reason code
+  - **Pattern Detection**: Identify merchants with systemic chargeback issues
+  - **Fraud vs Friendly Fraud**: AI distinguishes between true fraud and friendly fraud
+  - **Case Prioritization**: AI ranks cases by importance and win probability
 
 • **Merchant Threshold Alerts**:
   - Automatic alerts when merchant approaches 0.9%
@@ -1079,21 +1147,109 @@ This comprehensive recurring payments system transforms subscription management 
             {
                 title: 'All Merchants',
                 icon: Store,
-                description: 'Manage your merchant portfolio.',
-                content: `Complete merchant management:
+                description: 'Manage your merchant portfolio with recurring payment and AI metrics.',
+                content: `Complete merchant management with comprehensive analytics for one-time payments, subscriptions, and AI performance:
 
-• **Merchant Directory**: View all merchants with status and key metrics
-• **Merchant Details**: Full profile including:
-  - Business information
-  - Contact details
-  - Processing volume
-  - Fee structure
-  - Risk level
-  - LEI/vLEI status
-• **Actions**: Activate, suspend, or terminate merchants
-• **Performance**: Transaction volume and success rates
-• **Documents**: Access uploaded KYC documents`,
-                keywords: ['merchants', 'portfolio', 'management', 'profiles']
+• **Merchant Directory**: 
+  - View all merchants with status and key metrics
+  - Quick view cards showing:
+    * Total transaction volume
+    * Monthly Recurring Revenue (MRR)
+    * Active subscription count
+    * Success rate percentage
+    * Risk level indicator
+    * AI agent usage status
+
+• **Merchant Details**: 
+  Full profile including:
+  - **Business Information**: Legal name, trading name, registration details
+  - **Contact Details**: Primary contacts and support information
+  - **Processing Volume**: 
+    * One-time transaction volume
+    * Recurring payment volume
+    * Combined total volume
+    * Volume trends and growth
+  - **Fee Structure**: Transaction fees and subscription billing fees
+  - **Risk Level**: Current risk classification with AI risk score
+  - **LEI/vLEI Status**: Legal entity verification status
+  - **Subscription Metrics**:
+    * Active subscriptions count
+    * Current MRR contribution
+    * Churn rate
+    * Average subscription value
+    * Failed payment rate
+  - **AI Agent Configuration**:
+    * Which AI agents are active
+    * Agent performance for this merchant
+    * Automation level (% of autonomous decisions)
+
+• **Merchant Actions**: 
+  - Activate, suspend, or terminate merchants
+  - Approve onboarding applications
+  - Adjust risk levels
+  - Modify fee structures
+  - Configure AI agent settings
+  - Enable/disable recurring payment features
+
+• **Performance Metrics**: 
+  - **Transaction Performance**:
+    * Volume trends (daily, weekly, monthly)
+    * Success rates over time
+    * Decline reason analysis
+    * Refund and chargeback rates
+  - **Subscription Performance**:
+    * MRR growth/decline
+    * New subscription acquisition rate
+    * Churn trends
+    * Failed payment trends
+    * Dunning effectiveness
+    * Retention offer success
+  - **AI Performance**:
+    * AI decision accuracy for merchant
+    * Fraud blocked successfully
+    * Approval rate improvements
+    * Churn prevented
+    * Cost savings delivered
+
+• **Documents**: 
+  - Access uploaded KYC/KYB documents
+  - Compliance documentation
+  - Pricing agreements
+  - Terms and conditions
+  - Contract documents
+
+• **Communication**:
+  - Send announcements to merchant
+  - Share analytics reports
+  - Alert on performance issues
+  - Notify of AI recommendations
+  - Subscription milestone celebrations
+
+• **AI-Powered Merchant Insights**:
+  - **Health Score**: Overall merchant health (0-100)
+  - **Growth Prediction**: AI forecasts next quarter performance
+  - **Risk Prediction**: Likelihood of compliance or fraud issues
+  - **Churn Risk**: Probability merchant will leave platform
+  - **Optimization Suggestions**: 
+    * Enable recurring billing for suitable merchants
+    * Activate AI agents for high-volume merchants
+    * Improve payment flows to increase success rates
+    * Recommend pricing adjustments
+
+• **Segmentation and Tagging**:
+  - Segment merchants by industry, size, region
+  - Custom tags for merchant categorization
+  - High-value merchant identification
+  - At-risk merchant flags
+  - Subscription-focused merchant indicator
+
+• **Relationship Management**:
+  - Account manager assignment
+  - Last contact date tracking
+  - Upcoming renewal dates
+  - Support ticket history
+  - Satisfaction scores`,
+                keywords: ['merchants', 'portfolio', 'management', 'profiles', 'recurring', 'ai', 'mrr']
             },
             {
                 title: 'Merchant MIDs',
@@ -1584,50 +1740,289 @@ This comprehensive Virtual Terminal transforms payment operations from a simple 
             {
                 title: 'Balances',
                 icon: Wallet,
-                description: 'View PSP and merchant balances.',
-                content: `Financial balance management:
+                description: 'PSP and merchant balances with recurring revenue tracking.',
+                content: `Comprehensive financial balance management with support for one-time transactions, recurring payments, and AI-related financial metrics:
 
-• **PSP Balance**: Overall platform financial position
-• **Merchant Balances**: Individual merchant balances
-• **Reserve Funds**: Chargeback and rolling reserves
-• **Pending Settlements**: Upcoming payouts
-• **Historical Data**: Balance trends over time
-• **Multi-Currency**: Support for multiple currencies`,
-                keywords: ['balances', 'funds', 'reserves', 'money']
+• **PSP Balance**: 
+  - Overall platform financial position
+  - Aggregate one-time transaction revenue
+  - Monthly Recurring Revenue (MRR) balance
+  - Annual Recurring Revenue (ARR) projections
+  - AI cost savings impact on margins
+  - Real-time balance updates
+
+• **Merchant Balances**: 
+  - Individual merchant balance breakdowns
+  - **One-Time Revenue**: Traditional transaction revenue
+  - **Recurring Revenue**: 
+    * Current MRR per merchant
+    * Expected next-month MRR
+    * Expansion/contraction revenue trends
+    * Churned revenue impact
+  - **Pending Charges**: Scheduled subscription payments
+  - **Available Balance**: Funds ready for settlement
+  - **Balance on Hold**: Reserves and chargebacks
+
+• **Reserve Funds**: 
+  - Chargeback reserves by merchant
+  - Rolling reserves (typically 10% held for 180 days)
+  - **Recurring Payment Reserves**:
+    * Higher reserves for subscription merchants due to churn risk
+    * Reserves for future chargeback exposure
+    * Release schedule based on chargeback history
+  - Reserve balance aging
+  - Release schedule tracking
+
+• **Pending Settlements**: 
+  - Upcoming payouts with dates
+  - One-time transaction settlements
+  - Recurring payment settlements (monthly cycles)
+  - Settlement amount breakdowns:
+    * Gross revenue
+    * Transaction fees
+    * Subscription billing fees
+    * Refunds and chargebacks
+    * Net settlement amount
+
+• **Subscription Revenue Metrics**:
+  - **MRR (Monthly Recurring Revenue)**: Current monthly subscription revenue
+  - **New MRR**: Revenue from new subscriptions this period
+  - **Expansion MRR**: Revenue from upgrades and upsells
+  - **Contraction MRR**: Revenue lost from downgrades
+  - **Churned MRR**: Revenue lost from cancellations
+  - **Net New MRR**: Net change in MRR (new + expansion - contraction - churned)
+  - **ARR (Annual Recurring Revenue)**: MRR × 12, annual projection
+  - **Committed Revenue**: Total value of active subscriptions
+  - **Revenue at Risk**: Value of subscriptions in dunning status
+
+• **AI Financial Impact Tracking**:
+  - **Revenue Protected**: Fraud prevented by AI detection
+  - **Revenue Recovered**: Failed payments recovered through AI dunning
+  - **Approval Rate Improvement**: Additional revenue from AI routing optimization
+  - **Cost Savings**: Labor costs saved through automation
+  - **Net AI ROI**: Total financial benefit minus AI implementation costs
+
+• **Historical Data**: 
+  - Balance trends over time (daily, weekly, monthly views)
+  - MRR growth charts
+  - Churn rate trends
+  - Reserve balance history
+  - Settlement timing analysis
+  - AI performance impact on revenue
+
+• **Multi-Currency**: 
+  - Support for multiple currencies (USD, EUR, GBP, etc.)
+  - Real-time FX rate application
+  - Multi-currency MRR calculations
+  - Currency-specific balances
+  - Settlement currency preferences
+  - FX gain/loss tracking
+
+• **Cash Flow Forecasting**:
+  - Predictable recurring revenue streams
+  - Expected settlement dates and amounts
+  - Churn impact on future revenue
+  - Reserve release schedule
+  - AI-powered revenue forecasting based on trends
+
+• **Balance Alerts**:
+  - Low balance warnings
+  - Large deposit alerts
+  - Unusual balance changes
+  - Reserve threshold notifications
+  - MRR decline alerts
+  - Churn spike warnings
+
+• **Reconciliation Integration**:
+  - Match balances with bank statements
+  - Identify discrepancies
+  - Track pending vs cleared funds
+  - Separate one-time and recurring for clarity
+
+This balance management system provides complete financial visibility across all revenue streams, enabling accurate cash flow management, financial forecasting, and strategic decision-making for both one-time and recurring payment business models.`,
+                keywords: ['balances', 'funds', 'reserves', 'money', 'mrr', 'arr', 'recurring', 'ai impact']
             },
             {
                 title: 'Reports',
                 icon: FileText,
-                description: 'Generate financial reports.',
-                content: `Comprehensive reporting suite:
+                description: 'Generate financial reports with recurring payment and AI metrics.',
+                content: `Comprehensive reporting suite with support for recurring payments, AI operations, and traditional transaction reporting:
 
-• **Standard Reports**: Daily, weekly, monthly summaries
-• **Custom Reports**: Build reports with custom parameters
-• **Scheduled Reports**: Automate report generation
+• **Standard Reports**: 
+  - Daily, weekly, monthly summaries
+  - Separate reports for one-time and recurring transactions
+  - Combined revenue reports showing total performance
+
+• **Custom Reports**: 
+  - Build reports with custom parameters
+  - Filter by transaction type (one-time, recurring, both)
+  - Include AI decision metrics in custom reports
+  - Filter by AI agent activity
+
+• **Scheduled Reports**: 
+  - Automate report generation
+  - Schedule recurring payment performance reports
+  - Daily AI agent performance summaries
+  - Weekly churn and retention reports
+
 • **Export Formats**: CSV, PDF, Excel
+
 • **Report Types**:
-  - Transaction reports
-  - Settlement reports
-  - Chargeback reports
-  - Fee reports
-  - Merchant statements
-• **PCI Compliance Reports**: Audit-ready documentation`,
-                keywords: ['reports', 'export', 'statements', 'financial']
+  - **Transaction Reports**: 
+    * One-time transactions
+    * Recurring payment transactions
+    * Combined transaction views
+    * AI-approved vs manually approved breakdowns
+  - **Settlement Reports**:
+    * Standard settlements
+    * Recurring revenue settlements
+    * MRR/ARR calculations
+  - **Chargeback Reports**:
+    * All chargebacks
+    * Recurring payment disputes
+    * AI-assisted case outcomes
+  - **Fee Reports**:
+    * Transaction-based fees
+    * Subscription billing fees
+    * Merchant pricing reports
+  - **Merchant Statements**:
+    * Combined one-time and recurring revenue
+    * Subscription metrics (MRR, churn, LTV)
+  - **Subscription Reports**:
+    * Active subscriptions by plan type
+    * Churn rate analysis
+    * Failed payment rates
+    * Retention offer effectiveness
+    * Dunning performance metrics
+  - **AI Performance Reports**:
+    * Agent decision accuracy
+    * Override rates and reasons
+    * Fraud detection effectiveness
+    * Churn prediction accuracy
+    * Financial impact of AI decisions
+
+• **PCI Compliance Reports**: Audit-ready documentation
+
+• **Recurring Payment Specific Reports**:
+  - **MRR Movement**: Track changes in monthly recurring revenue
+  - **Cohort Analysis**: Subscription retention by cohort
+  - **Churn Reports**: Detailed churn analysis with reasons
+  - **Failed Payment Reports**: Dunning effectiveness and recovery rates
+  - **Lifecycle Reports**: Subscription age and lifetime value
+  - **Proration Reports**: Track billing adjustments and credits
+
+• **AI Analytics Reports**:
+  - **Decision Volume**: Total AI decisions by agent and time period
+  - **Accuracy Trends**: AI performance over time
+  - **Override Analysis**: Human override patterns and learnings
+  - **Risk Mitigation**: Fraud prevented and false positives
+  - **ROI Reports**: Financial impact of AI automation`,
+                keywords: ['reports', 'export', 'statements', 'financial', 'recurring', 'ai', 'mrr', 'churn']
             },
             {
                 title: 'Advanced Reports',
                 icon: BarChart3,
-                description: 'P&L and advanced financial analytics.',
-                content: `Deep financial analysis:
+                description: 'P&L and advanced financial analytics with AI and recurring metrics.',
+                content: `Deep financial analysis with comprehensive recurring payment and AI performance metrics:
 
-• **P&L Statements**: Profit and loss by merchant, period
-• **Fee Analysis**: Breakdown of all fee types
-• **Volume Analysis**: Transaction volume trends
-• **Success Rates**: Approval rate analytics
-• **Chargeback Analysis**: Ratios and trends
-• **Comparison**: Period-over-period comparisons
-• **Margin Analysis**: Buy rate vs sell rate margins`,
-                keywords: ['advanced reports', 'pnl', 'profit', 'loss', 'analytics']
+• **P&L Statements**: 
+  - Profit and loss by merchant, period
+  - Separate P&L for one-time vs recurring revenue streams
+  - Subscription revenue contribution analysis
+  - Churn impact on profitability
+
+• **Fee Analysis**: 
+  - Breakdown of all fee types
+  - Recurring billing fees
+  - Per-transaction vs subscription-based fee comparison
+  - AI automation cost savings analysis
+
+• **Volume Analysis**: 
+  - Transaction volume trends (one-time + recurring)
+  - MRR (Monthly Recurring Revenue) trends
+  - ARR (Annual Recurring Revenue) growth
+  - New subscription acquisition rate
+  - Subscription expansion revenue
+  - Churn volume and financial impact
+
+• **Success Rates**: 
+  - Approval rate analytics for one-time transactions
+  - Recurring payment success rates
+  - AI agent approval accuracy
+  - AI vs manual approval performance comparison
+  - Failed payment recovery rates (dunning effectiveness)
+
+• **Chargeback Analysis**: 
+  - Ratios and trends for all transactions
+  - Recurring payment chargeback rates
+  - AI-assisted chargeback case outcomes
+  - Chargeback prevention effectiveness
+
+• **Comparison**: 
+  - Period-over-period comparisons
+  - MRR movement analysis
+  - Churn rate trends
+  - AI performance improvements over time
+
+• **Margin Analysis**: 
+  - Buy rate vs sell rate margins
+  - Subscription revenue margins
+  - AI cost savings vs implementation costs
+  - Lifetime value (LTV) vs customer acquisition cost (CAC)
+
+• **Recurring Payment Analytics**:
+  - **Cohort Retention**: Track subscription retention by signup cohort
+  - **Churn Analysis**: 
+    * Voluntary churn (customer cancellations)
+    * Involuntary churn (failed payments)
+    * Churn reasons breakdown
+    * Churn rate by plan type
+  - **Revenue Retention**: Net revenue retention (NRR) and gross revenue retention (GRR)
+  - **Subscription Metrics**:
+    * New MRR: Revenue from new subscriptions
+    * Expansion MRR: Revenue from upgrades/upsells
+    * Contraction MRR: Revenue lost from downgrades
+    * Churned MRR: Revenue lost from cancellations
+  - **Customer Lifetime Value**: 
+    * Average subscription duration
+    * Total revenue per customer
+    * LTV by customer segment
+  - **Proration Impact**: Financial impact of proration credits
+  - **Usage-Based Revenue**: Consumption billing analysis
+
+• **AI Performance Analytics**:
+  - **Decision Accuracy by Agent Type**:
+    * Payment approval agent accuracy
+    * Fraud detection precision and recall
+    * Routing optimization results
+    * Churn prediction accuracy
+  - **Financial Impact**:
+    * Revenue protected by fraud detection
+    * Revenue saved through churn prevention
+    * Approval rate improvements from AI routing
+    * Labor cost savings from automation
+  - **Efficiency Metrics**:
+    * Transactions processed autonomously vs manual
+    * Average decision time (AI vs human)
+    * Queue reduction from automation
+  - **Learning Curve**:
+    * AI accuracy improvement over time
+    * Override rate trends (should decrease)
+    * Training data volume and quality
+  - **ROI Analysis**:
+    * Total AI implementation costs
+    * Cost savings and revenue gains
+    * Net ROI percentage
+    * Payback period
+
+• **Combined Analytics**:
+  - **Total Revenue View**: One-time + recurring + usage-based
+  - **Payment Method Mix**: Distribution across all transaction types
+  - **Customer Segmentation**: High-value vs low-value by transaction type
+  - **Geographic Revenue**: Region-based revenue including subscriptions
+  - **Predictive Analytics**: AI-powered revenue forecasting
+  - **Scenario Planning**: Model impact of pricing or churn changes`,
+                keywords: ['advanced reports', 'pnl', 'profit', 'loss', 'analytics', 'mrr', 'arr', 'churn', 'ai performance']
             },
             {
                 title: 'Payouts',
@@ -1646,16 +2041,81 @@ This comprehensive Virtual Terminal transforms payment operations from a simple 
             {
                 title: 'Automated Payouts',
                 icon: DollarSign,
-                description: 'Configure automatic settlement.',
-                content: `Automated settlement configuration:
+                description: 'Configure automatic settlement with recurring payment support.',
+                content: `Intelligent automated settlement configuration with support for one-time transactions and recurring payment revenue:
 
-• **Schedules**: Daily, weekly, or custom schedules
-• **Rules**: Threshold-based or time-based triggers
-• **Reserves**: Automatic reserve calculations
-• **Notifications**: Email alerts for payouts
-• **Exceptions**: Handle failed payouts automatically
-• **Audit Trail**: Complete payout history`,
-                keywords: ['automation', 'scheduled', 'automatic payouts']
+• **Settlement Schedules**: 
+  - Daily, weekly, bi-weekly, monthly, or custom schedules
+  - Separate schedules for one-time vs recurring revenue
+  - MRR-based settlement timing options
+  - Weekend and holiday handling rules
+
+• **Trigger Rules**: 
+  - **Threshold-Based**: Settle when balance reaches X amount
+  - **Time-Based**: Settle on specific days/dates
+  - **Hybrid**: Combine threshold and time triggers
+  - **Recurring-Specific**: Settle after subscription cycle close
+  - **AI-Optimized**: AI determines optimal settlement timing
+
+• **Reserve Calculations**: 
+  - Automatic reserve calculations per merchant
+  - Higher reserves for subscription-heavy merchants
+  - Chargeback risk-based reserve percentages
+  - Rolling reserve with aging schedule
+  - Reserve release automation
+  - **Churn Reserve**: Additional reserves for subscription churn risk
+
+• **Revenue Stream Handling**:
+  - **Combined Settlements**: One-time + recurring in single payout
+  - **Separate Settlements**: Different schedules for different revenue types
+  - **MRR Smoothing**: Predictable monthly payouts from subscription revenue
+  - **Proration Handling**: Automatic inclusion of proration adjustments
+  - **Usage-Based Billing**: Include variable usage charges in settlements
+
+• **Notifications**: 
+  - Email alerts for upcoming payouts
+  - Settlement confirmation emails
+  - Failed payout notifications
+  - MRR milestone celebrations (e.g., crossed $10K MRR)
+  - Churn warnings before settlement
+
+• **Smart Exception Handling**: 
+  - Failed payout automatic retry
+  - Bank validation error handling
+  - Insufficient balance management
+  - **Failed Recurring Payment Impact**: Adjust settlements for dunning-in-progress
+  - Alternative payout method triggering
+  - Manual intervention escalation
+
+• **AI-Enhanced Automation**:
+  - **Optimal Timing**: AI determines best payout timing per merchant
+  - **Cash Flow Optimization**: Balance merchant needs with PSP cash position
+  - **Risk-Based Holds**: AI identifies high-risk settlements for review
+  - **Predictive Reserves**: AI calculates optimal reserve percentages
+  - **Anomaly Detection**: Flag unusual payout requests
+
+• **Audit Trail**: 
+  - Complete payout history
+  - Approval chain documentation
+  - Configuration change tracking
+  - Exception handling logs
+  - AI decision logs for automated payouts
+
+• **Recurring Payment Considerations**:
+  - Factor in expected subscription revenue for next period
+  - Adjust for predicted churn
+  - Include retention offer costs
+  - Account for dunning-recovered revenue
+  - Track subscription lifecycle impact on payouts
+
+• **Best Practices**:
+  - Align settlement schedule with merchant cash flow needs
+  - Higher frequency for subscription merchants (more predictable)
+  - Maintain adequate reserves for churn and chargebacks
+  - Review AI-flagged settlements before processing
+  - Monitor failed payment impact on settlement amounts
+  - Communicate schedule changes in advance`,
+                keywords: ['automation', 'scheduled', 'automatic payouts', 'recurring', 'mrr', 'ai']
             },
             {
                 title: 'Reconciliation',
@@ -1722,18 +2182,175 @@ This comprehensive Virtual Terminal transforms payment operations from a simple 
             {
                 title: 'Fraud Prevention',
                 icon: Shield,
-                description: 'Fraud detection and prevention tools.',
-                content: `Comprehensive fraud prevention:
+                description: 'AI-powered fraud detection and prevention.',
+                content: `Comprehensive multi-layered fraud prevention with AI agents, machine learning, and advanced detection for one-time and recurring payments:
 
-• **Risk Scoring**: Real-time transaction risk assessment
-• **Rules Engine**: Configure fraud detection rules
-• **Velocity Checks**: Monitor transaction patterns
-• **Block Lists**: Manage blocked cards, IPs, emails
-• **3D Secure**: Configure 3DS 2.0 authentication
-• **Machine Learning**: AI-powered fraud detection
-• **Alerts**: Real-time fraud alerts and notifications
-• **Device Fingerprinting**: Track device characteristics`,
-                keywords: ['fraud', 'risk', 'prevention', 'rules', '3ds']
+• **AI Fraud Detection Agent**:
+  - **Real-Time Analysis**: AI evaluates every transaction in milliseconds
+  - **Risk Scoring**: 0-100 fraud probability score
+  - **Pattern Recognition**: Identifies sophisticated fraud patterns
+  - **Behavioral Analysis**: Detects deviations from normal customer behavior
+  - **Anomaly Detection**: Flags unusual transactions beyond standard rules
+  - **Learning System**: Continuously improves from fraud outcomes
+  - **Explainability**: Provides reasoning for fraud decisions
+  - **Confidence Levels**: Shows certainty in fraud determination
+
+• **Multi-Layered Detection**:
+  
+  **Layer 1 - Basic Rules**:
+  - Card validation (Luhn algorithm)
+  - AVS (Address Verification Service)
+  - CVV verification
+  - Card status checks (lost/stolen databases)
+  
+  **Layer 2 - Velocity Checks**:
+  - Transaction frequency limits per card
+  - Amount thresholds per time period
+  - Card usage patterns (multiple merchants)
+  - Geographic velocity (impossible travel)
+  - Device switching patterns
+  
+  **Layer 3 - Advanced Analytics**:
+  - Machine learning risk models
+  - Device fingerprinting analysis
+  - Behavioral biometrics
+  - Network analysis (linked accounts)
+  
+  **Layer 4 - AI Agent Analysis**:
+  - Deep pattern analysis
+  - Cross-merchant fraud detection
+  - Emerging threat identification
+  - Adaptive rule generation
+
+• **Rules Engine**: 
+  - Configure custom fraud detection rules
+  - Condition-based logic (if X then Y)
+  - Multiple condition combinations (AND/OR)
+  - Action options: Decline, Review, Challenge with 3DS
+  - Rule priority and conflict resolution
+  - Testing mode for new rules
+  - Performance analytics per rule
+
+• **Velocity Checks**: 
+  - Monitor transaction patterns in real-time
+  - Card velocity: Max transactions per hour/day
+  - Amount velocity: Max $ per period
+  - IP velocity: Limit transactions per IP
+  - Email velocity: Monitor per email address
+  - Device velocity: Track per device fingerprint
+  - Configurable time windows and thresholds
+
+• **Block Lists Management**: 
+  - **Card Numbers**: Block specific card numbers or BINs
+  - **IP Addresses**: Block fraudulent IPs or ranges
+  - **Email Addresses**: Block known fraudster emails
+  - **Countries**: Block high-risk countries
+  - **Devices**: Block fingerprinted devices
+  - **Import/Export**: Bulk management of block lists
+  - **Shared Intelligence**: Industry-wide block list sharing
+  - **Auto-Expiration**: Temporary blocks with auto-removal
+
+• **3D Secure (3DS 2.0)****: 
+  - Configure Strong Customer Authentication
+  - Risk-based authentication triggers:
+    * High-risk transactions require 3DS
+    * Low-risk can skip (frictionless)
+    * AI determines risk level
+  - Challenge vs frictionless flows
+  - SCA exemptions management
+  - Recurring payment MIT exemptions
+  - 3DS performance monitoring
+
+• **Recurring Payment Fraud Prevention**:
+  - **First Payment Verification**: Enhanced screening on initial subscription payment
+  - **Subscriber Behavior Analysis**: Monitor for unusual subscription patterns
+  - **Card Testing Detection**: Identify subscription signup fraud
+  - **Proration Fraud**: Detect abuse of proration features
+  - **Churn Fraud**: Identify fraudulent churn and re-signup patterns
+  - **Family Fraud Prevention**: Detect unauthorized subscription signups
+  - **Account Takeover**: Monitor for compromised account indicators
+
+• **Device Fingerprinting**: 
+  - Browser characteristics tracking
+  - Device ID generation
+  - IP geolocation
+  - Operating system and browser version
+  - Screen resolution and plugins
+  - Timezone consistency checks
+  - Multiple device detection per user
+
+• **Real-Time Alerts**: 
+  - Email/SMS alerts for high-risk transactions
+  - Dashboard notifications
+  - Webhook alerts to merchant systems
+  - Escalation workflows for critical fraud
+  - Alert fatigue prevention (smart grouping)
+
+• **Fraud Investigation Tools**:
+  - Transaction detail drill-down
+  - Related transaction discovery (same card, IP, device)
+  - Customer history analysis
+  - Dispute pattern correlation
+  - Evidence gathering for law enforcement
+
+• **AI Anomaly Detection**:
+  - **Pattern Anomalies**: Unusual spending patterns for customer
+  - **Geographic Anomalies**: Transaction from unexpected location
+  - **Velocity Anomalies**: Sudden transaction volume spikes
+  - **Amount Anomalies**: Unusual transaction sizes
+  - **Temporal Anomalies**: Transactions at unusual times
+  - **Merchant Anomalies**: Cross-merchant fraud patterns
+
+• **Fraud Analytics and Reporting**:
+  - Fraud rate by merchant, card type, region
+  - False positive rate tracking
+  - Chargeback fraud correlation
+  - AI detection accuracy metrics
+  - Cost of fraud vs cost of prevention
+  - Fraud trend analysis
+
+• **Subscription Fraud Specific**:
+  - **Card Testing**: Fraudsters test cards with low-value subscriptions
+  - **Trial Abuse**: Multiple accounts for free trial exploitation
+  - **BIN Attacks**: Systematic testing of card number ranges
+  - **Velocity Limits**: Limit subscription signups per email/card/IP
+  - **Email Validation**: Verify email addresses
+  - **Identity Verification**: Enhanced checks for high-value subscriptions
+
+• **Chargeback Fraud Prevention**:
+  - Identify friendly fraud patterns
+  - Customer dispute history tracking
+  - Blacklist repeat offenders
+  - 3DS liability shift for protection
+  - Delivery confirmation requirements
+  - Terms acceptance tracking
+
+• **Performance Optimization**:
+  - Balance fraud prevention with customer experience
+  - Minimize false positives (legitimate transactions declined)
+  - AI reduces false positives by 40-60% vs rules alone
+  - Continuous rule refinement based on outcomes
+  - A/B testing of fraud strategies
+
+• **Integration Points**:
+  - **Payment Processing**: Inline fraud checks before authorization
+  - **AI Agents**: Fraud agent coordinates with approval and routing agents
+  - **Chargebacks**: Fraud flags help defend against disputes
+  - **Analytics**: Fraud metrics in all reports
+  - **Compliance**: Fraud monitoring for AML/CFT requirements
+
+• **Best Practices**:
+  - Deploy AI fraud agent for all merchants
+  - Set strict rules for first-time customers
+  - Relax restrictions for trusted repeat customers
+  - Enable 3DS for high-risk transactions
+  - Monitor fraud trends weekly
+  - Update block lists regularly
+  - Test rules before deploying
+  - Balance security with conversion optimization
+  - Investigate all AI-flagged high-risk transactions
+  - Maintain fraud documentation for chargebacks`,
+                keywords: ['orchestration', 'providers', 'routing', 'tokens', 'ai', 'fraud', 'recurring']
             },
             {
                 title: 'Compliance',
@@ -2044,34 +2661,266 @@ This comprehensive Virtual Terminal transforms payment operations from a simple 
             {
                 title: 'Smart Routing',
                 icon: Zap,
-                description: 'Intelligent transaction routing.',
-                content: `Advanced transaction routing:
+                description: 'AI-powered intelligent transaction routing.',
+                content: `Advanced AI-enhanced transaction routing for optimal approval rates and cost efficiency:
 
 • **Routing Rules**: Configure routing based on:
-  - Card type and BIN
-  - Transaction amount
-  - Currency
-  - Geographic region
-  - Time of day
-• **Cascading**: Automatic failover to backup processors
-• **Load Balancing**: Distribute volume across processors
-• **Cost Optimization**: Route for lowest cost
-• **Success Optimization**: Route for highest approval rates`,
-                keywords: ['routing', 'smart', 'cascading', 'optimization']
+  - Card type and BIN range
+  - Transaction amount tiers
+  - Currency and cross-border factors
+  - Geographic region and country
+  - Time of day and day of week
+  - Merchant category and risk profile
+  - Transaction type (one-time vs recurring)
+  - Subscription plan type (for recurring payments)
+  - Payment attempt number (initial vs retry)
+
+• **AI-Powered Routing**:
+  - **Smart Routing Agent**: AI agent automatically selects optimal processor
+  - **Real-Time Decisions**: AI analyzes multiple factors in milliseconds
+  - **Dynamic Optimization**: 
+    * Route for highest approval rates by card type
+    * Consider processor-specific success patterns
+    * Account for real-time processor performance
+    * Optimize for cost when multiple options equal
+  - **Learning System**: AI improves routing decisions based on outcomes
+  - **A/B Testing**: Automatically test routing strategies
+  - **Contextual Routing**: Consider customer history and behavior
+
+• **Routing Strategies**:
+  - **Success Optimization**: Route to processor with highest approval rate
+  - **Cost Optimization**: Route to processor with lowest fees
+  - **Balanced**: Optimize for both success and cost
+  - **Geographic**: Route based on issuer location
+  - **Redundancy**: Ensure backup options available
+
+• **Cascading Failover**: 
+  - Automatic failover to backup processors on decline
+  - Smart cascade based on decline reason:
+    * Insufficient funds: No cascade (will fail everywhere)
+    * Technical error: Immediate cascade to backup
+    * Fraud decline: Cascade with additional verification
+    * Do not honor: Cascade to processors with different risk appetite
+  - Up to 5 cascade attempts configurable
+  - Cascade delay options (immediate or delayed)
+
+• **Load Balancing**: 
+  - Distribute volume across processors
+  - Prevent single processor overload
+  - Round-robin or weighted distribution
+  - Consider processor volume limits
+  - Real-time capacity monitoring
+
+• **Recurring Payment Routing**:
+  - **Initial Transaction Routing**: Smart routing for first subscription payment
+  - **Retry Routing**: Intelligent routing for failed payment retries
+  - **Token Optimization**: Route to processor that issued token
+  - **Success History**: Route to processor with best history for this customer
+  - **MIT (Merchant Initiated Transaction) Handling**: Proper flagging for recurring
+
+• **Performance Monitoring**:
+  - **Processor Success Rates**: Real-time approval rates by processor
+  - **Latency Tracking**: Response time per processor
+  - **Volume Distribution**: Transaction distribution across processors
+  - **Cost Analysis**: Effective cost per transaction by route
+  - **Optimization Opportunities**: AI identifies better routing options
+
+• **Rule Priority and Conflicts**:
+  - Priority ordering (1-1000)
+  - Conflict resolution logic
+  - Override capabilities
+  - Testing mode for new rules
+  - Staging before production
+
+• **Integration with AI Agents**:
+  - AI routing agent works seamlessly with other agents
+  - Fraud detection agent input considered in routing
+  - Approval agent coordinates with routing selection
+  - Combined optimization across all AI systems`,
+                keywords: ['routing', 'smart', 'cascading', 'optimization', 'ai', 'recurring']
             },
             {
                 title: 'Payment Orchestration',
                 icon: Globe,
-                description: 'Multi-provider payment orchestration.',
-                content: `Orchestration platform features:
+                description: 'AI-enhanced multi-provider payment orchestration.',
+                content: `Advanced payment orchestration platform with AI-driven decision-making, recurring payment optimization, and intelligent multi-provider management:
 
-• **Provider Management**: Connect multiple processors
-• **Dynamic Routing**: Real-time routing decisions
-• **Fallback Logic**: Automatic retry on decline
-• **Tokenization**: Secure card storage (PCI scope reduction)
-• **Network Tokens**: Visa/MC network tokenization
-• **Unified API**: Single integration for all providers`,
-                keywords: ['orchestration', 'providers', 'routing', 'tokens']
+• **Provider Management**: 
+  - Connect multiple payment processors and acquirers
+  - Support for traditional processors, gateways, and APMs
+  - Processor health monitoring and uptime tracking
+  - Automatic provider failover on downtime
+
+• **Dynamic Routing**: 
+  - Real-time routing decisions based on transaction context
+  - AI-powered processor selection for optimal results
+  - Consider success rates, costs, and latency
+  - Recurring payment routing optimization
+
+• **AI-Enhanced Orchestration**:
+  - **Smart Routing Agent Integration**: AI agent orchestrates across providers
+  - **Predictive Routing**: ML models predict best processor for each transaction
+  - **Real-Time Learning**: Routing improves based on actual outcomes
+  - **Multi-Dimensional Optimization**: Balance approval rate, cost, and speed
+  - **Automated Rules**: AI generates and updates routing rules automatically
+  - **Processor Performance Prediction**: Forecast processor availability and success
+
+• **Fallback Logic**: 
+  - Automatic retry on decline with intelligent cascade
+  - Decline reason analysis for smart fallback decisions
+  - Skip processors likely to also decline
+  - Configurable cascade chains (up to 5 levels)
+  - Retry delay configuration (immediate or timed)
+  - Circuit breaker patterns to avoid bad processors
+
+• **Recurring Payment Orchestration**:
+  - **Token Management**: Store payment tokens per processor
+  - **MIT Optimization**: Merchant-initiated transaction handling
+  - **Retry Intelligence**: Smart processor selection for failed payment retries
+  - **Success Pattern Learning**: Route based on customer's payment history
+  - **Multi-Processor Tokens**: Maintain tokens across multiple processors
+  - **Automatic Card Updater**: Integration with card update services
+  - **Network Token Support**: Visa Token Service (VTS) and Mastercard MDES
+
+• **Tokenization**: 
+  - Secure card storage with PCI scope reduction
+  - Single-use tokens for one-time payments
+  - Multi-use tokens for recurring payments
+  - Token lifecycle management
+  - Token expiration handling
+  - Processor-specific vs universal tokens
+
+• **Network Tokens**: 
+  - Visa Token Service (VTS) integration
+  - Mastercard Digital Enablement Service (MDES)
+  - Higher approval rates with network tokens
+  - Automatic card update through network
+  - Token cryptogram generation
+  - EMV compliance
+
+• **Unified API**: 
+  - Single integration point for merchants
+  - Abstract away processor differences
+  - Consistent request/response format
+  - Automatic payload transformation
+  - Error normalization across processors
+  - Webhook standardization
+
+• **Transaction Flow Orchestration**:
+  1. **Receive Transaction**: API request or Virtual Terminal entry
+  2. **AI Risk Analysis**: Fraud detection agent evaluates
+  3. **Routing Decision**: Smart routing agent selects processor
+  4. **Authorization**: Send to selected processor
+  5. **Fallback**: If declined, cascade to backup processor
+  6. **Response**: Normalize and return response
+  7. **Token Management**: Store token for recurring payments
+  8. **Webhook Notification**: Notify merchant of result
+  9. **Analytics**: Log for learning and reporting
+
+• **Subscription Payment Orchestration**:
+  - **Initial Payment**: Standard routing with tokenization
+  - **Recurring Charges**: Optimal processor for MIT transactions
+  - **Failed Payment Retry**: 
+    * Retry on same processor first (token already exists)
+    * Cascade to alternative if multiple failures
+    * Consider decline reason for routing
+  - **Card Update Automation**: Handle expiration via network tokens
+  - **3DS on First Payment**: SCA compliance, recurring exemption
+
+• **Provider Performance Management**:
+  - **Health Checks**: Continuous uptime monitoring
+  - **Success Rate Tracking**: Per processor, card type, amount tier
+  - **Latency Monitoring**: Average response time tracking
+  - **Volume Limits**: Respect processor daily/monthly caps
+  - **Cost Tracking**: Real-time cost per transaction
+  - **SLA Monitoring**: Track against service level agreements
+
+• **Multi-Currency Orchestration**:
+  - Route based on currency support
+  - Optimal FX rates by processor
+  - DCC (Dynamic Currency Conversion) support
+  - Settlement currency optimization
+  - Cross-border transaction handling
+
+• **AI Decision Integration**:
+  - **Approval Agent**: Decides approve/decline before routing
+  - **Fraud Agent**: Risk score influences routing
+  - **Routing Agent**: Selects processor based on ML model
+  - **Sequential Processing**: Agents work in coordinated pipeline
+  - **Override Capability**: Human can override any AI decision
+  - **Explainability**: Full reasoning chain visible
+
+• **Business Rules Engine**:
+  - Complex conditional routing logic
+  - Time-based routing (business hours, weekends)
+  - Volume-based routing (distribute load)
+  - Merchant-specific routing preferences
+  - Card BIN routing for specific issuers
+  - MCC code routing for merchant categories
+
+• **Testing and Simulation**:
+  - Sandbox mode for testing routes
+  - Routing simulation with historical data
+  - A/B testing routing strategies
+  - Shadow routing for validation
+  - Performance benchmarking
+
+• **Compliance and Security**:
+  - PCI DSS compliant tokenization
+  - ISO 20022 message format support
+  - Strong Customer Authentication (SCA/3DS)
+  - Regional compliance (PSD2, GDPR, etc.)
+  - Audit logging of all routing decisions
+
+• **Advanced Features**:
+  - **Split Payments**: Route different amounts to different processors
+  - **Currency Arbitrage**: Optimize for best FX rates
+  - **Reserve Routing**: Route based on reserve requirements
+  - **Scheme Fees Optimization**: Minimize Visa/MC fees through routing
+  - **3DS Intelligent Routing**: Route based on authentication results
+
+• **Real-World Orchestration Scenarios**:
+
+  **Scenario 1 - High-Value Recurring Payment**:
+  - Transaction: $500 monthly subscription
+  - AI Fraud Agent: Analyzes and scores low risk (5/100)
+  - AI Routing Agent: Selects Processor A (99% success rate for this merchant)
+  - Authorization: Sent to Processor A
+  - Result: Approved, token stored for next month
+
+  **Scenario 2 - Failed Payment Retry**:
+  - Transaction: $29.99 monthly subscription retry (2nd attempt)
+  - Decline Reason: Insufficient funds
+  - AI Routing Agent: Waits until payday, retries on Processor A
+  - Result: Approved, subscription continues
+
+  **Scenario 3 - High-Risk Transaction**:
+  - Transaction: $1,200 one-time payment, new customer
+  - AI Fraud Agent: Flags high risk (85/100)
+  - AI Approval Agent: Requires 3DS authentication
+  - 3DS Flow: Customer authenticates
+  - AI Routing Agent: Routes to Processor B (best for 3DS transactions)
+  - Result: Approved with liability shift
+
+• **Best Practices**:
+  - Maintain at least 2 processors per card network
+  - Monitor processor performance daily
+  - Review AI routing decisions weekly
+  - Test new routing rules in staging first
+  - Keep backup processors warm with regular transactions
+  - Document routing strategy rationale
+  - Train AI with diverse transaction data
+  - Set conservative thresholds initially
+  - Gradually increase AI autonomy based on proven accuracy
+
+• **ROI of Advanced Orchestration**:
+  - 2-5% approval rate improvement
+  - 15-30% cost reduction through optimal routing
+  - 40-70% reduction in manual routing decisions
+  - 50-80% faster transaction processing
+  - 30-60% reduction in churn through smart retry routing
+  - Measurable improvements in 30-90 days`,
+                keywords: ['orchestration', 'providers', 'routing', 'tokens', 'ai', 'recurring', 'optimization']
             },
             {
                 title: 'User Management',
