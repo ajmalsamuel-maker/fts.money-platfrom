@@ -3,11 +3,12 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
 Deno.serve(async (req) => {
     try {
         const base44 = createClientFromRequest(req);
-        const { action, email, password, user_id } = await req.json();
+        const body = await req.json();
+        const { action, email, password, user_id, new_password } = body;
 
         if (action === 'login') {
-            // Query PostgreSQL for merchant user
-            const { data: result } = await base44.functions.invoke('dbCore', {
+            // Query PostgreSQL for merchant user (using service role to bypass auth)
+            const { data: result } = await base44.asServiceRole.functions.invoke('dbCore', {
                 action: 'query',
                 sql: `
                     SELECT id, merchant_id, merchant_name, email, full_name, role, status, 
@@ -37,7 +38,7 @@ Deno.serve(async (req) => {
             }
 
             // Update last login
-            await base44.functions.invoke('dbCore', {
+            await base44.asServiceRole.functions.invoke('dbCore', {
                 action: 'execute',
                 sql: `UPDATE merchant_users SET last_login = NOW() WHERE id = $1`,
                 params: [user.id]
@@ -66,7 +67,7 @@ Deno.serve(async (req) => {
 
         if (action === 'validate') {
             // Validate session by checking if user still exists and is active
-            const { data: result } = await base44.functions.invoke('dbCore', {
+            const { data: result } = await base44.asServiceRole.functions.invoke('dbCore', {
                 action: 'query',
                 sql: `
                     SELECT id, merchant_id, merchant_name, email, full_name, role, status,
@@ -91,10 +92,8 @@ Deno.serve(async (req) => {
         }
 
         if (action === 'change_password') {
-            const { new_password } = await req.json();
-            
             // Update password and clear must_change_password flag
-            await base44.functions.invoke('dbCore', {
+            await base44.asServiceRole.functions.invoke('dbCore', {
                 action: 'execute',
                 sql: `
                     UPDATE merchant_users 
