@@ -226,6 +226,7 @@ export default function UserManagement() {
         admin: users.filter(u => (u.role || u.app_role) === 'admin').length,
         editor: users.filter(u => (u.role || u.app_role) === 'editor').length,
         viewer: users.filter(u => ((u.role || u.app_role) === 'viewer' || (!u.role && !u.app_role))).length,
+        merchant: users.filter(u => (u.role || u.app_role) === 'merchant').length,
     };
 
     return (
@@ -265,7 +266,7 @@ export default function UserManagement() {
                     </div>
 
                     {/* Role Stats */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4 mb-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-3 sm:gap-4 mb-6">
                         <Card className="p-4 border-l-4 border-l-slate-400">
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center">
@@ -310,6 +311,17 @@ export default function UserManagement() {
                                 </div>
                             </div>
                         </Card>
+                        <Card className="p-4 border-l-4 border-l-blue-400">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                                    <Building2 className="h-5 w-5 text-blue-600" />
+                                </div>
+                                <div>
+                                    <p className="text-sm text-slate-500">Merchants</p>
+                                    <p className="text-2xl font-bold text-blue-600">{roleStats.merchant}</p>
+                                </div>
+                            </div>
+                        </Card>
                     </div>
 
                     {/* Role Legend */}
@@ -350,6 +362,7 @@ export default function UserManagement() {
                                         <SelectItem value="admin">Admin</SelectItem>
                                         <SelectItem value="editor">Editor</SelectItem>
                                         <SelectItem value="viewer">Viewer</SelectItem>
+                                        <SelectItem value="merchant">Merchant</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
