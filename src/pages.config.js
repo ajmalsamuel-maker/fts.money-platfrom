@@ -48,6 +48,7 @@ import Support from './pages/Support';
 import PublicSupport from './pages/PublicSupport';
 import FraudMonitoring from './pages/FraudMonitoring';
 import VirtualTerminal from './pages/VirtualTerminal';
+import AIAutomationPlatform from './pages/AIAutomationPlatform';
 import __Layout from './Layout.jsx';
 
 
@@ -102,6 +103,7 @@ export const PAGES = {
     "PublicSupport": PublicSupport,
     "FraudMonitoring": FraudMonitoring,
     "VirtualTerminal": VirtualTerminal,
+    "AIAutomationPlatform": AIAutomationPlatform,
 }
 
 export const pagesConfig = {

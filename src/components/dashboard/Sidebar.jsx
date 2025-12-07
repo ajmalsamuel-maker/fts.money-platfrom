@@ -117,6 +117,7 @@ const menuItems = [
         group: 'Configuration',
         icon: Settings,
         items: [
+            { icon: Brain, label: 'AI & Automation', path: 'AIAutomationPlatform', permission: 'VIEW_ROUTING' },
             { icon: Zap, label: 'Smart Routing', path: 'SmartOrchestration', permission: 'VIEW_ROUTING' },
             { icon: Globe, label: 'Orchestration', path: 'PaymentOrchestration', permission: 'VIEW_ORCHESTRATION' },
             { icon: UserCog, label: 'User Management', path: 'UserManagement', permission: 'VIEW_USERS' },
