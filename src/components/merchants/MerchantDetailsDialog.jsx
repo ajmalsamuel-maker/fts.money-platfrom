@@ -23,6 +23,7 @@ import {
     CreditCard,
     FileText
 } from 'lucide-react';
+import MerchantDocumentsTab from './MerchantDocumentsTab';
 
 const statusConfig = {
     active: { label: 'Active', className: 'bg-emerald-100 text-emerald-700' },
@@ -66,9 +67,10 @@ export default function MerchantDetailsDialog({ merchant, open, onOpenChange }) 
                 </DialogHeader>
 
                 <Tabs defaultValue="overview" className="mt-6">
-                    <TabsList className="grid w-full grid-cols-4">
+                    <TabsList className="grid w-full grid-cols-5">
                         <TabsTrigger value="overview">Overview</TabsTrigger>
                         <TabsTrigger value="compliance">Compliance</TabsTrigger>
+                        <TabsTrigger value="documents">Documents</TabsTrigger>
                         <TabsTrigger value="financial">Financial</TabsTrigger>
                         <TabsTrigger value="settings">Settings</TabsTrigger>
                     </TabsList>
@@ -238,6 +240,10 @@ export default function MerchantDetailsDialog({ merchant, open, onOpenChange }) 
                                 )}
                             </div>
                         </div>
+                    </TabsContent>
+
+                    <TabsContent value="documents" className="space-y-6 mt-6">
+                        <MerchantDocumentsTab merchant={merchant} />
                     </TabsContent>
 
                     <TabsContent value="financial" className="space-y-6 mt-6">
