@@ -46,6 +46,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 import Support from './pages/Support';
 import PublicSupport from './pages/PublicSupport';
+import FraudMonitoring from './pages/FraudMonitoring';
 import __Layout from './Layout.jsx';
 
 
@@ -98,6 +99,7 @@ export const PAGES = {
     "TermsOfService": TermsOfService,
     "Support": Support,
     "PublicSupport": PublicSupport,
+    "FraudMonitoring": FraudMonitoring,
 }
 
 export const pagesConfig = {
