@@ -84,7 +84,6 @@ const menuItems = [
             { icon: Monitor, label: 'Virtual Terminals', path: 'VirtualTerminals', permission: 'VIEW_TERMINALS' },
             { icon: Key, label: 'API Credentials', path: 'MerchantCredentials', permission: 'VIEW_CREDENTIALS' },
             { icon: Users, label: 'Merchant Users', path: 'MerchantUsers', permission: 'VIEW_USERS' },
-            { icon: UserCog, label: 'Provision Merchant', path: 'MerchantUserProvisioning', permission: 'VIEW_USERS' },
         ]
     },
     {

@@ -42,7 +42,6 @@ import AIMerchantInsights from './pages/AIMerchantInsights';
 import MerchantLogin from './pages/MerchantLogin';
 import MerchantDashboard from './pages/MerchantDashboard';
 import MerchantChangePassword from './pages/MerchantChangePassword';
-import MerchantUserProvisioning from './pages/MerchantUserProvisioning';
 import __Layout from './Layout.jsx';
 
 
@@ -91,7 +90,6 @@ export const PAGES = {
     "MerchantLogin": MerchantLogin,
     "MerchantDashboard": MerchantDashboard,
     "MerchantChangePassword": MerchantChangePassword,
-    "MerchantUserProvisioning": MerchantUserProvisioning,
 }
 
 export const pagesConfig = {
