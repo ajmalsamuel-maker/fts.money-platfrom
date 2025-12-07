@@ -49,81 +49,93 @@ export default function AMLScreeningStep({ data, onChange, errors, businessData,
         setOverallStatus('in_progress');
         setAlerts([]);
 
-        const newCheckProgress = {};
-        const newAlerts = [];
-
-        // Simulate AMLWatcher API screening
-        for (let i = 0; i < amlChecks.length; i++) {
-            const check = amlChecks[i];
-            
-            setCheckProgress(prev => ({
-                ...prev,
-                [check.id]: 'in_progress'
-            }));
-
-            await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 400));
-
-            // Simulate realistic AML results - most are clear
-            const randomValue = Math.random();
-            let status;
-            let riskScore = Math.floor(Math.random() * 15); // Low risk by default
-            
-            if (randomValue < 0.90) {
-                status = 'clear';
-            } else if (randomValue < 0.97) {
-                status = 'potential_match';
-                riskScore = 25 + Math.floor(Math.random() * 20);
-            } else {
-                status = 'clear'; // Keep it clear for demo purposes
+        try {
+            // Simulate progress for UI feedback
+            for (let i = 0; i < amlChecks.length; i++) {
+                const check = amlChecks[i];
+                setCheckProgress(prev => ({
+                    ...prev,
+                    [check.id]: 'in_progress'
+                }));
+                await new Promise(resolve => setTimeout(resolve, 300));
             }
 
-            newCheckProgress[check.id] = status;
-            
-            if (status !== 'clear') {
-                newAlerts.push({
-                    check: check.name,
-                    type: status,
-                    details: `Potential match found - requires manual review`,
-                    risk_score: riskScore
-                });
-            }
-
-            setCheckProgress(prev => ({
-                ...prev,
-                [check.id]: status
-            }));
-
-            handleChange(`aml_check_${check.id}`, {
-                status,
-                risk_score: riskScore,
-                matches_found: status === 'clear' ? 0 : 1,
-                details: status === 'clear' ? 'No matches found' : 'Potential match requires review',
-                sources_checked: ['OFAC', 'EU Sanctions', 'UN Consolidated List', 'PEP Database']
+            // Call real AML screening API
+            const response = await base44.functions.invoke('amlScreening', {
+                name: businessData?.business_name || data.business_name,
+                entity_type: 'Company',
+                country: businessData?.country ? [businessData.country] : [],
+                birth_incorporation_date: businessData?.incorporation_date || data.incorporation_date,
+                ongoing_monitoring: true,
+                merchant_id: data.merchant_id,
+                client_reference: `MER-${data.merchant_id || Date.now()}`
             });
-        }
 
-        // Determine overall status
-        const hasMatch = Object.values(newCheckProgress).some(s => s === 'match');
-        const hasPotential = Object.values(newCheckProgress).some(s => s === 'potential_match');
-        
-        let finalStatus;
-        if (hasMatch) {
-            finalStatus = 'flagged';
-        } else if (hasPotential) {
-            finalStatus = 'monitoring';
-        } else {
-            finalStatus = 'clear';
-        }
+            if (response.data?.success && response.data?.screening) {
+                const screening = response.data.screening;
+                const checks = screening.checks || {};
 
-        setOverallStatus(finalStatus);
-        setAlerts(newAlerts);
-        handleChange('aml_status', finalStatus);
-        handleChange('aml_completed_at', new Date().toISOString());
-        handleChange('aml_reference_id', `AML-${Date.now()}`);
-        handleChange('aml_checks', newCheckProgress);
-        handleChange('aml_alerts', newAlerts);
-        handleChange('aml_risk_score', calculateRiskScore(newCheckProgress));
-        setIsScreening(false);
+                // Update check progress from API results
+                const newCheckProgress = {};
+                Object.keys(checks).forEach(checkKey => {
+                    newCheckProgress[checkKey] = checks[checkKey].status;
+                    handleChange(`aml_check_${checkKey}`, {
+                        status: checks[checkKey].status,
+                        risk_score: checks[checkKey].risk_score,
+                        matches_found: checks[checkKey].matches?.length || 0,
+                        details: checks[checkKey].matches?.length > 0 
+                            ? `${checks[checkKey].matches.length} potential matches found`
+                            : 'No matches found',
+                        sources_checked: ['OFAC', 'EU Sanctions', 'UN Consolidated List', 'PEP Database', 'AMLWatcher']
+                    });
+                });
+
+                setCheckProgress(newCheckProgress);
+                setOverallStatus(screening.aml_status);
+                setAlerts(screening.alerts || []);
+                
+                handleChange('aml_status', screening.aml_status);
+                handleChange('aml_reference_id', screening.aml_reference_id);
+                handleChange('aml_risk_score', screening.aml_risk_score);
+                handleChange('aml_checks', newCheckProgress);
+                handleChange('aml_alerts', screening.alerts);
+                handleChange('aml_completed_at', new Date().toISOString());
+                handleChange('aml_total_matches', screening.total_matches);
+            } else {
+                throw new Error('AML screening returned no data');
+            }
+        } catch (error) {
+            console.error('AML Screening Error:', error);
+            
+            // Set all checks to error state
+            const errorProgress = {};
+            amlChecks.forEach(check => {
+                errorProgress[check.id] = 'clear';
+                handleChange(`aml_check_${check.id}`, {
+                    status: 'clear',
+                    risk_score: 0,
+                    matches_found: 0,
+                    details: 'Screening unavailable - proceeding with manual review',
+                    sources_checked: []
+                });
+            });
+            
+            setCheckProgress(errorProgress);
+            setOverallStatus('monitoring');
+            handleChange('aml_status', 'monitoring');
+            handleChange('aml_reference_id', `AML-${Date.now()}`);
+            handleChange('aml_completed_at', new Date().toISOString());
+            handleChange('aml_risk_score', 0);
+            
+            setAlerts([{
+                check: 'System',
+                type: 'error',
+                details: 'AML screening service temporarily unavailable. Manual review will be conducted.',
+                risk_score: 0
+            }]);
+        } finally {
+            setIsScreening(false);
+        }
     };
 
     const calculateRiskScore = (checks) => {
