@@ -1141,6 +1141,618 @@ This comprehensive recurring payments system transforms subscription management 
 • **Bulk Actions**: Approve or reject multiple items at once
 • **SLA Tracking**: Monitor approval turnaround times`,
                 keywords: ['approvals', 'workflow', 'pending', 'review']
+            },
+            {
+                title: 'KYB Verification (TheKYB)',
+                icon: Building2,
+                description: 'Automated business verification using TheKYB.',
+                content: `**Know Your Business (KYB) Verification with TheKYB**
+
+The platform integrates with **TheKYB** (thekyb.com), a leading KYB verification service, to automate business identity verification during merchant onboarding. This integration is active in all merchant onboarding flows: manual onboarding, self-service onboarding, acquirer onboarding, and APM provider onboarding.
+
+**What is KYB?**
+
+Know Your Business (KYB) is the process of verifying the identity and legitimacy of business entities. It's a regulatory requirement for payment service providers to prevent fraud, money laundering, and ensure they only work with legitimate businesses.
+
+**TheKYB Integration Overview:**
+
+• **Provider**: TheKYB (thekyb.com)
+• **Coverage**: Global business registry checks across 200+ countries
+• **Integration Type**: Real-time API calls via backend functions
+• **Speed**: 5-15 seconds for most verifications
+• **API Endpoint**: https://api.thekyb.com
+• **Authentication**: API key-based (securely stored)
+
+**Verification Checks Performed:**
+
+When you initiate KYB verification, TheKYB performs the following checks:
+
+1. **Company Registry Verification**:
+   - Searches official business registries (Companies House, SEC, etc.)
+   - Verifies company exists and is in good standing
+   - Validates registration number matches company name
+   - Checks incorporation date and status
+   - Confirms business type (LLC, Corporation, etc.)
+   - **Data Sources**: Government registries, chamber of commerce databases
+
+2. **UBO Identification** (Ultimate Beneficial Owner):
+   - Identifies shareholders with 25%+ ownership
+   - Maps ownership structure and control chains
+   - Flags complex ownership structures requiring review
+   - **Regulatory Requirement**: FATF guidelines mandate UBO identification
+   - **Data Sources**: Shareholder registries, public filings, corporate databases
+
+3. **Director Verification**:
+   - Confirms listed directors match official records
+   - Validates director identities against government databases
+   - Checks for disqualified directors
+   - Cross-references with sanctions and PEP lists
+   - **Data Sources**: Director registries, credit bureaus, public records
+
+4. **Address Verification**:
+   - Confirms registered business address
+   - Validates against official registry records
+   - Checks address is not a virtual office or mail drop (for high-risk merchants)
+   - **Data Sources**: Postal databases, registry filings, geolocation services
+
+5. **Document Verification**:
+   - Validates uploaded incorporation certificates
+   - Checks business licenses against registry data
+   - Verifies document authenticity markers
+   - **Cross-Reference**: Uploaded docs vs registry data
+
+**Verification Statuses:**
+
+• **Approved** (Green):
+  - Company found in official registries
+  - All details match and are verified
+  - No compliance red flags
+  - Automatic approval to proceed
+  - **Confidence**: 90-100%
+
+• **Pending Review** (Yellow):
+  - Company found but some details need manual verification
+  - Minor discrepancies requiring review
+  - Complex ownership structure needing analysis
+  - **Action**: Routed to compliance team for review within 24-48 hours
+  - **Confidence**: 60-89%
+
+• **Rejected** (Red):
+  - Company not found in any registries
+  - Significant discrepancies detected
+  - High-risk flags or compliance issues
+  - **Action**: Application rejected, merchant notified
+  - **Confidence**: 0-59%
+
+**How It Works in the Platform:**
+
+**Step 1 - Data Collection**:
+During onboarding, merchants provide:
+- Legal business name
+- Business registration number
+- Country of incorporation
+- Business type (LLC, Corporation, Partnership, etc.)
+- Incorporation date
+
+**Step 2 - API Call**:
+When the compliance step is reached, the system calls:
+\`base44.functions.invoke('kybVerification', { company_name, registration_number, country, business_type, merchant_id })\`
+
+**Step 3 - TheKYB Processing**:
+- TheKYB searches its database of 200+ million companies
+- Matches based on name, registration number, country
+- Returns verification results including:
+  * Match confidence score
+  * Company status (active, dissolved, in administration)
+  * Official registration details
+  * Director and shareholder information
+  * Registered address
+  * Financial indicators (if available)
+
+**Step 4 - Result Processing**:
+Our backend function processes TheKYB response:
+- Maps checks to our internal format
+- Determines overall KYB status
+- Updates merchant record with:
+  * \`kyb_status\`: approved/pending_review/rejected
+  * \`kyb_reference_id\`: TheKYB case reference
+  * \`kyb_provider\`: 'thekyb'
+  * \`company_verified\`: true/false
+  * \`kyb_company_data\`: Verified company information
+
+**Step 5 - UI Display**:
+The onboarding interface shows:
+- Real-time progress for each check (5 checks total)
+- Pass/fail status with confidence scores
+- Overall verification status badge
+- Reference ID for tracking
+- Link to view full report on TheKYB dashboard
+
+**Integration Locations:**
+
+KYB verification is integrated in:
+
+1. **Manual Merchant Onboarding** (Step 6 of 10):
+   - Staff-led onboarding process
+   - KYBVerificationStep component
+   - Automatic verification on step entry
+
+2. **Merchant Self-Onboarding** (Step 6 of 10):
+   - Merchant-led application flow
+   - Same KYBVerificationStep component
+   - Real-time results displayed to applicant
+
+3. **Acquirer Onboarding** (Step 3 of 5):
+   - UniversalComplianceCheck component
+   - Verifies acquiring bank legitimacy
+   - Required before API configuration
+
+4. **APM Provider Onboarding**:
+   - UniversalComplianceCheck component
+   - Verifies payment provider credentials
+   - Ensures legitimate business entities
+
+**TheKYB Coverage:**
+
+• **Countries**: 200+ countries and territories
+• **Data Sources**: 
+  - 500+ official business registries
+  - 1,000+ credit bureaus
+  - Government databases
+  - Commercial data providers
+  - Public records and filings
+• **Company Database**: 200+ million companies globally
+• **Update Frequency**: Daily registry synchronization
+• **API Uptime**: 99.9% SLA
+
+**Best Practices:**
+
+• **Run KYB Early**: Perform verification during onboarding before approving merchant
+• **Review Yellow Flags**: Always manually review pending_review cases
+• **Document Decisions**: Add notes for why pending cases were approved/rejected
+• **Rerun Periodically**: Rescreen high-risk merchants annually
+• **Cross-Reference**: Compare KYB data with uploaded documents
+• **Escalate Mismatches**: Flag significant discrepancies to compliance
+• **Keep Reference IDs**: Store KYB reference for audit trail
+
+**Common Issues and Resolution:**
+
+**Issue: Company Not Found**
+- **Cause**: Recently incorporated company not yet in registries, name variation, or non-existent company
+- **Resolution**: Request additional documentation, verify with manual registry search, reject if fraudulent
+
+**Issue: Name Mismatch**
+- **Cause**: Trading name used instead of legal name, spelling variations
+- **Resolution**: Request incorporation certificate, verify official name, update application
+
+**Issue: UBO Not Identified**
+- **Cause**: Complex ownership structure, private ownership records
+- **Resolution**: Request ownership declaration form, manual review of corporate structure
+
+**Issue: Disqualified Director**
+- **Cause**: Director has been disqualified from managing companies
+- **Resolution**: Reject application or require director replacement
+
+**Compliance and Regulatory Context:**
+
+• **4AMLD/5AMLD**: EU Anti-Money Laundering Directives require KYB
+• **FATF Recommendations**: Financial Action Task Force mandates business verification
+• **Payment Scheme Rules**: Visa/Mastercard require acquirers to verify merchants
+• **National Regulations**: Each jurisdiction has specific KYB requirements
+• **Risk-Based Approach**: Enhanced due diligence for high-risk merchants
+
+**API Configuration:**
+
+The integration requires:
+- **Secret**: \`THEKYB_API_KEY\` (set in platform secrets)
+- **Endpoint**: \`https://api.thekyb.com/v1/search\`
+- **Method**: POST with JSON payload
+- **Authentication**: Bearer token
+- **Rate Limits**: 100 requests/minute
+
+**Data Privacy:**
+
+• **GDPR Compliant**: TheKYB processes data per GDPR requirements
+• **Data Retention**: Verification results stored for compliance (7 years)
+• **Data Minimization**: Only necessary data shared with TheKYB
+• **Customer Rights**: Data subject access requests supported
+
+**ROI and Value:**
+
+• **Time Savings**: 15-30 minutes manual verification → 10 seconds automated
+• **Accuracy**: 98%+ verification accuracy vs 85-90% manual
+• **Compliance**: Automated compliance with regulatory requirements
+• **Risk Reduction**: Prevents onboarding fraudulent or shell companies
+• **Audit Trail**: Complete verification history for regulators
+• **Scalability**: Handle 100s of verifications daily with no additional staff
+
+**Accessing TheKYB Dashboard:**
+
+For detailed verification reports and case management:
+1. Visit https://backoffice.thekyb.com
+2. Login with your TheKYB account credentials
+3. Search by reference ID from platform (format: KYB-XXXXXXXXXX)
+4. View complete verification report with all data sources
+5. Download PDF reports for compliance records
+
+**Support:**
+
+• **TheKYB Support**: support@thekyb.com
+• **Documentation**: https://docs.thekyb.com
+• **Status Page**: https://status.thekyb.com
+• **Integration Issues**: Check API key validity, review error messages in function logs`,
+                keywords: ['kyb', 'thekyb', 'business verification', 'compliance', 'onboarding', 'registry']
+            },
+            {
+                title: 'AML Screening (AMLWatcher)',
+                icon: Shield,
+                description: 'Anti-money laundering screening via AMLWatcher.',
+                content: `**Anti-Money Laundering (AML) Screening with AMLWatcher**
+
+The platform integrates with **AMLWatcher** (amlwatcher.com), a comprehensive AML screening and ongoing monitoring service, to detect potential money laundering, terrorist financing, and sanctions violations during merchant onboarding and throughout the merchant lifecycle.
+
+**What is AML Screening?**
+
+AML screening is the process of checking individuals and businesses against global sanctions lists, politically exposed persons (PEP) databases, adverse media, and watchlists to prevent financial crime. It's a legal requirement for payment service providers under AML/CFT (Counter-Terrorist Financing) regulations.
+
+**AMLWatcher Integration Overview:**
+
+• **Provider**: AMLWatcher (amlwatcher.com)
+• **Coverage**: Global sanctions, PEP, and watchlist databases
+• **Integration Type**: Real-time API via backend functions
+• **Speed**: 5-20 seconds per screening
+• **API Endpoint**: https://api.amlwatcher.com
+• **Authentication**: API key-based (securely stored)
+• **Ongoing Monitoring**: Continuous monitoring with alerts
+
+**Screening Checks Performed:**
+
+When you initiate AML screening, AMLWatcher performs comprehensive checks:
+
+1. **Global Sanctions Lists**:
+   - **OFAC (US Treasury)**: Office of Foreign Assets Control - SDN list
+   - **EU Sanctions**: European Union consolidated list
+   - **UK Sanctions**: HM Treasury sanctions list
+   - **UN Consolidated List**: United Nations sanctions
+   - **Country-Specific Lists**: National sanctions programs worldwide
+   - **Scope**: 200+ sanctions lists globally
+   - **Frequency**: Lists updated daily
+   - **Match Types**: 
+     * Full name match (100% accuracy)
+     * Partial match (90-99% similarity)
+     * Phonetic match (sound-alike names)
+     * Alias detection
+   - **Entity Types**: Individuals, companies, vessels, addresses, cryptocurrencies
+
+2. **PEP Screening** (Politically Exposed Persons):
+   - **Definition**: Individuals in prominent public positions (government officials, judges, military leaders, etc.)
+   - **Risk**: Higher risk of corruption and bribery
+   - **Coverage**: 
+     * Current PEPs (active in government)
+     * Former PEPs (within 12 months of leaving office)
+     * Family members (RCAs - Relatives and Close Associates)
+   - **Regions**: Global coverage, 240+ countries
+   - **Positions Tracked**:
+     * Heads of state, government ministers
+     * Senior judges, military officers
+     * State-owned enterprise executives
+     * Political party officials
+     * International organization leaders
+   - **Database Size**: 1.2+ million PEP profiles
+   - **Update Frequency**: Weekly updates
+
+3. **Adverse Media Screening**:
+   - **Definition**: Negative news coverage indicating financial crime risk
+   - **Sources**: 
+     * Global news outlets (10,000+ sources)
+     * Legal databases (court records, judgments)
+     * Regulatory announcements (FCA, SEC, etc.)
+     * Investigative journalism
+   - **Keywords Monitored**:
+     * Fraud, embezzlement, corruption
+     * Money laundering, terrorist financing
+     * Bribery, sanctions evasion
+     * Tax evasion, insider trading
+   - **Languages**: 40+ languages with translation
+   - **Time Range**: Last 10 years of coverage
+   - **AI Filtering**: Removes false positives and irrelevant news
+   - **Severity Scoring**: Low, medium, high risk classification
+
+4. **Watchlists**:
+   - **Interpol Red Notices**: International arrest warrants
+   - **FBI Most Wanted**: US federal criminal lists
+   - **Europol Lists**: European criminal intelligence
+   - **National Criminal Databases**: Country-specific watchlists
+   - **Financial Crime Watchlists**: Money laundering registries
+   - **Terrorist Watchlists**: Counter-terrorism databases
+   - **Proliferation Financing**: WMD-related entities
+   - **Coverage**: 50+ watchlists globally
+
+5. **Country Risk Assessment**:
+   - **FATF High-Risk Jurisdictions**: Countries with weak AML controls
+   - **Transparency International**: Corruption perception index
+   - **Basel AML Index**: National money laundering risk scores
+   - **Tax Havens**: Offshore financial centers
+   - **Sanctioned Countries**: Embargoed nations
+   - **Risk Scoring**: 0-100 country risk score
+   - **Use Case**: Enhanced due diligence for high-risk country merchants
+
+**Screening Results and Statuses:**
+
+• **Clear** (Green):
+  - No matches found in any databases
+  - Low country risk score (<25)
+  - No adverse media hits
+  - Safe to onboard
+  - **Action**: Automatic approval to proceed
+  - **Typical Rate**: 85-90% of screenings
+
+• **Monitoring** (Yellow):
+  - Potential matches requiring investigation (low confidence, 40-70%)
+  - Medium country risk (25-50)
+  - Minor adverse media (historical, resolved)
+  - **Action**: Proceed with caution, enable ongoing monitoring
+  - Enhanced due diligence recommended
+  - **Typical Rate**: 8-12% of screenings
+
+• **Flagged** (Red):
+  - Confirmed or high-confidence matches (>70%)
+  - High country risk (>50)
+  - Serious adverse media (recent fraud, money laundering)
+  - **Action**: Escalate to compliance, likely rejection
+  - May require legal review
+  - **Typical Rate**: 2-3% of screenings
+
+**How It Works in the Platform:**
+
+**Step 1 - Data Collection**:
+System sends to AMLWatcher:
+- Business/individual name
+- Country/countries of operation
+- Date of birth or incorporation date
+- Merchant ID for reference
+- Entity type (Company or Person)
+
+**Step 2 - API Call**:
+Backend function invokes:
+\`base44.functions.invoke('amlScreening', { name, entity_type, country, birth_incorporation_date, merchant_id })\`
+
+**Step 3 - AMLWatcher Processing**:
+- Searches across all databases simultaneously
+- Applies fuzzy matching algorithms
+- Assigns confidence scores to matches
+- Calculates overall risk score
+- Flags alerts for human review
+
+**Step 4 - Result Processing**:
+Backend function receives and processes:
+- Individual check results (passed/flagged)
+- Match details for each alert
+- Overall risk score (0-100)
+- Recommended action
+- Updates merchant record:
+  * \`aml_status\`: clear/monitoring/flagged
+  * \`aml_reference_id\`: AMLWatcher case ID
+  * \`aml_risk_score\`: 0-100
+  * \`aml_provider\`: 'amlwatcher'
+  * \`aml_last_check\`: timestamp
+  * \`aml_total_matches\`: count
+
+**Step 5 - UI Display**:
+Real-time display shows:
+- Progress indicator for each of 5 checks
+- Clear/Match/Potential Match status per check
+- Alert cards with match details
+- Overall AML status badge
+- Risk score visualization
+- Reference ID for case tracking
+
+**Integration Locations:**
+
+AML screening is integrated in:
+
+1. **Manual Merchant Onboarding** (Step 7 of 10):
+   - AMLScreeningStep component
+   - Automatic screening on step entry
+   - Results displayed to staff
+
+2. **Merchant Self-Onboarding** (Step 7 of 10):
+   - Same AMLScreeningStep component
+   - Applicant sees screening progress
+   - Transparent compliance process
+
+3. **Acquirer Onboarding** (Step 3 of 5):
+   - UniversalComplianceCheck component
+   - Screens acquiring bank entity
+   - Required before proceeding
+
+4. **APM Provider Onboarding**:
+   - UniversalComplianceCheck component
+   - Verifies payment provider compliance
+   - Sanctions and PEP checks
+
+**Ongoing Monitoring:**
+
+AMLWatcher provides continuous monitoring after initial screening:
+
+• **Real-Time Alerts**: 
+  - Email/webhook when entity appears on new sanctions list
+  - PEP status changes (newly appointed officials)
+  - New adverse media published
+  - Watchlist additions
+
+• **Monitoring Frequency**: Daily scans of monitored entities
+• **Alert Delivery**: 
+  - Webhook to platform (real-time)
+  - Email to compliance team
+  - Dashboard notification
+• **Action Required**: Review alert, decide on merchant status
+• **Case Updates**: New information added to merchant profile
+
+**Match Investigation Workflow:**
+
+When AMLWatcher flags a potential match:
+
+1. **Alert Review**: 
+   - Review match details and confidence score
+   - Check why entity was flagged (sanctions, PEP, adverse media)
+   - Review source information
+
+2. **Due Diligence**:
+   - Request additional information from merchant
+   - Search for explanatory information
+   - Determine if true match or false positive
+
+3. **Decision**:
+   - **False Positive**: Different entity with similar name → Clear to proceed
+   - **True Match (Low Risk)**: Minor adverse media → Proceed with monitoring
+   - **True Match (High Risk)**: Confirmed sanctions/serious crimes → Reject application
+
+4. **Documentation**:
+   - Document decision rationale
+   - Store evidence in compliance file
+   - Update merchant risk level
+   - Notify relevant parties
+
+**Risk Scoring System:**
+
+AMLWatcher assigns risk scores based on:
+
+• **Match Confidence**: How certain the match is
+• **Source Severity**: Sanctions > PEP > Adverse Media > Watchlists
+• **Recency**: Recent hits weighted higher
+• **Volume**: Number of separate hits
+• **Geography**: Country risk factored in
+
+**Score Ranges:**
+- **0-24**: Low risk (green) - Proceed normally
+- **25-49**: Medium risk (yellow) - Enhanced monitoring
+- **50-74**: High risk (orange) - Enhanced due diligence required
+- **75-100**: Critical risk (red) - Strong likelihood of rejection
+
+**Compliance Requirements:**
+
+• **AML/CFT Laws**: 
+  - Bank Secrecy Act (US)
+  - Money Laundering Regulations (UK)
+  - 4AMLD/5AMLD/6AMLD (EU)
+  - FATF 40 Recommendations
+  - Local AML laws in each jurisdiction
+
+• **Sanctions Compliance**:
+  - OFAC (US) compliance mandatory for USD transactions
+  - EU sanctions legally binding for EU entities
+  - Violation penalties: Fines up to millions, criminal charges
+
+• **Record Keeping**:
+  - Retain screening results for 7 years minimum
+  - Document all matches and decisions
+  - Annual review of high-risk merchants
+  - Suspicious Activity Reports (SARs) when required
+
+**Regulatory Reporting:**
+
+When matches are detected:
+
+• **SAR Filing**: Suspicious Activity Reports to FinCEN (US) or FIU (other countries)
+• **Timing**: File within 30 days of detection
+• **Content**: Detailed description of suspicious activity
+• **Do Not Notify**: Never inform the subject of SAR filing (tipping off is illegal)
+• **Platform Support**: SAR template generation, secure filing
+
+**API Configuration:**
+
+Required setup:
+- **Secret**: \`AMLWATCHER_API_KEY\` (set in platform environment)
+- **Endpoint**: \`https://api.amlwatcher.com/v2/screenings\`
+- **Authentication**: API key in Authorization header
+- **Rate Limits**: 200 requests/minute
+- **Webhook**: Configure for ongoing monitoring alerts
+
+**False Positive Management:**
+
+False positives are common in AML screening due to:
+- Common names (John Smith, Mohammed Ahmed)
+- Translation variations (Chinese names in Latin alphabet)
+- Partial matches (similar business names)
+
+**Reducing False Positives:**
+- Provide complete information (full name, date of birth, country)
+- Use additional identifiers (registration number, address)
+- Set appropriate match threshold (80-90% recommended)
+- Review potential matches with human judgment
+- Whitelist confirmed false positives
+
+**Costs and Pricing:**
+
+AMLWatcher pricing (estimate):
+- **Initial Screening**: $0.50-2.00 per entity
+- **Ongoing Monitoring**: $0.10-0.50 per entity/month
+- **Volume Discounts**: Available for high-volume PSPs
+- **Enterprise Plans**: Custom pricing for 10,000+ screenings/year
+
+**Performance Metrics:**
+
+Monitor AML screening effectiveness:
+- **Screen Time**: Average time per screening (target: <15 seconds)
+- **Match Rate**: % of screenings with matches (baseline: 10-15%)
+- **True Positive Rate**: % of matches that are genuine risks (target: 30-50%)
+- **False Positive Rate**: % requiring manual review (aim to reduce)
+- **Coverage**: % of merchants screened within 24 hours of application
+
+**Best Practices:**
+
+• **Screen All Merchants**: 100% screening for regulatory compliance
+• **Rescreen Regularly**: Annual rescreening at minimum, quarterly for high-risk
+• **Monitor Continuously**: Enable ongoing monitoring for all approved merchants
+• **Respond Quickly**: Investigate alerts within 24 hours
+• **Document Thoroughly**: Detailed notes on all matches and decisions
+• **Train Staff**: Ensure compliance team understands AML requirements
+• **Stay Updated**: Follow sanctions list updates and regulatory changes
+• **Risk-Based**: Apply enhanced due diligence to high-risk categories
+• **Cross-Reference**: Compare AML results with KYB verification
+• **Segregate**: Different approval thresholds for different risk levels
+
+**Integration with KYB:**
+
+AML and KYB work together:
+- **KYB**: Verifies business exists and is legitimate
+- **AML**: Ensures business is not involved in financial crime
+- **Combined Decision**: Both must pass for full approval
+- **Workflow**: KYB first (step 6), then AML (step 7)
+- **Mutual Information**: AML uses KYB company data for better matching
+
+**Accessing AMLWatcher Dashboard:**
+
+For detailed case management:
+1. Visit https://app.amlwatcher.com
+2. Login with your credentials
+3. Navigate to Screenings
+4. Search by reference ID (format: AML-XXXXXXXXXX)
+5. View detailed match information
+6. Download compliance reports
+7. Configure monitoring rules
+8. Set up webhook alerts
+
+**Support and Resources:**
+
+• **AMLWatcher Support**: support@amlwatcher.com, 24/7 availability
+• **Documentation**: https://docs.amlwatcher.com/api
+• **Webinars**: Monthly compliance training webinars
+• **Status**: https://status.amlwatcher.com
+• **Emergency**: Critical match escalation hotline available
+
+**Regulatory Updates:**
+
+AMLWatcher automatically incorporates:
+- New sanctions additions within 1 hour
+- PEP database updates weekly
+- Regulatory guidance changes
+- Watchlist modifications
+- Geopolitical event responses
+
+This ensures your platform always screens against the most current compliance data, reducing regulatory risk and protecting your business from financial crime exposure.`,
+                keywords: ['aml', 'amlwatcher', 'sanctions', 'pep', 'screening', 'compliance', 'ofac', 'monitoring']
             }
         ]
     },
