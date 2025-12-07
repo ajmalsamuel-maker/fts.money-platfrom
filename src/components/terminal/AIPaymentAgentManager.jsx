@@ -48,7 +48,9 @@ export default function AIPaymentAgentManager({ merchantId }) {
 
     const { data: agents = [] } = useQuery({
         queryKey: ['ai-agents', merchantId],
-        queryFn: () => base44.entities.AIPaymentAgent.filter({ merchant_id: merchantId }),
+        queryFn: () => merchantId ? 
+            base44.entities.AIPaymentAgent.filter({ merchant_id: merchantId }) :
+            base44.entities.AIPaymentAgent.list(),
     });
 
     const { data: decisions = [] } = useQuery({
@@ -68,6 +70,15 @@ export default function AIPaymentAgentManager({ merchantId }) {
             queryClient.invalidateQueries({ queryKey: ['ai-agents'] });
             toast.success('AI Agent created successfully');
             setShowCreateDialog(false);
+            setAgentData({
+                name: '',
+                merchant_id: merchantId,
+                agent_type: 'approval',
+                confidence_threshold: 0.85,
+                auto_approve_limit: 1000,
+                learning_mode: true,
+                capabilities: []
+            });
         }
     });
 
