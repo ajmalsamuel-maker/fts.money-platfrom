@@ -296,6 +296,62 @@ export default function AMLScreeningStep({ data, onChange, errors, businessData,
                 </Alert>
             )}
 
+            {overallStatus === 'flagged' && (
+                <Alert className="bg-red-50 border-red-200">
+                    <AlertTriangle className="h-4 w-4 text-red-600" />
+                    <AlertDescription className="text-red-700">
+                        <div>
+                            <strong className="block mb-2">Screening Flagged - Manual Review Required</strong>
+                            <div className="mt-3 space-y-2 text-sm">
+                                <p className="font-medium">Alert Summary:</p>
+                                {data.aml_reference_id && (
+                                    <div>
+                                        <span className="font-medium">Reference ID:</span> {data.aml_reference_id}
+                                    </div>
+                                )}
+                                {data.aml_risk_score !== undefined && (
+                                    <div>
+                                        <span className="font-medium">Overall Risk Score:</span> <span className="font-bold">{data.aml_risk_score}/100</span>
+                                    </div>
+                                )}
+                                {data.aml_total_matches > 0 && (
+                                    <div>
+                                        <span className="font-medium">Total Matches:</span> {data.aml_total_matches}
+                                    </div>
+                                )}
+                                <div className="space-y-2 mt-3">
+                                    {alerts.map((alert, idx) => (
+                                        <div key={idx} className="pl-3 border-l-2 border-red-400">
+                                            <p className="font-medium">{alert.check}</p>
+                                            <p className="text-xs mt-0.5">{alert.details}</p>
+                                            {alert.risk_score > 0 && (
+                                                <p className="text-xs mt-0.5">Risk Level: {alert.risk_score}/100</p>
+                                            )}
+                                            {alert.type && (
+                                                <p className="text-xs mt-0.5 capitalize">Type: {alert.type.replace('_', ' ')}</p>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="mt-3 pt-3 border-t border-red-300">
+                                    <p className="font-medium mb-1">Match Types:</p>
+                                    <ul className="text-xs space-y-0.5 list-disc list-inside">
+                                        <li>Sanctions Lists: OFAC (US), EU Consolidated, UN Security Council</li>
+                                        <li>PEP Databases: Politically Exposed Persons screening</li>
+                                        <li>Adverse Media: Negative news related to financial crime</li>
+                                        <li>Watchlists: Law enforcement and regulatory watchlists</li>
+                                    </ul>
+                                    <p className="mt-2">
+                                        Our compliance team will conduct enhanced due diligence and contact you within <strong>24-48 hours</strong>.
+                                        For urgent inquiries, contact <strong>compliance@paymenthub.com</strong>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </AlertDescription>
+                </Alert>
+            )}
+
             {data.aml_reference_id && (
                 <Card className="p-4 bg-slate-50">
                     <div className="flex items-center justify-between mb-4">

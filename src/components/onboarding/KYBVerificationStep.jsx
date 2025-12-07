@@ -253,7 +253,47 @@ export default function KYBVerificationStep({ data, onChange, errors, businessDa
                 <Alert className="bg-red-50 border-red-200">
                     <XCircle className="h-4 w-4 text-red-600" />
                     <AlertDescription className="text-red-700">
-                        <strong>Verification Failed</strong> - Please review the failed checks above and contact support for assistance.
+                        <div>
+                            <strong className="block mb-2">Verification Failed</strong>
+                            <div className="mt-3 space-y-2 text-sm">
+                                <p className="font-medium">Failure Details:</p>
+                                {data.kyb_reference_id && (
+                                    <div>
+                                        <span className="font-medium">Reference ID:</span> {data.kyb_reference_id}
+                                    </div>
+                                )}
+                                <div className="space-y-2 mt-2">
+                                    {Object.keys(checkProgress).filter(checkId => 
+                                        checkProgress[checkId] === 'failed' || checkProgress[checkId] === 'needs_review'
+                                    ).map(checkId => {
+                                        const check = kybChecks.find(c => c.id === checkId);
+                                        const checkData = data[`kyb_check_${checkId}`];
+                                        return (
+                                            <div key={checkId} className="pl-3 border-l-2 border-red-400">
+                                                <p className="font-medium">{check?.name}</p>
+                                                {checkData?.details && <p className="text-xs mt-0.5">{checkData.details}</p>}
+                                                {checkData?.confidence_score && (
+                                                    <p className="text-xs mt-0.5">Confidence: {checkData.confidence_score}%</p>
+                                                )}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                                <div className="mt-3 pt-3 border-t border-red-300">
+                                    <p className="font-medium mb-1">Possible Reasons:</p>
+                                    <ul className="text-xs space-y-0.5 list-disc list-inside">
+                                        <li>Company not found in official registries</li>
+                                        <li>Registration number does not match company name</li>
+                                        <li>Company dissolved or struck off</li>
+                                        <li>Insufficient public records available</li>
+                                        <li>Name variation between application and registry</li>
+                                    </ul>
+                                    <p className="mt-2">
+                                        Please verify all information is correct and contact support at <strong>compliance@paymenthub.com</strong> for assistance.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                     </AlertDescription>
                 </Alert>
             )}
