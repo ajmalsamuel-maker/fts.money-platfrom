@@ -28,7 +28,7 @@ export const getOnboardingInvitationEmail = ({
                     <tr>
                         <td style="background: linear-gradient(135deg, ${primaryColor}, #06b6d4); padding: 40px 20px; text-align: center;">
                             ${logoUrl ? `
-                            <img src="${logoUrl}" alt="${companyName}" style="max-width: 150px; max-height: 60px; margin-bottom: 20px;" />
+                            <img src="${logoUrl}" alt="${companyName}" style="max-width: 150px; max-height: 60px; height: auto; width: auto; display: block; margin: 0 auto 20px auto;" />
                             ` : `
                             <div style="font-size: 32px; font-weight: bold; color: white; margin-bottom: 10px;">${companyName}</div>
                             `}
