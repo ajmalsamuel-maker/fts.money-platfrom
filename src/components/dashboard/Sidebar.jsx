@@ -109,6 +109,7 @@ const menuItems = [
         icon: Shield,
         items: [
             { icon: Shield, label: 'Fraud Prevention', path: 'FraudPrevention', permission: 'VIEW_FRAUD_PREVENTION' },
+            { icon: AlertTriangle, label: 'Fraud Monitoring', path: 'FraudMonitoring', permission: 'VIEW_FRAUD_PREVENTION' },
             { icon: Users, label: 'Compliance', path: 'Compliance', permission: 'VIEW_COMPLIANCE' },
         ]
     },
