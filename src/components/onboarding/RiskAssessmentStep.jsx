@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import { AlertTriangle, AlertCircle } from 'lucide-react';
+import { AlertTriangle, AlertCircle, Building2 } from 'lucide-react';
 
 const volumeRanges = [
     { value: '0-10k', label: 'Less than $10,000' },
