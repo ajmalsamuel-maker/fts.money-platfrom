@@ -41,7 +41,8 @@ import {
     ArrowUpDown,
     Database,
     Headphones,
-    Scale
+    Scale,
+    Building2
 } from 'lucide-react';
 
 const menuItems = [
