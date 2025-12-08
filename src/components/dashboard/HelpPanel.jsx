@@ -55,7 +55,8 @@ import {
     Fingerprint,
     ShieldCheck,
     Award,
-    GraduationCap
+    GraduationCap,
+    Building2
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
 
