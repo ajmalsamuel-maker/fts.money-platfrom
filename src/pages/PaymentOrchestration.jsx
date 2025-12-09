@@ -74,6 +74,7 @@ import {
     Shuffle
 } from 'lucide-react';
 import RoutingFlowVisualizer from '@/components/orchestration/RoutingFlowVisualizer';
+import RouteSimulator from '@/components/orchestration/RouteSimulator';
 
 const processors = [
     { id: 'stripe', name: 'Stripe', type: 'gateway', status: 'active', successRate: 98.5, avgLatency: 245, fee: 2.9, networks: ['visa', 'mastercard', 'amex'] },
@@ -655,136 +656,7 @@ export default function PaymentOrchestration() {
 
                         {/* Route Simulator Tab */}
                         <TabsContent value="simulator">
-                            <div className="grid lg:grid-cols-2 gap-6">
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle>Transaction Simulator</CardTitle>
-                                        <CardDescription>Test which route a transaction would take</CardDescription>
-                                    </CardHeader>
-                                    <CardContent className="space-y-4">
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div className="space-y-2">
-                                                <Label>Amount</Label>
-                                                <Input type="number" placeholder="100.00" defaultValue="1500" />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <Label>Currency</Label>
-                                                <Select defaultValue="USD">
-                                                    <SelectTrigger>
-                                                        <SelectValue />
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        <SelectItem value="USD">USD</SelectItem>
-                                                        <SelectItem value="EUR">EUR</SelectItem>
-                                                        <SelectItem value="GBP">GBP</SelectItem>
-                                                    </SelectContent>
-                                                </Select>
-                                            </div>
-                                        </div>
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div className="space-y-2">
-                                                <Label>Card Network</Label>
-                                                <Select defaultValue="visa">
-                                                    <SelectTrigger>
-                                                        <SelectValue />
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        <SelectItem value="visa">Visa</SelectItem>
-                                                        <SelectItem value="mastercard">Mastercard</SelectItem>
-                                                        <SelectItem value="amex">Amex</SelectItem>
-                                                    </SelectContent>
-                                                </Select>
-                                            </div>
-                                            <div className="space-y-2">
-                                                <Label>Country</Label>
-                                                <Select defaultValue="US">
-                                                    <SelectTrigger>
-                                                        <SelectValue />
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        <SelectItem value="US">United States</SelectItem>
-                                                        <SelectItem value="GB">United Kingdom</SelectItem>
-                                                        <SelectItem value="DE">Germany</SelectItem>
-                                                        <SelectItem value="FR">France</SelectItem>
-                                                    </SelectContent>
-                                                </Select>
-                                            </div>
-                                        </div>
-                                        <Button className="w-full gap-2 bg-blue-600 hover:bg-blue-700">
-                                            <Play className="h-4 w-4" />
-                                            Simulate Route
-                                        </Button>
-                                    </CardContent>
-                                </Card>
-
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle>Simulation Result</CardTitle>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <div className="space-y-4">
-                                            <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
-                                                <div className="flex items-center gap-2 mb-2">
-                                                    <CheckCircle className="h-5 w-5 text-emerald-600" />
-                                                    <span className="font-medium text-emerald-700">Route Matched</span>
-                                                </div>
-                                                <p className="text-sm text-emerald-600">Rule: High Value Transactions (RULE-001)</p>
-                                            </div>
-
-                                            <div className="space-y-3">
-                                                <h4 className="font-medium text-sm text-slate-500">Complete Routing Path</h4>
-                                                <div className="space-y-2 p-3 bg-slate-50 rounded-lg text-xs">
-                                                    <div className="flex items-center gap-2">
-                                                        <span className="text-slate-600">1. Orchestration Layer:</span>
-                                                        <Badge variant="outline" className="text-xs">Selects Merchant MID</Badge>
-                                                    </div>
-                                                    <div className="flex items-center gap-2">
-                                                        <span className="text-slate-600">2. MID Routing Layer:</span>
-                                                        <Badge variant="outline" className="text-xs">Routes to Bank MID</Badge>
-                                                    </div>
-                                                    <div className="flex items-center gap-2">
-                                                        <span className="text-slate-600">3. Processing Layer:</span>
-                                                        <Badge variant="outline" className="text-xs">Executes via Acquirer</Badge>
-                                                    </div>
-                                                </div>
-                                                
-                                                <h4 className="font-medium text-sm text-slate-500 mt-4">Processor Cascade</h4>
-                                                <div className="flex items-center gap-2">
-                                                    <div className="flex-1 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                                                        <p className="font-medium text-blue-700">Adyen</p>
-                                                        <p className="text-xs text-blue-600">Primary</p>
-                                                    </div>
-                                                    <ArrowRight className="h-4 w-4 text-slate-300" />
-                                                    <div className="flex-1 p-3 bg-slate-50 border rounded-lg">
-                                                        <p className="font-medium text-slate-700">Stripe</p>
-                                                        <p className="text-xs text-slate-500">Fallback 1</p>
-                                                    </div>
-                                                    <ArrowRight className="h-4 w-4 text-slate-300" />
-                                                    <div className="flex-1 p-3 bg-slate-50 border rounded-lg">
-                                                        <p className="font-medium text-slate-700">Checkout</p>
-                                                        <p className="text-xs text-slate-500">Fallback 2</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div className="grid grid-cols-3 gap-4 pt-4 border-t">
-                                                <div>
-                                                    <p className="text-xs text-slate-500">Est. Success</p>
-                                                    <p className="font-medium text-emerald-600">97.8%</p>
-                                                </div>
-                                                <div>
-                                                    <p className="text-xs text-slate-500">Est. Latency</p>
-                                                    <p className="font-medium">320ms</p>
-                                                </div>
-                                                <div>
-                                                    <p className="text-xs text-slate-500">Est. Fee</p>
-                                                    <p className="font-medium">2.5%</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            </div>
+                            <RouteSimulator merchants={merchants} />
                         </TabsContent>
                     </Tabs>
 
