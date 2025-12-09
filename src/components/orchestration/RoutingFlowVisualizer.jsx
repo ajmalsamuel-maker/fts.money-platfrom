@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, CheckCircle, XCircle, Clock, Zap } from 'lucide-react';
+import { ArrowRight, CheckCircle, XCircle, Clock, Zap, CreditCard } from 'lucide-react';
 import { cn } from "@/lib/utils";
 
 export default function RoutingFlowVisualizer({ 
@@ -21,14 +21,34 @@ export default function RoutingFlowVisualizer({
                 .filter(r => r.merchant_mid_id === mid.id && r.status === 'active')
                 .sort((a, b) => a.priority - b.priority);
             
+            // Group routes by network
+            const routesByNetwork = {};
+            
+            routes.forEach(route => {
+                const bankMID = bankMIDs.find(b => b.id === route.bank_mid_id);
+                const processor = processors.find(p => p.id === bankMID?.acquirer_id);
+                
+                // Determine applicable networks
+                const networks = route.routing_conditions?.card_types || bankMID?.supported_card_types || ['all'];
+                
+                networks.forEach(network => {
+                    if (!routesByNetwork[network]) {
+                        routesByNetwork[network] = [];
+                    }
+                    routesByNetwork[network].push({ route, bankMID, processor });
+                });
+            });
+            
             return {
                 merchant,
                 merchantMID: mid,
                 routes: routes.map(route => {
                     const bankMID = bankMIDs.find(b => b.id === route.bank_mid_id);
                     const processor = processors.find(p => p.id === bankMID?.acquirer_id);
-                    return { route, bankMID, processor };
-                })
+                    const networks = route.routing_conditions?.card_types || bankMID?.supported_card_types || [];
+                    return { route, bankMID, processor, networks };
+                }),
+                routesByNetwork
             };
         });
     };
@@ -98,64 +118,81 @@ export default function RoutingFlowVisualizer({
                                 <div className="ml-12 pl-8 border-l-2 border-dashed border-slate-300">
                                     <div className="space-y-3">
                                         {path.routes.map((routeInfo, routeIdx) => (
-                                            <div key={routeIdx} className="flex items-center gap-4">
-                                                <div className="flex flex-col items-center gap-1">
-                                                    <div className={cn(
-                                                        "w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white",
-                                                        routeIdx === 0 ? "bg-emerald-500" : "bg-slate-400"
-                                                    )}>
-                                                        {routeInfo.route.priority}
-                                                    </div>
-                                                    <span className="text-xs text-slate-500">
-                                                        {routeIdx === 0 ? 'Primary' : `Failover ${routeIdx}`}
-                                                    </span>
-                                                </div>
-
-                                                <ArrowRight className="h-5 w-5 text-slate-400" />
-
-                                                {/* Bank MID */}
-                                                <div className="w-48 p-3 bg-gradient-to-r from-cyan-50 to-cyan-100 border-2 border-cyan-200 rounded-lg">
-                                                    <div className="flex items-center gap-2">
-                                                        <div className="w-6 h-6 rounded bg-cyan-500 text-white flex items-center justify-center text-xs font-bold">
-                                                            B
+                                            <div key={routeIdx} className="space-y-2">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="flex flex-col items-center gap-1">
+                                                        <div className={cn(
+                                                            "w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white",
+                                                            routeIdx === 0 ? "bg-emerald-500" : "bg-slate-400"
+                                                        )}>
+                                                            {routeInfo.route.priority}
                                                         </div>
-                                                        <div className="flex-1">
-                                                            <p className="text-xs text-cyan-600">Bank MID</p>
-                                                            <p className="text-xs font-bold text-cyan-900 truncate">
-                                                                {routeInfo.bankMID?.bank_mid_name || 'N/A'}
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                    <div className="flex items-center gap-1 mt-2">
-                                                        <CheckCircle className="h-3 w-3 text-emerald-600" />
-                                                        <span className="text-xs text-emerald-600 font-medium">
-                                                            {routeInfo.bankMID?.success_rate || 98}%
+                                                        <span className="text-xs text-slate-500">
+                                                            {routeIdx === 0 ? 'Primary' : `Failover ${routeIdx}`}
                                                         </span>
                                                     </div>
-                                                </div>
 
-                                                <ArrowRight className="h-5 w-5 text-slate-400" />
+                                                    <ArrowRight className="h-5 w-5 text-slate-400" />
 
-                                                {/* Processor */}
-                                                <div className="w-48 p-3 bg-gradient-to-r from-emerald-50 to-emerald-100 border-2 border-emerald-200 rounded-lg">
-                                                    <div className="flex items-center gap-2">
-                                                        <div className="w-6 h-6 rounded bg-emerald-500 text-white flex items-center justify-center text-xs font-bold">
-                                                            P
+                                                    {/* Bank MID */}
+                                                    <div className="w-48 p-3 bg-gradient-to-r from-cyan-50 to-cyan-100 border-2 border-cyan-200 rounded-lg">
+                                                        <div className="flex items-center gap-2">
+                                                            <div className="w-6 h-6 rounded bg-cyan-500 text-white flex items-center justify-center text-xs font-bold">
+                                                                B
+                                                            </div>
+                                                            <div className="flex-1">
+                                                                <p className="text-xs text-cyan-600">Bank MID</p>
+                                                                <p className="text-xs font-bold text-cyan-900 truncate">
+                                                                    {routeInfo.bankMID?.bank_mid_name || 'N/A'}
+                                                                </p>
+                                                            </div>
                                                         </div>
-                                                        <div className="flex-1">
-                                                            <p className="text-xs text-emerald-600">Processor</p>
-                                                            <p className="text-xs font-bold text-emerald-900 truncate">
-                                                                {routeInfo.processor?.name || routeInfo.bankMID?.acquirer_name || 'N/A'}
-                                                            </p>
+                                                        <div className="flex items-center gap-1 mt-2">
+                                                            <CheckCircle className="h-3 w-3 text-emerald-600" />
+                                                            <span className="text-xs text-emerald-600 font-medium">
+                                                                {routeInfo.bankMID?.success_rate || 98}%
+                                                            </span>
                                                         </div>
                                                     </div>
-                                                    <div className="flex items-center gap-2 mt-2">
-                                                        <Clock className="h-3 w-3 text-amber-600" />
-                                                        <span className="text-xs text-amber-600">
-                                                            {routeInfo.processor?.avg_response_time_ms || 250}ms
-                                                        </span>
+
+                                                    <ArrowRight className="h-5 w-5 text-slate-400" />
+
+                                                    {/* Processor */}
+                                                    <div className="w-48 p-3 bg-gradient-to-r from-emerald-50 to-emerald-100 border-2 border-emerald-200 rounded-lg">
+                                                        <div className="flex items-center gap-2">
+                                                            <div className="w-6 h-6 rounded bg-emerald-500 text-white flex items-center justify-center text-xs font-bold">
+                                                                P
+                                                            </div>
+                                                            <div className="flex-1">
+                                                                <p className="text-xs text-emerald-600">Processor</p>
+                                                                <p className="text-xs font-bold text-emerald-900 truncate">
+                                                                    {routeInfo.processor?.name || routeInfo.bankMID?.acquirer_name || 'N/A'}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex items-center gap-2 mt-2">
+                                                            <Clock className="h-3 w-3 text-amber-600" />
+                                                            <span className="text-xs text-amber-600">
+                                                                {routeInfo.processor?.avg_response_time_ms || 250}ms
+                                                            </span>
+                                                        </div>
                                                     </div>
                                                 </div>
+
+                                                {/* Network-specific info */}
+                                                {routeInfo.networks && routeInfo.networks.length > 0 && (
+                                                    <div className="ml-8 flex items-center gap-2">
+                                                        <CreditCard className="h-3 w-3 text-slate-400" />
+                                                        <span className="text-xs text-slate-500">Networks:</span>
+                                                        <div className="flex gap-1">
+                                                            {routeInfo.networks.map((net, idx) => (
+                                                                <Badge key={idx} variant="outline" className="text-xs capitalize">
+                                                                    {net}
+                                                                </Badge>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                )}
                                             </div>
                                         ))}
 

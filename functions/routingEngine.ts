@@ -55,7 +55,7 @@ Deno.serve(async (req) => {
         }
 
         // Apply orchestration logic
-        const selectedMerchantMID = await selectMerchantMID(
+        const { mid: selectedMerchantMID, rule: appliedOrchestrationRule } = await selectMerchantMID(
             base44, 
             merchantMIDs, 
             { amount, currency, card_type, country, transaction_type }
@@ -89,18 +89,33 @@ Deno.serve(async (req) => {
         // Sort by priority
         routingRules.sort((a, b) => a.priority - b.priority);
 
-        // Step 4: Try each routing rule in priority order (failover logic)
+        // Step 4: Try each routing rule in priority order (failover logic) with network-specific matching
         let selectedBankMID = null;
         let selectedProcessor = null;
         let routingPath = [];
+        let appliedMIDRoutingRule = null;
 
         for (const rule of routingRules) {
             const bankMID = await base44.entities.BankMID.filter({ id: rule.bank_mid_id });
             
             if (bankMID && bankMID.length > 0 && bankMID[0].status === 'active') {
-                // Check if conditions match
+                // Check network compatibility
+                const networkSupported = bankMID[0].supported_card_types?.includes(card_type) ?? true;
+                
+                if (!networkSupported) {
+                    routingPath.push({
+                        priority: rule.priority,
+                        bankMID: bankMID[0],
+                        status: 'network_mismatch',
+                        reason: `${card_type} not supported by this Bank MID`
+                    });
+                    continue;
+                }
+
+                // Check if conditions match (including network-specific conditions)
                 if (evaluateRoutingConditions(rule.routing_conditions, { amount, currency, card_type, country })) {
                     selectedBankMID = bankMID[0];
+                    appliedMIDRoutingRule = rule;
                     
                     // Get processor details
                     if (selectedBankMID.acquirer_id) {
@@ -114,9 +129,12 @@ Deno.serve(async (req) => {
 
                     routingPath.push({
                         priority: rule.priority,
+                        rule_id: rule.id,
                         bankMID: selectedBankMID,
                         processor: selectedProcessor,
                         status: 'selected',
+                        network: card_type,
+                        network_match: true,
                         failover_enabled: rule.failover_enabled
                     });
 
@@ -125,11 +143,12 @@ Deno.serve(async (req) => {
             }
 
             // Add to path as potential failover
-            if (rule.failover_enabled) {
+            if (rule.failover_enabled && bankMID && bankMID[0]) {
                 routingPath.push({
                     priority: rule.priority,
                     bankMID: bankMID[0],
                     status: 'failover',
+                    network: card_type,
                     failover_enabled: true
                 });
             }
@@ -178,12 +197,21 @@ Deno.serve(async (req) => {
                 status: selectedProcessor.status
             } : null,
             routingDecision: {
-                orchestration: 'Merchant MID selected based on transaction parameters',
+                network: card_type,
+                networkSpecific: true,
+                orchestration: appliedOrchestrationRule ? 
+                    `Rule: ${appliedOrchestrationRule.name} (Priority ${appliedOrchestrationRule.priority})` :
+                    'Default Merchant MID selected',
+                orchestrationNetworks: appliedOrchestrationRule?.card_networks || [],
                 midRouting: `Bank MID selected via priority ${routingPath[0]?.priority}`,
+                midRoutingRule: appliedMIDRoutingRule?.id,
+                networkCompatible: routingPath[0]?.network_match,
                 failoverAvailable: routingPath.length > 1,
                 failoverOptions: routingPath.slice(1).map(r => ({
                     priority: r.priority,
-                    bank_mid: r.bankMID?.bank_mid_name
+                    bank_mid: r.bankMID?.bank_mid_name,
+                    status: r.status,
+                    network: r.network
                 }))
             },
             transaction: {
@@ -230,14 +258,19 @@ Deno.serve(async (req) => {
 
 // Helper: Select best Merchant MID based on orchestration rules
 async function selectMerchantMID(base44, merchantMIDs, params) {
-    const { amount, currency, transaction_type, country } = params;
+    const { amount, currency, transaction_type, country, card_type } = params;
 
     // Get orchestration rules
     const orchestrationRules = await base44.entities.RoutingRule.filter({ status: 'active' });
     orchestrationRules.sort((a, b) => (a.priority || 100) - (b.priority || 100));
 
-    // Apply orchestration rules
+    // Apply orchestration rules with network-specific matching
     for (const rule of orchestrationRules) {
+        // Check if rule applies to this card network
+        if (rule.card_networks && rule.card_networks.length > 0) {
+            if (card_type && !rule.card_networks.includes(card_type)) continue;
+        }
+
         for (const mid of merchantMIDs) {
             // Check currency match
             if (mid.currency === currency) {
@@ -245,9 +278,12 @@ async function selectMerchantMID(base44, merchantMIDs, params) {
                 if (rule.min_amount && amount < rule.min_amount) continue;
                 if (rule.max_amount && amount > rule.max_amount) continue;
 
-                // Check transaction type
-                if (rule.card_networks && rule.card_networks.length > 0) {
-                    // Additional logic for card type matching
+                // Check transaction types
+                if (mid.transaction_types && mid.transaction_types.length > 0) {
+                    const txTypeMatch = mid.transaction_types.some(t => 
+                        t.toLowerCase().includes(transaction_type.toLowerCase())
+                    );
+                    if (!txTypeMatch) continue;
                 }
 
                 // Check country
@@ -256,13 +292,14 @@ async function selectMerchantMID(base44, merchantMIDs, params) {
                 }
 
                 // Found matching MID
-                return mid;
+                return { mid, rule };
             }
         }
     }
 
     // Default: return first matching by currency
-    return merchantMIDs.find(m => m.currency === currency) || merchantMIDs[0];
+    const defaultMid = merchantMIDs.find(m => m.currency === currency) || merchantMIDs[0];
+    return { mid: defaultMid, rule: null };
 }
 
 // Helper: Evaluate routing conditions

@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Play, Loader2, CheckCircle, XCircle, ArrowRight, Clock, DollarSign } from 'lucide-react';
+import { Play, Loader2, CheckCircle, XCircle, ArrowRight, Clock, DollarSign, CreditCard } from 'lucide-react';
 import { cn } from "@/lib/utils";
 
 export default function RouteSimulator({ merchants = [] }) {
@@ -177,6 +177,27 @@ export default function RouteSimulator({ merchants = [] }) {
                                     Routing Path Determined Successfully
                                 </AlertDescription>
                             </Alert>
+
+                            {/* Network Decision */}
+                            {result.path.routingDecision?.networkSpecific && (
+                                <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <CreditCard className="h-4 w-4 text-blue-600" />
+                                        <span className="text-sm font-medium text-blue-900">
+                                            Network-Specific Routing: {result.path.routingDecision.network?.toUpperCase()}
+                                        </span>
+                                    </div>
+                                    <p className="text-xs text-blue-700">
+                                        Route optimized for {result.path.routingDecision.network} transactions
+                                    </p>
+                                    {result.path.routingDecision.networkCompatible && (
+                                        <div className="flex items-center gap-1 mt-1">
+                                            <CheckCircle className="h-3 w-3 text-emerald-600" />
+                                            <span className="text-xs text-emerald-600">Network compatibility verified</span>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
 
                             {/* Routing Path */}
                             <div className="space-y-3">
