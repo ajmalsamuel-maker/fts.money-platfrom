@@ -135,17 +135,24 @@ const menuItems = [
                 { icon: Palette, label: 'appearance', path: 'Appearance', permission: 'VIEW_APPEARANCE' },
                 { icon: Settings, label: 'settings', path: 'Settings', permission: 'VIEW_SETTINGS' },
                 { icon: Landmark, label: 'databaseSetup', path: 'DatabaseSetup', permission: 'VIEW_SETTINGS' },
-            ]
-        },
-        {
-            group: 'resources',
-            icon: HelpCircle,
-            items: [
+                ]
+                },
+                {
+                group: 'api',
+                icon: Globe,
+                items: [
+                { icon: Globe, label: 'apiDocumentation', path: 'APIDocumentation', permission: 'VIEW_DASHBOARD' },
+                ]
+                },
+                {
+                group: 'resources',
+                icon: HelpCircle,
+                items: [
                 { icon: Headphones, label: 'supportCenter', path: 'Support', permission: 'VIEW_DASHBOARD' },
                 { icon: Shield, label: 'privacyPolicy', path: 'PrivacyPolicy', permission: 'VIEW_DASHBOARD' },
                 { icon: Scale, label: 'termsOfService', path: 'TermsOfService', permission: 'VIEW_DASHBOARD' },
-            ]
-        },
+                ]
+                },
         ];
 
 export default function Sidebar({ collapsed, onToggle, currentPage }) {

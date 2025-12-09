@@ -86,6 +86,7 @@ const categoryColors = {
 export default function PaymentNews() {
     const [news, setNews] = useState(newsData);
     const [isRefreshing, setIsRefreshing] = useState(false);
+    const [refreshInterval] = useState(3600000); // 1 hour
 
     const handleRefresh = () => {
         setIsRefreshing(true);
@@ -95,6 +96,11 @@ export default function PaymentNews() {
             setIsRefreshing(false);
         }, 1000);
     };
+
+    useEffect(() => {
+        const interval = setInterval(handleRefresh, refreshInterval);
+        return () => clearInterval(interval);
+    }, [refreshInterval]);
 
     return (
         <Card className="p-4">

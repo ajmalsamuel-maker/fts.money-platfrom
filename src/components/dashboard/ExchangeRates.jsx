@@ -33,6 +33,7 @@ export default function ExchangeRates({ selectedCurrencies = ['EUR', 'GBP', 'JPY
     const [rates, setRates] = useState(defaultRates);
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [lastUpdated, setLastUpdated] = useState(new Date());
+    const [refreshInterval] = useState(300000); // 5 minutes
 
     const handleRefresh = () => {
         setIsRefreshing(true);
@@ -52,6 +53,11 @@ export default function ExchangeRates({ selectedCurrencies = ['EUR', 'GBP', 'JPY
             setIsRefreshing(false);
         }, 800);
     };
+
+    useEffect(() => {
+        const interval = setInterval(handleRefresh, refreshInterval);
+        return () => clearInterval(interval);
+    }, [refreshInterval]);
 
     const displayCurrencies = selectedCurrencies.filter(c => rates[c]);
 
