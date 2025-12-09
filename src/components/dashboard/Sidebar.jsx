@@ -138,14 +138,7 @@ const menuItems = [
                 ]
                 },
                 {
-                group: 'api',
-                icon: Globe,
-                items: [
-                { icon: Globe, label: 'apiDocumentation', path: 'APIDocumentation', permission: 'VIEW_DASHBOARD' },
-                ]
-                },
-                {
-                group: 'resources',
+                    group: 'resources',
                 icon: HelpCircle,
                 items: [
                 { icon: Headphones, label: 'supportCenter', path: 'Support', permission: 'VIEW_DASHBOARD' },
