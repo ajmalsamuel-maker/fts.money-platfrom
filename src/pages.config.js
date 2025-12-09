@@ -50,6 +50,8 @@ import FraudMonitoring from './pages/FraudMonitoring';
 import VirtualTerminal from './pages/VirtualTerminal';
 import AIAutomationPlatform from './pages/AIAutomationPlatform';
 import MerchantSelfServicePortal from './pages/MerchantSelfServicePortal';
+import BankMIDs from './pages/BankMIDs';
+import MIDRouting from './pages/MIDRouting';
 import __Layout from './Layout.jsx';
 
 
@@ -106,6 +108,8 @@ export const PAGES = {
     "VirtualTerminal": VirtualTerminal,
     "AIAutomationPlatform": AIAutomationPlatform,
     "MerchantSelfServicePortal": MerchantSelfServicePortal,
+    "BankMIDs": BankMIDs,
+    "MIDRouting": MIDRouting,
 }
 
 export const pagesConfig = {
