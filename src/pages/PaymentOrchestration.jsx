@@ -137,6 +137,21 @@ export default function PaymentOrchestration() {
         queryFn: () => base44.entities.RoutingRule.list('-priority'),
     });
 
+    const { data: merchantMIDs = [] } = useQuery({
+        queryKey: ['merchantMIDs'],
+        queryFn: () => base44.entities.MerchantMID.list(),
+    });
+
+    const { data: bankMIDs = [] } = useQuery({
+        queryKey: ['bankMIDs'],
+        queryFn: () => base44.entities.BankMID.list(),
+    });
+
+    const { data: midRoutingRules = [] } = useQuery({
+        queryKey: ['midRoutingRules'],
+        queryFn: () => base44.entities.MIDRoutingRule.list('priority'),
+    });
+
     const createRuleMutation = useMutation({
         mutationFn: (data) => base44.entities.RoutingRule.create(data),
         onSuccess: () => {
@@ -203,47 +218,58 @@ export default function PaymentOrchestration() {
                     </div>
 
                     {/* Stats */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
                         <Card className="p-4">
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
                                     <Route className="h-5 w-5 text-blue-600" />
                                 </div>
                                 <div>
-                                    <p className="text-sm text-slate-500">Active Rules</p>
+                                    <p className="text-sm text-slate-500">Orchestration Rules</p>
                                     <p className="text-xl font-bold">{activeRulesCount}</p>
                                 </div>
                             </div>
                         </Card>
                         <Card className="p-4">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center">
-                                    <Server className="h-5 w-5 text-emerald-600" />
-                                </div>
-                                <div>
-                                    <p className="text-sm text-slate-500">Processors</p>
-                                    <p className="text-xl font-bold">{processors.filter(p => p.status === 'active').length}/{processors.length}</p>
-                                </div>
-                            </div>
-                        </Card>
-                        <Card className="p-4">
-                            <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 rounded-lg bg-purple-50 flex items-center justify-center">
-                                    <ArrowDown className="h-5 w-5 text-purple-600" />
+                                    <Layers className="h-5 w-5 text-purple-600" />
                                 </div>
                                 <div>
-                                    <p className="text-sm text-slate-500">Cascade Rules</p>
-                                    <p className="text-xl font-bold">{cascadeRulesCount}</p>
+                                    <p className="text-sm text-slate-500">Merchant MIDs</p>
+                                    <p className="text-xl font-bold">{merchantMIDs.filter(m => m.status === 'active').length}</p>
                                 </div>
                             </div>
                         </Card>
                         <Card className="p-4">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center">
-                                    <TrendingUp className="h-5 w-5 text-amber-600" />
+                                <div className="w-10 h-10 rounded-lg bg-cyan-50 flex items-center justify-center">
+                                    <Server className="h-5 w-5 text-cyan-600" />
                                 </div>
                                 <div>
-                                    <p className="text-sm text-slate-500">Avg Success Rate</p>
+                                    <p className="text-sm text-slate-500">Bank MIDs</p>
+                                    <p className="text-xl font-bold">{bankMIDs.filter(b => b.status === 'active').length}</p>
+                                </div>
+                            </div>
+                        </Card>
+                        <Card className="p-4">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center">
+                                    <GitBranch className="h-5 w-5 text-orange-600" />
+                                </div>
+                                <div>
+                                    <p className="text-sm text-slate-500">MID Routes</p>
+                                    <p className="text-xl font-bold">{midRoutingRules.filter(r => r.status === 'active').length}</p>
+                                </div>
+                            </div>
+                        </Card>
+                        <Card className="p-4">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center">
+                                    <TrendingUp className="h-5 w-5 text-emerald-600" />
+                                </div>
+                                <div>
+                                    <p className="text-sm text-slate-500">Success Rate</p>
                                     <p className="text-xl font-bold text-emerald-600">97.2%</p>
                                 </div>
                             </div>
@@ -252,11 +278,75 @@ export default function PaymentOrchestration() {
 
                     <Tabs value={activeTab} onValueChange={setActiveTab}>
                         <TabsList className="mb-6">
-                            <TabsTrigger value="rules">Routing Rules</TabsTrigger>
+                            <TabsTrigger value="rules">Orchestration Rules</TabsTrigger>
+                            <TabsTrigger value="mids">MID Routing</TabsTrigger>
                             <TabsTrigger value="processors">Processors</TabsTrigger>
                             <TabsTrigger value="cascade">Cascade Config</TabsTrigger>
                             <TabsTrigger value="simulator">Route Simulator</TabsTrigger>
                         </TabsList>
+
+                        {/* MID Routing Tab */}
+                        <TabsContent value="mids">
+                            <Card>
+                                <CardHeader className="border-b">
+                                    <div className="flex items-center justify-between">
+                                        <CardTitle className="text-lg">MID Routing Configuration</CardTitle>
+                                        <Badge variant="secondary">{midRoutingRules.length} routes</Badge>
+                                    </div>
+                                    <CardDescription>
+                                        Configure how Merchant MIDs route to Bank MIDs with priority-based failover
+                                    </CardDescription>
+                                </CardHeader>
+                                <CardContent className="p-0">
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow className="bg-slate-50">
+                                                <TableHead>Priority</TableHead>
+                                                <TableHead>Merchant MID</TableHead>
+                                                <TableHead>Routes To</TableHead>
+                                                <TableHead>Bank MID</TableHead>
+                                                <TableHead>Failover</TableHead>
+                                                <TableHead>Status</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {midRoutingRules.length === 0 ? (
+                                                <TableRow>
+                                                    <TableCell colSpan={6} className="text-center py-8 text-slate-500">
+                                                        No MID routing rules configured. Visit MID Routing page to create rules.
+                                                    </TableCell>
+                                                </TableRow>
+                                            ) : (
+                                                midRoutingRules.map((rule) => (
+                                                    <TableRow key={rule.id}>
+                                                        <TableCell>
+                                                            <Badge className="bg-blue-100 text-blue-700">
+                                                                P{rule.priority}
+                                                            </Badge>
+                                                        </TableCell>
+                                                        <TableCell className="font-medium">{rule.merchant_name}</TableCell>
+                                                        <TableCell>
+                                                            <ArrowRight className="h-4 w-4 text-slate-400" />
+                                                        </TableCell>
+                                                        <TableCell className="font-medium">{rule.bank_mid_name}</TableCell>
+                                                        <TableCell>
+                                                            <Badge variant="outline" className={rule.failover_enabled ? 'bg-emerald-50' : 'bg-slate-50'}>
+                                                                {rule.failover_enabled ? 'Enabled' : 'Disabled'}
+                                                            </Badge>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <Badge className={cn(statusConfig[rule.status]?.className)}>
+                                                                {statusConfig[rule.status]?.label || rule.status}
+                                                            </Badge>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                ))
+                                            )}
+                                        </TableBody>
+                                    </Table>
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
 
                         {/* Routing Rules Tab */}
                         <TabsContent value="rules">
@@ -623,7 +713,23 @@ export default function PaymentOrchestration() {
                                             </div>
 
                                             <div className="space-y-3">
-                                                <h4 className="font-medium text-sm text-slate-500">Routing Path</h4>
+                                                <h4 className="font-medium text-sm text-slate-500">Complete Routing Path</h4>
+                                                <div className="space-y-2 p-3 bg-slate-50 rounded-lg text-xs">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-slate-600">1. Orchestration Layer:</span>
+                                                        <Badge variant="outline" className="text-xs">Selects Merchant MID</Badge>
+                                                    </div>
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-slate-600">2. MID Routing Layer:</span>
+                                                        <Badge variant="outline" className="text-xs">Routes to Bank MID</Badge>
+                                                    </div>
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-slate-600">3. Processing Layer:</span>
+                                                        <Badge variant="outline" className="text-xs">Executes via Acquirer</Badge>
+                                                    </div>
+                                                </div>
+                                                
+                                                <h4 className="font-medium text-sm text-slate-500 mt-4">Processor Cascade</h4>
                                                 <div className="flex items-center gap-2">
                                                     <div className="flex-1 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                                                         <p className="font-medium text-blue-700">Adyen</p>

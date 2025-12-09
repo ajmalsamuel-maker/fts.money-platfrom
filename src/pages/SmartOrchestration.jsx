@@ -72,7 +72,24 @@ export default function SmartOrchestration() {
         queryFn: () => base44.entities.RoutingRule.list(),
     });
 
+    const { data: merchantMIDs = [] } = useQuery({
+        queryKey: ['merchantMIDs'],
+        queryFn: () => base44.entities.MerchantMID.list(),
+    });
+
+    const { data: bankMIDs = [] } = useQuery({
+        queryKey: ['bankMIDs'],
+        queryFn: () => base44.entities.BankMID.list(),
+    });
+
+    const { data: midRoutingRules = [] } = useQuery({
+        queryKey: ['midRoutingRules'],
+        queryFn: () => base44.entities.MIDRoutingRule.list(),
+    });
+
     const activeProcessors = processors.filter(p => p.status === 'active');
+    const activeBankMIDs = bankMIDs.filter(b => b.status === 'active');
+    const activeMerchantMIDs = merchantMIDs.filter(m => m.status === 'active');
 
     const runSimulation = async () => {
         setIsSimulating(true);
@@ -86,9 +103,15 @@ AI Routing: ${settings.ai_routing_enabled}
 Cost Optimization: ${settings.cost_optimization}
 Success Rate Priority: ${settings.success_rate_priority}%
 Active Processors: ${activeProcessors.length}
-Active Rules: ${routingRules.filter(r => r.status === 'active').length}
+Active Merchant MIDs: ${activeMerchantMIDs.length}
+Active Bank MIDs: ${activeBankMIDs.length}
+Active Orchestration Rules: ${routingRules.filter(r => r.status === 'active').length}
+Active MID Routing Rules: ${midRoutingRules.filter(r => r.status === 'active').length}
 
-Generate realistic optimization metrics and routing recommendations.`,
+Generate realistic optimization metrics including the complete routing path:
+Merchant → MerchantMID → BankMID → Processor
+
+Generate routing recommendations.`,
                 response_json_schema: {
                     type: "object",
                     properties: {
@@ -293,17 +316,38 @@ Generate realistic optimization metrics and routing recommendations.`,
                                 </div>
 
                                 {/* Active Processors */}
-                                <div className="pt-4 border-t">
-                                    <Label className="text-sm mb-2 block">Active Processors ({activeProcessors.length})</Label>
-                                    <div className="space-y-2">
-                                        {activeProcessors.slice(0, 4).map((p) => (
-                                            <div key={p.id} className="flex items-center justify-between text-sm">
-                                                <span>{p.name}</span>
-                                                <Badge variant="outline" className="text-xs">
-                                                    {p.success_rate || 95}%
-                                                </Badge>
-                                            </div>
-                                        ))}
+                                <div className="pt-4 border-t space-y-4">
+                                    <div>
+                                        <Label className="text-sm mb-2 block">Active Merchant MIDs ({activeMerchantMIDs.length})</Label>
+                                        <div className="space-y-2">
+                                            {activeMerchantMIDs.slice(0, 3).map((m) => (
+                                                <div key={m.id} className="flex items-center justify-between text-sm">
+                                                    <span className="truncate">{m.merchant_name}</span>
+                                                    <Badge variant="outline" className="text-xs capitalize">
+                                                        {m.account_type}
+                                                    </Badge>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <Label className="text-sm mb-2 block">Active Bank MIDs ({activeBankMIDs.length})</Label>
+                                        <div className="space-y-2">
+                                            {activeBankMIDs.slice(0, 3).map((b) => (
+                                                <div key={b.id} className="flex items-center justify-between text-sm">
+                                                    <span className="truncate">{b.bank_mid_name}</span>
+                                                    <Badge variant="outline" className="text-xs">
+                                                        {b.success_rate || 98}%
+                                                    </Badge>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <Label className="text-sm mb-2 block">MID Routing Rules ({midRoutingRules.filter(r => r.status === 'active').length})</Label>
+                                        <p className="text-xs text-slate-500">Priority-based failover enabled</p>
                                     </div>
                                 </div>
                             </CardContent>
@@ -343,7 +387,23 @@ Generate realistic optimization metrics and routing recommendations.`,
                                                 </div>
                                             </div>
 
-                                            {/* Optimal Routing */}
+                                            {/* Complete Routing Path */}
+                                            <h4 className="font-medium mb-3">Complete Routing Architecture</h4>
+                                            <div className="p-4 bg-slate-50 rounded-lg mb-4">
+                                                <div className="flex items-center gap-2 text-xs text-slate-600 mb-2">
+                                                    <span className="font-medium">Transaction Flow:</span>
+                                                </div>
+                                                <div className="flex items-center gap-2 flex-wrap">
+                                                    <Badge variant="outline" className="bg-purple-50 text-purple-700">Merchant</Badge>
+                                                    <ArrowRight className="h-3 w-3 text-slate-400" />
+                                                    <Badge variant="outline" className="bg-blue-50 text-blue-700">Merchant MID</Badge>
+                                                    <ArrowRight className="h-3 w-3 text-slate-400" />
+                                                    <Badge variant="outline" className="bg-cyan-50 text-cyan-700">Bank MID</Badge>
+                                                    <ArrowRight className="h-3 w-3 text-slate-400" />
+                                                    <Badge variant="outline" className="bg-emerald-50 text-emerald-700">Processor</Badge>
+                                                </div>
+                                            </div>
+
                                             <h4 className="font-medium mb-3">Recommended Routing Split</h4>
                                             <div className="space-y-3">
                                                 {simulationResult.optimal_routing?.map((route, idx) => (
