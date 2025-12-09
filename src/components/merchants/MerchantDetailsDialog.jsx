@@ -7,8 +7,9 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import {
     Building2,
@@ -21,7 +22,9 @@ import {
     AlertTriangle,
     DollarSign,
     CreditCard,
-    FileText
+    FileText,
+    Settings,
+    CheckCircle
 } from 'lucide-react';
 import MerchantDocumentsTab from './MerchantDocumentsTab';
 
@@ -43,15 +46,15 @@ export default function MerchantDetailsDialog({ merchant, open, onOpenChange }) 
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
-                <DialogHeader>
+            <DialogContent className="max-w-4xl max-h-[90vh] p-0">
+                <DialogHeader className="px-6 pt-6 pb-4 border-b">
                     <div className="flex items-start gap-4">
                         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
                             <Building2 className="h-6 w-6 text-white" />
                         </div>
                         <div className="flex-1">
                             <DialogTitle className="text-xl mb-2">{merchant.business_name}</DialogTitle>
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-2 flex-wrap">
                                 <Badge className={statusConfig[merchant.status]?.className}>
                                     {statusConfig[merchant.status]?.label}
                                 </Badge>
@@ -66,114 +69,113 @@ export default function MerchantDetailsDialog({ merchant, open, onOpenChange }) 
                     </div>
                 </DialogHeader>
 
-                <Tabs defaultValue="overview" className="mt-6">
-                    <TabsList className="grid w-full grid-cols-5">
-                        <TabsTrigger value="overview">Overview</TabsTrigger>
-                        <TabsTrigger value="compliance">Compliance</TabsTrigger>
-                        <TabsTrigger value="documents">Documents</TabsTrigger>
-                        <TabsTrigger value="financial">Financial</TabsTrigger>
-                        <TabsTrigger value="settings">Settings</TabsTrigger>
-                    </TabsList>
-
-                    <TabsContent value="overview" className="space-y-6 mt-6">
+                <ScrollArea className="max-h-[calc(90vh-120px)] px-6 py-6">
+                    <div className="space-y-8">
                         {/* Business Information */}
                         <div className="space-y-4">
-                            <h3 className="font-semibold text-slate-900">Business Information</h3>
+                            <div className="flex items-center gap-2">
+                                <Building2 className="h-5 w-5 text-blue-600" />
+                                <h3 className="font-semibold text-slate-900">Business Information</h3>
+                            </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <Label className="text-slate-500">Legal Name</Label>
-                                    <p className="font-medium">{merchant.business_name}</p>
+                                    <p className="font-medium mt-1">{merchant.business_name}</p>
                                 </div>
                                 {merchant.trading_name && (
                                     <div>
                                         <Label className="text-slate-500">Trading Name</Label>
-                                        <p className="font-medium">{merchant.trading_name}</p>
+                                        <p className="font-medium mt-1">{merchant.trading_name}</p>
                                     </div>
                                 )}
                                 <div>
                                     <Label className="text-slate-500">Category</Label>
-                                    <p className="font-medium capitalize">{merchant.category?.replace('_', ' ') || 'N/A'}</p>
+                                    <p className="font-medium mt-1 capitalize">{merchant.category?.replace('_', ' ') || 'N/A'}</p>
                                 </div>
                                 <div>
                                     <Label className="text-slate-500">Country</Label>
-                                    <p className="font-medium">{merchant.country || 'N/A'}</p>
+                                    <p className="font-medium mt-1">{merchant.country || 'N/A'}</p>
                                 </div>
+                                {merchant.mcc_code && (
+                                    <div>
+                                        <Label className="text-slate-500">MCC Code</Label>
+                                        <p className="font-medium mt-1">{merchant.mcc_code}</p>
+                                    </div>
+                                )}
                             </div>
                         </div>
 
+                        <Separator />
+
                         {/* Contact Information */}
-                        <div className="space-y-4 pt-4 border-t">
-                            <h3 className="font-semibold text-slate-900">Contact Information</h3>
+                        <div className="space-y-4">
+                            <div className="flex items-center gap-2">
+                                <Mail className="h-5 w-5 text-blue-600" />
+                                <h3 className="font-semibold text-slate-900">Contact Information</h3>
+                            </div>
                             <div className="space-y-3">
                                 {merchant.contact_name && (
-                                    <div className="flex items-center gap-3">
-                                        <Building2 className="h-4 w-4 text-slate-400" />
-                                        <span>{merchant.contact_name}</span>
+                                    <div className="flex items-start gap-3">
+                                        <Building2 className="h-4 w-4 text-slate-400 mt-1" />
+                                        <div>
+                                            <Label className="text-slate-500">Contact Name</Label>
+                                            <p className="font-medium">{merchant.contact_name}</p>
+                                        </div>
                                     </div>
                                 )}
                                 {merchant.contact_email && (
-                                    <div className="flex items-center gap-3">
-                                        <Mail className="h-4 w-4 text-slate-400" />
-                                        <a href={`mailto:${merchant.contact_email}`} className="text-blue-600 hover:underline">
-                                            {merchant.contact_email}
-                                        </a>
+                                    <div className="flex items-start gap-3">
+                                        <Mail className="h-4 w-4 text-slate-400 mt-1" />
+                                        <div>
+                                            <Label className="text-slate-500">Email</Label>
+                                            <a href={`mailto:${merchant.contact_email}`} className="text-blue-600 hover:underline font-medium">
+                                                {merchant.contact_email}
+                                            </a>
+                                        </div>
                                     </div>
                                 )}
                                 {merchant.contact_phone && (
-                                    <div className="flex items-center gap-3">
-                                        <Phone className="h-4 w-4 text-slate-400" />
-                                        <span>{merchant.contact_phone}</span>
+                                    <div className="flex items-start gap-3">
+                                        <Phone className="h-4 w-4 text-slate-400 mt-1" />
+                                        <div>
+                                            <Label className="text-slate-500">Phone</Label>
+                                            <p className="font-medium">{merchant.contact_phone}</p>
+                                        </div>
                                     </div>
                                 )}
                                 {merchant.website && (
-                                    <div className="flex items-center gap-3">
-                                        <Globe className="h-4 w-4 text-slate-400" />
-                                        <a href={merchant.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
-                                            {merchant.website}
-                                        </a>
+                                    <div className="flex items-start gap-3">
+                                        <Globe className="h-4 w-4 text-slate-400 mt-1" />
+                                        <div>
+                                            <Label className="text-slate-500">Website</Label>
+                                            <a href={merchant.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline font-medium">
+                                                {merchant.website}
+                                            </a>
+                                        </div>
                                     </div>
                                 )}
                                 {merchant.address && (
-                                    <div className="flex items-center gap-3">
-                                        <MapPin className="h-4 w-4 text-slate-400" />
-                                        <span className="text-sm">{merchant.address}</span>
+                                    <div className="flex items-start gap-3">
+                                        <MapPin className="h-4 w-4 text-slate-400 mt-1" />
+                                        <div>
+                                            <Label className="text-slate-500">Address</Label>
+                                            <p className="font-medium text-sm">{merchant.address}</p>
+                                        </div>
                                     </div>
                                 )}
                             </div>
                         </div>
 
-                        {/* Timeline */}
-                        <div className="space-y-4 pt-4 border-t">
-                            <h3 className="font-semibold text-slate-900">Timeline</h3>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="flex items-center gap-3">
-                                    <Calendar className="h-4 w-4 text-slate-400" />
-                                    <div>
-                                        <p className="text-xs text-slate-500">Created</p>
-                                        <p className="text-sm font-medium">
-                                            {merchant.created_date ? format(new Date(merchant.created_date), 'MMM dd, yyyy') : 'N/A'}
-                                        </p>
-                                    </div>
-                                </div>
-                                <div className="flex items-center gap-3">
-                                    <Calendar className="h-4 w-4 text-slate-400" />
-                                    <div>
-                                        <p className="text-xs text-slate-500">Last Updated</p>
-                                        <p className="text-sm font-medium">
-                                            {merchant.updated_date ? format(new Date(merchant.updated_date), 'MMM dd, yyyy') : 'N/A'}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </TabsContent>
+                        <Separator />
 
-                    <TabsContent value="compliance" className="space-y-6 mt-6">
-                        {/* KYB/AML Status */}
+                        {/* Compliance & Verification */}
                         <div className="space-y-4">
-                            <h3 className="font-semibold text-slate-900">Verification Status</h3>
+                            <div className="flex items-center gap-2">
+                                <Shield className="h-5 w-5 text-blue-600" />
+                                <h3 className="font-semibold text-slate-900">Compliance & Verification</h3>
+                            </div>
                             <div className="space-y-3">
-                                <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                                <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
                                     <div className="flex items-center gap-3">
                                         <Shield className="h-5 w-5 text-blue-600" />
                                         <div>
@@ -190,7 +192,7 @@ export default function MerchantDetailsDialog({ merchant, open, onOpenChange }) 
                                     </Badge>
                                 </div>
 
-                                <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                                <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
                                     <div className="flex items-center gap-3">
                                         <AlertTriangle className="h-5 w-5 text-amber-600" />
                                         <div>
@@ -209,7 +211,7 @@ export default function MerchantDetailsDialog({ merchant, open, onOpenChange }) 
                                 </div>
 
                                 {merchant.aml_risk_score !== null && merchant.aml_risk_score !== undefined && (
-                                    <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                                    <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
                                         <div className="flex items-center gap-3">
                                             <AlertTriangle className="h-5 w-5 text-slate-600" />
                                             <div>
@@ -222,11 +224,11 @@ export default function MerchantDetailsDialog({ merchant, open, onOpenChange }) 
                                 )}
 
                                 {merchant.lei && (
-                                    <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                                    <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
                                         <div className="flex items-center gap-3">
                                             <FileText className="h-5 w-5 text-slate-600" />
                                             <div>
-                                                <p className="font-medium">LEI Status</p>
+                                                <p className="font-medium">LEI</p>
                                                 <p className="text-xs text-slate-500 font-mono">{merchant.lei}</p>
                                             </div>
                                         </div>
@@ -238,17 +240,31 @@ export default function MerchantDetailsDialog({ merchant, open, onOpenChange }) 
                                         </Badge>
                                     </div>
                                 )}
+
+                                {merchant.kyb_reference_id && (
+                                    <div className="p-3 bg-slate-50 rounded-lg">
+                                        <Label className="text-slate-500">KYB Reference ID</Label>
+                                        <p className="font-mono text-sm mt-1">{merchant.kyb_reference_id}</p>
+                                    </div>
+                                )}
+
+                                {merchant.aml_last_check && (
+                                    <div className="p-3 bg-slate-50 rounded-lg">
+                                        <Label className="text-slate-500">Last AML Check</Label>
+                                        <p className="font-medium mt-1">{format(new Date(merchant.aml_last_check), 'MMM dd, yyyy HH:mm')}</p>
+                                    </div>
+                                )}
                             </div>
                         </div>
-                    </TabsContent>
 
-                    <TabsContent value="documents" className="space-y-6 mt-6">
-                        <MerchantDocumentsTab merchant={merchant} />
-                    </TabsContent>
+                        <Separator />
 
-                    <TabsContent value="financial" className="space-y-6 mt-6">
+                        {/* Financial Information */}
                         <div className="space-y-4">
-                            <h3 className="font-semibold text-slate-900">Financial Metrics</h3>
+                            <div className="flex items-center gap-2">
+                                <DollarSign className="h-5 w-5 text-blue-600" />
+                                <h3 className="font-semibold text-slate-900">Financial Metrics</h3>
+                            </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="p-4 bg-slate-50 rounded-lg">
                                     <div className="flex items-center gap-2 mb-2">
@@ -279,45 +295,101 @@ export default function MerchantDetailsDialog({ merchant, open, onOpenChange }) 
                                     <p className="text-lg font-bold">{merchant.fee_rate || 2.5}%</p>
                                 </div>
                             </div>
+
+                            {merchant.settlement_period && (
+                                <div className="mt-4 p-3 bg-slate-50 rounded-lg">
+                                    <Label className="text-slate-500">Settlement Period</Label>
+                                    <p className="font-medium mt-1">{merchant.settlement_period}</p>
+                                </div>
+                            )}
                         </div>
 
-                        {merchant.settlement_period && (
-                            <div className="space-y-4 pt-4 border-t">
-                                <h3 className="font-semibold text-slate-900">Settlement</h3>
-                                <div className="p-3 bg-slate-50 rounded-lg">
-                                    <Label className="text-slate-500">Settlement Period</Label>
-                                    <p className="font-medium">{merchant.settlement_period}</p>
-                                </div>
-                            </div>
-                        )}
-                    </TabsContent>
+                        <Separator />
 
-                    <TabsContent value="settings" className="space-y-6 mt-6">
+                        {/* Documents */}
                         <div className="space-y-4">
-                            <h3 className="font-semibold text-slate-900">Account Settings</h3>
-                            <div className="space-y-3">
+                            <div className="flex items-center gap-2">
+                                <FileText className="h-5 w-5 text-blue-600" />
+                                <h3 className="font-semibold text-slate-900">Documents</h3>
+                            </div>
+                            <MerchantDocumentsTab merchant={merchant} />
+                        </div>
+
+                        <Separator />
+
+                        {/* Account Settings */}
+                        <div className="space-y-4">
+                            <div className="flex items-center gap-2">
+                                <Settings className="h-5 w-5 text-blue-600" />
+                                <h3 className="font-semibold text-slate-900">Account Settings</h3>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
                                 {merchant.kyb_provider && (
                                     <div className="p-3 bg-slate-50 rounded-lg">
                                         <Label className="text-slate-500">KYB Provider</Label>
-                                        <p className="font-medium">{merchant.kyb_provider}</p>
+                                        <p className="font-medium mt-1">{merchant.kyb_provider}</p>
                                     </div>
                                 )}
                                 {merchant.aml_provider && (
                                     <div className="p-3 bg-slate-50 rounded-lg">
                                         <Label className="text-slate-500">AML Provider</Label>
-                                        <p className="font-medium">{merchant.aml_provider}</p>
+                                        <p className="font-medium mt-1">{merchant.aml_provider}</p>
                                     </div>
                                 )}
                                 {merchant.currency && (
                                     <div className="p-3 bg-slate-50 rounded-lg">
                                         <Label className="text-slate-500">Currency</Label>
-                                        <p className="font-medium">{merchant.currency}</p>
+                                        <p className="font-medium mt-1">{merchant.currency}</p>
                                     </div>
                                 )}
                             </div>
                         </div>
-                    </TabsContent>
-                </Tabs>
+
+                        <Separator />
+
+                        {/* Timeline */}
+                        <div className="space-y-4">
+                            <div className="flex items-center gap-2">
+                                <Calendar className="h-5 w-5 text-blue-600" />
+                                <h3 className="font-semibold text-slate-900">Timeline</h3>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="flex items-start gap-3">
+                                    <Calendar className="h-4 w-4 text-slate-400 mt-1" />
+                                    <div>
+                                        <Label className="text-slate-500">Created</Label>
+                                        <p className="font-medium mt-1">
+                                            {merchant.created_date ? format(new Date(merchant.created_date), 'MMM dd, yyyy HH:mm') : 'N/A'}
+                                        </p>
+                                        {merchant.created_by && (
+                                            <p className="text-xs text-slate-500 mt-1">by {merchant.created_by}</p>
+                                        )}
+                                    </div>
+                                </div>
+                                <div className="flex items-start gap-3">
+                                    <Calendar className="h-4 w-4 text-slate-400 mt-1" />
+                                    <div>
+                                        <Label className="text-slate-500">Last Updated</Label>
+                                        <p className="font-medium mt-1">
+                                            {merchant.updated_date ? format(new Date(merchant.updated_date), 'MMM dd, yyyy HH:mm') : 'N/A'}
+                                        </p>
+                                    </div>
+                                </div>
+                                {merchant.lei_verified_date && (
+                                    <div className="flex items-start gap-3">
+                                        <CheckCircle className="h-4 w-4 text-emerald-400 mt-1" />
+                                        <div>
+                                            <Label className="text-slate-500">LEI Verified</Label>
+                                            <p className="font-medium mt-1">
+                                                {format(new Date(merchant.lei_verified_date), 'MMM dd, yyyy')}
+                                            </p>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </ScrollArea>
             </DialogContent>
         </Dialog>
     );
