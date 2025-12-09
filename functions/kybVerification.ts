@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
+import { ConnectorFactory } from './connectors/index.js';
 
 Deno.serve(async (req) => {
     try {
@@ -17,52 +18,22 @@ Deno.serve(async (req) => {
             }, { status: 400 });
         }
 
-        const apiKey = Deno.env.get('THEKYB_API_KEY');
-        if (!apiKey) {
-            return Response.json({ 
-                error: 'TheKYB API key not configured' 
-            }, { status: 500 });
-        }
+        // Get KYB connector (handles API key check, retry, circuit breaker)
+        const kybConnector = ConnectorFactory.getKYBConnector();
 
-        // Call TheKYB API - Company Search
-        const searchResponse = await fetch('https://api.thekyb.com/api/company/search', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${apiKey}`
-            },
-            body: JSON.stringify({
-                company_name: company_name,
-                country: country,
-                registration_number: registration_number || null
-            })
+        // Search company using connector
+        const searchData = await kybConnector.post('/api/company/search', {
+            company_name: company_name,
+            country: country,
+            registration_number: registration_number || null
         });
-
-        if (!searchResponse.ok) {
-            const errorData = await searchResponse.json();
-            return Response.json({ 
-                error: 'TheKYB API error',
-                details: errorData 
-            }, { status: searchResponse.status });
-        }
-
-        const searchData = await searchResponse.json();
 
         // If company found, get detailed verification
         if (searchData.data && searchData.data.length > 0) {
             const companyId = searchData.data[0].company_id;
             
-            const detailsResponse = await fetch(`https://api.thekyb.com/api/company/${companyId}`, {
-                headers: {
-                    'Authorization': `Bearer ${apiKey}`
-                }
-            });
-
-            if (!detailsResponse.ok) {
-                return Response.json(searchData);
-            }
-
-            const detailsData = await detailsResponse.json();
+            // Get company details using connector
+            const detailsData = await kybConnector.get(`/api/company/${companyId}`);
 
             // Construct comprehensive verification result
             const verificationResult = {

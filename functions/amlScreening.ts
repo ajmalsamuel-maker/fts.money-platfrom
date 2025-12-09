@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
+import { ConnectorFactory } from './connectors/index.js';
 
 Deno.serve(async (req) => {
     try {
@@ -25,70 +26,20 @@ Deno.serve(async (req) => {
             }, { status: 400 });
         }
 
-        const apiEmail = 'onboardingmanager@fts.money';
-        const apiPassword = Deno.env.get('AMLWATCHER_API_PASSWORD') || 'Xsdr#54&&';
+        // Get AML connector (handles authentication, retry, circuit breaker)
+        const amlConnector = ConnectorFactory.getAMLConnector();
 
-        // Step 1: Get Access Token
-        const tokenResponse = await fetch('https://api.amlwatcher.com/api/get-access-token', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                email: apiEmail,
-                password: apiPassword
-            })
-        });
-
-        if (!tokenResponse.ok) {
-            return Response.json({ 
-                error: 'Failed to get AMLWatcher access token' 
-            }, { status: 500 });
-        }
-
-        const tokenData = await tokenResponse.json();
-        
-        if (!tokenData.data?.access_token) {
-            return Response.json({ 
-                error: 'Invalid token response from AMLWatcher' 
-            }, { status: 500 });
-        }
-
-        const accessToken = tokenData.data.access_token;
-
-        // Step 2: Perform AML Search
-        const searchPayload = {
+        // Perform AML screening using connector
+        const searchData = await amlConnector.screenEntity({
+            entity_type: entity_type,
             name: name,
-            entity_type: [entity_type],
-            country: country.length > 0 ? country : undefined,
-            birth_incorporation_date: birth_incorporation_date,
-            category: ['Sanctions', 'PEP', 'Adverse Media', 'Watchlist'],
-            alias_search: true,
-            rca_search: true,
-            ongoing_monitoring: ongoing_monitoring,
-            adverse_media_monitoring: false,
-            match_score: 75,
-            client_reference: client_reference || `MER-${merchant_id || Date.now()}`
-        };
-
-        const searchResponse = await fetch('https://api.amlwatcher.com/api/search', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${accessToken}`
-            },
-            body: JSON.stringify(searchPayload)
+            country: country,
+            date_of_birth: birth_incorporation_date,
+            additional_info: {
+                ongoing_monitoring: ongoing_monitoring,
+                client_reference: client_reference || `MER-${merchant_id || Date.now()}`
+            }
         });
-
-        if (!searchResponse.ok) {
-            const errorData = await searchResponse.json();
-            return Response.json({ 
-                error: 'AMLWatcher search failed',
-                details: errorData 
-            }, { status: searchResponse.status });
-        }
-
-        const searchData = await searchResponse.json();
 
         // Process results and categorize by check type
         const results = searchData.data || [];
