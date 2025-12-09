@@ -65,6 +65,7 @@ import { PermissionGate } from '@/components/auth/PermissionGate';
 import { createMerchantUsers } from '@/components/merchants/MerchantUserProvisioning';
 import { toast } from 'sonner';
 import MerchantOnboardingDialog from '@/components/merchants/MerchantOnboardingDialog';
+import MerchantDetailsView from '@/components/merchants/MerchantDetailsView';
 
 const statusConfig = {
     active: { label: 'Active', className: 'bg-emerald-100 text-emerald-700 border-emerald-200' },
@@ -87,6 +88,7 @@ export default function Merchants() {
     const [showOnboardingLinkDialog, setShowOnboardingLinkDialog] = useState(false);
     const [selectedMerchant, setSelectedMerchant] = useState(null);
     const [showOnboardingDialog, setShowOnboardingDialog] = useState(false);
+    const [showDetailsDialog, setShowDetailsDialog] = useState(false);
     const [onboardingMode, setOnboardingMode] = useState('view'); // 'view' or 'edit'
     const [newMerchant, setNewMerchant] = useState({
         business_name: '',
@@ -185,8 +187,7 @@ export default function Merchants() {
 
     const handleViewDetails = (merchant) => {
         setSelectedMerchant(merchant);
-        setOnboardingMode('view');
-        setShowOnboardingDialog(true);
+        setShowDetailsDialog(true);
     };
 
     const handleEditMerchant = (merchant) => {
@@ -544,6 +545,12 @@ export default function Merchants() {
             <SelfOnboardingUrlGenerator 
                 open={showOnboardingLinkDialog}
                 onOpenChange={setShowOnboardingLinkDialog}
+            />
+
+            <MerchantDetailsView
+                merchant={selectedMerchant}
+                open={showDetailsDialog}
+                onOpenChange={setShowDetailsDialog}
             />
 
             <MerchantOnboardingDialog
