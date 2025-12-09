@@ -52,6 +52,7 @@ import AIAutomationPlatform from './pages/AIAutomationPlatform';
 import MerchantSelfServicePortal from './pages/MerchantSelfServicePortal';
 import BankMIDs from './pages/BankMIDs';
 import MIDRouting from './pages/MIDRouting';
+import APIDocumentation from './pages/APIDocumentation';
 import __Layout from './Layout.jsx';
 
 
@@ -110,6 +111,7 @@ export const PAGES = {
     "MerchantSelfServicePortal": MerchantSelfServicePortal,
     "BankMIDs": BankMIDs,
     "MIDRouting": MIDRouting,
+    "APIDocumentation": APIDocumentation,
 }
 
 export const pagesConfig = {
