@@ -73,6 +73,7 @@ import {
     Server,
     Shuffle
 } from 'lucide-react';
+import RoutingFlowVisualizer from '@/components/orchestration/RoutingFlowVisualizer';
 
 const processors = [
     { id: 'stripe', name: 'Stripe', type: 'gateway', status: 'active', successRate: 98.5, avgLatency: 245, fee: 2.9, networks: ['visa', 'mastercard', 'amex'] },
@@ -150,6 +151,11 @@ export default function PaymentOrchestration() {
     const { data: midRoutingRules = [] } = useQuery({
         queryKey: ['midRoutingRules'],
         queryFn: () => base44.entities.MIDRoutingRule.list('priority'),
+    });
+
+    const { data: merchants = [] } = useQuery({
+        queryKey: ['merchants'],
+        queryFn: () => base44.entities.Merchant.list(),
     });
 
     const createRuleMutation = useMutation({
@@ -278,12 +284,25 @@ export default function PaymentOrchestration() {
 
                     <Tabs value={activeTab} onValueChange={setActiveTab}>
                         <TabsList className="mb-6">
+                            <TabsTrigger value="visualizer">Flow Visualizer</TabsTrigger>
                             <TabsTrigger value="rules">Orchestration Rules</TabsTrigger>
                             <TabsTrigger value="mids">MID Routing</TabsTrigger>
                             <TabsTrigger value="processors">Processors</TabsTrigger>
                             <TabsTrigger value="cascade">Cascade Config</TabsTrigger>
                             <TabsTrigger value="simulator">Route Simulator</TabsTrigger>
                         </TabsList>
+
+                        {/* Flow Visualizer Tab */}
+                        <TabsContent value="visualizer">
+                            <RoutingFlowVisualizer
+                                merchants={merchants.slice(0, 3)}
+                                merchantMIDs={merchantMIDs}
+                                bankMIDs={bankMIDs}
+                                processors={processors}
+                                midRoutingRules={midRoutingRules}
+                                orchestrationRules={allRules}
+                            />
+                        </TabsContent>
 
                         {/* MID Routing Tab */}
                         <TabsContent value="mids">

@@ -42,6 +42,7 @@ import {
     Target,
     Loader2
 } from 'lucide-react';
+import RoutingFlowVisualizer from '@/components/orchestration/RoutingFlowVisualizer';
 
 export default function SmartOrchestration() {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -85,6 +86,11 @@ export default function SmartOrchestration() {
     const { data: midRoutingRules = [] } = useQuery({
         queryKey: ['midRoutingRules'],
         queryFn: () => base44.entities.MIDRoutingRule.list(),
+    });
+
+    const { data: merchants = [] } = useQuery({
+        queryKey: ['merchants'],
+        queryFn: () => base44.entities.Merchant.list(),
     });
 
     const activeProcessors = processors.filter(p => p.status === 'active');
@@ -355,6 +361,16 @@ Generate routing recommendations.`,
 
                         {/* Results Panel */}
                         <div className="lg:col-span-2 space-y-6">
+                            {/* Flow Visualizer */}
+                            <RoutingFlowVisualizer
+                                merchants={merchants.slice(0, 2)}
+                                merchantMIDs={merchantMIDs}
+                                bankMIDs={bankMIDs}
+                                processors={processors}
+                                midRoutingRules={midRoutingRules}
+                                orchestrationRules={routingRules}
+                            />
+
                             {simulationResult ? (
                                 <>
                                     {/* Optimization Results */}

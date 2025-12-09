@@ -92,6 +92,17 @@ const menuItems = [
             ]
         },
         {
+            group: 'orchestration',
+            icon: Zap,
+            items: [
+                { icon: Globe, label: 'orchestration', path: 'PaymentOrchestration', permission: 'VIEW_ORCHESTRATION' },
+                { icon: Zap, label: 'smartRouting', path: 'SmartOrchestration', permission: 'VIEW_ROUTING' },
+                { icon: Landmark, label: 'bankMIDs', path: 'BankMIDs', permission: 'VIEW_BALANCES' },
+                { icon: ArrowUpDown, label: 'midRouting', path: 'MIDRouting', permission: 'VIEW_BALANCES' },
+                { icon: Building, label: 'providers', path: 'PaymentProviders', permission: 'VIEW_BALANCES' },
+            ]
+        },
+        {
             group: 'finance',
             icon: Wallet,
             items: [
@@ -101,9 +112,6 @@ const menuItems = [
                 { icon: CreditCard, label: 'payouts', path: 'Payouts', permission: 'VIEW_PAYOUTS' },
                 { icon: DollarSign, label: 'autoPayouts', path: 'AutomatedPayouts', permission: 'VIEW_PAYOUTS' },
                 { icon: ArrowUpDown, label: 'reconciliation', path: 'Reconciliation', permission: 'VIEW_BALANCES' },
-                { icon: Building, label: 'providers', path: 'PaymentProviders', permission: 'VIEW_BALANCES' },
-                { icon: Landmark, label: 'bankMIDs', path: 'BankMIDs', permission: 'VIEW_BALANCES' },
-                { icon: ArrowUpDown, label: 'midRouting', path: 'MIDRouting', permission: 'VIEW_BALANCES' },
                 { icon: Percent, label: 'buyRates', path: 'BuyRates', permission: 'VIEW_BALANCES' },
                 { icon: DollarSign, label: 'merchantPricing', path: 'MerchantPricing', permission: 'VIEW_BALANCES' },
             ]
@@ -122,8 +130,6 @@ const menuItems = [
             icon: Settings,
             items: [
                 { icon: Brain, label: 'aiAutomation', path: 'AIAutomationPlatform', permission: 'VIEW_ROUTING' },
-                { icon: Zap, label: 'smartRouting', path: 'SmartOrchestration', permission: 'VIEW_ROUTING' },
-                { icon: Globe, label: 'orchestration', path: 'PaymentOrchestration', permission: 'VIEW_ORCHESTRATION' },
                 { icon: UserCog, label: 'userManagement', path: 'UserManagement', permission: 'VIEW_USERS' },
                 { icon: Shield, label: 'auditLogs', path: 'AuditLogs', permission: 'VIEW_USERS' },
                 { icon: Palette, label: 'appearance', path: 'Appearance', permission: 'VIEW_APPEARANCE' },

@@ -48,6 +48,7 @@ const translations = {
         // Menu Groups
         overview: 'Overview',
         onboarding: 'Onboarding',
+        orchestration: 'Orchestration',
         finance: 'Finance',
         risk: 'Risk',
         configuration: 'Configuration',
@@ -144,6 +145,7 @@ const translations = {
         // Menu Groups
         overview: 'Resumen',
         onboarding: 'Incorporación',
+        orchestration: 'Orquestación',
         finance: 'Finanzas',
         risk: 'Riesgo',
         configuration: 'Configuración',
@@ -240,6 +242,7 @@ const translations = {
         // Menu Groups
         overview: 'Aperçu',
         onboarding: 'Intégration',
+        orchestration: 'Orchestration',
         finance: 'Finance',
         risk: 'Risque',
         configuration: 'Configuration',
@@ -336,6 +339,7 @@ const translations = {
         // Menu Groups
         overview: '概览',
         onboarding: '入驻',
+        orchestration: '编排',
         finance: '财务',
         risk: '风险',
         configuration: '配置',
