@@ -13,8 +13,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Search, Plus, MoreHorizontal, Edit, Trash2, ArrowRight, TrendingUp, ArrowUpDown } from 'lucide-react';
+import { Search, Plus, MoreHorizontal, Edit, Trash2, ArrowRight, TrendingUp, ArrowUpDown, CreditCard } from 'lucide-react';
 import { toast } from 'sonner';
+import { Textarea } from "@/components/ui/textarea";
 
 export default function MIDRouting() {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -25,6 +26,7 @@ export default function MIDRouting() {
         merchant_mid_id: '',
         priority: 1,
         bank_mid_id: '',
+        routing_conditions: {},
         failover_enabled: true,
         retry_attempts: 3,
         status: 'active'
@@ -88,6 +90,7 @@ export default function MIDRouting() {
             merchant_mid_id: '',
             priority: 1,
             bank_mid_id: '',
+            routing_conditions: {},
             failover_enabled: true,
             retry_attempts: 3,
             status: 'active'
@@ -318,6 +321,74 @@ export default function MIDRouting() {
                                 max="10"
                             />
                         </div>
+                        <div className="space-y-2">
+                            <Label>Network/APM Conditions</Label>
+                            <div className="space-y-3 p-4 border rounded-lg bg-slate-50">
+                                <div>
+                                    <Label className="text-xs">Card Networks / APMs</Label>
+                                    <div className="grid grid-cols-2 gap-2 mt-1">
+                                        {['visa', 'mastercard', 'amex', 'discover', 'alipay', 'wechat'].map(network => (
+                                            <label key={network} className="flex items-center gap-2 text-sm">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={formData.routing_conditions?.card_types?.includes(network) || false}
+                                                    onChange={(e) => {
+                                                        const current = formData.routing_conditions?.card_types || [];
+                                                        const updated = e.target.checked
+                                                            ? [...current, network]
+                                                            : current.filter(n => n !== network);
+                                                        setFormData({
+                                                            ...formData,
+                                                            routing_conditions: {
+                                                                ...formData.routing_conditions,
+                                                                card_types: updated
+                                                            }
+                                                        });
+                                                    }}
+                                                    className="rounded"
+                                                />
+                                                <span className="capitalize">{network}</span>
+                                            </label>
+                                        ))}
+                                    </div>
+                                    <p className="text-xs text-slate-500 mt-1">Leave empty to apply to all networks</p>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <Label className="text-xs">Min Amount</Label>
+                                        <Input
+                                            type="number"
+                                            placeholder="0"
+                                            value={formData.routing_conditions?.min_amount || ''}
+                                            onChange={(e) => setFormData({
+                                                ...formData,
+                                                routing_conditions: {
+                                                    ...formData.routing_conditions,
+                                                    min_amount: parseFloat(e.target.value) || undefined
+                                                }
+                                            })}
+                                        />
+                                    </div>
+                                    <div>
+                                        <Label className="text-xs">Max Amount</Label>
+                                        <Input
+                                            type="number"
+                                            placeholder="999999"
+                                            value={formData.routing_conditions?.max_amount || ''}
+                                            onChange={(e) => setFormData({
+                                                ...formData,
+                                                routing_conditions: {
+                                                    ...formData.routing_conditions,
+                                                    max_amount: parseFloat(e.target.value) || undefined
+                                                }
+                                            })}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div className="flex items-center gap-2">
                             <input
                                 type="checkbox"

@@ -737,7 +737,36 @@ export default function PaymentOrchestration() {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label>Conditions</Label>
+                                    <Label>Network-Specific Routing</Label>
+                                    <div className="space-y-2 p-4 border rounded-lg bg-slate-50">
+                                        <Label className="text-xs">Card Networks / APMs (Select multiple)</Label>
+                                        <div className="grid grid-cols-2 gap-2">
+                                            {['visa', 'mastercard', 'amex', 'discover', 'unionpay', 'jcb', 'alipay', 'wechat'].map(network => (
+                                                <label key={network} className="flex items-center gap-2 text-sm">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={newRule.card_networks?.includes(network) || false}
+                                                        onChange={(e) => {
+                                                            const current = newRule.card_networks || [];
+                                                            const updated = e.target.checked
+                                                                ? [...current, network]
+                                                                : current.filter(n => n !== network);
+                                                            setNewRule({ ...newRule, card_networks: updated });
+                                                        }}
+                                                        className="rounded border-slate-300"
+                                                    />
+                                                    <span className="capitalize">{network}</span>
+                                                </label>
+                                            ))}
+                                        </div>
+                                        <p className="text-xs text-slate-500 mt-1">
+                                            Leave empty to apply to all networks
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label>Amount Conditions</Label>
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="space-y-2">
                                             <Label className="text-xs text-slate-500">Min Amount</Label>
