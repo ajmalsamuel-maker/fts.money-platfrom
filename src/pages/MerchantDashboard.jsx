@@ -226,7 +226,11 @@ export default function MerchantDashboard() {
                                         <div className="text-sm text-slate-500">Export financial data</div>
                                     </div>
                                 </Button>
-                                <Button variant="outline" className="justify-start h-auto py-3">
+                                <Button 
+                                    variant="outline" 
+                                    className="justify-start h-auto py-3"
+                                    onClick={() => navigate(createPageUrl('MerchantAPIDocumentation'))}
+                                >
                                     <div className="text-left">
                                         <div className="font-medium">API Documentation</div>
                                         <div className="text-sm text-slate-500">Integration guides</div>
