@@ -102,6 +102,8 @@ const menuItems = [
                 { icon: DollarSign, label: 'autoPayouts', path: 'AutomatedPayouts', permission: 'VIEW_PAYOUTS' },
                 { icon: ArrowUpDown, label: 'reconciliation', path: 'Reconciliation', permission: 'VIEW_BALANCES' },
                 { icon: Building, label: 'providers', path: 'PaymentProviders', permission: 'VIEW_BALANCES' },
+                { icon: Landmark, label: 'bankMIDs', path: 'BankMIDs', permission: 'VIEW_BALANCES' },
+                { icon: ArrowUpDown, label: 'midRouting', path: 'MIDRouting', permission: 'VIEW_BALANCES' },
                 { icon: Percent, label: 'buyRates', path: 'BuyRates', permission: 'VIEW_BALANCES' },
                 { icon: DollarSign, label: 'merchantPricing', path: 'MerchantPricing', permission: 'VIEW_BALANCES' },
             ]
