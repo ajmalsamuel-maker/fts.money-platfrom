@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import MerchantSidebar from '@/components/merchant/MerchantSidebar';
 import MerchantTopBar from '@/components/merchant/MerchantTopBar';
+import AtomicTimeClock from '@/components/settings/AtomicTimeClock';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, AreaChart, Area, PieChart, Pie, Cell } from 'recharts';
 import { 
     DollarSign,
@@ -233,6 +234,14 @@ export default function MerchantDashboard() {
 
                 <main className="flex-1 overflow-y-auto p-6 bg-slate-50">
                     <div className="max-w-[1600px] mx-auto space-y-6">
+                        {/* Atomic Time Display */}
+                        <div className="flex justify-end">
+                            <AtomicTimeClock 
+                                timezone={merchant?.timezone || 'UTC'} 
+                                compact={true} 
+                            />
+                        </div>
+
                         {/* Page Header */}
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                             <div>
