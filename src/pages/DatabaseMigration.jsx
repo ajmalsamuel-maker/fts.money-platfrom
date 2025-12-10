@@ -42,7 +42,7 @@ COMMENT ON COLUMN merchant_users.merchant_code IS 'Merchant code for login ident
 UPDATE merchant_users mu
 SET merchant_code = m.merchant_code
 FROM merchants m
-WHERE mu.merchant_id = m.id
+WHERE mu.merchant_id = m.merchant_id
 AND mu.merchant_code IS NULL
 AND m.merchant_code IS NOT NULL;
         `.trim()
