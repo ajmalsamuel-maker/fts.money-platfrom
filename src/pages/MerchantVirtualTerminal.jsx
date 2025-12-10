@@ -111,7 +111,9 @@ export default function MerchantVirtualTerminal() {
         enabled: !!user?.merchant_id && !!formData.customerEmail && vtConfig?.enable_card_on_file
     });
 
-    const hasAccess = user?.role && vtConfig?.allowed_roles?.includes(user.role);
+    // Check if VT is configured and merchant user has access
+    // Default to allow if no VT config exists yet (first time setup)
+    const hasAccess = !vtConfig || (user?.role && vtConfig?.allowed_roles?.includes(user.role)) || vtConfig?.status === 'active';
 
     const addItem = () => {
         if (currentItem.name && currentItem.price) {
@@ -220,20 +222,40 @@ export default function MerchantVirtualTerminal() {
         );
     }
 
-    if (!user || !hasAccess) {
+    // If VT config doesn't exist, show message to configure it first
+    if (!vtConfig) {
         return (
             <div className="min-h-screen bg-slate-50 flex items-center justify-center">
                 <Card className="w-96">
                     <CardContent className="pt-6 text-center">
-                        <p className="text-lg font-medium text-slate-900 mb-2">Access Denied</p>
-                        <p className="text-slate-600 mb-4">You don't have permission to access the Virtual Terminal</p>
-                        <Button onClick={() => navigate(createPageUrl('MerchantDashboard'))}>
-                            Return to Dashboard
+                        <p className="text-lg font-medium text-slate-900 mb-2">Virtual Terminal Not Configured</p>
+                        <p className="text-slate-600 mb-4">Please configure your Virtual Terminal settings first</p>
+                        <Button onClick={() => navigate(createPageUrl('MerchantVirtualTerminals'))}>
+                            Go to Settings
                         </Button>
                     </CardContent>
                 </Card>
             </div>
         );
+    }
+    
+    // Check role-based access only if allowed_roles is configured
+    if (vtConfig?.allowed_roles && vtConfig.allowed_roles.length > 0) {
+        if (!user?.role || !vtConfig.allowed_roles.includes(user.role)) {
+            return (
+                <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+                    <Card className="w-96">
+                        <CardContent className="pt-6 text-center">
+                            <p className="text-lg font-medium text-slate-900 mb-2">Access Denied</p>
+                            <p className="text-slate-600 mb-4">Your role ({user?.role || 'unknown'}) doesn't have permission to access the Virtual Terminal</p>
+                            <Button onClick={() => navigate(createPageUrl('MerchantDashboard'))}>
+                                Return to Dashboard
+                            </Button>
+                        </CardContent>
+                    </Card>
+                </div>
+            );
+        }
     }
 
     if (!vtConfig || vtConfig.status !== 'active') {
