@@ -10,7 +10,9 @@ const LATEST_VERSIONS = {
     iso3166: '2025',
     iso9362: '2022',
     iso13616: '2020',
-    iso27001: '2022'
+    iso27001: '2022',
+    iso23257: '2022',
+    iso24165: '2021'
 };
 
 Deno.serve(async (req) => {

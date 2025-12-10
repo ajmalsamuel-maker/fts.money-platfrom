@@ -10,6 +10,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import ISO27001Checklist from '@/components/compliance/ISO27001Checklist';
 import ISOStandardsReference from '@/components/compliance/ISOStandardsReference';
+import CryptoAssetRegistry from '@/components/crypto/CryptoAssetRegistry';
 import { 
     Shield, 
     RefreshCw, 
@@ -76,6 +77,22 @@ const ISO_STANDARDS_CONFIG = [
         name: 'ISO 27001', 
         version: '2022', 
         description: 'Information Security',
+        lastChecked: null,
+        updateAvailable: false
+    },
+    { 
+        id: 'iso23257', 
+        name: 'ISO 23257', 
+        version: '2022', 
+        description: 'Blockchain & DLT Technologies',
+        lastChecked: null,
+        updateAvailable: false
+    },
+    { 
+        id: 'iso24165', 
+        name: 'ISO 24165', 
+        version: '2021', 
+        description: 'Digital Token Identifier (DTI)',
         lastChecked: null,
         updateAvailable: false
     }
@@ -269,6 +286,9 @@ export default function ISOConfiguration() {
                         {/* ISO Standards Reference */}
                         <ISOStandardsReference />
 
+                        {/* Crypto Asset Registry */}
+                        <CryptoAssetRegistry />
+
                         {/* ISO 27001 Compliance Checklist */}
                         <ISO27001Checklist />
 
@@ -288,7 +308,9 @@ export default function ISOConfiguration() {
                                         { area: 'Country/Location', standards: ['ISO 3166-1'], status: 'active' },
                                         { area: 'Bank Identifiers', standards: ['ISO 9362', 'ISO 13616'], status: 'active' },
                                         { area: 'Security Framework', standards: ['ISO 27001'], status: 'compliance' },
-                                        { area: 'Card Networks', standards: ['ISO 8583'], status: 'active' }
+                                        { area: 'Card Networks', standards: ['ISO 8583'], status: 'active' },
+                                        { area: 'Blockchain/DLT', standards: ['ISO 23257'], status: 'active' },
+                                        { area: 'Digital Assets', standards: ['ISO 24165'], status: 'active' }
                                     ].map((item, idx) => (
                                         <div key={idx} className="p-4 border rounded-lg">
                                             <div className="flex items-start justify-between mb-2">

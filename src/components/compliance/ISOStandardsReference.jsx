@@ -104,6 +104,35 @@ const ISO_STANDARDS = [
         ],
         messages: ['93 controls across 4 categories', 'Organizational, People, Physical, Technological', 'Incident management & compliance'],
         coverage: 'Information security, risk management, compliance'
+    },
+    {
+        id: 'iso23257',
+        standard: 'ISO 23257:2022',
+        title: 'Blockchain and Distributed Ledger Technologies',
+        icon: FileText,
+        status: 'Integrated',
+        description: 'Reference architecture for blockchain and DLT systems, including consensus mechanisms and smart contracts.',
+        implementations: [
+            { name: 'Built-in implementation', url: '/components/utils/iso23257.js', language: 'JavaScript' },
+            { name: 'ISO.org Official Standard', url: 'https://www.iso.org/standard/75093.html', language: 'Standard' }
+        ],
+        messages: ['DLT network types', 'Consensus mechanisms', 'Smart contract standards', 'Transaction validation'],
+        coverage: 'Blockchain transactions, crypto payments, DLT integration'
+    },
+    {
+        id: 'iso24165',
+        standard: 'ISO 24165:2021',
+        title: 'Digital Token Identifier (DTI)',
+        icon: FileText,
+        status: 'Integrated',
+        description: '9-character alphanumeric identifier for digital tokens and cryptocurrencies.',
+        implementations: [
+            { name: 'Built-in implementation', url: '/components/utils/iso24165.js', language: 'JavaScript' },
+            { name: 'DTI Foundation', url: 'https://www.dtif.org/', language: 'Registry' },
+            { name: 'ISO.org Official Standard', url: 'https://www.iso.org/standard/80601.html', language: 'Standard' }
+        ],
+        messages: ['9-character DTI format', 'Token categorization', 'Check digit validation', 'Registry integration'],
+        coverage: 'Crypto asset identification, token standards, digital asset registry'
     }
 ];
 
