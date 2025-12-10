@@ -165,15 +165,35 @@ export default function MerchantMIDs() {
         setShowDialog(false);
         setEditingMID(null);
         setFormData({
-            merchant_id: '', merchant_name: '', mid: '',
-            provider_id: '', provider_name: '', terminal_type: 'ecommerce',
-            transaction_types: [], currency: 'USD', status: 'pending',
-            activation_date: '', notes: ''
+            merchant_id: '', 
+            merchant_name: '', 
+            mid: '',
+            provider_id: '', 
+            provider_name: '', 
+            terminal_type: 'ecommerce',
+            transaction_types: [], 
+            currency: 'USD', 
+            status: 'pending',
+            activation_date: '', 
+            notes: ''
         });
     };
 
     const handleEdit = (mid) => {
         setEditingMID(mid);
+        
+        // Parse transaction_types if it's a string
+        let transactionTypes = [];
+        if (Array.isArray(mid.transaction_types)) {
+            transactionTypes = mid.transaction_types;
+        } else if (typeof mid.transaction_types === 'string') {
+            try {
+                transactionTypes = JSON.parse(mid.transaction_types);
+            } catch (e) {
+                transactionTypes = [];
+            }
+        }
+        
         setFormData({
             merchant_id: mid.merchant_id || '',
             merchant_name: mid.merchant_name || '',
@@ -181,7 +201,7 @@ export default function MerchantMIDs() {
             provider_id: mid.provider_id || '',
             provider_name: mid.provider_name || '',
             terminal_type: mid.terminal_type || 'ecommerce',
-            transaction_types: Array.isArray(mid.transaction_types) ? mid.transaction_types : [],
+            transaction_types: transactionTypes,
             currency: mid.currency || 'USD',
             status: mid.status || 'pending',
             activation_date: mid.activation_date || '',
@@ -250,10 +270,18 @@ export default function MerchantMIDs() {
     };
 
     const handleSubmit = () => {
+        // Ensure transaction_types is an array
+        const submitData = {
+            ...formData,
+            transaction_types: Array.isArray(formData.transaction_types) 
+                ? formData.transaction_types 
+                : []
+        };
+        
         if (editingMID) {
-            updateMutation.mutate({ id: editingMID.id, data: formData });
+            updateMutation.mutate({ id: editingMID.id, data: submitData });
         } else {
-            createMutation.mutate(formData);
+            createMutation.mutate(submitData);
         }
     };
 
