@@ -78,6 +78,7 @@ import BINTable from './pages/BINTable';
 import MerchantSettings from './pages/MerchantSettings';
 import ISOConfiguration from './pages/ISOConfiguration';
 import CryptoTransactions from './pages/CryptoTransactions';
+import FATFCompliance from './pages/FATFCompliance';
 import __Layout from './Layout.jsx';
 
 
@@ -162,6 +163,7 @@ export const PAGES = {
     "MerchantSettings": MerchantSettings,
     "ISOConfiguration": ISOConfiguration,
     "CryptoTransactions": CryptoTransactions,
+    "FATFCompliance": FATFCompliance,
 }
 
 export const pagesConfig = {
