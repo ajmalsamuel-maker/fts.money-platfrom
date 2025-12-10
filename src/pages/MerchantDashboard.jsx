@@ -75,7 +75,12 @@ export default function MerchantDashboard() {
     // Calculate stats by time period
     const statsData = React.useMemo(() => {
         if (!transactions.length) return {
-            summary: { today: 0, last7Days: 0, thisMonth: 0, lastMonth: 0 },
+            summary: { 
+                today: { amount: 0, count: 0 }, 
+                last7Days: { amount: 0, count: 0 }, 
+                thisMonth: { amount: 0, count: 0 }, 
+                lastMonth: { amount: 0, count: 0 }
+            },
             authData: [],
             payoutData: [],
             saleData: []
