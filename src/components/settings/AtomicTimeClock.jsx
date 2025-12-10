@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Clock, RefreshCw, CheckCircle2, AlertCircle } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { syncAtomicTime, getFormattedAtomicTime, getSyncStatus } from '@/utils/atomicTime';
+import { syncAtomicTime, getFormattedAtomicTime, getSyncStatus } from '../utils/atomicTime';
 
 export default function AtomicTimeClock({ timezone = 'UTC', showSync = true, compact = false }) {
     const [currentTime, setCurrentTime] = useState('');

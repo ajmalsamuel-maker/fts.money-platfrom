@@ -10,8 +10,8 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Globe, MapPin, Clock } from 'lucide-react';
-import { getAllCountries, getTimezoneForCountry } from '@/utils/countries';
-import { getAvailableTimezones } from '@/utils/atomicTime';
+import { getAllCountries, getTimezoneForCountry } from '../utils/countries';
+import { getAvailableTimezones } from '../utils/atomicTime';
 import AtomicTimeClock from './AtomicTimeClock';
 
 export default function TimezoneSettings({ 
