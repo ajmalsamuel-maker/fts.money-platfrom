@@ -128,7 +128,15 @@ export default function MerchantUsers() {
                 await AuditLogger.logMerchantUserRoleChanged({ ...user, id }, user.role, data.role);
             }
             
-            await base44.entities.MerchantUser.update(id, data);
+            const updated = await base44.entities.MerchantUser.update(id, data);
+            
+            // Sync to PostgreSQL
+            try {
+                await base44.functions.invoke('syncMerchantUser', { user: updated });
+            } catch (e) {
+                console.error('Failed to sync to PostgreSQL:', e);
+            }
+            
             return { id, data };
         },
         onSuccess: () => {
@@ -219,9 +227,27 @@ export default function MerchantUsers() {
                             <h1 className="text-2xl font-bold text-slate-900">Merchant User Management</h1>
                             <p className="text-slate-500">Comprehensive portal access and permission control</p>
                         </div>
-                        <Button onClick={() => setShowCreateDialog(true)} className="gap-2 bg-blue-600 hover:bg-blue-700">
-                            <Plus className="h-4 w-4" />Create User
-                        </Button>
+                        <div className="flex gap-2">
+                            <Button 
+                                variant="outline" 
+                                onClick={async () => {
+                                    try {
+                                        for (const user of users) {
+                                            await base44.functions.invoke('syncMerchantUser', { user });
+                                        }
+                                        alert('All users synced to PostgreSQL');
+                                    } catch (e) {
+                                        alert('Sync failed: ' + e.message);
+                                    }
+                                }}
+                                className="gap-2"
+                            >
+                                <RefreshCw className="h-4 w-4" />Sync All to DB
+                            </Button>
+                            <Button onClick={() => setShowCreateDialog(true)} className="gap-2 bg-blue-600 hover:bg-blue-700">
+                                <Plus className="h-4 w-4" />Create User
+                            </Button>
+                        </div>
                     </div>
 
                     {/* Stats */}
