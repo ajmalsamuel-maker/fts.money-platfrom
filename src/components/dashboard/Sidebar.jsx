@@ -61,6 +61,7 @@ const menuItems = [
             icon: ArrowLeftRight,
             items: [
                 { icon: ArrowLeftRight, label: 'transactions', path: 'Transactions', permission: 'VIEW_TRANSACTIONS' },
+                { icon: Coins, label: 'cryptoTransactions', path: 'CryptoTransactions', permission: 'VIEW_TRANSACTIONS' },
                 { icon: Receipt, label: 'settlements', path: 'Settlements', permission: 'VIEW_SETTLEMENTS' },
                 { icon: Repeat, label: 'chargebacks', path: 'Chargebacks', permission: 'VIEW_CHARGEBACKS' },
                 { icon: AlertTriangle, label: 'disputes', path: 'Disputes', permission: 'VIEW_DISPUTES' },
@@ -140,7 +141,6 @@ const menuItems = [
                 { icon: CreditCard, label: 'binTable', path: 'BINTable', permission: 'VIEW_SETTINGS' },
                 { icon: Landmark, label: 'databaseSetup', path: 'DatabaseSetup', permission: 'VIEW_SETTINGS' },
                 { icon: Database, label: 'databaseMigration', path: 'DatabaseMigration', permission: 'VIEW_SETTINGS' },
-                { icon: Coins, label: 'cryptoTransactions', path: 'CryptoTransactions', permission: 'VIEW_TRANSACTIONS' },
                 ]
                 },
                 {

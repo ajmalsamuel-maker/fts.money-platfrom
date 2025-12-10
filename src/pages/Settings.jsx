@@ -25,12 +25,16 @@ import {
     CheckCircle,
     DollarSign,
     Plus,
-    X
+    X,
+    Coins
 } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import TimezoneSettings from '@/components/settings/TimezoneSettings';
 import { ISO4217_CURRENCIES, getCurrencySymbol } from '@/components/utils/iso4217';
+import { CRYPTO_ASSETS, isStablecoin } from '@/components/utils/cryptoRegistry';
+import { generateCryptoAssetDTI } from '@/components/utils/iso24165';
+import { getCryptoBlockchain } from '@/components/utils/cryptoRegistry';
 
 export default function Settings() {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -44,6 +48,7 @@ export default function Settings() {
     const savedSettings = pspSettings?.[0];
 
     const [searchQuery, setSearchQuery] = useState('');
+    const [currencyType, setCurrencyType] = useState('fiat'); // 'fiat' or 'crypto'
 
     // Use ISO 4217 currencies
     const allCurrencies = ISO4217_CURRENCIES.map(curr => ({
@@ -51,7 +56,19 @@ export default function Settings() {
         name: curr.name,
         symbol: getCurrencySymbol(curr.code),
         minorUnit: curr.minorUnit,
-        num: curr.num
+        num: curr.num,
+        type: 'fiat'
+    }));
+
+    // Add crypto assets (ISO 23257 & ISO 24165)
+    const allCryptoAssets = CRYPTO_ASSETS.map(crypto => ({
+        code: crypto.symbol,
+        name: crypto.name,
+        symbol: crypto.symbol,
+        dti: generateCryptoAssetDTI(crypto.symbol),
+        blockchain: getCryptoBlockchain(crypto.symbol),
+        type: crypto.type,
+        isStablecoin: isStablecoin(crypto.symbol)
     }));
 
     const [selectedCurrencies, setSelectedCurrencies] = useState(['USD', 'EUR', 'GBP', 'JPY', 'CHF', 'CAD']);
@@ -424,10 +441,10 @@ export default function Settings() {
                                 <CardHeader>
                                     <CardTitle className="flex items-center gap-2">
                                         <DollarSign className="h-5 w-5 text-blue-600" />
-                                        Supported Currencies (ISO 4217)
+                                        Supported Currencies & Crypto Assets
                                     </CardTitle>
                                     <CardDescription>
-                                        Browse and select currencies from the complete ISO 4217 standard list
+                                        ISO 4217 (Fiat), ISO 23257 (Blockchain), ISO 24165 (Digital Tokens)
                                     </CardDescription>
                                 </CardHeader>
                                 <CardContent className="space-y-6">
@@ -435,20 +452,35 @@ export default function Settings() {
                                     <div>
                                         <div className="flex items-center justify-between mb-3">
                                             <p className="text-sm font-medium text-slate-700">
-                                                Selected Currencies ({selectedCurrencies.length})
+                                                Selected ({selectedCurrencies.length})
                                             </p>
-                                            <Badge variant="outline" className="text-xs">
-                                                ISO 4217 Compliant
-                                            </Badge>
+                                            <div className="flex gap-2">
+                                                <Badge variant="outline" className="text-xs">
+                                                    ISO 4217
+                                                </Badge>
+                                                <Badge variant="outline" className="text-xs">
+                                                    ISO 23257
+                                                </Badge>
+                                                <Badge variant="outline" className="text-xs">
+                                                    ISO 24165
+                                                </Badge>
+                                            </div>
                                         </div>
                                         <div className="flex flex-wrap gap-2">
                                             {selectedCurrencies.map(code => {
                                                 const currency = allCurrencies.find(c => c.code === code);
+                                                const crypto = allCryptoAssets.find(c => c.code === code);
+                                                const item = currency || crypto;
+                                                const isCrypto = !!crypto;
+                                                
                                                 return (
-                                                    <Badge key={code} className="gap-2 bg-blue-100 text-blue-700 hover:bg-blue-200 px-3 py-1.5">
-                                                        <span className="font-mono font-semibold">{currency?.symbol}</span>
+                                                    <Badge key={code} className={cn(
+                                                        "gap-2 px-3 py-1.5",
+                                                        isCrypto ? "bg-purple-100 text-purple-700 hover:bg-purple-200" : "bg-blue-100 text-blue-700 hover:bg-blue-200"
+                                                    )}>
+                                                        <span className="font-mono font-semibold">{item?.symbol}</span>
                                                         <span>{code}</span>
-                                                        <span className="text-xs opacity-70">({currency?.name})</span>
+                                                        {isCrypto && <span className="text-xs opacity-70">({crypto.blockchain})</span>}
                                                         <button 
                                                             onClick={() => toggleCurrency(code)}
                                                             className="ml-1 hover:text-red-600"
@@ -461,78 +493,169 @@ export default function Settings() {
                                         </div>
                                     </div>
 
-                                    {/* Search */}
+                                    {/* Type Toggle */}
                                     <div className="border-t pt-4">
+                                        <div className="flex items-center gap-2 mb-4">
+                                            <Button
+                                                variant={currencyType === 'fiat' ? 'default' : 'outline'}
+                                                onClick={() => setCurrencyType('fiat')}
+                                                size="sm"
+                                            >
+                                                <DollarSign className="h-4 w-4 mr-2" />
+                                                Fiat (ISO 4217)
+                                            </Button>
+                                            <Button
+                                                variant={currencyType === 'crypto' ? 'default' : 'outline'}
+                                                onClick={() => setCurrencyType('crypto')}
+                                                size="sm"
+                                            >
+                                                <Coins className="h-4 w-4 mr-2" />
+                                                Crypto (ISO 23257/24165)
+                                            </Button>
+                                        </div>
+
+                                        {/* Search */}
                                         <div className="mb-4">
-                                            <Label htmlFor="currency-search" className="text-sm font-medium">
-                                                Search ISO 4217 Currencies
-                                            </Label>
                                             <Input
-                                                id="currency-search"
-                                                placeholder="Search by code or name..."
+                                                placeholder={currencyType === 'fiat' ? "Search fiat currencies..." : "Search crypto assets..."}
                                                 value={searchQuery}
                                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                                className="mt-2"
                                             />
                                         </div>
 
-                                        {/* Currency Grid */}
-                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 max-h-96 overflow-y-auto p-1">
-                                            {allCurrencies
-                                                .filter(currency => {
-                                                    if (!searchQuery) return true;
-                                                    const query = searchQuery.toLowerCase();
-                                                    return (
-                                                        currency.code.toLowerCase().includes(query) ||
-                                                        currency.name.toLowerCase().includes(query) ||
-                                                        currency.num.includes(query)
-                                                    );
-                                                })
-                                                .map(currency => {
-                                                    const isSelected = selectedCurrencies.includes(currency.code);
-                                                    return (
-                                                        <div 
-                                                            key={currency.code}
-                                                            onClick={() => toggleCurrency(currency.code)}
-                                                            className={cn(
-                                                                "flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-all",
-                                                                isSelected 
-                                                                    ? "border-blue-400 bg-blue-50" 
-                                                                    : "border-slate-200 hover:border-slate-300 hover:bg-slate-50"
-                                                            )}
-                                                        >
-                                                            <div className="flex items-center gap-3 flex-1">
-                                                                <Checkbox checked={isSelected} />
-                                                                <div className="flex-1 min-w-0">
-                                                                    <div className="flex items-center gap-2">
-                                                                        <span className="font-mono font-semibold text-sm">{currency.symbol}</span>
-                                                                        <span className="font-medium text-slate-900">{currency.code}</span>
-                                                                        <Badge variant="outline" className="text-xs px-1">
-                                                                            {currency.num}
-                                                                        </Badge>
+                                        {/* Fiat Currency Grid */}
+                                        {currencyType === 'fiat' && (
+                                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 max-h-96 overflow-y-auto p-1">
+                                                {allCurrencies
+                                                    .filter(currency => {
+                                                        if (!searchQuery) return true;
+                                                        const query = searchQuery.toLowerCase();
+                                                        return (
+                                                            currency.code.toLowerCase().includes(query) ||
+                                                            currency.name.toLowerCase().includes(query) ||
+                                                            currency.num.includes(query)
+                                                        );
+                                                    })
+                                                    .map(currency => {
+                                                        const isSelected = selectedCurrencies.includes(currency.code);
+                                                        return (
+                                                            <div 
+                                                                key={currency.code}
+                                                                onClick={() => toggleCurrency(currency.code)}
+                                                                className={cn(
+                                                                    "flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-all",
+                                                                    isSelected 
+                                                                        ? "border-blue-400 bg-blue-50" 
+                                                                        : "border-slate-200 hover:border-slate-300 hover:bg-slate-50"
+                                                                )}
+                                                            >
+                                                                <div className="flex items-center gap-3 flex-1">
+                                                                    <Checkbox checked={isSelected} />
+                                                                    <div className="flex-1 min-w-0">
+                                                                        <div className="flex items-center gap-2">
+                                                                            <span className="font-mono font-semibold text-sm">{currency.symbol}</span>
+                                                                            <span className="font-medium text-slate-900">{currency.code}</span>
+                                                                            <Badge variant="outline" className="text-xs px-1">
+                                                                                {currency.num}
+                                                                            </Badge>
+                                                                        </div>
+                                                                        <p className="text-xs text-slate-600 truncate">{currency.name}</p>
+                                                                        <p className="text-xs text-slate-400">
+                                                                            Decimals: {currency.minorUnit}
+                                                                        </p>
                                                                     </div>
-                                                                    <p className="text-xs text-slate-600 truncate">{currency.name}</p>
-                                                                    <p className="text-xs text-slate-400">
-                                                                        Decimals: {currency.minorUnit}
-                                                                    </p>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                    );
-                                                })}
-                                        </div>
+                                                        );
+                                                    })}
+                                            </div>
+                                        )}
+
+                                        {/* Crypto Asset Grid */}
+                                        {currencyType === 'crypto' && (
+                                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 max-h-96 overflow-y-auto p-1">
+                                                {allCryptoAssets
+                                                    .filter(crypto => {
+                                                        if (!searchQuery) return true;
+                                                        const query = searchQuery.toLowerCase();
+                                                        return (
+                                                            crypto.code.toLowerCase().includes(query) ||
+                                                            crypto.name.toLowerCase().includes(query) ||
+                                                            crypto.blockchain.toLowerCase().includes(query)
+                                                        );
+                                                    })
+                                                    .map(crypto => {
+                                                        const isSelected = selectedCurrencies.includes(crypto.code);
+                                                        return (
+                                                            <div 
+                                                                key={crypto.code}
+                                                                onClick={() => toggleCurrency(crypto.code)}
+                                                                className={cn(
+                                                                    "flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-all",
+                                                                    isSelected 
+                                                                        ? "border-purple-400 bg-purple-50" 
+                                                                        : "border-slate-200 hover:border-slate-300 hover:bg-slate-50"
+                                                                )}
+                                                            >
+                                                                <div className="flex items-center gap-3 flex-1">
+                                                                    <Checkbox checked={isSelected} />
+                                                                    <div className="flex-1 min-w-0">
+                                                                        <div className="flex items-center gap-2">
+                                                                            <span className="font-mono font-semibold text-sm">{crypto.symbol}</span>
+                                                                            <span className="font-medium text-slate-900">{crypto.code}</span>
+                                                                            {crypto.isStablecoin && (
+                                                                                <Badge variant="secondary" className="text-xs px-1">
+                                                                                    Stable
+                                                                                </Badge>
+                                                                            )}
+                                                                        </div>
+                                                                        <p className="text-xs text-slate-600 truncate">{crypto.name}</p>
+                                                                        <div className="flex items-center gap-2 mt-1">
+                                                                            <Badge variant="outline" className="text-xs">
+                                                                                DTI: {crypto.dti}
+                                                                            </Badge>
+                                                                            <p className="text-xs text-slate-400">
+                                                                                {crypto.blockchain}
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        );
+                                                    })}
+                                            </div>
+                                        )}
                                     </div>
 
                                     {/* Info */}
-                                    <div className="bg-slate-50 p-4 rounded-lg border">
+                                    <div className={cn(
+                                        "p-4 rounded-lg border",
+                                        currencyType === 'fiat' ? "bg-slate-50" : "bg-purple-50 border-purple-200"
+                                    )}>
                                         <div className="flex items-start gap-3">
-                                            <DollarSign className="h-5 w-5 text-slate-600 mt-0.5" />
+                                            {currencyType === 'fiat' ? (
+                                                <DollarSign className="h-5 w-5 text-slate-600 mt-0.5" />
+                                            ) : (
+                                                <Coins className="h-5 w-5 text-purple-600 mt-0.5" />
+                                            )}
                                             <div>
-                                                <h4 className="font-medium text-sm text-slate-900">ISO 4217 Standard</h4>
-                                                <p className="text-xs text-slate-600 mt-1">
-                                                    This list contains {allCurrencies.length} currencies from the official ISO 4217 standard, 
-                                                    including currency codes, numeric codes, names, and decimal precision (minor units).
-                                                </p>
+                                                {currencyType === 'fiat' ? (
+                                                    <>
+                                                        <h4 className="font-medium text-sm text-slate-900">ISO 4217 Standard</h4>
+                                                        <p className="text-xs text-slate-600 mt-1">
+                                                            {allCurrencies.length} fiat currencies from the official ISO 4217 standard, 
+                                                            including currency codes, numeric codes, names, and decimal precision.
+                                                        </p>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <h4 className="font-medium text-sm text-purple-900">ISO 23257 & ISO 24165 Standards</h4>
+                                                        <p className="text-xs text-purple-700 mt-1">
+                                                            {allCryptoAssets.length} crypto assets with ISO 23257 (Blockchain/DLT) compliance and 
+                                                            ISO 24165 Digital Token Identifiers (DTI). Includes blockchain network and asset type information.
+                                                        </p>
+                                                    </>
+                                                )}
                                             </div>
                                         </div>
                                     </div>
