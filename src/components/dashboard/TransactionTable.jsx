@@ -21,6 +21,7 @@ import { MoreHorizontal, Eye, RefreshCw, Ban, ExternalLink } from 'lucide-react'
 import { cn } from "@/lib/utils";
 import CardBrandLogo from '../transaction/CardBrandLogo';
 import TransactionDetailsDialog from '../transaction/TransactionDetailsDialog';
+import ISOComplianceBadge from '../transaction/ISOComplianceBadge';
 
 const statusConfig = {
     approved: { label: 'Approved', className: 'bg-emerald-100 text-emerald-700 border-emerald-200' },
@@ -93,6 +94,7 @@ export default function TransactionTable({ transactions, title = "Recent Transac
                                 <TableHead className="font-semibold">Amount</TableHead>
                                 <TableHead className="font-semibold">Method</TableHead>
                                 <TableHead className="font-semibold">Status</TableHead>
+                                <TableHead className="font-semibold">ISO</TableHead>
                                 <TableHead className="font-semibold w-12"></TableHead>
                             </TableRow>
                         </TableHeader>
@@ -148,6 +150,9 @@ export default function TransactionTable({ transactions, title = "Recent Transac
                                         >
                                             {statusConfig[txn.status]?.label || txn.status}
                                         </Badge>
+                                    </TableCell>
+                                    <TableCell>
+                                        <ISOComplianceBadge transaction={txn} size="sm" />
                                     </TableCell>
                                     <TableCell>
                                         <DropdownMenu>
