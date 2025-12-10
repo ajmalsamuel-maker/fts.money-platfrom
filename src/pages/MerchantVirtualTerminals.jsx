@@ -9,37 +9,30 @@ import MerchantTopBar from '@/components/merchant/MerchantTopBar';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
-import {
-    Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
-} from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
     Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { 
-    Monitor, Plus, Search, Settings, Key, Copy, Check, ExternalLink, Loader2, Trash2
+    Monitor, Settings, ExternalLink, Loader2, Save, CheckCircle2
 } from 'lucide-react';
 
-const currencies = ['USD', 'EUR', 'GBP', 'CAD', 'AUD', 'SGD'];
+const ROLE_PERMISSIONS = {
+    admin: 'Full access to Virtual Terminal',
+    manager: 'Can process payments and view transactions',
+    operator: 'Can process payments only',
+    viewer: 'Read-only access'
+};
 
 export default function MerchantVirtualTerminals() {
     const { user, loading, isAuthenticated, logout } = useMerchantAuth();
     const navigate = useNavigate();
-    const [showCreateDialog, setShowCreateDialog] = useState(false);
-    const [showConfigDialog, setShowConfigDialog] = useState(false);
-    const [selectedTerminal, setSelectedTerminal] = useState(null);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [copiedKey, setCopiedKey] = useState(null);
     const [selectedMID, setSelectedMID] = useState('');
+    const [saving, setSaving] = useState(false);
     const queryClient = useQueryClient();
-
-    const [newTerminal, setNewTerminal] = useState({
-        name: '', terminal_type: 'web', allowed_currencies: ['USD'], 
-        daily_limit: 10000, per_transaction_limit: 1000,
-        requires_cvv: true, requires_avs: true, enable_3ds: true
-    });
 
     React.useEffect(() => {
         if (!loading && !isAuthenticated) {
@@ -70,96 +63,66 @@ export default function MerchantVirtualTerminals() {
         }
     }, [mids, selectedMID]);
 
-    const { data: terminals = [] } = useQuery({
-        queryKey: ['virtual-terminals', user?.merchant_id],
+    const { data: vtConfig, isLoading: loadingVT } = useQuery({
+        queryKey: ['virtual-terminal', user?.merchant_id],
         queryFn: async () => {
-            return await base44.entities.VirtualTerminal.filter({ 
+            const terminals = await base44.entities.VirtualTerminal.filter({ 
                 merchant_id: user.merchant_id 
             });
+            return terminals[0] || null;
         },
         enabled: !!user?.merchant_id
     });
 
-    const createTerminal = useMutation({
-        mutationFn: async (data) => {
-            const terminalId = `VT-${Date.now()}`;
-            
-            const terminal = await base44.entities.VirtualTerminal.create({
-                ...data,
-                merchant_id: user.merchant_id,
-                terminal_id: terminalId,
-                merchant_name: merchant?.business_name,
-                api_key: `vt_${btoa(user.merchant_id + Date.now()).slice(0, 24)}`,
-                status: 'active'
-            });
-
-            const tempPassword = Math.random().toString(36).slice(-8);
-            const userEmail = `vt.${terminalId.toLowerCase()}@terminal.local`;
-            
-            await base44.entities.VirtualTerminalUser.create({
-                terminal_id: terminalId,
-                merchant_id: user.merchant_id,
-                email: userEmail,
-                full_name: `${data.name} Operator`,
-                role: 'operator',
-                status: 'active',
-                temp_password: tempPassword,
-                must_change_password: true,
-                permissions: ['process_payment', 'view_transactions']
-            });
-
-            return { terminal, userEmail, tempPassword };
-        },
-        onSuccess: (data) => { 
-            queryClient.invalidateQueries({ queryKey: ['virtual-terminals'] }); 
-            alert(`Terminal created!\n\nLogin URL: ${window.location.origin}/VirtualTerminalLogin\nEmail: ${data.userEmail}\nPassword: ${data.tempPassword}\n\nPlease save these credentials!`);
-            setShowCreateDialog(false);
-            setNewTerminal({
-                name: '', terminal_type: 'web', allowed_currencies: ['USD'], 
-                daily_limit: 10000, per_transaction_limit: 1000,
-                requires_cvv: true, requires_avs: true, enable_3ds: true
-            });
-        }
+    const [settings, setSettings] = useState({
+        status: 'active',
+        allowed_currencies: ['USD', 'EUR', 'GBP'],
+        daily_limit: 50000,
+        per_transaction_limit: 10000,
+        requires_cvv: true,
+        requires_billing_address: false,
+        enable_3ds: true,
+        enable_card_on_file: true,
+        enable_recurring: true,
+        enable_split_tender: true,
+        enable_itemized_sale: true,
+        send_receipts_email: true,
+        send_receipts_sms: false,
+        allowed_roles: ['admin', 'manager', 'operator']
     });
 
-    const updateTerminal = useMutation({
+    React.useEffect(() => {
+        if (vtConfig) {
+            setSettings(vtConfig);
+        }
+    }, [vtConfig]);
+
+    const saveSettings = useMutation({
         mutationFn: async (data) => {
-            return await base44.entities.VirtualTerminal.update(data.id, data);
+            if (vtConfig) {
+                return await base44.entities.VirtualTerminal.update(vtConfig.id, data);
+            } else {
+                return await base44.entities.VirtualTerminal.create({
+                    ...data,
+                    merchant_id: user.merchant_id,
+                    merchant_name: merchant?.business_name
+                });
+            }
         },
         onSuccess: () => { 
-            queryClient.invalidateQueries({ queryKey: ['virtual-terminals'] }); 
-            setShowConfigDialog(false);
-            setSelectedTerminal(null);
+            queryClient.invalidateQueries({ queryKey: ['virtual-terminal'] }); 
+            setSaving(false);
         }
     });
 
-    const deleteTerminal = useMutation({
-        mutationFn: async (id) => {
-            return await base44.entities.VirtualTerminal.delete(id);
-        },
-        onSuccess: () => { 
-            queryClient.invalidateQueries({ queryKey: ['virtual-terminals'] }); 
-            setShowConfigDialog(false);
-            setSelectedTerminal(null);
-        }
-    });
-
-    const copyKey = (key) => { 
-        navigator.clipboard.writeText(key); 
-        setCopiedKey(key); 
-        setTimeout(() => setCopiedKey(null), 2000); 
+    const handleSave = async () => {
+        setSaving(true);
+        await saveSettings.mutateAsync(settings);
     };
 
-    const openConfig = (terminal) => {
-        setSelectedTerminal({...terminal});
-        setShowConfigDialog(true);
-    };
+    const hasAccess = user?.role && settings.allowed_roles?.includes(user.role);
 
-    const filteredTerminals = terminals.filter(t => 
-        t.name?.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-
-    if (loading) {
+    if (loading || loadingVT) {
         return (
             <div className="min-h-screen bg-slate-50 flex items-center justify-center">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -184,252 +147,324 @@ export default function MerchantVirtualTerminals() {
                 <MerchantTopBar user={user} merchant={merchant} onLogout={logout} selectedMID={selectedMID} />
 
                 <main className="flex-1 overflow-y-auto p-6">
-                    <div className="max-w-7xl mx-auto space-y-6">
+                    <div className="max-w-5xl mx-auto space-y-6">
                         <div className="flex items-center justify-between">
                             <div>
-                                <h1 className="text-2xl font-bold">Virtual Terminals</h1>
-                                <p className="text-slate-500">Create and manage virtual payment terminals</p>
+                                <h1 className="text-2xl font-bold">Virtual Terminal</h1>
+                                <p className="text-slate-500">Configure settings for your payment terminal</p>
                             </div>
-                            <Button onClick={() => setShowCreateDialog(true)} className="gap-2">
-                                <Plus className="h-4 w-4" />Create Terminal
-                            </Button>
+                            <div className="flex gap-2">
+                                {vtConfig && hasAccess && (
+                                    <Button 
+                                        variant="outline" 
+                                        onClick={() => window.open(createPageUrl('MerchantVirtualTerminal'), '_blank')}
+                                        className="gap-2"
+                                    >
+                                        <ExternalLink className="h-4 w-4" />
+                                        Open Terminal
+                                    </Button>
+                                )}
+                                <Button 
+                                    onClick={handleSave} 
+                                    disabled={saving}
+                                    className="gap-2"
+                                >
+                                    {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+                                    Save Settings
+                                </Button>
+                            </div>
                         </div>
 
-                        <Card>
-                            <CardContent className="p-4">
-                                <div className="relative max-w-md">
-                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                                    <Input 
-                                        placeholder="Search terminals..." 
-                                        value={searchQuery} 
-                                        onChange={(e) => setSearchQuery(e.target.value)} 
-                                        className="pl-10" 
-                                    />
-                                </div>
-                            </CardContent>
-                        </Card>
+                        {!vtConfig && (
+                            <Card className="border-blue-200 bg-blue-50">
+                                <CardContent className="pt-6">
+                                    <div className="flex items-start gap-3">
+                                        <Monitor className="h-5 w-5 text-blue-600 mt-0.5" />
+                                        <div>
+                                            <p className="font-medium text-blue-900">Virtual Terminal Not Configured</p>
+                                            <p className="text-sm text-blue-700 mt-1">
+                                                Configure your settings below and click "Save Settings" to activate your virtual terminal.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        )}
 
-                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {filteredTerminals.map((terminal) => (
-                                <Card key={terminal.id} className="overflow-hidden">
-                                    <div className={terminal.status === 'active' ? "h-1 bg-emerald-500" : "h-1 bg-slate-300"} />
-                                    <CardContent className="p-4">
-                                        <div className="flex items-start justify-between mb-3">
+                        {vtConfig && (
+                            <Card>
+                                <CardContent className="pt-6">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-3">
+                                            <div className={`w-3 h-3 rounded-full ${settings.status === 'active' ? 'bg-emerald-500' : 'bg-slate-300'}`} />
                                             <div>
-                                                <p className="font-semibold">{terminal.name}</p>
-                                                <p className="text-sm text-slate-500">{terminal.terminal_id}</p>
+                                                <p className="font-medium">Terminal Status</p>
+                                                <p className="text-sm text-slate-500">
+                                                    {settings.status === 'active' ? 'Active and ready to process payments' : 'Inactive'}
+                                                </p>
                                             </div>
-                                            <Badge variant="outline" className={terminal.status === 'active' ? 'bg-emerald-50 text-emerald-700' : ''}>
-                                                {terminal.status}
-                                            </Badge>
                                         </div>
-                                        <div className="text-xs text-slate-500 space-y-1 mb-3">
-                                            <p>Type: {terminal.terminal_type}</p>
-                                            <p>Daily Limit: ${terminal.daily_limit?.toLocaleString()}</p>
-                                            <p>3DS: {terminal.enable_3ds ? 'Enabled' : 'Disabled'}</p>
+                                        <Badge variant={settings.status === 'active' ? 'default' : 'secondary'}>
+                                            {settings.status}
+                                        </Badge>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        )}
+
+                        <Tabs defaultValue="general" className="space-y-6">
+                            <TabsList className="grid w-full grid-cols-4">
+                                <TabsTrigger value="general">General</TabsTrigger>
+                                <TabsTrigger value="features">Features</TabsTrigger>
+                                <TabsTrigger value="limits">Limits</TabsTrigger>
+                                <TabsTrigger value="access">Access Control</TabsTrigger>
+                            </TabsList>
+
+                            <TabsContent value="general" className="space-y-4">
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>General Settings</CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="space-y-6">
+                                        <div className="space-y-3">
+                                            <Label>Status</Label>
+                                            <Select 
+                                                value={settings.status} 
+                                                onValueChange={(v) => setSettings(p => ({ ...p, status: v }))}
+                                            >
+                                                <SelectTrigger>
+                                                    <SelectValue />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="active">Active</SelectItem>
+                                                    <SelectItem value="inactive">Inactive</SelectItem>
+                                                </SelectContent>
+                                            </Select>
                                         </div>
-                                        <div className="flex gap-2">
-                                            <Button 
-                                                variant="outline" 
-                                                size="sm" 
-                                                className="flex-1 gap-1" 
-                                                onClick={() => copyKey(terminal.api_key)}
-                                            >
-                                                {copiedKey === terminal.api_key ? <Check className="h-3 w-3" /> : <Key className="h-3 w-3" />}
-                                                API Key
-                                            </Button>
-                                            <Button 
-                                                variant="outline" 
-                                                size="sm"
-                                                onClick={() => openConfig(terminal)}
-                                            >
-                                                <Settings className="h-3 w-3" />
-                                            </Button>
+
+                                        <div className="space-y-3">
+                                            <Label>Allowed Currencies</Label>
+                                            <div className="flex flex-wrap gap-2">
+                                                {['USD', 'EUR', 'GBP', 'CAD', 'AUD', 'SGD', 'HKD'].map(curr => (
+                                                    <Button
+                                                        key={curr}
+                                                        type="button"
+                                                        variant={settings.allowed_currencies?.includes(curr) ? 'default' : 'outline'}
+                                                        size="sm"
+                                                        onClick={() => {
+                                                            const current = settings.allowed_currencies || [];
+                                                            if (current.includes(curr)) {
+                                                                setSettings(p => ({ ...p, allowed_currencies: current.filter(c => c !== curr) }));
+                                                            } else {
+                                                                setSettings(p => ({ ...p, allowed_currencies: [...current, curr] }));
+                                                            }
+                                                        }}
+                                                    >
+                                                        {curr}
+                                                    </Button>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-4 pt-4 border-t">
+                                            <div className="flex items-center justify-between">
+                                                <div>
+                                                    <p className="font-medium">Require CVV</p>
+                                                    <p className="text-sm text-slate-500">Card verification value required</p>
+                                                </div>
+                                                <Switch 
+                                                    checked={settings.requires_cvv} 
+                                                    onCheckedChange={(c) => setSettings(p => ({ ...p, requires_cvv: c }))} 
+                                                />
+                                            </div>
+                                            <div className="flex items-center justify-between">
+                                                <div>
+                                                    <p className="font-medium">Require Billing Address</p>
+                                                    <p className="text-sm text-slate-500">Customer billing address required</p>
+                                                </div>
+                                                <Switch 
+                                                    checked={settings.requires_billing_address} 
+                                                    onCheckedChange={(c) => setSettings(p => ({ ...p, requires_billing_address: c }))} 
+                                                />
+                                            </div>
+                                            <div className="flex items-center justify-between">
+                                                <div>
+                                                    <p className="font-medium">Enable 3D Secure</p>
+                                                    <p className="text-sm text-slate-500">Additional authentication for cards</p>
+                                                </div>
+                                                <Switch 
+                                                    checked={settings.enable_3ds} 
+                                                    onCheckedChange={(c) => setSettings(p => ({ ...p, enable_3ds: c }))} 
+                                                />
+                                            </div>
                                         </div>
                                     </CardContent>
                                 </Card>
-                            ))}
-                        </div>
+                            </TabsContent>
 
-                        {/* Create Dialog */}
-                        <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
-                            <DialogContent className="max-w-lg max-h-[80vh] overflow-y-auto">
-                                <DialogHeader><DialogTitle>Create Virtual Terminal</DialogTitle></DialogHeader>
-                                <div className="space-y-4">
-                                    <div className="space-y-2">
-                                        <Label>Terminal Name *</Label>
-                                        <Input 
-                                            value={newTerminal.name} 
-                                            onChange={(e) => setNewTerminal(p => ({ ...p, name: e.target.value }))} 
-                                            placeholder="e.g., Web Checkout" 
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label>Terminal Type</Label>
-                                        <Select 
-                                            value={newTerminal.terminal_type} 
-                                            onValueChange={(v) => setNewTerminal(p => ({ ...p, terminal_type: v }))}
-                                        >
-                                            <SelectTrigger><SelectValue /></SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="web">Web</SelectItem>
-                                                <SelectItem value="mobile">Mobile</SelectItem>
-                                                <SelectItem value="api">API</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-                                    <div className="grid grid-cols-2 gap-4">
+                            <TabsContent value="features" className="space-y-4">
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>Payment Features</CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="space-y-4">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="font-medium">Card on File</p>
+                                                <p className="text-sm text-slate-500">Save customer cards for future use</p>
+                                            </div>
+                                            <Switch 
+                                                checked={settings.enable_card_on_file} 
+                                                onCheckedChange={(c) => setSettings(p => ({ ...p, enable_card_on_file: c }))} 
+                                            />
+                                        </div>
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="font-medium">Recurring Payments</p>
+                                                <p className="text-sm text-slate-500">Schedule automatic recurring charges</p>
+                                            </div>
+                                            <Switch 
+                                                checked={settings.enable_recurring} 
+                                                onCheckedChange={(c) => setSettings(p => ({ ...p, enable_recurring: c }))} 
+                                            />
+                                        </div>
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="font-medium">Split Tender Payments</p>
+                                                <p className="text-sm text-slate-500">Allow multiple payment methods per transaction</p>
+                                            </div>
+                                            <Switch 
+                                                checked={settings.enable_split_tender} 
+                                                onCheckedChange={(c) => setSettings(p => ({ ...p, enable_split_tender: c }))} 
+                                            />
+                                        </div>
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="font-medium">Itemized Sales</p>
+                                                <p className="text-sm text-slate-500">Add line items and manage inventory</p>
+                                            </div>
+                                            <Switch 
+                                                checked={settings.enable_itemized_sale} 
+                                                onCheckedChange={(c) => setSettings(p => ({ ...p, enable_itemized_sale: c }))} 
+                                            />
+                                        </div>
+                                    </CardContent>
+                                </Card>
+
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>Receipt Options</CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="space-y-4">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="font-medium">Email Receipts</p>
+                                                <p className="text-sm text-slate-500">Send receipts via email</p>
+                                            </div>
+                                            <Switch 
+                                                checked={settings.send_receipts_email} 
+                                                onCheckedChange={(c) => setSettings(p => ({ ...p, send_receipts_email: c }))} 
+                                            />
+                                        </div>
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="font-medium">SMS Receipts</p>
+                                                <p className="text-sm text-slate-500">Send receipts via text message</p>
+                                            </div>
+                                            <Switch 
+                                                checked={settings.send_receipts_sms} 
+                                                onCheckedChange={(c) => setSettings(p => ({ ...p, send_receipts_sms: c }))} 
+                                            />
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </TabsContent>
+
+                            <TabsContent value="limits" className="space-y-4">
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>Transaction Limits</CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="space-y-4">
                                         <div className="space-y-2">
                                             <Label>Daily Limit ($)</Label>
                                             <Input 
                                                 type="number" 
-                                                value={newTerminal.daily_limit} 
-                                                onChange={(e) => setNewTerminal(p => ({ ...p, daily_limit: parseInt(e.target.value) }))} 
+                                                value={settings.daily_limit} 
+                                                onChange={(e) => setSettings(p => ({ ...p, daily_limit: parseInt(e.target.value) }))} 
                                             />
+                                            <p className="text-xs text-slate-500">Maximum daily transaction volume</p>
                                         </div>
                                         <div className="space-y-2">
                                             <Label>Per Transaction Limit ($)</Label>
                                             <Input 
                                                 type="number" 
-                                                value={newTerminal.per_transaction_limit} 
-                                                onChange={(e) => setNewTerminal(p => ({ ...p, per_transaction_limit: parseInt(e.target.value) }))} 
+                                                value={settings.per_transaction_limit} 
+                                                onChange={(e) => setSettings(p => ({ ...p, per_transaction_limit: parseInt(e.target.value) }))} 
                                             />
+                                            <p className="text-xs text-slate-500">Maximum amount per single transaction</p>
                                         </div>
-                                    </div>
-                                    <div className="space-y-3 pt-2">
-                                        <div className="flex items-center justify-between">
-                                            <span className="text-sm">Require CVV</span>
-                                            <Switch 
-                                                checked={newTerminal.requires_cvv} 
-                                                onCheckedChange={(c) => setNewTerminal(p => ({ ...p, requires_cvv: c }))} 
-                                            />
-                                        </div>
-                                        <div className="flex items-center justify-between">
-                                            <span className="text-sm">Require AVS</span>
-                                            <Switch 
-                                                checked={newTerminal.requires_avs} 
-                                                onCheckedChange={(c) => setNewTerminal(p => ({ ...p, requires_avs: c }))} 
-                                            />
-                                        </div>
-                                        <div className="flex items-center justify-between">
-                                            <span className="text-sm">Enable 3D Secure</span>
-                                            <Switch 
-                                                checked={newTerminal.enable_3ds} 
-                                                onCheckedChange={(c) => setNewTerminal(p => ({ ...p, enable_3ds: c }))} 
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                                <DialogFooter>
-                                    <Button variant="outline" onClick={() => setShowCreateDialog(false)}>Cancel</Button>
-                                    <Button 
-                                        onClick={() => createTerminal.mutate(newTerminal)} 
-                                        disabled={!newTerminal.name || createTerminal.isPending}
-                                    >
-                                        {createTerminal.isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-                                        Create Terminal
-                                    </Button>
-                                </DialogFooter>
-                            </DialogContent>
-                        </Dialog>
+                                    </CardContent>
+                                </Card>
+                            </TabsContent>
 
-                        {/* Config Dialog */}
-                        <Dialog open={showConfigDialog} onOpenChange={setShowConfigDialog}>
-                            <DialogContent className="max-w-lg max-h-[80vh] overflow-y-auto">
-                                <DialogHeader><DialogTitle>Terminal Configuration</DialogTitle></DialogHeader>
-                                {selectedTerminal && (
-                                    <div className="space-y-4">
-                                        <div className="space-y-2">
-                                            <Label>Terminal Name</Label>
-                                            <Input 
-                                                value={selectedTerminal.name} 
-                                                onChange={(e) => setSelectedTerminal(p => ({ ...p, name: e.target.value }))} 
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <Label>Status</Label>
-                                            <Select 
-                                                value={selectedTerminal.status} 
-                                                onValueChange={(v) => setSelectedTerminal(p => ({ ...p, status: v }))}
-                                            >
-                                                <SelectTrigger><SelectValue /></SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectItem value="active">Active</SelectItem>
-                                                    <SelectItem value="inactive">Inactive</SelectItem>
-                                                    <SelectItem value="suspended">Suspended</SelectItem>
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div className="space-y-2">
-                                                <Label>Daily Limit ($)</Label>
-                                                <Input 
-                                                    type="number" 
-                                                    value={selectedTerminal.daily_limit} 
-                                                    onChange={(e) => setSelectedTerminal(p => ({ ...p, daily_limit: parseInt(e.target.value) }))} 
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <Label>Per Transaction Limit ($)</Label>
-                                                <Input 
-                                                    type="number" 
-                                                    value={selectedTerminal.per_transaction_limit} 
-                                                    onChange={(e) => setSelectedTerminal(p => ({ ...p, per_transaction_limit: parseInt(e.target.value) }))} 
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="space-y-3 pt-2">
-                                            <div className="flex items-center justify-between">
-                                                <span className="text-sm">Require CVV</span>
+                            <TabsContent value="access" className="space-y-4">
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>Role-Based Access Control</CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="space-y-4">
+                                        <p className="text-sm text-slate-600">Select which user roles can access the Virtual Terminal:</p>
+                                        
+                                        {Object.entries(ROLE_PERMISSIONS).map(([role, description]) => (
+                                            <div key={role} className="flex items-start gap-3 p-3 border rounded-lg">
                                                 <Switch 
-                                                    checked={selectedTerminal.requires_cvv} 
-                                                    onCheckedChange={(c) => setSelectedTerminal(p => ({ ...p, requires_cvv: c }))} 
+                                                    checked={settings.allowed_roles?.includes(role)} 
+                                                    onCheckedChange={(checked) => {
+                                                        const current = settings.allowed_roles || [];
+                                                        if (checked) {
+                                                            setSettings(p => ({ ...p, allowed_roles: [...current, role] }));
+                                                        } else {
+                                                            setSettings(p => ({ ...p, allowed_roles: current.filter(r => r !== role) }));
+                                                        }
+                                                    }}
                                                 />
+                                                <div>
+                                                    <p className="font-medium capitalize">{role}</p>
+                                                    <p className="text-sm text-slate-500">{description}</p>
+                                                </div>
                                             </div>
-                                            <div className="flex items-center justify-between">
-                                                <span className="text-sm">Require AVS</span>
-                                                <Switch 
-                                                    checked={selectedTerminal.requires_avs} 
-                                                    onCheckedChange={(c) => setSelectedTerminal(p => ({ ...p, requires_avs: c }))} 
-                                                />
+                                        ))}
+                                    </CardContent>
+                                </Card>
+
+                                {user?.role && (
+                                    <Card>
+                                        <CardContent className="pt-6">
+                                            <div className="flex items-center gap-3">
+                                                {hasAccess ? (
+                                                    <>
+                                                        <CheckCircle2 className="h-5 w-5 text-emerald-600" />
+                                                        <div>
+                                                            <p className="font-medium text-emerald-900">You have access</p>
+                                                            <p className="text-sm text-emerald-700">Your role ({user.role}) can access the Virtual Terminal</p>
+                                                        </div>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <Monitor className="h-5 w-5 text-amber-600" />
+                                                        <div>
+                                                            <p className="font-medium text-amber-900">Limited access</p>
+                                                            <p className="text-sm text-amber-700">Your role ({user.role}) does not have Virtual Terminal access</p>
+                                                        </div>
+                                                    </>
+                                                )}
                                             </div>
-                                            <div className="flex items-center justify-between">
-                                                <span className="text-sm">Enable 3D Secure</span>
-                                                <Switch 
-                                                    checked={selectedTerminal.enable_3ds} 
-                                                    onCheckedChange={(c) => setSelectedTerminal(p => ({ ...p, enable_3ds: c }))} 
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="pt-4 border-t">
-                                            <Button 
-                                                variant="destructive" 
-                                                size="sm"
-                                                onClick={() => {
-                                                    if (confirm('Are you sure you want to delete this terminal?')) {
-                                                        deleteTerminal.mutate(selectedTerminal.id);
-                                                    }
-                                                }}
-                                                className="gap-2"
-                                            >
-                                                <Trash2 className="h-4 w-4" />
-                                                Delete Terminal
-                                            </Button>
-                                        </div>
-                                    </div>
+                                        </CardContent>
+                                    </Card>
                                 )}
-                                <DialogFooter>
-                                    <Button variant="outline" onClick={() => setShowConfigDialog(false)}>Cancel</Button>
-                                    <Button 
-                                        onClick={() => updateTerminal.mutate(selectedTerminal)} 
-                                        disabled={updateTerminal.isPending}
-                                    >
-                                        {updateTerminal.isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-                                        Save Changes
-                                    </Button>
-                                </DialogFooter>
-                            </DialogContent>
-                        </Dialog>
+                            </TabsContent>
+                        </Tabs>
                     </div>
                 </main>
             </div>
