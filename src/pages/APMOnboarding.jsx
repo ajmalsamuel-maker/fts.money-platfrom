@@ -31,7 +31,6 @@ import {
 } from 'lucide-react';
 import { ISO4217_CURRENCIES } from '@/components/utils/iso4217';
 import { getAllCountries } from '@/components/utils/countries';
-import { Switch } from "@/components/ui/switch";
 
 const apmProviders = [
     // Digital Wallets
