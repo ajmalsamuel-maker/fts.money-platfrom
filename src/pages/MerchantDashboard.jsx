@@ -37,6 +37,7 @@ import SettlementCalendar from '@/components/merchant/SettlementCalendar';
 import CustomerInsights from '@/components/merchant/CustomerInsights';
 import ComplianceDashboard from '@/components/merchant/ComplianceDashboard';
 import TransactionDetailsDialog from '@/components/transaction/TransactionDetailsDialog';
+import FintechNewsTicker from '@/components/dashboard/FintechNewsTicker';
 
 export default function MerchantDashboard() {
     const { user, loading, isAuthenticated, logout } = useMerchantAuth();

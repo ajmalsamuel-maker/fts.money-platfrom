@@ -72,12 +72,23 @@ export default function MerchantAppearance() {
 
     const saveAppearance = useMutation({
         mutationFn: async () => {
-            // Save to localStorage for now
+            // Update merchant entity with theme colors
+            await base44.entities.Merchant.update(merchant.id, {
+                metadata: {
+                    ...merchant.metadata,
+                    theme: colors
+                }
+            });
+            // Also save to localStorage for immediate effect
             localStorage.setItem('merchantTheme', JSON.stringify(colors));
             return colors;
         },
         onSuccess: () => {
+            queryClient.invalidateQueries(['merchant']);
             toast.success('Appearance settings saved');
+        },
+        onError: () => {
+            toast.error('Failed to save appearance settings');
         }
     });
 

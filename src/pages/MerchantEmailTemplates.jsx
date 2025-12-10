@@ -91,6 +91,9 @@ export default function MerchantEmailTemplates() {
         onSuccess: () => {
             queryClient.invalidateQueries(['email-templates']);
             toast.success('Email template saved successfully');
+        },
+        onError: (error) => {
+            toast.error('Failed to save email template: ' + error.message);
         }
     });
 
@@ -104,6 +107,9 @@ export default function MerchantEmailTemplates() {
         onSuccess: () => {
             queryClient.invalidateQueries(['receipt-templates']);
             toast.success('Receipt template saved successfully');
+        },
+        onError: (error) => {
+            toast.error('Failed to save receipt template: ' + error.message);
         }
     });
 
