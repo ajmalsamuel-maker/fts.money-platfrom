@@ -11,7 +11,6 @@ Deno.serve(async (req) => {
         });
     }
 
-    let sql;
     try {
         const { sql: migrationSql } = await req.json();
 
@@ -22,34 +21,29 @@ Deno.serve(async (req) => {
             }, { status: 400 });
         }
 
-        // Create connection with TLS options
-        const dbUrl = Deno.env.get('DATABASE_URL');
-        sql = postgres(dbUrl, {
-            ssl: dbUrl.includes('localhost') ? false : { rejectUnauthorized: false }
+        // Create connection
+        const sql = postgres(Deno.env.get('DATABASE_URL'), {
+            max: 1,
+            ssl: 'require',
+            connection: {
+                application_name: 'migration'
+            }
         });
 
-        // Split into individual statements and execute
-        const statements = migrationSql
-            .split(';')
-            .map(s => s.trim())
-            .filter(s => s.length > 0 && !s.startsWith('--'));
-
-        for (const statement of statements) {
-            await sql.unsafe(statement);
+        try {
+            // Execute migration
+            await sql.unsafe(migrationSql);
+            
+            return Response.json({ 
+                success: true,
+                message: 'Migration executed successfully'
+            });
+        } finally {
+            await sql.end({ timeout: 5 });
         }
-
-        await sql.end();
-
-        return Response.json({ 
-            success: true,
-            message: 'Migration executed successfully'
-        });
 
     } catch (error) {
         console.error('Migration error:', error);
-        if (sql) {
-            try { await sql.end(); } catch (e) {}
-        }
         return Response.json({ 
             success: false, 
             error: error.message || 'Migration failed'
