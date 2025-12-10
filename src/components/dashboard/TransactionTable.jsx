@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { format } from 'date-fns';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -19,6 +19,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal, Eye, RefreshCw, Ban, ExternalLink } from 'lucide-react';
 import { cn } from "@/lib/utils";
+import CardBrandLogo from '../transaction/CardBrandLogo';
+import TransactionDetailsDialog from '../transaction/TransactionDetailsDialog';
 
 const statusConfig = {
     approved: { label: 'Approved', className: 'bg-emerald-100 text-emerald-700 border-emerald-200' },
@@ -49,7 +51,26 @@ const cardIcons = {
 };
 
 export default function TransactionTable({ transactions, title = "Recent Transactions", showViewAll = true }) {
+    const [selectedTransaction, setSelectedTransaction] = useState(null);
+    const [showDialog, setShowDialog] = useState(false);
+
+    const handleViewDetails = (txn) => {
+        setSelectedTransaction(txn);
+        setShowDialog(true);
+    };
+
     return (
+        <>
+            {selectedTransaction && (
+                <TransactionDetailsDialog
+                    transaction={selectedTransaction}
+                    open={showDialog}
+                    onClose={() => {
+                        setShowDialog(false);
+                        setSelectedTransaction(null);
+                    }}
+                />
+            )}
         <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-4">
                 <CardTitle className="text-lg font-semibold">{title}</CardTitle>
@@ -106,9 +127,19 @@ export default function TransactionTable({ transactions, title = "Recent Transac
                                             {txn.currency || 'USD'} {txn.amount?.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                                         </span>
                                     </TableCell>
-                                    <TableCell className="text-slate-600 text-sm">
-                                        {cardIcons[txn.payment_method] || txn.payment_method}
-                                        {txn.card_last_four && ` •••• ${txn.card_last_four}`}
+                                    <TableCell>
+                                        {txn.card_brand ? (
+                                            <div className="flex items-center gap-2">
+                                                <CardBrandLogo brand={txn.card_brand} size="sm" />
+                                                {txn.card_last_four && (
+                                                    <span className="text-xs text-slate-500">•••• {txn.card_last_four}</span>
+                                                )}
+                                            </div>
+                                        ) : (
+                                            <span className="text-slate-600 text-sm">
+                                                {cardIcons[txn.payment_method] || txn.payment_method}
+                                            </span>
+                                        )}
                                     </TableCell>
                                     <TableCell>
                                         <Badge 
@@ -126,7 +157,7 @@ export default function TransactionTable({ transactions, title = "Recent Transac
                                                 </Button>
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end">
-                                                <DropdownMenuItem>
+                                                <DropdownMenuItem onClick={() => handleViewDetails(txn)}>
                                                     <Eye className="h-4 w-4 mr-2" />
                                                     View Details
                                                 </DropdownMenuItem>
@@ -148,5 +179,6 @@ export default function TransactionTable({ transactions, title = "Recent Transac
                 </div>
             </CardContent>
         </Card>
+        </>
     );
 }
