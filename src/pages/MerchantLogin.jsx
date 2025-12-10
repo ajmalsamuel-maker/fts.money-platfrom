@@ -20,11 +20,11 @@ export default function MerchantLogin() {
         const checkAuth = async () => {
             try {
                 const sessionData = JSON.parse(localStorage.getItem('merchantSession') || '{}');
-                if (sessionData.user_id) {
-                    // Validate session
+                if (sessionData.email) {
+                    // Validate session using email
                     const response = await base44.functions.invoke('merchantAuth', {
                         action: 'validate',
-                        user_id: sessionData.user_id
+                        email: sessionData.email
                     });
                     if (response.data.success) {
                         navigate(createPageUrl('MerchantDashboard'));
@@ -37,7 +37,7 @@ export default function MerchantLogin() {
             }
         };
         checkAuth();
-    }, [navigate]);
+    }, []);
 
     const handleLogin = async (e) => {
         e.preventDefault();
