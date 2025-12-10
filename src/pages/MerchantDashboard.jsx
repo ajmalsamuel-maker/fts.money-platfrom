@@ -5,6 +5,7 @@ import { useMerchantAuth } from '@/components/auth/useMerchantAuth';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import MerchantSidebar from '@/components/merchant/MerchantSidebar';
 import MerchantTopBar from '@/components/merchant/MerchantTopBar';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, AreaChart, Area, PieChart, Pie, Cell } from 'recharts';
@@ -20,7 +21,8 @@ import {
     Users,
     Brain,
     ArrowUpRight,
-    ArrowDownRight
+    ArrowDownRight,
+    HelpCircle
 } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -92,10 +94,10 @@ export default function MerchantDashboard() {
         enabled: !!user?.merchant_id
     });
 
-    // Filter transactions by selected MID
+    // Filter transactions by selected MID - check both terminal_id and mid fields
     const transactions = React.useMemo(() => {
         if (!selectedMID || !allTransactions.length) return [];
-        return allTransactions.filter(t => t.terminal_id === selectedMID);
+        return allTransactions.filter(t => t.terminal_id === selectedMID || t.mid === selectedMID);
     }, [allTransactions, selectedMID]);
 
     // Calculate business metrics
@@ -238,6 +240,26 @@ export default function MerchantDashboard() {
                                         <>No transactions found for <span className="font-mono font-semibold text-slate-700">{selectedMID}</span></>
                                     )}
                                 </p>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => refetchTransactions()}
+                                    className="gap-2"
+                                >
+                                    <Activity className="h-4 w-4" />
+                                    Refresh
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => window.open(createPageUrl('MerchantHelpCenter'), '_blank')}
+                                    className="gap-2"
+                                >
+                                    <HelpCircle className="h-4 w-4" />
+                                    Help
+                                </Button>
                             </div>
                         </div>
                         {/* Top Stats Cards */}
