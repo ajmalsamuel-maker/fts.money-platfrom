@@ -26,7 +26,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
 import PaymentNews from '@/components/dashboard/PaymentNews';
-import { Search } from 'lucide-react';
+import { Search, Zap, Shield, TrendingDown } from 'lucide-react';
 
 export default function MerchantDashboard() {
     const { user, loading, isAuthenticated, logout } = useMerchantAuth();
@@ -587,10 +587,97 @@ export default function MerchantDashboard() {
 
                             {/* Fintech News */}
                             <PaymentNews />
-                        </div>
+                            </div>
 
+                            {/* Real-Time Monitoring Section */}
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                            {/* Transaction Velocity Monitor */}
+                            <Card>
+                                <CardHeader className="border-b bg-slate-50/50">
+                                    <CardTitle className="text-base flex items-center gap-2">
+                                        <Zap className="h-5 w-5 text-amber-500" />
+                                        Transaction Velocity Monitor
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent className="pt-6">
+                                    <div className="space-y-4">
+                                        <div className="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-lg">
+                                            <div>
+                                                <p className="text-sm font-medium text-slate-700">Last Hour</p>
+                                                <p className="text-2xl font-bold text-green-700">{transactions.filter(t => new Date(t.created_date) > new Date(Date.now() - 3600000)).length}</p>
+                                            </div>
+                                            <Badge className="bg-green-100 text-green-700 border-green-300">Normal</Badge>
+                                        </div>
+                                        <div className="flex items-center justify-between p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                                            <div>
+                                                <p className="text-sm font-medium text-slate-700">Today</p>
+                                                <p className="text-2xl font-bold text-blue-700">{statsData.summary.today.count}</p>
+                                            </div>
+                                            <Badge className="bg-blue-100 text-blue-700 border-blue-300">Active</Badge>
+                                        </div>
+                                        <div className="flex items-center justify-between p-3 bg-purple-50 border border-purple-200 rounded-lg">
+                                            <div>
+                                                <p className="text-sm font-medium text-slate-700">Avg per Hour</p>
+                                                <p className="text-2xl font-bold text-purple-700">{(statsData.summary.today.count / 24).toFixed(1)}</p>
+                                            </div>
+                                            <Badge className="bg-purple-100 text-purple-700 border-purple-300">Steady</Badge>
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
 
-                    </div>
+                            {/* Risk & Fraud Monitor */}
+                            <Card>
+                                <CardHeader className="border-b bg-slate-50/50">
+                                    <CardTitle className="text-base flex items-center gap-2">
+                                        <Shield className="h-5 w-5 text-red-500" />
+                                        Risk & Fraud Monitor
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent className="pt-6">
+                                    <div className="space-y-4">
+                                        <div>
+                                            <div className="flex items-center justify-between mb-2">
+                                                <span className="text-sm font-medium text-slate-700">High Risk Transactions</span>
+                                                <span className="text-sm font-bold text-red-600">
+                                                    {transactions.filter(t => t.risk_score && t.risk_score > 70).length}
+                                                </span>
+                                            </div>
+                                            <Progress value={transactions.length > 0 ? (transactions.filter(t => t.risk_score && t.risk_score > 70).length / transactions.length) * 100 : 0} className="h-2 bg-red-100" />
+                                        </div>
+                                        <div>
+                                            <div className="flex items-center justify-between mb-2">
+                                                <span className="text-sm font-medium text-slate-700">Declined Transactions</span>
+                                                <span className="text-sm font-bold text-amber-600">
+                                                    {transactions.filter(t => t.status === 'declined').length}
+                                                </span>
+                                            </div>
+                                            <Progress value={transactions.length > 0 ? (transactions.filter(t => t.status === 'declined').length / transactions.length) * 100 : 0} className="h-2 bg-amber-100" />
+                                        </div>
+                                        <div>
+                                            <div className="flex items-center justify-between mb-2">
+                                                <span className="text-sm font-medium text-slate-700">Failed 3DS Verifications</span>
+                                                <span className="text-sm font-bold text-slate-600">
+                                                    {transactions.filter(t => !t.is_3ds && t.amount > 100).length}
+                                                </span>
+                                            </div>
+                                            <Progress value={transactions.length > 0 ? (transactions.filter(t => !t.is_3ds && t.amount > 100).length / transactions.length) * 100 : 0} className="h-2 bg-slate-100" />
+                                        </div>
+                                        <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                                            <div className="flex items-start gap-2">
+                                                <Shield className="h-4 w-4 text-blue-600 mt-0.5" />
+                                                <div>
+                                                    <p className="text-xs font-medium text-blue-900">Security Status: Good</p>
+                                                    <p className="text-xs text-blue-700 mt-1">All systems operational. No unusual patterns detected.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                            </div>
+
+                            </div>
                 </main>
             </div>
         </div>

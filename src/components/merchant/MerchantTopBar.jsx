@@ -31,9 +31,14 @@ export default function MerchantTopBar({ user, merchant, onLogout, selectedMID }
             </div>
 
             <div className="flex items-center gap-2">
-                <Button variant="ghost" size="sm">
+                <Button variant="ghost" size="sm" onClick={() => navigate(createPageUrl('MerchantHelpCenter'))}>
                     <HelpCircle className="h-4 w-4 mr-1" />
                     Help
+                </Button>
+
+                <Button variant="outline" size="sm" onClick={onLogout} className="text-red-600 hover:text-red-700 hover:bg-red-50">
+                    <LogOut className="h-4 w-4 mr-1" />
+                    Logout
                 </Button>
 
                 <DropdownMenu>
