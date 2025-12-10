@@ -29,6 +29,7 @@ import {
 } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
+import TimezoneSettings from '@/components/settings/TimezoneSettings';
 
 export default function Settings() {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -167,6 +168,7 @@ export default function Settings() {
                             <TabsTrigger value="address">Address</TabsTrigger>
                             <TabsTrigger value="contact">Contact</TabsTrigger>
                             <TabsTrigger value="licensing">Licensing</TabsTrigger>
+                            <TabsTrigger value="location">Location & Time</TabsTrigger>
                             <TabsTrigger value="currencies">Currencies</TabsTrigger>
                         </TabsList>
 
@@ -412,6 +414,20 @@ export default function Settings() {
                                     </div>
                                 </CardContent>
                             </Card>
+                        </TabsContent>
+
+                        <TabsContent value="location">
+                            <TimezoneSettings
+                                currentCountry={savedSettings?.country || 'US'}
+                                currentTimezone={savedSettings?.timezone || 'UTC'}
+                                onSave={async ({ country, timezone }) => {
+                                    await saveMutation.mutateAsync({
+                                        ...settings,
+                                        country,
+                                        timezone
+                                    });
+                                }}
+                            />
                         </TabsContent>
 
                         <TabsContent value="currencies">

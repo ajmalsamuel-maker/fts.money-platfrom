@@ -75,6 +75,7 @@ import VirtualTerminalLogin from './pages/VirtualTerminalLogin';
 import MerchantVirtualTerminals from './pages/MerchantVirtualTerminals';
 import MerchantEmailTemplates from './pages/MerchantEmailTemplates';
 import BINTable from './pages/BINTable';
+import MerchantSettings from './pages/MerchantSettings';
 import __Layout from './Layout.jsx';
 
 
@@ -156,6 +157,7 @@ export const PAGES = {
     "MerchantVirtualTerminals": MerchantVirtualTerminals,
     "MerchantEmailTemplates": MerchantEmailTemplates,
     "BINTable": BINTable,
+    "MerchantSettings": MerchantSettings,
 }
 
 export const pagesConfig = {
