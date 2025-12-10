@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { TrendingUp, TrendingDown } from 'lucide-react';
 
-export default function StatsCards({ stats }) {
+export default function StatsCards({ stats, cryptoTransactions = [] }) {
     return (
         <>
             {stats.map((stat, idx) => (

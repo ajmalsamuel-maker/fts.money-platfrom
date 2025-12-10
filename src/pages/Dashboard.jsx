@@ -45,6 +45,8 @@ export default function Dashboard() {
         queryFn: () => base44.entities.Merchant.list(),
     });
 
+    const cryptoVolume = cryptoTransactions.reduce((sum, t) => sum + (t.amount || 0), 0);
+
     const stats = [
         {
             label: t('todaysVolume'),
@@ -74,13 +76,22 @@ export default function Dashboard() {
             iconColor: "text-purple-600"
         },
         {
+            label: 'Crypto Volume',
+            value: `$${(cryptoVolume / 1000).toFixed(1)}K`,
+            change: "+18.2%",
+            changeType: "positive",
+            icon: Coins,
+            bgColor: "bg-amber-50",
+            iconColor: "text-amber-600"
+        },
+        {
             label: t('activeMerchants'),
             value: merchants.filter(m => m.status === 'active').length || "156",
             change: "+3",
             changeType: "positive",
             icon: Store,
-            bgColor: "bg-amber-50",
-            iconColor: "text-amber-600"
+            bgColor: "bg-cyan-50",
+            iconColor: "text-cyan-600"
         }
     ];
 
@@ -129,8 +140,8 @@ export default function Dashboard() {
                     </div>
 
                     {/* Stats Cards */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-                        <StatsCards stats={stats} />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
+                        <StatsCards stats={stats} cryptoTransactions={cryptoTransactions} />
                     </div>
 
                     {/* Recurring & AI Metrics */}
