@@ -14,7 +14,7 @@ Deno.serve(async (req) => {
         if (!user.merchant_code) {
             // Fetch merchant_code from Merchant entity if not present
             const merchantQuery = await pool.query(
-                'SELECT merchant_code FROM merchants WHERE merchant_id = $1',
+                'SELECT merchant_code FROM merchants WHERE id = $1',
                 [user.merchant_id]
             );
             
