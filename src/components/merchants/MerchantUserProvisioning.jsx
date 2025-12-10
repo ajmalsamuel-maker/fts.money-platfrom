@@ -25,6 +25,7 @@ export async function createMerchantUsers(merchantData, contacts) {
             // Create MerchantUser record
             const user = await base44.entities.MerchantUser.create({
                 merchant_id: merchantData.id,
+                merchant_code: merchantData.merchant_code,
                 merchant_name: merchantData.business_name,
                 email: contact.email,
                 full_name: contact.full_name,
@@ -66,6 +67,7 @@ Merchant ID: ${merchantData.merchant_id}
 
 Login Details:
 Portal URL: ${portalUrl}
+Merchant Code: ${merchantData.merchant_code}
 Email: ${user.email}
 Temporary Password: ${tempPassword}
 
