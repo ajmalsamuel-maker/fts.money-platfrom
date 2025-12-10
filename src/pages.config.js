@@ -54,6 +54,9 @@ import BankMIDs from './pages/BankMIDs';
 import MIDRouting from './pages/MIDRouting';
 import APIDocumentation from './pages/APIDocumentation';
 import MerchantAPIDocumentation from './pages/MerchantAPIDocumentation';
+import MerchantInfo from './pages/MerchantInfo';
+import MerchantBankInfo from './pages/MerchantBankInfo';
+import MerchantTransactionList from './pages/MerchantTransactionList';
 import __Layout from './Layout.jsx';
 
 
@@ -114,6 +117,9 @@ export const PAGES = {
     "MIDRouting": MIDRouting,
     "APIDocumentation": APIDocumentation,
     "MerchantAPIDocumentation": MerchantAPIDocumentation,
+    "MerchantInfo": MerchantInfo,
+    "MerchantBankInfo": MerchantBankInfo,
+    "MerchantTransactionList": MerchantTransactionList,
 }
 
 export const pagesConfig = {
