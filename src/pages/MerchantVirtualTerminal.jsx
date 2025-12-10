@@ -4,6 +4,17 @@ import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { useMerchantAuth } from '@/components/auth/useMerchantAuth';
+
+const detectCardBrand = (cardNumber) => {
+    const cleaned = cardNumber.replace(/\s/g, '');
+    if (/^4/.test(cleaned)) return 'visa';
+    if (/^5[1-5]/.test(cleaned)) return 'mastercard';
+    if (/^3[47]/.test(cleaned)) return 'amex';
+    if (/^6(?:011|5)/.test(cleaned)) return 'discover';
+    if (/^35/.test(cleaned)) return 'jcb';
+    if (/^62/.test(cleaned)) return 'unionpay';
+    return 'unknown';
+};
 import MerchantSidebar from '@/components/merchant/MerchantSidebar';
 import MerchantTopBar from '@/components/merchant/MerchantTopBar';
 import { Button } from "@/components/ui/button";
@@ -155,26 +166,71 @@ export default function MerchantVirtualTerminal() {
         setProcessing(true);
         
         try {
+            const txnId = `TXN${Date.now()}${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
+            const authCode = Math.random().toString(36).substr(2, 9).toUpperCase();
+            const cardNum = formData.useExistingCard ? 
+                savedCards.find(c => c.id === formData.existingCardId)?.card_last_four :
+                formData.cardNumber;
+            
             const transactionData = {
+                transaction_id: txnId,
+                merchant_transaction_id: `VT-${Date.now()}`,
+                order_id: formData.invoiceNumber || `ORD-${Date.now()}`,
                 merchant_id: user.merchant_id,
                 merchant_name: merchant?.business_name,
+                mid: selectedMID,
                 type: paymentMode === 'recurring' ? 'recurring' : 'sale',
+                action: 'sale',
                 status: 'approved',
                 amount: total,
+                original_amount: total,
+                actual_amount: total,
                 currency: formData.currency,
-                payment_method: 'card',
+                payment_method: 'credit_card',
+                card_number: formData.useExistingCard ? 
+                    `•••• •••• •••• ${savedCards.find(c => c.id === formData.existingCardId)?.card_last_four}` :
+                    `•••• •••• •••• ${cardNum.slice(-4)}`,
                 card_last_four: formData.useExistingCard ? 
                     savedCards.find(c => c.id === formData.existingCardId)?.card_last_four :
-                    formData.cardNumber.slice(-4),
+                    cardNum.slice(-4),
+                card_prefix: !formData.useExistingCard ? cardNum.slice(0, 6) : undefined,
+                card_brand: detectCardBrand(cardNum),
                 customer_email: formData.customerEmail,
                 customer_name: formData.customerName || formData.cardholderName,
+                customer_phone: formData.phone,
+                bill_to_account_name: formData.billingAddress,
                 description: paymentMode === 'itemized' ? 
                     items.map(i => `${i.quantity}x ${i.name}`).join(', ') : 
                     formData.description,
-                auth_code: Math.random().toString(36).substr(2, 9).toUpperCase(),
+                terminal_id: vtConfig?.id,
+                operator: user.email,
+                user_id: user.email,
+                auth_code: authCode,
+                approval_code: authCode,
                 response_code: '00',
                 response_message: 'Approved',
-                is_3ds: vtConfig?.enable_3ds || false
+                connector_response_code: '00',
+                is_3ds: vtConfig?.enable_3ds || false,
+                complete_time: new Date().toISOString(),
+                accepted_time: new Date().toISOString(),
+                history: [{
+                    updated_time: new Date().toISOString(),
+                    accepted_time: new Date().toISOString(),
+                    status: 'approved',
+                    response_code: '00',
+                    connector_response: '00',
+                    actual_amount: total,
+                    note: 'Transaction approved via Virtual Terminal'
+                }],
+                transaction_log: [{
+                    timestamp: new Date().toISOString(),
+                    message: `[Virtual Terminal] Transaction initiated for ${formData.currency} ${total.toFixed(2)}`,
+                    created_time: new Date().toISOString()
+                }, {
+                    timestamp: new Date().toISOString(),
+                    message: `[Virtual Terminal] Payment approved - Auth Code: ${authCode}`,
+                    created_time: new Date().toISOString()
+                }]
             };
 
             await base44.entities.Transaction.create(transactionData);
