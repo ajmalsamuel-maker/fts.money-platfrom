@@ -33,6 +33,19 @@ ON merchant_users(merchant_code, email);
 COMMENT ON COLUMN merchants.merchant_code IS 'Unique merchant identifier for login';
 COMMENT ON COLUMN merchant_users.merchant_code IS 'Merchant code for login identification';
         `.trim()
+    },
+    {
+        id: 'populate_merchant_codes',
+        name: 'Populate Merchant Codes',
+        description: 'Updates merchant_code for existing merchant_users from merchants table',
+        sql: `
+UPDATE merchant_users mu
+SET merchant_code = m.merchant_code
+FROM merchants m
+WHERE mu.merchant_id = m.id
+AND mu.merchant_code IS NULL
+AND m.merchant_code IS NOT NULL;
+        `.trim()
     }
 ];
 
