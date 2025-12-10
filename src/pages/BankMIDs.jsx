@@ -14,8 +14,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Search, Plus, MoreHorizontal, Eye, Edit, Trash2, Landmark, TrendingUp, Activity } from 'lucide-react';
+import { Search, Plus, MoreHorizontal, Eye, Edit, Trash2, Landmark, TrendingUp, Activity, Bitcoin, Building2 } from 'lucide-react';
 import { toast } from 'sonner';
+import BankMIDOnboardingWizard from '../components/bankmid/BankMIDOnboardingWizard';
 
 const statusConfig = {
     active: { label: 'Active', className: 'bg-emerald-100 text-emerald-700' },
@@ -30,17 +31,7 @@ export default function BankMIDs() {
     const [statusFilter, setStatusFilter] = useState('all');
     const [showDialog, setShowDialog] = useState(false);
     const [editingBankMID, setEditingBankMID] = useState(null);
-    const [formData, setFormData] = useState({
-        bank_mid_id: '',
-        bank_mid_name: '',
-        acquirer_id: '',
-        acquirer_name: '',
-        connector_type: 'standard',
-        account_type: 'ecomm',
-        currency: 'USD',
-        country: '',
-        status: 'active'
-    });
+    const [showWizard, setShowWizard] = useState(false);
 
     const queryClient = useQueryClient();
 
@@ -59,8 +50,8 @@ export default function BankMIDs() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['bankMIDs'] });
             setShowDialog(false);
-            resetForm();
-            toast.success('Bank MID created successfully');
+            setShowWizard(false);
+            toast.success('Bank MID created successfully and submitted for verification');
         },
     });
 
@@ -69,7 +60,7 @@ export default function BankMIDs() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['bankMIDs'] });
             setShowDialog(false);
-            resetForm();
+            setShowWizard(false);
             toast.success('Bank MID updated successfully');
         },
     });
@@ -82,33 +73,22 @@ export default function BankMIDs() {
         },
     });
 
-    const resetForm = () => {
-        setFormData({
-            bank_mid_id: '',
-            bank_mid_name: '',
-            acquirer_id: '',
-            acquirer_name: '',
-            connector_type: 'standard',
-            account_type: 'ecomm',
-            currency: 'USD',
-            country: '',
-            status: 'active'
-        });
-        setEditingBankMID(null);
-    };
-
     const handleEdit = (bankMID) => {
         setEditingBankMID(bankMID);
-        setFormData(bankMID);
-        setShowDialog(true);
+        setShowWizard(true);
     };
 
-    const handleSubmit = () => {
+    const handleWizardSubmit = (data) => {
         if (editingBankMID) {
-            updateMutation.mutate({ id: editingBankMID.id, data: formData });
+            updateMutation.mutate({ id: editingBankMID.id, data });
         } else {
-            createMutation.mutate(formData);
+            createMutation.mutate(data);
         }
+    };
+
+    const handleWizardCancel = () => {
+        setShowWizard(false);
+        setEditingBankMID(null);
     };
 
     const handleDelete = (id) => {
@@ -142,7 +122,7 @@ export default function BankMIDs() {
                             <h1 className="text-2xl font-bold text-slate-900">Bank MIDs</h1>
                             <p className="text-slate-500">Manage bank acquiring accounts</p>
                         </div>
-                        <Button onClick={() => setShowDialog(true)} className="gap-2 bg-blue-600 hover:bg-blue-700">
+                        <Button onClick={() => setShowWizard(true)} className="gap-2 bg-blue-600 hover:bg-blue-700">
                             <Plus className="h-4 w-4" />
                             Add Bank MID
                         </Button>
@@ -220,11 +200,11 @@ export default function BankMIDs() {
                                     <TableHeader>
                                         <TableRow className="bg-slate-50">
                                             <TableHead className="font-semibold">Bank MID</TableHead>
-                                            <TableHead className="font-semibold">Acquirer</TableHead>
+                                            <TableHead className="font-semibold">Institution</TableHead>
                                             <TableHead className="font-semibold">Type</TableHead>
+                                            <TableHead className="font-semibold">Country</TableHead>
                                             <TableHead className="font-semibold">Currency</TableHead>
                                             <TableHead className="font-semibold">Status</TableHead>
-                                            <TableHead className="font-semibold">Success Rate</TableHead>
                                             <TableHead className="font-semibold w-12"></TableHead>
                                         </TableRow>
                                     </TableHeader>
@@ -244,20 +224,32 @@ export default function BankMIDs() {
                                                             <p className="text-sm text-slate-500 font-mono">{bankMID.bank_mid_id}</p>
                                                         </div>
                                                     </TableCell>
-                                                    <TableCell className="text-slate-600">{bankMID.acquirer_name || 'N/A'}</TableCell>
+                                                    <TableCell>
+                                                        <div className="flex items-center gap-2">
+                                                            {bankMID.institution_type === 'crypto_exchange' ? (
+                                                                <Bitcoin className="h-4 w-4 text-orange-600" />
+                                                            ) : (
+                                                                <Landmark className="h-4 w-4 text-blue-600" />
+                                                            )}
+                                                            <div>
+                                                                <p className="text-sm font-medium">{bankMID.acquirer_name || bankMID.legal_entity_name || 'N/A'}</p>
+                                                                {bankMID.bic_swift && <p className="text-xs text-slate-500 font-mono">{bankMID.bic_swift}</p>}
+                                                            </div>
+                                                        </div>
+                                                    </TableCell>
                                                     <TableCell>
                                                         <Badge variant="outline" className="text-xs capitalize">
-                                                            {bankMID.account_type?.replace('_', ' ')}
+                                                            {bankMID.institution_type?.replace('_', ' ') || 'Bank'}
                                                         </Badge>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <span className="font-mono text-sm">{bankMID.country || 'N/A'}</span>
                                                     </TableCell>
                                                     <TableCell className="font-medium">{bankMID.currency}</TableCell>
                                                     <TableCell>
                                                         <Badge variant="outline" className={cn("text-xs", statusConfig[bankMID.status]?.className)}>
                                                             {statusConfig[bankMID.status]?.label}
                                                         </Badge>
-                                                    </TableCell>
-                                                    <TableCell className="text-emerald-600 font-medium">
-                                                        {bankMID.success_rate ? `${bankMID.success_rate}%` : 'N/A'}
                                                     </TableCell>
                                                     <TableCell>
                                                         <DropdownMenu>
@@ -289,124 +281,19 @@ export default function BankMIDs() {
                 </main>
             </div>
 
-            <Dialog open={showDialog} onOpenChange={(open) => { setShowDialog(open); if (!open) resetForm(); }}>
-                <DialogContent className="max-w-2xl">
+            <Dialog open={showWizard} onOpenChange={(open) => { setShowWizard(open); if (!open) handleWizardCancel(); }}>
+                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
                     <DialogHeader>
-                        <DialogTitle>{editingBankMID ? 'Edit' : 'Add'} Bank MID</DialogTitle>
+                        <DialogTitle className="flex items-center gap-2">
+                            <Building2 className="h-5 w-5" />
+                            {editingBankMID ? 'Edit' : 'Onboard'} Bank MID / Institution
+                        </DialogTitle>
                     </DialogHeader>
-                    <div className="grid grid-cols-2 gap-4 py-4">
-                        <div className="space-y-2">
-                            <Label>Bank MID ID *</Label>
-                            <Input
-                                value={formData.bank_mid_id}
-                                onChange={(e) => setFormData({...formData, bank_mid_id: e.target.value})}
-                                placeholder="e.g., STANDARD_USD_FTS"
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label>Bank MID Name *</Label>
-                            <Input
-                                value={formData.bank_mid_name}
-                                onChange={(e) => setFormData({...formData, bank_mid_name: e.target.value})}
-                                placeholder="e.g., Standard USD Account"
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label>Acquirer</Label>
-                            <Select 
-                                value={formData.acquirer_id}
-                                onValueChange={(val) => {
-                                    const provider = providers.find(p => p.id === val);
-                                    setFormData({...formData, acquirer_id: val, acquirer_name: provider?.name || ''});
-                                }}
-                            >
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Select acquirer" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {providers.map(p => (
-                                        <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div className="space-y-2">
-                            <Label>Connector Type</Label>
-                            <Select value={formData.connector_type} onValueChange={(val) => setFormData({...formData, connector_type: val})}>
-                                <SelectTrigger>
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="standard">Standard</SelectItem>
-                                    <SelectItem value="gateway">Gateway</SelectItem>
-                                    <SelectItem value="direct">Direct</SelectItem>
-                                    <SelectItem value="aggregator">Aggregator</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div className="space-y-2">
-                            <Label>Account Type</Label>
-                            <Select value={formData.account_type} onValueChange={(val) => setFormData({...formData, account_type: val})}>
-                                <SelectTrigger>
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="bank">Bank</SelectItem>
-                                    <SelectItem value="ecomm">E-Commerce</SelectItem>
-                                    <SelectItem value="moto">MOTO</SelectItem>
-                                    <SelectItem value="pos">POS</SelectItem>
-                                    <SelectItem value="soft_pos">Soft POS</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div className="space-y-2">
-                            <Label>Currency</Label>
-                            <Select value={formData.currency} onValueChange={(val) => setFormData({...formData, currency: val})}>
-                                <SelectTrigger>
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="USD">USD</SelectItem>
-                                    <SelectItem value="EUR">EUR</SelectItem>
-                                    <SelectItem value="GBP">GBP</SelectItem>
-                                    <SelectItem value="CNY">CNY</SelectItem>
-                                    <SelectItem value="HKD">HKD</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div className="space-y-2">
-                            <Label>Country</Label>
-                            <Input
-                                value={formData.country}
-                                onChange={(e) => setFormData({...formData, country: e.target.value})}
-                                placeholder="e.g., US"
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label>Status</Label>
-                            <Select value={formData.status} onValueChange={(val) => setFormData({...formData, status: val})}>
-                                <SelectTrigger>
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="active">Active</SelectItem>
-                                    <SelectItem value="inactive">Inactive</SelectItem>
-                                    <SelectItem value="maintenance">Maintenance</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                    </div>
-                    <DialogFooter>
-                        <Button variant="outline" onClick={() => { setShowDialog(false); resetForm(); }}>
-                            Cancel
-                        </Button>
-                        <Button 
-                            onClick={handleSubmit}
-                            disabled={!formData.bank_mid_id || !formData.bank_mid_name}
-                        >
-                            {editingBankMID ? 'Update' : 'Create'}
-                        </Button>
-                    </DialogFooter>
+                    <BankMIDOnboardingWizard
+                        onSubmit={handleWizardSubmit}
+                        onCancel={handleWizardCancel}
+                        initialData={editingBankMID}
+                    />
                 </DialogContent>
             </Dialog>
         </div>
