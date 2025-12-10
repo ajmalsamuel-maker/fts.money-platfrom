@@ -62,6 +62,9 @@ import MerchantDataTransactions from './pages/MerchantDataTransactions';
 import MerchantSettlementReports from './pages/MerchantSettlementReports';
 import MerchantChargebackReport from './pages/MerchantChargebackReport';
 import MerchantStatementReport from './pages/MerchantStatementReport';
+import MerchantMonitorTools from './pages/MerchantMonitorTools';
+import MerchantDisputeManagement from './pages/MerchantDisputeManagement';
+import MerchantOperators from './pages/MerchantOperators';
 import __Layout from './Layout.jsx';
 
 
@@ -130,6 +133,9 @@ export const PAGES = {
     "MerchantSettlementReports": MerchantSettlementReports,
     "MerchantChargebackReport": MerchantChargebackReport,
     "MerchantStatementReport": MerchantStatementReport,
+    "MerchantMonitorTools": MerchantMonitorTools,
+    "MerchantDisputeManagement": MerchantDisputeManagement,
+    "MerchantOperators": MerchantOperators,
 }
 
 export const pagesConfig = {
