@@ -233,11 +233,11 @@ export default function MerchantUsers() {
                                 variant="outline" 
                                 onClick={async () => {
                                     try {
-                                        const { generateMerchantCode } = await import('@/components/merchants/MerchantCodeGenerator');
+                                        const { generateUniqueMerchantCode } = await import('@/components/merchants/MerchantCodeGenerator');
                                         let fixed = 0;
                                         for (const merchant of merchants) {
                                             if (!merchant.merchant_code) {
-                                                const code = generateMerchantCode(merchant.business_name, merchants);
+                                                const code = generateUniqueMerchantCode(merchant.business_name, merchants);
                                                 await base44.entities.Merchant.update(merchant.id, { merchant_code: code });
                                                 fixed++;
                                             }
