@@ -168,6 +168,40 @@ export default function MerchantDashboard() {
 
                 <main className="flex-1 overflow-y-auto p-6">
                     <div className="max-w-[1400px] mx-auto space-y-6">
+                        {/* Quick Stats */}
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <Card>
+                                <CardHeader className="pb-3"><CardTitle className="text-sm text-slate-500">Today's Volume</CardTitle></CardHeader>
+                                <CardContent>
+                                    <div className="text-2xl font-bold">${statsData.summary.today.amount.toLocaleString(undefined, {minimumFractionDigits: 2})}</div>
+                                    <p className="text-xs text-slate-500 mt-1">{statsData.summary.today.count} transactions</p>
+                                </CardContent>
+                            </Card>
+                            <Card>
+                                <CardHeader className="pb-3"><CardTitle className="text-sm text-slate-500">Total Transactions</CardTitle></CardHeader>
+                                <CardContent>
+                                    <div className="text-2xl font-bold">{transactions.length}</div>
+                                    <p className="text-xs text-slate-500 mt-1">All time</p>
+                                </CardContent>
+                            </Card>
+                            <Card>
+                                <CardHeader className="pb-3"><CardTitle className="text-sm text-slate-500">Success Rate</CardTitle></CardHeader>
+                                <CardContent>
+                                    <div className="text-2xl font-bold text-green-600">
+                                        {transactions.length > 0 ? ((transactions.filter(t => t.status === 'approved').length / transactions.length) * 100).toFixed(1) : 0}%
+                                    </div>
+                                    <p className="text-xs text-slate-500 mt-1">Last 7 days</p>
+                                </CardContent>
+                            </Card>
+                            <Card>
+                                <CardHeader className="pb-3"><CardTitle className="text-sm text-slate-500">Monthly Volume</CardTitle></CardHeader>
+                                <CardContent>
+                                    <div className="text-2xl font-bold text-blue-600">${statsData.summary.thisMonth.amount.toLocaleString(undefined, {minimumFractionDigits: 2})}</div>
+                                    <p className="text-xs text-slate-500 mt-1">{statsData.summary.thisMonth.count} transactions</p>
+                                </CardContent>
+                            </Card>
+                        </div>
+
                         {/* Account Summary */}
                         <Card>
                             <CardHeader>

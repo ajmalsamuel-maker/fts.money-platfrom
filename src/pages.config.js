@@ -65,6 +65,8 @@ import MerchantStatementReport from './pages/MerchantStatementReport';
 import MerchantMonitorTools from './pages/MerchantMonitorTools';
 import MerchantDisputeManagement from './pages/MerchantDisputeManagement';
 import MerchantOperators from './pages/MerchantOperators';
+import MerchantAppearance from './pages/MerchantAppearance';
+import MerchantHelpCenter from './pages/MerchantHelpCenter';
 import __Layout from './Layout.jsx';
 
 
@@ -136,6 +138,8 @@ export const PAGES = {
     "MerchantMonitorTools": MerchantMonitorTools,
     "MerchantDisputeManagement": MerchantDisputeManagement,
     "MerchantOperators": MerchantOperators,
+    "MerchantAppearance": MerchantAppearance,
+    "MerchantHelpCenter": MerchantHelpCenter,
 }
 
 export const pagesConfig = {
