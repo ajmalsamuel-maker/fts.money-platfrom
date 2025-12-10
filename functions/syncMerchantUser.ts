@@ -11,6 +11,20 @@ Deno.serve(async (req) => {
     try {
         const { user } = await req.json();
 
+        if (!user.merchant_code) {
+            // Fetch merchant_code from Merchant entity if not present
+            const merchantQuery = await pool.query(
+                'SELECT merchant_code FROM merchants WHERE merchant_id = $1',
+                [user.merchant_id]
+            );
+            
+            if (merchantQuery.rows.length === 0) {
+                throw new Error(`Merchant not found for merchant_id: ${user.merchant_id}`);
+            }
+            
+            user.merchant_code = merchantQuery.rows[0].merchant_code;
+        }
+
         // Insert or update merchant user in PostgreSQL
         await pool.query(`
             INSERT INTO merchant_users (
@@ -38,12 +52,12 @@ Deno.serve(async (req) => {
             user.full_name,
             user.role,
             user.status,
-            user.temp_password,
-            user.must_change_password,
+            user.temp_password || null,
+            user.must_change_password || true,
             user.two_factor_enabled || false,
             user.phone || null,
-            user.permissions || null,
-            user.allowed_terminals || null
+            JSON.stringify(user.permissions || []),
+            JSON.stringify(user.allowed_terminals || [])
         ]);
 
         return Response.json({ success: true });
