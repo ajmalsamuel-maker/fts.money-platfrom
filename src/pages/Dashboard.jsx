@@ -18,6 +18,7 @@ import HelpPanel from '@/components/dashboard/HelpPanel';
 import RecurringRevenueCard from '@/components/dashboard/RecurringRevenueCard';
 import AIPerformanceCard from '@/components/dashboard/AIPerformanceCard';
 import SubscriptionHealthCard from '@/components/dashboard/SubscriptionHealthCard';
+import CryptoAnalyticsCard from '@/components/dashboard/CryptoAnalyticsCard';
 import { 
     DollarSign, 
     ArrowLeftRight, 
@@ -172,6 +173,7 @@ export default function Dashboard() {
                         </div>
                         <div className="space-y-3 sm:space-y-4">
                             <TopMerchants />
+                            <CryptoAnalyticsCard />
                         </div>
                     </div>
 

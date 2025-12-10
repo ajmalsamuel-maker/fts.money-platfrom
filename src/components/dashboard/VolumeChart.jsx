@@ -20,6 +20,7 @@ const generateData = (period) => {
     
     for (let i = 0; i < points; i++) {
         const base = 100000 + Math.random() * 150000;
+        const cryptoVolume = Math.round(base * 0.08); // 8% crypto volume
         data.push({
             label: period === '24h' 
                 ? `${i}:00` 
@@ -29,6 +30,8 @@ const generateData = (period) => {
                         ? `Day ${i + 1}`
                         : ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][i],
             volume: Math.round(base),
+            fiat: Math.round(base - cryptoVolume),
+            crypto: cryptoVolume,
             transactions: Math.round(base / 50),
             approved: Math.round((base / 50) * 0.95),
             declined: Math.round((base / 50) * 0.05),
@@ -44,14 +47,21 @@ export default function VolumeChart() {
 
     const CustomTooltip = ({ active, payload, label }) => {
         if (active && payload && payload.length) {
+            const totalVol = (payload[0]?.payload?.fiat || 0) + (payload[0]?.payload?.crypto || 0);
             return (
                 <div className="bg-white p-3 rounded-lg shadow-lg border border-slate-200">
                     <p className="font-medium text-slate-900">{label}</p>
+                    <p className="text-sm text-slate-700">
+                        Total: ${totalVol.toLocaleString()}
+                    </p>
                     <p className="text-sm text-blue-600">
-                        Volume: ${payload[0].value.toLocaleString()}
+                        Fiat: ${(payload[0]?.payload?.fiat || 0).toLocaleString()}
+                    </p>
+                    <p className="text-sm text-amber-600">
+                        Crypto: ${(payload[0]?.payload?.crypto || 0).toLocaleString()}
                     </p>
                     <p className="text-sm text-slate-500">
-                        Transactions: {payload[0].payload.transactions.toLocaleString()}
+                        Txns: {payload[0]?.payload?.transactions?.toLocaleString() || 0}
                     </p>
                 </div>
             );
@@ -91,9 +101,13 @@ export default function VolumeChart() {
                         {chartType === 'area' ? (
                             <AreaChart data={data}>
                                 <defs>
-                                    <linearGradient id="volumeGradient" x1="0" y1="0" x2="0" y2="1">
+                                    <linearGradient id="fiatGradient" x1="0" y1="0" x2="0" y2="1">
                                         <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
                                         <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                                    </linearGradient>
+                                    <linearGradient id="cryptoGradient" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.3}/>
+                                        <stop offset="95%" stopColor="#f59e0b" stopOpacity={0}/>
                                     </linearGradient>
                                 </defs>
                                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
@@ -112,10 +126,21 @@ export default function VolumeChart() {
                                 <Tooltip content={<CustomTooltip />} />
                                 <Area
                                     type="monotone"
-                                    dataKey="volume"
+                                    dataKey="fiat"
+                                    stackId="1"
                                     stroke="#3b82f6"
                                     strokeWidth={2}
-                                    fill="url(#volumeGradient)"
+                                    fill="url(#fiatGradient)"
+                                    name="Fiat"
+                                />
+                                <Area
+                                    type="monotone"
+                                    dataKey="crypto"
+                                    stackId="1"
+                                    stroke="#f59e0b"
+                                    strokeWidth={2}
+                                    fill="url(#cryptoGradient)"
+                                    name="Crypto"
                                 />
                             </AreaChart>
                         ) : (
