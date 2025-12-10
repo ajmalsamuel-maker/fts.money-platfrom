@@ -93,24 +93,30 @@ export default function MerchantMIDs() {
 
     const createMutation = useMutation({
         mutationFn: async (data) => {
+            console.log('Creating MID with data:', data);
             const mid = await base44.entities.MerchantMID.create(data);
+            console.log('MID created:', mid);
             await AuditLogger.logMerchantMIDCreated(mid);
             return mid;
         },
-        onSuccess: () => { 
+        onSuccess: (data) => { 
+            console.log('Create success:', data);
             queryClient.invalidateQueries({ queryKey: ['merchant-mids'] }); 
             toast.success('MID created successfully');
             resetForm(); 
         },
         onError: (error) => {
-            toast.error('Failed to create MID: ' + error.message);
+            console.error('Create error:', error);
+            toast.error('Failed to create MID: ' + (error.message || 'Unknown error'));
         }
     });
 
     const updateMutation = useMutation({
         mutationFn: async ({ id, data }) => {
+            console.log('Updating MID:', id, 'with data:', data);
             const oldMID = mids.find(m => m.id === id);
             const mid = await base44.entities.MerchantMID.update(id, data);
+            console.log('MID updated:', mid);
             
             // Check if status changed
             if (oldMID?.status !== data.status) {
@@ -120,13 +126,15 @@ export default function MerchantMIDs() {
             }
             return mid;
         },
-        onSuccess: () => { 
+        onSuccess: (data) => { 
+            console.log('Update success:', data);
             queryClient.invalidateQueries({ queryKey: ['merchant-mids'] }); 
             toast.success('MID updated successfully');
             resetForm(); 
         },
         onError: (error) => {
-            toast.error('Failed to update MID: ' + error.message);
+            console.error('Update error:', error);
+            toast.error('Failed to update MID: ' + (error.message || 'Unknown error'));
         }
     });
 
@@ -270,6 +278,8 @@ export default function MerchantMIDs() {
     };
 
     const handleSubmit = () => {
+        console.log('Form data before submit:', formData);
+        
         // Ensure transaction_types is an array
         const submitData = {
             ...formData,
@@ -278,9 +288,13 @@ export default function MerchantMIDs() {
                 : []
         };
         
+        console.log('Submit data:', submitData);
+        
         if (editingMID) {
+            console.log('Editing MID:', editingMID.id);
             updateMutation.mutate({ id: editingMID.id, data: submitData });
         } else {
+            console.log('Creating new MID');
             createMutation.mutate(submitData);
         }
     };
