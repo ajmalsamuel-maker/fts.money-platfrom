@@ -240,6 +240,39 @@ export default function MerchantVirtualTerminal() {
 
             await base44.entities.Transaction.create(transactionData);
 
+            // Send email receipt to customer
+            if (formData.customerEmail && vtConfig?.send_receipts_email) {
+                try {
+                    await base44.integrations.Core.SendEmail({
+                        from_name: merchant?.business_name || 'Payment Gateway',
+                        to: formData.customerEmail,
+                        subject: `Payment Receipt - ${txnId}`,
+                        body: `
+                            <h2>Payment Confirmation</h2>
+                            <p>Dear ${formData.customerName || formData.cardholderName || 'Customer'},</p>
+                            <p>Your payment has been successfully processed.</p>
+                            
+                            <h3>Transaction Details:</h3>
+                            <ul>
+                                <li><strong>Transaction ID:</strong> ${txnId}</li>
+                                <li><strong>Amount:</strong> ${formData.currency} ${total.toFixed(2)}</li>
+                                <li><strong>Date:</strong> ${new Date().toLocaleString()}</li>
+                                <li><strong>Status:</strong> Approved</li>
+                                <li><strong>Authorization Code:</strong> ${authCode}</li>
+                                <li><strong>Payment Method:</strong> ${detectCardBrand(cardNum)} ending in ${cardNum.slice(-4)}</li>
+                                ${formData.description ? `<li><strong>Description:</strong> ${formData.description}</li>` : ''}
+                            </ul>
+                            
+                            <p>Thank you for your business!</p>
+                            <p><small>If you have any questions, please contact ${merchant?.contact_email || 'support'}</small></p>
+                        `
+                    });
+                } catch (emailError) {
+                    console.error('Failed to send email:', emailError);
+                    // Don't fail the transaction if email fails
+                }
+            }
+
             // Save card if requested
             if (formData.saveCard && !formData.useExistingCard && formData.customerEmail) {
                 await base44.entities.SavedCard.create({
