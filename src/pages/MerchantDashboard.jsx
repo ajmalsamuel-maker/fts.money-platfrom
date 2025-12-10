@@ -36,12 +36,15 @@ import PaymentMethodsBreakdown from '@/components/merchant/PaymentMethodsBreakdo
 import SettlementCalendar from '@/components/merchant/SettlementCalendar';
 import CustomerInsights from '@/components/merchant/CustomerInsights';
 import ComplianceDashboard from '@/components/merchant/ComplianceDashboard';
+import TransactionDetailsDialog from '@/components/transaction/TransactionDetailsDialog';
 
 export default function MerchantDashboard() {
     const { user, loading, isAuthenticated, logout } = useMerchantAuth();
     const navigate = useNavigate();
     const [selectedMID, setSelectedMID] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
+    const [selectedTransaction, setSelectedTransaction] = useState(null);
+    const [showTransactionDialog, setShowTransactionDialog] = useState(false);
 
     useEffect(() => {
         if (!loading && !isAuthenticated) {
@@ -618,7 +621,16 @@ export default function MerchantDashboard() {
                                                         </Badge>
                                                     </td>
                                                     <td className="py-3 px-4 text-right">
-                                                        <button className="text-slate-400 hover:text-slate-600">⋯</button>
+                                                       <Button
+                                                           variant="ghost"
+                                                           size="sm"
+                                                           onClick={() => {
+                                                               setSelectedTransaction(txn);
+                                                               setShowTransactionDialog(true);
+                                                           }}
+                                                       >
+                                                           View
+                                                       </Button>
                                                     </td>
                                                 </tr>
                                             ))}
@@ -733,6 +745,18 @@ export default function MerchantDashboard() {
                             </div>
                 </main>
             </div>
+
+            {/* Transaction Details Dialog */}
+            {selectedTransaction && (
+                <TransactionDetailsDialog
+                    transaction={selectedTransaction}
+                    open={showTransactionDialog}
+                    onClose={() => {
+                        setShowTransactionDialog(false);
+                        setSelectedTransaction(null);
+                    }}
+                />
+            )}
         </div>
     );
 }

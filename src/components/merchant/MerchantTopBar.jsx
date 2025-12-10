@@ -21,10 +21,10 @@ export default function MerchantTopBar({ user, merchant, onLogout, selectedMID }
                     <span className="text-sm font-semibold text-slate-900">
                         {merchant?.business_name || 'Merchant Portal'}
                     </span>
-                    {merchant?.merchant_code && (
+                    {(merchant?.merchant_code || user?.merchant_code) && (
                         <div className="flex items-center gap-2 px-3 py-1 bg-slate-100 border border-slate-300 rounded-md">
                             <span className="text-xs font-medium text-slate-600">Code:</span>
-                            <span className="text-xs font-mono font-bold text-slate-900">{merchant.merchant_code}</span>
+                            <span className="text-xs font-mono font-bold text-slate-900">{merchant?.merchant_code || user?.merchant_code}</span>
                         </div>
                     )}
                     {selectedMID && (
