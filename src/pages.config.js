@@ -79,6 +79,8 @@ import MerchantSettings from './pages/MerchantSettings';
 import ISOConfiguration from './pages/ISOConfiguration';
 import CryptoTransactions from './pages/CryptoTransactions';
 import FATFCompliance from './pages/FATFCompliance';
+import BlockchainConnectors from './pages/BlockchainConnectors';
+import ExchangeIntegrations from './pages/ExchangeIntegrations';
 import __Layout from './Layout.jsx';
 
 
@@ -164,6 +166,8 @@ export const PAGES = {
     "ISOConfiguration": ISOConfiguration,
     "CryptoTransactions": CryptoTransactions,
     "FATFCompliance": FATFCompliance,
+    "BlockchainConnectors": BlockchainConnectors,
+    "ExchangeIntegrations": ExchangeIntegrations,
 }
 
 export const pagesConfig = {

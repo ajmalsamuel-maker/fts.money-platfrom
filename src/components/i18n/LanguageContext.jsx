@@ -101,7 +101,10 @@ const translations = {
         supportCenter: 'Support Center',
         privacyPolicy: 'Privacy Policy',
         termsOfService: 'Terms of Service',
-    },
+        fatfCompliance: 'FATF Compliance',
+        blockchainConnectors: 'Blockchain Connectors',
+        exchangeIntegrations: 'Exchange Integrations',
+        },
     es: {
         // Common
         dashboard: 'Panel',
