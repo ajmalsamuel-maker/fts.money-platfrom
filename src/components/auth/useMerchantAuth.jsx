@@ -14,7 +14,7 @@ export function useMerchantAuth() {
     }, []);
 
     const checkSession = () => {
-        const stored = localStorage.getItem(MERCHANT_SESSION_KEY);
+        const stored = localStorage.getItem('merchantSession');
         if (stored) {
             try {
                 const parsed = JSON.parse(stored);
@@ -22,33 +22,34 @@ export function useMerchantAuth() {
                 if (Date.now() - parsed.timestamp < 24 * 60 * 60 * 1000) {
                     setSession(parsed);
                 } else {
-                    logout();
+                    localStorage.removeItem('merchantSession');
                 }
             } catch (e) {
-                logout();
+                localStorage.removeItem('merchantSession');
             }
         }
         setLoading(false);
     };
 
     const login = (sessionData) => {
-        localStorage.setItem(MERCHANT_SESSION_KEY, JSON.stringify(sessionData));
+        localStorage.setItem('merchantSession', JSON.stringify(sessionData));
         setSession(sessionData);
     };
 
     const logout = () => {
-        localStorage.removeItem(MERCHANT_SESSION_KEY);
+        localStorage.removeItem('merchantSession');
         setSession(null);
         navigate(createPageUrl('MerchantLogin'));
     };
 
     const updateSession = (updates) => {
         const updated = { ...session, ...updates };
-        localStorage.setItem(MERCHANT_SESSION_KEY, JSON.stringify(updated));
+        localStorage.setItem('merchantSession', JSON.stringify(updated));
         setSession(updated);
     };
 
     return {
+        user: session,
         session,
         loading,
         isAuthenticated: !!session,
@@ -59,7 +60,7 @@ export function useMerchantAuth() {
 }
 
 export function getMerchantSession() {
-    const stored = localStorage.getItem(MERCHANT_SESSION_KEY);
+    const stored = localStorage.getItem('merchantSession');
     if (stored) {
         try {
             const parsed = JSON.parse(stored);
@@ -72,6 +73,6 @@ export function getMerchantSession() {
 }
 
 export function merchantLogout() {
-    localStorage.removeItem(MERCHANT_SESSION_KEY);
+    localStorage.removeItem('merchantSession');
     window.location.href = createPageUrl('MerchantLogin');
 }
