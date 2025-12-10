@@ -26,8 +26,12 @@ import {
     Key,
     Shield,
     Plus,
-    Upload
+    Upload,
+    Bitcoin
 } from 'lucide-react';
+import { ISO4217_CURRENCIES } from '@/components/utils/iso4217';
+import { getAllCountries } from '@/components/utils/countries';
+import { Switch } from "@/components/ui/switch";
 
 const apmProviders = [
     // Digital Wallets
@@ -92,6 +96,12 @@ export default function APMOnboarding() {
         webhook_url: '',
     });
     const [complianceData, setComplianceData] = useState(null);
+    const [apmConfig, setAPMConfig] = useState({
+        supported_currencies: [],
+        supported_countries: [],
+        iso_20022_compliant: false,
+        crypto_iso_23257_compliant: false,
+    });
     const queryClient = useQueryClient();
     
     const allProviders = [...apmProviders, ...customProviders];
@@ -284,6 +294,54 @@ export default function APMOnboarding() {
                                         className="bg-slate-50 font-mono text-sm"
                                     />
                                     <p className="text-xs text-slate-500">Configure this URL in your {selectedAPM.name} dashboard</p>
+                                </div>
+
+                                <div className="space-y-3 pt-4 border-t">
+                                    <Label>Regional Configuration</Label>
+                                    <div className="space-y-2">
+                                        <Label className="text-xs">Currencies (ISO 4217)</Label>
+                                        <Select onValueChange={(val) => {
+                                            setAPMConfig(prev => ({
+                                                ...prev,
+                                                supported_currencies: [...(prev.supported_currencies || []), val]
+                                            }));
+                                        }}>
+                                            <SelectTrigger><SelectValue placeholder="Add currency" /></SelectTrigger>
+                                            <SelectContent>
+                                                {ISO4217_CURRENCIES.slice(0, 30).map(c => (
+                                                    <SelectItem key={c.code} value={c.code}>{c.code} - {c.name}</SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                        <div className="flex flex-wrap gap-1">
+                                            {apmConfig.supported_currencies?.map(c => (
+                                                <Badge key={c} variant="secondary">{c}</Badge>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-3 pt-4 border-t">
+                                    <Label className="flex items-center gap-2">
+                                        <Shield className="h-4 w-4 text-blue-600" />
+                                        ISO Compliance
+                                    </Label>
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-sm">ISO 20022 Compliant</span>
+                                        <Switch 
+                                            checked={apmConfig.iso_20022_compliant}
+                                            onCheckedChange={(checked) => setAPMConfig(prev => ({ ...prev, iso_20022_compliant: checked }))}
+                                        />
+                                    </div>
+                                    {selectedAPM.category === 'crypto' && (
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-sm">ISO 23257 DLT Compliant</span>
+                                            <Switch 
+                                                checked={apmConfig.crypto_iso_23257_compliant}
+                                                onCheckedChange={(checked) => setAPMConfig(prev => ({ ...prev, crypto_iso_23257_compliant: checked }))}
+                                            />
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className="space-y-3 pt-4 border-t">

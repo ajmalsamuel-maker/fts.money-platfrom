@@ -28,8 +28,13 @@ import {
     Settings,
     CheckCircle,
     ArrowRight,
-    Loader2
+    Loader2,
+    Building2,
+    FileText
 } from 'lucide-react';
+import { ISO4217_CURRENCIES } from '@/components/utils/iso4217';
+import { getAllCountries } from '@/components/utils/countries';
+import { validateISO9362, validateIBANFormat } from '@/components/utils/isoValidator';
 
 const cardNetworks = [
     { id: 'visa', name: 'Visa', logo: '💳' },
@@ -40,9 +45,6 @@ const cardNetworks = [
     { id: 'unionpay', name: 'UnionPay', logo: '💳' },
 ];
 
-const currencies = ['USD', 'EUR', 'GBP', 'CAD', 'AUD', 'SGD', 'HKD', 'JPY', 'CNY'];
-const countries = ['US', 'UK', 'EU', 'CA', 'AU', 'SG', 'HK', 'JP', 'CN'];
-
 export default function AcquirerOnboarding() {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -51,8 +53,15 @@ export default function AcquirerOnboarding() {
     
     const [formData, setFormData] = useState({
         name: '',
+        legal_entity_name: '',
+        lei: '',
+        license_number: '',
+        licensing_authority: '',
         type: 'acquirer',
         bin_sponsor: '',
+        country: '',
+        bic_swift: '',
+        iban: '',
         networks: [],
         currencies: [],
         countries: [],
@@ -75,6 +84,8 @@ export default function AcquirerOnboarding() {
             fixed_fee: '',
             chargeback_fee: '',
         },
+        iso_20022_compliant: false,
+        iso_8583_compliant: false,
         compliance: null
     });
 
@@ -161,18 +172,28 @@ export default function AcquirerOnboarding() {
                         <Card className="max-w-2xl">
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
-                                    <Landmark className="h-5 w-5" />
-                                    Basic Information
+                                    <Building2 className="h-5 w-5" />
+                                    Institution Details
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-4">
-                                <div className="space-y-2">
-                                    <Label>Processor Name *</Label>
-                                    <Input 
-                                        value={formData.name} 
-                                        onChange={(e) => handleChange('name', e.target.value)}
-                                        placeholder="e.g., Chase Paymentech, Worldpay"
-                                    />
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <Label>Processor Name *</Label>
+                                        <Input 
+                                            value={formData.name} 
+                                            onChange={(e) => handleChange('name', e.target.value)}
+                                            placeholder="e.g., Chase Paymentech"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>Legal Entity Name *</Label>
+                                        <Input 
+                                            value={formData.legal_entity_name} 
+                                            onChange={(e) => handleChange('legal_entity_name', e.target.value)}
+                                            placeholder="Full legal name"
+                                        />
+                                    </div>
                                 </div>
                                 <div className="space-y-2">
                                     <Label>Type</Label>
@@ -186,6 +207,47 @@ export default function AcquirerOnboarding() {
                                         </SelectContent>
                                     </Select>
                                 </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <Label>Country (ISO 3166-1) *</Label>
+                                        <Select value={formData.country} onValueChange={(val) => handleChange('country', val)}>
+                                            <SelectTrigger><SelectValue placeholder="Select country" /></SelectTrigger>
+                                            <SelectContent>
+                                                {getAllCountries().slice(0, 50).map(c => (
+                                                    <SelectItem key={c.code} value={c.code}>{c.code} - {c.name}</SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>LEI (Optional)</Label>
+                                        <Input 
+                                            value={formData.lei} 
+                                            onChange={(e) => handleChange('lei', e.target.value)}
+                                            placeholder="20-character LEI"
+                                            maxLength={20}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <Label>BIC/SWIFT (ISO 9362)</Label>
+                                        <Input 
+                                            value={formData.bic_swift} 
+                                            onChange={(e) => handleChange('bic_swift', e.target.value.toUpperCase())}
+                                            placeholder="8 or 11 characters"
+                                            maxLength={11}
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>IBAN (ISO 13616)</Label>
+                                        <Input 
+                                            value={formData.iban} 
+                                            onChange={(e) => handleChange('iban', e.target.value.replace(/\s/g, '').toUpperCase())}
+                                            placeholder="International Bank Account"
+                                        />
+                                    </div>
+                                </div>
                                 <div className="space-y-2">
                                     <Label>BIN Sponsor (if applicable)</Label>
                                     <Input 
@@ -194,7 +256,7 @@ export default function AcquirerOnboarding() {
                                         placeholder="Sponsoring bank name"
                                     />
                                 </div>
-                                <Button onClick={() => setStep(2)} className="w-full gap-2" disabled={!formData.name}>
+                                <Button onClick={() => setStep(2)} className="w-full gap-2" disabled={!formData.name || !formData.country}>
                                     Continue <ArrowRight className="h-4 w-4" />
                                 </Button>
                             </CardContent>
@@ -229,31 +291,47 @@ export default function AcquirerOnboarding() {
                                     </div>
                                 </div>
                                 <div className="space-y-2">
-                                    <Label>Supported Currencies</Label>
-                                    <div className="flex flex-wrap gap-2">
-                                        {currencies.map((curr) => (
+                                    <Label>Supported Currencies (ISO 4217)</Label>
+                                    <Select onValueChange={(val) => toggleArrayItem('currencies', val)}>
+                                        <SelectTrigger><SelectValue placeholder="Add currency" /></SelectTrigger>
+                                        <SelectContent>
+                                            {ISO4217_CURRENCIES.slice(0, 50).map(c => (
+                                                <SelectItem key={c.code} value={c.code}>{c.code} - {c.name}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    <div className="flex flex-wrap gap-2 mt-2">
+                                        {formData.currencies.map((curr) => (
                                             <Badge
                                                 key={curr}
-                                                variant="outline"
-                                                className={cn("cursor-pointer", formData.currencies.includes(curr) && "bg-blue-100 border-blue-500")}
+                                                variant="default"
+                                                className="cursor-pointer"
                                                 onClick={() => toggleArrayItem('currencies', curr)}
                                             >
-                                                {curr}
+                                                {curr} ✕
                                             </Badge>
                                         ))}
                                     </div>
                                 </div>
                                 <div className="space-y-2">
-                                    <Label>Supported Countries</Label>
-                                    <div className="flex flex-wrap gap-2">
-                                        {countries.map((c) => (
+                                    <Label>Supported Countries (ISO 3166-1)</Label>
+                                    <Select onValueChange={(val) => toggleArrayItem('countries', val)}>
+                                        <SelectTrigger><SelectValue placeholder="Add country" /></SelectTrigger>
+                                        <SelectContent>
+                                            {getAllCountries().slice(0, 50).map(c => (
+                                                <SelectItem key={c.code} value={c.code}>{c.code} - {c.name}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    <div className="flex flex-wrap gap-2 mt-2">
+                                        {formData.countries.map((c) => (
                                             <Badge
                                                 key={c}
-                                                variant="outline"
-                                                className={cn("cursor-pointer", formData.countries.includes(c) && "bg-blue-100 border-blue-500")}
+                                                variant="default"
+                                                className="cursor-pointer"
                                                 onClick={() => toggleArrayItem('countries', c)}
                                             >
-                                                {c}
+                                                {c} ✕
                                             </Badge>
                                         ))}
                                     </div>
@@ -345,6 +423,27 @@ export default function AcquirerOnboarding() {
                                             />
                                         </div>
                                     ))}
+                                </div>
+
+                                <div className="space-y-3 pt-4 border-t">
+                                    <Label className="flex items-center gap-2">
+                                        <Shield className="h-4 w-4 text-blue-600" />
+                                        ISO Standards Compliance
+                                    </Label>
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-sm">ISO 20022 Messaging</span>
+                                        <Switch 
+                                            checked={formData.iso_20022_compliant}
+                                            onCheckedChange={(checked) => handleChange('iso_20022_compliant', checked)}
+                                        />
+                                    </div>
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-sm">ISO 8583 Messaging</span>
+                                        <Switch 
+                                            checked={formData.iso_8583_compliant}
+                                            onCheckedChange={(checked) => handleChange('iso_8583_compliant', checked)}
+                                        />
+                                    </div>
                                 </div>
                                 <div className="flex gap-2 pt-4">
                                     <Button variant="outline" onClick={() => setStep(3)}>Back</Button>

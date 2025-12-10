@@ -45,6 +45,7 @@ import {
     MapPin
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
+import { validateCurrency, validateCountry, validateISO9362, validateIBANFormat } from '@/components/utils/isoValidator';
 import BusinessDetailsStep from '@/components/onboarding/BusinessDetailsStep';
 import CompanyStructureStep from '@/components/onboarding/CompanyStructureStep';
 import LEIVerificationStep from '@/components/onboarding/LEIVerificationStep';
@@ -273,6 +274,10 @@ export default function MerchantSelfOnboarding() {
             if (!formData.business.business_type) newErrors.business_type = 'Required';
             if (!formData.business.registration_number) newErrors.registration_number = 'Required';
             if (!formData.business.country) newErrors.country = 'Required';
+            else {
+                const countryValidation = validateCountry(formData.business.country);
+                if (!countryValidation.valid) newErrors.country = 'Invalid ISO 3166-1 country code';
+            }
             if (!formData.business.mcc_code) newErrors.mcc_code = 'Required';
         }
         
@@ -293,6 +298,18 @@ export default function MerchantSelfOnboarding() {
             if (!formData.bank.bank_name) newErrors.bank_name = 'Required';
             if (!formData.bank.account_number && !formData.bank.iban) {
                 newErrors.account_number = 'Account number or IBAN required';
+            }
+            if (formData.bank.swift_code) {
+                const bicValidation = validateISO9362(formData.bank.swift_code);
+                if (!bicValidation.valid) newErrors.swift_code = 'Invalid ISO 9362 BIC/SWIFT code';
+            }
+            if (formData.bank.iban) {
+                const ibanValidation = validateIBANFormat(formData.bank.iban);
+                if (!ibanValidation.valid) newErrors.iban = 'Invalid ISO 13616 IBAN';
+            }
+            if (formData.bank.currency) {
+                const currencyValidation = validateCurrency(formData.bank.currency);
+                if (!currencyValidation.valid) newErrors.currency = 'Invalid ISO 4217 currency code';
             }
         }
         

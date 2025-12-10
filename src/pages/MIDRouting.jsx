@@ -13,9 +13,12 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Search, Plus, MoreHorizontal, Edit, Trash2, ArrowRight, TrendingUp, ArrowUpDown, CreditCard } from 'lucide-react';
+import { Search, Plus, MoreHorizontal, Edit, Trash2, ArrowRight, TrendingUp, ArrowUpDown, CreditCard, Shield, Globe } from 'lucide-react';
 import { toast } from 'sonner';
 import { Textarea } from "@/components/ui/textarea";
+import { ISO4217_CURRENCIES } from '@/components/utils/iso4217';
+import { getAllCountries } from '@/components/utils/countries';
+import { Checkbox } from "@/components/ui/checkbox";
 
 export default function MIDRouting() {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -322,12 +325,12 @@ export default function MIDRouting() {
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label>Network/APM Conditions</Label>
+                            <Label>Routing Conditions</Label>
                             <div className="space-y-3 p-4 border rounded-lg bg-slate-50">
                                 <div>
                                     <Label className="text-xs">Card Networks / APMs</Label>
                                     <div className="grid grid-cols-2 gap-2 mt-1">
-                                        {['visa', 'mastercard', 'amex', 'discover', 'alipay', 'wechat'].map(network => (
+                                        {['visa', 'mastercard', 'amex', 'discover', 'unionpay', 'jcb', 'alipay', 'wechat'].map(network => (
                                             <label key={network} className="flex items-center gap-2 text-sm">
                                                 <input
                                                     type="checkbox"
@@ -351,7 +354,68 @@ export default function MIDRouting() {
                                             </label>
                                         ))}
                                     </div>
-                                    <p className="text-xs text-slate-500 mt-1">Leave empty to apply to all networks</p>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <Label className="text-xs">Countries (ISO 3166-1)</Label>
+                                        <Select 
+                                            onValueChange={(val) => {
+                                                const current = formData.routing_conditions?.countries || [];
+                                                if (!current.includes(val)) {
+                                                    setFormData({
+                                                        ...formData,
+                                                        routing_conditions: {
+                                                            ...formData.routing_conditions,
+                                                            countries: [...current, val]
+                                                        }
+                                                    });
+                                                }
+                                            }}
+                                        >
+                                            <SelectTrigger><SelectValue placeholder="Add country" /></SelectTrigger>
+                                            <SelectContent>
+                                                {getAllCountries().slice(0, 50).map(c => (
+                                                    <SelectItem key={c.code} value={c.code}>{c.code} - {c.name}</SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                        <div className="flex flex-wrap gap-1 mt-1">
+                                            {formData.routing_conditions?.countries?.map(c => (
+                                                <Badge key={c} variant="secondary" className="text-xs">{c}</Badge>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <Label className="text-xs">Currencies (ISO 4217)</Label>
+                                        <Select 
+                                            onValueChange={(val) => {
+                                                const current = formData.routing_conditions?.currencies || [];
+                                                if (!current.includes(val)) {
+                                                    setFormData({
+                                                        ...formData,
+                                                        routing_conditions: {
+                                                            ...formData.routing_conditions,
+                                                            currencies: [...current, val]
+                                                        }
+                                                    });
+                                                }
+                                            }}
+                                        >
+                                            <SelectTrigger><SelectValue placeholder="Add currency" /></SelectTrigger>
+                                            <SelectContent>
+                                                {ISO4217_CURRENCIES.slice(0, 30).map(c => (
+                                                    <SelectItem key={c.code} value={c.code}>{c.code} - {c.name}</SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                        <div className="flex flex-wrap gap-1 mt-1">
+                                            {formData.routing_conditions?.currencies?.map(c => (
+                                                <Badge key={c} variant="secondary" className="text-xs">{c}</Badge>
+                                            ))}
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-4">
@@ -386,6 +450,22 @@ export default function MIDRouting() {
                                         />
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label className="flex items-center gap-2">
+                                <Shield className="h-4 w-4 text-blue-600" />
+                                ISO Compliance Options
+                            </Label>
+                            <div className="space-y-2 p-3 border rounded-lg">
+                                <label className="flex items-center gap-2">
+                                    <Checkbox 
+                                        checked={formData.iso_compliance_required || false}
+                                        onCheckedChange={(checked) => setFormData({...formData, iso_compliance_required: checked})}
+                                    />
+                                    <span className="text-sm">Require ISO compliance validation</span>
+                                </label>
                             </div>
                         </div>
 

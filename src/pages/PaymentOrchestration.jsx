@@ -71,10 +71,14 @@ import {
     RefreshCw,
     Activity,
     Server,
-    Shuffle
+    Shuffle,
+    Shield
 } from 'lucide-react';
 import RoutingFlowVisualizer from '@/components/orchestration/RoutingFlowVisualizer';
 import RouteSimulator from '@/components/orchestration/RouteSimulator';
+import { ISO4217_CURRENCIES } from '@/components/utils/iso4217';
+import { getAllCountries } from '@/components/utils/countries';
+import { validateCurrency, validateCountry } from '@/components/utils/isoValidator';
 
 const processors = [
     { id: 'stripe', name: 'Stripe', type: 'gateway', status: 'active', successRate: 98.5, avgLatency: 245, fee: 2.9, networks: ['visa', 'mastercard', 'amex'] },
@@ -737,9 +741,8 @@ export default function PaymentOrchestration() {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label>Network-Specific Routing</Label>
+                                    <Label>Card Networks / APMs</Label>
                                     <div className="space-y-2 p-4 border rounded-lg bg-slate-50">
-                                        <Label className="text-xs">Card Networks / APMs (Select multiple)</Label>
                                         <div className="grid grid-cols-2 gap-2">
                                             {['visa', 'mastercard', 'amex', 'discover', 'unionpay', 'jcb', 'alipay', 'wechat'].map(network => (
                                                 <label key={network} className="flex items-center gap-2 text-sm">
@@ -762,6 +765,98 @@ export default function PaymentOrchestration() {
                                         <p className="text-xs text-slate-500 mt-1">
                                             Leave empty to apply to all networks
                                         </p>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <Label>Countries (ISO 3166-1)</Label>
+                                        <Select 
+                                            value={newRule.countries?.[0]}
+                                            onValueChange={(val) => {
+                                                const current = newRule.countries || [];
+                                                if (!current.includes(val)) {
+                                                    setNewRule({ ...newRule, countries: [...current, val] });
+                                                }
+                                            }}
+                                        >
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Add country" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {countries.slice(0, 50).map(c => (
+                                                    <SelectItem key={c.code} value={c.code}>{c.code} - {c.name}</SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                        <div className="flex flex-wrap gap-1">
+                                            {newRule.countries?.map(c => (
+                                                <Badge key={c} variant="secondary" className="text-xs">{c}</Badge>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <Label>Currencies (ISO 4217)</Label>
+                                        <Select 
+                                            value={newRule.currencies?.[0]}
+                                            onValueChange={(val) => {
+                                                const current = newRule.currencies || [];
+                                                if (!current.includes(val)) {
+                                                    setNewRule({ ...newRule, currencies: [...current, val] });
+                                                }
+                                            }}
+                                        >
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Add currency" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {currencies.map(c => (
+                                                    <SelectItem key={c} value={c}>{c}</SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                        <div className="flex flex-wrap gap-1">
+                                            {newRule.currencies?.map(c => (
+                                                <Badge key={c} variant="secondary" className="text-xs">{c}</Badge>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-3 p-4 border rounded-lg bg-blue-50">
+                                    <div className="flex items-center gap-2">
+                                        <Shield className="h-4 w-4 text-blue-600" />
+                                        <Label className="text-sm font-medium">ISO Standards Compliance</Label>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="flex items-center gap-2 text-sm">
+                                            <input
+                                                type="checkbox"
+                                                checked={newRule.iso_8583_routing || false}
+                                                onChange={(e) => setNewRule({ ...newRule, iso_8583_routing: e.target.checked })}
+                                                className="rounded"
+                                            />
+                                            <span>ISO 8583 Routing</span>
+                                        </label>
+                                        <label className="flex items-center gap-2 text-sm">
+                                            <input
+                                                type="checkbox"
+                                                checked={newRule.iso_20022_routing || false}
+                                                onChange={(e) => setNewRule({ ...newRule, iso_20022_routing: e.target.checked })}
+                                                className="rounded"
+                                            />
+                                            <span>ISO 20022 Routing</span>
+                                        </label>
+                                        <label className="flex items-center gap-2 text-sm">
+                                            <input
+                                                type="checkbox"
+                                                checked={newRule.dlt_routing_enabled || false}
+                                                onChange={(e) => setNewRule({ ...newRule, dlt_routing_enabled: e.target.checked })}
+                                                className="rounded"
+                                            />
+                                            <span>ISO 23257 DLT/Crypto Routing</span>
+                                        </label>
                                     </div>
                                 </div>
 

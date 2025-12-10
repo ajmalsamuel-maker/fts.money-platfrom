@@ -28,8 +28,10 @@ import {
     Loader2,
     CreditCard,
     Send,
-    AlertTriangle
+    AlertTriangle,
+    Shield
 } from 'lucide-react';
+import { validateCurrency, validateCountry, validateISO9362, validateIBANFormat } from '@/components/utils/isoValidator';
 import { createMerchantUsers } from '@/components/merchants/MerchantUserProvisioning';
 import { toast } from 'sonner';
 import { sendStageCompletionEmail, getNextStepsText, sendApplicationSubmittedEmail } from '@/components/onboarding/StepCompletionNotifications';
@@ -206,6 +208,10 @@ export default function MerchantOnboarding() {
             if (!data.business_type) newErrors.business_type = 'Business type is required';
             if (!data.industry) newErrors.industry = 'Industry is required';
             if (!data.country) newErrors.country = 'Country is required';
+            else {
+                const countryValidation = validateCountry(data.country);
+                if (!countryValidation.valid) newErrors.country = 'Invalid ISO 3166-1 country code';
+            }
             if (!data.business_address) newErrors.business_address = 'Business address is required';
             if (!data.business_description) newErrors.business_description = 'Business description is required';
         }
@@ -296,7 +302,19 @@ export default function MerchantOnboarding() {
               if (!data.account_number) newErrors.account_number = 'Account number is required';
               if (!data.routing_number) newErrors.routing_number = 'Routing number is required';
               if (!data.swift_code) newErrors.swift_code = 'SWIFT code is required';
+              else {
+                  const bicValidation = validateISO9362(data.swift_code);
+                  if (!bicValidation.valid) newErrors.swift_code = 'Invalid ISO 9362 BIC/SWIFT code';
+              }
+              if (data.iban) {
+                  const ibanValidation = validateIBANFormat(data.iban);
+                  if (!ibanValidation.valid) newErrors.iban = 'Invalid ISO 13616 IBAN';
+              }
               if (!data.settlement_currency) newErrors.settlement_currency = 'Settlement currency is required';
+              else {
+                  const currencyValidation = validateCurrency(data.settlement_currency);
+                  if (!currencyValidation.valid) newErrors.settlement_currency = 'Invalid ISO 4217 currency code';
+              }
               if (!data.settlement_period) newErrors.settlement_period = 'Settlement period is required';
           }
 
