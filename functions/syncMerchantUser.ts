@@ -61,8 +61,8 @@ Deno.serve(async (req) => {
             user.must_change_password || true,
             user.two_factor_enabled || false,
             user.phone || null,
-            JSON.stringify(user.permissions || []),
-            JSON.stringify(user.allowed_terminals || [])
+            user.permissions || [],
+            user.allowed_terminals || []
         ]);
 
         return Response.json({ success: true });
