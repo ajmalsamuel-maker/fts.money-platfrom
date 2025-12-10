@@ -93,6 +93,7 @@ const translations = {
         userManagement: 'User Management',
         auditLogs: 'Audit Logs',
         appearance: 'Appearance',
+        binTable: 'BIN Table',
         databaseSetup: 'Database Setup',
     databaseMigration: 'Database Migration',
         supportCenter: 'Support Center',
