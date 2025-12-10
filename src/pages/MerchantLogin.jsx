@@ -10,6 +10,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { CreditCard, Loader2, AlertCircle } from 'lucide-react';
 
 export default function MerchantLogin() {
+    const [merchantCode, setMerchantCode] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -20,11 +21,12 @@ export default function MerchantLogin() {
         const checkAuth = async () => {
             try {
                 const sessionData = JSON.parse(localStorage.getItem('merchantSession') || '{}');
-                if (sessionData.email) {
-                    // Validate session using email
+                if (sessionData.email && sessionData.merchant_code) {
+                    // Validate session using email and merchant_code
                     const response = await base44.functions.invoke('merchantAuth', {
                         action: 'validate',
-                        email: sessionData.email
+                        email: sessionData.email,
+                        merchant_code: sessionData.merchant_code
                     });
                     if (response.data.success) {
                         navigate(createPageUrl('MerchantDashboard'));
@@ -47,6 +49,7 @@ export default function MerchantLogin() {
         try {
             const response = await base44.functions.invoke('merchantAuth', {
                 action: 'login',
+                merchant_code: merchantCode,
                 email,
                 password
             });
@@ -93,6 +96,20 @@ export default function MerchantLogin() {
                                 <AlertDescription>{error}</AlertDescription>
                             </Alert>
                         )}
+                        
+                        <div className="space-y-2">
+                            <Label htmlFor="merchantCode">Merchant Code</Label>
+                            <Input
+                                id="merchantCode"
+                                type="text"
+                                placeholder="Enter merchant code"
+                                value={merchantCode}
+                                onChange={(e) => setMerchantCode(e.target.value.toUpperCase())}
+                                required
+                                disabled={loading}
+                                className="font-mono"
+                            />
+                        </div>
                         
                         <div className="space-y-2">
                             <Label htmlFor="email">Email</Label>

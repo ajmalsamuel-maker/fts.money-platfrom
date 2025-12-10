@@ -22,19 +22,19 @@ Deno.serve(async (req) => {
 
     try {
         const body = await req.json();
-        const { action, email, password, user_id, new_password } = body;
+        const { action, email, password, user_id, new_password, merchant_code } = body;
 
         if (action === 'login') {
-            console.log('Login attempt for:', email);
+            console.log('Login attempt for:', email, 'with merchant code:', merchant_code);
             
             // Query PostgreSQL for merchant user directly
             const result = await pool.query(`
-                SELECT id, merchant_id, merchant_name, email, full_name, role, status, 
+                SELECT id, merchant_id, merchant_code, merchant_name, email, full_name, role, status, 
                        temp_password, must_change_password, two_factor_enabled, last_login,
                        permissions, allowed_terminals, phone
                 FROM merchant_users 
-                WHERE email = $1 AND status = 'active'
-            `, [email]);
+                WHERE email = $1 AND merchant_code = $2 AND status = 'active'
+            `, [email, merchant_code]);
 
             console.log('DB Query result:', result.rows.length, 'rows');
 
@@ -65,6 +65,7 @@ Deno.serve(async (req) => {
             const session = {
                 user_id: user.id,
                 merchant_id: user.merchant_id,
+                merchant_code: user.merchant_code,
                 merchant_name: user.merchant_name,
                 email: user.email,
                 full_name: user.full_name,
@@ -83,14 +84,14 @@ Deno.serve(async (req) => {
         }
 
         if (action === 'validate') {
-            // Validate session by email (more reliable than UUID)
-            const { email: session_email } = body;
+            // Validate session by email and merchant_code
+            const { email: session_email, merchant_code: session_merchant_code } = body;
             const result = await pool.query(`
-                SELECT id, merchant_id, merchant_name, email, full_name, role, status,
+                SELECT id, merchant_id, merchant_code, merchant_name, email, full_name, role, status,
                        permissions, must_change_password
                 FROM merchant_users 
-                WHERE email = $1 AND status = 'active'
-            `, [session_email || user_id]);
+                WHERE email = $1 AND merchant_code = $2 AND status = 'active'
+            `, [session_email || user_id, session_merchant_code]);
 
             if (!result.rows || result.rows.length === 0) {
                 return Response.json({ 
