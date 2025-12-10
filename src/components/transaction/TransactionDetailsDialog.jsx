@@ -18,7 +18,9 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { CheckCircle2, XCircle, Clock, AlertCircle, Receipt, FileText } from 'lucide-react';
+import { CheckCircle2, XCircle, Clock, AlertCircle, Receipt, FileText, CreditCard } from 'lucide-react';
+import CardBrandLogo from './CardBrandLogo';
+import BankInfoDisplay from './BankInfoDisplay';
 
 const getStatusConfig = (status) => {
     const configs = {
@@ -151,7 +153,16 @@ export default function TransactionDetailsDialog({ transaction, open, onClose })
                                 <CardContent>
                                     <div className="grid grid-cols-3 gap-4">
                                         <DetailField label="Payment Method" value={transaction.payment_method} />
-                                        <DetailField label="Card Brand" value={transaction.card_brand} />
+                                        <div>
+                                            <Label className="text-xs text-slate-500">Card Brand</Label>
+                                            <div className="mt-1">
+                                                {transaction.card_brand ? (
+                                                    <CardBrandLogo brand={transaction.card_brand} size="md" />
+                                                ) : (
+                                                    <span className="text-sm text-slate-400">N/A</span>
+                                                )}
+                                            </div>
+                                        </div>
                                         <DetailField label="Card Number" value={transaction.card_number || (transaction.card_last_four ? `•••• ${transaction.card_last_four}` : 'N/A')} mono />
                                         <DetailField label="Card Prefix (BIN)" value={transaction.card_prefix} mono />
                                         <DetailField label="Issuer Bank" value={transaction.issuer_bank} />
@@ -163,6 +174,20 @@ export default function TransactionDetailsDialog({ transaction, open, onClose })
                                             </Badge>
                                         </div>
                                     </div>
+
+                                    {/* Card & Bank Info Section */}
+                                    {transaction.card_brand && (
+                                        <div className="mt-6 p-4 bg-slate-50 rounded-lg border">
+                                            <h4 className="text-sm font-semibold mb-3 flex items-center gap-2">
+                                                <CreditCard className="h-4 w-4" />
+                                                Issuing Bank Information
+                                            </h4>
+                                            <BankInfoDisplay 
+                                                cardNumber={transaction.card_number} 
+                                                bin={transaction.card_prefix}
+                                            />
+                                        </div>
+                                    )}
                                 </CardContent>
                             </Card>
 
