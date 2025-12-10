@@ -44,7 +44,8 @@ import {
     Scale,
     Building2,
     FileCheck,
-    Coins
+    Coins,
+    TrendingUp
 } from 'lucide-react';
 
 const menuItems = [
