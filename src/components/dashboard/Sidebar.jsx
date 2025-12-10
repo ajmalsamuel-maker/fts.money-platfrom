@@ -135,6 +135,7 @@ const menuItems = [
                 { icon: Palette, label: 'appearance', path: 'Appearance', permission: 'VIEW_APPEARANCE' },
                 { icon: Settings, label: 'settings', path: 'Settings', permission: 'VIEW_SETTINGS' },
                 { icon: Landmark, label: 'databaseSetup', path: 'DatabaseSetup', permission: 'VIEW_SETTINGS' },
+                { icon: Database, label: 'databaseMigration', path: 'DatabaseMigration', permission: 'VIEW_SETTINGS' },
                 ]
                 },
                 {

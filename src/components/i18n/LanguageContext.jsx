@@ -94,6 +94,7 @@ const translations = {
         auditLogs: 'Audit Logs',
         appearance: 'Appearance',
         databaseSetup: 'Database Setup',
+    databaseMigration: 'Database Migration',
         supportCenter: 'Support Center',
         privacyPolicy: 'Privacy Policy',
         termsOfService: 'Terms of Service',
