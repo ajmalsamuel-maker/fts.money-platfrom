@@ -28,6 +28,7 @@ import {
     Search, Plus, MoreHorizontal, Edit, Trash2, CreditCard, Store, Terminal, 
     ChevronLeft, ChevronRight, CheckCircle, XCircle, Filter, Sparkles, Loader2
 } from 'lucide-react';
+import { toast } from 'sonner';
 
 const terminalTypeLabels = {
     ecommerce: 'E-Commerce',
@@ -96,7 +97,14 @@ export default function MerchantMIDs() {
             await AuditLogger.logMerchantMIDCreated(mid);
             return mid;
         },
-        onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['merchant-mids'] }); resetForm(); },
+        onSuccess: () => { 
+            queryClient.invalidateQueries({ queryKey: ['merchant-mids'] }); 
+            toast.success('MID created successfully');
+            resetForm(); 
+        },
+        onError: (error) => {
+            toast.error('Failed to create MID: ' + error.message);
+        }
     });
 
     const updateMutation = useMutation({
@@ -112,7 +120,14 @@ export default function MerchantMIDs() {
             }
             return mid;
         },
-        onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['merchant-mids'] }); resetForm(); },
+        onSuccess: () => { 
+            queryClient.invalidateQueries({ queryKey: ['merchant-mids'] }); 
+            toast.success('MID updated successfully');
+            resetForm(); 
+        },
+        onError: (error) => {
+            toast.error('Failed to update MID: ' + error.message);
+        }
     });
 
     const deleteMutation = useMutation({
@@ -629,8 +644,20 @@ export default function MerchantMIDs() {
                         </div>
                     </div>
                     <DialogFooter>
-                        <Button variant="outline" onClick={resetForm}>Cancel</Button>
-                        <Button onClick={handleSubmit} disabled={!formData.merchant_id || !formData.mid || !formData.provider_id}>{editingMID ? 'Update' : 'Create'}</Button>
+                        <Button variant="outline" onClick={resetForm} disabled={createMutation.isPending || updateMutation.isPending}>Cancel</Button>
+                        <Button 
+                            onClick={handleSubmit} 
+                            disabled={!formData.merchant_id || !formData.mid || !formData.provider_id || createMutation.isPending || updateMutation.isPending}
+                        >
+                            {(createMutation.isPending || updateMutation.isPending) ? (
+                                <>
+                                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                    {editingMID ? 'Updating...' : 'Creating...'}
+                                </>
+                            ) : (
+                                editingMID ? 'Update MID' : 'Create MID'
+                            )}
+                        </Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
