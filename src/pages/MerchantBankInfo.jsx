@@ -6,7 +6,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import MerchantSidebar from '@/components/merchant/MerchantSidebar';
 import MerchantTopBar from '@/components/merchant/MerchantTopBar';
-import { Landmark, CreditCard, DollarSign, Calendar, Shield, Lock } from 'lucide-react';
+import { Landmark, CreditCard, DollarSign, Calendar, Shield, Lock, CheckCircle } from 'lucide-react';
+import { validateISO9362, validateIBANFormat } from '@/components/utils/isoValidator';
+import { Badge as ISOBadge } from "@/components/ui/badge";
 
 export default function MerchantBankInfo() {
     const { user, loading, logout } = useMerchantAuth();
@@ -52,11 +54,15 @@ export default function MerchantBankInfo() {
         accountName: merchant?.business_name || 'N/A',
         accountNumber: '****7890',
         routingNumber: '****6789',
+        iban: 'GB29NWBK60161331926819',
         bankName: 'Chase Bank',
         swiftCode: 'CHASUS33',
         accountType: 'Business Checking',
         currency: merchant?.currency || 'USD'
     };
+
+    const bicValidation = validateISO9362(bankInfo.swiftCode);
+    const ibanValidation = validateIBANFormat(bankInfo.iban);
 
     const totalSettled = settlements.reduce((sum, s) => sum + (s.net_amount || 0), 0);
     const pendingSettlement = settlements.filter(s => s.status === 'pending').reduce((sum, s) => sum + (s.net_amount || 0), 0);
@@ -118,9 +124,25 @@ export default function MerchantBankInfo() {
                         {/* Bank Account Details */}
                         <Card>
                             <CardHeader>
-                                <CardTitle className="flex items-center gap-2">
-                                    <Landmark className="h-5 w-5" />
-                                    Bank Account Details
+                                <CardTitle className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <Landmark className="h-5 w-5" />
+                                        Bank Account Details
+                                    </div>
+                                    <div className="flex gap-2">
+                                        {bicValidation.valid && (
+                                            <Badge variant="outline" className="bg-emerald-50 text-emerald-700 gap-1">
+                                                <CheckCircle className="h-3 w-3" />
+                                                ISO 9362
+                                            </Badge>
+                                        )}
+                                        {ibanValidation.valid && (
+                                            <Badge variant="outline" className="bg-blue-50 text-blue-700 gap-1">
+                                                <CheckCircle className="h-3 w-3" />
+                                                ISO 13616
+                                            </Badge>
+                                        )}
+                                    </div>
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>
@@ -138,6 +160,21 @@ export default function MerchantBankInfo() {
                                             </p>
                                         </div>
                                         <div>
+                                            <label className="text-sm font-medium text-slate-500 flex items-center gap-1">
+                                                IBAN (ISO 13616)
+                                                {ibanValidation.valid && <Shield className="h-3 w-3 text-emerald-600" />}
+                                            </label>
+                                            <p className="text-base font-mono flex items-center gap-2">
+                                                <Lock className="h-4 w-4 text-slate-400" />
+                                                {bankInfo.iban}
+                                            </p>
+                                            {ibanValidation.valid && (
+                                                <p className="text-xs text-slate-500 mt-1">
+                                                    Country: {ibanValidation.data.countryCode}
+                                                </p>
+                                            )}
+                                        </div>
+                                        <div>
                                             <label className="text-sm font-medium text-slate-500">Routing Number</label>
                                             <p className="text-base font-mono flex items-center gap-2">
                                                 <Lock className="h-4 w-4 text-slate-400" />
@@ -151,11 +188,23 @@ export default function MerchantBankInfo() {
                                             <p className="text-base font-semibold">{bankInfo.bankName}</p>
                                         </div>
                                         <div>
+                                            <label className="text-sm font-medium text-slate-500 flex items-center gap-1">
+                                                BIC/SWIFT (ISO 9362)
+                                                {bicValidation.valid && <Shield className="h-3 w-3 text-emerald-600" />}
+                                            </label>
+                                            <p className="text-base font-mono">{bankInfo.swiftCode}</p>
+                                            {bicValidation.valid && (
+                                                <p className="text-xs text-slate-500 mt-1">
+                                                    Bank: {bicValidation.bankCode} | Country: {bicValidation.countryCode}
+                                                </p>
+                                            )}
+                                        </div>
+                                        <div>
                                             <label className="text-sm font-medium text-slate-500">Account Type</label>
                                             <p className="text-base">{bankInfo.accountType}</p>
                                         </div>
                                         <div>
-                                            <label className="text-sm font-medium text-slate-500">Currency</label>
+                                            <label className="text-sm font-medium text-slate-500">Currency (ISO 4217)</label>
                                             <p className="text-base font-mono">{bankInfo.currency}</p>
                                         </div>
                                     </div>

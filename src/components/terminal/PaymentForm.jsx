@@ -12,8 +12,10 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { CreditCard, Loader2, CheckCircle } from 'lucide-react';
+import { CreditCard, Loader2, CheckCircle, Shield } from 'lucide-react';
 import { toast } from 'sonner';
+import { ISO4217_CURRENCIES } from '../utils/iso4217';
+import { validateCurrency } from '../utils/isoValidator';
 
 export default function PaymentForm({ merchants }) {
     const [formData, setFormData] = useState({
@@ -93,6 +95,13 @@ export default function PaymentForm({ merchants }) {
         
         if (!formData.merchant_id || !formData.amount || !formData.customer_email) {
             toast.error('Please fill in all required fields');
+            return;
+        }
+
+        // Validate currency with ISO 4217
+        const currencyValidation = validateCurrency(formData.currency);
+        if (!currencyValidation.valid) {
+            toast.error('Invalid ISO 4217 currency code');
             return;
         }
 
@@ -191,15 +200,20 @@ export default function PaymentForm({ merchants }) {
                     />
                 </div>
                 <div className="space-y-2">
-                    <Label>Currency</Label>
+                    <Label className="flex items-center gap-1">
+                        Currency (ISO 4217)
+                        <Shield className="h-3 w-3 text-blue-600" />
+                    </Label>
                     <Select value={formData.currency} onValueChange={(val) => setFormData({...formData, currency: val})}>
                         <SelectTrigger>
                             <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="USD">USD</SelectItem>
-                            <SelectItem value="EUR">EUR</SelectItem>
-                            <SelectItem value="GBP">GBP</SelectItem>
+                            {ISO4217_CURRENCIES.slice(0, 30).map(c => (
+                                <SelectItem key={c.code} value={c.code}>
+                                    {c.code} - {c.name}
+                                </SelectItem>
+                            ))}
                         </SelectContent>
                     </Select>
                 </div>

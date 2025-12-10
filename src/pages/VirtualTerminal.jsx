@@ -7,8 +7,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CreditCard, Loader2, CheckCircle2, LogOut } from 'lucide-react';
+import { CreditCard, Loader2, CheckCircle2, LogOut, Shield } from 'lucide-react';
 import { toast } from 'sonner';
+import { ISO4217_CURRENCIES } from '@/components/utils/iso4217';
+import { validateCurrency } from '@/components/utils/isoValidator';
+import ISOComplianceBadge from '@/components/transaction/ISOComplianceBadge';
 
 export default function VirtualTerminal() {
     const { user, loading, logout } = useVTAuth();
@@ -59,6 +62,14 @@ export default function VirtualTerminal() {
 
         setProcessing(true);
         
+        // Validate currency with ISO 4217
+        const currencyValidation = validateCurrency(formData.currency);
+        if (!currencyValidation.valid) {
+            toast.error('Invalid ISO 4217 currency code');
+            setProcessing(false);
+            return;
+        }
+        
         try {
             await base44.entities.Transaction.create({
                 merchant_id: user.merchant_id,
@@ -67,6 +78,7 @@ export default function VirtualTerminal() {
                 status: 'approved',
                 amount: parseFloat(formData.amount),
                 currency: formData.currency,
+                customer_country: merchant?.country,
                 payment_method: 'card',
                 card_last_four: formData.cardNumber.slice(-4),
                 customer_email: formData.customerEmail,
@@ -153,16 +165,20 @@ export default function VirtualTerminal() {
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <Label>Currency</Label>
+                                        <Label className="flex items-center gap-1">
+                                            Currency (ISO 4217)
+                                            <Shield className="h-3 w-3 text-blue-600" />
+                                        </Label>
                                         <Select value={formData.currency} onValueChange={(v) => handleInputChange('currency', v)}>
                                             <SelectTrigger>
                                                 <SelectValue />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="USD">USD</SelectItem>
-                                                <SelectItem value="EUR">EUR</SelectItem>
-                                                <SelectItem value="GBP">GBP</SelectItem>
-                                                <SelectItem value="HKD">HKD</SelectItem>
+                                                {ISO4217_CURRENCIES.slice(0, 30).map(c => (
+                                                    <SelectItem key={c.code} value={c.code}>
+                                                        {c.code} - {c.name}
+                                                    </SelectItem>
+                                                ))}
                                             </SelectContent>
                                         </Select>
                                     </div>

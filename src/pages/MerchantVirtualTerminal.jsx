@@ -27,9 +27,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { 
-    CreditCard, Loader2, CheckCircle2, DollarSign, Plus, Trash2, ShoppingCart, Repeat, Save, X
+    CreditCard, Loader2, CheckCircle2, DollarSign, Plus, Trash2, ShoppingCart, Repeat, Save, X, Shield
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { ISO4217_CURRENCIES } from '@/components/utils/iso4217';
+import { validateCurrency } from '@/components/utils/isoValidator';
+import ISOComplianceBadge from '@/components/transaction/ISOComplianceBadge';
 
 export default function MerchantVirtualTerminal() {
     const { user, loading, isAuthenticated, logout } = useMerchantAuth();
@@ -177,6 +180,14 @@ export default function MerchantVirtualTerminal() {
                 savedCards.find(c => c.id === formData.existingCardId)?.card_last_four :
                 formData.cardNumber;
             
+            // Validate currency with ISO 4217
+            const currencyValidation = validateCurrency(formData.currency);
+            if (!currencyValidation.valid) {
+                toast.error('Invalid currency code');
+                setProcessing(false);
+                return;
+            }
+
             const transactionData = {
                 transaction_id: txnId,
                 merchant_transaction_id: `VT-${Date.now()}`,
@@ -191,6 +202,7 @@ export default function MerchantVirtualTerminal() {
                 original_amount: total,
                 actual_amount: total,
                 currency: formData.currency,
+                customer_country: merchant?.country,
                 payment_method: 'credit_card',
                 card_number: formData.useExistingCard ? 
                     `•••• •••• •••• ${savedCards.find(c => c.id === formData.existingCardId)?.card_last_four}` :
@@ -447,13 +459,21 @@ export default function MerchantVirtualTerminal() {
                                                             />
                                                         </div>
                                                         <div className="space-y-2">
-                                                            <Label>Currency</Label>
+                                                            <Label className="flex items-center gap-1">
+                                                                Currency (ISO 4217)
+                                                                <Shield className="h-3 w-3 text-blue-600" />
+                                                            </Label>
                                                             <Select value={formData.currency} onValueChange={(v) => setFormData(p => ({ ...p, currency: v }))}>
                                                                 <SelectTrigger><SelectValue /></SelectTrigger>
                                                                 <SelectContent>
-                                                                    {vtConfig?.allowed_currencies?.map(curr => (
-                                                                        <SelectItem key={curr} value={curr}>{curr}</SelectItem>
-                                                                    ))}
+                                                                    {(vtConfig?.allowed_currencies || ['USD', 'EUR', 'GBP']).map(curr => {
+                                                                        const currencyData = ISO4217_CURRENCIES.find(c => c.code === curr);
+                                                                        return (
+                                                                            <SelectItem key={curr} value={curr}>
+                                                                                {curr} {currencyData ? `- ${currencyData.name}` : ''}
+                                                                            </SelectItem>
+                                                                        );
+                                                                    })}
                                                                 </SelectContent>
                                                             </Select>
                                                         </div>
