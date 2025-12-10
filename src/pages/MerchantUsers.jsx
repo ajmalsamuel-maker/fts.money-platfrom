@@ -546,7 +546,48 @@ export default function MerchantUsers() {
                                             </div>
                                             <div className="space-y-2">
                                                 <Label>Merchant Code</Label>
-                                                <Input value={showDetailsDialog.merchant_code || 'Not set'} readOnly className="bg-slate-50 font-mono" />
+                                                <div className="flex gap-2">
+                                                    <Input 
+                                                        value={showDetailsDialog.merchant_code || ''} 
+                                                        onChange={(e) => setShowDetailsDialog({...showDetailsDialog, merchant_code: e.target.value})}
+                                                        className="font-mono" 
+                                                        placeholder="Enter merchant code"
+                                                    />
+                                                    <Button 
+                                                        variant="outline" 
+                                                        size="sm"
+                                                        onClick={async () => {
+                                                            const merchant = merchants.find(m => m.id === showDetailsDialog.merchant_id);
+                                                            if (merchant?.merchant_code) {
+                                                                await updateUserMutation.mutateAsync({ 
+                                                                    id: showDetailsDialog.id, 
+                                                                    data: { merchant_code: merchant.merchant_code }
+                                                                });
+                                                                setShowDetailsDialog({...showDetailsDialog, merchant_code: merchant.merchant_code});
+                                                            } else {
+                                                                alert('Merchant does not have a merchant_code set');
+                                                            }
+                                                        }}
+                                                        title="Fetch from Merchant"
+                                                    >
+                                                        <RefreshCw className="h-3 w-3" />
+                                                    </Button>
+                                                    <Button 
+                                                        size="sm"
+                                                        onClick={() => {
+                                                            updateUserMutation.mutate({ 
+                                                                id: showDetailsDialog.id, 
+                                                                data: { merchant_code: showDetailsDialog.merchant_code }
+                                                            });
+                                                        }}
+                                                        disabled={!showDetailsDialog.merchant_code}
+                                                    >
+                                                        Save
+                                                    </Button>
+                                                </div>
+                                                <p className="text-xs text-slate-500">
+                                                    Click refresh to auto-fetch from merchant, or enter manually and save
+                                                </p>
                                             </div>
                                             <div className="space-y-2">
                                                 <Label>Created</Label>
