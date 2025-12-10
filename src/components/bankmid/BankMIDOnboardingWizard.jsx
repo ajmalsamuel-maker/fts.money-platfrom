@@ -281,6 +281,188 @@ export default function BankMIDOnboardingWizard({ onSubmit, onCancel, initialDat
                             />
                             <p className="text-xs text-slate-500">Optional but recommended for institutional verification</p>
                         </div>
+
+                        {/* Institution-specific fields */}
+                        {formData.institution_type === 'traditional_bank' && (
+                            <div className="p-4 bg-blue-50 rounded-lg border border-blue-200 mt-4">
+                                <h3 className="font-semibold text-sm mb-3 flex items-center gap-2">
+                                    <Landmark className="h-4 w-4 text-blue-600" />
+                                    Traditional Bank Information
+                                </h3>
+                                <div className="space-y-3">
+                                    <div className="space-y-2">
+                                        <Label className="text-xs">Bank Charter Type</Label>
+                                        <Select value={formData.bank_charter_type} onValueChange={(val) => updateField('bank_charter_type', val)}>
+                                            <SelectTrigger className="text-sm">
+                                                <SelectValue placeholder="Select charter type" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="national">National Bank</SelectItem>
+                                                <SelectItem value="state">State Bank</SelectItem>
+                                                <SelectItem value="commercial">Commercial Bank</SelectItem>
+                                                <SelectItem value="investment">Investment Bank</SelectItem>
+                                                <SelectItem value="retail">Retail Bank</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label className="text-xs">Federal Reserve Member</Label>
+                                        <Select value={formData.fed_member ? 'yes' : 'no'} onValueChange={(val) => updateField('fed_member', val === 'yes')}>
+                                            <SelectTrigger className="text-sm">
+                                                <SelectValue />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="yes">Yes</SelectItem>
+                                                <SelectItem value="no">No</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {formData.institution_type === 'payment_institution' && (
+                            <div className="p-4 bg-purple-50 rounded-lg border border-purple-200 mt-4">
+                                <h3 className="font-semibold text-sm mb-3 flex items-center gap-2">
+                                    <Building2 className="h-4 w-4 text-purple-600" />
+                                    Payment Institution Information
+                                </h3>
+                                <div className="space-y-3">
+                                    <div className="space-y-2">
+                                        <Label className="text-xs">Payment Services Offered</Label>
+                                        <div className="flex flex-wrap gap-2">
+                                            {['Merchant Acquiring', 'Remittance', 'E-Money Issuance', 'Payment Gateway', 'Cross-border Payments'].map(service => (
+                                                <Badge
+                                                    key={service}
+                                                    variant={formData.payment_services?.includes(service) ? 'default' : 'outline'}
+                                                    className="cursor-pointer text-xs"
+                                                    onClick={() => {
+                                                        const current = formData.payment_services || [];
+                                                        updateField('payment_services', 
+                                                            current.includes(service) 
+                                                                ? current.filter(s => s !== service)
+                                                                : [...current, service]
+                                                        );
+                                                    }}
+                                                >
+                                                    {service}
+                                                </Badge>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label className="text-xs">EMI License Number</Label>
+                                        <Input
+                                            value={formData.emi_license}
+                                            onChange={(e) => updateField('emi_license', e.target.value)}
+                                            placeholder="Electronic Money Institution license"
+                                            className="text-sm"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {formData.institution_type === 'e_money_institution' && (
+                            <div className="p-4 bg-teal-50 rounded-lg border border-teal-200 mt-4">
+                                <h3 className="font-semibold text-sm mb-3 flex items-center gap-2">
+                                    <Wallet className="h-4 w-4 text-teal-600" />
+                                    E-Money Institution Information
+                                </h3>
+                                <div className="space-y-3">
+                                    <div className="space-y-2">
+                                        <Label className="text-xs">Safeguarding Method</Label>
+                                        <Select value={formData.safeguarding_method} onValueChange={(val) => updateField('safeguarding_method', val)}>
+                                            <SelectTrigger className="text-sm">
+                                                <SelectValue placeholder="Select safeguarding method" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="segregation">Segregation</SelectItem>
+                                                <SelectItem value="insurance">Insurance Policy</SelectItem>
+                                                <SelectItem value="combination">Combination</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label className="text-xs">Average Float Amount</Label>
+                                        <Input
+                                            type="number"
+                                            value={formData.average_float}
+                                            onChange={(e) => updateField('average_float', parseFloat(e.target.value))}
+                                            placeholder="Average customer funds held"
+                                            className="text-sm"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label className="text-xs">Capital Adequacy Ratio</Label>
+                                        <Input
+                                            value={formData.capital_adequacy_ratio}
+                                            onChange={(e) => updateField('capital_adequacy_ratio', e.target.value)}
+                                            placeholder="e.g., 8%"
+                                            className="text-sm"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {formData.institution_type === 'crypto_exchange' && (
+                            <div className="p-4 bg-amber-50 rounded-lg border border-amber-200 mt-4">
+                                <h3 className="font-semibold text-sm mb-3 flex items-center gap-2">
+                                    <Bitcoin className="h-4 w-4 text-amber-600" />
+                                    Crypto Exchange Information
+                                </h3>
+                                <div className="space-y-3">
+                                    <div className="space-y-2">
+                                        <Label className="text-xs">Exchange Type</Label>
+                                        <Select value={formData.exchange_type} onValueChange={(val) => updateField('exchange_type', val)}>
+                                            <SelectTrigger className="text-sm">
+                                                <SelectValue placeholder="Select exchange type" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="centralized">Centralized Exchange (CEX)</SelectItem>
+                                                <SelectItem value="decentralized">Decentralized Exchange (DEX)</SelectItem>
+                                                <SelectItem value="hybrid">Hybrid Exchange</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label className="text-xs">Cold Storage Percentage</Label>
+                                        <Input
+                                            type="number"
+                                            value={formData.cold_storage_percentage}
+                                            onChange={(e) => updateField('cold_storage_percentage', parseFloat(e.target.value))}
+                                            placeholder="% of assets in cold storage"
+                                            className="text-sm"
+                                            min="0"
+                                            max="100"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label className="text-xs">Insurance Coverage Amount (USD)</Label>
+                                        <Input
+                                            type="number"
+                                            value={formData.insurance_coverage}
+                                            onChange={(e) => updateField('insurance_coverage', parseFloat(e.target.value))}
+                                            placeholder="Crypto custody insurance"
+                                            className="text-sm"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label className="text-xs">Travel Rule Compliance</Label>
+                                        <Select value={formData.travel_rule_compliant ? 'yes' : 'no'} onValueChange={(val) => updateField('travel_rule_compliant', val === 'yes')}>
+                                            <SelectTrigger className="text-sm">
+                                                <SelectValue />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="yes">Yes (FATF Travel Rule)</SelectItem>
+                                                <SelectItem value="no">No</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </CardContent>
                 </Card>
             )}
@@ -330,11 +512,12 @@ export default function BankMIDOnboardingWizard({ onSubmit, onCancel, initialDat
                             </Select>
                         </div>
 
+                        {/* Crypto-specific licensing */}
                         {isCrypto && (
                             <div className="space-y-2">
                                 <Label>Crypto License Types</Label>
                                 <div className="flex flex-wrap gap-2">
-                                    {['VASP', 'MTL', 'BitLicense', 'MiFID', 'Other'].map(type => (
+                                    {['VASP', 'MTL', 'BitLicense', 'MiFID II', 'MiCA', 'FinCEN MSB', 'Other'].map(type => (
                                         <Badge
                                             key={type}
                                             variant={formData.crypto_license_types?.includes(type) ? 'default' : 'outline'}
@@ -352,6 +535,88 @@ export default function BankMIDOnboardingWizard({ onSubmit, onCancel, initialDat
                                         </Badge>
                                     ))}
                                 </div>
+                                <p className="text-xs text-slate-500">VASP = Virtual Asset Service Provider</p>
+                            </div>
+                        )}
+
+                        {/* Payment Institution specific licensing */}
+                        {formData.institution_type === 'payment_institution' && (
+                            <div className="space-y-2">
+                                <Label>Payment Institution Regulations</Label>
+                                <div className="flex flex-wrap gap-2">
+                                    {['PSD2', 'PSD3', 'EMD', 'AISP', 'PISP', 'CASS'].map(type => (
+                                        <Badge
+                                            key={type}
+                                            variant={formData.pi_regulations?.includes(type) ? 'default' : 'outline'}
+                                            className="cursor-pointer"
+                                            onClick={() => {
+                                                const current = formData.pi_regulations || [];
+                                                updateField('pi_regulations', 
+                                                    current.includes(type) 
+                                                        ? current.filter(t => t !== type)
+                                                        : [...current, type]
+                                                );
+                                            }}
+                                        >
+                                            {type}
+                                        </Badge>
+                                    ))}
+                                </div>
+                                <p className="text-xs text-slate-500">PSD2/3 = Payment Services Directive</p>
+                            </div>
+                        )}
+
+                        {/* E-Money Institution specific licensing */}
+                        {formData.institution_type === 'e_money_institution' && (
+                            <div className="space-y-2">
+                                <Label>E-Money Directives</Label>
+                                <div className="flex flex-wrap gap-2">
+                                    {['EMD2', 'EMD3 (proposed)', 'SEPA', 'PSD2 EMI'].map(type => (
+                                        <Badge
+                                            key={type}
+                                            variant={formData.emi_directives?.includes(type) ? 'default' : 'outline'}
+                                            className="cursor-pointer"
+                                            onClick={() => {
+                                                const current = formData.emi_directives || [];
+                                                updateField('emi_directives', 
+                                                    current.includes(type) 
+                                                        ? current.filter(t => t !== type)
+                                                        : [...current, type]
+                                                );
+                                            }}
+                                        >
+                                            {type}
+                                        </Badge>
+                                    ))}
+                                </div>
+                                <p className="text-xs text-slate-500">EMD = Electronic Money Directive</p>
+                            </div>
+                        )}
+
+                        {/* Traditional Bank specific licensing */}
+                        {formData.institution_type === 'traditional_bank' && (
+                            <div className="space-y-2">
+                                <Label>Banking Regulations</Label>
+                                <div className="flex flex-wrap gap-2">
+                                    {['Basel III', 'Basel IV', 'Dodd-Frank', 'CRD IV', 'IFRS 9'].map(type => (
+                                        <Badge
+                                            key={type}
+                                            variant={formData.bank_regulations?.includes(type) ? 'default' : 'outline'}
+                                            className="cursor-pointer"
+                                            onClick={() => {
+                                                const current = formData.bank_regulations || [];
+                                                updateField('bank_regulations', 
+                                                    current.includes(type) 
+                                                        ? current.filter(t => t !== type)
+                                                        : [...current, type]
+                                                );
+                                            }}
+                                        >
+                                            {type}
+                                        </Badge>
+                                    ))}
+                                </div>
+                                <p className="text-xs text-slate-500">Basel = International banking regulations</p>
                             </div>
                         )}
 
@@ -423,7 +688,7 @@ export default function BankMIDOnboardingWizard({ onSubmit, onCancel, initialDat
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                        {!isCrypto ? (
+                        {formData.institution_type === 'traditional_bank' ? (
                             <>
                                 <div className="space-y-2">
                                     <Label>Bank Account Number *</Label>
@@ -459,6 +724,55 @@ export default function BankMIDOnboardingWizard({ onSubmit, onCancel, initialDat
                                         value={formData.sort_code}
                                         onChange={(e) => updateField('sort_code', e.target.value)}
                                         placeholder="XX-XX-XX"
+                                    />
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label>Branch Code / Transit Number</Label>
+                                    <Input
+                                        value={formData.branch_code}
+                                        onChange={(e) => updateField('branch_code', e.target.value)}
+                                        placeholder="Branch identification code"
+                                    />
+                                </div>
+                            </>
+                        ) : formData.institution_type === 'payment_institution' || formData.institution_type === 'e_money_institution' ? (
+                            <>
+                                <div className="space-y-2">
+                                    <Label>Settlement Account Number *</Label>
+                                    <Input
+                                        value={formData.settlement_account}
+                                        onChange={(e) => updateField('settlement_account', e.target.value)}
+                                        placeholder="Settlement account for funds"
+                                    />
+                                    {validations.settlement_account && <p className="text-xs text-red-600">{validations.settlement_account}</p>}
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label>Partner Bank Name</Label>
+                                    <Input
+                                        value={formData.partner_bank_name}
+                                        onChange={(e) => updateField('partner_bank_name', e.target.value)}
+                                        placeholder="Banking partner for settlement"
+                                    />
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label>Partner Bank BIC/SWIFT</Label>
+                                    <Input
+                                        value={formData.partner_bank_bic}
+                                        onChange={(e) => updateField('partner_bank_bic', e.target.value.toUpperCase())}
+                                        placeholder="Partner bank BIC code"
+                                        maxLength={11}
+                                    />
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label>Custodian Account (if applicable)</Label>
+                                    <Input
+                                        value={formData.custodian_account}
+                                        onChange={(e) => updateField('custodian_account', e.target.value)}
+                                        placeholder="Client funds custodian account"
                                     />
                                 </div>
                             </>
