@@ -256,6 +256,35 @@ export default function MerchantUsers() {
                                 variant="outline" 
                                 onClick={async () => {
                                     try {
+                                        let fixed = 0;
+                                        for (const user of users) {
+                                            if (!user.merchant_code) {
+                                                const merchant = merchants.find(m => m.id === user.merchant_id);
+                                                if (merchant?.merchant_code) {
+                                                    await base44.entities.MerchantUser.update(user.id, { 
+                                                        merchant_code: merchant.merchant_code 
+                                                    });
+                                                    await base44.functions.invoke('syncMerchantUser', { 
+                                                        user: { ...user, merchant_code: merchant.merchant_code } 
+                                                    });
+                                                    fixed++;
+                                                }
+                                            }
+                                        }
+                                        queryClient.invalidateQueries({ queryKey: ['merchant-users'] });
+                                        alert(`Fixed ${fixed} users with missing merchant codes`);
+                                    } catch (e) {
+                                        alert('Failed: ' + e.message);
+                                    }
+                                }}
+                                className="gap-2"
+                            >
+                                <UserCog className="h-4 w-4" />Fix User Codes
+                            </Button>
+                            <Button 
+                                variant="outline" 
+                                onClick={async () => {
+                                    try {
                                         for (const user of users) {
                                             await base44.functions.invoke('syncMerchantUser', { user });
                                         }
