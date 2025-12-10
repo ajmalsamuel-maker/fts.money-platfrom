@@ -363,6 +363,109 @@ export default function MerchantDashboard() {
                             <PerformanceComparison transactions={transactions} />
                         </div>
 
+                        {/* Recent Transactions & News Row */}
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                            <Card className="lg:col-span-2">
+                                <CardHeader className="border-b bg-slate-50/50">
+                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                        <CardTitle className="text-base">Recent Transactions</CardTitle>
+                                        <div className="flex items-center gap-2">
+                                            <div className="relative flex-1 sm:w-64">
+                                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                                                <Input
+                                                    placeholder="Search transactions..."
+                                                    value={searchQuery}
+                                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                                    className="pl-9 h-9 text-sm"
+                                                />
+                                            </div>
+                                            <button className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1 whitespace-nowrap">
+                                                View All <ArrowUpRight className="h-4 w-4" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                </CardHeader>
+                                <CardContent className="p-0">
+                                    <div className="overflow-x-auto">
+                                        <table className="w-full">
+                                            <thead className="bg-slate-50 border-b text-xs">
+                                                <tr>
+                                                    <th className="text-left py-3 px-4 font-medium text-slate-600">Transaction ID</th>
+                                                    <th className="text-left py-3 px-4 font-medium text-slate-600">Date & Time</th>
+                                                    <th className="text-left py-3 px-4 font-medium text-slate-600">Merchant</th>
+                                                    <th className="text-left py-3 px-4 font-medium text-slate-600">Type</th>
+                                                    <th className="text-left py-3 px-4 font-medium text-slate-600">Amount</th>
+                                                    <th className="text-left py-3 px-4 font-medium text-slate-600">Method</th>
+                                                    <th className="text-left py-3 px-4 font-medium text-slate-600">Status</th>
+                                                    <th className="py-3 px-4"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {transactions
+                                                    .filter(txn => 
+                                                        !searchQuery || 
+                                                        (txn.transaction_id || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+                                                        (txn.customer_name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+                                                        (txn.amount?.toString() || '').includes(searchQuery)
+                                                    )
+                                                    .slice(0, 5)
+                                                    .map((txn) => (
+                                                <tr key={txn.id} className="border-b hover:bg-slate-50 transition-colors">
+                                                    <td className="py-3 px-4">
+                                                        <span className="text-sm font-mono text-blue-600">{txn.transaction_id?.slice(0, 16) || `TXN-${txn.id.slice(-12)}`}</span>
+                                                    </td>
+                                                    <td className="py-3 px-4 text-sm text-slate-600">
+                                                        {new Date(txn.created_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}, {new Date(txn.created_date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+                                                    </td>
+                                                    <td className="py-3 px-4">
+                                                        <div className="text-sm">
+                                                            <div className="font-medium">{merchant?.business_name || 'FTS Money'}</div>
+                                                            <div className="text-xs text-slate-500">{merchant?.merchant_id?.slice(0, 20) || 'MID123...'}</div>
+                                                        </div>
+                                                    </td>
+                                                    <td className="py-3 px-4">
+                                                        <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
+                                                            {txn.type || 'Sale'}
+                                                        </Badge>
+                                                    </td>
+                                                    <td className="py-3 px-4 text-sm font-semibold">
+                                                        {txn.currency || 'USD'} {txn.amount?.toFixed(2) || '100.00'}
+                                                    </td>
+                                                    <td className="py-3 px-4">
+                                                        <div className="flex items-center gap-2">
+                                                            <CreditCard className="h-4 w-4 text-slate-400" />
+                                                            <span className="text-sm">{txn.card_brand || 'Visa'}</span>
+                                                        </div>
+                                                    </td>
+                                                    <td className="py-3 px-4">
+                                                        <Badge className={txn.status === 'approved' || txn.status === 'settled' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-slate-50 text-slate-700 border-slate-200'}>
+                                                            {txn.status || 'Approved'}
+                                                        </Badge>
+                                                    </td>
+                                                    <td className="py-3 px-4 text-right">
+                                                       <Button
+                                                           variant="ghost"
+                                                           size="sm"
+                                                           onClick={() => {
+                                                               setSelectedTransaction(txn);
+                                                               setShowTransactionDialog(true);
+                                                           }}
+                                                       >
+                                                           View
+                                                       </Button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </CardContent>
+                            </Card>
+
+                            {/* Fintech News */}
+                            <PaymentNews />
+                        </div>
+
                         {/* Charts Grid */}
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                             {/* Transaction Volume */}
@@ -542,108 +645,7 @@ export default function MerchantDashboard() {
                             </CardContent>
                         </Card>
 
-                        {/* Recent Transactions with Search */}
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                            <Card className="lg:col-span-2">
-                                <CardHeader className="border-b bg-slate-50/50">
-                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                                        <CardTitle className="text-base">Recent Transactions</CardTitle>
-                                        <div className="flex items-center gap-2">
-                                            <div className="relative flex-1 sm:w-64">
-                                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                                                <Input
-                                                    placeholder="Search transactions..."
-                                                    value={searchQuery}
-                                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                                    className="pl-9 h-9 text-sm"
-                                                />
-                                            </div>
-                                            <button className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1 whitespace-nowrap">
-                                                View All <ArrowUpRight className="h-4 w-4" />
-                                            </button>
-                                        </div>
-                                    </div>
-                                </CardHeader>
-                                <CardContent className="p-0">
-                                    <div className="overflow-x-auto">
-                                        <table className="w-full">
-                                            <thead className="bg-slate-50 border-b text-xs">
-                                                <tr>
-                                                    <th className="text-left py-3 px-4 font-medium text-slate-600">Transaction ID</th>
-                                                    <th className="text-left py-3 px-4 font-medium text-slate-600">Date & Time</th>
-                                                    <th className="text-left py-3 px-4 font-medium text-slate-600">Merchant</th>
-                                                    <th className="text-left py-3 px-4 font-medium text-slate-600">Type</th>
-                                                    <th className="text-left py-3 px-4 font-medium text-slate-600">Amount</th>
-                                                    <th className="text-left py-3 px-4 font-medium text-slate-600">Method</th>
-                                                    <th className="text-left py-3 px-4 font-medium text-slate-600">Status</th>
-                                                    <th className="py-3 px-4"></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {transactions
-                                                    .filter(txn => 
-                                                        !searchQuery || 
-                                                        (txn.transaction_id || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-                                                        (txn.customer_name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-                                                        (txn.amount?.toString() || '').includes(searchQuery)
-                                                    )
-                                                    .slice(0, 5)
-                                                    .map((txn) => (
-                                                <tr key={txn.id} className="border-b hover:bg-slate-50 transition-colors">
-                                                    <td className="py-3 px-4">
-                                                        <span className="text-sm font-mono text-blue-600">{txn.transaction_id?.slice(0, 16) || `TXN-${txn.id.slice(-12)}`}</span>
-                                                    </td>
-                                                    <td className="py-3 px-4 text-sm text-slate-600">
-                                                        {new Date(txn.created_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}, {new Date(txn.created_date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
-                                                    </td>
-                                                    <td className="py-3 px-4">
-                                                        <div className="text-sm">
-                                                            <div className="font-medium">{merchant?.business_name || 'FTS Money'}</div>
-                                                            <div className="text-xs text-slate-500">{merchant?.merchant_id?.slice(0, 20) || 'MID123...'}</div>
-                                                        </div>
-                                                    </td>
-                                                    <td className="py-3 px-4">
-                                                        <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
-                                                            {txn.type || 'Sale'}
-                                                        </Badge>
-                                                    </td>
-                                                    <td className="py-3 px-4 text-sm font-semibold">
-                                                        USD {txn.amount?.toFixed(2) || '100.00'}
-                                                    </td>
-                                                    <td className="py-3 px-4">
-                                                        <div className="flex items-center gap-2">
-                                                            <CreditCard className="h-4 w-4 text-slate-400" />
-                                                            <span className="text-sm">{txn.card_brand || 'Visa'}</span>
-                                                        </div>
-                                                    </td>
-                                                    <td className="py-3 px-4">
-                                                        <Badge className={txn.status === 'approved' || txn.status === 'settled' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-slate-50 text-slate-700 border-slate-200'}>
-                                                            {txn.status || 'Approved'}
-                                                        </Badge>
-                                                    </td>
-                                                    <td className="py-3 px-4 text-right">
-                                                       <Button
-                                                           variant="ghost"
-                                                           size="sm"
-                                                           onClick={() => {
-                                                               setSelectedTransaction(txn);
-                                                               setShowTransactionDialog(true);
-                                                           }}
-                                                       >
-                                                           View
-                                                       </Button>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </CardContent>
-                            </Card>
 
-                            {/* Fintech News */}
-                            <PaymentNews />
-                            </div>
 
                             {/* Customer & Compliance Insights */}
                             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
