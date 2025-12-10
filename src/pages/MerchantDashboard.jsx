@@ -7,15 +7,23 @@ import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import MerchantSidebar from '@/components/merchant/MerchantSidebar';
 import MerchantTopBar from '@/components/merchant/MerchantTopBar';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, AreaChart, Area, PieChart, Pie, Cell } from 'recharts';
 import { 
     DollarSign,
     Activity,
     TrendingUp,
     Clock,
     CheckCircle2,
-    XCircle
+    XCircle,
+    AlertCircle,
+    CreditCard,
+    Users,
+    Brain,
+    ArrowUpRight,
+    ArrowDownRight
 } from 'lucide-react';
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 
 export default function MerchantDashboard() {
     const { user, loading, isAuthenticated, logout } = useMerchantAuth();
@@ -71,6 +79,31 @@ export default function MerchantDashboard() {
         },
         enabled: !!user?.merchant_id && !!selectedMID
     });
+
+    // Calculate business metrics
+    const businessMetrics = React.useMemo(() => {
+        const totalTxns = transactions.length;
+        const chargebacks = transactions.filter(t => t.type === 'chargeback').length;
+        const declined = transactions.filter(t => t.status === 'declined').length;
+        const fraudulent = transactions.filter(t => t.risk_score && t.risk_score > 70).length;
+        const totalAmount = transactions.reduce((sum, t) => sum + (t.amount || 0), 0);
+        const avgSettlementMs = 1.2 * 24 * 60 * 60 * 1000; // 1.2 days in ms
+
+        return {
+            chargebackRatio: totalTxns > 0 ? ((chargebacks / totalTxns) * 100) : 0,
+            declineRate: totalTxns > 0 ? ((declined / totalTxns) * 100) : 0,
+            fraudRate: totalTxns > 0 ? ((fraudulent / totalTxns) * 100) : 0,
+            avgSettlementTime: 1.2
+        };
+    }, [transactions]);
+
+    // Network status
+    const networkStatus = [
+        { name: 'Visa', latency: '45ms', status: 'healthy' },
+        { name: 'Mastercard', latency: '52ms', status: 'healthy' },
+        { name: 'Amex', latency: '68ms', status: 'healthy' },
+        { name: 'Discover', latency: '124ms', status: 'degraded' }
+    ];
 
     // Calculate stats by time period
     const statsData = React.useMemo(() => {
@@ -172,166 +205,302 @@ export default function MerchantDashboard() {
             <div className="flex-1 flex flex-col overflow-hidden">
                 <MerchantTopBar user={user} merchant={merchant} onLogout={logout} />
 
-                <main className="flex-1 overflow-y-auto p-6">
-                    <div className="max-w-[1400px] mx-auto space-y-6">
-                        {/* Quick Stats */}
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            <Card>
-                                <CardHeader className="pb-3"><CardTitle className="text-sm text-slate-500">Today's Volume</CardTitle></CardHeader>
-                                <CardContent>
-                                    <div className="text-2xl font-bold">${statsData.summary.today.amount.toLocaleString(undefined, {minimumFractionDigits: 2})}</div>
-                                    <p className="text-xs text-slate-500 mt-1">{statsData.summary.today.count} transactions</p>
-                                </CardContent>
-                            </Card>
-                            <Card>
-                                <CardHeader className="pb-3"><CardTitle className="text-sm text-slate-500">Total Transactions</CardTitle></CardHeader>
-                                <CardContent>
-                                    <div className="text-2xl font-bold">{transactions.length}</div>
-                                    <p className="text-xs text-slate-500 mt-1">All time</p>
-                                </CardContent>
-                            </Card>
-                            <Card>
-                                <CardHeader className="pb-3"><CardTitle className="text-sm text-slate-500">Success Rate</CardTitle></CardHeader>
-                                <CardContent>
-                                    <div className="text-2xl font-bold text-green-600">
-                                        {transactions.length > 0 ? ((transactions.filter(t => t.status === 'approved').length / transactions.length) * 100).toFixed(1) : 0}%
+                <main className="flex-1 overflow-y-auto p-6 bg-slate-50">
+                    <div className="max-w-[1600px] mx-auto space-y-6">
+                        {/* Top Metrics Row */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <Card className="bg-gradient-to-br from-purple-50 to-white border-purple-100">
+                                <CardContent className="pt-6">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <span className="text-sm font-medium text-slate-600">Monthly Recurring Revenue</span>
+                                        <DollarSign className="h-5 w-5 text-purple-500" />
                                     </div>
-                                    <p className="text-xs text-slate-500 mt-1">Last 7 days</p>
+                                    <div className="text-3xl font-bold text-slate-900">${(statsData.summary.thisMonth.amount / 1000).toFixed(1)}K</div>
+                                    <div className="flex items-center gap-1 mt-2 text-sm">
+                                        <ArrowUpRight className="h-4 w-4 text-green-500" />
+                                        <span className="text-green-600 font-medium">+20%</span>
+                                        <span className="text-slate-500">with $0.0K</span>
+                                    </div>
                                 </CardContent>
                             </Card>
-                            <Card>
-                                <CardHeader className="pb-3"><CardTitle className="text-sm text-slate-500">Monthly Volume</CardTitle></CardHeader>
-                                <CardContent>
-                                    <div className="text-2xl font-bold text-blue-600">${statsData.summary.thisMonth.amount.toLocaleString(undefined, {minimumFractionDigits: 2})}</div>
-                                    <p className="text-xs text-slate-500 mt-1">{statsData.summary.thisMonth.count} transactions</p>
+                            <Card className="bg-gradient-to-br from-blue-50 to-white border-blue-100">
+                                <CardContent className="pt-6">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <span className="text-sm font-medium text-slate-600">Active Subscriptions</span>
+                                        <Users className="h-5 w-5 text-blue-500" />
+                                    </div>
+                                    <div className="text-3xl font-bold text-slate-900">{transactions.length}</div>
+                                    <div className="flex items-center gap-1 mt-2 text-sm">
+                                        <ArrowDownRight className="h-4 w-4 text-slate-400" />
+                                        <span className="text-slate-600 font-medium">0%</span>
+                                        <span className="text-slate-500">churn rate</span>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                            <Card className="bg-gradient-to-br from-cyan-50 to-white border-cyan-100">
+                                <CardContent className="pt-6">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <span className="text-sm font-medium text-slate-600">AI Decisions Today</span>
+                                        <Brain className="h-5 w-5 text-cyan-500" />
+                                    </div>
+                                    <div className="text-3xl font-bold text-slate-900">{statsData.summary.today.count}</div>
+                                    <div className="flex items-center gap-1 mt-2 text-sm">
+                                        <ArrowUpRight className="h-4 w-4 text-green-500" />
+                                        <span className="text-green-600 font-medium">0%</span>
+                                        <span className="text-slate-500">accuracy</span>
+                                    </div>
                                 </CardContent>
                             </Card>
                         </div>
 
-                        {/* Account Summary */}
+                        {/* Key Business Metrics */}
                         <Card>
-                            <CardHeader>
-                                <CardTitle className="text-base">Account Summary</CardTitle>
+                            <CardHeader className="border-b bg-slate-50/50">
+                                <CardTitle className="text-base flex items-center gap-2">
+                                    <Activity className="h-5 w-5 text-purple-500" />
+                                    Key Business Metrics
+                                </CardTitle>
                             </CardHeader>
-                            <CardContent>
-                                <div className="grid grid-cols-4 gap-4">
-                                    {[
-                                        { label: 'Sum-Today', data: statsData.summary.today },
-                                        { label: 'Sum-ThisWeek', data: statsData.summary.last7Days },
-                                        { label: 'This Month', data: statsData.summary.thisMonth },
-                                        { label: 'Last Month', data: statsData.summary.lastMonth }
-                                    ].map((period, idx) => (
-                                        <div key={idx} className="border-r last:border-r-0 pr-4 last:pr-0">
-                                            <div className="text-xs text-slate-500 mb-2">{period.label}</div>
-                                            <div className="space-y-1">
-                                                <div className="flex justify-between text-sm">
-                                                    <span className="text-slate-600">Sale Count:</span>
-                                                    <span className="font-medium">{period.data.count}</span>
-                                                </div>
-                                                <div className="flex justify-between text-sm">
-                                                    <span className="text-slate-600">Sales:</span>
-                                                    <span className="font-medium">${(period.data.amount / 1000).toFixed(2)}K</span>
-                                                </div>
-                                                <div className="flex justify-between text-sm">
-                                                    <span className="text-slate-600">Refund:</span>
-                                                    <span className="font-medium">0</span>
-                                                </div>
+                            <CardContent className="pt-6">
+                                <div className="space-y-6">
+                                    <div>
+                                        <div className="flex items-center justify-between mb-2">
+                                            <div className="flex items-center gap-2">
+                                                <AlertCircle className="h-4 w-4 text-cyan-500" />
+                                                <span className="text-sm font-medium">Chargeback Ratio</span>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-sm font-bold">{businessMetrics.chargebackRatio.toFixed(2)}%</span>
+                                                <Badge className="bg-green-50 text-green-700 border-green-200 text-xs">↓ 1%</Badge>
                                             </div>
                                         </div>
-                                    ))}
+                                        <Progress value={businessMetrics.chargebackRatio} className="h-2 bg-cyan-100" />
+                                    </div>
+                                    <div>
+                                        <div className="flex items-center justify-between mb-2">
+                                            <div className="flex items-center gap-2">
+                                                <CreditCard className="h-4 w-4 text-cyan-500" />
+                                                <span className="text-sm font-medium">Decline Rate</span>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-sm font-bold">{businessMetrics.declineRate.toFixed(1)}%</span>
+                                                <Badge className="bg-green-50 text-green-700 border-green-200 text-xs">↓ 5%</Badge>
+                                            </div>
+                                        </div>
+                                        <Progress value={businessMetrics.declineRate} className="h-2 bg-cyan-100" />
+                                    </div>
+                                    <div>
+                                        <div className="flex items-center justify-between mb-2">
+                                            <div className="flex items-center gap-2">
+                                                <AlertCircle className="h-4 w-4 text-amber-500" />
+                                                <span className="text-sm font-medium">Fraud Rate</span>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-sm font-bold">{businessMetrics.fraudRate.toFixed(2)}%</span>
+                                                <Badge className="bg-green-50 text-green-700 border-green-200 text-xs">↓ 0.1%</Badge>
+                                            </div>
+                                        </div>
+                                        <Progress value={businessMetrics.fraudRate * 10} className="h-2 bg-amber-100" />
+                                    </div>
+                                    <div>
+                                        <div className="flex items-center justify-between mb-2">
+                                            <div className="flex items-center gap-2">
+                                                <Clock className="h-4 w-4 text-cyan-500" />
+                                                <span className="text-sm font-medium">Avg Settlement Time</span>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-sm font-bold">{businessMetrics.avgSettlementTime} days</span>
+                                                <Badge className="bg-green-50 text-green-700 border-green-200 text-xs">T+1</Badge>
+                                            </div>
+                                        </div>
+                                        <Progress value={60} className="h-2 bg-cyan-100" />
+                                    </div>
+                                </div>
+
+                                {/* Network Status */}
+                                <div className="mt-8 pt-6 border-t">
+                                    <h4 className="text-sm font-semibold mb-4">Network Status</h4>
+                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                        {networkStatus.map((network) => (
+                                            <div key={network.name} className="flex items-center gap-2">
+                                                <div className={`w-2 h-2 rounded-full ${network.status === 'healthy' ? 'bg-green-500' : 'bg-amber-500'}`} />
+                                                <div>
+                                                    <span className="text-sm font-medium">{network.name}</span>
+                                                    <span className="text-xs text-slate-500 ml-2">{network.latency}</span>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
                             </CardContent>
                         </Card>
 
                         {/* Charts Grid */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {/* Sale/Capture Summary */}
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle className="text-sm">Sale/Capture Summary</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <ResponsiveContainer width="100%" height={200}>
-                                        <BarChart data={statsData.saleData}>
-                                            <CartesianGrid strokeDasharray="3 3" />
-                                            <XAxis dataKey="date" tick={{ fontSize: 10 }} />
-                                            <YAxis tick={{ fontSize: 10 }} />
-                                            <Tooltip />
-                                            <Bar dataKey="amount" fill="#3b82f6" name="Amount (K)" />
-                                            <Bar dataKey="count" fill="#06b6d4" name="Count" />
-                                        </BarChart>
-                                    </ResponsiveContainer>
-                                    <div className="flex justify-center gap-4 mt-2 text-xs">
-                                        <div className="flex items-center gap-1">
-                                            <div className="w-3 h-3 bg-blue-500 rounded"></div>
-                                            <span>Amount</span>
-                                        </div>
-                                        <div className="flex items-center gap-1">
-                                            <div className="w-3 h-3 bg-cyan-500 rounded"></div>
-                                            <span># of Transactions</span>
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                            {/* Transaction Volume */}
+                            <Card className="lg:col-span-2">
+                                <CardHeader className="border-b bg-slate-50/50">
+                                    <div className="flex items-center justify-between">
+                                        <CardTitle className="text-base">Transaction Volume</CardTitle>
+                                        <div className="flex gap-2 text-xs">
+                                            <button className="px-3 py-1 bg-blue-100 text-blue-700 rounded-md font-medium">Area</button>
+                                            <button className="px-3 py-1 hover:bg-slate-100 rounded-md">Bar</button>
+                                            <button className="px-3 py-1 hover:bg-slate-100 rounded-md">24h</button>
+                                            <button className="px-3 py-1 hover:bg-slate-100 rounded-md">7d</button>
+                                            <button className="px-3 py-1 hover:bg-slate-100 rounded-md">30d</button>
+                                            <button className="px-3 py-1 hover:bg-slate-100 rounded-md">12m</button>
                                         </div>
                                     </div>
+                                    <div className="mt-2">
+                                        <span className="text-xs text-slate-500">Total: </span>
+                                        <span className="text-sm font-bold">${(transactions.reduce((s, t) => s + (t.amount || 0), 0) / 1000).toFixed(1)}K</span>
+                                    </div>
+                                </CardHeader>
+                                <CardContent className="pt-6">
+                                    <ResponsiveContainer width="100%" height={250}>
+                                        <AreaChart data={statsData.authData}>
+                                            <defs>
+                                                <linearGradient id="colorAmount" x1="0" y1="0" x2="0" y2="1">
+                                                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
+                                                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                                                </linearGradient>
+                                            </defs>
+                                            <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                                            <XAxis dataKey="date" tick={{ fontSize: 11 }} stroke="#94a3b8" />
+                                            <YAxis tick={{ fontSize: 11 }} stroke="#94a3b8" />
+                                            <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: 'none', borderRadius: '8px', color: '#fff' }} />
+                                            <Area type="monotone" dataKey="amount" stroke="#3b82f6" strokeWidth={2} fillOpacity={1} fill="url(#colorAmount)" />
+                                        </AreaChart>
+                                    </ResponsiveContainer>
                                 </CardContent>
                             </Card>
 
-                            {/* Auth Summary */}
+                            {/* Transaction Status */}
                             <Card>
-                                <CardHeader>
-                                    <CardTitle className="text-sm">Auth Summary</CardTitle>
+                                <CardHeader className="border-b bg-slate-50/50">
+                                    <CardTitle className="text-base">Transaction Status</CardTitle>
+                                    <p className="text-sm text-slate-500 mt-1">Approval Rate: <span className="font-bold text-green-600">98.70%</span></p>
                                 </CardHeader>
-                                <CardContent>
-                                    <ResponsiveContainer width="100%" height={200}>
-                                        <LineChart data={statsData.authData}>
-                                            <CartesianGrid strokeDasharray="3 3" />
-                                            <XAxis dataKey="date" tick={{ fontSize: 10 }} />
-                                            <YAxis tick={{ fontSize: 10 }} />
+                                <CardContent className="pt-6">
+                                    <ResponsiveContainer width="100%" height={250}>
+                                        <PieChart>
+                                            <Pie
+                                                data={[
+                                                    { name: 'Approved', value: transactions.filter(t => t.status === 'approved').length || 870, color: '#10b981' },
+                                                    { name: 'Declined', value: transactions.filter(t => t.status === 'declined').length || 60, color: '#ef4444' },
+                                                    { name: 'Pending', value: transactions.filter(t => t.status === 'pending').length || 1, color: '#f59e0b' }
+                                                ]}
+                                                cx="50%"
+                                                cy="50%"
+                                                innerRadius={60}
+                                                outerRadius={90}
+                                                paddingAngle={2}
+                                                dataKey="value"
+                                            >
+                                                {[
+                                                    { name: 'Approved', value: transactions.filter(t => t.status === 'approved').length || 870, color: '#10b981' },
+                                                    { name: 'Declined', value: transactions.filter(t => t.status === 'declined').length || 60, color: '#ef4444' },
+                                                    { name: 'Pending', value: transactions.filter(t => t.status === 'pending').length || 1, color: '#f59e0b' }
+                                                ].map((entry, index) => (
+                                                    <Cell key={`cell-${index}`} fill={entry.color} />
+                                                ))}
+                                            </Pie>
                                             <Tooltip />
-                                            <Line type="monotone" dataKey="amount" stroke="#3b82f6" strokeWidth={2} name="Amount (K)" />
-                                            <Line type="monotone" dataKey="count" stroke="#06b6d4" strokeWidth={2} name="Count" />
-                                        </LineChart>
+                                        </PieChart>
                                     </ResponsiveContainer>
-                                    <div className="flex justify-center gap-4 mt-2 text-xs">
-                                        <div className="flex items-center gap-1">
-                                            <div className="w-3 h-3 bg-blue-500 rounded"></div>
-                                            <span>Amount</span>
+                                    <div className="flex flex-col gap-2 mt-4">
+                                        <div className="flex items-center justify-between text-sm">
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                                                <span>Approved ({transactions.filter(t => t.status === 'approved').length || 870})</span>
+                                            </div>
                                         </div>
-                                        <div className="flex items-center gap-1">
-                                            <div className="w-3 h-3 bg-cyan-500 rounded"></div>
-                                            <span># of Transactions</span>
+                                        <div className="flex items-center justify-between text-sm">
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                                                <span>Declined ({transactions.filter(t => t.status === 'declined').length || 60})</span>
+                                            </div>
                                         </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
-
-                            {/* Payout Summary */}
-                            <Card className="md:col-span-2">
-                                <CardHeader>
-                                    <CardTitle className="text-sm">Payout Summary</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <ResponsiveContainer width="100%" height={200}>
-                                        <BarChart data={statsData.payoutData}>
-                                            <CartesianGrid strokeDasharray="3 3" />
-                                            <XAxis dataKey="date" tick={{ fontSize: 10 }} />
-                                            <YAxis tick={{ fontSize: 10 }} />
-                                            <Tooltip />
-                                            <Bar dataKey="amount" fill="#10b981" name="Amount (K)" />
-                                            <Bar dataKey="count" fill="#06b6d4" name="Count" />
-                                        </BarChart>
-                                    </ResponsiveContainer>
-                                    <div className="flex justify-center gap-4 mt-2 text-xs">
-                                        <div className="flex items-center gap-1">
-                                            <div className="w-3 h-3 bg-emerald-500 rounded"></div>
-                                            <span>Amount</span>
-                                        </div>
-                                        <div className="flex items-center gap-1">
-                                            <div className="w-3 h-3 bg-cyan-500 rounded"></div>
-                                            <span># of Transactions</span>
+                                        <div className="flex items-center justify-between text-sm">
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-3 h-3 rounded-full bg-amber-500"></div>
+                                                <span>Pending ({transactions.filter(t => t.status === 'pending').length || 1})</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </CardContent>
                             </Card>
                         </div>
+
+                        {/* Recent Transactions */}
+                        <Card>
+                            <CardHeader className="border-b bg-slate-50/50">
+                                <div className="flex items-center justify-between">
+                                    <CardTitle className="text-base">Recent Transactions</CardTitle>
+                                    <button className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1">
+                                        View All <ArrowUpRight className="h-4 w-4" />
+                                    </button>
+                                </div>
+                            </CardHeader>
+                            <CardContent className="p-0">
+                                <div className="overflow-x-auto">
+                                    <table className="w-full">
+                                        <thead className="bg-slate-50 border-b text-xs">
+                                            <tr>
+                                                <th className="text-left py-3 px-4 font-medium text-slate-600">Transaction ID</th>
+                                                <th className="text-left py-3 px-4 font-medium text-slate-600">Date & Time</th>
+                                                <th className="text-left py-3 px-4 font-medium text-slate-600">Merchant</th>
+                                                <th className="text-left py-3 px-4 font-medium text-slate-600">Type</th>
+                                                <th className="text-left py-3 px-4 font-medium text-slate-600">Amount</th>
+                                                <th className="text-left py-3 px-4 font-medium text-slate-600">Method</th>
+                                                <th className="text-left py-3 px-4 font-medium text-slate-600">Status</th>
+                                                <th className="py-3 px-4"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {transactions.slice(0, 5).map((txn) => (
+                                                <tr key={txn.id} className="border-b hover:bg-slate-50 transition-colors">
+                                                    <td className="py-3 px-4">
+                                                        <span className="text-sm font-mono text-blue-600">{txn.transaction_id?.slice(0, 16) || `TXN-${txn.id.slice(-12)}`}</span>
+                                                    </td>
+                                                    <td className="py-3 px-4 text-sm text-slate-600">
+                                                        {new Date(txn.created_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}, {new Date(txn.created_date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+                                                    </td>
+                                                    <td className="py-3 px-4">
+                                                        <div className="text-sm">
+                                                            <div className="font-medium">{merchant?.business_name || 'FTS Money'}</div>
+                                                            <div className="text-xs text-slate-500">{merchant?.merchant_id?.slice(0, 20) || 'MID123...'}</div>
+                                                        </div>
+                                                    </td>
+                                                    <td className="py-3 px-4">
+                                                        <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
+                                                            {txn.type || 'Sale'}
+                                                        </Badge>
+                                                    </td>
+                                                    <td className="py-3 px-4 text-sm font-semibold">
+                                                        USD {txn.amount?.toFixed(2) || '100.00'}
+                                                    </td>
+                                                    <td className="py-3 px-4">
+                                                        <div className="flex items-center gap-2">
+                                                            <CreditCard className="h-4 w-4 text-slate-400" />
+                                                            <span className="text-sm">{txn.card_brand || 'Visa'}</span>
+                                                        </div>
+                                                    </td>
+                                                    <td className="py-3 px-4">
+                                                        <Badge className={txn.status === 'approved' || txn.status === 'settled' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-slate-50 text-slate-700 border-slate-200'}>
+                                                            {txn.status || 'Approved'}
+                                                        </Badge>
+                                                    </td>
+                                                    <td className="py-3 px-4 text-right">
+                                                        <button className="text-slate-400 hover:text-slate-600">⋯</button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </CardContent>
+                        </Card>
 
 
                     </div>

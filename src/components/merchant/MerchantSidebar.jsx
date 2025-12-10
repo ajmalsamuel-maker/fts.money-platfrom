@@ -72,7 +72,12 @@ const menuSections = [
 ];
 
 export default function MerchantSidebar({ selectedMID, mids, onMIDChange, currentPage }) {
-    const [expandedSections, setExpandedSections] = useState(['Merchant Profile']);
+    // Find which section contains the current page
+    const currentSection = menuSections.find(section => 
+        section.items.some(item => item.path === currentPage)
+    );
+    
+    const [expandedSections, setExpandedSections] = useState([currentSection?.title || 'Merchant Profile']);
 
     const toggleSection = (title) => {
         setExpandedSections(prev => 
