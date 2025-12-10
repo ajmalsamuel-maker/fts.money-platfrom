@@ -19,12 +19,21 @@ export default function MerchantLogin() {
     useEffect(() => {
         const checkAuth = async () => {
             try {
-                const user = await base44.auth.me();
-                if (user && user.role === 'merchant') {
-                    navigate(createPageUrl('MerchantDashboard'));
+                const sessionData = JSON.parse(localStorage.getItem('merchantSession') || '{}');
+                if (sessionData.user_id) {
+                    // Validate session
+                    const response = await base44.functions.invoke('merchantAuth', {
+                        action: 'validate',
+                        user_id: sessionData.user_id
+                    });
+                    if (response.data.success) {
+                        navigate(createPageUrl('MerchantDashboard'));
+                    } else {
+                        localStorage.removeItem('merchantSession');
+                    }
                 }
             } catch (err) {
-                // Not logged in
+                localStorage.removeItem('merchantSession');
             }
         };
         checkAuth();
@@ -36,16 +45,25 @@ export default function MerchantLogin() {
         setLoading(true);
 
         try {
-            await base44.auth.login(email, password);
-            const user = await base44.auth.me();
-            
-            if (user.role !== 'merchant') {
-                await base44.auth.logout();
-                setError('Invalid merchant credentials');
-                return;
+            const response = await base44.functions.invoke('merchantAuth', {
+                action: 'login',
+                email,
+                password
+            });
+
+            if (response.data.success) {
+                // Store session in localStorage
+                localStorage.setItem('merchantSession', JSON.stringify(response.data.session));
+                
+                // Check if password change is required
+                if (response.data.must_change_password) {
+                    navigate(createPageUrl('MerchantChangePassword'));
+                } else {
+                    navigate(createPageUrl('MerchantDashboard'));
+                }
+            } else {
+                setError(response.data.error || 'Login failed. Please check your credentials.');
             }
-            
-            navigate(createPageUrl('MerchantDashboard'));
         } catch (err) {
             setError('Login failed. Please check your credentials.');
         } finally {
