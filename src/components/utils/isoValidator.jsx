@@ -3,7 +3,7 @@
 
 import { ISO4217_CURRENCIES } from './iso4217';
 import { getAllCountries } from './countries';
-import { validateIBAN, isValidBIC } from './ibanBic';
+import { validateIBAN, validateBIC } from './ibanBic';
 import { validateDTI } from './iso24165';
 import { validateBlockchainTransaction, validateAddressFormat } from './iso23257';
 
