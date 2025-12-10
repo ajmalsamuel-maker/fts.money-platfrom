@@ -16,7 +16,11 @@ export default function MerchantDataTransactions() {
         queryKey: ['merchant', user?.merchant_id],
         queryFn: async () => {
             const merchants = await base44.entities.Merchant.filter({ merchant_id: user.merchant_id });
-            return merchants[0];
+            const merchantData = merchants[0];
+            if (merchantData && !merchantData.merchant_code && user.merchant_code) {
+                merchantData.merchant_code = user.merchant_code;
+            }
+            return merchantData;
         },
         enabled: !!user?.merchant_id
     });
@@ -67,7 +71,7 @@ export default function MerchantDataTransactions() {
 
     return (
         <div className="flex h-screen bg-slate-50">
-            <MerchantSidebar selectedMID={selectedMID} mids={mids} onMIDChange={setSelectedMID} currentPage="MerchantDataTransactions" />
+            <MerchantSidebar selectedMID={selectedMID} mids={mids} onMIDChange={setSelectedMID} currentPage="MerchantDataTransactions" user={user} merchant={merchant} />
             <div className="flex-1 flex flex-col overflow-hidden">
                 <MerchantTopBar user={user} merchant={merchant} onLogout={logout} />
                 <main className="flex-1 overflow-y-auto p-6">
