@@ -32,8 +32,8 @@ Deno.serve(async (req) => {
 
         // Check if user exists
         const checkResult = await pool.query(
-            'SELECT id FROM merchant_users WHERE email = $1 AND merchant_code = $2',
-            [user.email, user.merchant_code]
+            'SELECT id FROM merchant_users WHERE email = $1',
+            [user.email]
         );
 
         if (checkResult.rows.length > 0) {
@@ -41,17 +41,18 @@ Deno.serve(async (req) => {
             await pool.query(`
                 UPDATE merchant_users SET
                     merchant_id = $1,
-                    merchant_name = $2,
-                    full_name = $3,
-                    role = $4,
-                    status = $5,
-                    temp_password = $6,
-                    must_change_password = $7,
-                    two_factor_enabled = $8,
-                    phone = $9,
-                    permissions = $10,
-                    allowed_terminals = $11
-                WHERE email = $12 AND merchant_code = $13
+                    merchant_code = $2,
+                    merchant_name = $3,
+                    full_name = $4,
+                    role = $5,
+                    status = $6,
+                    temp_password = $7,
+                    must_change_password = $8,
+                    two_factor_enabled = $9,
+                    phone = $10,
+                    permissions = $11,
+                    allowed_terminals = $12
+                WHERE email = $13
             `, [
                 user.merchant_id,
                 user.merchant_name,
