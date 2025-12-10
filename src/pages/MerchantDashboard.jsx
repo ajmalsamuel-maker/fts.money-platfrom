@@ -230,6 +230,9 @@ export default function MerchantDashboard() {
             {/* Main Content */}
             <div className="flex-1 flex flex-col overflow-hidden">
                 <MerchantTopBar user={user} merchant={merchant} onLogout={logout} selectedMID={selectedMID} />
+                
+                {/* Fintech News Ticker */}
+                <FintechNewsTicker />
 
                 <main className="flex-1 overflow-y-auto p-6 bg-slate-50">
                     <div className="max-w-[1600px] mx-auto space-y-6">
