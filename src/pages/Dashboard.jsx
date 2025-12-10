@@ -10,7 +10,7 @@ import SuccessRateChart from '@/components/dashboard/SuccessRateChart';
 import TopMerchants from '@/components/dashboard/TopMerchants';
 import PaymentMethodsChart from '@/components/dashboard/PaymentMethodsChart';
 import TPSCounter from '@/components/dashboard/TPSCounter';
-import PaymentNews from '@/components/dashboard/PaymentNews';
+import RiskAlertsCard from '@/components/dashboard/RiskAlertsCard';
 import ExchangeRates from '@/components/dashboard/ExchangeRates';
 import BusinessMetrics from '@/components/dashboard/BusinessMetrics';
 import HelpPanel from '@/components/dashboard/HelpPanel';
@@ -180,9 +180,9 @@ export default function Dashboard() {
                         </div>
                     </div>
 
-                    {/* News, Exchange Rates, and Payment Methods Row */}
+                    {/* Risk Alerts, Exchange Rates, and Payment Methods Row */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mt-3 sm:mt-4">
-                        <PaymentNews />
+                        <RiskAlertsCard />
                         <ExchangeRates />
                         <PaymentMethodsChart />
                     </div>

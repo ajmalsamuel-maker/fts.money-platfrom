@@ -9,27 +9,34 @@ import { createPageUrl } from '@/utils';
 
 // Simulated exchange rates (in production, these would come from an API)
 const defaultRates = {
-    EUR: { rate: 0.9234, change: -0.12, name: 'Euro' },
-    GBP: { rate: 0.7891, change: 0.08, name: 'British Pound' },
-    JPY: { rate: 149.45, change: 0.34, name: 'Japanese Yen' },
-    CHF: { rate: 0.8812, change: -0.05, name: 'Swiss Franc' },
-    CAD: { rate: 1.3567, change: 0.15, name: 'Canadian Dollar' },
-    AUD: { rate: 1.5234, change: -0.22, name: 'Australian Dollar' },
-    CNY: { rate: 7.2456, change: 0.02, name: 'Chinese Yuan' },
-    INR: { rate: 83.45, change: 0.18, name: 'Indian Rupee' },
-    BRL: { rate: 4.9876, change: -0.35, name: 'Brazilian Real' },
-    MXN: { rate: 17.234, change: 0.28, name: 'Mexican Peso' },
-    SGD: { rate: 1.3412, change: -0.08, name: 'Singapore Dollar' },
-    HKD: { rate: 7.8234, change: 0.01, name: 'Hong Kong Dollar' },
+    EUR: { rate: 0.9234, change: -0.12, name: 'Euro', type: 'fiat' },
+    GBP: { rate: 0.7891, change: 0.08, name: 'British Pound', type: 'fiat' },
+    JPY: { rate: 149.45, change: 0.34, name: 'Japanese Yen', type: 'fiat' },
+    CHF: { rate: 0.8812, change: -0.05, name: 'Swiss Franc', type: 'fiat' },
+    CAD: { rate: 1.3567, change: 0.15, name: 'Canadian Dollar', type: 'fiat' },
+    AUD: { rate: 1.5234, change: -0.22, name: 'Australian Dollar', type: 'fiat' },
+    CNY: { rate: 7.2456, change: 0.02, name: 'Chinese Yuan', type: 'fiat' },
+    INR: { rate: 83.45, change: 0.18, name: 'Indian Rupee', type: 'fiat' },
+    BRL: { rate: 4.9876, change: -0.35, name: 'Brazilian Real', type: 'fiat' },
+    MXN: { rate: 17.234, change: 0.28, name: 'Mexican Peso', type: 'fiat' },
+    SGD: { rate: 1.3412, change: -0.08, name: 'Singapore Dollar', type: 'fiat' },
+    HKD: { rate: 7.8234, change: 0.01, name: 'Hong Kong Dollar', type: 'fiat' },
+    BTC: { rate: 42350.00, change: 2.45, name: 'Bitcoin', type: 'crypto' },
+    ETH: { rate: 2245.50, change: 1.87, name: 'Ethereum', type: 'crypto' },
+    USDT: { rate: 1.0002, change: 0.01, name: 'Tether', type: 'crypto' },
+    BNB: { rate: 312.45, change: -0.65, name: 'Binance Coin', type: 'crypto' },
+    SOL: { rate: 98.32, change: 3.21, name: 'Solana', type: 'crypto' },
+    XRP: { rate: 0.6234, change: 1.45, name: 'Ripple', type: 'crypto' },
 };
 
 const currencyFlags = {
     EUR: '🇪🇺', GBP: '🇬🇧', JPY: '🇯🇵', CHF: '🇨🇭', CAD: '🇨🇦', 
     AUD: '🇦🇺', CNY: '🇨🇳', INR: '🇮🇳', BRL: '🇧🇷', MXN: '🇲🇽',
-    SGD: '🇸🇬', HKD: '🇭🇰', USD: '🇺🇸'
+    SGD: '🇸🇬', HKD: '🇭🇰', USD: '🇺🇸',
+    BTC: '₿', ETH: 'Ξ', USDT: '₮', BNB: 'B', SOL: '◎', XRP: 'X'
 };
 
-export default function ExchangeRates({ selectedCurrencies = ['EUR', 'GBP', 'JPY', 'CHF', 'CAD', 'AUD'] }) {
+export default function ExchangeRates({ selectedCurrencies = ['EUR', 'GBP', 'BTC', 'ETH', 'CAD', 'USDT'] }) {
     const [rates, setRates] = useState(defaultRates);
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [lastUpdated, setLastUpdated] = useState(new Date());
@@ -70,7 +77,7 @@ export default function ExchangeRates({ selectedCurrencies = ['EUR', 'GBP', 'JPY
                     </div>
                     <div>
                         <h3 className="font-semibold text-slate-900">Exchange Rates</h3>
-                        <p className="text-xs text-slate-500">Base: USD • Updated {lastUpdated.toLocaleTimeString()}</p>
+                        <p className="text-xs text-slate-500">Fiat & Crypto • Updated {lastUpdated.toLocaleTimeString()}</p>
                     </div>
                 </div>
                 <div className="flex items-center gap-1">
@@ -93,7 +100,10 @@ export default function ExchangeRates({ selectedCurrencies = ['EUR', 'GBP', 'JPY
                     return (
                         <div 
                             key={currency}
-                            className="p-3 rounded-lg bg-slate-50 hover:bg-slate-100 transition-colors"
+                            className={cn(
+                                "p-3 rounded-lg hover:bg-slate-100 transition-colors",
+                                data.type === 'crypto' ? 'bg-amber-50' : 'bg-slate-50'
+                            )}
                         >
                             <div className="flex items-center justify-between mb-1">
                                 <div className="flex items-center gap-2">
