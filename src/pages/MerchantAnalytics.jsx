@@ -103,6 +103,15 @@ export default function MerchantAnalytics() {
     const cryptoTransactions = transactions.filter(t => t.crypto_asset || t.payment_method === 'crypto_currency' || t.payment_method === 'bitcoin' || t.payment_method === 'bitcoin_cash');
     const fiatTransactions = transactions.filter(t => !t.crypto_asset && t.payment_method !== 'crypto_currency' && t.payment_method !== 'bitcoin' && t.payment_method !== 'bitcoin_cash');
 
+    // Payment method distribution
+    const paymentMethodData = [
+        { name: 'Visa', value: 45, color: '#1a1f71' },
+        { name: 'Mastercard', value: 32, color: '#eb001b' },
+        { name: 'Amex', value: 12, color: '#006fcf' },
+        { name: 'Crypto', value: transactions.length > 0 && cryptoTransactions.length > 0 ? Math.round((cryptoTransactions.length / transactions.length) * 100) : 5, color: '#f59e0b' },
+        { name: 'Other', value: 6, color: '#6b7280' }
+    ];
+
     // Filter merchants
     const filteredMerchants = merchants.filter(m => {
         const matchesSearch = !searchQuery || 
@@ -181,14 +190,7 @@ export default function MerchantAnalytics() {
         }, {})
     ).map(([name, value]) => ({ name, value, color: categoryColors[name] || '#6b7280' }));
 
-    // Payment method distribution
-    const paymentMethodData = [
-        { name: 'Visa', value: 45, color: '#1a1f71' },
-        { name: 'Mastercard', value: 32, color: '#eb001b' },
-        { name: 'Amex', value: 12, color: '#006fcf' },
-        { name: 'Crypto', value: cryptoTransactions.length > 0 ? Math.round((cryptoTransactions.length / transactions.length) * 100) : 5, color: '#f59e0b' },
-        { name: 'Other', value: 6, color: '#6b7280' }
-    ];
+
 
     // Settlement timeline data
     const settlementData = [

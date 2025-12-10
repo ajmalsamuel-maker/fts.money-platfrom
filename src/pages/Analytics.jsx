@@ -68,14 +68,7 @@ const generateTimeSeriesData = (days) => {
     return data;
 };
 
-const paymentMethodData = [
-    { name: 'Visa', value: 45, amount: 1125000, color: '#1a1f71' },
-    { name: 'Mastercard', value: 32, amount: 800000, color: '#eb001b' },
-    { name: 'Amex', value: 12, amount: 300000, color: '#006fcf' },
-    { name: 'Discover', value: 5, amount: 125000, color: '#ff6000' },
-    { name: 'Crypto', value: cryptoTransactions.length > 0 ? Math.round((cryptoTransactions.length / transactions.length) * 100) : 4, amount: cryptoTransactions.reduce((sum, t) => sum + (t.amount || 0), 0), color: '#f59e0b' },
-    { name: 'Others', value: 2, amount: 50000, color: '#64748b' },
-];
+
 
 const geoData = [
     { country: 'United States', transactions: 5420, volume: 892340, percentage: 42 },
@@ -110,6 +103,15 @@ export default function Analytics() {
     // Separate crypto and fiat transactions
     const cryptoTransactions = transactions.filter(t => t.crypto_asset || t.payment_method === 'crypto_currency' || t.payment_method === 'bitcoin' || t.payment_method === 'bitcoin_cash');
     const fiatTransactions = transactions.filter(t => !t.crypto_asset && t.payment_method !== 'crypto_currency' && t.payment_method !== 'bitcoin' && t.payment_method !== 'bitcoin_cash');
+
+    const paymentMethodData = [
+        { name: 'Visa', value: 45, amount: 1125000, color: '#1a1f71' },
+        { name: 'Mastercard', value: 32, amount: 800000, color: '#eb001b' },
+        { name: 'Amex', value: 12, amount: 300000, color: '#006fcf' },
+        { name: 'Discover', value: 5, amount: 125000, color: '#ff6000' },
+        { name: 'Crypto', value: transactions.length > 0 && cryptoTransactions.length > 0 ? Math.round((cryptoTransactions.length / transactions.length) * 100) : 4, amount: cryptoTransactions.reduce((sum, t) => sum + (t.amount || 0), 0), color: '#f59e0b' },
+        { name: 'Others', value: 2, amount: 50000, color: '#64748b' },
+    ];
 
     const { data: subscriptions = [] } = useQuery({
         queryKey: ['subscriptions-analytics'],
