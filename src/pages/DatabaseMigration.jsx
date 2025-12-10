@@ -46,6 +46,46 @@ WHERE mu.merchant_id = m.merchant_id
 AND mu.merchant_code IS NULL
 AND m.merchant_code IS NOT NULL;
         `.trim()
+    },
+    {
+        id: 'create_vt_users_table',
+        name: 'Create Virtual Terminal Users Table',
+        description: 'Creates virtual_terminal_users table for VT authentication',
+        sql: `
+-- Create virtual_terminal_users table
+CREATE TABLE IF NOT EXISTS virtual_terminal_users (
+    id VARCHAR(255) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+    terminal_id VARCHAR(255) NOT NULL,
+    merchant_id VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    full_name VARCHAR(255) NOT NULL,
+    role VARCHAR(50) DEFAULT 'operator',
+    status VARCHAR(50) DEFAULT 'active',
+    temp_password VARCHAR(255),
+    must_change_password BOOLEAN DEFAULT true,
+    last_login TIMESTAMP,
+    permissions JSONB DEFAULT '[]'::jsonb,
+    created_date TIMESTAMP DEFAULT NOW(),
+    updated_date TIMESTAMP DEFAULT NOW(),
+    created_by VARCHAR(255),
+    CONSTRAINT vt_users_email_unique UNIQUE (email)
+);
+
+-- Create indexes
+CREATE INDEX IF NOT EXISTS idx_vt_users_terminal 
+ON virtual_terminal_users(terminal_id);
+
+CREATE INDEX IF NOT EXISTS idx_vt_users_merchant 
+ON virtual_terminal_users(merchant_id);
+
+CREATE INDEX IF NOT EXISTS idx_vt_users_email 
+ON virtual_terminal_users(email);
+
+-- Add comments
+COMMENT ON TABLE virtual_terminal_users IS 'Users for Virtual Terminal authentication';
+COMMENT ON COLUMN virtual_terminal_users.terminal_id IS 'Reference to VirtualTerminal';
+COMMENT ON COLUMN virtual_terminal_users.temp_password IS 'Temporary password for login';
+        `.trim()
     }
 ];
 
