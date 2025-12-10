@@ -23,13 +23,17 @@ import {
     Brain,
     ArrowUpRight,
     ArrowDownRight,
-    HelpCircle
+    HelpCircle,
+    Search, 
+    Zap, 
+    Shield, 
+    TrendingDown
 } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
 import PaymentNews from '@/components/dashboard/PaymentNews';
-import { Search, Zap, Shield, TrendingDown } from 'lucide-react';
+import ISOComplianceBadge from '@/components/transaction/ISOComplianceBadge';
 import QuickActionsPanel from '@/components/merchant/QuickActionsPanel';
 import AlertCenter from '@/components/merchant/AlertCenter';
 import PerformanceComparison from '@/components/merchant/PerformanceComparison';
@@ -401,11 +405,11 @@ export default function MerchantDashboard() {
                                                 <tr>
                                                     <th className="text-left py-3 px-4 font-medium text-slate-600">Transaction ID</th>
                                                     <th className="text-left py-3 px-4 font-medium text-slate-600">Date & Time</th>
-                                                    <th className="text-left py-3 px-4 font-medium text-slate-600">Merchant</th>
                                                     <th className="text-left py-3 px-4 font-medium text-slate-600">Type</th>
                                                     <th className="text-left py-3 px-4 font-medium text-slate-600">Amount</th>
                                                     <th className="text-left py-3 px-4 font-medium text-slate-600">Method</th>
                                                     <th className="text-left py-3 px-4 font-medium text-slate-600">Status</th>
+                                                    <th className="text-left py-3 px-4 font-medium text-slate-600">ISO</th>
                                                     <th className="py-3 px-4"></th>
                                                 </tr>
                                             </thead>
@@ -427,12 +431,6 @@ export default function MerchantDashboard() {
                                                         {new Date(txn.created_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}, {new Date(txn.created_date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
                                                     </td>
                                                     <td className="py-3 px-4">
-                                                        <div className="text-sm">
-                                                            <div className="font-medium">{merchant?.business_name || 'FTS Money'}</div>
-                                                            <div className="text-xs text-slate-500">{merchant?.merchant_id?.slice(0, 20) || 'MID123...'}</div>
-                                                        </div>
-                                                    </td>
-                                                    <td className="py-3 px-4">
                                                         <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
                                                             {txn.type || 'Sale'}
                                                         </Badge>
@@ -450,6 +448,9 @@ export default function MerchantDashboard() {
                                                         <Badge className={txn.status === 'approved' || txn.status === 'settled' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-slate-50 text-slate-700 border-slate-200'}>
                                                             {txn.status || 'Approved'}
                                                         </Badge>
+                                                    </td>
+                                                    <td className="py-3 px-4">
+                                                        <ISOComplianceBadge transaction={txn} showScore={false} />
                                                     </td>
                                                     <td className="py-3 px-4 text-right">
                                                        <Button
