@@ -31,12 +31,12 @@ export const validateCountry = (countryCode) => {
 };
 
 // ISO 9362 BIC Validation
-export const validateBIC = (bic) => {
-    const valid = isValidBIC(bic);
+export const validateISO9362 = (bic) => {
+    const result = validateBIC(bic);
     return {
-        valid,
+        valid: result.valid,
         standard: 'ISO 9362',
-        error: valid ? null : 'Invalid BIC code'
+        error: result.valid ? null : 'Invalid BIC code'
     };
 };
 
