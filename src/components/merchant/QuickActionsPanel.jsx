@@ -22,7 +22,7 @@ export default function QuickActionsPanel({ selectedMID, transactions }) {
     const [copied, setCopied] = useState(false);
 
     const handleVirtualTerminal = () => {
-        navigate(createPageUrl('MerchantDataTransactions'));
+        navigate(createPageUrl('MerchantVirtualTerminal'));
     };
 
     const handleExportReport = () => {
