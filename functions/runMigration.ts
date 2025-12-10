@@ -22,8 +22,11 @@ Deno.serve(async (req) => {
             }, { status: 400 });
         }
 
-        // Create connection
-        sql = postgres(Deno.env.get('DATABASE_URL'));
+        // Create connection with TLS options
+        const dbUrl = Deno.env.get('DATABASE_URL');
+        sql = postgres(dbUrl, {
+            ssl: dbUrl.includes('localhost') ? false : { rejectUnauthorized: false }
+        });
 
         // Split into individual statements and execute
         const statements = migrationSql
