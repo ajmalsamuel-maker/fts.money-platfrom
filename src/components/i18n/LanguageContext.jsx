@@ -104,6 +104,7 @@ const translations = {
         fatfCompliance: 'FATF Compliance',
         blockchainConnectors: 'Blockchain Connectors',
         exchangeIntegrations: 'Exchange Integrations',
+        cryptoPayouts: 'Crypto Payouts',
         },
     es: {
         // Common

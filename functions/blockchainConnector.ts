@@ -15,7 +15,7 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const { action, connector_id, data } = await req.json();
+        const { action, connector_id, data, wallet_address, blockchain_network, address } = await req.json();
 
         switch (action) {
             case 'get_balance':

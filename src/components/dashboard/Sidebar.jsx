@@ -137,6 +137,7 @@ const menuItems = [
                 { icon: Shield, label: 'fatfCompliance', path: 'FATFCompliance', permission: 'VIEW_COMPLIANCE' },
                 { icon: Coins, label: 'blockchainConnectors', path: 'BlockchainConnectors', permission: 'VIEW_SETTINGS' },
                 { icon: TrendingUp, label: 'exchangeIntegrations', path: 'ExchangeIntegrations', permission: 'VIEW_SETTINGS' },
+                { icon: DollarSign, label: 'cryptoPayouts', path: 'CryptoPayouts', permission: 'VIEW_PAYOUTS' },
                 { icon: UserCog, label: 'userManagement', path: 'UserManagement', permission: 'VIEW_USERS' },
                 { icon: Shield, label: 'auditLogs', path: 'AuditLogs', permission: 'VIEW_USERS' },
                 { icon: Palette, label: 'appearance', path: 'Appearance', permission: 'VIEW_APPEARANCE' },

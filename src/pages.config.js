@@ -81,6 +81,8 @@ import CryptoTransactions from './pages/CryptoTransactions';
 import FATFCompliance from './pages/FATFCompliance';
 import BlockchainConnectors from './pages/BlockchainConnectors';
 import ExchangeIntegrations from './pages/ExchangeIntegrations';
+import CryptoPayouts from './pages/CryptoPayouts';
+import MerchantCryptoDashboard from './pages/MerchantCryptoDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -168,6 +170,8 @@ export const PAGES = {
     "FATFCompliance": FATFCompliance,
     "BlockchainConnectors": BlockchainConnectors,
     "ExchangeIntegrations": ExchangeIntegrations,
+    "CryptoPayouts": CryptoPayouts,
+    "MerchantCryptoDashboard": MerchantCryptoDashboard,
 }
 
 export const pagesConfig = {
