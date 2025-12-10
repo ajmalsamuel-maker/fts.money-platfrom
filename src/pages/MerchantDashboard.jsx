@@ -220,133 +220,95 @@ export default function MerchantDashboard() {
                                 </p>
                             </div>
                         </div>
-                        {/* Top Metrics Row */}
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <Card className="bg-gradient-to-br from-purple-50 to-white border-purple-100">
+                        {/* Top Stats Cards */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <Card>
                                 <CardContent className="pt-6">
-                                    <div className="flex items-center justify-between mb-2">
-                                        <span className="text-sm font-medium text-slate-600">Monthly Recurring Revenue</span>
-                                        <DollarSign className="h-5 w-5 text-purple-500" />
-                                    </div>
-                                    <div className="text-3xl font-bold text-slate-900">${(statsData.summary.thisMonth.amount / 1000).toFixed(1)}K</div>
-                                    <div className="flex items-center gap-1 mt-2 text-sm">
-                                        <ArrowUpRight className="h-4 w-4 text-green-500" />
-                                        <span className="text-green-600 font-medium">+20%</span>
-                                        <span className="text-slate-500">with $0.0K</span>
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex-1">
+                                            <p className="text-sm font-medium text-slate-500">Today's Volume</p>
+                                            <div className="flex items-baseline gap-2 mt-1">
+                                                <h3 className="text-2xl font-bold text-slate-900">
+                                                    ${statsData.summary.today.amount.toLocaleString(undefined, {minimumFractionDigits: 2})}
+                                                </h3>
+                                            </div>
+                                            <p className="text-xs text-green-600 flex items-center gap-1 mt-1">
+                                                <TrendingUp className="h-3 w-3" />
+                                                +12.5%
+                                            </p>
+                                        </div>
+                                        <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
+                                            <DollarSign className="h-5 w-5 text-blue-600" />
+                                        </div>
                                     </div>
                                 </CardContent>
                             </Card>
-                            <Card className="bg-gradient-to-br from-blue-50 to-white border-blue-100">
+
+                            <Card>
                                 <CardContent className="pt-6">
-                                    <div className="flex items-center justify-between mb-2">
-                                        <span className="text-sm font-medium text-slate-600">Active Subscriptions</span>
-                                        <Users className="h-5 w-5 text-blue-500" />
-                                    </div>
-                                    <div className="text-3xl font-bold text-slate-900">{transactions.length}</div>
-                                    <div className="flex items-center gap-1 mt-2 text-sm">
-                                        <ArrowDownRight className="h-4 w-4 text-slate-400" />
-                                        <span className="text-slate-600 font-medium">0%</span>
-                                        <span className="text-slate-500">churn rate</span>
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex-1">
+                                            <p className="text-sm font-medium text-slate-500">Success Rate</p>
+                                            <div className="flex items-baseline gap-2 mt-1">
+                                                <h3 className="text-2xl font-bold text-green-600">
+                                                    {transactions.length > 0 ? ((transactions.filter(t => t.status === 'approved').length / transactions.length) * 100).toFixed(1) : 98.7}%
+                                                </h3>
+                                            </div>
+                                            <p className="text-xs text-green-600 flex items-center gap-1 mt-1">
+                                                <TrendingUp className="h-3 w-3" />
+                                                +0.5%
+                                            </p>
+                                        </div>
+                                        <div className="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center">
+                                            <CheckCircle2 className="h-5 w-5 text-emerald-600" />
+                                        </div>
                                     </div>
                                 </CardContent>
                             </Card>
-                            <Card className="bg-gradient-to-br from-cyan-50 to-white border-cyan-100">
+
+                            <Card>
                                 <CardContent className="pt-6">
-                                    <div className="flex items-center justify-between mb-2">
-                                        <span className="text-sm font-medium text-slate-600">AI Decisions Today</span>
-                                        <Brain className="h-5 w-5 text-cyan-500" />
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex-1">
+                                            <p className="text-sm font-medium text-slate-500">Monthly Revenue</p>
+                                            <div className="flex items-baseline gap-2 mt-1">
+                                                <h3 className="text-2xl font-bold text-slate-900">
+                                                    ${(statsData.summary.thisMonth.amount / 1000).toFixed(1)}K
+                                                </h3>
+                                            </div>
+                                            <p className="text-xs text-green-600 flex items-center gap-1 mt-1">
+                                                <TrendingUp className="h-3 w-3" />
+                                                +20%
+                                            </p>
+                                        </div>
+                                        <div className="w-10 h-10 rounded-lg bg-purple-50 flex items-center justify-center">
+                                            <DollarSign className="h-5 w-5 text-purple-600" />
+                                        </div>
                                     </div>
-                                    <div className="text-3xl font-bold text-slate-900">{statsData.summary.today.count}</div>
-                                    <div className="flex items-center gap-1 mt-2 text-sm">
-                                        <ArrowUpRight className="h-4 w-4 text-green-500" />
-                                        <span className="text-green-600 font-medium">0%</span>
-                                        <span className="text-slate-500">accuracy</span>
+                                </CardContent>
+                            </Card>
+
+                            <Card>
+                                <CardContent className="pt-6">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex-1">
+                                            <p className="text-sm font-medium text-slate-500">Live TPS</p>
+                                            <div className="flex items-baseline gap-2 mt-1">
+                                                <h3 className="text-2xl font-bold text-slate-900">
+                                                    {(transactions.length / 86400).toFixed(2)}
+                                                </h3>
+                                            </div>
+                                            <p className="text-xs text-slate-500 mt-1">
+                                                transactions/sec
+                                            </p>
+                                        </div>
+                                        <div className="w-10 h-10 rounded-lg bg-cyan-50 flex items-center justify-center">
+                                            <Activity className="h-5 w-5 text-cyan-600" />
+                                        </div>
                                     </div>
                                 </CardContent>
                             </Card>
                         </div>
-
-                        {/* Key Business Metrics */}
-                        <Card>
-                            <CardHeader className="border-b bg-slate-50/50">
-                                <CardTitle className="text-base flex items-center gap-2">
-                                    <Activity className="h-5 w-5 text-purple-500" />
-                                    Key Business Metrics
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="pt-6">
-                                <div className="space-y-6">
-                                    <div>
-                                        <div className="flex items-center justify-between mb-2">
-                                            <div className="flex items-center gap-2">
-                                                <AlertCircle className="h-4 w-4 text-cyan-500" />
-                                                <span className="text-sm font-medium">Chargeback Ratio</span>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <span className="text-sm font-bold">{businessMetrics.chargebackRatio.toFixed(2)}%</span>
-                                                <Badge className="bg-green-50 text-green-700 border-green-200 text-xs">↓ 1%</Badge>
-                                            </div>
-                                        </div>
-                                        <Progress value={businessMetrics.chargebackRatio} className="h-2 bg-cyan-100" />
-                                    </div>
-                                    <div>
-                                        <div className="flex items-center justify-between mb-2">
-                                            <div className="flex items-center gap-2">
-                                                <CreditCard className="h-4 w-4 text-cyan-500" />
-                                                <span className="text-sm font-medium">Decline Rate</span>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <span className="text-sm font-bold">{businessMetrics.declineRate.toFixed(1)}%</span>
-                                                <Badge className="bg-green-50 text-green-700 border-green-200 text-xs">↓ 5%</Badge>
-                                            </div>
-                                        </div>
-                                        <Progress value={businessMetrics.declineRate} className="h-2 bg-cyan-100" />
-                                    </div>
-                                    <div>
-                                        <div className="flex items-center justify-between mb-2">
-                                            <div className="flex items-center gap-2">
-                                                <AlertCircle className="h-4 w-4 text-amber-500" />
-                                                <span className="text-sm font-medium">Fraud Rate</span>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <span className="text-sm font-bold">{businessMetrics.fraudRate.toFixed(2)}%</span>
-                                                <Badge className="bg-green-50 text-green-700 border-green-200 text-xs">↓ 0.1%</Badge>
-                                            </div>
-                                        </div>
-                                        <Progress value={businessMetrics.fraudRate * 10} className="h-2 bg-amber-100" />
-                                    </div>
-                                    <div>
-                                        <div className="flex items-center justify-between mb-2">
-                                            <div className="flex items-center gap-2">
-                                                <Clock className="h-4 w-4 text-cyan-500" />
-                                                <span className="text-sm font-medium">Avg Settlement Time</span>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <span className="text-sm font-bold">{businessMetrics.avgSettlementTime} days</span>
-                                                <Badge className="bg-green-50 text-green-700 border-green-200 text-xs">T+1</Badge>
-                                            </div>
-                                        </div>
-                                        <Progress value={60} className="h-2 bg-cyan-100" />
-                                    </div>
-                                </div>
-
-                                {/* Network Status */}
-                                <div className="mt-8 pt-6 border-t">
-                                    <h4 className="text-sm font-semibold mb-4">Network Status</h4>
-                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                        {networkStatus.map((network) => (
-                                            <div key={network.name} className="flex items-center gap-2">
-                                                <div className={`w-2 h-2 rounded-full ${network.status === 'healthy' ? 'bg-green-500' : 'bg-amber-500'}`} />
-                                                <div>
-                                                    <span className="text-sm font-medium">{network.name}</span>
-                                                    <span className="text-xs text-slate-500 ml-2">{network.latency}</span>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
 
                         {/* Charts Grid */}
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -444,6 +406,88 @@ export default function MerchantDashboard() {
                                 </CardContent>
                             </Card>
                         </div>
+
+                        {/* Key Business Metrics */}
+                        <Card>
+                            <CardHeader className="border-b bg-slate-50/50">
+                                <CardTitle className="text-base flex items-center gap-2">
+                                    <Activity className="h-5 w-5 text-purple-500" />
+                                    Key Business Metrics
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="pt-6">
+                                <div className="space-y-6">
+                                    <div>
+                                        <div className="flex items-center justify-between mb-2">
+                                            <div className="flex items-center gap-2">
+                                                <AlertCircle className="h-4 w-4 text-cyan-500" />
+                                                <span className="text-sm font-medium">Chargeback Ratio</span>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-sm font-bold">{businessMetrics.chargebackRatio.toFixed(2)}%</span>
+                                                <Badge className="bg-green-50 text-green-700 border-green-200 text-xs">↓ 1%</Badge>
+                                            </div>
+                                        </div>
+                                        <Progress value={businessMetrics.chargebackRatio} className="h-2 bg-cyan-100" />
+                                    </div>
+                                    <div>
+                                        <div className="flex items-center justify-between mb-2">
+                                            <div className="flex items-center gap-2">
+                                                <CreditCard className="h-4 w-4 text-cyan-500" />
+                                                <span className="text-sm font-medium">Decline Rate</span>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-sm font-bold">{businessMetrics.declineRate.toFixed(1)}%</span>
+                                                <Badge className="bg-green-50 text-green-700 border-green-200 text-xs">↓ 5%</Badge>
+                                            </div>
+                                        </div>
+                                        <Progress value={businessMetrics.declineRate} className="h-2 bg-cyan-100" />
+                                    </div>
+                                    <div>
+                                        <div className="flex items-center justify-between mb-2">
+                                            <div className="flex items-center gap-2">
+                                                <AlertCircle className="h-4 w-4 text-amber-500" />
+                                                <span className="text-sm font-medium">Fraud Rate</span>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-sm font-bold">{businessMetrics.fraudRate.toFixed(2)}%</span>
+                                                <Badge className="bg-green-50 text-green-700 border-green-200 text-xs">↓ 0.1%</Badge>
+                                            </div>
+                                        </div>
+                                        <Progress value={businessMetrics.fraudRate * 10} className="h-2 bg-amber-100" />
+                                    </div>
+                                    <div>
+                                        <div className="flex items-center justify-between mb-2">
+                                            <div className="flex items-center gap-2">
+                                                <Clock className="h-4 w-4 text-cyan-500" />
+                                                <span className="text-sm font-medium">Avg Settlement Time</span>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-sm font-bold">{businessMetrics.avgSettlementTime} days</span>
+                                                <Badge className="bg-green-50 text-green-700 border-green-200 text-xs">T+1</Badge>
+                                            </div>
+                                        </div>
+                                        <Progress value={60} className="h-2 bg-cyan-100" />
+                                    </div>
+                                </div>
+
+                                {/* Network Status */}
+                                <div className="mt-8 pt-6 border-t">
+                                    <h4 className="text-sm font-semibold mb-4">Network Status</h4>
+                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                        {networkStatus.map((network) => (
+                                            <div key={network.name} className="flex items-center gap-2">
+                                                <div className={`w-2 h-2 rounded-full ${network.status === 'healthy' ? 'bg-green-500' : 'bg-amber-500'}`} />
+                                                <div>
+                                                    <span className="text-sm font-medium">{network.name}</span>
+                                                    <span className="text-xs text-slate-500 ml-2">{network.latency}</span>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
 
                         {/* Recent Transactions with Search */}
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
