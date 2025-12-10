@@ -30,6 +30,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import TimezoneSettings from '@/components/settings/TimezoneSettings';
+import { ISO4217_CURRENCIES, getCurrencySymbol } from '@/components/utils/iso4217';
 
 export default function Settings() {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -42,30 +43,18 @@ export default function Settings() {
 
     const savedSettings = pspSettings?.[0];
 
-    const allCurrencies = [
-        { code: 'EUR', name: 'Euro', flag: '🇪🇺' },
-        { code: 'GBP', name: 'British Pound', flag: '🇬🇧' },
-        { code: 'JPY', name: 'Japanese Yen', flag: '🇯🇵' },
-        { code: 'CHF', name: 'Swiss Franc', flag: '🇨🇭' },
-        { code: 'CAD', name: 'Canadian Dollar', flag: '🇨🇦' },
-        { code: 'AUD', name: 'Australian Dollar', flag: '🇦🇺' },
-        { code: 'CNY', name: 'Chinese Yuan', flag: '🇨🇳' },
-        { code: 'INR', name: 'Indian Rupee', flag: '🇮🇳' },
-        { code: 'BRL', name: 'Brazilian Real', flag: '🇧🇷' },
-        { code: 'MXN', name: 'Mexican Peso', flag: '🇲🇽' },
-        { code: 'SGD', name: 'Singapore Dollar', flag: '🇸🇬' },
-        { code: 'HKD', name: 'Hong Kong Dollar', flag: '🇭🇰' },
-        { code: 'KRW', name: 'South Korean Won', flag: '🇰🇷' },
-        { code: 'SEK', name: 'Swedish Krona', flag: '🇸🇪' },
-        { code: 'NOK', name: 'Norwegian Krone', flag: '🇳🇴' },
-        { code: 'DKK', name: 'Danish Krone', flag: '🇩🇰' },
-        { code: 'PLN', name: 'Polish Zloty', flag: '🇵🇱' },
-        { code: 'ZAR', name: 'South African Rand', flag: '🇿🇦' },
-        { code: 'AED', name: 'UAE Dirham', flag: '🇦🇪' },
-        { code: 'THB', name: 'Thai Baht', flag: '🇹🇭' },
-    ];
+    const [searchQuery, setSearchQuery] = useState('');
 
-    const [selectedCurrencies, setSelectedCurrencies] = useState(['EUR', 'GBP', 'JPY', 'CHF', 'CAD', 'AUD']);
+    // Use ISO 4217 currencies
+    const allCurrencies = ISO4217_CURRENCIES.map(curr => ({
+        code: curr.code,
+        name: curr.name,
+        symbol: getCurrencySymbol(curr.code),
+        minorUnit: curr.minorUnit,
+        num: curr.num
+    }));
+
+    const [selectedCurrencies, setSelectedCurrencies] = useState(['USD', 'EUR', 'GBP', 'JPY', 'CHF', 'CAD']);
 
     const [settings, setSettings] = useState({
         company_name: '',
@@ -435,21 +424,31 @@ export default function Settings() {
                                 <CardHeader>
                                     <CardTitle className="flex items-center gap-2">
                                         <DollarSign className="h-5 w-5 text-blue-600" />
-                                        Dashboard Currencies
+                                        Supported Currencies (ISO 4217)
                                     </CardTitle>
-                                    <CardDescription>Select currencies to display on the dashboard exchange rates widget</CardDescription>
+                                    <CardDescription>
+                                        Browse and select currencies from the complete ISO 4217 standard list
+                                    </CardDescription>
                                 </CardHeader>
-                                <CardContent>
-                                    <div className="mb-4">
-                                        <p className="text-sm text-slate-600 mb-2">
-                                            Selected: <span className="font-medium">{selectedCurrencies.length}</span> currencies
-                                        </p>
+                                <CardContent className="space-y-6">
+                                    {/* Selected Currencies */}
+                                    <div>
+                                        <div className="flex items-center justify-between mb-3">
+                                            <p className="text-sm font-medium text-slate-700">
+                                                Selected Currencies ({selectedCurrencies.length})
+                                            </p>
+                                            <Badge variant="outline" className="text-xs">
+                                                ISO 4217 Compliant
+                                            </Badge>
+                                        </div>
                                         <div className="flex flex-wrap gap-2">
                                             {selectedCurrencies.map(code => {
                                                 const currency = allCurrencies.find(c => c.code === code);
                                                 return (
-                                                    <Badge key={code} className="gap-1 bg-blue-100 text-blue-700 hover:bg-blue-200">
-                                                        {currency?.flag} {code}
+                                                    <Badge key={code} className="gap-2 bg-blue-100 text-blue-700 hover:bg-blue-200 px-3 py-1.5">
+                                                        <span className="font-mono font-semibold">{currency?.symbol}</span>
+                                                        <span>{code}</span>
+                                                        <span className="text-xs opacity-70">({currency?.name})</span>
                                                         <button 
                                                             onClick={() => toggleCurrency(code)}
                                                             className="ml-1 hover:text-red-600"
@@ -462,33 +461,79 @@ export default function Settings() {
                                         </div>
                                     </div>
 
+                                    {/* Search */}
                                     <div className="border-t pt-4">
-                                        <p className="text-sm font-medium text-slate-700 mb-3">Available Currencies</p>
-                                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                                            {allCurrencies.map(currency => {
-                                                const isSelected = selectedCurrencies.includes(currency.code);
-                                                return (
-                                                    <div 
-                                                        key={currency.code}
-                                                        onClick={() => toggleCurrency(currency.code)}
-                                                        className={cn(
-                                                            "flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all",
-                                                            isSelected 
-                                                                ? "border-blue-300 bg-blue-50" 
-                                                                : "border-slate-200 hover:border-slate-300 hover:bg-slate-50"
-                                                        )}
-                                                    >
-                                                        <Checkbox checked={isSelected} />
-                                                        <div className="flex items-center gap-2">
-                                                            <span className="text-lg">{currency.flag}</span>
-                                                            <div>
-                                                                <p className="font-medium text-slate-900">{currency.code}</p>
-                                                                <p className="text-xs text-slate-500">{currency.name}</p>
+                                        <div className="mb-4">
+                                            <Label htmlFor="currency-search" className="text-sm font-medium">
+                                                Search ISO 4217 Currencies
+                                            </Label>
+                                            <Input
+                                                id="currency-search"
+                                                placeholder="Search by code or name..."
+                                                value={searchQuery}
+                                                onChange={(e) => setSearchQuery(e.target.value)}
+                                                className="mt-2"
+                                            />
+                                        </div>
+
+                                        {/* Currency Grid */}
+                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 max-h-96 overflow-y-auto p-1">
+                                            {allCurrencies
+                                                .filter(currency => {
+                                                    if (!searchQuery) return true;
+                                                    const query = searchQuery.toLowerCase();
+                                                    return (
+                                                        currency.code.toLowerCase().includes(query) ||
+                                                        currency.name.toLowerCase().includes(query) ||
+                                                        currency.num.includes(query)
+                                                    );
+                                                })
+                                                .map(currency => {
+                                                    const isSelected = selectedCurrencies.includes(currency.code);
+                                                    return (
+                                                        <div 
+                                                            key={currency.code}
+                                                            onClick={() => toggleCurrency(currency.code)}
+                                                            className={cn(
+                                                                "flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-all",
+                                                                isSelected 
+                                                                    ? "border-blue-400 bg-blue-50" 
+                                                                    : "border-slate-200 hover:border-slate-300 hover:bg-slate-50"
+                                                            )}
+                                                        >
+                                                            <div className="flex items-center gap-3 flex-1">
+                                                                <Checkbox checked={isSelected} />
+                                                                <div className="flex-1 min-w-0">
+                                                                    <div className="flex items-center gap-2">
+                                                                        <span className="font-mono font-semibold text-sm">{currency.symbol}</span>
+                                                                        <span className="font-medium text-slate-900">{currency.code}</span>
+                                                                        <Badge variant="outline" className="text-xs px-1">
+                                                                            {currency.num}
+                                                                        </Badge>
+                                                                    </div>
+                                                                    <p className="text-xs text-slate-600 truncate">{currency.name}</p>
+                                                                    <p className="text-xs text-slate-400">
+                                                                        Decimals: {currency.minorUnit}
+                                                                    </p>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                );
-                                            })}
+                                                    );
+                                                })}
+                                        </div>
+                                    </div>
+
+                                    {/* Info */}
+                                    <div className="bg-slate-50 p-4 rounded-lg border">
+                                        <div className="flex items-start gap-3">
+                                            <DollarSign className="h-5 w-5 text-slate-600 mt-0.5" />
+                                            <div>
+                                                <h4 className="font-medium text-sm text-slate-900">ISO 4217 Standard</h4>
+                                                <p className="text-xs text-slate-600 mt-1">
+                                                    This list contains {allCurrencies.length} currencies from the official ISO 4217 standard, 
+                                                    including currency codes, numeric codes, names, and decimal precision (minor units).
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
                                 </CardContent>
