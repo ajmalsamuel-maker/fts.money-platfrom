@@ -59,6 +59,7 @@ const menuSections = [
         title: 'Administration',
         items: [
             { label: 'Merchant Operators', icon: Users, path: 'MerchantOperators' },
+            { label: 'Email Templates', icon: FileText, path: 'MerchantEmailTemplates' },
             { label: 'Change Password', icon: Settings, path: 'MerchantChangePassword' },
             { label: 'Appearance', icon: Settings, path: 'MerchantAppearance' },
         ]
