@@ -182,7 +182,7 @@ export default function MerchantVirtualTerminal() {
                 merchant_transaction_id: `VT-${Date.now()}`,
                 order_id: formData.invoiceNumber || `ORD-${Date.now()}`,
                 merchant_id: user.merchant_id,
-                merchant_name: merchant?.business_name,
+                merchant_name: merchant?.business_name || merchant?.trading_name || user.merchant_name || 'N/A',
                 mid: selectedMID,
                 type: paymentMode === 'recurring' ? 'recurring' : 'sale',
                 action: 'sale',
