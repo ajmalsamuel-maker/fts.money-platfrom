@@ -52,7 +52,12 @@ export default function MerchantDashboard() {
         queryKey: ['merchant', user?.merchant_id],
         queryFn: async () => {
             const merchants = await base44.entities.Merchant.filter({ merchant_id: user.merchant_id });
-            return merchants[0];
+            const merchantData = merchants[0];
+            // Use merchant_code from session if not in merchant data
+            if (merchantData && !merchantData.merchant_code && user.merchant_code) {
+                merchantData.merchant_code = user.merchant_code;
+            }
+            return merchantData;
         },
         enabled: !!user?.merchant_id
     });
