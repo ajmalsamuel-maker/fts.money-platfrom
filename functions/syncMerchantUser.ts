@@ -55,6 +55,7 @@ Deno.serve(async (req) => {
                 WHERE email = $13
             `, [
                 user.merchant_id,
+                user.merchant_code,
                 user.merchant_name,
                 user.full_name,
                 user.role,
@@ -65,8 +66,7 @@ Deno.serve(async (req) => {
                 user.phone || null,
                 user.permissions || [],
                 user.allowed_terminals || [],
-                user.email,
-                user.merchant_code
+                user.email
             ]);
         } else {
             // Insert new user
