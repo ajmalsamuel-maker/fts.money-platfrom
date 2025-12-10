@@ -42,7 +42,8 @@ import {
     Database,
     Headphones,
     Scale,
-    Building2
+    Building2,
+    FileCheck
 } from 'lucide-react';
 
 const menuItems = [
@@ -134,6 +135,7 @@ const menuItems = [
                 { icon: Shield, label: 'auditLogs', path: 'AuditLogs', permission: 'VIEW_USERS' },
                 { icon: Palette, label: 'appearance', path: 'Appearance', permission: 'VIEW_APPEARANCE' },
                 { icon: Settings, label: 'settings', path: 'Settings', permission: 'VIEW_SETTINGS' },
+                { icon: FileCheck, label: 'isoStandards', path: 'ISOConfiguration', permission: 'VIEW_SETTINGS' },
                 { icon: CreditCard, label: 'binTable', path: 'BINTable', permission: 'VIEW_SETTINGS' },
                 { icon: Landmark, label: 'databaseSetup', path: 'DatabaseSetup', permission: 'VIEW_SETTINGS' },
                 { icon: Database, label: 'databaseMigration', path: 'DatabaseMigration', permission: 'VIEW_SETTINGS' },

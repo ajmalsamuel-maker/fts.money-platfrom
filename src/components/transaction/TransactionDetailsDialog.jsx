@@ -21,6 +21,8 @@ import {
 import { CheckCircle2, XCircle, Clock, AlertCircle, Receipt, FileText, CreditCard } from 'lucide-react';
 import CardBrandLogo from './CardBrandLogo';
 import BankInfoDisplay from './BankInfoDisplay';
+import ISO8583Encoder from './ISO8583Encoder';
+import ISO20022Encoder from './ISO20022Encoder';
 
 const getStatusConfig = (status) => {
     const configs = {
@@ -65,10 +67,11 @@ export default function TransactionDetailsDialog({ transaction, open, onClose })
                 </DialogHeader>
 
                 <Tabs defaultValue="details" className="flex-1 overflow-hidden">
-                    <TabsList className="grid w-full grid-cols-3">
+                    <TabsList className="grid w-full grid-cols-4">
                         <TabsTrigger value="details">Transaction Details</TabsTrigger>
                         <TabsTrigger value="history">History & Logs</TabsTrigger>
                         <TabsTrigger value="receipt">Receipt</TabsTrigger>
+                        <TabsTrigger value="iso">ISO Messages</TabsTrigger>
                     </TabsList>
 
                     <ScrollArea className="h-[calc(85vh-180px)] mt-4">
@@ -340,6 +343,12 @@ export default function TransactionDetailsDialog({ transaction, open, onClose })
                                     </CardContent>
                                 </Card>
                             )}
+                        </TabsContent>
+
+                        {/* ISO Messages Tab */}
+                        <TabsContent value="iso" className="space-y-4 pr-4">
+                            <ISO8583Encoder transaction={transaction} />
+                            <ISO20022Encoder transaction={transaction} />
                         </TabsContent>
 
                         {/* Receipt Tab */}

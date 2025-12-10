@@ -96,6 +96,7 @@ const translations = {
         binTable: 'BIN Table',
         databaseSetup: 'Database Setup',
     databaseMigration: 'Database Migration',
+    isoStandards: 'ISO Standards',
         supportCenter: 'Support Center',
         privacyPolicy: 'Privacy Policy',
         termsOfService: 'Terms of Service',
