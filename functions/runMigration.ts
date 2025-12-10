@@ -1,5 +1,9 @@
 import { Pool } from 'npm:pg@8.11.3';
 
+const pool = new Pool({
+    connectionString: Deno.env.get('DATABASE_URL'),
+});
+
 Deno.serve(async (req) => {
     if (req.method === 'OPTIONS') {
         return new Response(null, {
@@ -10,10 +14,6 @@ Deno.serve(async (req) => {
             }
         });
     }
-
-    const pool = new Pool({
-        connectionString: Deno.env.get('DATABASE_URL'),
-    });
 
     try {
         const { sql: migrationSql } = await req.json();
@@ -44,7 +44,5 @@ Deno.serve(async (req) => {
             success: false, 
             error: error.message || 'Migration failed'
         }, { status: 200 });
-    } finally {
-        await pool.end();
     }
 });
