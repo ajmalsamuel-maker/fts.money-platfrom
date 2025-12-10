@@ -24,12 +24,7 @@ import {
 import MerchantSidebar from '@/components/merchant/MerchantSidebar';
 import MerchantTopBar from '@/components/merchant/MerchantTopBar';
 import { Search, Download, Filter, CheckCircle2, XCircle, Clock, AlertCircle, Eye, X } from 'lucide-react';
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-} from "@/components/ui/dialog";
+import TransactionDetailsDialog from '@/components/transaction/TransactionDetailsDialog';
 
 export default function MerchantTransactionList() {
     const { user, loading, logout } = useMerchantAuth();
@@ -273,121 +268,11 @@ export default function MerchantTransactionList() {
             </div>
 
             {/* Transaction Details Dialog */}
-            <Dialog open={!!selectedTransaction} onOpenChange={() => setSelectedTransaction(null)}>
-                <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-                    <DialogHeader>
-                        <DialogTitle>Transaction Details</DialogTitle>
-                    </DialogHeader>
-                    {selectedTransaction && (
-                        <div className="space-y-4">
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <Label className="text-xs text-slate-500">Transaction ID</Label>
-                                    <p className="font-mono text-sm">{selectedTransaction.transaction_id || selectedTransaction.id}</p>
-                                </div>
-                                <div>
-                                    <Label className="text-xs text-slate-500">Status</Label>
-                                    <div className="mt-1">
-                                        <Badge variant="outline" className={getStatusConfig(selectedTransaction.status).className}>
-                                            {selectedTransaction.status}
-                                        </Badge>
-                                    </div>
-                                </div>
-                                <div>
-                                    <Label className="text-xs text-slate-500">Amount</Label>
-                                    <p className="text-lg font-bold">${selectedTransaction.amount?.toLocaleString(undefined, {minimumFractionDigits: 2})}</p>
-                                </div>
-                                <div>
-                                    <Label className="text-xs text-slate-500">Currency</Label>
-                                    <p className="text-sm">{selectedTransaction.currency || 'USD'}</p>
-                                </div>
-                                <div>
-                                    <Label className="text-xs text-slate-500">Date & Time</Label>
-                                    <p className="text-sm">{new Date(selectedTransaction.created_date).toLocaleString()}</p>
-                                </div>
-                                <div>
-                                    <Label className="text-xs text-slate-500">Type</Label>
-                                    <p className="text-sm">{selectedTransaction.type}</p>
-                                </div>
-                            </div>
-
-                            <div className="border-t pt-4">
-                                <h4 className="font-semibold mb-3">Payment Method</h4>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <Label className="text-xs text-slate-500">Card Brand</Label>
-                                        <p className="text-sm">{selectedTransaction.card_brand || 'N/A'}</p>
-                                    </div>
-                                    <div>
-                                        <Label className="text-xs text-slate-500">Last 4 Digits</Label>
-                                        <p className="text-sm font-mono">•••• {selectedTransaction.card_last_four}</p>
-                                    </div>
-                                    <div>
-                                        <Label className="text-xs text-slate-500">Payment Method</Label>
-                                        <p className="text-sm">{selectedTransaction.payment_method}</p>
-                                    </div>
-                                    <div>
-                                        <Label className="text-xs text-slate-500">3DS</Label>
-                                        <p className="text-sm">{selectedTransaction.is_3ds ? 'Yes' : 'No'}</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="border-t pt-4">
-                                <h4 className="font-semibold mb-3">Customer Information</h4>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <Label className="text-xs text-slate-500">Name</Label>
-                                        <p className="text-sm">{selectedTransaction.customer_name || 'N/A'}</p>
-                                    </div>
-                                    <div>
-                                        <Label className="text-xs text-slate-500">Email</Label>
-                                        <p className="text-sm">{selectedTransaction.customer_email || 'N/A'}</p>
-                                    </div>
-                                    <div>
-                                        <Label className="text-xs text-slate-500">Country</Label>
-                                        <p className="text-sm">{selectedTransaction.customer_country || 'N/A'}</p>
-                                    </div>
-                                    <div>
-                                        <Label className="text-xs text-slate-500">IP Address</Label>
-                                        <p className="text-sm font-mono">{selectedTransaction.ip_address || 'N/A'}</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="border-t pt-4">
-                                <h4 className="font-semibold mb-3">Transaction Details</h4>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <Label className="text-xs text-slate-500">Auth Code</Label>
-                                        <p className="text-sm font-mono">{selectedTransaction.auth_code || 'N/A'}</p>
-                                    </div>
-                                    <div>
-                                        <Label className="text-xs text-slate-500">Response Code</Label>
-                                        <p className="text-sm font-mono">{selectedTransaction.response_code || 'N/A'}</p>
-                                    </div>
-                                    <div className="col-span-2">
-                                        <Label className="text-xs text-slate-500">Response Message</Label>
-                                        <p className="text-sm">{selectedTransaction.response_message || 'N/A'}</p>
-                                    </div>
-                                    {selectedTransaction.description && (
-                                        <div className="col-span-2">
-                                            <Label className="text-xs text-slate-500">Description</Label>
-                                            <p className="text-sm">{selectedTransaction.description}</p>
-                                        </div>
-                                    )}
-                                    {selectedTransaction.risk_score && (
-                                        <div>
-                                            <Label className="text-xs text-slate-500">Risk Score</Label>
-                                            <p className="text-sm">{selectedTransaction.risk_score}</p>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                    )}
-                </DialogContent>
-            </Dialog>
+            <TransactionDetailsDialog 
+                transaction={selectedTransaction}
+                open={!!selectedTransaction}
+                onOpenChange={() => setSelectedTransaction(null)}
+            />
         </div>
     );
 }
