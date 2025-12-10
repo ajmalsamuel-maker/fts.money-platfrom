@@ -2,7 +2,7 @@
 // Validates data against ISO 4217, ISO 3166-1, ISO 8583, ISO 20022, ISO 9362, ISO 13616, ISO 23257, ISO 24165
 
 import { ISO4217_CURRENCIES } from './iso4217';
-import { COUNTRIES } from './countries';
+import { getAllCountries } from './countries';
 import { validateIBAN, isValidBIC } from './ibanBic';
 import { validateDTI } from './iso24165';
 import { validateBlockchainTransaction, validateAddressFormat } from './iso23257';
@@ -20,7 +20,8 @@ export const validateCurrency = (currencyCode) => {
 
 // ISO 3166-1 Country Validation
 export const validateCountry = (countryCode) => {
-    const country = COUNTRIES.find(c => c.code === countryCode);
+    const countries = getAllCountries();
+    const country = countries.find(c => c.code === countryCode);
     return {
         valid: !!country,
         standard: 'ISO 3166-1',
