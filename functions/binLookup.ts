@@ -37,6 +37,8 @@ Deno.serve(async (req) => {
 
                 const data = await response.json();
 
+                console.log('BINList API response for', bin, ':', JSON.stringify(data));
+
                 // Store in database
                 const binData = {
                     bin: bin,
@@ -53,6 +55,8 @@ Deno.serve(async (req) => {
                     status: 'active',
                     metadata: data
                 };
+
+                console.log('Storing BIN data:', JSON.stringify(binData));
 
                 const created = await base44.asServiceRole.entities.BIN.create(binData);
 
