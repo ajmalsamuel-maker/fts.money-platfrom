@@ -77,6 +77,11 @@ export default function MerchantInfo() {
                             <CardContent className="grid md:grid-cols-2 gap-6">
                                 <div className="space-y-4">
                                     <div>
+                                        <label className="text-sm font-medium text-slate-500">Merchant Code</label>
+                                        <p className="text-xl font-mono font-bold text-blue-600">{merchant?.merchant_code || 'N/A'}</p>
+                                        <p className="text-xs text-slate-500 mt-1">Use this code to log in to the merchant portal</p>
+                                    </div>
+                                    <div>
                                         <label className="text-sm font-medium text-slate-500">Legal Business Name</label>
                                         <p className="text-base font-semibold">{merchant?.business_name || 'N/A'}</p>
                                     </div>
