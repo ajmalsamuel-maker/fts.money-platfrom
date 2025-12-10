@@ -1,191 +1,290 @@
 import React, { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useVTAuth } from '@/components/auth/useVTAuth';
 import { base44 } from '@/api/base44Client';
-import Sidebar from '@/components/dashboard/Sidebar';
-import TopHeader from '@/components/dashboard/TopHeader';
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { useQuery } from '@tanstack/react-query';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-import { 
-    CreditCard, 
-    FileText,
-    Link2,
-    CheckCircle,
-    Mail,
-    Printer,
-    Download,
-    Send
-} from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { CreditCard, Loader2, CheckCircle2, LogOut } from 'lucide-react';
 import { toast } from 'sonner';
-import InvoiceGenerator from '@/components/terminal/InvoiceGenerator';
-import PaymentLinkGenerator from '@/components/terminal/PaymentLinkGenerator';
-import PaymentForm from '@/components/terminal/PaymentForm';
-import InvoiceTemplateManager from '@/components/terminal/InvoiceTemplateManager';
 
 export default function VirtualTerminal() {
-    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-    const [activeTab, setActiveTab] = useState('payment');
-    const [recentTransactions, setRecentTransactions] = useState([]);
-
-    const queryClient = useQueryClient();
-
-    const { data: merchants = [] } = useQuery({
-        queryKey: ['merchants'],
-        queryFn: () => base44.entities.Merchant.list(),
+    const { user, loading, logout } = useVTAuth();
+    const [processing, setProcessing] = useState(false);
+    const [success, setSuccess] = useState(false);
+    
+    const [formData, setFormData] = useState({
+        amount: '',
+        currency: 'USD',
+        cardNumber: '',
+        cardholderName: '',
+        expiryMonth: '',
+        expiryYear: '',
+        cvv: '',
+        customerEmail: '',
+        description: ''
     });
 
-    const { data: transactions = [] } = useQuery({
-        queryKey: ['recent-transactions'],
-        queryFn: () => base44.entities.Transaction.list('-created_date', 10),
+    const { data: terminal } = useQuery({
+        queryKey: ['virtualTerminal', user?.terminal_id],
+        queryFn: async () => {
+            const terminals = await base44.entities.VirtualTerminal.filter({ terminal_id: user.terminal_id });
+            return terminals[0];
+        },
+        enabled: !!user?.terminal_id
     });
+
+    const { data: merchant } = useQuery({
+        queryKey: ['merchant', user?.merchant_id],
+        queryFn: async () => {
+            const merchants = await base44.entities.Merchant.filter({ merchant_id: user.merchant_id });
+            return merchants[0];
+        },
+        enabled: !!user?.merchant_id
+    });
+
+    const handleInputChange = (field, value) => {
+        setFormData(prev => ({ ...prev, [field]: value }));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        
+        if (!formData.amount || !formData.cardNumber || !formData.cvv || !formData.expiryMonth || !formData.expiryYear) {
+            toast.error('Please fill in all required fields');
+            return;
+        }
+
+        setProcessing(true);
+        
+        try {
+            await base44.entities.Transaction.create({
+                merchant_id: user.merchant_id,
+                merchant_name: merchant?.business_name,
+                type: 'sale',
+                status: 'approved',
+                amount: parseFloat(formData.amount),
+                currency: formData.currency,
+                payment_method: 'card',
+                card_last_four: formData.cardNumber.slice(-4),
+                customer_email: formData.customerEmail,
+                customer_name: formData.cardholderName,
+                description: formData.description,
+                terminal_id: user.terminal_id,
+                auth_code: Math.random().toString(36).substr(2, 9).toUpperCase(),
+                response_code: '00',
+                response_message: 'Approved',
+                is_3ds: false
+            });
+
+            setSuccess(true);
+            toast.success('Payment processed successfully');
+            
+            setTimeout(() => {
+                setFormData({
+                    amount: '',
+                    currency: 'USD',
+                    cardNumber: '',
+                    cardholderName: '',
+                    expiryMonth: '',
+                    expiryYear: '',
+                    cvv: '',
+                    customerEmail: '',
+                    description: ''
+                });
+                setSuccess(false);
+            }, 3000);
+        } catch (error) {
+            toast.error('Payment processing failed');
+        } finally {
+            setProcessing(false);
+        }
+    };
+
+    if (loading || !user) {
+        return <div className="flex h-screen items-center justify-center">Loading...</div>;
+    }
 
     return (
         <div className="min-h-screen bg-slate-50">
-            <Sidebar 
-                collapsed={sidebarCollapsed} 
-                currentPage="VirtualTerminals"
-            />
-            
-            <div className={cn(
-                "transition-all duration-300",
-                sidebarCollapsed ? "ml-20" : "ml-64"
-            )}>
-                <TopHeader 
-                    onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
-                    collapsed={sidebarCollapsed}
-                />
-                
-                <main className="p-6">
-                    {/* Header */}
-                    <div className="mb-6">
-                        <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
-                            <CreditCard className="h-7 w-7 text-blue-600" />
-                            Virtual Payment Terminal
-                        </h1>
-                        <p className="text-slate-500">Process payments, create invoices, and generate payment links</p>
-                    </div>
-
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        {/* Main Terminal */}
-                        <div className="lg:col-span-2">
-                            <Card>
-                                <CardHeader className="border-b">
-                                    <CardTitle>Payment Processing</CardTitle>
-                                </CardHeader>
-                                <CardContent className="p-6">
-                                    <Tabs value={activeTab} onValueChange={setActiveTab}>
-                                       <TabsList className="grid w-full grid-cols-4 mb-6">
-                                           <TabsTrigger value="payment" className="gap-2">
-                                               <CreditCard className="h-4 w-4" />
-                                               <span className="hidden sm:inline">Payment</span>
-                                           </TabsTrigger>
-                                           <TabsTrigger value="invoice" className="gap-2">
-                                               <FileText className="h-4 w-4" />
-                                               <span className="hidden sm:inline">Invoice</span>
-                                           </TabsTrigger>
-                                           <TabsTrigger value="link" className="gap-2">
-                                               <Link2 className="h-4 w-4" />
-                                               <span className="hidden sm:inline">Link</span>
-                                           </TabsTrigger>
-                                           <TabsTrigger value="templates" className="gap-2">
-                                               <FileText className="h-4 w-4" />
-                                               <span className="hidden sm:inline">Templates</span>
-                                           </TabsTrigger>
-                                       </TabsList>
-
-                                        <TabsContent value="payment">
-                                            <PaymentForm merchants={merchants} />
-                                        </TabsContent>
-
-                                        <TabsContent value="invoice">
-                                            <InvoiceGenerator merchants={merchants} />
-                                        </TabsContent>
-
-                                        <TabsContent value="link">
-                                            <PaymentLinkGenerator merchants={merchants} />
-                                        </TabsContent>
-
-                                        <TabsContent value="templates">
-                                            <InvoiceTemplateManager merchantId={merchants[0]?.id} />
-                                        </TabsContent>
-                                    </Tabs>
-                                </CardContent>
-                            </Card>
+            {/* Header */}
+            <header className="bg-white border-b border-slate-200 px-6 py-4">
+                <div className="flex items-center justify-between max-w-7xl mx-auto">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
+                            <CreditCard className="h-5 w-5 text-white" />
                         </div>
-
-                        {/* Sidebar - Recent Activity */}
-                        <div className="space-y-4">
-                            <Card>
-                                <CardHeader className="border-b">
-                                    <CardTitle className="text-base">Recent Transactions</CardTitle>
-                                </CardHeader>
-                                <CardContent className="p-4">
-                                    <div className="space-y-3">
-                                        {transactions.slice(0, 5).map((tx) => (
-                                            <div key={tx.id} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-                                                <div className="flex-1">
-                                                    <p className="font-medium text-sm">{tx.merchant_name}</p>
-                                                    <p className="text-xs text-slate-500">{tx.transaction_id}</p>
-                                                </div>
-                                                <div className="text-right">
-                                                    <p className="font-semibold text-sm">${tx.amount?.toFixed(2)}</p>
-                                                    <Badge className={cn(
-                                                        "text-xs",
-                                                        tx.status === 'approved' ? 'bg-emerald-100 text-emerald-700' : 
-                                                        tx.status === 'pending' ? 'bg-amber-100 text-amber-700' :
-                                                        'bg-red-100 text-red-700'
-                                                    )}>
-                                                        {tx.status}
-                                                    </Badge>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </CardContent>
-                            </Card>
-
-                            <Card>
-                                <CardHeader className="border-b">
-                                    <CardTitle className="text-base">ISO 20022 Compliance</CardTitle>
-                                </CardHeader>
-                                <CardContent className="p-4">
-                                    <div className="space-y-3">
-                                        <div className="flex items-center gap-2 text-sm">
-                                            <CheckCircle className="h-4 w-4 text-emerald-600" />
-                                            <span className="text-slate-600">Payment Instructions (pain.001)</span>
-                                        </div>
-                                        <div className="flex items-center gap-2 text-sm">
-                                            <CheckCircle className="h-4 w-4 text-emerald-600" />
-                                            <span className="text-slate-600">Credit Transfer (pacs.008)</span>
-                                        </div>
-                                        <div className="flex items-center gap-2 text-sm">
-                                            <CheckCircle className="h-4 w-4 text-emerald-600" />
-                                            <span className="text-slate-600">Account Statement (camt.053)</span>
-                                        </div>
-                                        <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                                            <p className="text-xs text-blue-700">
-                                                All transactions are structured for ISO 20022 compatibility with proper end-to-end identification and remittance information.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
+                        <div>
+                            <h1 className="text-lg font-bold">Virtual Terminal</h1>
+                            <p className="text-xs text-slate-500">{terminal?.name || 'Terminal'} • {user.email}</p>
                         </div>
                     </div>
-                </main>
-            </div>
+                    <Button variant="outline" size="sm" onClick={logout}>
+                        <LogOut className="h-4 w-4 mr-2" />
+                        Logout
+                    </Button>
+                </div>
+            </header>
+
+            {/* Main Content */}
+            <main className="p-6">
+                <div className="max-w-2xl mx-auto space-y-6">
+                    <Card>
+                        <CardHeader className="border-b bg-slate-50/50">
+                            <CardTitle className="flex items-center gap-2">
+                                <CreditCard className="h-5 w-5" />
+                                Payment Details
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="pt-6">
+                            <form onSubmit={handleSubmit} className="space-y-4">
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <Label>Amount *</Label>
+                                        <Input
+                                            type="number"
+                                            step="0.01"
+                                            placeholder="0.00"
+                                            value={formData.amount}
+                                            onChange={(e) => handleInputChange('amount', e.target.value)}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>Currency</Label>
+                                        <Select value={formData.currency} onValueChange={(v) => handleInputChange('currency', v)}>
+                                            <SelectTrigger>
+                                                <SelectValue />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="USD">USD</SelectItem>
+                                                <SelectItem value="EUR">EUR</SelectItem>
+                                                <SelectItem value="GBP">GBP</SelectItem>
+                                                <SelectItem value="HKD">HKD</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label>Cardholder Name *</Label>
+                                    <Input
+                                        placeholder="John Doe"
+                                        value={formData.cardholderName}
+                                        onChange={(e) => handleInputChange('cardholderName', e.target.value)}
+                                        required
+                                    />
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label>Card Number *</Label>
+                                    <Input
+                                        placeholder="4111 1111 1111 1111"
+                                        value={formData.cardNumber}
+                                        onChange={(e) => handleInputChange('cardNumber', e.target.value.replace(/\s/g, ''))}
+                                        maxLength={16}
+                                        required
+                                    />
+                                </div>
+
+                                <div className="grid grid-cols-3 gap-4">
+                                    <div className="space-y-2">
+                                        <Label>Expiry Month *</Label>
+                                        <Input
+                                            placeholder="MM"
+                                            value={formData.expiryMonth}
+                                            onChange={(e) => handleInputChange('expiryMonth', e.target.value)}
+                                            maxLength={2}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>Expiry Year *</Label>
+                                        <Input
+                                            placeholder="YY"
+                                            value={formData.expiryYear}
+                                            onChange={(e) => handleInputChange('expiryYear', e.target.value)}
+                                            maxLength={2}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>CVV *</Label>
+                                        <Input
+                                            placeholder="123"
+                                            value={formData.cvv}
+                                            onChange={(e) => handleInputChange('cvv', e.target.value)}
+                                            maxLength={4}
+                                            required
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label>Customer Email</Label>
+                                    <Input
+                                        type="email"
+                                        placeholder="customer@example.com"
+                                        value={formData.customerEmail}
+                                        onChange={(e) => handleInputChange('customerEmail', e.target.value)}
+                                    />
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label>Description</Label>
+                                    <Input
+                                        placeholder="Payment for..."
+                                        value={formData.description}
+                                        onChange={(e) => handleInputChange('description', e.target.value)}
+                                    />
+                                </div>
+
+                                <div className="flex gap-3 pt-4">
+                                    <Button 
+                                        type="button" 
+                                        variant="outline" 
+                                        className="flex-1"
+                                        onClick={() => setFormData({
+                                            amount: '',
+                                            currency: 'USD',
+                                            cardNumber: '',
+                                            cardholderName: '',
+                                            expiryMonth: '',
+                                            expiryYear: '',
+                                            cvv: '',
+                                            customerEmail: '',
+                                            description: ''
+                                        })}
+                                    >
+                                        Clear
+                                    </Button>
+                                    <Button 
+                                        type="submit" 
+                                        className="flex-1"
+                                        disabled={processing || success}
+                                    >
+                                        {processing ? (
+                                            <>
+                                                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                                Processing...
+                                            </>
+                                        ) : success ? (
+                                            <>
+                                                <CheckCircle2 className="h-4 w-4 mr-2" />
+                                                Success
+                                            </>
+                                        ) : (
+                                            'Process Payment'
+                                        )}
+                                    </Button>
+                                </div>
+                            </form>
+                        </CardContent>
+                    </Card>
+                </div>
+            </main>
         </div>
     );
 }
