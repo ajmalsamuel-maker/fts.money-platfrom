@@ -19,7 +19,8 @@ import {
     ChevronRight,
     Wallet,
     HelpCircle,
-    Book
+    Book,
+    Bitcoin
 } from 'lucide-react';
 
 const menuSections = [
@@ -51,6 +52,7 @@ const menuSections = [
         title: 'Operations',
         items: [
             { label: 'Virtual Terminals', icon: CreditCard, path: 'MerchantVirtualTerminals' },
+            { label: 'Crypto Management', icon: Bitcoin, path: 'MerchantCryptoDashboard' },
             { label: 'Monitor Tools', icon: BarChart3, path: 'MerchantMonitorTools' },
             { label: 'Dispute Management', icon: AlertCircle, path: 'MerchantDisputeManagement' },
         ]
