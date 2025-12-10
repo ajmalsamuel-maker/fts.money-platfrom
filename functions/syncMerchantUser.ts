@@ -14,9 +14,9 @@ Deno.serve(async (req) => {
         // Insert or update merchant user in PostgreSQL
         await pool.query(`
             INSERT INTO merchant_users (
-                id, merchant_id, merchant_name, email, full_name, role, status,
+                merchant_id, merchant_name, email, full_name, role, status,
                 temp_password, must_change_password, two_factor_enabled, phone, permissions, allowed_terminals
-            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
             ON CONFLICT (email) 
             DO UPDATE SET
                 merchant_id = EXCLUDED.merchant_id,
@@ -31,7 +31,6 @@ Deno.serve(async (req) => {
                 permissions = EXCLUDED.permissions,
                 allowed_terminals = EXCLUDED.allowed_terminals
         `, [
-            user.id,
             user.merchant_id,
             user.merchant_name,
             user.email,
