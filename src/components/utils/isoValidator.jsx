@@ -3,7 +3,7 @@
 
 import { ISO4217_CURRENCIES } from './iso4217';
 import { getAllCountries } from './countries';
-import { validateIBAN, validateBIC } from './ibanBic';
+import { validateIBAN, validateBIC as validateBICUtil } from './ibanBic';
 import { validateDTI } from './iso24165';
 import { validateBlockchainTransaction, validateAddressFormat } from './iso23257';
 
@@ -32,7 +32,7 @@ export const validateCountry = (countryCode) => {
 
 // ISO 9362 BIC Validation
 export const validateISO9362 = (bic) => {
-    const result = validateBIC(bic);
+    const result = validateBICUtil(bic);
     return {
         valid: result.valid,
         standard: 'ISO 9362',
