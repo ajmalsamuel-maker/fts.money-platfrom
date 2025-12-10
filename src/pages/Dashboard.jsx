@@ -25,7 +25,8 @@ import {
     TrendingUp, 
     Store,
     RefreshCw,
-    HelpCircle
+    HelpCircle,
+    Coins
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -46,6 +47,8 @@ export default function Dashboard() {
         queryFn: () => base44.entities.Merchant.list(),
     });
 
+    // Separate crypto and fiat transactions
+    const cryptoTransactions = transactions.filter(t => t.crypto_asset || t.payment_method === 'crypto_currency' || t.payment_method === 'bitcoin' || t.payment_method === 'bitcoin_cash');
     const cryptoVolume = cryptoTransactions.reduce((sum, t) => sum + (t.amount || 0), 0);
 
     const stats = [
