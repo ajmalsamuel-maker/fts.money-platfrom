@@ -53,6 +53,7 @@ import {
 } from 'lucide-react';
 import { usePermissions } from '@/components/auth/usePermissions';
 import { PermissionGate } from '@/components/auth/PermissionGate';
+import TransactionDetailsDialog from '@/components/transaction/TransactionDetailsDialog';
 
 const statusConfig = {
     approved: { label: 'Approved', className: 'bg-emerald-100 text-emerald-700 border-emerald-200' },
@@ -385,74 +386,16 @@ export default function Transactions() {
             </div>
 
             {/* View Details Dialog */}
-            <Dialog open={viewDetailsOpen} onOpenChange={setViewDetailsOpen}>
-                <DialogContent className="max-w-2xl">
-                    <DialogHeader>
-                        <DialogTitle>Transaction Details</DialogTitle>
-                        <DialogDescription>
-                            {selectedTransaction?.transaction_id || `TXN-${selectedTransaction?.id?.slice(0, 8)}`}
-                        </DialogDescription>
-                    </DialogHeader>
-                    {selectedTransaction && (
-                        <div className="space-y-4">
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <p className="text-sm text-slate-500">Status</p>
-                                    <Badge className={cn("mt-1", statusConfig[selectedTransaction.status]?.className)}>
-                                        {statusConfig[selectedTransaction.status]?.label}
-                                    </Badge>
-                                </div>
-                                <div>
-                                    <p className="text-sm text-slate-500">Type</p>
-                                    <Badge className={cn("mt-1", typeConfig[selectedTransaction.type]?.className)}>
-                                        {typeConfig[selectedTransaction.type]?.label}
-                                    </Badge>
-                                </div>
-                                <div>
-                                    <p className="text-sm text-slate-500">Amount</p>
-                                    <p className="font-semibold text-slate-900 mt-1">
-                                        {selectedTransaction.currency} {selectedTransaction.amount?.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                                    </p>
-                                </div>
-                                <div>
-                                    <p className="text-sm text-slate-500">Date</p>
-                                    <p className="text-slate-900 mt-1">
-                                        {selectedTransaction.created_date ? format(new Date(selectedTransaction.created_date), 'MMM dd, yyyy HH:mm:ss') : '-'}
-                                    </p>
-                                </div>
-                                <div>
-                                    <p className="text-sm text-slate-500">Merchant</p>
-                                    <p className="text-slate-900 mt-1">{selectedTransaction.merchant_name || 'N/A'}</p>
-                                </div>
-                                <div>
-                                    <p className="text-sm text-slate-500">Customer</p>
-                                    <p className="text-slate-900 mt-1">{selectedTransaction.customer_email || 'N/A'}</p>
-                                </div>
-                                <div>
-                                    <p className="text-sm text-slate-500">Payment Method</p>
-                                    <p className="text-slate-900 mt-1">
-                                        {selectedTransaction.payment_method}
-                                        {selectedTransaction.card_last_four && ` •••• ${selectedTransaction.card_last_four}`}
-                                    </p>
-                                </div>
-                                <div>
-                                    <p className="text-sm text-slate-500">Auth Code</p>
-                                    <p className="text-slate-900 mt-1">{selectedTransaction.auth_code || '-'}</p>
-                                </div>
-                            </div>
-                            {selectedTransaction.description && (
-                                <div>
-                                    <p className="text-sm text-slate-500">Description</p>
-                                    <p className="text-slate-900 mt-1">{selectedTransaction.description}</p>
-                                </div>
-                            )}
-                        </div>
-                    )}
-                    <DialogFooter>
-                        <Button variant="outline" onClick={() => setViewDetailsOpen(false)}>Close</Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
+            {selectedTransaction && (
+                <TransactionDetailsDialog
+                    transaction={selectedTransaction}
+                    open={viewDetailsOpen}
+                    onClose={() => {
+                        setViewDetailsOpen(false);
+                        setSelectedTransaction(null);
+                    }}
+                />
+            )}
 
             {/* Refund Dialog */}
             <Dialog open={refundDialogOpen} onOpenChange={setRefundDialogOpen}>

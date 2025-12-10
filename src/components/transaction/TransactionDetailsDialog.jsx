@@ -46,14 +46,14 @@ const DetailField = ({ label, value, mono = false, className = "" }) => (
     </div>
 );
 
-export default function TransactionDetailsDialog({ transaction, open, onOpenChange }) {
+export default function TransactionDetailsDialog({ transaction, open, onClose }) {
     if (!transaction) return null;
 
     const statusConfig = getStatusConfig(transaction.status);
     const StatusIcon = statusConfig.icon;
 
     return (
-        <Dialog open={open} onOpenChange={onOpenChange}>
+        <Dialog open={open} onOpenChange={onClose}>
             <DialogContent className="max-w-4xl max-h-[85vh] overflow-hidden flex flex-col">
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">

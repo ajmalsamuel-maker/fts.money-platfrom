@@ -8,8 +8,8 @@ export default function FintechNewsTicker() {
 
     useEffect(() => {
         fetchNews();
-        // Refresh every 30 minutes
-        const interval = setInterval(fetchNews, 30 * 60 * 1000);
+        // Refresh every 6 hours
+        const interval = setInterval(fetchNews, 6 * 60 * 60 * 1000);
         return () => clearInterval(interval);
     }, []);
 
@@ -26,7 +26,10 @@ export default function FintechNewsTicker() {
 
             const allHeadlines = [];
             
-            for (const url of sources) {
+            // Shuffle sources for variety
+            const shuffledSources = [...sources].sort(() => Math.random() - 0.5);
+            
+            for (const url of shuffledSources) {
                 try {
                     const response = await base44.integrations.Core.InvokeLLM({
                         prompt: `Extract the latest fintech news headlines from this website. Return a JSON array of objects with 'title' and 'url' fields. Only return the top 5 most recent headlines. Make sure the URLs are complete and valid.`,
@@ -58,12 +61,15 @@ export default function FintechNewsTicker() {
                     console.error(`Failed to fetch from ${url}:`, err);
                 }
             }
+            
+            // Shuffle all headlines for variety
+            const shuffledHeadlines = allHeadlines.sort(() => Math.random() - 0.5);
 
             // Remove duplicates based on title similarity
             const uniqueHeadlines = [];
             const seenTitles = new Set();
             
-            for (const headline of allHeadlines) {
+            for (const headline of shuffledHeadlines) {
                 const normalizedTitle = headline.title.toLowerCase().replace(/[^a-z0-9]/g, '');
                 if (!seenTitles.has(normalizedTitle)) {
                     seenTitles.add(normalizedTitle);

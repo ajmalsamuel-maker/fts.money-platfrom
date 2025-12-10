@@ -103,12 +103,14 @@ export default function MerchantSidebar({ selectedMID, mids, onMIDChange, curren
                 </div>
                 
                 {/* Merchant Code Display */}
-                <div className="mb-3 p-2 bg-slate-700 rounded border border-slate-600">
-                    <label className="text-[10px] text-slate-400 block mb-1">MERCHANT CODE</label>
-                    <div className="font-mono font-bold text-sm text-blue-400">
-                        {merchant?.merchant_code || user?.merchant_code || 'LOADING...'}
+                {(merchant?.merchant_code || user?.merchant_code) && (
+                    <div className="mb-3 p-2 bg-slate-700 rounded border border-slate-600">
+                        <label className="text-[10px] text-slate-400 block mb-1">MERCHANT CODE</label>
+                        <div className="font-mono font-bold text-sm text-blue-400">
+                            {merchant?.merchant_code || user?.merchant_code}
+                        </div>
                     </div>
-                </div>
+                )}
 
                 {/* MID Selection */}
                 <div>
