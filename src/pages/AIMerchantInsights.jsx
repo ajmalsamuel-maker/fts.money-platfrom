@@ -63,6 +63,7 @@ export default function AIMerchantInsights() {
                 const merchantTxns = transactions.filter(t => t.merchant_id === m.id);
                 const merchantChargebacks = chargebacks.filter(c => c.merchant_id === m.id);
                 const merchantDisputes = disputes.filter(d => d.merchant_id === m.id);
+                const cryptoTxns = merchantTxns.filter(t => t.crypto_asset || t.payment_method === 'crypto_currency' || t.payment_method === 'bitcoin');
 
                 return {
                     id: m.id,
@@ -72,6 +73,8 @@ export default function AIMerchantInsights() {
                     mcc_code: m.mcc_code,
                     total_volume: m.total_volume || 0,
                     total_transactions: merchantTxns.length,
+                    crypto_transactions: cryptoTxns.length,
+                    crypto_volume: cryptoTxns.reduce((sum, t) => sum + (t.amount || 0), 0),
                     chargeback_count: merchantChargebacks.length,
                     dispute_count: merchantDisputes.length,
                     avg_transaction_value: merchantTxns.length > 0 

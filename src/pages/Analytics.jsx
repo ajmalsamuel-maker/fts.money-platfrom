@@ -45,7 +45,8 @@ import {
     Download,
     RefreshCw,
     Repeat,
-    Brain
+    Brain,
+    Coins
 } from 'lucide-react';
 
 const generateTimeSeriesData = (days) => {
@@ -72,7 +73,8 @@ const paymentMethodData = [
     { name: 'Mastercard', value: 32, amount: 800000, color: '#eb001b' },
     { name: 'Amex', value: 12, amount: 300000, color: '#006fcf' },
     { name: 'Discover', value: 5, amount: 125000, color: '#ff6000' },
-    { name: 'Others', value: 6, amount: 150000, color: '#64748b' },
+    { name: 'Crypto', value: cryptoTransactions.length > 0 ? Math.round((cryptoTransactions.length / transactions.length) * 100) : 4, amount: cryptoTransactions.reduce((sum, t) => sum + (t.amount || 0), 0), color: '#f59e0b' },
+    { name: 'Others', value: 2, amount: 50000, color: '#64748b' },
 ];
 
 const geoData = [
@@ -102,8 +104,12 @@ export default function Analytics() {
 
     const { data: transactions = [] } = useQuery({
         queryKey: ['transactions'],
-        queryFn: () => base44.entities.Transaction.list('-created_date', 100),
+        queryFn: () => base44.entities.Transaction.list('-created_date', 1000),
     });
+
+    // Separate crypto and fiat transactions
+    const cryptoTransactions = transactions.filter(t => t.crypto_asset || t.payment_method === 'crypto_currency' || t.payment_method === 'bitcoin' || t.payment_method === 'bitcoin_cash');
+    const fiatTransactions = transactions.filter(t => !t.crypto_asset && t.payment_method !== 'crypto_currency' && t.payment_method !== 'bitcoin' && t.payment_method !== 'bitcoin_cash');
 
     const { data: subscriptions = [] } = useQuery({
         queryKey: ['subscriptions-analytics'],
@@ -237,8 +243,8 @@ export default function Analytics() {
                         </Card>
                     </div>
 
-                    {/* Recurring & AI KPI Cards */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                    {/* Recurring, AI & Crypto KPI Cards */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                         <Card className="p-5">
                             <div className="flex items-start justify-between">
                                 <div>
@@ -271,16 +277,30 @@ export default function Analytics() {
                         <Card className="p-5">
                             <div className="flex items-start justify-between">
                                 <div>
+                                    <p className="text-sm text-slate-500">Crypto Transactions</p>
+                                    <p className="text-2xl font-bold text-slate-900">{cryptoTransactions.length}</p>
+                                    <div className="flex items-center gap-1 mt-1 text-amber-600 text-sm">
+                                        ${(cryptoTransactions.reduce((sum, t) => sum + (t.amount || 0), 0) / 1000).toFixed(1)}K
+                                    </div>
+                                </div>
+                                <div className="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center">
+                                    <Coins className="h-6 w-6 text-amber-600" />
+                                </div>
+                            </div>
+                        </Card>
+                        <Card className="p-5">
+                            <div className="flex items-start justify-between">
+                                <div>
                                     <p className="text-sm text-slate-500">Failed Payments</p>
                                     <p className="text-2xl font-bold text-slate-900">
                                         {subscriptions.filter(s => s.status === 'dunning').length}
                                     </p>
-                                    <div className="flex items-center gap-1 mt-1 text-amber-600 text-sm">
+                                    <div className="flex items-center gap-1 mt-1 text-red-600 text-sm">
                                         In dunning
                                     </div>
                                 </div>
-                                <div className="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center">
-                                    <AlertTriangle className="h-6 w-6 text-amber-600" />
+                                <div className="w-12 h-12 rounded-xl bg-red-50 flex items-center justify-center">
+                                    <AlertTriangle className="h-6 w-6 text-red-600" />
                                 </div>
                             </div>
                         </Card>

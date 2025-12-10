@@ -99,6 +99,10 @@ export default function MerchantAnalytics() {
         queryFn: () => base44.entities.Chargeback.list('-created_date'),
     });
 
+    // Separate crypto and fiat transactions
+    const cryptoTransactions = transactions.filter(t => t.crypto_asset || t.payment_method === 'crypto_currency' || t.payment_method === 'bitcoin' || t.payment_method === 'bitcoin_cash');
+    const fiatTransactions = transactions.filter(t => !t.crypto_asset && t.payment_method !== 'crypto_currency' && t.payment_method !== 'bitcoin' && t.payment_method !== 'bitcoin_cash');
+
     // Filter merchants
     const filteredMerchants = merchants.filter(m => {
         const matchesSearch = !searchQuery || 
@@ -182,7 +186,8 @@ export default function MerchantAnalytics() {
         { name: 'Visa', value: 45, color: '#1a1f71' },
         { name: 'Mastercard', value: 32, color: '#eb001b' },
         { name: 'Amex', value: 12, color: '#006fcf' },
-        { name: 'Other', value: 11, color: '#6b7280' }
+        { name: 'Crypto', value: cryptoTransactions.length > 0 ? Math.round((cryptoTransactions.length / transactions.length) * 100) : 5, color: '#f59e0b' },
+        { name: 'Other', value: 6, color: '#6b7280' }
     ];
 
     // Settlement timeline data
@@ -309,7 +314,7 @@ export default function MerchantAnalytics() {
                     </Card>
 
                     {/* Overview Metrics */}
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                    <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
                         <MetricCard 
                             title="Total Volume" 
                             value={overallMetrics.totalVolume} 
@@ -322,6 +327,13 @@ export default function MerchantAnalytics() {
                             value={overallMetrics.totalTxns} 
                             change={8.3}
                             icon={CreditCard}
+                        />
+                        <MetricCard 
+                            title="Crypto Volume" 
+                            value={cryptoTransactions.reduce((sum, t) => sum + (t.amount || 0), 0)} 
+                            change={15.2}
+                            icon={Store}
+                            format="currency"
                         />
                         <MetricCard 
                             title="Success Rate" 
