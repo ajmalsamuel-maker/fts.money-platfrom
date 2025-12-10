@@ -233,6 +233,29 @@ export default function MerchantUsers() {
                                 variant="outline" 
                                 onClick={async () => {
                                     try {
+                                        const { generateMerchantCode } = await import('@/components/merchants/MerchantCodeGenerator');
+                                        let fixed = 0;
+                                        for (const merchant of merchants) {
+                                            if (!merchant.merchant_code) {
+                                                const code = generateMerchantCode(merchant.business_name, merchants);
+                                                await base44.entities.Merchant.update(merchant.id, { merchant_code: code });
+                                                fixed++;
+                                            }
+                                        }
+                                        queryClient.invalidateQueries({ queryKey: ['merchants'] });
+                                        alert(`Fixed ${fixed} merchants with missing codes`);
+                                    } catch (e) {
+                                        alert('Failed: ' + e.message);
+                                    }
+                                }}
+                                className="gap-2"
+                            >
+                                <Key className="h-4 w-4" />Fix Merchant Codes
+                            </Button>
+                            <Button 
+                                variant="outline" 
+                                onClick={async () => {
+                                    try {
                                         for (const user of users) {
                                             await base44.functions.invoke('syncMerchantUser', { user });
                                         }
