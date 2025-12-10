@@ -2,6 +2,7 @@ import { Pool } from 'npm:pg@8.11.3';
 
 const pool = new Pool({
     connectionString: Deno.env.get('DATABASE_URL'),
+    ssl: false
 });
 
 Deno.serve(async (req) => {
