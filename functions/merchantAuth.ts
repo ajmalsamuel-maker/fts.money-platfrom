@@ -84,11 +84,13 @@ Deno.serve(async (req) => {
 
         if (action === 'validate') {
             // Validate session by checking if user still exists and is active
+            // PostgreSQL generates UUID for id, so we validate using email or merchant_id
             const result = await pool.query(`
                 SELECT id, merchant_id, merchant_name, email, full_name, role, status,
                        permissions, must_change_password
                 FROM merchant_users 
-                WHERE id = $1 AND status = 'active'
+                WHERE email = (SELECT email FROM merchant_users WHERE id::text = $1 OR email = $1 LIMIT 1)
+                AND status = 'active'
             `, [user_id]);
 
             if (!result.rows || result.rows.length === 0) {
