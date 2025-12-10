@@ -153,8 +153,14 @@ export default function MerchantLogin() {
                         </Button>
                     </form>
 
-                    <div className="mt-6 text-center text-sm text-slate-500">
-                        <p>Need help? Contact your PSP administrator</p>
+                    <div className="mt-6 text-center space-y-2">
+                        <Link 
+                            to={createPageUrl('MerchantCodeRecovery')} 
+                            className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+                        >
+                            Forgot Merchant Code?
+                        </Link>
+                        <p className="text-sm text-slate-500">Need help? Contact your PSP administrator</p>
                     </div>
                 </CardContent>
             </Card>

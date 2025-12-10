@@ -33,6 +33,7 @@ import {
 import { createMerchantUsers } from '@/components/merchants/MerchantUserProvisioning';
 import { toast } from 'sonner';
 import { sendStageCompletionEmail, getNextStepsText, sendApplicationSubmittedEmail } from '@/components/onboarding/StepCompletionNotifications';
+import { generateUniqueMerchantCode } from '@/components/merchants/MerchantCodeGenerator';
 
 const TOTAL_STEPS = 10;
 
@@ -77,8 +78,12 @@ export default function MerchantOnboarding() {
 
     const createMerchantMutation = useMutation({
         mutationFn: async (data) => {
+            // Generate unique merchant code
+            const merchantCode = generateUniqueMerchantCode(data.business.legal_name, merchants);
+            
             const merchantData = {
                 merchant_id: `MID-${Date.now()}`,
+                merchant_code: merchantCode,
                 business_name: data.business.legal_name,
                 trading_name: data.business.trading_name,
                 status: determineInitialStatus(data),

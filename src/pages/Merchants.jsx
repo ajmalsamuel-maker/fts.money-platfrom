@@ -66,6 +66,7 @@ import { createMerchantUsers } from '@/components/merchants/MerchantUserProvisio
 import { toast } from 'sonner';
 import MerchantOnboardingDialog from '@/components/merchants/MerchantOnboardingDialog';
 import MerchantDetailsView from '@/components/merchants/MerchantDetailsView';
+import { generateUniqueMerchantCode } from '@/components/merchants/MerchantCodeGenerator';
 
 const statusConfig = {
     active: { label: 'Active', className: 'bg-emerald-100 text-emerald-700 border-emerald-200' },
@@ -144,9 +145,13 @@ export default function Merchants() {
 
     const createMutation = useMutation({
         mutationFn: async (data) => {
+            // Generate unique merchant code
+            const merchantCode = generateUniqueMerchantCode(data.business_name, merchants);
+            
             const merchant = await base44.entities.Merchant.create({
                 ...data,
                 merchant_id: `MID-${Date.now()}`,
+                merchant_code: merchantCode,
                 status: 'pending',
                 risk_level: 'medium',
             });
@@ -461,9 +466,14 @@ export default function Merchants() {
                                                         </div>
                                                     </TableCell>
                                                     <TableCell>
-                                                        <span className="font-mono text-sm text-blue-600">
-                                                            {merchant.merchant_id || `MID-${merchant.id?.slice(0, 8)}`}
-                                                        </span>
+                                                        <div>
+                                                            <div className="font-mono text-sm font-bold text-blue-600">
+                                                                {merchant.merchant_code || 'N/A'}
+                                                            </div>
+                                                            <div className="font-mono text-xs text-slate-500">
+                                                                {merchant.merchant_id || `MID-${merchant.id?.slice(0, 8)}`}
+                                                            </div>
+                                                        </div>
                                                     </TableCell>
                                                     <TableCell className="text-slate-600 capitalize">
                                                         {merchant.category?.replace('_', ' ') || 'N/A'}

@@ -100,6 +100,14 @@ export default function MerchantSidebar({ selectedMID, mids, onMIDChange, curren
                     </div>
                 </div>
                 
+                {/* Merchant Code Display */}
+                <div className="mb-3 p-2 bg-slate-700 rounded border border-slate-600">
+                    <label className="text-[10px] text-slate-400 block mb-1">MERCHANT CODE</label>
+                    <div className="font-mono font-bold text-sm text-blue-400">
+                        {mids[0]?.merchant_code || 'N/A'}
+                    </div>
+                </div>
+
                 {/* MID Selection */}
                 <div>
                     <label className="text-xs text-slate-400 mb-1 block">MID:</label>

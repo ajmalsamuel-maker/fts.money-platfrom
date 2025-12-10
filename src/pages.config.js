@@ -68,6 +68,7 @@ import MerchantOperators from './pages/MerchantOperators';
 import MerchantAppearance from './pages/MerchantAppearance';
 import MerchantHelpCenter from './pages/MerchantHelpCenter';
 import MerchantAPIDoc from './pages/MerchantAPIDoc';
+import MerchantCodeRecovery from './pages/MerchantCodeRecovery';
 import __Layout from './Layout.jsx';
 
 
@@ -142,6 +143,7 @@ export const PAGES = {
     "MerchantAppearance": MerchantAppearance,
     "MerchantHelpCenter": MerchantHelpCenter,
     "MerchantAPIDoc": MerchantAPIDoc,
+    "MerchantCodeRecovery": MerchantCodeRecovery,
 }
 
 export const pagesConfig = {
