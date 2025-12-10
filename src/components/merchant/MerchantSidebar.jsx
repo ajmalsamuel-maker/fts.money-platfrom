@@ -17,7 +17,9 @@ import {
     Clock,
     ChevronDown,
     ChevronRight,
-    Wallet
+    Wallet,
+    HelpCircle,
+    Book
 } from 'lucide-react';
 
 const menuSections = [
