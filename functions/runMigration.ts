@@ -1,9 +1,4 @@
-import { Pool } from 'npm:pg@8.11.3';
-
-const pool = new Pool({
-    connectionString: Deno.env.get('DATABASE_URL'),
-    ssl: false
-});
+import { Client } from 'npm:pg@8.11.3';
 
 Deno.serve(async (req) => {
     if (req.method === 'OPTIONS') {
@@ -26,7 +21,12 @@ Deno.serve(async (req) => {
             }, { status: 400 });
         }
 
-        const client = await pool.connect();
+        const client = new Client({
+            connectionString: Deno.env.get('DATABASE_URL')?.replace('?sslmode=require', ''),
+            ssl: false
+        });
+        
+        await client.connect();
         
         try {
             await client.query(migrationSql);
@@ -36,7 +36,7 @@ Deno.serve(async (req) => {
                 message: 'Migration executed successfully'
             });
         } finally {
-            client.release();
+            await client.end();
         }
 
     } catch (error) {
