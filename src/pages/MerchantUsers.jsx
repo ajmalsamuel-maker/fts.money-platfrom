@@ -79,6 +79,13 @@ export default function MerchantUsers() {
                 must_change_password: true
             });
             
+            // Sync to PostgreSQL
+            try {
+                await base44.functions.invoke('syncMerchantUser', { user });
+            } catch (e) {
+                console.error('Failed to sync to PostgreSQL:', e);
+            }
+            
             // Audit log
             await AuditLogger.logMerchantUserCreated(user);
             
