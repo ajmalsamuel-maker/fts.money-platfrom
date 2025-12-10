@@ -43,7 +43,8 @@ import {
     Headphones,
     Scale,
     Building2,
-    FileCheck
+    FileCheck,
+    Coins
 } from 'lucide-react';
 
 const menuItems = [
@@ -139,6 +140,7 @@ const menuItems = [
                 { icon: CreditCard, label: 'binTable', path: 'BINTable', permission: 'VIEW_SETTINGS' },
                 { icon: Landmark, label: 'databaseSetup', path: 'DatabaseSetup', permission: 'VIEW_SETTINGS' },
                 { icon: Database, label: 'databaseMigration', path: 'DatabaseMigration', permission: 'VIEW_SETTINGS' },
+                { icon: Coins, label: 'cryptoTransactions', path: 'CryptoTransactions', permission: 'VIEW_TRANSACTIONS' },
                 ]
                 },
                 {

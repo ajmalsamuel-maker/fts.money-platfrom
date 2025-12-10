@@ -77,6 +77,7 @@ import MerchantEmailTemplates from './pages/MerchantEmailTemplates';
 import BINTable from './pages/BINTable';
 import MerchantSettings from './pages/MerchantSettings';
 import ISOConfiguration from './pages/ISOConfiguration';
+import CryptoTransactions from './pages/CryptoTransactions';
 import __Layout from './Layout.jsx';
 
 
@@ -160,6 +161,7 @@ export const PAGES = {
     "BINTable": BINTable,
     "MerchantSettings": MerchantSettings,
     "ISOConfiguration": ISOConfiguration,
+    "CryptoTransactions": CryptoTransactions,
 }
 
 export const pagesConfig = {
