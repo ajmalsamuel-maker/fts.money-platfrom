@@ -52,17 +52,18 @@ export default function MerchantTransactionList() {
         enabled: !!user?.merchant_id
     });
 
-    const { data: transactions = [] } = useQuery({
-        queryKey: ['transactions', user?.merchant_id, selectedMID],
+    const { data: allTransactions = [] } = useQuery({
+        queryKey: ['transactions', user?.merchant_id],
         queryFn: async () => {
-            const query = { merchant_id: user.merchant_id };
-            if (selectedMID && selectedMID !== 'all') {
-                query.terminal_id = selectedMID;
-            }
-            return await base44.entities.Transaction.filter(query);
+            return await base44.entities.Transaction.filter({ merchant_id: user.merchant_id });
         },
         enabled: !!user?.merchant_id
     });
+
+    const transactions = React.useMemo(() => {
+        if (!selectedMID || selectedMID === 'all') return allTransactions;
+        return allTransactions.filter(t => t.terminal_id === selectedMID || t.mid === selectedMID);
+    }, [allTransactions, selectedMID]);
 
     React.useEffect(() => {
         if (mids.length > 0 && !selectedMID) {
