@@ -256,30 +256,44 @@ export default function MerchantUsers() {
                                 variant="outline" 
                                 onClick={async () => {
                                     try {
-                                        let fixed = 0;
-                                        for (const user of users) {
-                                            if (!user.merchant_code) {
-                                                const merchant = merchants.find(m => m.id === user.merchant_id);
-                                                if (merchant?.merchant_code) {
-                                                    await base44.entities.MerchantUser.update(user.id, { 
-                                                        merchant_code: merchant.merchant_code 
-                                                    });
-                                                    await base44.functions.invoke('syncMerchantUser', { 
-                                                        user: { ...user, merchant_code: merchant.merchant_code } 
-                                                    });
-                                                    fixed++;
-                                                }
+                                        const { generateUniqueMerchantCode } = await import('@/components/merchants/MerchantCodeGenerator');
+                                        let merchantsFixed = 0;
+                                        let usersFixed = 0;
+                                        
+                                        // First fix merchants
+                                        for (const merchant of merchants) {
+                                            if (!merchant.merchant_code) {
+                                                const code = generateUniqueMerchantCode(merchant.business_name, merchants);
+                                                await base44.entities.Merchant.update(merchant.id, { merchant_code: code });
+                                                merchant.merchant_code = code;
+                                                merchantsFixed++;
                                             }
                                         }
+                                        
+                                        // Then fix users
+                                        for (const user of users) {
+                                            const merchant = merchants.find(m => m.id === user.merchant_id);
+                                            if (merchant?.merchant_code && user.merchant_code !== merchant.merchant_code) {
+                                                await base44.entities.MerchantUser.update(user.id, { 
+                                                    merchant_code: merchant.merchant_code 
+                                                });
+                                                await base44.functions.invoke('syncMerchantUser', { 
+                                                    user: { ...user, merchant_code: merchant.merchant_code } 
+                                                });
+                                                usersFixed++;
+                                            }
+                                        }
+                                        
+                                        queryClient.invalidateQueries({ queryKey: ['merchants'] });
                                         queryClient.invalidateQueries({ queryKey: ['merchant-users'] });
-                                        alert(`Fixed ${fixed} users with missing merchant codes`);
+                                        alert(`Fixed ${merchantsFixed} merchants and ${usersFixed} users with codes`);
                                     } catch (e) {
                                         alert('Failed: ' + e.message);
                                     }
                                 }}
                                 className="gap-2"
                             >
-                                <UserCog className="h-4 w-4" />Fix User Codes
+                                <UserCog className="h-4 w-4" />Fix All Codes
                             </Button>
                             <Button 
                                 variant="outline" 
