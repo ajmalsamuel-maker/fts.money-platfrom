@@ -58,8 +58,15 @@ export default function BINTable() {
     const { data: bins = [], isLoading, refetch } = useQuery({
         queryKey: ['bins'],
         queryFn: async () => {
-            const response = await base44.functions.invoke('binLookup', { action: 'list' });
-            return response.data?.data || [];
+            try {
+                const response = await base44.functions.invoke('binLookup', { action: 'list' });
+                console.log('BIN response:', response.data);
+                return response.data?.data || [];
+            } catch (error) {
+                console.error('Failed to fetch BINs:', error);
+                toast.error('Failed to load BINs');
+                return [];
+            }
         },
     });
 

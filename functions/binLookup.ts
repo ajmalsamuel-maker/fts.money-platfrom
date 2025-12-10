@@ -141,11 +141,20 @@ Deno.serve(async (req) => {
 
         // List all BINs
         if (action === 'list') {
-            const bins = await base44.asServiceRole.entities.BIN.list('-created_date', 100);
-            return Response.json({ 
-                success: true, 
-                data: bins 
-            });
+            try {
+                const bins = await base44.asServiceRole.entities.BIN.list('-created_date', 100);
+                return Response.json({ 
+                    success: true, 
+                    data: bins 
+                });
+            } catch (error) {
+                console.error('Error listing BINs:', error);
+                return Response.json({ 
+                    success: false, 
+                    error: error.message,
+                    data: []
+                });
+            }
         }
 
         // Update BIN routing
