@@ -14,12 +14,16 @@ Deno.serve(async (req) => {
         if (!user.merchant_code) {
             // Fetch merchant_code from Merchant entity if not present
             const merchantQuery = await pool.query(
-                'SELECT merchant_code FROM merchants WHERE merchant_id = $1',
+                'SELECT merchant_code FROM merchants WHERE id = $1',
                 [user.merchant_id]
             );
             
-            if (merchantQuery.rows.length === 0) {
-                throw new Error(`Merchant not found for merchant_id: ${user.merchant_id}`);
+            if (merchantQuery.rows.length === 0 || !merchantQuery.rows[0].merchant_code) {
+                console.warn(`No merchant_code found for merchant_id: ${user.merchant_id}, skipping sync`);
+                return Response.json({ 
+                    success: false, 
+                    error: `Merchant code not set for merchant: ${user.merchant_id}` 
+                }, { status: 400 });
             }
             
             user.merchant_code = merchantQuery.rows[0].merchant_code;
