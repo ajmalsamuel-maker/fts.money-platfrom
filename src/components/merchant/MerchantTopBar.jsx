@@ -7,9 +7,13 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut, User, HelpCircle } from 'lucide-react';
+import { LogOut, User, HelpCircle, KeyRound } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
 
 export default function MerchantTopBar({ user, merchant, onLogout, selectedMID }) {
+    const navigate = useNavigate();
+    
     return (
         <header className="h-14 bg-white border-b border-slate-200 flex items-center justify-between px-6">
             <div>
@@ -47,9 +51,13 @@ export default function MerchantTopBar({ user, merchant, onLogout, selectedMID }
                             <p className="text-xs text-slate-500">{user?.email}</p>
                         </div>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => navigate(createPageUrl('MerchantInfo'))}>
                             <User className="h-4 w-4 mr-2" />
                             Profile
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => navigate(createPageUrl('MerchantChangePassword'))}>
+                            <KeyRound className="h-4 w-4 mr-2" />
+                            Change Password
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem onClick={onLogout} className="text-red-600">
