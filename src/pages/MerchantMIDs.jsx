@@ -166,7 +166,7 @@ export default function MerchantMIDs() {
             provider_id: mid.provider_id || '',
             provider_name: mid.provider_name || '',
             terminal_type: mid.terminal_type || 'ecommerce',
-            transaction_types: mid.transaction_types || [],
+            transaction_types: Array.isArray(mid.transaction_types) ? mid.transaction_types : [],
             currency: mid.currency || 'USD',
             status: mid.status || 'pending',
             activation_date: mid.activation_date || '',
@@ -532,13 +532,13 @@ export default function MerchantMIDs() {
                     <div className="space-y-4 py-4">
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
-                                <Label>Merchant *</Label>
-                                <Select value={formData.merchant_id} onValueChange={handleMerchantChange}>
-                                    <SelectTrigger><SelectValue placeholder="Select merchant" /></SelectTrigger>
-                                    <SelectContent>
-                                        {merchants.map(m => <SelectItem key={m.id} value={m.id}>{m.business_name}</SelectItem>)}
-                                    </SelectContent>
-                                </Select>
+                               <Label>Merchant *</Label>
+                               <Select value={formData.merchant_id} onValueChange={handleMerchantChange} disabled={!!editingMID}>
+                                   <SelectTrigger><SelectValue placeholder="Select merchant" /></SelectTrigger>
+                                   <SelectContent>
+                                       {merchants.map(m => <SelectItem key={m.id} value={m.id}>{m.business_name}</SelectItem>)}
+                                   </SelectContent>
+                               </Select>
                             </div>
                             <div className="space-y-2">
                                 <Label>MID *</Label>
@@ -562,13 +562,13 @@ export default function MerchantMIDs() {
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
-                                <Label>Provider *</Label>
-                                <Select value={formData.provider_id} onValueChange={handleProviderChange}>
-                                    <SelectTrigger><SelectValue placeholder="Select provider" /></SelectTrigger>
-                                    <SelectContent>
-                                        {providers.map(p => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}
-                                    </SelectContent>
-                                </Select>
+                               <Label>Provider *</Label>
+                               <Select value={formData.provider_id} onValueChange={handleProviderChange} disabled={!!editingMID}>
+                                   <SelectTrigger><SelectValue placeholder="Select provider" /></SelectTrigger>
+                                   <SelectContent>
+                                       {providers.map(p => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}
+                                   </SelectContent>
+                               </Select>
                             </div>
                             <div className="space-y-2">
                                 <Label>Terminal Type *</Label>
