@@ -72,17 +72,19 @@ export default function MerchantDashboard() {
     }, [mids, selectedMID]);
 
     // Fetch transactions for selected MID
-    const { data: transactions = [], refetch: refetchTransactions } = useQuery({
+    const { data: allTransactions = [], refetch: refetchTransactions } = useQuery({
         queryKey: ['transactions', user?.merchant_id, selectedMID],
         queryFn: async () => {
-            const query = { merchant_id: user.merchant_id };
-            if (selectedMID) {
-                query.terminal_id = selectedMID;
-            }
-            return await base44.entities.Transaction.filter(query);
+            return await base44.entities.Transaction.filter({ merchant_id: user.merchant_id });
         },
-        enabled: !!user?.merchant_id && !!selectedMID
+        enabled: !!user?.merchant_id
     });
+
+    // Filter transactions by selected MID
+    const transactions = React.useMemo(() => {
+        if (!selectedMID || !allTransactions.length) return [];
+        return allTransactions.filter(t => t.terminal_id === selectedMID);
+    }, [allTransactions, selectedMID]);
 
     // Calculate business metrics
     const businessMetrics = React.useMemo(() => {
@@ -207,7 +209,7 @@ export default function MerchantDashboard() {
 
             {/* Main Content */}
             <div className="flex-1 flex flex-col overflow-hidden">
-                <MerchantTopBar user={user} merchant={merchant} onLogout={logout} />
+                <MerchantTopBar user={user} merchant={merchant} onLogout={logout} selectedMID={selectedMID} />
 
                 <main className="flex-1 overflow-y-auto p-6 bg-slate-50">
                     <div className="max-w-[1600px] mx-auto space-y-6">
@@ -216,7 +218,11 @@ export default function MerchantDashboard() {
                             <div>
                                 <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
                                 <p className="text-sm text-slate-500 mt-1">
-                                    Viewing data for MID: <span className="font-mono font-semibold text-slate-700">{selectedMID}</span>
+                                    {transactions.length > 0 ? (
+                                        <>Showing {transactions.length} transactions for <span className="font-mono font-semibold text-blue-700">{selectedMID}</span></>
+                                    ) : (
+                                        <>No transactions found for <span className="font-mono font-semibold text-slate-700">{selectedMID}</span></>
+                                    )}
                                 </p>
                             </div>
                         </div>

@@ -9,17 +9,20 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { LogOut, User, HelpCircle } from 'lucide-react';
 
-export default function MerchantTopBar({ user, merchant, onLogout }) {
+export default function MerchantTopBar({ user, merchant, onLogout, selectedMID }) {
     return (
         <header className="h-14 bg-white border-b border-slate-200 flex items-center justify-between px-6">
             <div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-3">
                     <span className="text-sm font-semibold text-slate-900">
                         {merchant?.business_name || 'Merchant Portal'}
                     </span>
-                    <span className="text-xs text-slate-500">
-                        MID: {merchant?.merchant_id}
-                    </span>
+                    {selectedMID && (
+                        <div className="flex items-center gap-2 px-3 py-1 bg-blue-50 border border-blue-200 rounded-md">
+                            <span className="text-xs font-medium text-slate-600">Active MID:</span>
+                            <span className="text-xs font-mono font-bold text-blue-700">{selectedMID}</span>
+                        </div>
+                    )}
                 </div>
             </div>
 
