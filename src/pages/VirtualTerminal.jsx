@@ -7,16 +7,19 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CreditCard, Loader2, CheckCircle2, LogOut, Shield } from 'lucide-react';
+import { CreditCard, Loader2, CheckCircle2, LogOut, Shield, Bitcoin } from 'lucide-react';
 import { toast } from 'sonner';
 import { ISO4217_CURRENCIES } from '@/components/utils/iso4217';
 import { validateCurrency } from '@/components/utils/isoValidator';
 import ISOComplianceBadge from '@/components/transaction/ISOComplianceBadge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import CryptoPaymentForm from '@/components/terminal/CryptoPaymentForm';
 
 export default function VirtualTerminal() {
     const { user, loading, logout } = useVTAuth();
     const [processing, setProcessing] = useState(false);
     const [success, setSuccess] = useState(false);
+    const [paymentType, setPaymentType] = useState('card'); // 'card' or 'crypto'
     
     const [formData, setFormData] = useState({
         amount: '',
@@ -143,15 +146,35 @@ export default function VirtualTerminal() {
             {/* Main Content */}
             <main className="p-6">
                 <div className="max-w-2xl mx-auto space-y-6">
-                    <Card>
-                        <CardHeader className="border-b bg-slate-50/50">
-                            <CardTitle className="flex items-center gap-2">
-                                <CreditCard className="h-5 w-5" />
-                                Payment Details
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent className="pt-6">
-                            <form onSubmit={handleSubmit} className="space-y-4">
+                    <Tabs value={paymentType} onValueChange={setPaymentType}>
+                        <TabsList className="grid w-full grid-cols-2">
+                            <TabsTrigger value="card" className="gap-2">
+                                <CreditCard className="h-4 w-4" />Card Payment
+                            </TabsTrigger>
+                            <TabsTrigger value="crypto" className="gap-2">
+                                <Bitcoin className="h-4 w-4" />Crypto Payment
+                            </TabsTrigger>
+                        </TabsList>
+
+                        <TabsContent value="crypto" className="mt-6">
+                            <CryptoPaymentForm 
+                                merchant_id={user?.merchant_id}
+                                onSuccess={() => {
+                                    toast.success('Crypto payment initiated');
+                                }}
+                            />
+                        </TabsContent>
+
+                        <TabsContent value="card" className="mt-6">
+                            <Card>
+                                <CardHeader className="border-b bg-slate-50/50">
+                                    <CardTitle className="flex items-center gap-2">
+                                        <CreditCard className="h-5 w-5" />
+                                        Card Payment Details
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent className="pt-6">
+                                    <form onSubmit={handleSubmit} className="space-y-4">
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-2">
                                         <Label>Amount *</Label>
@@ -296,9 +319,11 @@ export default function VirtualTerminal() {
                                         )}
                                     </Button>
                                 </div>
-                            </form>
-                        </CardContent>
-                    </Card>
+                                    </form>
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
+                    </Tabs>
                 </div>
             </main>
         </div>

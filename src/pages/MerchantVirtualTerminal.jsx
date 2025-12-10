@@ -27,12 +27,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { 
-    CreditCard, Loader2, CheckCircle2, DollarSign, Plus, Trash2, ShoppingCart, Repeat, Save, X, Shield
+    CreditCard, Loader2, CheckCircle2, DollarSign, Plus, Trash2, ShoppingCart, Repeat, Save, X, Shield, Bitcoin
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { ISO4217_CURRENCIES } from '@/components/utils/iso4217';
 import { validateCurrency } from '@/components/utils/isoValidator';
 import ISOComplianceBadge from '@/components/transaction/ISOComplianceBadge';
+import CryptoPaymentForm from '@/components/terminal/CryptoPaymentForm';
 
 export default function MerchantVirtualTerminal() {
     const { user, loading, isAuthenticated, logout } = useMerchantAuth();
@@ -421,9 +422,12 @@ export default function MerchantVirtualTerminal() {
                         </div>
 
                         <Tabs value={paymentMode} onValueChange={setPaymentMode} className="space-y-6">
-                            <TabsList className="grid w-full grid-cols-3">
+                            <TabsList className="grid w-full grid-cols-4">
                                 <TabsTrigger value="quick" className="gap-2">
                                     <DollarSign className="h-4 w-4" />Quick Charge
+                                </TabsTrigger>
+                                <TabsTrigger value="crypto" className="gap-2">
+                                    <Bitcoin className="h-4 w-4" />Crypto Payment
                                 </TabsTrigger>
                                 <TabsTrigger value="itemized" className="gap-2" disabled={!vtConfig?.enable_itemized_sale}>
                                     <ShoppingCart className="h-4 w-4" />Itemized Sale
@@ -432,6 +436,16 @@ export default function MerchantVirtualTerminal() {
                                     <Repeat className="h-4 w-4" />Recurring
                                 </TabsTrigger>
                             </TabsList>
+
+                            <TabsContent value="crypto" className="mt-0">
+                                <CryptoPaymentForm 
+                                    merchant_id={user.merchant_id}
+                                    onSuccess={() => {
+                                        toast.success('Crypto payment initiated');
+                                        setTimeout(() => setPaymentMode('quick'), 2000);
+                                    }}
+                                />
+                            </TabsContent>
 
                             <form onSubmit={handleSubmit} className="space-y-6">
                                 <div className="grid lg:grid-cols-2 gap-6">
