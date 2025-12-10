@@ -1,7 +1,5 @@
 import postgres from 'npm:postgres@3.4.4';
 
-const sql = postgres(Deno.env.get('DATABASE_URL'));
-
 Deno.serve(async (req) => {
     if (req.method === 'OPTIONS') {
         return new Response(null, {
@@ -13,6 +11,7 @@ Deno.serve(async (req) => {
         });
     }
 
+    let sql;
     try {
         const { sql: migrationSql } = await req.json();
 
@@ -23,8 +22,20 @@ Deno.serve(async (req) => {
             }, { status: 400 });
         }
 
-        // Execute the migration SQL
-        await sql.unsafe(migrationSql);
+        // Create connection
+        sql = postgres(Deno.env.get('DATABASE_URL'));
+
+        // Split into individual statements and execute
+        const statements = migrationSql
+            .split(';')
+            .map(s => s.trim())
+            .filter(s => s.length > 0 && !s.startsWith('--'));
+
+        for (const statement of statements) {
+            await sql.unsafe(statement);
+        }
+
+        await sql.end();
 
         return Response.json({ 
             success: true,
@@ -33,9 +44,12 @@ Deno.serve(async (req) => {
 
     } catch (error) {
         console.error('Migration error:', error);
+        if (sql) {
+            try { await sql.end(); } catch (e) {}
+        }
         return Response.json({ 
             success: false, 
-            error: error.message 
-        }, { status: 500 });
+            error: error.message || 'Migration failed'
+        }, { status: 200 });
     }
 });
