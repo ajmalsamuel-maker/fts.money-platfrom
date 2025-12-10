@@ -217,6 +217,8 @@ export default function MerchantDashboard() {
                 mids={mids}
                 onMIDChange={setSelectedMID}
                 currentPage="MerchantDashboard"
+                user={user}
+                merchant={merchant}
             />
 
             {/* Main Content */}
