@@ -54,6 +54,8 @@ import {
 import { usePermissions } from '@/components/auth/usePermissions';
 import { PermissionGate } from '@/components/auth/PermissionGate';
 import TransactionDetailsDialog from '@/components/transaction/TransactionDetailsDialog';
+import ISOComplianceBadge from '@/components/transaction/ISOComplianceBadge';
+import { validateCurrency, validateCountry } from '@/components/utils/isoValidator';
 
 const statusConfig = {
     approved: { label: 'Approved', className: 'bg-emerald-100 text-emerald-700 border-emerald-200' },

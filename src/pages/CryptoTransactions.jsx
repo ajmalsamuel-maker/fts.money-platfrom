@@ -42,6 +42,7 @@ import {
 import { CRYPTO_ASSETS, getCryptoInfo, getCryptoBlockchain } from '@/components/utils/cryptoRegistry';
 import { generateCryptoAssetDTI, validateDTI } from '@/components/utils/iso24165';
 import { validateBlockchainTransaction, BLOCKCHAIN_NETWORKS, DLT_STATUS_CODES } from '@/components/utils/iso23257';
+import ISOComplianceBadge from '@/components/transaction/ISOComplianceBadge';
 
 export default function CryptoTransactions() {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -293,6 +294,7 @@ export default function CryptoTransactions() {
                                                                     <Badge variant="secondary" className="text-xs">
                                                                         {blockchain}
                                                                     </Badge>
+                                                                    <ISOComplianceBadge transaction={tx} size="sm" />
                                                                 </div>
                                                                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                                                                     <div>

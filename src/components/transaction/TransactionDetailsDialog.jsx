@@ -23,6 +23,8 @@ import CardBrandLogo from './CardBrandLogo';
 import BankInfoDisplay from './BankInfoDisplay';
 import ISO8583Encoder from './ISO8583Encoder';
 import ISO20022Encoder from './ISO20022Encoder';
+import ISOComplianceBadge from './ISOComplianceBadge';
+import { generateISOComplianceReport } from '@/components/utils/isoValidator';
 
 const getStatusConfig = (status) => {
     const configs = {
@@ -60,18 +62,22 @@ export default function TransactionDetailsDialog({ transaction, open, onClose })
         <Dialog open={open} onOpenChange={onClose}>
             <DialogContent className="max-w-4xl max-h-[85vh] overflow-hidden flex flex-col">
                 <DialogHeader>
-                    <DialogTitle className="flex items-center gap-2">
-                        <FileText className="h-5 w-5" />
-                        Transaction Details
+                    <DialogTitle className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                            <FileText className="h-5 w-5" />
+                            Transaction Details
+                        </div>
+                        <ISOComplianceBadge transaction={transaction} showScore={true} />
                     </DialogTitle>
                 </DialogHeader>
 
                 <Tabs defaultValue="details" className="flex-1 overflow-hidden">
-                    <TabsList className="grid w-full grid-cols-4">
-                        <TabsTrigger value="details">Transaction Details</TabsTrigger>
-                        <TabsTrigger value="history">History & Logs</TabsTrigger>
-                        <TabsTrigger value="receipt">Receipt</TabsTrigger>
+                    <TabsList className="grid w-full grid-cols-5">
+                        <TabsTrigger value="details">Details</TabsTrigger>
+                        <TabsTrigger value="history">History</TabsTrigger>
                         <TabsTrigger value="iso">ISO Messages</TabsTrigger>
+                        <TabsTrigger value="compliance">ISO Compliance</TabsTrigger>
+                        <TabsTrigger value="receipt">Receipt</TabsTrigger>
                     </TabsList>
 
                     <ScrollArea className="h-[calc(85vh-180px)] mt-4">
@@ -349,6 +355,76 @@ export default function TransactionDetailsDialog({ transaction, open, onClose })
                         <TabsContent value="iso" className="space-y-4 pr-4">
                             <ISO8583Encoder transaction={transaction} />
                             <ISO20022Encoder transaction={transaction} />
+                        </TabsContent>
+
+                        {/* ISO Compliance Tab */}
+                        <TabsContent value="compliance" className="pr-4">
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle className="text-base">ISO Standards Compliance Report</CardTitle>
+                                </CardHeader>
+                                <CardContent className="space-y-4">
+                                    {(() => {
+                                        const report = generateISOComplianceReport(transaction);
+                                        return (
+                                            <>
+                                                <div className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
+                                                    <div>
+                                                        <p className="text-sm text-slate-600">Compliance Score</p>
+                                                        <p className="text-3xl font-bold">{report.complianceScore}%</p>
+                                                    </div>
+                                                    <Badge className={report.isCompliant ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"}>
+                                                        {report.isCompliant ? 'Fully Compliant' : 'Partial Compliance'}
+                                                    </Badge>
+                                                </div>
+
+                                                <div>
+                                                    <h4 className="font-semibold text-sm mb-2">Standards Validated</h4>
+                                                    <div className="flex flex-wrap gap-2">
+                                                        {report.standards.map((std, idx) => (
+                                                            <Badge key={idx} variant="outline">{std}</Badge>
+                                                        ))}
+                                                    </div>
+                                                </div>
+
+                                                <div>
+                                                    <h4 className="font-semibold text-sm mb-2">Validation Details</h4>
+                                                    <div className="space-y-2">
+                                                        {Object.entries(report.validations).map(([key, validation]) => (
+                                                            <div key={key} className="flex items-center justify-between p-3 border rounded-lg">
+                                                                <div>
+                                                                    <p className="font-medium text-sm capitalize">{key.replace(/_/g, ' ')}</p>
+                                                                    <p className="text-xs text-slate-500">{validation.standard}</p>
+                                                                </div>
+                                                                {validation.valid ? (
+                                                                    <CheckCircle className="h-5 w-5 text-green-600" />
+                                                                ) : (
+                                                                    <XCircle className="h-5 w-5 text-red-600" />
+                                                                )}
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+
+                                                {report.recommendations.length > 0 && (
+                                                    <div>
+                                                        <h4 className="font-semibold text-sm mb-2">Recommendations</h4>
+                                                        <div className="space-y-2">
+                                                            {report.recommendations.map((rec, idx) => (
+                                                                <div key={idx} className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                                                                    <p className="text-sm font-medium text-yellow-900 capitalize">{rec.field.replace(/_/g, ' ')}</p>
+                                                                    <p className="text-xs text-yellow-700 mt-1">{rec.error}</p>
+                                                                    <p className="text-xs text-yellow-600 mt-1">Standard: {rec.standard}</p>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </>
+                                        );
+                                    })()}
+                                </CardContent>
+                            </Card>
                         </TabsContent>
 
                         {/* Receipt Tab */}
