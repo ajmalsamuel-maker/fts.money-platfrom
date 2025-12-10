@@ -21,9 +21,10 @@ Deno.serve(async (req) => {
             if (merchantQuery.rows.length === 0 || !merchantQuery.rows[0].merchant_code) {
                 console.warn(`No merchant_code found for merchant_id: ${user.merchant_id}, skipping sync`);
                 return Response.json({ 
-                    success: false, 
-                    error: `Merchant code not set for merchant: ${user.merchant_id}` 
-                }, { status: 400 });
+                    success: true,
+                    skipped: true,
+                    message: `Merchant code not yet set, sync skipped` 
+                });
             }
             
             user.merchant_code = merchantQuery.rows[0].merchant_code;
