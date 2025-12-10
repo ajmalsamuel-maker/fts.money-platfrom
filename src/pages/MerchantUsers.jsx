@@ -74,6 +74,7 @@ export default function MerchantUsers() {
                 ...data,
                 user_id: `MU-${Date.now()}`,
                 merchant_name: merchant?.business_name,
+                merchant_code: merchant?.merchant_code,
                 status: 'pending',
                 temp_password: tempPassword,
                 must_change_password: true
@@ -347,6 +348,7 @@ export default function MerchantUsers() {
                                     <TableRow className="bg-slate-50">
                                         <TableHead>User</TableHead>
                                         <TableHead>Merchant</TableHead>
+                                        <TableHead>Merchant Code</TableHead>
                                         <TableHead>Role</TableHead>
                                         <TableHead>Status</TableHead>
                                         <TableHead>2FA</TableHead>
@@ -356,9 +358,9 @@ export default function MerchantUsers() {
                                 </TableHeader>
                                 <TableBody>
                                     {filteredUsers.length === 0 ? (
-                                        <TableRow>
-                                            <TableCell colSpan={7} className="text-center py-12 text-slate-500">No users found</TableCell>
-                                        </TableRow>
+                                       <TableRow>
+                                           <TableCell colSpan={8} className="text-center py-12 text-slate-500">No users found</TableCell>
+                                       </TableRow>
                                     ) : (
                                         filteredUsers.map((user) => (
                                             <TableRow key={user.id} className="cursor-pointer hover:bg-slate-50" onClick={() => setShowDetailsDialog(user)}>
@@ -376,6 +378,11 @@ export default function MerchantUsers() {
                                                 <TableCell>
                                                     <div className="flex items-center gap-2">
                                                         <Badge variant="outline" className="font-normal">{user.merchant_name}</Badge>
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <div className="font-mono text-sm font-medium text-blue-600">
+                                                        {user.merchant_code || <span className="text-slate-400">Not set</span>}
                                                     </div>
                                                 </TableCell>
                                                 <TableCell>
@@ -536,6 +543,10 @@ export default function MerchantUsers() {
                                             <div className="space-y-2">
                                                 <Label>Merchant</Label>
                                                 <Input value={showDetailsDialog.merchant_name} readOnly className="bg-slate-50" />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <Label>Merchant Code</Label>
+                                                <Input value={showDetailsDialog.merchant_code || 'Not set'} readOnly className="bg-slate-50 font-mono" />
                                             </div>
                                             <div className="space-y-2">
                                                 <Label>Created</Label>
