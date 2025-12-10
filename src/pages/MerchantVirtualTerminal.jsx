@@ -147,6 +147,11 @@ export default function MerchantVirtualTerminal() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         
+        if (!selectedMID) {
+            toast.error('Please select a MID before processing payment');
+            return;
+        }
+        
         const total = calculateTotal();
         if (total === 0) {
             toast.error('Amount cannot be zero');
@@ -344,16 +349,30 @@ export default function MerchantVirtualTerminal() {
                 <main className="flex-1 overflow-y-auto p-6">
                     <div className="max-w-5xl mx-auto space-y-6">
                         <div className="flex items-center justify-between">
-                            <div>
-                                <h1 className="text-2xl font-bold">Process Payment</h1>
-                                <p className="text-slate-500">Virtual Terminal • {merchant?.business_name}</p>
-                            </div>
-                            <div className="flex items-center gap-3">
-                                <Badge variant="outline">MID: {selectedMID}</Badge>
-                                <Badge variant={vtConfig.status === 'active' ? 'default' : 'secondary'}>
-                                    {vtConfig.status}
-                                </Badge>
-                            </div>
+                           <div>
+                               <h1 className="text-2xl font-bold">Process Payment</h1>
+                               <p className="text-slate-500">Virtual Terminal • {merchant?.business_name}</p>
+                           </div>
+                           <div className="flex items-center gap-3">
+                               <div className="flex items-center gap-2">
+                                   <Label className="text-sm">MID *</Label>
+                                   <Select value={selectedMID || ''} onValueChange={setSelectedMID} required>
+                                       <SelectTrigger className="w-56">
+                                           <SelectValue placeholder="Select MID" />
+                                       </SelectTrigger>
+                                       <SelectContent>
+                                           {mids.map(mid => (
+                                               <SelectItem key={mid.id} value={mid.mid}>
+                                                   {mid.mid} - {mid.account_type}
+                                               </SelectItem>
+                                           ))}
+                                       </SelectContent>
+                                   </Select>
+                               </div>
+                               <Badge variant={vtConfig.status === 'active' ? 'default' : 'secondary'}>
+                                   {vtConfig.status}
+                               </Badge>
+                           </div>
                         </div>
 
                         <Tabs value={paymentMode} onValueChange={setPaymentMode} className="space-y-6">
