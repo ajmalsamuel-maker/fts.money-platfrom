@@ -57,6 +57,14 @@ const menuSections = [
         items: [
             { label: 'Merchant Operators', icon: Users, path: 'MerchantOperators' },
             { label: 'Change Password', icon: Settings, path: 'MerchantChangePassword' },
+            { label: 'Appearance', icon: Settings, path: 'MerchantAppearance' },
+        ]
+    },
+    {
+        title: 'Support & Docs',
+        items: [
+            { label: 'Help Center', icon: HelpCircle, path: 'MerchantHelpCenter' },
+            { label: 'API Documentation', icon: Book, path: 'MerchantAPIDoc' },
         ]
     }
 ];
