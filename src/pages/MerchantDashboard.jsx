@@ -27,6 +27,13 @@ import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
 import PaymentNews from '@/components/dashboard/PaymentNews';
 import { Search, Zap, Shield, TrendingDown } from 'lucide-react';
+import QuickActionsPanel from '@/components/merchant/QuickActionsPanel';
+import AlertCenter from '@/components/merchant/AlertCenter';
+import PerformanceComparison from '@/components/merchant/PerformanceComparison';
+import PaymentMethodsBreakdown from '@/components/merchant/PaymentMethodsBreakdown';
+import SettlementCalendar from '@/components/merchant/SettlementCalendar';
+import CustomerInsights from '@/components/merchant/CustomerInsights';
+import ComplianceDashboard from '@/components/merchant/ComplianceDashboard';
 
 export default function MerchantDashboard() {
     const { user, loading, isAuthenticated, logout } = useMerchantAuth();
@@ -316,6 +323,13 @@ export default function MerchantDashboard() {
                             </Card>
                         </div>
 
+                        {/* Quick Actions & Alerts Row */}
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                            <QuickActionsPanel />
+                            <AlertCenter transactions={transactions} />
+                            <PerformanceComparison transactions={transactions} />
+                        </div>
+
                         {/* Charts Grid */}
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                             {/* Transaction Volume */}
@@ -588,6 +602,16 @@ export default function MerchantDashboard() {
                             {/* Fintech News */}
                             <PaymentNews />
                             </div>
+
+                            {/* Customer & Compliance Insights */}
+                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                                <PaymentMethodsBreakdown transactions={transactions} />
+                                <CustomerInsights transactions={transactions} />
+                                <ComplianceDashboard merchant={merchant} />
+                            </div>
+
+                            {/* Settlement Calendar */}
+                            <SettlementCalendar />
 
                             {/* Real-Time Monitoring Section */}
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
