@@ -14,6 +14,7 @@ import PaymentNews from '@/components/dashboard/PaymentNews';
 import ExchangeRates from '@/components/dashboard/ExchangeRates';
 import BusinessMetrics from '@/components/dashboard/BusinessMetrics';
 import HelpPanel from '@/components/dashboard/HelpPanel';
+import FintechNewsTicker from '@/components/dashboard/FintechNewsTicker';
 import RecurringRevenueCard from '@/components/dashboard/RecurringRevenueCard';
 import AIPerformanceCard from '@/components/dashboard/AIPerformanceCard';
 import SubscriptionHealthCard from '@/components/dashboard/SubscriptionHealthCard';
@@ -100,6 +101,9 @@ export default function Dashboard() {
                     onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
                     collapsed={sidebarCollapsed}
                 />
+                
+                {/* Fintech News Ticker */}
+                <FintechNewsTicker />
                 
                 <main className="p-3 sm:p-6">
                     {/* Page Header */}
