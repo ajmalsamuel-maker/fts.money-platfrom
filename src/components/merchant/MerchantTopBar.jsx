@@ -1,0 +1,61 @@
+import React from 'react';
+import { Button } from "@/components/ui/button";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { LogOut, User, HelpCircle } from 'lucide-react';
+
+export default function MerchantTopBar({ user, merchant, onLogout }) {
+    return (
+        <header className="h-14 bg-white border-b border-slate-200 flex items-center justify-between px-6">
+            <div>
+                <div className="flex items-center gap-2">
+                    <span className="text-sm font-semibold text-slate-900">
+                        {merchant?.business_name || 'Merchant Portal'}
+                    </span>
+                    <span className="text-xs text-slate-500">
+                        MID: {merchant?.merchant_id}
+                    </span>
+                </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+                <Button variant="ghost" size="sm">
+                    <HelpCircle className="h-4 w-4 mr-1" />
+                    Help
+                </Button>
+
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="sm" className="gap-2">
+                            <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white text-xs font-medium">
+                                {user?.full_name?.charAt(0) || 'U'}
+                            </div>
+                            <span className="text-sm">{user?.full_name}</span>
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-48">
+                        <div className="px-2 py-2">
+                            <p className="text-sm font-medium">{user?.full_name}</p>
+                            <p className="text-xs text-slate-500">{user?.email}</p>
+                        </div>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem>
+                            <User className="h-4 w-4 mr-2" />
+                            Profile
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={onLogout} className="text-red-600">
+                            <LogOut className="h-4 w-4 mr-2" />
+                            Logout
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </div>
+        </header>
+    );
+}

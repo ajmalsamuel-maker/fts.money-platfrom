@@ -1,0 +1,171 @@
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
+import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+    LayoutDashboard,
+    FileText,
+    CreditCard,
+    BarChart3,
+    Settings,
+    DollarSign,
+    Users,
+    Building,
+    AlertCircle,
+    Clock,
+    ChevronDown,
+    ChevronRight,
+    Wallet
+} from 'lucide-react';
+
+const menuSections = [
+    {
+        title: 'Merchant Profile',
+        items: [
+            { label: 'Dashboard', icon: LayoutDashboard, path: 'MerchantDashboard' },
+            { label: 'Merchant Info', icon: Building, path: 'MerchantInfo' },
+            { label: 'Bank Info', icon: Wallet, path: 'MerchantBankInfo' },
+        ]
+    },
+    {
+        title: 'Transactions',
+        items: [
+            { label: 'Transaction List', icon: FileText, path: 'MerchantTransactionList' },
+            { label: 'Batch Reports', icon: BarChart3, path: 'MerchantBatchReports' },
+            { label: 'Data Transactions', icon: CreditCard, path: 'MerchantDataTransactions' },
+        ]
+    },
+    {
+        title: 'Finance Reports',
+        items: [
+            { label: 'Settlement Reports', icon: DollarSign, path: 'MerchantSettlementReports' },
+            { label: 'Chargeback Report', icon: AlertCircle, path: 'MerchantChargebackReport' },
+            { label: 'Statement Report', icon: FileText, path: 'MerchantStatementReport' },
+        ]
+    },
+    {
+        title: 'Operations',
+        items: [
+            { label: 'Monitor Tools', icon: BarChart3, path: 'MerchantMonitorTools' },
+            { label: 'Dispute Management', icon: AlertCircle, path: 'MerchantDisputeManagement' },
+        ]
+    },
+    {
+        title: 'Administration',
+        items: [
+            { label: 'Merchant Operators', icon: Users, path: 'MerchantOperators' },
+            { label: 'Change Password', icon: Settings, path: 'MerchantChangePassword' },
+        ]
+    }
+];
+
+export default function MerchantSidebar({ selectedMID, mids, onMIDChange, currentPage }) {
+    const [expandedSections, setExpandedSections] = useState(['Merchant Profile']);
+
+    const toggleSection = (title) => {
+        setExpandedSections(prev => 
+            prev.includes(title) 
+                ? prev.filter(s => s !== title)
+                : [...prev, title]
+        );
+    };
+
+    return (
+        <aside className="w-64 bg-slate-800 text-white flex flex-col h-screen">
+            {/* Header */}
+            <div className="p-4 border-b border-slate-700">
+                <div className="flex items-center gap-2 mb-3">
+                    <div className="w-8 h-8 rounded bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
+                        <CreditCard className="h-4 w-4 text-white" />
+                    </div>
+                    <div>
+                        <h1 className="font-bold text-sm">Merchant Portal</h1>
+                    </div>
+                </div>
+                
+                {/* MID Selection */}
+                <div>
+                    <label className="text-xs text-slate-400 mb-1 block">MID:</label>
+                    <select
+                        value={selectedMID}
+                        onChange={(e) => onMIDChange(e.target.value)}
+                        className="w-full bg-slate-700 text-white text-sm px-2 py-1.5 rounded border border-slate-600 focus:outline-none focus:border-blue-500"
+                    >
+                        {mids.map((mid) => (
+                            <option key={mid.id} value={mid.mid}>
+                                {mid.mid}
+                            </option>
+                        ))}
+                    </select>
+                    {selectedMID && mids.find(m => m.mid === selectedMID) && (
+                        <div className="mt-1">
+                            <Badge variant="outline" className="text-[10px] border-slate-600 text-slate-300">
+                                {mids.find(m => m.mid === selectedMID)?.account_type}
+                            </Badge>
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {/* Navigation Menu */}
+            <ScrollArea className="flex-1">
+                <nav className="py-2">
+                    {menuSections.map((section) => {
+                        const isExpanded = expandedSections.includes(section.title);
+                        return (
+                            <div key={section.title} className="mb-1">
+                                <button
+                                    onClick={() => toggleSection(section.title)}
+                                    className="w-full px-4 py-2 flex items-center justify-between text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-700 transition-colors"
+                                >
+                                    <span>{section.title}</span>
+                                    {isExpanded ? (
+                                        <ChevronDown className="h-3 w-3" />
+                                    ) : (
+                                        <ChevronRight className="h-3 w-3" />
+                                    )}
+                                </button>
+                                {isExpanded && (
+                                    <div className="py-1">
+                                        {section.items.map((item) => {
+                                            const Icon = item.icon;
+                                            const isActive = currentPage === item.path;
+                                            return (
+                                                <Link
+                                                    key={item.path}
+                                                    to={createPageUrl(item.path)}
+                                                    className={cn(
+                                                        "flex items-center gap-3 px-4 pl-8 py-2 text-sm transition-colors",
+                                                        isActive
+                                                            ? "bg-blue-600 text-white"
+                                                            : "text-slate-300 hover:bg-slate-700 hover:text-white"
+                                                    )}
+                                                >
+                                                    <Icon className="h-4 w-4" />
+                                                    <span>{item.label}</span>
+                                                </Link>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    })}
+                </nav>
+            </ScrollArea>
+
+            {/* Footer Info */}
+            <div className="p-4 border-t border-slate-700 text-xs text-slate-400">
+                <div className="flex items-center gap-2">
+                    <Clock className="h-3 w-3" />
+                    <span>Currency: USD</span>
+                </div>
+                <div className="flex items-center gap-2 mt-1">
+                    <span>Timezone: Asia/Hong_Kong</span>
+                </div>
+            </div>
+        </aside>
+    );
+}
