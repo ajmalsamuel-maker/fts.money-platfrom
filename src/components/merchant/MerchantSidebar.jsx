@@ -50,6 +50,7 @@ const menuSections = [
     {
         title: 'Operations',
         items: [
+            { label: 'Virtual Terminals', icon: CreditCard, path: 'MerchantVirtualTerminals' },
             { label: 'Monitor Tools', icon: BarChart3, path: 'MerchantMonitorTools' },
             { label: 'Dispute Management', icon: AlertCircle, path: 'MerchantDisputeManagement' },
         ]

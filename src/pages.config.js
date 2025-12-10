@@ -72,6 +72,7 @@ import MerchantCodeRecovery from './pages/MerchantCodeRecovery';
 import DatabaseMigration from './pages/DatabaseMigration';
 import MerchantVirtualTerminal from './pages/MerchantVirtualTerminal';
 import VirtualTerminalLogin from './pages/VirtualTerminalLogin';
+import MerchantVirtualTerminals from './pages/MerchantVirtualTerminals';
 import __Layout from './Layout.jsx';
 
 
@@ -150,6 +151,7 @@ export const PAGES = {
     "DatabaseMigration": DatabaseMigration,
     "MerchantVirtualTerminal": MerchantVirtualTerminal,
     "VirtualTerminalLogin": VirtualTerminalLogin,
+    "MerchantVirtualTerminals": MerchantVirtualTerminals,
 }
 
 export const pagesConfig = {
