@@ -48,17 +48,41 @@ export default function VirtualTerminals() {
     });
 
     const createTerminal = useMutation({
-        mutationFn: (data) => {
+        mutationFn: async (data) => {
             const merchant = merchants.find(m => m.id === data.merchant_id);
-            return base44.entities.VirtualTerminal.create({
+            const terminalId = `VT-${Date.now()}`;
+            
+            const terminal = await base44.entities.VirtualTerminal.create({
                 ...data,
-                terminal_id: `VT-${Date.now()}`,
+                terminal_id: terminalId,
                 merchant_name: merchant?.business_name,
                 api_key: `vt_${btoa(data.merchant_id + Date.now()).slice(0, 24)}`,
                 status: 'active'
             });
+
+            // Create default VT user
+            const tempPassword = Math.random().toString(36).slice(-8);
+            const userEmail = `vt.${terminalId.toLowerCase()}@terminal.local`;
+            
+            await base44.entities.VirtualTerminalUser.create({
+                terminal_id: terminalId,
+                merchant_id: data.merchant_id,
+                email: userEmail,
+                full_name: `${data.name} Operator`,
+                role: 'operator',
+                status: 'active',
+                temp_password: tempPassword,
+                must_change_password: true,
+                permissions: ['process_payment', 'view_transactions']
+            });
+
+            return { terminal, userEmail, tempPassword };
         },
-        onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['virtual-terminals'] }); setShowCreateDialog(false); }
+        onSuccess: (data) => { 
+            queryClient.invalidateQueries({ queryKey: ['virtual-terminals'] }); 
+            alert(`Terminal created!\n\nLogin URL: ${window.location.origin}/VirtualTerminalLogin\nEmail: ${data.userEmail}\nPassword: ${data.tempPassword}\n\nPlease save these credentials!`);
+            setShowCreateDialog(false); 
+        }
     });
 
     const copyKey = (key) => { navigator.clipboard.writeText(key); setCopiedKey(key); setTimeout(() => setCopiedKey(null), 2000); };
