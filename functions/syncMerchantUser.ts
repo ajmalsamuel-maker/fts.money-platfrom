@@ -30,40 +30,66 @@ Deno.serve(async (req) => {
             user.merchant_code = merchantQuery.rows[0].merchant_code;
         }
 
-        // Insert or update merchant user in PostgreSQL
-        await pool.query(`
-            INSERT INTO merchant_users (
-                merchant_id, merchant_code, merchant_name, email, full_name, role, status,
-                temp_password, must_change_password, two_factor_enabled, phone, permissions, allowed_terminals
-            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
-            ON CONFLICT (email, merchant_code) 
-            DO UPDATE SET
-                merchant_id = EXCLUDED.merchant_id,
-                merchant_name = EXCLUDED.merchant_name,
-                full_name = EXCLUDED.full_name,
-                role = EXCLUDED.role,
-                status = EXCLUDED.status,
-                temp_password = EXCLUDED.temp_password,
-                must_change_password = EXCLUDED.must_change_password,
-                two_factor_enabled = EXCLUDED.two_factor_enabled,
-                phone = EXCLUDED.phone,
-                permissions = EXCLUDED.permissions,
-                allowed_terminals = EXCLUDED.allowed_terminals
-        `, [
-            user.merchant_id,
-            user.merchant_code,
-            user.merchant_name,
-            user.email,
-            user.full_name,
-            user.role,
-            user.status,
-            user.temp_password || null,
-            user.must_change_password || true,
-            user.two_factor_enabled || false,
-            user.phone || null,
-            user.permissions || [],
-            user.allowed_terminals || []
-        ]);
+        // Check if user exists
+        const checkResult = await pool.query(
+            'SELECT id FROM merchant_users WHERE email = $1 AND merchant_code = $2',
+            [user.email, user.merchant_code]
+        );
+
+        if (checkResult.rows.length > 0) {
+            // Update existing user
+            await pool.query(`
+                UPDATE merchant_users SET
+                    merchant_id = $1,
+                    merchant_name = $2,
+                    full_name = $3,
+                    role = $4,
+                    status = $5,
+                    temp_password = $6,
+                    must_change_password = $7,
+                    two_factor_enabled = $8,
+                    phone = $9,
+                    permissions = $10,
+                    allowed_terminals = $11
+                WHERE email = $12 AND merchant_code = $13
+            `, [
+                user.merchant_id,
+                user.merchant_name,
+                user.full_name,
+                user.role,
+                user.status,
+                user.temp_password || null,
+                user.must_change_password || true,
+                user.two_factor_enabled || false,
+                user.phone || null,
+                user.permissions || [],
+                user.allowed_terminals || [],
+                user.email,
+                user.merchant_code
+            ]);
+        } else {
+            // Insert new user
+            await pool.query(`
+                INSERT INTO merchant_users (
+                    merchant_id, merchant_code, merchant_name, email, full_name, role, status,
+                    temp_password, must_change_password, two_factor_enabled, phone, permissions, allowed_terminals
+                ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+            `, [
+                user.merchant_id,
+                user.merchant_code,
+                user.merchant_name,
+                user.email,
+                user.full_name,
+                user.role,
+                user.status,
+                user.temp_password || null,
+                user.must_change_password || true,
+                user.two_factor_enabled || false,
+                user.phone || null,
+                user.permissions || [],
+                user.allowed_terminals || []
+            ]);
+        }
 
         return Response.json({ success: true });
 
