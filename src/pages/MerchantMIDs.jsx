@@ -611,8 +611,12 @@ export default function MerchantMIDs() {
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
                                <Label>Merchant *</Label>
-                               <Select value={formData.merchant_id} onValueChange={handleMerchantChange} disabled={!!editingMID}>
-                                   <SelectTrigger><SelectValue placeholder="Select merchant" /></SelectTrigger>
+                               <Select value={formData.merchant_id} onValueChange={handleMerchantChange}>
+                                   <SelectTrigger>
+                                       <SelectValue placeholder="Select merchant">
+                                           {formData.merchant_id && merchants.find(m => m.id === formData.merchant_id)?.business_name}
+                                       </SelectValue>
+                                   </SelectTrigger>
                                    <SelectContent>
                                        {merchants.map(m => <SelectItem key={m.id} value={m.id}>{m.business_name}</SelectItem>)}
                                    </SelectContent>
@@ -641,8 +645,12 @@ export default function MerchantMIDs() {
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
                                <Label>Provider *</Label>
-                               <Select value={formData.provider_id} onValueChange={handleProviderChange} disabled={!!editingMID}>
-                                   <SelectTrigger><SelectValue placeholder="Select provider" /></SelectTrigger>
+                               <Select value={formData.provider_id} onValueChange={handleProviderChange}>
+                                   <SelectTrigger>
+                                       <SelectValue placeholder="Select provider">
+                                           {formData.provider_id && providers.find(p => p.id === formData.provider_id)?.name}
+                                       </SelectValue>
+                                   </SelectTrigger>
                                    <SelectContent>
                                        {providers.map(p => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}
                                    </SelectContent>
