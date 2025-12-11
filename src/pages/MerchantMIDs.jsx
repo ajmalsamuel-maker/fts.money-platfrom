@@ -30,12 +30,13 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 
-const terminalTypeLabels = {
+const accountTypeLabels = {
     ecommerce: 'E-Commerce',
-    virtual_terminal: 'Virtual Terminal',
+    moto: 'MOTO (Mail/Phone Order)',
+    pos: 'POS (Card Present)',
     soft_pos: 'Soft POS',
-    physical_terminal: 'Physical Terminal',
-    mpos: 'mPOS',
+    virtual_terminal: 'Virtual Terminal',
+    recurring: 'Recurring Billing',
 };
 
 const transactionTypeLabels = {
@@ -72,7 +73,7 @@ export default function MerchantMIDs() {
     const [isSuggestingMID, setIsSuggestingMID] = useState(false);
     const [formData, setFormData] = useState({
         merchant_id: '', merchant_name: '', mid: '',
-        provider_id: '', provider_name: '', terminal_type: 'ecommerce',
+        provider_id: '', provider_name: '', account_type: 'ecommerce',
         transaction_types: [], currency: 'USD', status: 'pending',
         activation_date: '', notes: ''
     });
@@ -181,7 +182,7 @@ export default function MerchantMIDs() {
             mid: '',
             provider_id: '', 
             provider_name: '', 
-            terminal_type: 'ecommerce',
+            account_type: 'ecommerce',
             transaction_types: [], 
             currency: 'USD', 
             status: 'pending',
@@ -211,7 +212,7 @@ export default function MerchantMIDs() {
             mid: mid.mid || '',
             provider_id: mid.provider_id || '',
             provider_name: mid.provider_name || '',
-            terminal_type: mid.terminal_type || 'ecommerce',
+            account_type: mid.account_type || 'ecommerce',
             transaction_types: transactionTypes,
             currency: mid.currency || 'USD',
             status: mid.status || 'pending',
@@ -246,26 +247,27 @@ export default function MerchantMIDs() {
     };
 
     const suggestMID = async () => {
-        if (!formData.provider_id || !formData.terminal_type) return;
+        if (!formData.provider_id || !formData.account_type) return;
         
         setIsSuggestingMID(true);
         try {
             const provider = providers.find(p => p.id === formData.provider_id);
             const existingMIDs = mids
-                .filter(m => m.provider_id === formData.provider_id && m.terminal_type === formData.terminal_type)
+                .filter(m => m.provider_id === formData.provider_id && m.account_type === formData.account_type)
                 .map(m => m.mid);
             
             // Generate smart MID suggestion
             const providerPrefix = provider?.name?.substring(0, 3).toUpperCase() || 'MID';
-            const terminalPrefix = formData.terminal_type === 'ecommerce' ? 'EC' : 
-                                   formData.terminal_type === 'virtual_terminal' ? 'VT' :
-                                   formData.terminal_type === 'soft_pos' ? 'SP' :
-                                   formData.terminal_type === 'physical_terminal' ? 'PT' : 'MP';
+            const accountPrefix = formData.account_type === 'ecommerce' ? 'EC' : 
+                                   formData.account_type === 'virtual_terminal' ? 'VT' :
+                                   formData.account_type === 'soft_pos' ? 'SP' :
+                                   formData.account_type === 'pos' ? 'PT' :
+                                   formData.account_type === 'moto' ? 'MO' : 'RC';
             
             let suggestedMID;
             let counter = 1;
             do {
-                suggestedMID = `${providerPrefix}${terminalPrefix}${String(counter).padStart(6, '0')}`;
+                suggestedMID = `${providerPrefix}${accountPrefix}${String(counter).padStart(6, '0')}`;
                 counter++;
             } while (existingMIDs.includes(suggestedMID));
             
@@ -457,7 +459,7 @@ export default function MerchantMIDs() {
                                         <TableHead>MID</TableHead>
                                         <TableHead>Merchant</TableHead>
                                         <TableHead>Provider</TableHead>
-                                        <TableHead>Terminal Type</TableHead>
+                                        <TableHead>Account Type</TableHead>
                                         <TableHead>Transaction Types</TableHead>
                                         <TableHead>Status</TableHead>
                                         <TableHead className="w-12"></TableHead>
@@ -496,7 +498,7 @@ export default function MerchantMIDs() {
                                                 </TableCell>
                                                 <TableCell>{mid.provider_name}</TableCell>
                                                 <TableCell>
-                                                    <Badge variant="outline">{terminalTypeLabels[mid.terminal_type] || mid.terminal_type}</Badge>
+                                                    <Badge variant="outline">{accountTypeLabels[mid.account_type] || mid.account_type}</Badge>
                                                 </TableCell>
                                                 <TableCell>
                                                     <div className="flex flex-wrap gap-1">
@@ -621,19 +623,19 @@ export default function MerchantMIDs() {
                                 <div className="flex gap-2">
                                     <Input value={formData.mid} onChange={(e) => setFormData({...formData, mid: e.target.value})} placeholder="e.g., 1234567890" />
                                     <Button 
-                                        type="button"
-                                        variant="outline" 
-                                        size="icon"
-                                        onClick={suggestMID}
-                                        disabled={!formData.provider_id || !formData.terminal_type || isSuggestingMID}
-                                        title="Auto-suggest MID"
+                                       type="button"
+                                       variant="outline" 
+                                       size="icon"
+                                       onClick={suggestMID}
+                                       disabled={!formData.provider_id || !formData.account_type || isSuggestingMID}
+                                       title="Auto-suggest MID"
                                     >
-                                        {isSuggestingMID ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+                                       {isSuggestingMID ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
                                     </Button>
-                                </div>
-                                {formData.provider_id && formData.terminal_type && (
+                                    </div>
+                                    {formData.provider_id && formData.account_type && (
                                     <p className="text-xs text-slate-500">Click sparkle icon to auto-generate available MID</p>
-                                )}
+                                    )}
                             </div>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
@@ -647,11 +649,11 @@ export default function MerchantMIDs() {
                                </Select>
                             </div>
                             <div className="space-y-2">
-                                <Label>Terminal Type *</Label>
-                                <Select value={formData.terminal_type} onValueChange={(val) => setFormData({...formData, terminal_type: val})}>
+                                <Label>Account Type *</Label>
+                                <Select value={formData.account_type} onValueChange={(val) => setFormData({...formData, account_type: val})}>
                                     <SelectTrigger><SelectValue /></SelectTrigger>
                                     <SelectContent>
-                                        {Object.entries(terminalTypeLabels).map(([key, label]) => (
+                                        {Object.entries(accountTypeLabels).map(([key, label]) => (
                                             <SelectItem key={key} value={key}>{label}</SelectItem>
                                         ))}
                                     </SelectContent>
@@ -659,19 +661,22 @@ export default function MerchantMIDs() {
                             </div>
                         </div>
                         <div className="space-y-2">
-                            <Label>Transaction Types</Label>
-                            <div className="grid grid-cols-2 gap-2 p-3 border rounded-md">
-                                {Object.entries(transactionTypeLabels).map(([key, label]) => (
-                                    <div key={key} className="flex items-center space-x-2">
-                                        <Checkbox 
-                                            id={key} 
-                                            checked={(formData.transaction_types || []).includes(key)}
-                                            onCheckedChange={() => toggleTransactionType(key)}
-                                        />
-                                        <label htmlFor={key} className="text-sm">{label}</label>
-                                    </div>
-                                ))}
-                            </div>
+                           <Label>Transaction Types</Label>
+                           <p className="text-xs text-slate-500 mb-2">
+                               Select all transaction types this MID can process. Flexible configuration allows mixing payment types.
+                           </p>
+                           <div className="grid grid-cols-2 gap-2 p-3 border rounded-md">
+                               {Object.entries(transactionTypeLabels).map(([key, label]) => (
+                                   <div key={key} className="flex items-center space-x-2">
+                                       <Checkbox 
+                                           id={key} 
+                                           checked={(formData.transaction_types || []).includes(key)}
+                                           onCheckedChange={() => toggleTransactionType(key)}
+                                       />
+                                       <label htmlFor={key} className="text-sm cursor-pointer">{label}</label>
+                                   </div>
+                               ))}
+                           </div>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
