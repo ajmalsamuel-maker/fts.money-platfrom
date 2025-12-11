@@ -56,6 +56,7 @@ import { PermissionGate } from '@/components/auth/PermissionGate';
 import TransactionDetailsDialog from '@/components/transaction/TransactionDetailsDialog';
 import ISOComplianceBadge from '@/components/transaction/ISOComplianceBadge';
 import { validateCurrency, validateCountry } from '@/components/utils/isoValidator';
+import AdvancedSearchPanel from '@/components/transaction/AdvancedSearchPanel';
 
 const statusConfig = {
     approved: { label: 'Approved', className: 'bg-emerald-100 text-emerald-700 border-emerald-200' },
@@ -97,6 +98,11 @@ export default function Transactions() {
     const { data: aiDecisions = [] } = useQuery({
         queryKey: ['ai-decisions-txn'],
         queryFn: () => base44.entities.AIPaymentDecision.list('-created_date', 100),
+    });
+
+    const { data: mids = [] } = useQuery({
+        queryKey: ['merchant-mids'],
+        queryFn: () => base44.entities.MerchantMID.list(),
     });
 
     const filteredTransactions = transactions.filter(txn => {
@@ -165,6 +171,17 @@ export default function Transactions() {
         setVoidDialogOpen(true);
     };
 
+    const handleAdvancedSearch = (searchParams) => {
+        console.log('Advanced search params:', searchParams);
+        // TODO: Implement advanced search filtering logic
+        toast.info('Advanced search executed');
+    };
+
+    const handleExport = () => {
+        // TODO: Implement export functionality
+        toast.info('Export functionality coming soon');
+    };
+
     return (
         <div className="min-h-screen bg-slate-50">
             <Sidebar 
@@ -196,54 +213,12 @@ export default function Transactions() {
                         </PermissionGate>
                     </div>
 
-                    {/* Filters */}
-                    <Card className="mb-6">
-                        <CardContent className="p-4">
-                            <div className="flex flex-wrap items-center gap-4">
-                                <div className="relative flex-1 min-w-[250px]">
-                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                                    <Input
-                                        placeholder="Search by ID, merchant, email..."
-                                        value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
-                                        className="pl-10"
-                                    />
-                                </div>
-                                <Select value={statusFilter} onValueChange={setStatusFilter}>
-                                    <SelectTrigger className="w-40">
-                                        <SelectValue placeholder="Status" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="all">All Status</SelectItem>
-                                        <SelectItem value="approved">Approved</SelectItem>
-                                        <SelectItem value="pending">Pending</SelectItem>
-                                        <SelectItem value="declined">Declined</SelectItem>
-                                        <SelectItem value="settled">Settled</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                                <Select value={typeFilter} onValueChange={setTypeFilter}>
-                                    <SelectTrigger className="w-40">
-                                        <SelectValue placeholder="Type" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="all">All Types</SelectItem>
-                                        <SelectItem value="sale">Sale</SelectItem>
-                                        <SelectItem value="refund">Refund</SelectItem>
-                                        <SelectItem value="chargeback">Chargeback</SelectItem>
-                                        <SelectItem value="payout">Payout</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                                <Button variant="outline" className="gap-2">
-                                    <Calendar className="h-4 w-4" />
-                                    Date Range
-                                </Button>
-                                <Button variant="outline" className="gap-2">
-                                    <Filter className="h-4 w-4" />
-                                    More Filters
-                                </Button>
-                            </div>
-                        </CardContent>
-                    </Card>
+                    {/* Advanced Search Panel */}
+                    <AdvancedSearchPanel 
+                        mids={mids}
+                        onSearch={handleAdvancedSearch}
+                        onExport={handleExport}
+                    />
 
                     {/* Transactions Table */}
                     <Card>
