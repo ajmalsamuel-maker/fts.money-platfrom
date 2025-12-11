@@ -6,6 +6,10 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Download, FileText, Database, Code, Map } from 'lucide-react';
+import { FULL_ARCHITECTURE_DOC } from '@/components/docs/FullArchitectureDoc';
+import { FULL_MIGRATION_PLAN } from '@/components/docs/FullMigrationPlan';
+import { FULL_API_SPEC } from '@/components/docs/FullAPISpec';
+import { FULL_SCHEMA_SCRIPT } from '@/components/docs/FullSchemaScript';
 
 export default function Documentation() {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -20,131 +24,10 @@ export default function Documentation() {
         URL.revokeObjectURL(url);
     };
 
-    const architectureDoc = `# PSP Platform - Production Architecture Design
-
-**Version:** 1.0  
-**Date:** December 11, 2025
-
-See full content in browser - download this file for complete documentation including:
-- Executive Summary
-- Architecture Diagrams
-- Component Details (Frontend, API Gateway, Payment Processing, Databases, Queue, Cache)
-- Network Architecture & Security
-- PCI Compliance Strategy
-- Cost Breakdown
-- Migration Path
-`;
-
-    const migrationPlan = `# PSP Platform - Migration Plan
-
-**Version:** 1.0  
-**Duration:** 16 weeks (4 months)
-
-## Phase 1: Foundation (Weeks 1-2)
-- AWS Infrastructure Setup
-- Database Configuration
-- Network & Security
-
-## Phase 2: Payment Processor (Weeks 3-6)
-- Go + Fiber application development
-- Payment routing engine
-- SQS integration
-
-## Phase 3: Infrastructure Deploy (Weeks 7-8)
-- ECS setup
-- Redis deployment
-- Load balancer configuration
-
-## Phase 4: Base44 Integration (Weeks 9-10)
-- API proxy functions
-- Data migration
-- Frontend updates
-
-## Phase 5: Security (Weeks 11-12)
-- Cloudflare WAF setup
-- PCI scope hardening
-
-## Phase 6: Testing (Weeks 13-14)
-- Load testing (k6)
-- Security testing
-- Performance optimization
-
-## Phase 7: Go Live (Weeks 15-16)
-- Production deployment
-- Monitoring validation
-- Launch
-
-## Phase 8: PCI Certification (Weeks 17-24)
-- QSA audit
-- Compliance documentation
-- AOC acquisition
-
-Download full file for detailed checklists, tasks, and deliverables.
-`;
-
-    const apiSpec = `# PSP Platform - API Specification
-
-**Version:** 1.0
-**Base URL:** https://api.yourpsp.com
-
-## Authentication
-HMAC-based API key authentication
-
-## Core Endpoints
-
-### POST /api/v1/transactions
-Create transaction (sale, auth, capture)
-
-### GET /api/v1/transactions/:id
-Retrieve transaction details
-
-### POST /api/v1/transactions/:id/void
-Void a transaction
-
-### POST /api/v1/transactions/:id/refund
-Refund a transaction
-
-### POST /api/v1/transactions/crypto
-Process cryptocurrency payment
-
-## Webhooks
-- transaction.approved
-- transaction.declined
-- crypto.confirmed
-- settlement.completed
-
-Download full file for complete API documentation with request/response examples.
-`;
-
-    const schemaScript = `/**
- * Base44 Schema Export Script
- * 
- * Exports all Base44 entities to PostgreSQL DDL
- * 
- * Usage: node export-schema.js
- * Output: pci-scope.sql, operational.sql, indexes.sql
- */
-
-import { base44 } from '@/api/base44Client';
-import fs from 'fs';
-
-const PCI_SCOPE_ENTITIES = [
-    'Transaction',
-    'SavedCard',
-    'TravelRuleData',
-    'SanctionsScreening'
-];
-
-const OPERATIONAL_ENTITIES = [
-    'Merchant',
-    'MerchantMID',
-    'BankMID',
-    // ... and more
-];
-
-// Converts JSON Schema to PostgreSQL CREATE TABLE statements
-// Download full script for complete implementation
-`;
+    const architectureDoc = FULL_ARCHITECTURE_DOC;
+    const migrationPlan = FULL_MIGRATION_PLAN;
+    const apiSpec = FULL_API_SPEC;
+    const schemaScript = FULL_SCHEMA_SCRIPT;
 
     return (
         <div className="min-h-screen bg-slate-50">
