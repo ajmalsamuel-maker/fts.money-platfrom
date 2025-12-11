@@ -107,6 +107,7 @@ const translations = {
         exchangeIntegrations: 'Exchange Integrations',
         cryptoPayouts: 'Crypto Payouts',
         securityManagement: 'Security & PKI',
+        paymentGateways: 'Payment Gateways',
         },
     es: {
         // Common
