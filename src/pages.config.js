@@ -83,6 +83,7 @@ import BlockchainConnectors from './pages/BlockchainConnectors';
 import ExchangeIntegrations from './pages/ExchangeIntegrations';
 import CryptoPayouts from './pages/CryptoPayouts';
 import MerchantCryptoDashboard from './pages/MerchantCryptoDashboard';
+import Documentation from './pages/Documentation';
 import __Layout from './Layout.jsx';
 
 
@@ -172,6 +173,7 @@ export const PAGES = {
     "ExchangeIntegrations": ExchangeIntegrations,
     "CryptoPayouts": CryptoPayouts,
     "MerchantCryptoDashboard": MerchantCryptoDashboard,
+    "Documentation": Documentation,
 }
 
 export const pagesConfig = {
