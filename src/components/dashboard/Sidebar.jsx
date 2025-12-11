@@ -134,6 +134,7 @@ const menuItems = [
             icon: Settings,
             items: [
                 { icon: Brain, label: 'aiAutomation', path: 'AIAutomationPlatform', permission: 'VIEW_ROUTING' },
+                { icon: Shield, label: 'securityManagement', path: 'SecurityManagement', permission: 'VIEW_SETTINGS' },
                 { icon: Shield, label: 'fatfCompliance', path: 'FATFCompliance', permission: 'VIEW_COMPLIANCE' },
                 { icon: Coins, label: 'blockchainConnectors', path: 'BlockchainConnectors', permission: 'VIEW_SETTINGS' },
                 { icon: TrendingUp, label: 'exchangeIntegrations', path: 'ExchangeIntegrations', permission: 'VIEW_SETTINGS' },

@@ -106,6 +106,7 @@ const translations = {
         blockchainConnectors: 'Blockchain Connectors',
         exchangeIntegrations: 'Exchange Integrations',
         cryptoPayouts: 'Crypto Payouts',
+        securityManagement: 'Security & PKI',
         },
     es: {
         // Common
