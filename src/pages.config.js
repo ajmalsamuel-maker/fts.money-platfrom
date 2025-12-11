@@ -85,6 +85,7 @@ import CryptoPayouts from './pages/CryptoPayouts';
 import MerchantCryptoDashboard from './pages/MerchantCryptoDashboard';
 import Documentation from './pages/Documentation';
 import SecurityManagement from './pages/SecurityManagement';
+import PaymentGateways from './pages/PaymentGateways';
 import __Layout from './Layout.jsx';
 
 
@@ -176,6 +177,7 @@ export const PAGES = {
     "MerchantCryptoDashboard": MerchantCryptoDashboard,
     "Documentation": Documentation,
     "SecurityManagement": SecurityManagement,
+    "PaymentGateways": PaymentGateways,
 }
 
 export const pagesConfig = {
