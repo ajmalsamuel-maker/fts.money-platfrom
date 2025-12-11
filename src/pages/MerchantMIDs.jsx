@@ -46,6 +46,9 @@ const transactionTypeLabels = {
     soft_pos: 'Soft POS',
     recurring: 'Recurring',
     moto: 'MOTO',
+    crypto: 'Cryptocurrency',
+    crypto_on_ramp: 'Crypto On-Ramp',
+    crypto_off_ramp: 'Crypto Off-Ramp',
 };
 
 const statusConfig = {
@@ -219,21 +222,27 @@ export default function MerchantMIDs() {
     };
 
     const handleMerchantChange = (merchantId) => {
+        console.log('Merchant changed:', merchantId);
         const merchant = merchants.find(m => m.id === merchantId);
-        setFormData({
+        const newFormData = {
             ...formData,
             merchant_id: merchantId,
             merchant_name: merchant?.business_name || ''
-        });
+        };
+        console.log('New form data after merchant change:', newFormData);
+        setFormData(newFormData);
     };
 
     const handleProviderChange = (providerId) => {
+        console.log('Provider changed:', providerId);
         const provider = providers.find(p => p.id === providerId);
-        setFormData({
+        const newFormData = {
             ...formData,
             provider_id: providerId,
             provider_name: provider?.name || ''
-        });
+        };
+        console.log('New form data after provider change:', newFormData);
+        setFormData(newFormData);
     };
 
     const suggestMID = async () => {
@@ -698,8 +707,11 @@ export default function MerchantMIDs() {
                     <DialogFooter>
                         <Button variant="outline" onClick={resetForm} disabled={createMutation.isPending || updateMutation.isPending}>Cancel</Button>
                         <Button 
-                            onClick={handleSubmit} 
-                            disabled={!formData.merchant_id || !formData.mid || !formData.provider_id || createMutation.isPending || updateMutation.isPending}
+                            onClick={() => {
+                                console.log('Button clicked! Current formData:', formData);
+                                console.log('Button disabled?', !formData.merchant_id || !formData.mid || !formData.provider_id);
+                                handleSubmit();
+                            }}
                         >
                             {(createMutation.isPending || updateMutation.isPending) ? (
                                 <>
