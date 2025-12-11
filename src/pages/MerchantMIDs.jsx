@@ -692,10 +692,18 @@ export default function MerchantMIDs() {
                                 <Select value={formData.currency} onValueChange={(val) => setFormData({...formData, currency: val})}>
                                     <SelectTrigger><SelectValue /></SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="USD">USD</SelectItem>
-                                        <SelectItem value="EUR">EUR</SelectItem>
-                                        <SelectItem value="GBP">GBP</SelectItem>
-                                        <SelectItem value="SGD">SGD</SelectItem>
+                                        <SelectItem value="USD">USD - US Dollar</SelectItem>
+                                        <SelectItem value="EUR">EUR - Euro</SelectItem>
+                                        <SelectItem value="GBP">GBP - British Pound</SelectItem>
+                                        <SelectItem value="SGD">SGD - Singapore Dollar</SelectItem>
+                                        <SelectItem value="BTC">BTC - Bitcoin</SelectItem>
+                                        <SelectItem value="ETH">ETH - Ethereum</SelectItem>
+                                        <SelectItem value="USDT">USDT - Tether</SelectItem>
+                                        <SelectItem value="USDC">USDC - USD Coin</SelectItem>
+                                        <SelectItem value="BNB">BNB - Binance Coin</SelectItem>
+                                        <SelectItem value="XRP">XRP - Ripple</SelectItem>
+                                        <SelectItem value="SOL">SOL - Solana</SelectItem>
+                                        <SelectItem value="ADA">ADA - Cardano</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
