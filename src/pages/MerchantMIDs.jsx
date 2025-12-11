@@ -278,7 +278,17 @@ export default function MerchantMIDs() {
     };
 
     const handleSubmit = () => {
-        console.log('Form data before submit:', formData);
+        console.log('=== SUBMIT CLICKED ===');
+        console.log('Form data:', formData);
+        console.log('Validation - merchant_id:', formData.merchant_id);
+        console.log('Validation - mid:', formData.mid);
+        console.log('Validation - provider_id:', formData.provider_id);
+        
+        // Validate required fields
+        if (!formData.merchant_id || !formData.mid || !formData.provider_id) {
+            toast.error('Please fill in all required fields (Merchant, MID, Provider)');
+            return;
+        }
         
         // Ensure transaction_types is an array
         const submitData = {
