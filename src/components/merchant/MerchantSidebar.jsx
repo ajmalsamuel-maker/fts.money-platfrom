@@ -25,49 +25,49 @@ import {
 
 const menuSections = [
     {
-        title: 'Merchant Profile',
+        title: 'Overview',
         items: [
             { label: 'Dashboard', icon: LayoutDashboard, path: 'MerchantDashboard' },
-            { label: 'Merchant Info', icon: Building, path: 'MerchantInfo' },
-            { label: 'Bank Info', icon: Wallet, path: 'MerchantBankInfo' },
+            { label: 'Analytics', icon: BarChart3, path: 'MerchantMonitorTools' },
+        ]
+    },
+    {
+        title: 'Payments',
+        items: [
+            { label: 'Virtual Terminals', icon: CreditCard, path: 'MerchantVirtualTerminals' },
+            { label: 'Crypto Management', icon: Bitcoin, path: 'MerchantCryptoDashboard' },
         ]
     },
     {
         title: 'Transactions',
         items: [
-            { label: 'Transaction List', icon: FileText, path: 'MerchantTransactionList' },
+            { label: 'All Transactions', icon: FileText, path: 'MerchantTransactionList' },
+            { label: 'Transaction Data', icon: CreditCard, path: 'MerchantDataTransactions' },
+            { label: 'Disputes', icon: AlertCircle, path: 'MerchantDisputeManagement' },
+        ]
+    },
+    {
+        title: 'Finance',
+        items: [
+            { label: 'Settlements', icon: DollarSign, path: 'MerchantSettlementReports' },
+            { label: 'Chargebacks', icon: AlertCircle, path: 'MerchantChargebackReport' },
+            { label: 'Statements', icon: FileText, path: 'MerchantStatementReport' },
             { label: 'Batch Reports', icon: BarChart3, path: 'MerchantBatchReports' },
-            { label: 'Data Transactions', icon: CreditCard, path: 'MerchantDataTransactions' },
         ]
     },
     {
-        title: 'Finance Reports',
+        title: 'Settings',
         items: [
-            { label: 'Settlement Reports', icon: DollarSign, path: 'MerchantSettlementReports' },
-            { label: 'Chargeback Report', icon: AlertCircle, path: 'MerchantChargebackReport' },
-            { label: 'Statement Report', icon: FileText, path: 'MerchantStatementReport' },
-        ]
-    },
-    {
-        title: 'Operations',
-        items: [
-            { label: 'Virtual Terminals', icon: CreditCard, path: 'MerchantVirtualTerminals' },
-            { label: 'Crypto Management', icon: Bitcoin, path: 'MerchantCryptoDashboard' },
-            { label: 'Monitor Tools', icon: BarChart3, path: 'MerchantMonitorTools' },
-            { label: 'Dispute Management', icon: AlertCircle, path: 'MerchantDisputeManagement' },
-        ]
-    },
-    {
-        title: 'Administration',
-        items: [
-            { label: 'Merchant Operators', icon: Users, path: 'MerchantOperators' },
+            { label: 'Merchant Info', icon: Building, path: 'MerchantInfo' },
+            { label: 'Bank Details', icon: Wallet, path: 'MerchantBankInfo' },
+            { label: 'Users & Operators', icon: Users, path: 'MerchantOperators' },
             { label: 'Email Templates', icon: FileText, path: 'MerchantEmailTemplates' },
-            { label: 'Change Password', icon: Settings, path: 'MerchantChangePassword' },
             { label: 'Appearance', icon: Settings, path: 'MerchantAppearance' },
+            { label: 'Change Password', icon: Settings, path: 'MerchantChangePassword' },
         ]
     },
     {
-        title: 'Support & Docs',
+        title: 'Resources',
         items: [
             { label: 'Help Center', icon: HelpCircle, path: 'MerchantHelpCenter' },
             { label: 'API Documentation', icon: Book, path: 'MerchantAPIDoc' },
