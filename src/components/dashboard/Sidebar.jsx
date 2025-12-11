@@ -152,6 +152,7 @@ const menuItems = [
                     group: 'resources',
                 icon: HelpCircle,
                 items: [
+                { icon: FileText, label: 'documentation', path: 'Documentation', permission: 'VIEW_DASHBOARD' },
                 { icon: Headphones, label: 'supportCenter', path: 'Support', permission: 'VIEW_DASHBOARD' },
                 { icon: Shield, label: 'privacyPolicy', path: 'PrivacyPolicy', permission: 'VIEW_DASHBOARD' },
                 { icon: Scale, label: 'termsOfService', path: 'TermsOfService', permission: 'VIEW_DASHBOARD' },

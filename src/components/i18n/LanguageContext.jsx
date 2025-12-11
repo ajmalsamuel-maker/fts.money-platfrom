@@ -98,6 +98,7 @@ const translations = {
         databaseMigration: 'Database Migration',
         isoStandards: 'ISO Standards',
         cryptoTransactions: 'Crypto Transactions',
+        documentation: 'Documentation',
         supportCenter: 'Support Center',
         privacyPolicy: 'Privacy Policy',
         termsOfService: 'Terms of Service',
