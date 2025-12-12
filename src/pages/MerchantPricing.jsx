@@ -632,13 +632,23 @@ export default function MerchantPricing() {
                     </Tabs>
                     
                     <DialogFooter>
-                        <Button variant="outline" onClick={resetForm}>Cancel</Button>
-                        <Button 
-                            onClick={handleSubmit} 
-                            disabled={!formData.merchant_id || !formData.provider_id || !formData.buy_rate_id || !formData.effective_from}
-                        >
-                            {editingPricing ? 'Update Pricing' : 'Create Pricing'}
-                        </Button>
+                        <div className="flex items-center justify-between w-full">
+                            <div className="text-sm text-slate-500">
+                                {!formData.merchant_id && "Select a merchant"}
+                                {formData.merchant_id && !formData.provider_id && "Select a provider"}
+                                {formData.provider_id && !formData.buy_rate_id && "Select a buy rate"}
+                                {formData.buy_rate_id && !formData.effective_from && "Set effective date"}
+                            </div>
+                            <div className="flex gap-2">
+                                <Button variant="outline" onClick={resetForm}>Cancel</Button>
+                                <Button 
+                                    onClick={handleSubmit} 
+                                    disabled={!formData.merchant_id || !formData.provider_id || !formData.buy_rate_id || !formData.effective_from}
+                                >
+                                    {editingPricing ? 'Update Pricing' : 'Create Pricing'}
+                                </Button>
+                            </div>
+                        </div>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
