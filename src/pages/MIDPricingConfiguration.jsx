@@ -359,10 +359,23 @@ export default function MIDPricingConfiguration() {
                                             {mids.map(m => (
                                                 <SelectItem key={m.id} value={m.mid}>
                                                     {m.mid} - {m.account_type}
+                                                    {m.transaction_types && m.transaction_types.length > 0 && (
+                                                        <span className="text-xs text-slate-500 ml-2">
+                                                            ({m.transaction_types.slice(0, 2).join(', ')})
+                                                        </span>
+                                                    )}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>
                                     </Select>
+                                    {currentMID && (
+                                        <div className="text-xs text-slate-500 mt-1">
+                                            <div>Account Type: <span className="font-medium">{currentMID.account_type}</span></div>
+                                            {currentMID.transaction_types && currentMID.transaction_types.length > 0 && (
+                                                <div>Payment Methods: <span className="font-medium">{currentMID.transaction_types.join(', ')}</span></div>
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="space-y-2">
                                     <Label>Inherits Merchant Pricing</Label>
