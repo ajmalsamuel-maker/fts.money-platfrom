@@ -88,6 +88,7 @@ import SecurityManagement from './pages/SecurityManagement';
 import PaymentGateways from './pages/PaymentGateways';
 import APIGateway from './pages/APIGateway';
 import MerchantAPIKeys from './pages/MerchantAPIKeys';
+import PayoutOrchestration from './pages/PayoutOrchestration';
 import __Layout from './Layout.jsx';
 
 
@@ -182,6 +183,7 @@ export const PAGES = {
     "PaymentGateways": PaymentGateways,
     "APIGateway": APIGateway,
     "MerchantAPIKeys": MerchantAPIKeys,
+    "PayoutOrchestration": PayoutOrchestration,
 }
 
 export const pagesConfig = {

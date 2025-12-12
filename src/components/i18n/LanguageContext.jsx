@@ -86,6 +86,7 @@ const translations = {
         virtualTerminals: 'Virtual Terminals',
 
         balances: 'Balances & Settlements',
+        payoutOrchestration: 'Payout Orchestration',
         fiatPayouts: 'Fiat Payouts',
         cryptoPayouts: 'Crypto Payouts',
         reconciliation: 'Reconciliation',
