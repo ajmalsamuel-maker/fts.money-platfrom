@@ -58,27 +58,62 @@ export default function MIDPricingConfiguration() {
     }, [mids, selectedMID]);
 
     // Determine which payment method columns to show based on MID configuration
-    const paymentMethodConfig = React.useMemo(() => {
-        if (!currentMID) return { showCUP: false, showBankTransfer: false, showWallet: false };
+    const paymentMethodColumns = React.useMemo(() => {
+        if (!currentMID) return [];
         
-        const transactionTypes = currentMID.transaction_types || [];
-        const accountType = currentMID.account_type || '';
+        const columns = [];
         
-        return {
-            // Show CUP columns if card transactions are supported (UnionPay)
-            showCUP: transactionTypes.includes('card_present') || 
-                     transactionTypes.includes('card_not_present') ||
-                     transactionTypes.includes('ecommerce'),
-            
-            // Show Bank Transfer columns if bank payment methods are configured
-            showBankTransfer: accountType === 'bank_transfer' || 
-                             transactionTypes.some(t => t.includes('bank')) ||
-                             currentMID.description?.toLowerCase().includes('bank'),
-            
-            // Show Wallet columns if wallet/digital payment methods are configured  
-            showWallet: accountType === 'wallet' ||
-                       transactionTypes.some(t => t.includes('wallet'))
-        };
+        // Add card brand columns
+        const cardBrands = currentMID.supported_card_brands || [];
+        cardBrands.forEach(brand => {
+            columns.push({
+                id: `${brand}_fixed`,
+                label: `${brand.charAt(0).toUpperCase() + brand.slice(1)} Fixed`,
+                type: 'card_brand',
+                brand: brand
+            });
+            columns.push({
+                id: `${brand}_percentage`,
+                label: `${brand.charAt(0).toUpperCase() + brand.slice(1)} %`,
+                type: 'card_brand',
+                brand: brand
+            });
+        });
+        
+        // Add APM columns
+        const apms = currentMID.supported_apms || [];
+        apms.forEach(apm => {
+            const apmLabel = apm.replace(/_/g, ' ').split(' ')
+                .map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+            columns.push({
+                id: `${apm}_fixed`,
+                label: `${apmLabel} Fixed`,
+                type: 'apm',
+                method: apm
+            });
+            columns.push({
+                id: `${apm}_percentage`,
+                label: `${apmLabel} %`,
+                type: 'apm',
+                method: apm
+            });
+        });
+        
+        // Add bank transfer columns if supported
+        if (currentMID.supports_bank_transfer) {
+            columns.push({
+                id: 'bank_transfer_fixed',
+                label: 'Bank Transfer Fixed',
+                type: 'bank_transfer'
+            });
+            columns.push({
+                id: 'bank_transfer_percentage',
+                label: 'Bank Transfer %',
+                type: 'bank_transfer'
+            });
+        }
+        
+        return columns;
     }, [currentMID]);
 
     const { data: feeTypes = [] } = useQuery({
