@@ -224,9 +224,12 @@ export default function UserManagement() {
     const roleStats = {
         total: users.length,
         admin: users.filter(u => (u.role || u.app_role) === 'admin').length,
+        finance: users.filter(u => (u.role || u.app_role) === 'finance').length,
+        operations: users.filter(u => (u.role || u.app_role) === 'operations').length,
+        compliance: users.filter(u => (u.role || u.app_role) === 'compliance').length,
+        technical: users.filter(u => (u.role || u.app_role) === 'technical').length,
         editor: users.filter(u => (u.role || u.app_role) === 'editor').length,
         viewer: users.filter(u => ((u.role || u.app_role) === 'viewer' || (!u.role && !u.app_role))).length,
-        merchant: users.filter(u => (u.role || u.app_role) === 'merchant').length,
     };
 
     return (
@@ -266,7 +269,7 @@ export default function UserManagement() {
                     </div>
 
                     {/* Role Stats */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-3 sm:gap-4 mb-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4 mb-6">
                         <Card className="p-4 border-l-4 border-l-slate-400">
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center">
@@ -278,25 +281,25 @@ export default function UserManagement() {
                                 </div>
                             </div>
                         </Card>
-                        <Card className="p-4 border-l-4 border-l-emerald-400">
+                        <Card className="p-4 border-l-4 border-l-red-400">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center">
-                                    <Crown className="h-5 w-5 text-emerald-600" />
+                                <div className="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center">
+                                    <Crown className="h-5 w-5 text-red-600" />
                                 </div>
                                 <div>
                                     <p className="text-sm text-slate-500">Administrators</p>
-                                    <p className="text-2xl font-bold text-emerald-600">{roleStats.admin}</p>
+                                    <p className="text-2xl font-bold text-red-600">{roleStats.admin}</p>
                                 </div>
                             </div>
                         </Card>
-                        <Card className="p-4 border-l-4 border-l-amber-400">
+                        <Card className="p-4 border-l-4 border-l-emerald-400">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center">
-                                    <Pencil className="h-5 w-5 text-amber-600" />
+                                <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center">
+                                    <Shield className="h-5 w-5 text-emerald-600" />
                                 </div>
                                 <div>
-                                    <p className="text-sm text-slate-500">Editors</p>
-                                    <p className="text-2xl font-bold text-amber-600">{roleStats.editor}</p>
+                                    <p className="text-sm text-slate-500">Managers</p>
+                                    <p className="text-2xl font-bold text-emerald-600">{roleStats.finance + roleStats.operations + roleStats.compliance + roleStats.technical}</p>
                                 </div>
                             </div>
                         </Card>
@@ -306,19 +309,8 @@ export default function UserManagement() {
                                     <Eye className="h-5 w-5 text-purple-600" />
                                 </div>
                                 <div>
-                                    <p className="text-sm text-slate-500">Viewers</p>
-                                    <p className="text-2xl font-bold text-purple-600">{roleStats.viewer}</p>
-                                </div>
-                            </div>
-                        </Card>
-                        <Card className="p-4 border-l-4 border-l-blue-400">
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
-                                    <Building2 className="h-5 w-5 text-blue-600" />
-                                </div>
-                                <div>
-                                    <p className="text-sm text-slate-500">Merchants</p>
-                                    <p className="text-2xl font-bold text-blue-600">{roleStats.merchant}</p>
+                                    <p className="text-sm text-slate-500">Staff</p>
+                                    <p className="text-2xl font-bold text-purple-600">{roleStats.editor + roleStats.viewer}</p>
                                 </div>
                             </div>
                         </Card>
@@ -359,10 +351,13 @@ export default function UserManagement() {
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="all">All Roles</SelectItem>
-                                        <SelectItem value="admin">Admin</SelectItem>
+                                        <SelectItem value="admin">Administrator</SelectItem>
+                                        <SelectItem value="finance">Finance Manager</SelectItem>
+                                        <SelectItem value="operations">Operations Manager</SelectItem>
+                                        <SelectItem value="compliance">Compliance Officer</SelectItem>
+                                        <SelectItem value="technical">Technical Manager</SelectItem>
                                         <SelectItem value="editor">Editor</SelectItem>
                                         <SelectItem value="viewer">Viewer</SelectItem>
-                                        <SelectItem value="merchant">Merchant</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
@@ -600,14 +595,20 @@ export default function UserManagement() {
                             <TableHeader>
                                 <TableRow className="bg-slate-50">
                                     <TableHead className="font-semibold">Permission</TableHead>
-                                    <TableHead className="font-semibold text-center">
-                                        <Badge className={cn(ROLE_CONFIG.admin.bgColor, ROLE_CONFIG.admin.textColor)}>Admin</Badge>
+                                    <TableHead className="font-semibold text-center w-20">
+                                        <Badge className={cn(ROLE_CONFIG.admin.bgColor, ROLE_CONFIG.admin.textColor, "text-xs")}>Admin</Badge>
                                     </TableHead>
-                                    <TableHead className="font-semibold text-center">
-                                        <Badge className={cn(ROLE_CONFIG.editor.bgColor, ROLE_CONFIG.editor.textColor)}>Editor</Badge>
+                                    <TableHead className="font-semibold text-center w-20">
+                                        <Badge className={cn(ROLE_CONFIG.finance.bgColor, ROLE_CONFIG.finance.textColor, "text-xs")}>Finance</Badge>
                                     </TableHead>
-                                    <TableHead className="font-semibold text-center">
-                                        <Badge className={cn(ROLE_CONFIG.viewer.bgColor, ROLE_CONFIG.viewer.textColor)}>Viewer</Badge>
+                                    <TableHead className="font-semibold text-center w-20">
+                                        <Badge className={cn(ROLE_CONFIG.operations.bgColor, ROLE_CONFIG.operations.textColor, "text-xs")}>Ops</Badge>
+                                    </TableHead>
+                                    <TableHead className="font-semibold text-center w-20">
+                                        <Badge className={cn(ROLE_CONFIG.compliance.bgColor, ROLE_CONFIG.compliance.textColor, "text-xs")}>Comp</Badge>
+                                    </TableHead>
+                                    <TableHead className="font-semibold text-center w-20">
+                                        <Badge className={cn(ROLE_CONFIG.technical.bgColor, ROLE_CONFIG.technical.textColor, "text-xs")}>Tech</Badge>
                                     </TableHead>
                                 </TableRow>
                             </TableHeader>
@@ -632,10 +633,10 @@ export default function UserManagement() {
                                         <TableCell className="text-center">
                                             {editingPermissions ? (
                                                 <Checkbox 
-                                                    checked={roles.includes('editor')}
-                                                    onCheckedChange={() => togglePermission(permission, 'editor')}
+                                                    checked={roles.includes('finance')}
+                                                    onCheckedChange={() => togglePermission(permission, 'finance')}
                                                 />
-                                            ) : roles.includes('editor') ? (
+                                            ) : roles.includes('finance') ? (
                                                 <Check className="h-4 w-4 text-emerald-500 mx-auto" />
                                             ) : (
                                                 <span className="text-slate-300">—</span>
@@ -644,10 +645,34 @@ export default function UserManagement() {
                                         <TableCell className="text-center">
                                             {editingPermissions ? (
                                                 <Checkbox 
-                                                    checked={roles.includes('viewer')}
-                                                    onCheckedChange={() => togglePermission(permission, 'viewer')}
+                                                    checked={roles.includes('operations')}
+                                                    onCheckedChange={() => togglePermission(permission, 'operations')}
                                                 />
-                                            ) : roles.includes('viewer') ? (
+                                            ) : roles.includes('operations') ? (
+                                                <Check className="h-4 w-4 text-emerald-500 mx-auto" />
+                                            ) : (
+                                                <span className="text-slate-300">—</span>
+                                            )}
+                                        </TableCell>
+                                        <TableCell className="text-center">
+                                            {editingPermissions ? (
+                                                <Checkbox 
+                                                    checked={roles.includes('compliance')}
+                                                    onCheckedChange={() => togglePermission(permission, 'compliance')}
+                                                />
+                                            ) : roles.includes('compliance') ? (
+                                                <Check className="h-4 w-4 text-emerald-500 mx-auto" />
+                                            ) : (
+                                                <span className="text-slate-300">—</span>
+                                            )}
+                                        </TableCell>
+                                        <TableCell className="text-center">
+                                            {editingPermissions ? (
+                                                <Checkbox 
+                                                    checked={roles.includes('technical')}
+                                                    onCheckedChange={() => togglePermission(permission, 'technical')}
+                                                />
+                                            ) : roles.includes('technical') ? (
                                                 <Check className="h-4 w-4 text-emerald-500 mx-auto" />
                                             ) : (
                                                 <span className="text-slate-300">—</span>
