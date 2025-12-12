@@ -80,6 +80,9 @@ import { ISO4217_CURRENCIES } from '@/components/utils/iso4217';
 import { getAllCountries } from '@/components/utils/countries';
 import { validateCurrency, validateCountry } from '@/components/utils/isoValidator';
 
+const countries = getAllCountries();
+const currencies = Object.keys(ISO4217_CURRENCIES).slice(0, 50);
+
 const processors = [
     { id: 'stripe', name: 'Stripe', type: 'gateway', status: 'active', successRate: 98.5, avgLatency: 245, fee: 2.9, networks: ['visa', 'mastercard', 'amex'] },
     { id: 'adyen', name: 'Adyen', type: 'psp', status: 'active', successRate: 97.8, avgLatency: 320, fee: 2.5, networks: ['visa', 'mastercard', 'amex', 'discover'] },
