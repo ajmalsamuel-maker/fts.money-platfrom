@@ -96,6 +96,10 @@ import PSPPasswordReset from './pages/PSPPasswordReset';
 import FeeTypeManagement from './pages/FeeTypeManagement';
 import MIDPricingConfiguration from './pages/MIDPricingConfiguration';
 import Invoices from './pages/Invoices';
+import PaymentLinks from './pages/PaymentLinks';
+import Customers from './pages/Customers';
+import Webhooks from './pages/Webhooks';
+import Refunds from './pages/Refunds';
 import __Layout from './Layout.jsx';
 
 
@@ -198,6 +202,10 @@ export const PAGES = {
     "FeeTypeManagement": FeeTypeManagement,
     "MIDPricingConfiguration": MIDPricingConfiguration,
     "Invoices": Invoices,
+    "PaymentLinks": PaymentLinks,
+    "Customers": Customers,
+    "Webhooks": Webhooks,
+    "Refunds": Refunds,
 }
 
 export const pagesConfig = {
