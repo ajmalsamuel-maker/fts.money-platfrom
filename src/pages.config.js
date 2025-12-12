@@ -92,6 +92,7 @@ import PayoutOrchestration from './pages/PayoutOrchestration';
 import MerchantPayouts from './pages/MerchantPayouts';
 import MerchantPayoutPricing from './pages/MerchantPayoutPricing';
 import PSPLogin from './pages/PSPLogin';
+import PSPPasswordReset from './pages/PSPPasswordReset';
 import __Layout from './Layout.jsx';
 
 
@@ -190,6 +191,7 @@ export const PAGES = {
     "MerchantPayouts": MerchantPayouts,
     "MerchantPayoutPricing": MerchantPayoutPricing,
     "PSPLogin": PSPLogin,
+    "PSPPasswordReset": PSPPasswordReset,
 }
 
 export const pagesConfig = {

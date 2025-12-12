@@ -26,7 +26,8 @@ import {
     DollarSign,
     Plus,
     X,
-    Coins
+    Coins,
+    UserCog
 } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -39,6 +40,11 @@ import { getCryptoBlockchain } from '@/components/utils/cryptoRegistry';
 export default function Settings() {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const queryClient = useQueryClient();
+
+    const { data: users = [] } = useQuery({
+        queryKey: ['all-users'],
+        queryFn: () => base44.entities.AppUser.list('-created_date', 20),
+    });
 
     const { data: pspSettings, isLoading } = useQuery({
         queryKey: ['psp-settings'],
@@ -75,6 +81,7 @@ export default function Settings() {
 
     const [settings, setSettings] = useState({
         company_name: '',
+        psp_code: '',
         legal_name: '',
         registration_number: '',
         vat_number: '',
@@ -90,7 +97,11 @@ export default function Settings() {
         email: '',
         website: '',
         support_email: '',
-        support_phone: ''
+        support_phone: '',
+        allow_psp_code_login: true,
+        require_2fa: false,
+        '2fa_method': 'email',
+        password_reset_enabled: true
     });
 
     const toggleCurrency = (code) => {
@@ -105,6 +116,7 @@ export default function Settings() {
         if (savedSettings) {
             setSettings({
                 company_name: savedSettings.company_name || '',
+                psp_code: savedSettings.psp_code || '',
                 legal_name: savedSettings.legal_name || '',
                 registration_number: savedSettings.registration_number || '',
                 vat_number: savedSettings.vat_number || '',
@@ -120,7 +132,11 @@ export default function Settings() {
                 email: savedSettings.email || '',
                 website: savedSettings.website || '',
                 support_email: savedSettings.support_email || '',
-                support_phone: savedSettings.support_phone || ''
+                support_phone: savedSettings.support_phone || '',
+                allow_psp_code_login: savedSettings.allow_psp_code_login ?? true,
+                require_2fa: savedSettings.require_2fa || false,
+                '2fa_method': savedSettings['2fa_method'] || 'email',
+                password_reset_enabled: savedSettings.password_reset_enabled ?? true
             });
         }
     }, [savedSettings]);
@@ -174,6 +190,7 @@ export default function Settings() {
                             <TabsTrigger value="address">Address</TabsTrigger>
                             <TabsTrigger value="contact">Contact</TabsTrigger>
                             <TabsTrigger value="licensing">Licensing</TabsTrigger>
+                            <TabsTrigger value="login">Login & Security</TabsTrigger>
                             <TabsTrigger value="location">Location & Time</TabsTrigger>
                             <TabsTrigger value="currencies">Currencies</TabsTrigger>
                         </TabsList>
@@ -197,7 +214,18 @@ export default function Settings() {
                                                 onChange={(e) => setSettings({ ...settings, company_name: e.target.value })}
                                                 placeholder="e.g., PaymentHub Inc."
                                             />
-                                            <p className="text-xs text-slate-500">This name will appear in the sidebar and throughout the app</p>
+                                            <p className="text-xs text-slate-500">This name will appear in the login page and throughout the app</p>
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label htmlFor="psp_code">PSP Code *</Label>
+                                            <Input
+                                                id="psp_code"
+                                                value={settings.psp_code}
+                                                onChange={(e) => setSettings({ ...settings, psp_code: e.target.value.toUpperCase() })}
+                                                placeholder="e.g., PSP001"
+                                                className="font-mono font-bold"
+                                            />
+                                            <p className="text-xs text-slate-500">Unique identifier for your PSP organization</p>
                                         </div>
                                         <div className="space-y-2">
                                             <Label htmlFor="legal_name">Legal Entity Name</Label>
@@ -417,6 +445,119 @@ export default function Settings() {
                                                 placeholder="e.g., FCA, BaFin, MAS"
                                             />
                                         </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
+
+                        <TabsContent value="login">
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle className="flex items-center gap-2">
+                                        <Shield className="h-5 w-5 text-blue-600" />
+                                        Login & Security Settings
+                                    </CardTitle>
+                                    <CardDescription>Configure authentication and security options</CardDescription>
+                                </CardHeader>
+                                <CardContent className="space-y-6">
+                                    {/* Login Methods */}
+                                    <div className="space-y-4">
+                                        <h3 className="font-medium text-slate-900">Login Methods</h3>
+                                        <div className="space-y-3">
+                                            <div className="flex items-center justify-between p-4 border rounded-lg">
+                                                <div className="flex-1">
+                                                    <p className="font-medium text-sm">PSP Code Login</p>
+                                                    <p className="text-xs text-slate-500">Allow users to login with PSP code + email</p>
+                                                </div>
+                                                <Checkbox
+                                                    checked={settings.allow_psp_code_login}
+                                                    onCheckedChange={(checked) => setSettings({ ...settings, allow_psp_code_login: checked })}
+                                                />
+                                            </div>
+                                            <div className="flex items-center justify-between p-4 border rounded-lg">
+                                                <div className="flex-1">
+                                                    <p className="font-medium text-sm">Password Reset</p>
+                                                    <p className="text-xs text-slate-500">Enable forgot password functionality</p>
+                                                </div>
+                                                <Checkbox
+                                                    checked={settings.password_reset_enabled}
+                                                    onCheckedChange={(checked) => setSettings({ ...settings, password_reset_enabled: checked })}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Two-Factor Authentication */}
+                                    <div className="space-y-4 border-t pt-6">
+                                        <h3 className="font-medium text-slate-900">Two-Factor Authentication (2FA)</h3>
+                                        <div className="flex items-center justify-between p-4 border rounded-lg bg-amber-50 border-amber-200">
+                                            <div className="flex-1">
+                                                <p className="font-medium text-sm text-amber-900">Require 2FA for All Users</p>
+                                                <p className="text-xs text-amber-700">Enhanced security for all login attempts</p>
+                                            </div>
+                                            <Checkbox
+                                                checked={settings.require_2fa}
+                                                onCheckedChange={(checked) => setSettings({ ...settings, require_2fa: checked })}
+                                            />
+                                        </div>
+                                        
+                                        {settings.require_2fa && (
+                                            <div className="space-y-2">
+                                                <Label>2FA Delivery Method</Label>
+                                                <Select 
+                                                    value={settings['2fa_method']} 
+                                                    onValueChange={(val) => setSettings({ ...settings, '2fa_method': val })}
+                                                >
+                                                    <SelectTrigger>
+                                                        <SelectValue />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="email">Email (OTP)</SelectItem>
+                                                        <SelectItem value="sms">SMS (OTP)</SelectItem>
+                                                        <SelectItem value="authenticator">Authenticator App</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Active Users */}
+                                    <div className="space-y-4 border-t pt-6">
+                                        <div className="flex items-center justify-between">
+                                            <h3 className="font-medium text-slate-900">Authorized Users</h3>
+                                            <Badge variant="secondary">{users?.length || 0} active users</Badge>
+                                        </div>
+                                        <div className="space-y-2 max-h-64 overflow-y-auto">
+                                            {users?.slice(0, 10).map(user => {
+                                                const role = user.role || user.app_role || 'viewer';
+                                                const config = ROLE_CONFIG[role] || ROLE_CONFIG.viewer;
+                                                return (
+                                                    <div key={user.id} className="flex items-center justify-between p-3 border rounded-lg bg-white">
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white text-xs font-semibold">
+                                                                {user.full_name?.charAt(0) || user.email?.charAt(0) || '?'}
+                                                            </div>
+                                                            <div>
+                                                                <p className="text-sm font-medium">{user.full_name || 'No Name'}</p>
+                                                                <p className="text-xs text-slate-500">{user.email}</p>
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex items-center gap-2">
+                                                            <Badge className={cn(config.bgColor, config.textColor, "text-xs")}>
+                                                                {config.label}
+                                                            </Badge>
+                                                            {user.two_factor_enabled && (
+                                                                <Badge className="bg-green-100 text-green-700 text-xs">2FA</Badge>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                        <Button variant="outline" className="w-full" onClick={() => window.location.href = '/UserManagement'}>
+                                            <UserCog className="h-4 w-4 mr-2" />
+                                            Manage All Users
+                                        </Button>
                                     </div>
                                 </CardContent>
                             </Card>
