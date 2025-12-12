@@ -45,7 +45,9 @@ import {
     Building2,
     FileCheck,
     Coins,
-    TrendingUp
+    TrendingUp,
+    Tag,
+    FileText as InvoiceIcon
 } from 'lucide-react';
 
 const menuItems = [
@@ -122,6 +124,8 @@ const menuItems = [
                     { icon: ArrowUpDown, label: 'reconciliation', path: 'Reconciliation', permission: 'VIEW_BALANCES' },
                     { icon: FileText, label: 'reports', path: 'Reports', permission: 'VIEW_REPORTS' },
                     { icon: Percent, label: 'pricingAndRates', path: 'MerchantPricing', permission: 'VIEW_BALANCES' },
+                    { icon: DollarSign, label: 'midPricingConfig', path: 'MIDPricingConfiguration', permission: 'VIEW_BALANCES' },
+                    { icon: InvoiceIcon, label: 'invoices', path: 'Invoices', permission: 'VIEW_BALANCES' },
                 ]
             },
             {
@@ -144,6 +148,7 @@ const menuItems = [
                     { icon: Shield, label: 'auditLogs', path: 'AuditLogs', permission: 'VIEW_USERS' },
                     { icon: Palette, label: 'appearance', path: 'Appearance', permission: 'VIEW_APPEARANCE' },
                     { icon: FileCheck, label: 'isoStandards', path: 'ISOConfiguration', permission: 'VIEW_SETTINGS' },
+                    { icon: Tag, label: 'feeTypeManagement', path: 'FeeTypeManagement', permission: 'VIEW_SETTINGS' },
                     { icon: Database, label: 'databaseTools', path: 'DatabaseSetup', permission: 'VIEW_SETTINGS' },
                     { icon: Settings, label: 'generalSettings', path: 'Settings', permission: 'VIEW_SETTINGS' },
                 ]
