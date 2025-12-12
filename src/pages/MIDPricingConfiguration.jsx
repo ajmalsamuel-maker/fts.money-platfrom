@@ -70,7 +70,9 @@ export default function MIDPricingConfiguration() {
     const { data: merchantPricing } = useQuery({
         queryKey: ['merchantPricing', selectedMerchant],
         queryFn: async () => {
+            console.log('Looking for merchant pricing with merchant_id:', selectedMerchant);
             const result = await base44.entities.MerchantPricing.filter({ merchant_id: selectedMerchant });
+            console.log('Found merchant pricing:', result);
             return result;
         },
         enabled: !!selectedMerchant
