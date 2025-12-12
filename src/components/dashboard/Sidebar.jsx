@@ -123,7 +123,8 @@ const menuItems = [
                     { icon: Percent, label: 'payoutPricing', path: 'MerchantPayoutPricing', permission: 'VIEW_BALANCES' },
                     { icon: ArrowUpDown, label: 'reconciliation', path: 'Reconciliation', permission: 'VIEW_BALANCES' },
                     { icon: FileText, label: 'reports', path: 'Reports', permission: 'VIEW_REPORTS' },
-                    { icon: Percent, label: 'pricingAndRates', path: 'MerchantPricing', permission: 'VIEW_BALANCES' },
+                    { icon: TrendingUp, label: 'buyRates', path: 'BuyRates', permission: 'VIEW_BALANCES' },
+                    { icon: Percent, label: 'merchantPricing', path: 'MerchantPricing', permission: 'VIEW_BALANCES' },
                     { icon: DollarSign, label: 'midPricingConfig', path: 'MIDPricingConfiguration', permission: 'VIEW_BALANCES' },
                     { icon: InvoiceIcon, label: 'invoices', path: 'Invoices', permission: 'VIEW_BALANCES' },
                 ]
