@@ -125,6 +125,31 @@ export default function MIDPricingConfiguration() {
         }
     }, [existingPricing, selectedMID, mids, merchants, feeTypes, selectedMerchant]);
 
+    // Populate from merchant pricing when inheritance is enabled
+    React.useEffect(() => {
+        if (pricingData.inherits_merchant_pricing && merchantPricing && merchantPricing.length > 0 && selectedMID) {
+            const mp = merchantPricing[0];
+            setPricingData(prev => ({
+                ...prev,
+                merchant_pricing_id: mp.id,
+                currency: mp.currency || 'USD',
+                fee_configuration: prev.fee_configuration.map(fc => {
+                    // For transaction fees, use the sell rate from merchant pricing
+                    if (fc.fee_code === 'SALE_TXN') {
+                        return {
+                            ...fc,
+                            enabled: true,
+                            fixed_amount: mp.sell_fixed_fee || 0,
+                            percentage: mp.sell_percentage_rate || 0,
+                            offset_from_settlement: true
+                        };
+                    }
+                    return fc;
+                })
+            }));
+        }
+    }, [pricingData.inherits_merchant_pricing, merchantPricing, selectedMID]);
+
     const saveMutation = useMutation({
         mutationFn: (data) => {
             if (existingPricing) {
@@ -190,9 +215,13 @@ export default function MIDPricingConfiguration() {
                                     <p className="text-slate-500">Configure detailed pricing per MID</p>
                                 </div>
                             </div>
-                            <Button onClick={handleSave} className="gap-2">
+                            <Button 
+                                onClick={handleSave} 
+                                className="gap-2"
+                                disabled={!selectedMID || saveMutation.isPending}
+                            >
                                 <Save className="h-4 w-4" />
-                                Save Configuration
+                                {saveMutation.isPending ? 'Saving...' : 'Save Configuration'}
                             </Button>
                         </div>
                     </div>
