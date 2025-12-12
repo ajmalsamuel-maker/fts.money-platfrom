@@ -97,6 +97,7 @@ const translations = {
         complianceDashboard: 'Compliance Dashboard',
         fatfAML: 'FATF/AML',
 
+        apiGateway: 'Unified API Gateway',
         securityPKI: 'Security & PKI',
         userManagement: 'User Management',
         auditLogs: 'Audit Logs',
@@ -106,8 +107,6 @@ const translations = {
         generalSettings: 'General Settings',
 
         documentation: 'Documentation',
-        apiGateway: 'Unified API Gateway',
-        apiCredentials: 'API Credentials',
         supportCenter: 'Support Center',
         },
     es: {

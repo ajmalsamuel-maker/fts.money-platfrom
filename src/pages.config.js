@@ -87,6 +87,7 @@ import Documentation from './pages/Documentation';
 import SecurityManagement from './pages/SecurityManagement';
 import PaymentGateways from './pages/PaymentGateways';
 import APIGateway from './pages/APIGateway';
+import MerchantAPIKeys from './pages/MerchantAPIKeys';
 import __Layout from './Layout.jsx';
 
 
@@ -180,6 +181,7 @@ export const PAGES = {
     "SecurityManagement": SecurityManagement,
     "PaymentGateways": PaymentGateways,
     "APIGateway": APIGateway,
+    "MerchantAPIKeys": MerchantAPIKeys,
 }
 
 export const pagesConfig = {

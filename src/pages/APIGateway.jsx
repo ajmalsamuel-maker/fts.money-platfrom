@@ -25,18 +25,27 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { 
     Key, Plus, Copy, Eye, EyeOff, MoreHorizontal, Trash2, 
-    Activity, Clock, Zap, Shield, CheckCircle, XCircle, RefreshCw
+    Activity, Clock, Zap, Shield, CheckCircle, XCircle, RefreshCw,
+    Webhook, Mail, Send
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 
 const permissionOptions = [
     { value: 'create_payment', label: 'Create Payment' },
+    { value: 'capture_payment', label: 'Capture Payment' },
+    { value: 'refund_payment', label: 'Refund Payment' },
+    { value: 'void_payment', label: 'Void Payment' },
     { value: 'tokenize_card', label: 'Tokenize Card' },
+    { value: 'detokenize_card', label: 'Detokenize Card' },
     { value: 'get_transaction', label: 'Get Transaction' },
     { value: 'list_transactions', label: 'List Transactions' },
-    { value: 'refunds', label: 'Process Refunds' },
-    { value: 'webhooks', label: 'Manage Webhooks' },
+    { value: 'create_customer', label: 'Create Customer' },
+    { value: 'update_customer', label: 'Update Customer' },
+    { value: 'list_customers', label: 'List Customers' },
+    { value: 'create_webhook', label: 'Create Webhook' },
+    { value: 'list_webhooks', label: 'List Webhooks' },
+    { value: 'delete_webhook', label: 'Delete Webhook' },
 ];
 
 export default function APIGateway() {
@@ -87,7 +96,32 @@ export default function APIGateway() {
                 allowed_ips: data.allowed_ips ? data.allowed_ips.split(',').map(ip => ip.trim()) : []
             });
             
-            return { key, plainKey: apiKey, plainSecret: apiSecret };
+            // Send email notification to merchant
+            if (merchant?.contact_email) {
+                try {
+                    await base44.integrations.Core.SendEmail({
+                        to: merchant.contact_email,
+                        subject: `New API Key Created - ${data.key_name}`,
+                        body: `
+                            <h2>New API Credentials Created</h2>
+                            <p>Hello ${merchant.business_name},</p>
+                            <p>A new API key has been created for your account:</p>
+                            <ul>
+                                <li><strong>Key Name:</strong> ${data.key_name}</li>
+                                <li><strong>Environment:</strong> ${data.environment}</li>
+                                <li><strong>Rate Limit:</strong> ${data.rate_limit} requests/min</li>
+                            </ul>
+                            <p>Your credentials are now available in your merchant portal under Settings > API Credentials.</p>
+                            <p><strong>Important:</strong> For security reasons, the full API key and secret are only shown once during creation. Please ensure you have saved them securely.</p>
+                            <p>If you did not request this API key or have any questions, please contact support immediately.</p>
+                        `
+                    });
+                } catch (error) {
+                    console.error('Failed to send email:', error);
+                }
+            }
+            
+            return { key, plainKey: apiKey, plainSecret: apiSecret, merchant };
         },
         onSuccess: ({ key, plainKey, plainSecret }) => {
             queryClient.invalidateQueries({ queryKey: ['api-keys'] });
@@ -95,7 +129,7 @@ export default function APIGateway() {
             setShowSecretDialog(true);
             setShowDialog(false);
             resetForm();
-            toast.success('API key created successfully');
+            toast.success('API key created and merchant notified via email');
         },
     });
 
@@ -221,6 +255,7 @@ export default function APIGateway() {
                     <Tabs defaultValue="keys" className="space-y-4">
                         <TabsList>
                             <TabsTrigger value="keys">API Keys</TabsTrigger>
+                            <TabsTrigger value="webhooks">Webhooks</TabsTrigger>
                             <TabsTrigger value="logs">Request Logs</TabsTrigger>
                             <TabsTrigger value="docs">Documentation</TabsTrigger>
                         </TabsList>
@@ -308,6 +343,25 @@ export default function APIGateway() {
                             </Card>
                         </TabsContent>
 
+                        <TabsContent value="webhooks">
+                            <Card>
+                                <CardHeader className="flex flex-row items-center justify-between">
+                                    <CardTitle>Webhooks</CardTitle>
+                                    <Button size="sm" className="gap-2">
+                                        <Plus className="h-4 w-4" /> Add Webhook
+                                    </Button>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="text-center py-12 text-slate-500">
+                                        <Webhook className="h-12 w-12 mx-auto mb-4 text-slate-400" />
+                                        <p className="font-medium">Webhook Management</p>
+                                        <p className="text-sm mt-1">Configure webhook endpoints to receive real-time event notifications</p>
+                                        <p className="text-xs mt-4 text-slate-400">Events: payment.success, payment.failed, refund.completed, chargeback.created</p>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
+
                         <TabsContent value="logs">
                             <Card>
                                 <CardHeader>
@@ -369,30 +423,81 @@ export default function APIGateway() {
 Authorization: Bearer pk_sandbox_your_api_key_here
                                     </pre>
 
+                                    <h3>Supported Actions</h3>
+                                    <ul className="list-disc ml-6 mb-4">
+                                        <li><code>create_payment</code> - Process a new payment</li>
+                                        <li><code>capture_payment</code> - Capture an authorized payment</li>
+                                        <li><code>refund_payment</code> - Refund a completed payment</li>
+                                        <li><code>void_payment</code> - Void an authorized payment</li>
+                                        <li><code>tokenize_card</code> - Tokenize card details</li>
+                                        <li><code>get_transaction</code> - Retrieve transaction details</li>
+                                        <li><code>list_transactions</code> - List all transactions</li>
+                                        <li><code>create_webhook</code> - Register a webhook endpoint</li>
+                                    </ul>
+
                                     <h3>Create Payment</h3>
-                                    <pre className="bg-slate-900 text-slate-100 p-4 rounded-lg">
+                                    <pre className="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto">
 {`POST /api/unifiedAPIGateway
 Content-Type: application/json
+Authorization: Bearer pk_sandbox_your_api_key
 
 {
   "action": "create_payment",
   "amount": 100.00,
   "currency": "USD",
   "payment_method": "pm_card_visa",
-  "description": "Order #12345"
+  "description": "Order #12345",
+  "metadata": {
+    "order_id": "12345",
+    "customer_id": "cust_123"
+  }
 }`}
                                     </pre>
 
-                                    <h3>List Transactions</h3>
-                                    <pre className="bg-slate-900 text-slate-100 p-4 rounded-lg">
+                                    <h3>Response Format</h3>
+                                    <pre className="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto">
+{`{
+  "success": true,
+  "transaction_id": "pi_1234567890",
+  "status": "succeeded",
+  "amount": 100.00,
+  "currency": "USD",
+  "gateway": "stripe",
+  "request_id": "req_abc123",
+  "response_time_ms": 245
+}`}
+                                    </pre>
+
+                                    <h3>Webhooks</h3>
+                                    <p>Register webhook endpoints to receive real-time notifications:</p>
+                                    <pre className="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto">
 {`POST /api/unifiedAPIGateway
 Content-Type: application/json
+Authorization: Bearer pk_sandbox_your_api_key
 
 {
-  "action": "list_transactions",
-  "limit": 50
+  "action": "create_webhook",
+  "url": "https://your-domain.com/webhooks",
+  "events": ["payment.success", "payment.failed", "refund.completed"]
 }`}
                                     </pre>
+
+                                    <h3>Error Handling</h3>
+                                    <pre className="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto">
+{`{
+  "error": "Invalid API key",
+  "request_id": "req_abc123",
+  "response_time_ms": 12
+}`}
+                                    </pre>
+
+                                    <h3>Rate Limits</h3>
+                                    <p>Rate limits are enforced per API key and are returned in response headers:</p>
+                                    <ul className="list-disc ml-6">
+                                        <li><code>X-RateLimit-Limit</code>: Maximum requests per minute</li>
+                                        <li><code>X-RateLimit-Remaining</code>: Remaining requests in current window</li>
+                                        <li><code>X-RateLimit-Reset</code>: Unix timestamp when the limit resets</li>
+                                    </ul>
                                 </CardContent>
                             </Card>
                         </TabsContent>

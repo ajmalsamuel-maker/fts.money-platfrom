@@ -136,6 +136,7 @@ const menuItems = [
                 group: 'system',
                 icon: Settings,
                 items: [
+                    { icon: Zap, label: 'apiGateway', path: 'APIGateway', permission: 'VIEW_SETTINGS' },
                     { icon: Shield, label: 'securityPKI', path: 'SecurityManagement', permission: 'VIEW_SETTINGS' },
                     { icon: UserCog, label: 'userManagement', path: 'UserManagement', permission: 'VIEW_USERS' },
                     { icon: Shield, label: 'auditLogs', path: 'AuditLogs', permission: 'VIEW_USERS' },
@@ -150,8 +151,6 @@ const menuItems = [
                 icon: HelpCircle,
                 items: [
                     { icon: FileText, label: 'documentation', path: 'Documentation', permission: 'VIEW_DASHBOARD' },
-                    { icon: Zap, label: 'apiGateway', path: 'APIGateway', permission: 'VIEW_CREDENTIALS' },
-                    { icon: Key, label: 'apiCredentials', path: 'MerchantCredentials', permission: 'VIEW_CREDENTIALS' },
                     { icon: Headphones, label: 'supportCenter', path: 'Support', permission: 'VIEW_DASHBOARD' },
                 ]
             },

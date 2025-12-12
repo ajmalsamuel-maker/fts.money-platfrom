@@ -20,7 +20,8 @@ import {
     Wallet,
     HelpCircle,
     Book,
-    Bitcoin
+    Bitcoin,
+    Key
 } from 'lucide-react';
 
 const menuSections = [
@@ -60,6 +61,7 @@ const menuSections = [
         items: [
             { label: 'Merchant Info', icon: Building, path: 'MerchantInfo' },
             { label: 'Bank Details', icon: Wallet, path: 'MerchantBankInfo' },
+            { label: 'API Credentials', icon: Key, path: 'MerchantAPIKeys' },
             { label: 'Users & Operators', icon: Users, path: 'MerchantOperators' },
             { label: 'Email Templates', icon: FileText, path: 'MerchantEmailTemplates' },
             { label: 'Appearance', icon: Settings, path: 'MerchantAppearance' },
