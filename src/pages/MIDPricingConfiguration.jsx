@@ -98,12 +98,17 @@ export default function MIDPricingConfiguration() {
         status: 'active'
     });
 
+    // Initialize fee configuration when MID is selected
     React.useEffect(() => {
+        console.log('MID selection effect:', { existingPricing, selectedMID, feeTypesLength: feeTypes.length });
+        
         if (existingPricing) {
             setPricingData(existingPricing);
-        } else if (selectedMID) {
+        } else if (selectedMID && feeTypes.length > 0) {
             const mid = mids.find(m => m.mid === selectedMID);
             const merchant = merchants.find(m => m.id === selectedMerchant);
+            console.log('Initializing fee configuration for MID:', selectedMID);
+            
             setPricingData(prev => ({
                 ...prev,
                 merchant_id: selectedMerchant,
@@ -122,6 +127,8 @@ export default function MIDPricingConfiguration() {
                     cup_percentage: 0
                 }))
             }));
+            
+            console.log('Fee configuration initialized with', feeTypes.length, 'fee types');
         }
     }, [existingPricing, selectedMID, mids, merchants, feeTypes, selectedMerchant]);
 
