@@ -36,6 +36,8 @@ import { ISO4217_CURRENCIES, getCurrencySymbol } from '@/components/utils/iso421
 import { CRYPTO_ASSETS, isStablecoin } from '@/components/utils/cryptoRegistry';
 import { generateCryptoAssetDTI } from '@/components/utils/iso24165';
 import { getCryptoBlockchain } from '@/components/utils/cryptoRegistry';
+import { ROLE_CONFIG } from '@/components/auth/permissions';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function Settings() {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
