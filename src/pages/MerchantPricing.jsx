@@ -110,21 +110,6 @@ export default function MerchantPricing() {
         onSuccess: () => queryClient.invalidateQueries({ queryKey: ['merchant-pricing'] }),
     });
 
-    const resetForm = () => {
-        setShowDialog(false);
-        setEditingPricing(null);
-        setSelectedBuyRate(null);
-        setFormData({
-            merchant_id: '', merchant_name: '', mid_id: '', mid: '',
-            provider_id: '', provider_name: '', buy_rate_id: '',
-            transaction_type: 'ecommerce', card_type: 'all', card_brand: 'all', region: 'all', currency: 'USD',
-            buy_percentage_rate: 0, buy_fixed_fee: 0,
-            markup_percentage: '', markup_fixed_fee: '',
-            sell_percentage_rate: 0, sell_fixed_fee: 0,
-            monthly_fee: 0, minimum_fee: 0, effective_from: '', status: 'active', notes: ''
-        });
-    };
-
     const handleEdit = (pricing) => {
         setEditingPricing(pricing);
         const buyRate = buyRates.find(r => r.id === pricing.buy_rate_id);
@@ -225,6 +210,22 @@ export default function MerchantPricing() {
         }
     };
 
+    const resetForm = () => {
+        setShowDialog(false);
+        setEditingPricing(null);
+        setSelectedBuyRate(null);
+        const today = new Date().toISOString().split('T')[0];
+        setFormData({
+            merchant_id: '', merchant_name: '', mid_id: '', mid: '',
+            provider_id: '', provider_name: '', buy_rate_id: '',
+            transaction_type: 'ecommerce', card_type: 'all', card_brand: 'all', region: 'all', currency: 'USD',
+            buy_percentage_rate: 0, buy_fixed_fee: 0,
+            markup_percentage: '', markup_fixed_fee: '',
+            sell_percentage_rate: 0, sell_fixed_fee: 0,
+            monthly_fee: 0, minimum_fee: 0, effective_from: today, status: 'active', notes: ''
+        });
+    };
+
     const handleSubmit = () => {
         const today = new Date().toISOString().split('T')[0];
         const data = {
@@ -244,22 +245,6 @@ export default function MerchantPricing() {
         } else {
             createMutation.mutate(data);
         }
-    };
-
-    const resetForm = () => {
-        setShowDialog(false);
-        setEditingPricing(null);
-        setSelectedBuyRate(null);
-        const today = new Date().toISOString().split('T')[0];
-        setFormData({
-            merchant_id: '', merchant_name: '', mid_id: '', mid: '',
-            provider_id: '', provider_name: '', buy_rate_id: '',
-            transaction_type: 'ecommerce', card_type: 'all', card_brand: 'all', region: 'all', currency: 'USD',
-            buy_percentage_rate: 0, buy_fixed_fee: 0,
-            markup_percentage: '', markup_fixed_fee: '',
-            sell_percentage_rate: 0, sell_fixed_fee: 0,
-            monthly_fee: 0, minimum_fee: 0, effective_from: today, status: 'active', notes: ''
-        });
     };
 
     // Filter MIDs for selected merchant
