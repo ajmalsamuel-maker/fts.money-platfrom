@@ -165,7 +165,7 @@ export default function MIDPricingConfiguration() {
     // Initialize fee configuration when MID is selected
     React.useEffect(() => {
         console.log('MID selection effect:', { existingPricing, selectedMID, feeTypesLength: feeTypes.length });
-        
+
         if (existingPricing) {
             console.log('Loading existing pricing data:', existingPricing);
             // Ensure fee_configuration exists and has items, or initialize it
@@ -177,12 +177,9 @@ export default function MIDPricingConfiguration() {
                     fixed_amount: 0,
                     percentage: 0,
                     offset_from_settlement: ft.offset_from_settlement,
-                    bank_transfer_fixed: 0,
-                    bank_transfer_percentage: 0,
-                    cup_fixed: 0,
-                    cup_percentage: 0
+                    payment_method_rates: {}
                 }));
-            
+
             setPricingData({
                 ...existingPricing,
                 fee_configuration: feeConfig
@@ -192,7 +189,7 @@ export default function MIDPricingConfiguration() {
             const mid = mids.find(m => m.mid === selectedMID);
             const merchant = merchants.find(m => m.id === selectedMerchant);
             console.log('Initializing new fee configuration for MID:', selectedMID);
-            
+
             setPricingData(prev => ({
                 ...prev,
                 merchant_id: selectedMerchant,
@@ -205,13 +202,10 @@ export default function MIDPricingConfiguration() {
                     fixed_amount: 0,
                     percentage: 0,
                     offset_from_settlement: ft.offset_from_settlement,
-                    bank_transfer_fixed: 0,
-                    bank_transfer_percentage: 0,
-                    cup_fixed: 0,
-                    cup_percentage: 0
+                    payment_method_rates: {}
                 }))
             }));
-            
+
             console.log('Fee configuration initialized with', feeTypes.length, 'fee types');
         }
     }, [existingPricing, selectedMID, mids, merchants, feeTypes, selectedMerchant]);
