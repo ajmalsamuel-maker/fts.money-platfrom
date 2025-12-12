@@ -150,7 +150,8 @@ const menuItems = [
                 icon: HelpCircle,
                 items: [
                     { icon: FileText, label: 'documentation', path: 'Documentation', permission: 'VIEW_DASHBOARD' },
-                    { icon: Key, label: 'apiReference', path: 'MerchantCredentials', permission: 'VIEW_CREDENTIALS' },
+                    { icon: Zap, label: 'apiGateway', path: 'APIGateway', permission: 'VIEW_CREDENTIALS' },
+                    { icon: Key, label: 'apiCredentials', path: 'MerchantCredentials', permission: 'VIEW_CREDENTIALS' },
                     { icon: Headphones, label: 'supportCenter', path: 'Support', permission: 'VIEW_DASHBOARD' },
                 ]
             },

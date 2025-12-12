@@ -106,7 +106,8 @@ const translations = {
         generalSettings: 'General Settings',
 
         documentation: 'Documentation',
-        apiReference: 'API Reference',
+        apiGateway: 'Unified API Gateway',
+        apiCredentials: 'API Credentials',
         supportCenter: 'Support Center',
         },
     es: {
