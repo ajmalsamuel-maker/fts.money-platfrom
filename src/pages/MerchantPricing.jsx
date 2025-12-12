@@ -588,7 +588,7 @@ export default function MerchantPricing() {
                             
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <Label>Markup Percentage (%) *</Label>
+                                    <Label>Markup Percentage (%)</Label>
                                     <Input 
                                         type="number" 
                                         step="0.01" 
@@ -608,7 +608,7 @@ export default function MerchantPricing() {
                                     />
                                 </div>
                             </div>
-                            
+
                             <div className="grid grid-cols-3 gap-4">
                                 <div className="space-y-2">
                                     <Label>Monthly Fee</Label>
@@ -619,7 +619,7 @@ export default function MerchantPricing() {
                                     <Input type="number" step="0.01" value={formData.minimum_fee} onChange={(e) => setFormData({...formData, minimum_fee: e.target.value})} placeholder="0.00" />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label>Effective From</Label>
+                                    <Label>Effective From *</Label>
                                     <Input type="date" value={formData.effective_from} onChange={(e) => setFormData({...formData, effective_from: e.target.value})} />
                                 </div>
                             </div>
@@ -635,7 +635,7 @@ export default function MerchantPricing() {
                         <Button variant="outline" onClick={resetForm}>Cancel</Button>
                         <Button 
                             onClick={handleSubmit} 
-                            disabled={!formData.merchant_id || !formData.provider_id || !formData.buy_rate_id || !formData.markup_percentage}
+                            disabled={!formData.merchant_id || !formData.provider_id || !formData.buy_rate_id || !formData.effective_from}
                         >
                             {editingPricing ? 'Update Pricing' : 'Create Pricing'}
                         </Button>
