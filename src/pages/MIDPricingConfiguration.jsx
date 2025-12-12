@@ -67,6 +67,15 @@ export default function MIDPricingConfiguration() {
         enabled: !!selectedMID
     });
 
+    const { data: merchantPricing } = useQuery({
+        queryKey: ['merchantPricing', selectedMerchant],
+        queryFn: async () => {
+            const result = await base44.entities.MerchantPricing.filter({ merchant_id: selectedMerchant });
+            return result;
+        },
+        enabled: !!selectedMerchant
+    });
+
     const [pricingData, setPricingData] = useState({
         merchant_id: '',
         merchant_name: '',
@@ -225,11 +234,16 @@ export default function MIDPricingConfiguration() {
                                 </div>
                                 <div className="space-y-2">
                                     <Label>Inherits Merchant Pricing</Label>
-                                    <div className="flex items-center h-10">
+                                    <div className="flex items-center h-10 gap-2">
                                         <Switch 
                                             checked={pricingData.inherits_merchant_pricing}
                                             onCheckedChange={(val) => setPricingData({...pricingData, inherits_merchant_pricing: val})}
                                         />
+                                        {pricingData.inherits_merchant_pricing ? (
+                                            <span className="text-xs text-blue-600">Using merchant defaults</span>
+                                        ) : (
+                                            <span className="text-xs text-slate-500">Custom MID pricing</span>
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -237,6 +251,37 @@ export default function MIDPricingConfiguration() {
                     </Card>
 
                     {selectedMID && (
+                        <>
+                            {pricingData.inherits_merchant_pricing && merchantPricing && merchantPricing.length > 0 && (
+                                <Card className="mb-4 bg-blue-50 border-blue-200">
+                                    <CardContent className="p-4">
+                                        <div className="flex items-center gap-2 text-blue-700">
+                                            <Badge className="bg-blue-600">Inheriting Merchant Pricing</Badge>
+                                            <span className="text-sm">
+                                                Using pricing from: <strong>{merchantPricing[0].pricing_model_name}</strong>
+                                            </span>
+                                        </div>
+                                        <p className="text-xs text-blue-600 mt-2">
+                                            {merchantPricing.length} pricing model(s) configured for this merchant. 
+                                            Disable inheritance to create custom MID-specific pricing.
+                                        </p>
+                                    </CardContent>
+                                </Card>
+                            )}
+                            
+                            {pricingData.inherits_merchant_pricing && (!merchantPricing || merchantPricing.length === 0) && (
+                                <Card className="mb-4 bg-amber-50 border-amber-200">
+                                    <CardContent className="p-4">
+                                        <div className="flex items-center gap-2 text-amber-700">
+                                            <Badge className="bg-amber-600">No Merchant Pricing Found</Badge>
+                                        </div>
+                                        <p className="text-xs text-amber-600 mt-2">
+                                            No pricing configured for this merchant yet. Please create merchant pricing first or disable inheritance to configure MID-specific pricing.
+                                        </p>
+                                    </CardContent>
+                                </Card>
+                            )}
+
                         <Tabs defaultValue="transactions" className="space-y-4">
                             <TabsList>
                                 <TabsTrigger value="transactions">Transaction Fees</TabsTrigger>
@@ -570,6 +615,7 @@ export default function MIDPricingConfiguration() {
                                 </div>
                             </TabsContent>
                         </Tabs>
+                        </>
                     )}
                 </main>
             </div>
