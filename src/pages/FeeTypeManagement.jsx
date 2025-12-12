@@ -165,6 +165,23 @@ export default function FeeTypeManagement() {
         });
     };
 
+    const useTemplate = (template) => {
+        setFormData({
+            fee_code: template.code,
+            fee_name: template.name,
+            category: template.category || 'transaction',
+            applies_to: template.applies_to,
+            billing_frequency: template.billing_frequency || 'per_transaction',
+            supports_fixed: true,
+            supports_percentage: true,
+            supports_tiered: false,
+            offset_from_settlement: true,
+            status: 'active',
+            description: `${template.standard} standard fee type`
+        });
+        setShowTemplates(false);
+    };
+
     const getCategoryBadge = (category) => {
         const colors = {
             transaction: 'bg-blue-100 text-blue-700',
