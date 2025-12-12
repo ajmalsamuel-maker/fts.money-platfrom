@@ -80,6 +80,26 @@ const GATEWAY_OPERATIONS = [
     { code: 'GATEWAY_FEE', name: 'Payment Gateway Transaction Fee', applies_to: 'sale', category: 'service' },
 ];
 
+// Standard Transaction Fee Types
+const STANDARD_TRANSACTION_FEES = [
+    { code: 'SALE_TXN', name: 'Sale Transaction Fee', applies_to: 'sale', category: 'transaction' },
+    { code: 'SALE_NET_TXN', name: 'Sale (Net) Transaction Fee', applies_to: 'sale', category: 'transaction' },
+    { code: 'REFUND_TXN', name: 'Refund Transaction Fee', applies_to: 'refund', category: 'transaction' },
+    { code: 'REFUND_NET_TXN', name: 'Refund (Net) Transaction Fee', applies_to: 'refund', category: 'transaction' },
+    { code: 'AUTH_TXN', name: 'Authorization Fee', applies_to: 'authorization', category: 'transaction' },
+    { code: 'AUTH_NET_TXN', name: 'Authorization (Net) Fee', applies_to: 'authorization', category: 'transaction' },
+    { code: 'CAPTURE_TXN', name: 'Capture Fee', applies_to: 'capture', category: 'transaction' },
+    { code: 'CAPTURE_NET_TXN', name: 'Capture (Net) Fee', applies_to: 'capture', category: 'transaction' },
+    { code: 'VOID_SALE_TXN', name: 'Void Sale Fee', applies_to: 'void', category: 'transaction' },
+    { code: 'VOID_REFUND_TXN', name: 'Void Refund Fee', applies_to: 'void', category: 'transaction' },
+    { code: 'VOID_AUTH_TXN', name: 'Void Authorization Fee', applies_to: 'void', category: 'transaction' },
+    { code: 'VOID_CAPTURE_TXN', name: 'Void Capture Fee', applies_to: 'void', category: 'transaction' },
+    { code: 'CHARGEBACK_FEE', name: 'Chargeback Fee', applies_to: 'chargeback', category: 'penalty' },
+    { code: 'FRAUD_CONTROL_FEE', name: 'Fraud Control Fee', applies_to: 'fraud_check', category: 'service' },
+    { code: 'PAYOUT_FEE', name: 'Payout Fee', applies_to: 'payout', category: 'transaction' },
+    { code: 'REDEEM_FEE', name: 'Redeem Fee', applies_to: 'other', category: 'transaction' },
+];
+
 const STANDARD_FEE_TEMPLATES = [
     ...ISO8583_TRANSACTION_TYPES.map(t => ({ ...t, category: 'transaction', standard: 'ISO 8583' })),
     ...ISO20022_MESSAGE_TYPES.map(t => ({ ...t, category: 'transaction', standard: 'ISO 20022' })),
