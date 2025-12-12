@@ -45,8 +45,12 @@ export default function MIDPricingConfiguration() {
 
     const { data: mids = [] } = useQuery({
         queryKey: ['mids', selectedMerchant],
-        queryFn: () => base44.entities.MerchantMID.filter({ merchant_id: selectedMerchant }),
-        enabled: !!selectedMerchant
+        queryFn: async () => {
+            const merchant = merchants.find(m => m.merchant_id === selectedMerchant);
+            if (!merchant) return [];
+            return await base44.entities.MerchantMID.filter({ merchant_id: merchant.id });
+        },
+        enabled: !!selectedMerchant && merchants.length > 0
     });
 
     const { data: feeTypes = [] } = useQuery({
