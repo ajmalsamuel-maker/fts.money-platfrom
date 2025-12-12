@@ -30,7 +30,7 @@ Deno.serve(async (req) => {
             // Query PostgreSQL for merchant user directly
             const result = await pool.query(`
                 SELECT id, merchant_id, merchant_code, merchant_name, email, full_name, role, status, 
-                       temp_password, must_change_password, two_factor_enabled, last_login,
+                       temp_password, must_change_password, two_factor_enabled, last_login, last_login_ip,
                        permissions, allowed_terminals, phone
                 FROM merchant_users 
                 WHERE email = $1 AND merchant_code = $2 AND status = 'active'
@@ -58,8 +58,16 @@ Deno.serve(async (req) => {
                 }, { status: 401 });
             }
 
-            // Update last login
-            await pool.query('UPDATE merchant_users SET last_login = NOW() WHERE id = $1', [user.id]);
+            // Get client IP address
+            const ip = req.headers.get('x-forwarded-for')?.split(',')[0].trim() || 
+                       req.headers.get('x-real-ip') || 
+                       'unknown';
+
+            // Update last login with IP
+            await pool.query(
+                'UPDATE merchant_users SET last_login = NOW(), last_login_ip = $1 WHERE id = $2', 
+                [ip, user.id]
+            );
 
             // Create session token
             const session = {

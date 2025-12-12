@@ -77,9 +77,10 @@ export default function StaffLogin() {
 
             localStorage.setItem('staff_session', JSON.stringify(session));
 
-            // Update last login
+            // Update last login with IP
             await base44.entities.AppUser.update(user.id, {
-                last_login: new Date().toISOString()
+                last_login: new Date().toISOString(),
+                last_login_ip: 'web-login'
             });
 
             // Redirect to dashboard

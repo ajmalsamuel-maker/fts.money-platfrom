@@ -419,6 +419,7 @@ export default function MerchantUsers() {
                                         <TableHead>Status</TableHead>
                                         <TableHead>2FA</TableHead>
                                         <TableHead>Last Login</TableHead>
+                                        <TableHead>Login IP</TableHead>
                                         <TableHead className="text-right">Actions</TableHead>
                                     </TableRow>
                                 </TableHeader>
@@ -428,8 +429,8 @@ export default function MerchantUsers() {
                                            <TableCell colSpan={8} className="text-center py-12 text-slate-500">No users found</TableCell>
                                        </TableRow>
                                     ) : (
-                                        filteredUsers.map((user) => (
-                                            <TableRow key={user.id} className="cursor-pointer hover:bg-slate-50" onClick={() => setShowDetailsDialog(user)}>
+                                       filteredUsers.map((user) => (
+                                           <TableRow key={user.id} className="cursor-pointer hover:bg-slate-50" onClick={() => setShowDetailsDialog(user)} title={user.last_login_ip ? `Last login from ${user.last_login_ip}` : 'No login history'}>
                                                 <TableCell>
                                                     <div className="flex items-center gap-3">
                                                         <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-medium">
@@ -481,6 +482,9 @@ export default function MerchantUsers() {
                                                 </TableCell>
                                                 <TableCell className="text-sm text-slate-500">
                                                     {user.last_login ? format(new Date(user.last_login), 'MMM d, yyyy HH:mm') : 'Never'}
+                                                </TableCell>
+                                                <TableCell className="text-sm text-slate-500">
+                                                    {user.last_login_ip || 'N/A'}
                                                 </TableCell>
                                                 <TableCell onClick={(e) => e.stopPropagation()}>
                                                     <div className="flex gap-1 justify-end">
@@ -662,6 +666,10 @@ export default function MerchantUsers() {
                                             <div className="space-y-2">
                                                 <Label>Last Login</Label>
                                                 <Input value={showDetailsDialog.last_login ? format(new Date(showDetailsDialog.last_login), 'MMM d, yyyy HH:mm') : 'Never'} readOnly className="bg-slate-50" />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <Label>Last Login IP</Label>
+                                                <Input value={showDetailsDialog.last_login_ip || 'N/A'} readOnly className="bg-slate-50" />
                                             </div>
                                             <div className="space-y-2">
                                                 <Label>Password Change Required</Label>

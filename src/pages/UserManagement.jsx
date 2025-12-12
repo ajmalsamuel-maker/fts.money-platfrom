@@ -390,13 +390,14 @@ export default function UserManagement() {
                                             <TableHead className="font-semibold">Department</TableHead>
                                             <TableHead className="font-semibold">Joined</TableHead>
                                             <TableHead className="font-semibold">Last Active</TableHead>
+                                            <TableHead className="font-semibold">Login IP</TableHead>
                                             <TableHead className="font-semibold w-12"></TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
                                         {filteredUsers.length === 0 ? (
                                             <TableRow>
-                                                <TableCell colSpan={6} className="text-center py-12 text-slate-500">
+                                                <TableCell colSpan={7} className="text-center py-12 text-slate-500">
                                                     {isLoading ? 'Loading users...' : 'No users found'}
                                                 </TableCell>
                                             </TableRow>
@@ -446,6 +447,9 @@ export default function UserManagement() {
                                                                 <Clock className="h-3 w-3 text-slate-400" />
                                                                 {user.last_login ? format(new Date(user.last_login), 'MMM dd, HH:mm') : 'Never'}
                                                             </div>
+                                                        </TableCell>
+                                                        <TableCell className="text-slate-600 text-xs font-mono">
+                                                            {user.last_login_ip || 'N/A'}
                                                         </TableCell>
                                                         <TableCell>
                                                             {can('MANAGE_USERS') && !isCurrentUser && (
