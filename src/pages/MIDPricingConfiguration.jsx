@@ -488,18 +488,9 @@ export default function MIDPricingConfiguration() {
                                                         <TableHead>Offset from Settlement</TableHead>
                                                         <TableHead>Fixed Amount</TableHead>
                                                         <TableHead>Percentage</TableHead>
-                                                        {paymentMethodConfig.showCUP && (
-                                                            <>
-                                                                <TableHead>CUP Fixed</TableHead>
-                                                                <TableHead>CUP %</TableHead>
-                                                            </>
-                                                        )}
-                                                        {paymentMethodConfig.showBankTransfer && (
-                                                            <>
-                                                                <TableHead>Bank Transfer Fixed</TableHead>
-                                                                <TableHead>Bank Transfer %</TableHead>
-                                                            </>
-                                                        )}
+                                                        {paymentMethodColumns.map(col => (
+                                                            <TableHead key={col.id}>{col.label}</TableHead>
+                                                        ))}
                                                     </TableRow>
                                                 </TableHeader>
                                                 <TableBody>
