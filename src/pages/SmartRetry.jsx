@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import Sidebar from '@/components/dashboard/Sidebar';
 import TopHeader from '@/components/dashboard/TopHeader';
@@ -8,10 +8,25 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { RotateCcw, TrendingUp, Zap, Brain } from 'lucide-react';
 
 export default function SmartRetry() {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [formData, setFormData] = useState({
+        merchant_id: '',
+        config_name: '',
+        max_retry_attempts: 3,
+        ml_optimization_enabled: false,
+        enabled: true
+    });
+
+    const queryClient = useQueryClient();
 
     const { data: retryConfigs = [] } = useQuery({
         queryKey: ['retry-configs'],
@@ -21,6 +36,21 @@ export default function SmartRetry() {
     const { data: merchants = [] } = useQuery({
         queryKey: ['merchants'],
         queryFn: () => base44.entities.Merchant.list()
+    });
+
+    const createMutation = useMutation({
+        mutationFn: (data) => base44.entities.RetryConfiguration.create(data),
+        onSuccess: () => {
+            queryClient.invalidateQueries(['retry-configs']);
+            setDialogOpen(false);
+            setFormData({
+                merchant_id: '',
+                config_name: '',
+                max_retry_attempts: 3,
+                ml_optimization_enabled: false,
+                enabled: true
+            });
+        }
     });
 
     const avgSuccessRate = retryConfigs.reduce((sum, r) => {
@@ -46,10 +76,60 @@ export default function SmartRetry() {
                                     <p className="text-slate-500">Intelligent payment retry strategies</p>
                                 </div>
                             </div>
-                            <Button className="gap-2">
-                                <Zap className="h-4 w-4" />
-                                Create Strategy
-                            </Button>
+                            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                                <DialogTrigger asChild>
+                                    <Button className="gap-2">
+                                        <Zap className="h-4 w-4" />
+                                        Create Strategy
+                                    </Button>
+                                </DialogTrigger>
+                                <DialogContent className="max-w-2xl">
+                                    <DialogHeader>
+                                        <DialogTitle>Create Retry Strategy</DialogTitle>
+                                    </DialogHeader>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="col-span-2">
+                                            <Label>Merchant</Label>
+                                            <Select value={formData.merchant_id} onValueChange={(v) => setFormData({...formData, merchant_id: v})}>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select merchant" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {merchants.map(m => (
+                                                        <SelectItem key={m.id} value={m.id}>{m.business_name}</SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                        <div className="col-span-2">
+                                            <Label>Strategy Name</Label>
+                                            <Input
+                                                value={formData.config_name}
+                                                onChange={(e) => setFormData({...formData, config_name: e.target.value})}
+                                                placeholder="e.g., Subscription Payment Retry"
+                                            />
+                                        </div>
+                                        <div>
+                                            <Label>Max Retry Attempts</Label>
+                                            <Input
+                                                type="number"
+                                                value={formData.max_retry_attempts}
+                                                onChange={(e) => setFormData({...formData, max_retry_attempts: parseInt(e.target.value)})}
+                                            />
+                                        </div>
+                                        <div className="flex items-center gap-2 pt-6">
+                                            <Switch
+                                                checked={formData.ml_optimization_enabled}
+                                                onCheckedChange={(checked) => setFormData({...formData, ml_optimization_enabled: checked})}
+                                            />
+                                            <Label>Enable ML Optimization</Label>
+                                        </div>
+                                    </div>
+                                    <Button onClick={() => createMutation.mutate(formData)} className="w-full mt-4">
+                                        Create Strategy
+                                    </Button>
+                                </DialogContent>
+                            </Dialog>
                         </div>
                     </div>
 
