@@ -11,7 +11,7 @@ export default function BankInfoDisplay({ cardNumber, bin }) {
             if (!cardNumber && !bin) return;
 
             // Extract BIN from card number (first 6-8 digits)
-            const binToLookup = bin || cardNumber?.replace(/\D/g, '').slice(0, 6);
+            const binToLookup = bin || (cardNumber ? cardNumber.replace(/\D/g, '').slice(0, 6) : null);
             if (!binToLookup || binToLookup.length < 6) return;
 
             setLoading(true);
