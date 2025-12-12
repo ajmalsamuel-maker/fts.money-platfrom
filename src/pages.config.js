@@ -110,6 +110,9 @@ import MerchantSavedCards from './pages/MerchantSavedCards';
 import MerchantRefunds from './pages/MerchantRefunds';
 import MerchantWebhooks from './pages/MerchantWebhooks';
 import MarketAnalysis from './pages/MarketAnalysis';
+import NetworkTokenization from './pages/NetworkTokenization';
+import AccountUpdater from './pages/AccountUpdater';
+import SmartRetry from './pages/SmartRetry';
 import __Layout from './Layout.jsx';
 
 
@@ -226,6 +229,9 @@ export const PAGES = {
     "MerchantRefunds": MerchantRefunds,
     "MerchantWebhooks": MerchantWebhooks,
     "MarketAnalysis": MarketAnalysis,
+    "NetworkTokenization": NetworkTokenization,
+    "AccountUpdater": AccountUpdater,
+    "SmartRetry": SmartRetry,
 }
 
 export const pagesConfig = {
