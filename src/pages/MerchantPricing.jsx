@@ -226,6 +226,7 @@ export default function MerchantPricing() {
     };
 
     const handleSubmit = () => {
+        const today = new Date().toISOString().split('T')[0];
         const data = {
             ...formData,
             buy_percentage_rate: parseFloat(formData.buy_percentage_rate) || 0,
@@ -236,12 +237,29 @@ export default function MerchantPricing() {
             sell_fixed_fee: parseFloat(formData.sell_fixed_fee) || 0,
             monthly_fee: parseFloat(formData.monthly_fee) || 0,
             minimum_fee: parseFloat(formData.minimum_fee) || 0,
+            effective_from: formData.effective_from || today,
         };
         if (editingPricing) {
             updateMutation.mutate({ id: editingPricing.id, data });
         } else {
             createMutation.mutate(data);
         }
+    };
+
+    const resetForm = () => {
+        setShowDialog(false);
+        setEditingPricing(null);
+        setSelectedBuyRate(null);
+        const today = new Date().toISOString().split('T')[0];
+        setFormData({
+            merchant_id: '', merchant_name: '', mid_id: '', mid: '',
+            provider_id: '', provider_name: '', buy_rate_id: '',
+            transaction_type: 'ecommerce', card_type: 'all', card_brand: 'all', region: 'all', currency: 'USD',
+            buy_percentage_rate: 0, buy_fixed_fee: 0,
+            markup_percentage: '', markup_fixed_fee: '',
+            sell_percentage_rate: 0, sell_fixed_fee: 0,
+            monthly_fee: 0, minimum_fee: 0, effective_from: today, status: 'active', notes: ''
+        });
     };
 
     // Filter MIDs for selected merchant
