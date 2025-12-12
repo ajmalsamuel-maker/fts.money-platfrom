@@ -61,6 +61,7 @@ export default function MerchantPricing() {
     const [formData, setFormData] = useState({
         merchant_id: '', merchant_name: '', mid_id: '', mid: '',
         provider_id: '', provider_name: '', buy_rate_id: '',
+        pricing_model_name: '',
         transaction_type: 'ecommerce', card_type: 'all', card_brand: 'all', region: 'all', currency: 'USD',
         buy_percentage_rate: 0, buy_fixed_fee: 0,
         markup_percentage: '', markup_fixed_fee: '',
@@ -122,6 +123,7 @@ export default function MerchantPricing() {
             provider_id: pricing.provider_id || '',
             provider_name: pricing.provider_name || '',
             buy_rate_id: pricing.buy_rate_id || '',
+            pricing_model_name: pricing.pricing_model_name || '',
             transaction_type: pricing.transaction_type || 'ecommerce',
             card_type: pricing.card_type || 'all',
             card_brand: pricing.card_brand || 'all',
@@ -222,6 +224,7 @@ export default function MerchantPricing() {
         setFormData({
             merchant_id: '', merchant_name: '', mid_id: '', mid: '',
             provider_id: '', provider_name: '', buy_rate_id: '',
+            pricing_model_name: '',
             transaction_type: 'ecommerce', card_type: 'all', card_brand: 'all', region: 'all', currency: 'USD',
             buy_percentage_rate: 0, buy_fixed_fee: 0,
             markup_percentage: '', markup_fixed_fee: '',
@@ -480,6 +483,14 @@ export default function MerchantPricing() {
                         
                         <TabsContent value="merchant" className="space-y-4 py-4">
                             <div className="space-y-2">
+                                <Label>Pricing Model Name *</Label>
+                                <Input 
+                                    value={formData.pricing_model_name} 
+                                    onChange={(e) => setFormData({...formData, pricing_model_name: e.target.value})} 
+                                    placeholder="e.g., Standard E-Commerce Pricing"
+                                />
+                            </div>
+                            <div className="space-y-2">
                                 <Label>Merchant *</Label>
                                 <Select value={formData.merchant_id} onValueChange={handleMerchantChange}>
                                     <SelectTrigger><SelectValue placeholder="Select merchant" /></SelectTrigger>
@@ -645,17 +656,17 @@ export default function MerchantPricing() {
                     <DialogFooter>
                         <div className="flex items-center justify-between w-full">
                             <div className="text-sm text-slate-500">
-                                {!formData.merchant_id && "Select a merchant"}
+                                {!formData.pricing_model_name && "Enter a pricing model name"}
+                                {formData.pricing_model_name && !formData.merchant_id && "Select a merchant"}
                                 {formData.merchant_id && !formData.provider_id && "Select a provider"}
                                 {formData.provider_id && !formData.buy_rate_id && "Select a buy rate"}
-                                {formData.buy_rate_id && !formData.effective_from && "Set effective date"}
                             </div>
                             <div className="flex gap-2">
                                 <Button variant="outline" onClick={resetForm}>Cancel</Button>
                                 <Button 
                                     type="button"
                                     onClick={handleSubmit} 
-                                    disabled={!formData.merchant_id || !formData.provider_id || !formData.buy_rate_id}
+                                    disabled={!formData.pricing_model_name || !formData.merchant_id || !formData.provider_id || !formData.buy_rate_id}
                                     className="bg-blue-600 hover:bg-blue-700"
                                 >
                                     {editingPricing ? 'Update Pricing' : 'Create Pricing'}
