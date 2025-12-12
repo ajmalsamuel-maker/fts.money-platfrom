@@ -29,12 +29,13 @@ Deno.serve(async (req) => {
 
         if (action === 'verifyEmail') {
             const users = await base44.asServiceRole.entities.AppUser.list();
-            const user = users.find(u => u.email === email);
+            const staffRoles = ['admin', 'finance', 'operations', 'compliance', 'technical', 'editor', 'viewer'];
+            const user = users.find(u => u.email === email && staffRoles.includes(u.role));
             
             if (!user) {
                 return Response.json({
                     success: false,
-                    error: 'No account found with this email'
+                    error: 'No staff account found with this email'
                 });
             }
 
@@ -62,7 +63,8 @@ Deno.serve(async (req) => {
 
         if (action === 'login') {
             const users = await base44.asServiceRole.entities.AppUser.list();
-            const user = users.find(u => u.email === email);
+            const staffRoles = ['admin', 'finance', 'operations', 'compliance', 'technical', 'editor', 'viewer'];
+            const user = users.find(u => u.email === email && staffRoles.includes(u.role));
 
             if (!user || user.password_hash !== password) {
                 return Response.json({
