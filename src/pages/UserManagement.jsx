@@ -99,7 +99,11 @@ export default function UserManagement() {
 
     const { data: users = [], isLoading } = useQuery({
         queryKey: ['all-users'],
-        queryFn: () => base44.entities.AppUser.list('-created_date'),
+        queryFn: async () => {
+            const allUsers = await base44.entities.AppUser.list('-created_date');
+            const staffRoles = ['admin', 'finance', 'operations', 'compliance', 'technical', 'editor', 'viewer'];
+            return allUsers.filter(u => staffRoles.includes(u.role));
+        },
         enabled: can('VIEW_USERS'),
     });
 
@@ -384,6 +388,7 @@ export default function UserManagement() {
                                         <TableRow className="bg-slate-50">
                                             <TableHead className="font-semibold">User</TableHead>
                                             <TableHead className="font-semibold">Role</TableHead>
+                                            <TableHead className="font-semibold">Status</TableHead>
                                             <TableHead className="font-semibold">Department</TableHead>
                                             <TableHead className="font-semibold">2FA</TableHead>
                                             <TableHead className="font-semibold">Joined</TableHead>
@@ -395,7 +400,7 @@ export default function UserManagement() {
                                     <TableBody>
                                         {filteredUsers.length === 0 ? (
                                             <TableRow>
-                                                <TableCell colSpan={8} className="text-center py-12 text-slate-500">
+                                                <TableCell colSpan={9} className="text-center py-12 text-slate-500">
                                                     {isLoading ? 'Loading users...' : 'No users found'}
                                                 </TableCell>
                                             </TableRow>
@@ -430,6 +435,21 @@ export default function UserManagement() {
                                                             <Badge className={cn("text-xs", config.bgColor, config.textColor, config.borderColor)}>
                                                                 {config.label}
                                                             </Badge>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            {user.status === 'active' ? (
+                                                                <Badge className="bg-green-100 text-green-700 text-xs">
+                                                                    Active
+                                                                </Badge>
+                                                            ) : user.status === 'inactive' ? (
+                                                                <Badge className="bg-slate-100 text-slate-700 text-xs">
+                                                                    Inactive
+                                                                </Badge>
+                                                            ) : (
+                                                                <Badge className="bg-amber-100 text-amber-700 text-xs">
+                                                                    Pending
+                                                                </Badge>
+                                                            )}
                                                         </TableCell>
                                                         <TableCell className="text-slate-600">
                                                             <div className="flex items-center gap-1">
