@@ -13,7 +13,7 @@ import { createPageUrl } from '@/utils';
 import { toast } from 'sonner';
 
 export default function PSPLogin() {
-    const [loginMethod, setLoginMethod] = useState('email');
+    const [step, setStep] = useState(1); // 1: PSP Code, 2: Email, 3: Password, 4: 2FA
     const [email, setEmail] = useState('');
     const [pspCode, setPspCode] = useState('');
     const [password, setPassword] = useState('');
@@ -21,7 +21,6 @@ export default function PSPLogin() {
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
-    const [show2FA, setShow2FA] = useState(false);
     const [tempUser, setTempUser] = useState(null);
 
     const { data: pspSettings } = useQuery({
@@ -52,26 +51,34 @@ export default function PSPLogin() {
         }
     }, []);
 
-    const handleLogin = async (e) => {
+    const handleStep1 = async (e) => {
         e.preventDefault();
         setError('');
         setIsLoading(true);
 
         try {
-            // Find user by email or PSP code
-            let users;
-            if (loginMethod === 'psp_code') {
-                // Verify PSP code matches
-                if (pspCode.toUpperCase() !== pspCodeValue) {
-                    throw new Error('Invalid PSP code');
-                }
-                users = await base44.entities.AppUser.filter({ email });
-            } else {
-                users = await base44.entities.AppUser.filter({ email });
+            // Verify PSP code matches
+            if (pspCode.toUpperCase() !== pspCodeValue) {
+                throw new Error('Invalid PSP code');
             }
+            setStep(2);
+        } catch (err) {
+            setError(err.message);
+        }
+        setIsLoading(false);
+    };
+
+    const handleStep2 = async (e) => {
+        e.preventDefault();
+        setError('');
+        setIsLoading(true);
+
+        try {
+            // Check if user exists with this email
+            const users = await base44.entities.AppUser.filter({ email });
             
             if (users.length === 0) {
-                throw new Error('Invalid credentials');
+                throw new Error('No account found with this email');
             }
 
             const user = users[0];
@@ -81,26 +88,39 @@ export default function PSPLogin() {
                 throw new Error('Account is not active');
             }
 
+            setTempUser(user);
+            setStep(3);
+        } catch (err) {
+            setError(err.message);
+        }
+        setIsLoading(false);
+    };
+
+    const handleStep3 = async (e) => {
+        e.preventDefault();
+        setError('');
+        setIsLoading(true);
+
+        try {
             // Simple password check (in production, use proper password hashing)
-            if (user.password_hash !== password) {
-                throw new Error('Invalid credentials');
+            if (tempUser.password_hash !== password) {
+                throw new Error('Incorrect password');
             }
 
             // Check if 2FA is required for this user
-            if (user.two_factor_enabled) {
-                setTempUser(user);
-                setShow2FA(true);
+            if (tempUser.two_factor_enabled) {
+                setStep(4);
                 setIsLoading(false);
                 // In production, send OTP via email/SMS
-                const method = user.two_factor_method || 'email';
+                const method = tempUser.two_factor_method || 'email';
                 toast.success(`2FA code sent via ${method}`);
                 return;
             }
 
             // Complete login
-            completeLogin(user);
+            completeLogin(tempUser);
         } catch (err) {
-            setError(err.message || 'Login failed. Please try again.');
+            setError(err.message);
             setIsLoading(false);
         }
     };
@@ -171,92 +191,160 @@ export default function PSPLogin() {
                         </div>
                     </CardHeader>
                     <CardContent>
-                        {!show2FA ? (
-                            <>
-                                {allowPSPCode && (
-                                    <Tabs value={loginMethod} onValueChange={setLoginMethod} className="mb-4">
-                                        <TabsList className="grid w-full grid-cols-2">
-                                            <TabsTrigger value="email">Email</TabsTrigger>
-                                            <TabsTrigger value="psp_code">PSP Code</TabsTrigger>
-                                        </TabsList>
-                                    </Tabs>
+                        {step === 1 ? (
+                            <form onSubmit={handleStep1} className="space-y-5">
+                                {error && (
+                                    <Alert variant="destructive">
+                                        <AlertDescription>{error}</AlertDescription>
+                                    </Alert>
                                 )}
 
-                                <form onSubmit={handleLogin} className="space-y-5">
-                                    {error && (
-                                        <Alert variant="destructive">
-                                            <AlertDescription>{error}</AlertDescription>
-                                        </Alert>
+                                <div className="text-center mb-4">
+                                    <p className="text-sm text-slate-600">Step 1 of 3</p>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label htmlFor="psp_code">PSP Code</Label>
+                                    <Input
+                                        id="psp_code"
+                                        placeholder={pspCodeValue}
+                                        value={pspCode}
+                                        onChange={(e) => setPspCode(e.target.value.toUpperCase())}
+                                        required
+                                        disabled={isLoading}
+                                        className="font-mono font-bold text-center text-xl"
+                                        autoFocus
+                                    />
+                                </div>
+
+                                <Button
+                                    type="submit"
+                                    className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-semibold py-6"
+                                    disabled={isLoading}
+                                >
+                                    {isLoading ? (
+                                        <>
+                                            <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                                            Verifying...
+                                        </>
+                                    ) : (
+                                        'Continue'
                                     )}
+                                </Button>
+                            </form>
+                        ) : step === 2 ? (
+                            <form onSubmit={handleStep2} className="space-y-5">
+                                {error && (
+                                    <Alert variant="destructive">
+                                        <AlertDescription>{error}</AlertDescription>
+                                    </Alert>
+                                )}
 
-                                    {loginMethod === 'psp_code' && (
-                                        <div className="space-y-2">
-                                            <Label htmlFor="psp_code">PSP Code</Label>
-                                            <Input
-                                                id="psp_code"
-                                                placeholder={pspCodeValue}
-                                                value={pspCode}
-                                                onChange={(e) => setPspCode(e.target.value.toUpperCase())}
-                                                required
-                                                disabled={isLoading}
-                                                className="font-mono font-bold text-center"
-                                            />
-                                        </div>
-                                    )}
+                                <div className="text-center mb-4">
+                                    <p className="text-sm text-slate-600">Step 2 of 3</p>
+                                </div>
 
-                                    <div className="space-y-2">
-                                        <Label htmlFor="email">Email Address</Label>
-                                        <Input
-                                            id="email"
-                                            type="email"
-                                            placeholder="user@example.com"
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
-                                            required
-                                            disabled={isLoading}
-                                        />
-                                    </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="email">Email Address</Label>
+                                    <Input
+                                        id="email"
+                                        type="email"
+                                        placeholder="user@example.com"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        required
+                                        disabled={isLoading}
+                                        autoFocus
+                                    />
+                                </div>
 
-                                    <div className="space-y-2">
-                                        <Label htmlFor="password">Password</Label>
-                                        <div className="relative">
-                                            <Input
-                                                id="password"
-                                                type={showPassword ? "text" : "password"}
-                                                placeholder="••••••••"
-                                                value={password}
-                                                onChange={(e) => setPassword(e.target.value)}
-                                                required
-                                                disabled={isLoading}
-                                            />
-                                            <Button
-                                                type="button"
-                                                variant="ghost"
-                                                size="sm"
-                                                className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
-                                                onClick={() => setShowPassword(!showPassword)}
-                                                disabled={isLoading}
-                                            >
-                                                {showPassword ? (
-                                                    <EyeOff className="h-4 w-4 text-slate-400" />
-                                                ) : (
-                                                    <Eye className="h-4 w-4 text-slate-400" />
-                                                )}
-                                            </Button>
-                                        </div>
-                                    </div>
-
-                                    {pspSettings?.password_reset_enabled && (
-                                        <div className="text-right">
-                                            <a href={createPageUrl('PSPPasswordReset')} className="text-sm text-blue-600 hover:underline">
-                                                Forgot password?
-                                            </a>
-                                        </div>
-                                    )}
-
+                                <div className="flex gap-2">
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        className="w-24"
+                                        onClick={() => { setStep(1); setError(''); }}
+                                    >
+                                        Back
+                                    </Button>
                                     <Button
                                         type="submit"
-                                        className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-semibold py-6"
+                                        className="flex-1 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-semibold py-6"
+                                        disabled={isLoading}
+                                    >
+                                        {isLoading ? (
+                                            <>
+                                                <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                                                Verifying...
+                                            </>
+                                        ) : (
+                                            'Continue'
+                                        )}
+                                    </Button>
+                                </div>
+                            </form>
+                        ) : step === 3 ? (
+                            <form onSubmit={handleStep3} className="space-y-5">
+                                {error && (
+                                    <Alert variant="destructive">
+                                        <AlertDescription>{error}</AlertDescription>
+                                    </Alert>
+                                )}
+
+                                <div className="text-center mb-4">
+                                    <p className="text-sm text-slate-600">Step 3 of 3</p>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label htmlFor="password">Password</Label>
+                                    <div className="relative">
+                                        <Input
+                                            id="password"
+                                            type={showPassword ? "text" : "password"}
+                                            placeholder="••••••••"
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
+                                            required
+                                            disabled={isLoading}
+                                            autoFocus
+                                        />
+                                        <Button
+                                            type="button"
+                                            variant="ghost"
+                                            size="sm"
+                                            className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            disabled={isLoading}
+                                        >
+                                            {showPassword ? (
+                                                <EyeOff className="h-4 w-4 text-slate-400" />
+                                            ) : (
+                                                <Eye className="h-4 w-4 text-slate-400" />
+                                            )}
+                                        </Button>
+                                    </div>
+                                </div>
+
+                                {pspSettings?.password_reset_enabled && (
+                                    <div className="text-right">
+                                        <a href={createPageUrl('PSPPasswordReset')} className="text-sm text-blue-600 hover:underline">
+                                            Forgot password?
+                                        </a>
+                                    </div>
+                                )}
+
+                                <div className="flex gap-2">
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        className="w-24"
+                                        onClick={() => { setStep(2); setError(''); }}
+                                    >
+                                        Back
+                                    </Button>
+                                    <Button
+                                        type="submit"
+                                        className="flex-1 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-semibold py-6"
                                         disabled={isLoading}
                                     >
                                         {isLoading ? (
@@ -271,8 +359,8 @@ export default function PSPLogin() {
                                             </>
                                         )}
                                     </Button>
-                                </form>
-                            </>
+                                </div>
+                            </form>
                         ) : (
                             <form onSubmit={(e) => { e.preventDefault(); verify2FA(); }} className="space-y-5">
                                 {error && (
@@ -287,7 +375,7 @@ export default function PSPLogin() {
                                     </div>
                                     <h3 className="font-semibold text-lg">Two-Factor Authentication</h3>
                                     <p className="text-sm text-slate-500 mt-2">
-                                        Enter the 6-digit code sent to your {twoFAMethod}
+                                        Enter the 6-digit code sent to your {tempUser?.two_factor_method || 'email'}
                                     </p>
                                 </div>
 
@@ -328,12 +416,12 @@ export default function PSPLogin() {
                                     variant="ghost"
                                     className="w-full"
                                     onClick={() => {
-                                        setShow2FA(false);
-                                        setTempUser(null);
+                                        setStep(3);
                                         setOtpCode('');
+                                        setError('');
                                     }}
                                 >
-                                    Back to Login
+                                    Back to Password
                                 </Button>
                             </form>
                         )}
