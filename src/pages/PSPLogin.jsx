@@ -1,19 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Eye, EyeOff, LogIn, Shield, KeyRound } from 'lucide-react';
-import { getStaffSession } from '@/components/auth/useStaffAuth';
 import { createPageUrl } from '@/utils';
 import { toast } from 'sonner';
 
 export default function PSPLogin() {
-    const [step, setStep] = useState(1); // 1: PSP Code, 2: Email, 3: Password, 4: 2FA
+    const [step, setStep] = useState(1);
     const [email, setEmail] = useState('');
     const [pspCode, setPspCode] = useState('');
     const [password, setPassword] = useState('');
@@ -23,35 +20,20 @@ export default function PSPLogin() {
     const [error, setError] = useState('');
     const [tempUser, setTempUser] = useState(null);
 
-    const [settings, setSettings] = useState(null);
-
     useEffect(() => {
-        const fetchSettings = async () => {
+        const checkAuth = async () => {
             try {
-                const response = await base44.functions.invoke('pspAuth', {
-                    action: 'getSettings'
-                });
-                setSettings(response.data);
+                const sessionData = JSON.parse(localStorage.getItem('staff_session') || '{}');
+                if (sessionData.email && sessionData.expires > Date.now()) {
+                    window.location.href = '/Dashboard';
+                } else {
+                    localStorage.removeItem('staff_session');
+                }
             } catch (err) {
-                console.error('Failed to load settings:', err);
+                localStorage.removeItem('staff_session');
             }
         };
-        fetchSettings();
-    }, []);
-
-    const pspSettings = settings?.pspSettings;
-    const themeSettings = settings?.themeSettings;
-
-    const companyName = pspSettings?.company_name || 'PaymentHub';
-    const pspCodeValue = pspSettings?.psp_code || 'PSP001';
-    const logoUrl = themeSettings?.logo_url;
-    const allowPSPCode = pspSettings?.allow_psp_code_login ?? true;
-
-    useEffect(() => {
-        const existingSession = getStaffSession();
-        if (existingSession) {
-            window.location.href = '/Dashboard';
-        }
+        checkAuth();
     }, []);
 
     const handleStep1 = async (e) => {
@@ -170,16 +152,12 @@ export default function PSPLogin() {
                 <Card className="shadow-2xl border-0">
                     <CardHeader className="space-y-4 pb-8">
                         <div className="flex justify-center">
-                            {logoUrl ? (
-                                <img src={logoUrl} alt={companyName} className="h-16 w-16 object-contain rounded-2xl" />
-                            ) : (
-                                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center shadow-lg">
-                                    <Shield className="h-8 w-8 text-white" />
-                                </div>
-                            )}
+                            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center shadow-lg">
+                                <Shield className="h-8 w-8 text-white" />
+                            </div>
                         </div>
                         <div className="text-center">
-                            <CardTitle className="text-2xl font-bold text-slate-900">{companyName}</CardTitle>
+                            <CardTitle className="text-2xl font-bold text-slate-900">PaymentHub</CardTitle>
                             <CardDescription className="text-base mt-2">PSP Management Portal</CardDescription>
                         </div>
                     </CardHeader>
@@ -200,7 +178,7 @@ export default function PSPLogin() {
                                     <Label htmlFor="psp_code">PSP Code</Label>
                                     <Input
                                         id="psp_code"
-                                        placeholder={pspCodeValue}
+                                        placeholder="Enter PSP code"
                                         value={pspCode}
                                         onChange={(e) => setPspCode(e.target.value.toUpperCase())}
                                         required
@@ -318,13 +296,11 @@ export default function PSPLogin() {
                                     </div>
                                 </div>
 
-                                {pspSettings?.password_reset_enabled && (
-                                    <div className="text-right">
-                                        <a href={createPageUrl('PSPPasswordReset')} className="text-sm text-blue-600 hover:underline">
-                                            Forgot password?
-                                        </a>
-                                    </div>
-                                )}
+                                <div className="text-right">
+                                    <a href={createPageUrl('PSPPasswordReset')} className="text-sm text-blue-600 hover:underline">
+                                        Forgot password?
+                                    </a>
+                                </div>
 
                                 <div className="flex gap-2">
                                     <Button
