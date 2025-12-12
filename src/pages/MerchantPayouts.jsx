@@ -39,7 +39,9 @@ export default function MerchantPayouts() {
 
     const [payoutForm, setPayoutForm] = useState({
         amount: '', currency: 'USD', country: 'US',
-        beneficiary_name: '', beneficiary_account: '', beneficiary_bank: ''
+        beneficiary_name: '', beneficiary_account: '', beneficiary_bank: '',
+        wallet_address: '', blockchain_network: '', apm_wallet_id: '', 
+        apm_phone: '', apm_email: '', channel_type: ''
     });
 
     const { data: merchant } = useQuery({
@@ -457,7 +459,8 @@ export default function MerchantPayouts() {
                                                         key={route.id} 
                                                         className="p-3 border rounded-lg hover:shadow-md transition-all cursor-pointer hover:border-purple-400"
                                                         onClick={() => {
-                                                            setPayoutForm({...payoutForm, currency: route.supported_currencies?.[0] || 'USD'});
+                                                            setPayoutForm({...payoutForm, currency: route.supported_currencies?.[0] || 'USD', channel_type: route.channel_type});
+                                                            setSelectedRoute(route);
                                                             setShowPayoutDialog(true);
                                                             toast.success(`Selected ${route.route_name}`);
                                                         }}
@@ -490,7 +493,8 @@ export default function MerchantPayouts() {
                                                         key={route.id} 
                                                         className="p-3 border rounded-lg hover:shadow-md transition-all cursor-pointer hover:border-amber-400"
                                                         onClick={() => {
-                                                            setPayoutForm({...payoutForm, currency: route.supported_currencies?.[0] || 'USD'});
+                                                            setPayoutForm({...payoutForm, currency: route.supported_currencies?.[0] || 'USD', channel_type: route.channel_type});
+                                                            setSelectedRoute(route);
                                                             setShowPayoutDialog(true);
                                                             toast.success(`Selected ${route.route_name}`);
                                                         }}
@@ -659,38 +663,163 @@ export default function MerchantPayouts() {
                             </div>
                         )}
 
-                        <div className="space-y-4 p-4 bg-slate-50 rounded-lg">
-                            <h4 className="font-medium text-sm">Beneficiary Details</h4>
-                            <div className="space-y-3">
-                                <div className="space-y-2">
-                                    <Label>Account Holder Name *</Label>
-                                    <Input 
-                                        value={payoutForm.beneficiary_name} 
-                                        onChange={(e) => setPayoutForm({...payoutForm, beneficiary_name: e.target.value})}
-                                    />
+                        {/* Crypto Payout Fields */}
+                        {['bitcoin', 'ethereum', 'usdt', 'usdc', 'lightning_network', 'stablecoin', 'crypto'].includes(payoutForm.channel_type) && (
+                            <div className="space-y-4 p-4 bg-amber-50 rounded-lg border border-amber-200">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <TrendingUp className="h-5 w-5 text-amber-600" />
+                                    <h4 className="font-medium text-sm text-amber-900">Cryptocurrency Payout Details</h4>
                                 </div>
-                                <div className="space-y-2">
-                                    <Label>Account Number / IBAN *</Label>
-                                    <Input 
-                                        value={payoutForm.beneficiary_account} 
-                                        onChange={(e) => setPayoutForm({...payoutForm, beneficiary_account: e.target.value})}
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label>Bank Name</Label>
-                                    <Input 
-                                        value={payoutForm.beneficiary_bank} 
-                                        onChange={(e) => setPayoutForm({...payoutForm, beneficiary_bank: e.target.value})}
-                                    />
+                                <div className="space-y-3">
+                                    <div className="space-y-2">
+                                        <Label>Recipient Name *</Label>
+                                        <Input 
+                                            value={payoutForm.beneficiary_name} 
+                                            onChange={(e) => setPayoutForm({...payoutForm, beneficiary_name: e.target.value})}
+                                            placeholder="Recipient name"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>Wallet Address *</Label>
+                                        <Input 
+                                            value={payoutForm.wallet_address} 
+                                            onChange={(e) => setPayoutForm({...payoutForm, wallet_address: e.target.value})}
+                                            placeholder="0x... or bc1..."
+                                            className="font-mono text-xs"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>Blockchain Network *</Label>
+                                        <Select value={payoutForm.blockchain_network} onValueChange={(val) => setPayoutForm({...payoutForm, blockchain_network: val})}>
+                                            <SelectTrigger><SelectValue placeholder="Select network" /></SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="bitcoin">Bitcoin Mainnet</SelectItem>
+                                                <SelectItem value="ethereum">Ethereum (ERC-20)</SelectItem>
+                                                <SelectItem value="bsc">Binance Smart Chain (BEP-20)</SelectItem>
+                                                <SelectItem value="polygon">Polygon</SelectItem>
+                                                <SelectItem value="tron">TRON (TRC-20)</SelectItem>
+                                                <SelectItem value="lightning">Lightning Network</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    <div className="p-3 bg-amber-100 rounded border border-amber-300">
+                                        <p className="text-xs text-amber-800">
+                                            <strong>⚠️ Important:</strong> Verify wallet address and network carefully. Crypto transactions are irreversible.
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        )}
+
+                        {/* APM Payout Fields */}
+                        {['paypal', 'venmo', 'cashapp', 'alipay', 'wechat_pay', 'gcash', 'paytm', 'm_pesa', 'pix', 'upi', 'wallet'].includes(payoutForm.channel_type) && (
+                            <div className="space-y-4 p-4 bg-purple-50 rounded-lg border border-purple-200">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <Wallet className="h-5 w-5 text-purple-600" />
+                                    <h4 className="font-medium text-sm text-purple-900">Digital Wallet / APM Details</h4>
+                                </div>
+                                <div className="space-y-3">
+                                    <div className="space-y-2">
+                                        <Label>Recipient Name *</Label>
+                                        <Input 
+                                            value={payoutForm.beneficiary_name} 
+                                            onChange={(e) => setPayoutForm({...payoutForm, beneficiary_name: e.target.value})}
+                                            placeholder="Recipient name"
+                                        />
+                                    </div>
+                                    {['paypal', 'venmo', 'cashapp'].includes(payoutForm.channel_type) && (
+                                        <div className="space-y-2">
+                                            <Label>Email Address / Account ID *</Label>
+                                            <Input 
+                                                value={payoutForm.apm_email} 
+                                                onChange={(e) => setPayoutForm({...payoutForm, apm_email: e.target.value})}
+                                                placeholder="email@example.com or @username"
+                                            />
+                                        </div>
+                                    )}
+                                    {['alipay', 'wechat_pay'].includes(payoutForm.channel_type) && (
+                                        <div className="space-y-2">
+                                            <Label>Account ID / QR Code *</Label>
+                                            <Input 
+                                                value={payoutForm.apm_wallet_id} 
+                                                onChange={(e) => setPayoutForm({...payoutForm, apm_wallet_id: e.target.value})}
+                                                placeholder="Account ID or scan QR"
+                                            />
+                                        </div>
+                                    )}
+                                    {['gcash', 'paytm', 'm_pesa'].includes(payoutForm.channel_type) && (
+                                        <div className="space-y-2">
+                                            <Label>Mobile Number *</Label>
+                                            <Input 
+                                                value={payoutForm.apm_phone} 
+                                                onChange={(e) => setPayoutForm({...payoutForm, apm_phone: e.target.value})}
+                                                placeholder="+63 912 345 6789"
+                                            />
+                                        </div>
+                                    )}
+                                    {['pix'].includes(payoutForm.channel_type) && (
+                                        <div className="space-y-2">
+                                            <Label>PIX Key *</Label>
+                                            <Input 
+                                                value={payoutForm.apm_wallet_id} 
+                                                onChange={(e) => setPayoutForm({...payoutForm, apm_wallet_id: e.target.value})}
+                                                placeholder="CPF, Email, Phone, or Random Key"
+                                            />
+                                        </div>
+                                    )}
+                                    {['upi'].includes(payoutForm.channel_type) && (
+                                        <div className="space-y-2">
+                                            <Label>UPI ID *</Label>
+                                            <Input 
+                                                value={payoutForm.apm_wallet_id} 
+                                                onChange={(e) => setPayoutForm({...payoutForm, apm_wallet_id: e.target.value})}
+                                                placeholder="yourname@paytm"
+                                            />
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Traditional Banking Fields */}
+                        {['bank_transfer', 'swift', 'sepa', 'ach', 'instant_payment', 'card_payout'].includes(payoutForm.channel_type) && (
+                            <div className="space-y-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <DollarSign className="h-5 w-5 text-blue-600" />
+                                    <h4 className="font-medium text-sm text-blue-900">Bank Account Details</h4>
+                                </div>
+                                <div className="space-y-3">
+                                    <div className="space-y-2">
+                                        <Label>Account Holder Name *</Label>
+                                        <Input 
+                                            value={payoutForm.beneficiary_name} 
+                                            onChange={(e) => setPayoutForm({...payoutForm, beneficiary_name: e.target.value})}
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>Account Number / IBAN *</Label>
+                                        <Input 
+                                            value={payoutForm.beneficiary_account} 
+                                            onChange={(e) => setPayoutForm({...payoutForm, beneficiary_account: e.target.value})}
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label>Bank Name / SWIFT/BIC</Label>
+                                        <Input 
+                                            value={payoutForm.beneficiary_bank} 
+                                            onChange={(e) => setPayoutForm({...payoutForm, beneficiary_bank: e.target.value})}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
                     <DialogFooter>
                         <Button variant="outline" onClick={() => setShowPayoutDialog(false)}>Cancel</Button>
                         <Button 
                             onClick={() => initiatePayoutMutation.mutate(payoutForm)}
-                            disabled={!payoutForm.amount || !payoutForm.beneficiary_name || !payoutForm.beneficiary_account}
+                            disabled={!payoutForm.amount || !payoutForm.beneficiary_name || 
+                                (!payoutForm.beneficiary_account && !payoutForm.wallet_address && !payoutForm.apm_wallet_id && !payoutForm.apm_phone && !payoutForm.apm_email)}
                         >
                             {initiatePayoutMutation.isPending ? (
                                 <>
