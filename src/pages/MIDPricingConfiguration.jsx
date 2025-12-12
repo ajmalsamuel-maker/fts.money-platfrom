@@ -103,11 +103,31 @@ export default function MIDPricingConfiguration() {
         console.log('MID selection effect:', { existingPricing, selectedMID, feeTypesLength: feeTypes.length });
         
         if (existingPricing) {
-            setPricingData(existingPricing);
+            console.log('Loading existing pricing data:', existingPricing);
+            // Ensure fee_configuration exists and has items, or initialize it
+            const feeConfig = existingPricing.fee_configuration && existingPricing.fee_configuration.length > 0
+                ? existingPricing.fee_configuration
+                : feeTypes.map(ft => ({
+                    fee_code: ft.fee_code,
+                    enabled: false,
+                    fixed_amount: 0,
+                    percentage: 0,
+                    offset_from_settlement: ft.offset_from_settlement,
+                    bank_transfer_fixed: 0,
+                    bank_transfer_percentage: 0,
+                    cup_fixed: 0,
+                    cup_percentage: 0
+                }));
+            
+            setPricingData({
+                ...existingPricing,
+                fee_configuration: feeConfig
+            });
+            console.log('Set pricing data with fee_configuration length:', feeConfig.length);
         } else if (selectedMID && feeTypes.length > 0) {
             const mid = mids.find(m => m.mid === selectedMID);
             const merchant = merchants.find(m => m.id === selectedMerchant);
-            console.log('Initializing fee configuration for MID:', selectedMID);
+            console.log('Initializing new fee configuration for MID:', selectedMID);
             
             setPricingData(prev => ({
                 ...prev,
