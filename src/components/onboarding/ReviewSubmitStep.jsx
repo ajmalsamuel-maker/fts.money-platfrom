@@ -189,7 +189,15 @@ export default function ReviewSubmitStep({ formData }) {
                     </li>
                     <li className="flex items-start gap-2">
                         <span className="w-5 h-5 rounded-full bg-blue-200 text-blue-800 flex items-center justify-center text-xs font-medium flex-shrink-0">3</span>
-                        You'll receive an email notification with your merchant credentials
+                        Upon approval, API credentials will be automatically generated
+                    </li>
+                    <li className="flex items-start gap-2">
+                        <span className="w-5 h-5 rounded-full bg-blue-200 text-blue-800 flex items-center justify-center text-xs font-medium flex-shrink-0">4</span>
+                        You'll receive an email with your merchant credentials and API keys
+                    </li>
+                    <li className="flex items-start gap-2">
+                        <span className="w-5 h-5 rounded-full bg-blue-200 text-blue-800 flex items-center justify-center text-xs font-medium flex-shrink-0">5</span>
+                        Access your API credentials anytime in the merchant portal under Settings
                     </li>
                 </ol>
             </Card>
