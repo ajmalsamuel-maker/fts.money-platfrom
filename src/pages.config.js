@@ -90,6 +90,7 @@ import APIGateway from './pages/APIGateway';
 import MerchantAPIKeys from './pages/MerchantAPIKeys';
 import PayoutOrchestration from './pages/PayoutOrchestration';
 import MerchantPayouts from './pages/MerchantPayouts';
+import MerchantPayoutPricing from './pages/MerchantPayoutPricing';
 import __Layout from './Layout.jsx';
 
 
@@ -186,6 +187,7 @@ export const PAGES = {
     "MerchantAPIKeys": MerchantAPIKeys,
     "PayoutOrchestration": PayoutOrchestration,
     "MerchantPayouts": MerchantPayouts,
+    "MerchantPayoutPricing": MerchantPayoutPricing,
 }
 
 export const pagesConfig = {

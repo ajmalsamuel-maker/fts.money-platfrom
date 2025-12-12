@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
+import { cn } from "@/lib/utils";
 
 export default function MerchantPayouts() {
     const { user } = useMerchantAuth();
@@ -419,7 +420,15 @@ export default function MerchantPayouts() {
                                         <CardContent>
                                             <div className="grid md:grid-cols-2 gap-3">
                                                 {allRoutes.filter(r => ['bank_transfer', 'swift', 'sepa', 'ach'].includes(r.channel_type)).map(route => (
-                                                    <div key={route.id} className="p-3 border rounded-lg hover:shadow-md transition-shadow">
+                                                    <div 
+                                                        key={route.id} 
+                                                        className="p-3 border rounded-lg hover:shadow-md transition-all cursor-pointer hover:border-blue-400"
+                                                        onClick={() => {
+                                                            setPayoutForm({...payoutForm, currency: route.supported_currencies?.[0] || 'USD'});
+                                                            setShowPayoutDialog(true);
+                                                            toast.success(`Selected ${route.route_name}`);
+                                                        }}
+                                                    >
                                                         <div className="flex items-center justify-between mb-2">
                                                             <Badge className="bg-blue-100 text-blue-700">{route.channel_type?.toUpperCase()}</Badge>
                                                             <Badge variant="outline" className="text-xs">{route.speed?.replace(/_/g, ' ')}</Badge>
@@ -444,7 +453,15 @@ export default function MerchantPayouts() {
                                         <CardContent>
                                             <div className="grid md:grid-cols-3 gap-3">
                                                 {allRoutes.filter(r => ['paypal', 'venmo', 'cashapp', 'alipay', 'wechat_pay', 'gcash', 'paytm', 'm_pesa', 'pix', 'upi', 'wallet'].includes(r.channel_type)).map(route => (
-                                                    <div key={route.id} className="p-3 border rounded-lg hover:shadow-md transition-shadow">
+                                                    <div 
+                                                        key={route.id} 
+                                                        className="p-3 border rounded-lg hover:shadow-md transition-all cursor-pointer hover:border-purple-400"
+                                                        onClick={() => {
+                                                            setPayoutForm({...payoutForm, currency: route.supported_currencies?.[0] || 'USD'});
+                                                            setShowPayoutDialog(true);
+                                                            toast.success(`Selected ${route.route_name}`);
+                                                        }}
+                                                    >
                                                         <div className="flex items-center justify-between mb-2">
                                                             <Badge className="bg-purple-100 text-purple-700 text-xs">{route.channel_type?.replace(/_/g, ' ').toUpperCase()}</Badge>
                                                             <Badge variant="outline" className="text-xs">{route.speed?.replace(/_/g, ' ')}</Badge>
@@ -469,7 +486,15 @@ export default function MerchantPayouts() {
                                         <CardContent>
                                             <div className="grid md:grid-cols-2 gap-3">
                                                 {allRoutes.filter(r => ['crypto', 'bitcoin', 'ethereum', 'usdt', 'usdc', 'lightning_network', 'stablecoin'].includes(r.channel_type)).map(route => (
-                                                    <div key={route.id} className="p-3 border rounded-lg hover:shadow-md transition-shadow">
+                                                    <div 
+                                                        key={route.id} 
+                                                        className="p-3 border rounded-lg hover:shadow-md transition-all cursor-pointer hover:border-amber-400"
+                                                        onClick={() => {
+                                                            setPayoutForm({...payoutForm, currency: route.supported_currencies?.[0] || 'USD'});
+                                                            setShowPayoutDialog(true);
+                                                            toast.success(`Selected ${route.route_name}`);
+                                                        }}
+                                                    >
                                                         <div className="flex items-center justify-between mb-2">
                                                             <Badge className="bg-amber-100 text-amber-700">{route.channel_type?.toUpperCase()}</Badge>
                                                             <Badge variant="outline" className="text-xs">{route.speed?.replace(/_/g, ' ')}</Badge>

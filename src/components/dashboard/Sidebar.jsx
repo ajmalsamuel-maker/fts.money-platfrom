@@ -118,6 +118,7 @@ const menuItems = [
                     { icon: Zap, label: 'payoutOrchestration', path: 'PayoutOrchestration', permission: 'VIEW_PAYOUTS' },
                     { icon: CreditCard, label: 'fiatPayouts', path: 'Payouts', permission: 'VIEW_PAYOUTS' },
                     { icon: Coins, label: 'cryptoPayouts', path: 'CryptoPayouts', permission: 'VIEW_PAYOUTS' },
+                    { icon: Percent, label: 'payoutPricing', path: 'MerchantPayoutPricing', permission: 'VIEW_BALANCES' },
                     { icon: ArrowUpDown, label: 'reconciliation', path: 'Reconciliation', permission: 'VIEW_BALANCES' },
                     { icon: FileText, label: 'reports', path: 'Reports', permission: 'VIEW_REPORTS' },
                     { icon: Percent, label: 'pricingAndRates', path: 'MerchantPricing', permission: 'VIEW_BALANCES' },

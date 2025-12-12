@@ -89,6 +89,7 @@ const translations = {
         payoutOrchestration: 'Payout Orchestration',
         fiatPayouts: 'Fiat Payouts',
         cryptoPayouts: 'Crypto Payouts',
+        payoutPricing: 'Payout Pricing',
         reconciliation: 'Reconciliation',
         reports: 'Reports',
         pricingAndRates: 'Pricing & Rates',
