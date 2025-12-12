@@ -109,6 +109,7 @@ import MerchantCustomers from './pages/MerchantCustomers';
 import MerchantSavedCards from './pages/MerchantSavedCards';
 import MerchantRefunds from './pages/MerchantRefunds';
 import MerchantWebhooks from './pages/MerchantWebhooks';
+import MarketAnalysis from './pages/MarketAnalysis';
 import __Layout from './Layout.jsx';
 
 
@@ -224,6 +225,7 @@ export const PAGES = {
     "MerchantSavedCards": MerchantSavedCards,
     "MerchantRefunds": MerchantRefunds,
     "MerchantWebhooks": MerchantWebhooks,
+    "MarketAnalysis": MarketAnalysis,
 }
 
 export const pagesConfig = {
