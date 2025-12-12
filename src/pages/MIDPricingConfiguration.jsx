@@ -173,7 +173,7 @@ export default function MIDPricingConfiguration() {
                 };
             });
         }
-    }, [pricingData.inherits_merchant_pricing, merchantPricing, selectedMID]);
+    }, [pricingData.inherits_merchant_pricing, merchantPricing, selectedMID, pricingData.fee_configuration.length]);
 
     const saveMutation = useMutation({
         mutationFn: (data) => {
