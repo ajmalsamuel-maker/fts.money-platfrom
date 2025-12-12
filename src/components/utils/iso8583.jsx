@@ -134,19 +134,19 @@ export const transactionToISO8583 = (transaction) => {
     const fields = {
         2: transaction.card_number?.replace(/\D/g, ''),
         3: '000000', // Purchase
-        4: Math.round(transaction.amount * 100).toString().padStart(12, '0'),
+        4: Math.round((transaction.amount || 0) * 100).toString().padStart(12, '0'),
         7: now.toISOString().replace(/[-:TZ.]/g, '').substring(4, 14),
-        11: transaction.transaction_id?.substring(0, 6) || Math.floor(Math.random() * 999999).toString().padStart(6, '0'),
+        11: (transaction.transaction_id || '').substring(0, 6) || Math.floor(Math.random() * 999999).toString().padStart(6, '0'),
         12: now.toTimeString().replace(/:/g, '').substring(0, 6),
         13: now.toISOString().substring(5, 10).replace('-', ''),
         14: transaction.card_expiry || '2512',
         18: transaction.mcc_code || '5999',
         22: '012', // Contactless
         25: '00', // Normal
-        32: transaction.merchant_id?.substring(0, 11),
+        32: (transaction.merchant_id || '').substring(0, 11),
         37: transaction.rrn || generateRRN(),
-        41: transaction.terminal_id?.substring(0, 8) || 'TERM0001',
-        42: transaction.merchant_id?.substring(0, 15),
+        41: (transaction.terminal_id || '').substring(0, 8) || 'TERM0001',
+        42: (transaction.merchant_id || '').substring(0, 15),
         49: transaction.currency || 'USD',
     };
 
