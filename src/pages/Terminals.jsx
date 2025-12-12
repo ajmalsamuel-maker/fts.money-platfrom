@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { format } from 'date-fns';
 import Sidebar from '@/components/dashboard/Sidebar';
@@ -7,8 +7,11 @@ import TopHeader from '@/components/dashboard/TopHeader';
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { toast } from 'sonner';
 import {
     Table,
     TableBody,
@@ -62,11 +65,65 @@ export default function Terminals() {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
+    const [showDialog, setShowDialog] = useState(false);
+    const queryClient = useQueryClient();
+
+    const [formData, setFormData] = useState({
+        terminal_id: '',
+        merchant_id: '',
+        merchant_name: '',
+        type: 'pos',
+        model: '',
+        serial_number: '',
+        location: '',
+        status: 'active'
+    });
 
     const { data: terminals = [], isLoading } = useQuery({
         queryKey: ['terminals'],
         queryFn: () => base44.entities.Terminal.list('-created_date'),
     });
+
+    const { data: merchants = [] } = useQuery({
+        queryKey: ['merchants'],
+        queryFn: () => base44.entities.Merchant.list()
+    });
+
+    const createMutation = useMutation({
+        mutationFn: (data) => base44.entities.Terminal.create(data),
+        onSuccess: () => {
+            queryClient.invalidateQueries(['terminals']);
+            setShowDialog(false);
+            resetForm();
+            toast.success('Terminal added successfully');
+        }
+    });
+
+    const handleMerchantChange = (merchantId) => {
+        const merchant = merchants.find(m => m.id === merchantId);
+        setFormData({
+            ...formData,
+            merchant_id: merchantId,
+            merchant_name: merchant?.business_name || ''
+        });
+    };
+
+    const handleSubmit = () => {
+        createMutation.mutate(formData);
+    };
+
+    const resetForm = () => {
+        setFormData({
+            terminal_id: '',
+            merchant_id: '',
+            merchant_name: '',
+            type: 'pos',
+            model: '',
+            serial_number: '',
+            location: '',
+            status: 'active'
+        });
+    };
 
     const filteredTerminals = terminals.filter(t => {
         const matchesSearch = !searchQuery || 
@@ -100,7 +157,7 @@ export default function Terminals() {
                             <h1 className="text-2xl font-bold text-slate-900">Terminals</h1>
                             <p className="text-slate-500">Manage payment terminals and devices</p>
                         </div>
-                        <Button className="gap-2 bg-blue-600 hover:bg-blue-700">
+                        <Button onClick={() => setShowDialog(true)} className="gap-2 bg-blue-600 hover:bg-blue-700">
                             <Plus className="h-4 w-4" />
                             Add Terminal
                         </Button>
@@ -265,6 +322,92 @@ export default function Terminals() {
                     </Card>
                 </main>
             </div>
+
+            <Dialog open={showDialog} onOpenChange={setShowDialog}>
+                <DialogContent className="max-w-2xl">
+                    <DialogHeader>
+                        <DialogTitle>Add Terminal</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label>Terminal ID *</Label>
+                                <Input 
+                                    value={formData.terminal_id}
+                                    onChange={(e) => setFormData({...formData, terminal_id: e.target.value})}
+                                    placeholder="TID-001"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Type *</Label>
+                                <Select value={formData.type} onValueChange={(val) => setFormData({...formData, type: val})}>
+                                    <SelectTrigger>
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="pos">POS</SelectItem>
+                                        <SelectItem value="mpos">mPOS</SelectItem>
+                                        <SelectItem value="virtual">Virtual</SelectItem>
+                                        <SelectItem value="ecommerce">E-Commerce</SelectItem>
+                                        <SelectItem value="unattended">Unattended</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label>Merchant *</Label>
+                            <Select value={formData.merchant_id} onValueChange={handleMerchantChange}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select merchant" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {merchants.map(m => (
+                                        <SelectItem key={m.id} value={m.id}>{m.business_name}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label>Model</Label>
+                                <Input 
+                                    value={formData.model}
+                                    onChange={(e) => setFormData({...formData, model: e.target.value})}
+                                    placeholder="e.g., Verifone VX520"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Serial Number</Label>
+                                <Input 
+                                    value={formData.serial_number}
+                                    onChange={(e) => setFormData({...formData, serial_number: e.target.value})}
+                                    placeholder="SN123456"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label>Location</Label>
+                            <Input 
+                                value={formData.location}
+                                onChange={(e) => setFormData({...formData, location: e.target.value})}
+                                placeholder="e.g., Main Store - Checkout 1"
+                            />
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setShowDialog(false)}>Cancel</Button>
+                        <Button 
+                            onClick={handleSubmit}
+                            disabled={!formData.terminal_id || !formData.merchant_id}
+                        >
+                            Add Terminal
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }
