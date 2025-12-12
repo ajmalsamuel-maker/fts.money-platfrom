@@ -159,23 +159,44 @@ export default function MIDPricingConfiguration() {
             hasMerchantPricing: merchantPricing?.length > 0,
             selectedMID,
             feeConfigLength: pricingData.fee_configuration.length,
-            merchantPricing
+            feeTypesLength: feeTypes.length
         });
         
         if (pricingData.inherits_merchant_pricing && merchantPricing && merchantPricing.length > 0 && selectedMID) {
             const mp = merchantPricing[0];
             console.log('Populating from merchant pricing:', mp);
             
-            // Wait for fee_configuration to be initialized
-            if (pricingData.fee_configuration.length === 0) {
-                console.log('Fee configuration not ready yet, skipping population');
-                return;
-            }
+            // Create fee configuration directly from merchant pricing if not initialized
+            const baseFeeConfig = pricingData.fee_configuration.length > 0 
+                ? pricingData.fee_configuration
+                : feeTypes.length > 0
+                ? feeTypes.map(ft => ({
+                    fee_code: ft.fee_code,
+                    enabled: false,
+                    fixed_amount: 0,
+                    percentage: 0,
+                    offset_from_settlement: ft.offset_from_settlement,
+                    bank_transfer_fixed: 0,
+                    bank_transfer_percentage: 0,
+                    cup_fixed: 0,
+                    cup_percentage: 0
+                }))
+                : [{
+                    fee_code: 'SALE_TXN',
+                    enabled: true,
+                    fixed_amount: mp.sell_fixed_fee || 0,
+                    percentage: mp.sell_percentage_rate || 0,
+                    offset_from_settlement: true,
+                    bank_transfer_fixed: 0,
+                    bank_transfer_percentage: 0,
+                    cup_fixed: 0,
+                    cup_percentage: 0
+                }];
             
-            console.log('Current fee_configuration before update:', pricingData.fee_configuration);
+            console.log('Base fee config:', baseFeeConfig);
             
             setPricingData(prev => {
-                const newConfig = prev.fee_configuration.map(fc => {
+                const newConfig = baseFeeConfig.map(fc => {
                     // For transaction fees, use the sell rate from merchant pricing
                     if (fc.fee_code === 'SALE_TXN') {
                         console.log('Setting SALE_TXN fee - fixed:', mp.sell_fixed_fee, 'percentage:', mp.sell_percentage_rate);
@@ -200,7 +221,7 @@ export default function MIDPricingConfiguration() {
                 };
             });
         }
-    }, [pricingData.inherits_merchant_pricing, merchantPricing, selectedMID, pricingData.fee_configuration.length]);
+    }, [pricingData.inherits_merchant_pricing, merchantPricing, selectedMID, feeTypes]);
 
     const saveMutation = useMutation({
         mutationFn: (data) => {
