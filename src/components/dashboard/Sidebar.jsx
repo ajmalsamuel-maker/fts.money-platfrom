@@ -190,6 +190,7 @@ const menuItems = [
                     { icon: Palette, label: 'appearance', path: 'Appearance', permission: 'VIEW_APPEARANCE' },
                     { icon: FileCheck, label: 'isoStandards', path: 'ISOConfiguration', permission: 'VIEW_SETTINGS' },
                     { icon: Database, label: 'databaseTools', path: 'DatabaseSetup', permission: 'VIEW_SETTINGS' },
+                    { icon: Building2, label: 'pspProvisioning', path: 'PSPProvisioning', permission: 'VIEW_SETTINGS' },
                     { icon: Settings, label: 'generalSettings', path: 'Settings', permission: 'VIEW_SETTINGS' },
                 ]
             },
