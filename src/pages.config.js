@@ -117,6 +117,7 @@ import InstantPayments from './pages/InstantPayments';
 import SubMerchants from './pages/SubMerchants';
 import PCICompliance from './pages/PCICompliance';
 import CheckoutComponents from './pages/CheckoutComponents';
+import PSPProvisioning from './pages/PSPProvisioning';
 import __Layout from './Layout.jsx';
 
 
@@ -240,6 +241,7 @@ export const PAGES = {
     "SubMerchants": SubMerchants,
     "PCICompliance": PCICompliance,
     "CheckoutComponents": CheckoutComponents,
+    "PSPProvisioning": PSPProvisioning,
 }
 
 export const pagesConfig = {
