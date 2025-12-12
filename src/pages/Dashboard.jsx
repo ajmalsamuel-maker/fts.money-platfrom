@@ -122,27 +122,6 @@ export default function Dashboard() {
                 />
                 
                 <main className="p-3 sm:p-6">
-                    {/* FTS.Money Platform Access */}
-                    <div className="mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-xl p-6 shadow-lg">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
-                                    <Sparkles className="h-6 w-6 text-white" />
-                                </div>
-                                <div>
-                                    <h2 className="text-xl font-bold text-white">FTS.Money Platform</h2>
-                                    <p className="text-sm text-white/80">Manage your white-label PSP infrastructure</p>
-                                </div>
-                            </div>
-                            <Button 
-                                onClick={() => navigate(createPageUrl('FTSMoneyPlatform'))}
-                                className="bg-white text-purple-600 hover:bg-white/90 shadow-lg"
-                            >
-                                Access Platform
-                            </Button>
-                        </div>
-                    </div>
-
                     {/* Page Header */}
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                         <div>
