@@ -102,6 +102,13 @@ import Webhooks from './pages/Webhooks';
 import Refunds from './pages/Refunds';
 import RealTimeMonitor from './pages/RealTimeMonitor';
 import ThreeDSecure from './pages/ThreeDSecure';
+import MerchantPaymentLinks from './pages/MerchantPaymentLinks';
+import MerchantInvoices from './pages/MerchantInvoices';
+import MerchantSubscriptions from './pages/MerchantSubscriptions';
+import MerchantCustomers from './pages/MerchantCustomers';
+import MerchantSavedCards from './pages/MerchantSavedCards';
+import MerchantRefunds from './pages/MerchantRefunds';
+import MerchantWebhooks from './pages/MerchantWebhooks';
 import __Layout from './Layout.jsx';
 
 
@@ -210,6 +217,13 @@ export const PAGES = {
     "Refunds": Refunds,
     "RealTimeMonitor": RealTimeMonitor,
     "ThreeDSecure": ThreeDSecure,
+    "MerchantPaymentLinks": MerchantPaymentLinks,
+    "MerchantInvoices": MerchantInvoices,
+    "MerchantSubscriptions": MerchantSubscriptions,
+    "MerchantCustomers": MerchantCustomers,
+    "MerchantSavedCards": MerchantSavedCards,
+    "MerchantRefunds": MerchantRefunds,
+    "MerchantWebhooks": MerchantWebhooks,
 }
 
 export const pagesConfig = {
