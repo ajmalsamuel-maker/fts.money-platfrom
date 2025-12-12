@@ -383,7 +383,7 @@ export default function MerchantTransactionList() {
             <TransactionDetailsDialog 
                 transaction={selectedTransaction}
                 open={!!selectedTransaction}
-                onOpenChange={() => setSelectedTransaction(null)}
+                onClose={() => setSelectedTransaction(null)}
             />
 
             {/* Refund Dialog */}
