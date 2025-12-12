@@ -101,6 +101,7 @@ const STANDARD_TRANSACTION_FEES = [
 ];
 
 const STANDARD_FEE_TEMPLATES = [
+    ...STANDARD_TRANSACTION_FEES.map(t => ({ ...t, standard: 'Standard' })),
     ...ISO8583_TRANSACTION_TYPES.map(t => ({ ...t, category: 'transaction', standard: 'ISO 8583' })),
     ...ISO20022_MESSAGE_TYPES.map(t => ({ ...t, category: 'transaction', standard: 'ISO 20022' })),
     ...EMV_TRANSACTION_TYPES.map(t => ({ ...t, category: 'transaction', standard: 'EMV' })),
