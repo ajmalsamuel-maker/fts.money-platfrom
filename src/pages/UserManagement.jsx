@@ -875,7 +875,17 @@ export default function UserManagement() {
                                         two_factor_enabled: tfaData.enabled,
                                         two_factor_method: tfaData.method
                                     });
-                                    await AuditLogger.logUserUpdated(selectedUser, currentUser, 'two_factor_settings');
+                                    await AuditLogger.log({
+                                        eventType: 'user_updated',
+                                        category: 'security',
+                                        action: tfaData.enabled ? 'ENABLE_2FA' : 'DISABLE_2FA',
+                                        description: `2FA ${tfaData.enabled ? 'enabled' : 'disabled'} for user ${selectedUser.email}`,
+                                        targetEntity: 'AppUser',
+                                        targetId: selectedUser.id,
+                                        newValue: { two_factor_enabled: tfaData.enabled, two_factor_method: tfaData.method },
+                                        pciRelevant: true,
+                                        severity: 'warning'
+                                    });
                                     queryClient.invalidateQueries({ queryKey: ['all-users'] });
                                     toast.success('2FA settings updated successfully');
                                     setShow2FADialog(false);
@@ -963,10 +973,22 @@ export default function UserManagement() {
                         <Button 
                             onClick={async () => {
                                 try {
+                                    const oldStatus = selectedUser.status || 'pending';
                                     await base44.entities.AppUser.update(selectedUser.id, {
                                         status: selectedStatus
                                     });
-                                    await AuditLogger.logUserUpdated(selectedUser, currentUser, 'status_change');
+                                    await AuditLogger.log({
+                                        eventType: 'user_updated',
+                                        category: 'user_management',
+                                        action: 'CHANGE_STATUS',
+                                        description: `User ${selectedUser.email} status changed from ${oldStatus} to ${selectedStatus}`,
+                                        targetEntity: 'AppUser',
+                                        targetId: selectedUser.id,
+                                        oldValue: { status: oldStatus },
+                                        newValue: { status: selectedStatus },
+                                        pciRelevant: true,
+                                        severity: 'warning'
+                                    });
                                     queryClient.invalidateQueries({ queryKey: ['all-users'] });
                                     toast.success('User status updated successfully');
                                     setShowStatusDialog(false);
