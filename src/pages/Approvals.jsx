@@ -36,8 +36,100 @@ export default function Approvals() {
         onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['approval-requests'] }); setSelectedRequest(null); setReviewComment(''); }
     });
 
-    const handleApprove = () => {
-        updateRequest.mutate({ id: selectedRequest.id, data: { status: 'approved', review_comments: reviewComment, review_date: new Date().toISOString(), reviewed_by: 'current_user' } });
+    const handleApprove = async () => {
+        // Update approval status
+        updateRequest.mutate({ 
+            id: selectedRequest.id, 
+            data: { 
+                status: 'approved', 
+                review_comments: reviewComment, 
+                review_date: new Date().toISOString(), 
+                reviewed_by: 'current_user' 
+            } 
+        });
+        
+        // If it's a merchant onboarding approval, generate API credentials
+        if (selectedRequest.request_type === 'merchant_onboarding' && selectedRequest.entity_id) {
+            try {
+                const merchants = await base44.entities.Merchant.filter({ id: selectedRequest.entity_id });
+                const merchant = merchants[0];
+                
+                if (merchant) {
+                    // Update merchant status to active
+                    await base44.entities.Merchant.update(merchant.id, { status: 'active' });
+                    
+                    // Generate API keys for sandbox and production
+                    const environments = ['sandbox', 'production'];
+                    
+                    for (const env of environments) {
+                        const apiKey = `pk_${env}_${crypto.randomUUID().replace(/-/g, '')}`;
+                        const apiSecret = `sk_${env}_${crypto.randomUUID().replace(/-/g, '')}`;
+                        
+                        await base44.entities.APIKey.create({
+                            merchant_id: merchant.id,
+                            merchant_name: merchant.business_name,
+                            key_name: `${env === 'sandbox' ? 'Test' : 'Live'} API Key`,
+                            api_key: apiKey,
+                            api_secret: apiSecret,
+                            key_prefix: apiKey.substring(0, 8),
+                            environment: env,
+                            permissions: [
+                                'create_payment', 'capture_payment', 'refund_payment', 
+                                'void_payment', 'tokenize_card', 'get_transaction', 
+                                'list_transactions', 'create_webhook', 'list_webhooks'
+                            ],
+                            rate_limit: env === 'sandbox' ? 100 : 1000,
+                            status: 'active',
+                            allowed_ips: []
+                        });
+                    }
+                    
+                    // Send welcome email with credentials info
+                    await base44.integrations.Core.SendEmail({
+                        to: merchant.contact_email,
+                        subject: `Welcome to PaymentHub - Merchant Approved!`,
+                        body: `
+                            <h2>Congratulations! Your Merchant Account is Approved</h2>
+                            <p>Hello ${merchant.business_name},</p>
+                            <p>We're excited to inform you that your merchant application has been approved!</p>
+                            
+                            <h3>Your Account Details:</h3>
+                            <ul>
+                                <li><strong>Merchant Code:</strong> ${merchant.merchant_code}</li>
+                                <li><strong>Business Name:</strong> ${merchant.business_name}</li>
+                                <li><strong>Status:</strong> Active</li>
+                            </ul>
+                            
+                            <h3>API Credentials Generated:</h3>
+                            <p>We've automatically generated API credentials for both sandbox (testing) and production environments.</p>
+                            <p>You can access your API keys by logging into the merchant portal:</p>
+                            <ol>
+                                <li>Go to Settings → API Credentials</li>
+                                <li>View your sandbox and production API keys</li>
+                                <li>Copy and securely store your credentials</li>
+                            </ol>
+                            
+                            <h3>Next Steps:</h3>
+                            <ol>
+                                <li>Login to your merchant portal using your merchant code</li>
+                                <li>Complete your profile settings</li>
+                                <li>Access your API credentials in Settings</li>
+                                <li>Review our API documentation</li>
+                                <li>Start processing test payments in sandbox mode</li>
+                            </ol>
+                            
+                            <p><strong>Important Security Notice:</strong> Your API credentials provide access to your payment processing. Keep them secure and never share them publicly.</p>
+                            
+                            <p>If you have any questions or need assistance with integration, our support team is here to help.</p>
+                            
+                            <p>Welcome aboard!</p>
+                        `
+                    });
+                }
+            } catch (error) {
+                console.error('Error generating API credentials:', error);
+            }
+        }
     };
 
     const handleReject = () => {
