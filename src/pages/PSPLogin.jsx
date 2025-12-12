@@ -75,7 +75,8 @@ export default function PSPLogin() {
 
         try {
             // Check if user exists with this email
-            const users = await base44.entities.AppUser.filter({ email });
+            const allUsers = await base44.entities.AppUser.list();
+            const users = allUsers.filter(u => u.email === email);
             
             if (users.length === 0) {
                 throw new Error('No account found with this email');
