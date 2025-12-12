@@ -260,7 +260,7 @@ export default function Transactions() {
                                             filteredTransactions.map((txn) => {
                                                 const aiDecision = aiDecisions.find(d => d.transaction_id === txn.transaction_id);
                                                 return (
-                                                <TableRow key={txn.id} className="hover:bg-slate-50/50">
+                                                <TableRow key={txn.id} className="hover:bg-slate-50/50 cursor-pointer" onClick={() => handleViewDetails(txn)}>
                                                     <TableCell>
                                                         <span className="font-mono text-sm text-blue-600">
                                                             {txn.transaction_id || `TXN-${txn.id?.slice(0, 8)}`}
@@ -308,7 +308,7 @@ export default function Transactions() {
                                                             </Badge>
                                                         )}
                                                     </TableCell>
-                                                    <TableCell>
+                                                    <TableCell onClick={(e) => e.stopPropagation()}>
                                                         <DropdownMenu>
                                                             <DropdownMenuTrigger asChild>
                                                                 <Button variant="ghost" size="icon" className="h-8 w-8">
@@ -316,18 +316,18 @@ export default function Transactions() {
                                                                 </Button>
                                                             </DropdownMenuTrigger>
                                                             <DropdownMenuContent align="end">
-                                                                <DropdownMenuItem onClick={() => handleViewDetails(txn)}>
+                                                                <DropdownMenuItem onClick={(e) => { e.stopPropagation(); handleViewDetails(txn); }}>
                                                                     <Eye className="h-4 w-4 mr-2" />
                                                                     View Details
                                                                 </DropdownMenuItem>
                                                                 <PermissionGate permission="REFUND_TRANSACTIONS">
-                                                                    <DropdownMenuItem onClick={() => handleRefund(txn)} disabled={txn.type === 'refund' || txn.status === 'reversed'}>
+                                                                    <DropdownMenuItem onClick={(e) => { e.stopPropagation(); handleRefund(txn); }} disabled={txn.type === 'refund' || txn.status === 'reversed'}>
                                                                         <RefreshCw className="h-4 w-4 mr-2" />
                                                                         Refund
                                                                     </DropdownMenuItem>
                                                                 </PermissionGate>
                                                                 <PermissionGate permission="VOID_TRANSACTIONS">
-                                                                    <DropdownMenuItem onClick={() => handleVoid(txn)} className="text-red-600" disabled={txn.status === 'reversed'}>
+                                                                    <DropdownMenuItem onClick={(e) => { e.stopPropagation(); handleVoid(txn); }} className="text-red-600" disabled={txn.status === 'reversed'}>
                                                                         <Ban className="h-4 w-4 mr-2" />
                                                                         Void
                                                                     </DropdownMenuItem>

@@ -100,7 +100,7 @@ export default function TransactionTable({ transactions, title = "Recent Transac
                         </TableHeader>
                         <TableBody>
                             {transactions.map((txn) => (
-                                <TableRow key={txn.id} className="hover:bg-slate-50/50">
+                                <TableRow key={txn.id} className="hover:bg-slate-50/50 cursor-pointer" onClick={() => handleViewDetails(txn)}>
                                     <TableCell>
                                         <span className="font-mono text-sm text-blue-600">
                                             {txn.transaction_id || `TXN-${txn.id?.slice(0, 8)}`}
@@ -154,7 +154,7 @@ export default function TransactionTable({ transactions, title = "Recent Transac
                                     <TableCell>
                                         <ISOComplianceBadge transaction={txn} size="sm" />
                                     </TableCell>
-                                    <TableCell>
+                                    <TableCell onClick={(e) => e.stopPropagation()}>
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
                                                 <Button variant="ghost" size="icon" className="h-8 w-8">
@@ -162,15 +162,15 @@ export default function TransactionTable({ transactions, title = "Recent Transac
                                                 </Button>
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end">
-                                                <DropdownMenuItem onClick={() => handleViewDetails(txn)}>
+                                                <DropdownMenuItem onClick={(e) => { e.stopPropagation(); handleViewDetails(txn); }}>
                                                     <Eye className="h-4 w-4 mr-2" />
                                                     View Details
                                                 </DropdownMenuItem>
-                                                <DropdownMenuItem>
+                                                <DropdownMenuItem onClick={(e) => e.stopPropagation()}>
                                                     <RefreshCw className="h-4 w-4 mr-2" />
                                                     Refund
                                                 </DropdownMenuItem>
-                                                <DropdownMenuItem className="text-red-600">
+                                                <DropdownMenuItem onClick={(e) => e.stopPropagation()} className="text-red-600">
                                                     <Ban className="h-4 w-4 mr-2" />
                                                     Void
                                                 </DropdownMenuItem>
