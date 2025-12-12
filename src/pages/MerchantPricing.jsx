@@ -57,6 +57,7 @@ export default function MerchantPricing() {
     const [showDialog, setShowDialog] = useState(false);
     const [editingPricing, setEditingPricing] = useState(null);
     const [selectedBuyRate, setSelectedBuyRate] = useState(null);
+    const today = new Date().toISOString().split('T')[0];
     const [formData, setFormData] = useState({
         merchant_id: '', merchant_name: '', mid_id: '', mid: '',
         provider_id: '', provider_name: '', buy_rate_id: '',
@@ -64,7 +65,7 @@ export default function MerchantPricing() {
         buy_percentage_rate: 0, buy_fixed_fee: 0,
         markup_percentage: '', markup_fixed_fee: '',
         sell_percentage_rate: 0, sell_fixed_fee: 0,
-        monthly_fee: 0, minimum_fee: 0, effective_from: '', status: 'active', notes: ''
+        monthly_fee: 0, minimum_fee: 0, effective_from: today, status: 'active', notes: ''
     });
 
     const queryClient = useQueryClient();
