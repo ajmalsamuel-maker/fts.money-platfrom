@@ -256,6 +256,8 @@ export default function MIDPricingConfiguration() {
                                                     <TableHead>Transaction Type</TableHead>
                                                     <TableHead>Enabled</TableHead>
                                                     <TableHead>Offset from Settlement</TableHead>
+                                                    <TableHead>Fixed Amount</TableHead>
+                                                    <TableHead>Percentage</TableHead>
                                                     <TableHead>CUP Fixed</TableHead>
                                                     <TableHead>CUP %</TableHead>
                                                     <TableHead>Bank Transfer Fixed</TableHead>
@@ -282,6 +284,24 @@ export default function MIDPricingConfiguration() {
                                                                 <Switch 
                                                                     checked={config.offset_from_settlement}
                                                                     onCheckedChange={(val) => updateFeeConfig(fee.fee_code, 'offset_from_settlement', val)}
+                                                                />
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <Input
+                                                                    type="number"
+                                                                    step="0.01"
+                                                                    value={config.fixed_amount}
+                                                                    onChange={(e) => updateFeeConfig(fee.fee_code, 'fixed_amount', parseFloat(e.target.value) || 0)}
+                                                                    className="w-24"
+                                                                />
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <Input
+                                                                    type="number"
+                                                                    step="0.01"
+                                                                    value={config.percentage}
+                                                                    onChange={(e) => updateFeeConfig(fee.fee_code, 'percentage', parseFloat(e.target.value) || 0)}
+                                                                    className="w-24"
                                                                 />
                                                             </TableCell>
                                                             <TableCell>
