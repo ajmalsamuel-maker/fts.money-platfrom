@@ -1,0 +1,349 @@
+import React, { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { base44 } from '@/api/base44Client';
+import Sidebar from '@/components/dashboard/Sidebar';
+import TopHeader from '@/components/dashboard/TopHeader';
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
+import { Plus, Edit, Tag, Settings } from 'lucide-react';
+import { toast } from 'sonner';
+
+export default function FeeTypeManagement() {
+    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [editingFee, setEditingFee] = useState(null);
+    const queryClient = useQueryClient();
+
+    const { data: feeTypes = [] } = useQuery({
+        queryKey: ['feeTypes'],
+        queryFn: () => base44.entities.FeeType.list()
+    });
+
+    const [formData, setFormData] = useState({
+        fee_code: '',
+        fee_name: '',
+        category: 'transaction',
+        applies_to: 'sale',
+        billing_frequency: 'per_transaction',
+        supports_fixed: true,
+        supports_percentage: true,
+        supports_tiered: false,
+        offset_from_settlement: true,
+        status: 'active',
+        description: ''
+    });
+
+    const createFeeMutation = useMutation({
+        mutationFn: (data) => base44.entities.FeeType.create(data),
+        onSuccess: () => {
+            queryClient.invalidateQueries(['feeTypes']);
+            toast.success('Fee type created');
+            setDialogOpen(false);
+            resetForm();
+        }
+    });
+
+    const updateFeeMutation = useMutation({
+        mutationFn: ({ id, data }) => base44.entities.FeeType.update(id, data),
+        onSuccess: () => {
+            queryClient.invalidateQueries(['feeTypes']);
+            toast.success('Fee type updated');
+            setDialogOpen(false);
+            resetForm();
+        }
+    });
+
+    const handleSubmit = () => {
+        if (editingFee) {
+            updateFeeMutation.mutate({ id: editingFee.id, data: formData });
+        } else {
+            createFeeMutation.mutate(formData);
+        }
+    };
+
+    const handleEdit = (fee) => {
+        setEditingFee(fee);
+        setFormData(fee);
+        setDialogOpen(true);
+    };
+
+    const resetForm = () => {
+        setEditingFee(null);
+        setFormData({
+            fee_code: '',
+            fee_name: '',
+            category: 'transaction',
+            applies_to: 'sale',
+            billing_frequency: 'per_transaction',
+            supports_fixed: true,
+            supports_percentage: true,
+            supports_tiered: false,
+            offset_from_settlement: true,
+            status: 'active',
+            description: ''
+        });
+    };
+
+    const getCategoryBadge = (category) => {
+        const colors = {
+            transaction: 'bg-blue-100 text-blue-700',
+            payment_method: 'bg-purple-100 text-purple-700',
+            service: 'bg-green-100 text-green-700',
+            operational: 'bg-amber-100 text-amber-700',
+            recurring: 'bg-cyan-100 text-cyan-700',
+            penalty: 'bg-red-100 text-red-700',
+            custom: 'bg-slate-100 text-slate-700'
+        };
+        return <Badge className={colors[category] || ''}>{category}</Badge>;
+    };
+
+    return (
+        <div className="min-h-screen bg-slate-50">
+            <Sidebar collapsed={sidebarCollapsed} currentPage="Settings" />
+            <div className={cn("transition-all duration-300", "ml-64")}>
+                <TopHeader onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} collapsed={sidebarCollapsed} />
+                
+                <main className="p-6">
+                    <div className="mb-6">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                                    <Tag className="h-5 w-5 text-white" />
+                                </div>
+                                <div>
+                                    <h1 className="text-2xl font-bold">Fee Type Management</h1>
+                                    <p className="text-slate-500">Define and manage billable fee types</p>
+                                </div>
+                            </div>
+                            <Dialog open={dialogOpen} onOpenChange={(open) => {
+                                setDialogOpen(open);
+                                if (!open) resetForm();
+                            }}>
+                                <DialogTrigger asChild>
+                                    <Button className="gap-2">
+                                        <Plus className="h-4 w-4" />
+                                        Add Fee Type
+                                    </Button>
+                                </DialogTrigger>
+                                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                                    <DialogHeader>
+                                        <DialogTitle>{editingFee ? 'Edit' : 'Create'} Fee Type</DialogTitle>
+                                    </DialogHeader>
+                                    <div className="space-y-4">
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div className="space-y-2">
+                                                <Label>Fee Code *</Label>
+                                                <Input
+                                                    value={formData.fee_code}
+                                                    onChange={(e) => setFormData({...formData, fee_code: e.target.value.toUpperCase()})}
+                                                    placeholder="e.g., SALE_TXN_FEE"
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <Label>Fee Name *</Label>
+                                                <Input
+                                                    value={formData.fee_name}
+                                                    onChange={(e) => setFormData({...formData, fee_name: e.target.value})}
+                                                    placeholder="e.g., Sale Transaction Fee"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div className="space-y-2">
+                                                <Label>Category</Label>
+                                                <Select value={formData.category} onValueChange={(val) => setFormData({...formData, category: val})}>
+                                                    <SelectTrigger>
+                                                        <SelectValue />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="transaction">Transaction</SelectItem>
+                                                        <SelectItem value="payment_method">Payment Method</SelectItem>
+                                                        <SelectItem value="service">Service</SelectItem>
+                                                        <SelectItem value="operational">Operational</SelectItem>
+                                                        <SelectItem value="recurring">Recurring</SelectItem>
+                                                        <SelectItem value="penalty">Penalty</SelectItem>
+                                                        <SelectItem value="custom">Custom</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
+                                            <div className="space-y-2">
+                                                <Label>Applies To</Label>
+                                                <Select value={formData.applies_to} onValueChange={(val) => setFormData({...formData, applies_to: val})}>
+                                                    <SelectTrigger>
+                                                        <SelectValue />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="sale">Sale</SelectItem>
+                                                        <SelectItem value="refund">Refund</SelectItem>
+                                                        <SelectItem value="authorization">Authorization</SelectItem>
+                                                        <SelectItem value="capture">Capture</SelectItem>
+                                                        <SelectItem value="void">Void</SelectItem>
+                                                        <SelectItem value="chargeback">Chargeback</SelectItem>
+                                                        <SelectItem value="payout">Payout</SelectItem>
+                                                        <SelectItem value="tokenization">Tokenization</SelectItem>
+                                                        <SelectItem value="fraud_check">Fraud Check</SelectItem>
+                                                        <SelectItem value="3ds">3D Secure</SelectItem>
+                                                        <SelectItem value="settlement">Settlement</SelectItem>
+                                                        <SelectItem value="recurring">Recurring</SelectItem>
+                                                        <SelectItem value="other">Other</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <Label>Billing Frequency</Label>
+                                            <Select value={formData.billing_frequency} onValueChange={(val) => setFormData({...formData, billing_frequency: val})}>
+                                                <SelectTrigger>
+                                                    <SelectValue />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="per_transaction">Per Transaction</SelectItem>
+                                                    <SelectItem value="daily">Daily</SelectItem>
+                                                    <SelectItem value="weekly">Weekly</SelectItem>
+                                                    <SelectItem value="monthly">Monthly</SelectItem>
+                                                    <SelectItem value="annual">Annual</SelectItem>
+                                                    <SelectItem value="one_time">One Time</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+
+                                        <div className="space-y-3 p-4 bg-slate-50 rounded-lg">
+                                            <Label>Pricing Support</Label>
+                                            <div className="flex items-center justify-between">
+                                                <span className="text-sm">Supports Fixed Amount</span>
+                                                <Switch checked={formData.supports_fixed} onCheckedChange={(val) => setFormData({...formData, supports_fixed: val})} />
+                                            </div>
+                                            <div className="flex items-center justify-between">
+                                                <span className="text-sm">Supports Percentage</span>
+                                                <Switch checked={formData.supports_percentage} onCheckedChange={(val) => setFormData({...formData, supports_percentage: val})} />
+                                            </div>
+                                            <div className="flex items-center justify-between">
+                                                <span className="text-sm">Supports Volume Tiers</span>
+                                                <Switch checked={formData.supports_tiered} onCheckedChange={(val) => setFormData({...formData, supports_tiered: val})} />
+                                            </div>
+                                            <div className="flex items-center justify-between">
+                                                <span className="text-sm">Offset from Settlement</span>
+                                                <Switch checked={formData.offset_from_settlement} onCheckedChange={(val) => setFormData({...formData, offset_from_settlement: val})} />
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <Label>Description</Label>
+                                            <Textarea
+                                                value={formData.description}
+                                                onChange={(e) => setFormData({...formData, description: e.target.value})}
+                                                placeholder="Fee type description"
+                                                rows={3}
+                                            />
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <Label>Status</Label>
+                                            <Select value={formData.status} onValueChange={(val) => setFormData({...formData, status: val})}>
+                                                <SelectTrigger>
+                                                    <SelectValue />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="active">Active</SelectItem>
+                                                    <SelectItem value="inactive">Inactive</SelectItem>
+                                                    <SelectItem value="deprecated">Deprecated</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+
+                                        <div className="flex justify-end gap-2 pt-4">
+                                            <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
+                                            <Button onClick={handleSubmit}>
+                                                {editingFee ? 'Update' : 'Create'} Fee Type
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </DialogContent>
+                            </Dialog>
+                        </div>
+                    </div>
+
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Fee Types ({feeTypes.length})</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Code</TableHead>
+                                        <TableHead>Name</TableHead>
+                                        <TableHead>Category</TableHead>
+                                        <TableHead>Applies To</TableHead>
+                                        <TableHead>Frequency</TableHead>
+                                        <TableHead>Pricing</TableHead>
+                                        <TableHead>Status</TableHead>
+                                        <TableHead>Actions</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {feeTypes.map((fee) => (
+                                        <TableRow key={fee.id}>
+                                            <TableCell className="font-mono text-xs">{fee.fee_code}</TableCell>
+                                            <TableCell className="font-medium">{fee.fee_name}</TableCell>
+                                            <TableCell>{getCategoryBadge(fee.category)}</TableCell>
+                                            <TableCell className="capitalize">{fee.applies_to?.replace('_', ' ')}</TableCell>
+                                            <TableCell className="text-xs">{fee.billing_frequency?.replace('_', ' ')}</TableCell>
+                                            <TableCell>
+                                                <div className="flex gap-1">
+                                                    {fee.supports_fixed && <Badge variant="outline" className="text-xs">Fixed</Badge>}
+                                                    {fee.supports_percentage && <Badge variant="outline" className="text-xs">%</Badge>}
+                                                    {fee.supports_tiered && <Badge variant="outline" className="text-xs">Tiered</Badge>}
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Badge variant={fee.status === 'active' ? 'default' : 'outline'}>
+                                                    {fee.status}
+                                                </Badge>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Button size="sm" variant="ghost" onClick={() => handleEdit(fee)}>
+                                                    <Edit className="h-3 w-3" />
+                                                </Button>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </CardContent>
+                    </Card>
+                </main>
+            </div>
+        </div>
+    );
+}
