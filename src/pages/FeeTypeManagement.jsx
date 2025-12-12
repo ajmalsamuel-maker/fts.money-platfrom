@@ -33,8 +33,60 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { Plus, Edit, Tag, Settings } from 'lucide-react';
+import { Plus, Edit, Tag, Settings, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
+
+// ISO 8583 Message Type Indicators (MTI)
+const ISO8583_TRANSACTION_TYPES = [
+    { code: 'ISO8583_0100', name: 'Authorization Request', applies_to: 'authorization' },
+    { code: 'ISO8583_0200', name: 'Financial Transaction Request', applies_to: 'sale' },
+    { code: 'ISO8583_0400', name: 'Reversal Request', applies_to: 'void' },
+    { code: 'ISO8583_0420', name: 'Reversal Advice', applies_to: 'void' },
+    { code: 'ISO8583_0800', name: 'Network Management Request', applies_to: 'other' },
+];
+
+// ISO 20022 Payment Message Types
+const ISO20022_MESSAGE_TYPES = [
+    { code: 'PAIN_001', name: 'Customer Credit Transfer Initiation (pain.001)', applies_to: 'payout' },
+    { code: 'PAIN_002', name: 'Customer Payment Status Report (pain.002)', applies_to: 'settlement' },
+    { code: 'PACS_008', name: 'Financial Institution Credit Transfer (pacs.008)', applies_to: 'payout' },
+    { code: 'PACS_009', name: 'Financial Institution Credit Transfer (pacs.009)', applies_to: 'settlement' },
+    { code: 'CAMT_053', name: 'Bank to Customer Statement (camt.053)', applies_to: 'settlement' },
+    { code: 'CAMT_054', name: 'Bank to Customer Debit Credit Notification (camt.054)', applies_to: 'settlement' },
+];
+
+// EMV Transaction Types
+const EMV_TRANSACTION_TYPES = [
+    { code: 'EMV_PURCHASE', name: 'EMV Purchase', applies_to: 'sale' },
+    { code: 'EMV_CASH_ADVANCE', name: 'EMV Cash Advance', applies_to: 'sale' },
+    { code: 'EMV_REFUND', name: 'EMV Refund', applies_to: 'refund' },
+    { code: 'EMV_CASHBACK', name: 'EMV Cashback', applies_to: 'sale' },
+];
+
+// Card Scheme Fee Types
+const CARD_SCHEME_FEES = [
+    { code: 'SCHEME_ASSESSMENT', name: 'Card Scheme Assessment Fee', applies_to: 'sale', category: 'payment_method' },
+    { code: 'INTERCHANGE_FEE', name: 'Interchange Fee', applies_to: 'sale', category: 'payment_method' },
+    { code: 'CROSSBORDER_FEE', name: 'Cross-Border Transaction Fee', applies_to: 'sale', category: 'payment_method' },
+    { code: 'CURRENCY_CONV_FEE', name: 'Dynamic Currency Conversion Fee', applies_to: 'sale', category: 'payment_method' },
+];
+
+// Common Payment Gateway Operations
+const GATEWAY_OPERATIONS = [
+    { code: 'TOKENIZATION_FEE', name: 'Card Tokenization Fee', applies_to: 'tokenization', category: 'service' },
+    { code: '3DS_AUTH_FEE', name: '3D Secure Authentication Fee', applies_to: '3ds', category: 'service' },
+    { code: 'FRAUD_SCREEN_FEE', name: 'Fraud Screening Fee', applies_to: 'fraud_check', category: 'service' },
+    { code: 'PCI_COMPLIANCE_FEE', name: 'PCI Compliance Fee', applies_to: 'other', category: 'recurring', billing_frequency: 'monthly' },
+    { code: 'GATEWAY_FEE', name: 'Payment Gateway Transaction Fee', applies_to: 'sale', category: 'service' },
+];
+
+const STANDARD_FEE_TEMPLATES = [
+    ...ISO8583_TRANSACTION_TYPES.map(t => ({ ...t, category: 'transaction', standard: 'ISO 8583' })),
+    ...ISO20022_MESSAGE_TYPES.map(t => ({ ...t, category: 'transaction', standard: 'ISO 20022' })),
+    ...EMV_TRANSACTION_TYPES.map(t => ({ ...t, category: 'transaction', standard: 'EMV' })),
+    ...CARD_SCHEME_FEES.map(t => ({ ...t, standard: 'Card Schemes' })),
+    ...GATEWAY_OPERATIONS.map(t => ({ ...t, standard: 'Gateway' })),
+];
 
 export default function FeeTypeManagement() {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
