@@ -50,6 +50,7 @@ const menuSections = [
     {
         title: 'Finance',
         items: [
+            { label: 'Payout Management', icon: Wallet, path: 'MerchantPayouts' },
             { label: 'Settlements', icon: DollarSign, path: 'MerchantSettlementReports' },
             { label: 'Chargebacks', icon: AlertCircle, path: 'MerchantChargebackReport' },
             { label: 'Statements', icon: FileText, path: 'MerchantStatementReport' },
