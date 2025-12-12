@@ -244,7 +244,8 @@ export default function MerchantPricing() {
     };
 
     // Filter MIDs for selected merchant
-    const filteredMIDs = merchantMIDs.filter(m => m.merchant_id === formData.merchant_id);
+    const selectedMerchant = merchants.find(m => m.id === formData.merchant_id);
+    const filteredMIDs = merchantMIDs.filter(m => m.merchant_id === selectedMerchant?.id);
     
     // Filter buy rates for selected provider
     const filteredBuyRates = buyRates.filter(r => 
