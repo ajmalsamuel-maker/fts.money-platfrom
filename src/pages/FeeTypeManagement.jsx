@@ -213,16 +213,21 @@ export default function FeeTypeManagement() {
                                     <p className="text-slate-500">Define and manage billable fee types</p>
                                 </div>
                             </div>
-                            <Dialog open={dialogOpen} onOpenChange={(open) => {
-                                setDialogOpen(open);
-                                if (!open) resetForm();
-                            }}>
-                                <DialogTrigger asChild>
-                                    <Button className="gap-2">
-                                        <Plus className="h-4 w-4" />
-                                        Add Fee Type
-                                    </Button>
-                                </DialogTrigger>
+                            <div className="flex gap-2">
+                                <Button variant="outline" onClick={() => setShowTemplates(!showTemplates)} className="gap-2">
+                                    <Sparkles className="h-4 w-4" />
+                                    {showTemplates ? 'Hide' : 'Show'} Templates
+                                </Button>
+                                <Dialog open={dialogOpen} onOpenChange={(open) => {
+                                    setDialogOpen(open);
+                                    if (!open) resetForm();
+                                }}>
+                                    <DialogTrigger asChild>
+                                        <Button className="gap-2">
+                                            <Plus className="h-4 w-4" />
+                                            Add Fee Type
+                                        </Button>
+                                    </DialogTrigger>
                                 <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                                     <DialogHeader>
                                         <DialogTitle>{editingFee ? 'Edit' : 'Create'} Fee Type</DialogTitle>
