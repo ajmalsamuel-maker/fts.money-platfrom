@@ -11,15 +11,15 @@ Deno.serve(async (req) => {
     try {
         const { email } = await req.json();
 
-        // Check app_users
+        // Check app_users with password info
         const appUserResult = await pool.query(
-            'SELECT id, email, full_name, role, status FROM app_users WHERE email = $1',
+            'SELECT id, email, full_name, role, status, password_hash, length(password_hash) as pwd_length FROM app_users WHERE email = $1',
             [email]
         );
 
-        // Check merchant_users
+        // Check merchant_users with password info
         const merchantUserResult = await pool.query(
-            'SELECT id, email, full_name, merchant_code, role, status FROM merchant_users WHERE email = $1',
+            'SELECT id, email, full_name, merchant_code, role, status, temp_password, password_hash FROM merchant_users WHERE email = $1',
             [email]
         );
 
