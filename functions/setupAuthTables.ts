@@ -127,10 +127,10 @@ Deno.serve(async (req) => {
             const appUsers = await base44.asServiceRole.entities.AppUser.list();
             for (const user of appUsers) {
                 await pool.query(`
-                    INSERT INTO app_users (user_id, email, full_name, role, department, status, password_hash, 
+                    INSERT INTO app_users (email, full_name, role, department, status, password_hash, 
                                           must_change_password, two_factor_enabled, two_factor_method, 
                                           last_login, last_login_ip, created_date)
-                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
                     ON CONFLICT (email) DO UPDATE SET
                         full_name = EXCLUDED.full_name,
                         role = EXCLUDED.role,
@@ -138,7 +138,6 @@ Deno.serve(async (req) => {
                         status = EXCLUDED.status,
                         updated_date = NOW()
                 `, [
-                    user.user_id || user.id,
                     user.email,
                     user.full_name,
                     user.role || 'viewer',
@@ -159,18 +158,17 @@ Deno.serve(async (req) => {
             const merchantUsers = await base44.asServiceRole.entities.MerchantUser.list();
             for (const user of merchantUsers) {
                 await pool.query(`
-                    INSERT INTO merchant_users (user_id, merchant_id, merchant_code, merchant_name, email, 
+                    INSERT INTO merchant_users (merchant_id, merchant_code, merchant_name, email, 
                                                full_name, role, status, permissions, allowed_terminals, phone,
                                                last_login, last_login_ip, password_hash, temp_password,
                                                must_change_password, two_factor_enabled, created_date)
-                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)
                     ON CONFLICT (email, merchant_code) DO UPDATE SET
                         full_name = EXCLUDED.full_name,
                         role = EXCLUDED.role,
                         status = EXCLUDED.status,
                         updated_date = NOW()
                 `, [
-                    user.user_id || user.id,
                     user.merchant_id,
                     user.merchant_code,
                     user.merchant_name,
