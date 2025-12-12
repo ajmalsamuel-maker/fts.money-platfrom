@@ -73,7 +73,11 @@ export default function MerchantPricing() {
 
     const { data: pricingList = [], isLoading } = useQuery({
         queryKey: ['merchant-pricing'],
-        queryFn: () => base44.entities.MerchantPricing.list('-created_date'),
+        queryFn: async () => {
+            const data = await base44.entities.MerchantPricing.list('-created_date');
+            console.log('Loaded pricing data:', data);
+            return data;
+        },
     });
 
     const { data: merchants = [] } = useQuery({
@@ -413,26 +417,26 @@ export default function MerchantPricing() {
                                                             {pricing.mid && <p className="text-xs text-slate-500">MID: {pricing.mid}</p>}
                                                         </div>
                                                     </TableCell>
-                                                    <TableCell className="text-slate-600">{pricing.provider_name}</TableCell>
+                                                    <TableCell className="text-slate-600">{pricing.provider_name || '—'}</TableCell>
                                                     <TableCell>
-                                                        <Badge variant="outline">{transactionTypeLabels[pricing.transaction_type] || pricing.transaction_type}</Badge>
+                                                        <Badge variant="outline">{transactionTypeLabels[pricing.transaction_type] || pricing.transaction_type || '—'}</Badge>
                                                     </TableCell>
                                                     <TableCell className="text-center">
                                                         <div className="text-slate-600">
-                                                            <span className="font-mono">{pricing.buy_percentage_rate?.toFixed(2)}%</span>
-                                                            {pricing.buy_fixed_fee > 0 && <span className="text-xs ml-1">+ {pricing.currency} {pricing.buy_fixed_fee?.toFixed(2)}</span>}
+                                                            <span className="font-mono">{(pricing.buy_percentage_rate ?? 0).toFixed(2)}%</span>
+                                                            {(pricing.buy_fixed_fee ?? 0) > 0 && <span className="text-xs ml-1">+ {pricing.currency || 'USD'} {(pricing.buy_fixed_fee ?? 0).toFixed(2)}</span>}
                                                         </div>
                                                     </TableCell>
                                                     <TableCell className="text-center">
                                                         <div className="text-amber-600 font-medium">
-                                                            <span>+{pricing.markup_percentage?.toFixed(2)}%</span>
-                                                            {pricing.markup_fixed_fee > 0 && <span className="text-xs ml-1">+ {pricing.currency} {pricing.markup_fixed_fee?.toFixed(2)}</span>}
+                                                            <span>+{(pricing.markup_percentage ?? 0).toFixed(2)}%</span>
+                                                            {(pricing.markup_fixed_fee ?? 0) > 0 && <span className="text-xs ml-1">+ {pricing.currency || 'USD'} {(pricing.markup_fixed_fee ?? 0).toFixed(2)}</span>}
                                                         </div>
                                                     </TableCell>
                                                     <TableCell className="text-center">
                                                         <div className="text-blue-600 font-bold">
-                                                            <span>{pricing.sell_percentage_rate?.toFixed(2)}%</span>
-                                                            {pricing.sell_fixed_fee > 0 && <span className="text-xs ml-1">+ {pricing.currency} {pricing.sell_fixed_fee?.toFixed(2)}</span>}
+                                                            <span>{(pricing.sell_percentage_rate ?? 0).toFixed(2)}%</span>
+                                                            {(pricing.sell_fixed_fee ?? 0) > 0 && <span className="text-xs ml-1">+ {pricing.currency || 'USD'} {(pricing.sell_fixed_fee ?? 0).toFixed(2)}</span>}
                                                         </div>
                                                     </TableCell>
                                                     <TableCell className="text-center">
