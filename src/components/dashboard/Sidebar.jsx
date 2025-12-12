@@ -233,13 +233,8 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
         .filter(group => group.items.length > 0);
 
     const handleLogout = () => {
-        // Check if using staff session
-        const staffSession = getStaffSession();
-        if (staffSession) {
-            staffLogout();
-            return;
-        }
-        base44.auth.logout();
+        // Always use staff logout (no base44 auth in this app)
+        staffLogout();
     };
 
     const sidebarBg = themeSettings?.sidebar_bg || '#0f172a';

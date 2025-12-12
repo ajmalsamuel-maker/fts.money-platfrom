@@ -85,12 +85,8 @@ export default function TopHeader({ onToggleSidebar, collapsed }) {
     const userInitials = user?.full_name?.split(' ').map(n => n[0]).join('').toUpperCase() || user?.email?.charAt(0)?.toUpperCase() || 'U';
 
     const handleLogout = () => {
-        const staffSession = getStaffSession();
-        if (staffSession) {
-            staffLogout();
-            return;
-        }
-        base44.auth.logout();
+        // Always use staff logout (no base44 auth in this app)
+        staffLogout();
     };
 
     return (
