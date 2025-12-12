@@ -86,6 +86,8 @@ export default function UserManagement() {
     const [showPasswordDialog, setShowPasswordDialog] = useState(false);
     const [passwordData, setPasswordData] = useState({ password: '', confirmPassword: '' });
     const [showPermissionsDialog, setShowPermissionsDialog] = useState(false);
+    const [show2FADialog, setShow2FADialog] = useState(false);
+    const [tfaData, setTfaData] = useState({ enabled: false, method: 'email' });
     const [confirmRoleChange, setConfirmRoleChange] = useState(null);
     const [showAddUserDialog, setShowAddUserDialog] = useState(false);
     const [newUser, setNewUser] = useState({ email: '', full_name: '', app_role: 'viewer', department: '', password: '', confirmPassword: '' });
@@ -383,6 +385,7 @@ export default function UserManagement() {
                                             <TableHead className="font-semibold">User</TableHead>
                                             <TableHead className="font-semibold">Role</TableHead>
                                             <TableHead className="font-semibold">Department</TableHead>
+                                            <TableHead className="font-semibold">2FA</TableHead>
                                             <TableHead className="font-semibold">Joined</TableHead>
                                             <TableHead className="font-semibold">Last Active</TableHead>
                                             <TableHead className="font-semibold">Login IP</TableHead>
@@ -392,7 +395,7 @@ export default function UserManagement() {
                                     <TableBody>
                                         {filteredUsers.length === 0 ? (
                                             <TableRow>
-                                                <TableCell colSpan={7} className="text-center py-12 text-slate-500">
+                                                <TableCell colSpan={8} className="text-center py-12 text-slate-500">
                                                     {isLoading ? 'Loading users...' : 'No users found'}
                                                 </TableCell>
                                             </TableRow>
@@ -434,6 +437,18 @@ export default function UserManagement() {
                                                                 {user.department || 'Not assigned'}
                                                             </div>
                                                         </TableCell>
+                                                        <TableCell>
+                                                            {user.two_factor_enabled ? (
+                                                                <Badge className="bg-green-100 text-green-700 text-xs gap-1">
+                                                                    <Shield className="h-3 w-3" />
+                                                                    {user.two_factor_method || 'email'}
+                                                                </Badge>
+                                                            ) : (
+                                                                <Badge variant="outline" className="text-slate-400 text-xs">
+                                                                    Disabled
+                                                                </Badge>
+                                                            )}
+                                                        </TableCell>
                                                         <TableCell className="text-slate-600">
                                                             {user.created_date ? format(new Date(user.created_date), 'MMM dd, yyyy') : '-'}
                                                         </TableCell>
@@ -458,6 +473,17 @@ export default function UserManagement() {
                                                                         <DropdownMenuItem onClick={() => { setSelectedUser(user); setShowRoleDialog(true); }}>
                                                                             <Shield className="h-4 w-4 mr-2" />
                                                                             Change Role
+                                                                        </DropdownMenuItem>
+                                                                        <DropdownMenuItem onClick={() => { 
+                                                                            setSelectedUser(user); 
+                                                                            setTfaData({ 
+                                                                                enabled: user.two_factor_enabled || false, 
+                                                                                method: user.two_factor_method || 'email' 
+                                                                            }); 
+                                                                            setShow2FADialog(true); 
+                                                                        }}>
+                                                                            <Shield className="h-4 w-4 mr-2" />
+                                                                            Manage 2FA
                                                                         </DropdownMenuItem>
                                                                         <DropdownMenuItem onClick={() => { setSelectedUser(user); setPasswordData({ password: '', confirmPassword: '' }); setShowPasswordDialog(true); }}>
                                                                             <KeyRound className="h-4 w-4 mr-2" />
@@ -749,6 +775,91 @@ export default function UserManagement() {
                         >
                             <KeyRound className="h-4 w-4 mr-2" />
                             Update Password
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            {/* 2FA Management Dialog */}
+            <Dialog open={show2FADialog} onOpenChange={setShow2FADialog}>
+                <DialogContent className="max-w-md">
+                    <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2">
+                            <Shield className="h-5 w-5 text-blue-600" />
+                            Manage Two-Factor Authentication
+                        </DialogTitle>
+                        <DialogDescription>
+                            Configure 2FA settings for {selectedUser?.full_name || selectedUser?.email}
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4 py-4">
+                        <div className="flex items-center justify-between p-4 border rounded-lg bg-amber-50 border-amber-200">
+                            <div className="flex-1">
+                                <p className="font-medium text-sm text-amber-900">Enable 2FA</p>
+                                <p className="text-xs text-amber-700">Require two-factor authentication for this user</p>
+                            </div>
+                            <Checkbox
+                                checked={tfaData.enabled}
+                                onCheckedChange={(checked) => setTfaData({ ...tfaData, enabled: checked })}
+                            />
+                        </div>
+
+                        {tfaData.enabled && (
+                            <div className="space-y-2">
+                                <Label>2FA Method</Label>
+                                <Select 
+                                    value={tfaData.method} 
+                                    onValueChange={(val) => setTfaData({ ...tfaData, method: val })}
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="email">
+                                            <div className="flex items-center gap-2">
+                                                <Mail className="h-4 w-4" />
+                                                Email (OTP)
+                                            </div>
+                                        </SelectItem>
+                                        <SelectItem value="sms">
+                                            <div className="flex items-center gap-2">
+                                                <Phone className="h-4 w-4" />
+                                                SMS (OTP)
+                                            </div>
+                                        </SelectItem>
+                                        <SelectItem value="authenticator">
+                                            <div className="flex items-center gap-2">
+                                                <Shield className="h-4 w-4" />
+                                                Authenticator App
+                                            </div>
+                                        </SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        )}
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setShow2FADialog(false)}>
+                            Cancel
+                        </Button>
+                        <Button 
+                            onClick={async () => {
+                                try {
+                                    await base44.entities.AppUser.update(selectedUser.id, {
+                                        two_factor_enabled: tfaData.enabled,
+                                        two_factor_method: tfaData.method
+                                    });
+                                    await AuditLogger.logUserUpdated(selectedUser, currentUser, 'two_factor_settings');
+                                    queryClient.invalidateQueries({ queryKey: ['all-users'] });
+                                    toast.success('2FA settings updated successfully');
+                                    setShow2FADialog(false);
+                                } catch (error) {
+                                    toast.error('Failed to update 2FA settings: ' + error.message);
+                                }
+                            }}
+                        >
+                            <Shield className="h-4 w-4 mr-2" />
+                            Save Settings
                         </Button>
                     </DialogFooter>
                 </DialogContent>
