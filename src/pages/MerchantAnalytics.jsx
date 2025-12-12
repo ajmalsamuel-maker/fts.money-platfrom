@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { format, subDays, startOfMonth, endOfMonth } from 'date-fns';
-import Sidebar from '@/components/dashboard/Sidebar';
-import TopHeader from '@/components/dashboard/TopHeader';
+import MerchantSidebar from '@/components/merchant/MerchantSidebar';
+import MerchantTopBar from '@/components/merchant/MerchantTopBar';
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -75,7 +75,6 @@ const categoryColors = {
 };
 
 export default function MerchantAnalytics() {
-    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedMerchant, setSelectedMerchant] = useState(null);
     const [dateRange, setDateRange] = useState({
@@ -83,11 +82,38 @@ export default function MerchantAnalytics() {
         to: new Date()
     });
     const [categoryFilter, setCategoryFilter] = useState('all');
+    const [selectedMID, setSelectedMID] = useState('');
+    const [user, setUser] = useState(null);
+
+    React.useEffect(() => {
+        const loadUser = async () => {
+            try {
+                const currentUser = await base44.auth.me();
+                setUser(currentUser);
+            } catch (err) {}
+        };
+        loadUser();
+    }, []);
 
     const { data: merchants = [], isLoading: loadingMerchants } = useQuery({
         queryKey: ['merchants'],
         queryFn: () => base44.entities.Merchant.list('-total_volume'),
     });
+
+    const { data: mids = [] } = useQuery({
+        queryKey: ['merchant-mids', user?.merchant_id],
+        queryFn: async () => {
+            if (!user?.merchant_id) return [];
+            return await base44.entities.MerchantMID.filter({ merchant_id: user.merchant_id });
+        },
+        enabled: !!user?.merchant_id
+    });
+
+    React.useEffect(() => {
+        if (mids.length > 0 && !selectedMID) {
+            setSelectedMID(mids[0].mid);
+        }
+    }, [mids, selectedMID]);
 
     const { data: transactions = [] } = useQuery({
         queryKey: ['transactions'],
@@ -244,11 +270,17 @@ export default function MerchantAnalytics() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50">
-            <Sidebar collapsed={sidebarCollapsed} currentPage="MerchantAnalytics" />
+        <div className="min-h-screen bg-slate-50 flex">
+            <MerchantSidebar 
+                selectedMID={selectedMID}
+                mids={mids}
+                onMIDChange={setSelectedMID}
+                currentPage="MerchantAnalytics"
+                user={user}
+            />
             
-            <div className={cn("transition-all duration-300", sidebarCollapsed ? "ml-20" : "ml-64")}>
-                <TopHeader onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} collapsed={sidebarCollapsed} />
+            <div className="flex-1 flex flex-col">
+                <MerchantTopBar user={user} />
                 
                 <main className="p-6">
                     {/* Header */}
