@@ -409,7 +409,9 @@ export default function MerchantPricing() {
                                                 </TableCell>
                                             </TableRow>
                                         ) : (
-                                            filteredPricing.map((pricing) => (
+                                            filteredPricing.map((pricing) => {
+                                                console.log('Rendering pricing row:', pricing);
+                                                return (
                                                 <TableRow key={pricing.id}>
                                                     <TableCell>
                                                         <div>
@@ -460,7 +462,7 @@ export default function MerchantPricing() {
                                                         </DropdownMenu>
                                                     </TableCell>
                                                 </TableRow>
-                                            ))
+                                            )})
                                         )}
                                     </TableBody>
                                 </Table>
