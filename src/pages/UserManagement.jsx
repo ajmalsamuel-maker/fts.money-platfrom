@@ -93,6 +93,8 @@ export default function UserManagement() {
     const [newUser, setNewUser] = useState({ email: '', full_name: '', app_role: 'viewer', department: '', password: '', confirmPassword: '' });
     const [editingPermissions, setEditingPermissions] = useState(false);
     const [permissionMatrix, setPermissionMatrix] = useState({...PERMISSIONS});
+    const [showStatusDialog, setShowStatusDialog] = useState(false);
+    const [selectedStatus, setSelectedStatus] = useState('active');
 
     const queryClient = useQueryClient();
     const { can, loading: permLoading, userRole, user: currentUser } = usePermissions();
@@ -490,6 +492,10 @@ export default function UserManagement() {
                                                                         </Button>
                                                                     </DropdownMenuTrigger>
                                                                     <DropdownMenuContent align="end">
+                                                                        <DropdownMenuItem onClick={() => { setSelectedUser(user); setSelectedStatus(user.status || 'active'); setShowStatusDialog(true); }}>
+                                                                            <Check className="h-4 w-4 mr-2" />
+                                                                            Change Status
+                                                                        </DropdownMenuItem>
                                                                         <DropdownMenuItem onClick={() => { setSelectedUser(user); setShowRoleDialog(true); }}>
                                                                             <Shield className="h-4 w-4 mr-2" />
                                                                             Change Role
@@ -880,6 +886,97 @@ export default function UserManagement() {
                         >
                             <Shield className="h-4 w-4 mr-2" />
                             Save Settings
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            {/* Change Status Dialog */}
+            <Dialog open={showStatusDialog} onOpenChange={setShowStatusDialog}>
+                <DialogContent className="max-w-md">
+                    <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2">
+                            <Check className="h-5 w-5 text-blue-600" />
+                            Change User Status
+                        </DialogTitle>
+                        <DialogDescription>
+                            Update the status for {selectedUser?.full_name || selectedUser?.email}
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="py-4 space-y-3">
+                        <button
+                            onClick={() => setSelectedStatus('active')}
+                            className={cn(
+                                "w-full p-4 rounded-lg border-2 text-left transition-all",
+                                selectedStatus === 'active'
+                                    ? "border-green-500 bg-green-50"
+                                    : "border-slate-200 hover:border-slate-300"
+                            )}
+                        >
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <Badge className="bg-green-100 text-green-700">Active</Badge>
+                                    <span className="text-sm text-slate-600">User can access the system</span>
+                                </div>
+                                {selectedStatus === 'active' && <Check className="h-5 w-5 text-green-600" />}
+                            </div>
+                        </button>
+                        <button
+                            onClick={() => setSelectedStatus('inactive')}
+                            className={cn(
+                                "w-full p-4 rounded-lg border-2 text-left transition-all",
+                                selectedStatus === 'inactive'
+                                    ? "border-slate-500 bg-slate-50"
+                                    : "border-slate-200 hover:border-slate-300"
+                            )}
+                        >
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <Badge className="bg-slate-100 text-slate-700">Inactive</Badge>
+                                    <span className="text-sm text-slate-600">User cannot access the system</span>
+                                </div>
+                                {selectedStatus === 'inactive' && <Check className="h-5 w-5 text-slate-600" />}
+                            </div>
+                        </button>
+                        <button
+                            onClick={() => setSelectedStatus('pending')}
+                            className={cn(
+                                "w-full p-4 rounded-lg border-2 text-left transition-all",
+                                selectedStatus === 'pending'
+                                    ? "border-amber-500 bg-amber-50"
+                                    : "border-slate-200 hover:border-slate-300"
+                            )}
+                        >
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <Badge className="bg-amber-100 text-amber-700">Pending</Badge>
+                                    <span className="text-sm text-slate-600">Awaiting approval or setup</span>
+                                </div>
+                                {selectedStatus === 'pending' && <Check className="h-5 w-5 text-amber-600" />}
+                            </div>
+                        </button>
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setShowStatusDialog(false)}>
+                            Cancel
+                        </Button>
+                        <Button 
+                            onClick={async () => {
+                                try {
+                                    await base44.entities.AppUser.update(selectedUser.id, {
+                                        status: selectedStatus
+                                    });
+                                    await AuditLogger.logUserUpdated(selectedUser, currentUser, 'status_change');
+                                    queryClient.invalidateQueries({ queryKey: ['all-users'] });
+                                    toast.success('User status updated successfully');
+                                    setShowStatusDialog(false);
+                                } catch (error) {
+                                    toast.error('Failed to update status: ' + error.message);
+                                }
+                            }}
+                        >
+                            <Check className="h-4 w-4 mr-2" />
+                            Update Status
                         </Button>
                     </DialogFooter>
                 </DialogContent>
