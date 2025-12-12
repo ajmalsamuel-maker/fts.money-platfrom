@@ -113,6 +113,10 @@ import MarketAnalysis from './pages/MarketAnalysis';
 import NetworkTokenization from './pages/NetworkTokenization';
 import AccountUpdater from './pages/AccountUpdater';
 import SmartRetry from './pages/SmartRetry';
+import InstantPayments from './pages/InstantPayments';
+import SubMerchants from './pages/SubMerchants';
+import PCICompliance from './pages/PCICompliance';
+import CheckoutComponents from './pages/CheckoutComponents';
 import __Layout from './Layout.jsx';
 
 
@@ -232,6 +236,10 @@ export const PAGES = {
     "NetworkTokenization": NetworkTokenization,
     "AccountUpdater": AccountUpdater,
     "SmartRetry": SmartRetry,
+    "InstantPayments": InstantPayments,
+    "SubMerchants": SubMerchants,
+    "PCICompliance": PCICompliance,
+    "CheckoutComponents": CheckoutComponents,
 }
 
 export const pagesConfig = {
