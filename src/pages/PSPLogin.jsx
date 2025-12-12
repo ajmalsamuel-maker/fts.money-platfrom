@@ -44,8 +44,6 @@ export default function PSPLogin() {
     const pspCodeValue = pspSettings?.psp_code || 'PSP001';
     const logoUrl = themeSettings?.logo_url;
     const allowPSPCode = pspSettings?.allow_psp_code_login ?? true;
-    const require2FA = pspSettings?.require_2fa || false;
-    const twoFAMethod = pspSettings?.['2fa_method'] || 'email';
 
     useEffect(() => {
         const existingSession = getStaffSession();
@@ -88,13 +86,14 @@ export default function PSPLogin() {
                 throw new Error('Invalid credentials');
             }
 
-            // Check if 2FA is required
-            if (require2FA || user.two_factor_enabled) {
+            // Check if 2FA is required for this user
+            if (user.two_factor_enabled) {
                 setTempUser(user);
                 setShow2FA(true);
                 setIsLoading(false);
                 // In production, send OTP via email/SMS
-                toast.success(`2FA code sent via ${twoFAMethod}`);
+                const method = user.two_factor_method || 'email';
+                toast.success(`2FA code sent via ${method}`);
                 return;
             }
 

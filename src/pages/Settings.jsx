@@ -101,8 +101,6 @@ export default function Settings() {
         support_email: '',
         support_phone: '',
         allow_psp_code_login: true,
-        require_2fa: false,
-        '2fa_method': 'email',
         password_reset_enabled: true
     });
 
@@ -136,8 +134,6 @@ export default function Settings() {
                 support_email: savedSettings.support_email || '',
                 support_phone: savedSettings.support_phone || '',
                 allow_psp_code_login: savedSettings.allow_psp_code_login ?? true,
-                require_2fa: savedSettings.require_2fa || false,
-                '2fa_method': savedSettings['2fa_method'] || 'email',
                 password_reset_enabled: savedSettings.password_reset_enabled ?? true
             });
         }
@@ -487,40 +483,6 @@ export default function Settings() {
                                                 />
                                             </div>
                                         </div>
-                                    </div>
-
-                                    {/* Two-Factor Authentication */}
-                                    <div className="space-y-4 border-t pt-6">
-                                        <h3 className="font-medium text-slate-900">Two-Factor Authentication (2FA)</h3>
-                                        <div className="flex items-center justify-between p-4 border rounded-lg bg-amber-50 border-amber-200">
-                                            <div className="flex-1">
-                                                <p className="font-medium text-sm text-amber-900">Require 2FA for All Users</p>
-                                                <p className="text-xs text-amber-700">Enhanced security for all login attempts</p>
-                                            </div>
-                                            <Checkbox
-                                                checked={settings.require_2fa}
-                                                onCheckedChange={(checked) => setSettings({ ...settings, require_2fa: checked })}
-                                            />
-                                        </div>
-                                        
-                                        {settings.require_2fa && (
-                                            <div className="space-y-2">
-                                                <Label>2FA Delivery Method</Label>
-                                                <Select 
-                                                    value={settings['2fa_method']} 
-                                                    onValueChange={(val) => setSettings({ ...settings, '2fa_method': val })}
-                                                >
-                                                    <SelectTrigger>
-                                                        <SelectValue />
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        <SelectItem value="email">Email (OTP)</SelectItem>
-                                                        <SelectItem value="sms">SMS (OTP)</SelectItem>
-                                                        <SelectItem value="authenticator">Authenticator App</SelectItem>
-                                                    </SelectContent>
-                                                </Select>
-                                            </div>
-                                        )}
                                     </div>
 
                                     {/* Active Users */}
