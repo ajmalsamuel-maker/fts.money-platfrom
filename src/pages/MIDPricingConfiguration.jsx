@@ -398,40 +398,41 @@ export default function MIDPricingConfiguration() {
                                         <CardTitle>Transaction Fee Configuration</CardTitle>
                                     </CardHeader>
                                     <CardContent>
-                                        <Table>
-                                            <TableHeader>
-                                                <TableRow>
-                                                    <TableHead>Transaction Type</TableHead>
-                                                    <TableHead>Enabled</TableHead>
-                                                    <TableHead>Offset from Settlement</TableHead>
-                                                    <TableHead>Fixed Amount</TableHead>
-                                                    <TableHead>Percentage</TableHead>
-                                                    <TableHead>CUP Fixed</TableHead>
-                                                    <TableHead>CUP %</TableHead>
-                                                    <TableHead>Bank Transfer Fixed</TableHead>
-                                                    <TableHead>Bank Transfer %</TableHead>
-                                                </TableRow>
-                                            </TableHeader>
-                                            <TableBody>
-                                                {transactionFees.map(fee => {
-                                                    const config = pricingData.fee_configuration?.find(fc => fc.fee_code === fee.fee_code);
-                                                    if (!config) return null;
-                                                    return (
-                                                        <TableRow key={fee.id}>
+                                        {pricingData.fee_configuration.length === 0 ? (
+                                            <div className="text-center py-8 text-slate-500">
+                                                No fee configuration available. Toggle inheritance or add fees manually.
+                                            </div>
+                                        ) : (
+                                            <Table>
+                                                <TableHeader>
+                                                    <TableRow>
+                                                        <TableHead>Transaction Type</TableHead>
+                                                        <TableHead>Enabled</TableHead>
+                                                        <TableHead>Offset from Settlement</TableHead>
+                                                        <TableHead>Fixed Amount</TableHead>
+                                                        <TableHead>Percentage</TableHead>
+                                                        <TableHead>CUP Fixed</TableHead>
+                                                        <TableHead>CUP %</TableHead>
+                                                        <TableHead>Bank Transfer Fixed</TableHead>
+                                                        <TableHead>Bank Transfer %</TableHead>
+                                                    </TableRow>
+                                                </TableHeader>
+                                                <TableBody>
+                                                    {pricingData.fee_configuration.map((config, idx) => (
+                                                        <TableRow key={config.fee_code || idx}>
                                                             <TableCell className="font-medium">
-                                                                {fee.fee_name}
-                                                                <div className="text-xs text-slate-500">{fee.fee_code}</div>
+                                                                {config.fee_code}
                                                             </TableCell>
                                                             <TableCell>
                                                                 <Switch 
                                                                     checked={config.enabled}
-                                                                    onCheckedChange={(val) => updateFeeConfig(fee.fee_code, 'enabled', val)}
+                                                                    onCheckedChange={(val) => updateFeeConfig(config.fee_code, 'enabled', val)}
                                                                 />
                                                             </TableCell>
                                                             <TableCell>
                                                                 <Switch 
                                                                     checked={config.offset_from_settlement}
-                                                                    onCheckedChange={(val) => updateFeeConfig(fee.fee_code, 'offset_from_settlement', val)}
+                                                                    onCheckedChange={(val) => updateFeeConfig(config.fee_code, 'offset_from_settlement', val)}
                                                                 />
                                                             </TableCell>
                                                             <TableCell>
@@ -439,7 +440,7 @@ export default function MIDPricingConfiguration() {
                                                                     type="number"
                                                                     step="0.01"
                                                                     value={config.fixed_amount}
-                                                                    onChange={(e) => updateFeeConfig(fee.fee_code, 'fixed_amount', parseFloat(e.target.value) || 0)}
+                                                                    onChange={(e) => updateFeeConfig(config.fee_code, 'fixed_amount', parseFloat(e.target.value) || 0)}
                                                                     className="w-24"
                                                                 />
                                                             </TableCell>
@@ -448,7 +449,7 @@ export default function MIDPricingConfiguration() {
                                                                     type="number"
                                                                     step="0.01"
                                                                     value={config.percentage}
-                                                                    onChange={(e) => updateFeeConfig(fee.fee_code, 'percentage', parseFloat(e.target.value) || 0)}
+                                                                    onChange={(e) => updateFeeConfig(config.fee_code, 'percentage', parseFloat(e.target.value) || 0)}
                                                                     className="w-24"
                                                                 />
                                                             </TableCell>
@@ -456,8 +457,8 @@ export default function MIDPricingConfiguration() {
                                                                 <Input
                                                                     type="number"
                                                                     step="0.01"
-                                                                    value={config.cup_fixed}
-                                                                    onChange={(e) => updateFeeConfig(fee.fee_code, 'cup_fixed', parseFloat(e.target.value) || 0)}
+                                                                    value={config.cup_fixed || 0}
+                                                                    onChange={(e) => updateFeeConfig(config.fee_code, 'cup_fixed', parseFloat(e.target.value) || 0)}
                                                                     className="w-24"
                                                                 />
                                                             </TableCell>
@@ -465,8 +466,8 @@ export default function MIDPricingConfiguration() {
                                                                 <Input
                                                                     type="number"
                                                                     step="0.01"
-                                                                    value={config.cup_percentage}
-                                                                    onChange={(e) => updateFeeConfig(fee.fee_code, 'cup_percentage', parseFloat(e.target.value) || 0)}
+                                                                    value={config.cup_percentage || 0}
+                                                                    onChange={(e) => updateFeeConfig(config.fee_code, 'cup_percentage', parseFloat(e.target.value) || 0)}
                                                                     className="w-24"
                                                                 />
                                                             </TableCell>
@@ -474,8 +475,8 @@ export default function MIDPricingConfiguration() {
                                                                 <Input
                                                                     type="number"
                                                                     step="0.01"
-                                                                    value={config.bank_transfer_fixed}
-                                                                    onChange={(e) => updateFeeConfig(fee.fee_code, 'bank_transfer_fixed', parseFloat(e.target.value) || 0)}
+                                                                    value={config.bank_transfer_fixed || 0}
+                                                                    onChange={(e) => updateFeeConfig(config.fee_code, 'bank_transfer_fixed', parseFloat(e.target.value) || 0)}
                                                                     className="w-24"
                                                                 />
                                                             </TableCell>
@@ -483,16 +484,16 @@ export default function MIDPricingConfiguration() {
                                                                 <Input
                                                                     type="number"
                                                                     step="0.01"
-                                                                    value={config.bank_transfer_percentage}
-                                                                    onChange={(e) => updateFeeConfig(fee.fee_code, 'bank_transfer_percentage', parseFloat(e.target.value) || 0)}
+                                                                    value={config.bank_transfer_percentage || 0}
+                                                                    onChange={(e) => updateFeeConfig(config.fee_code, 'bank_transfer_percentage', parseFloat(e.target.value) || 0)}
                                                                     className="w-24"
                                                                 />
                                                             </TableCell>
                                                         </TableRow>
-                                                    );
-                                                })}
-                                            </TableBody>
-                                        </Table>
+                                                    ))}
+                                                </TableBody>
+                                            </Table>
+                                        )}
                                     </CardContent>
                                 </Card>
                             </TabsContent>
