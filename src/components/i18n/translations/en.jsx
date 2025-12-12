@@ -11,5 +11,6 @@ json
     "accountUpdater": "Account Updater",
     "smartRetry": "Smart Retry",
     "pciCompliance": "PCI Compliance",
-    "checkoutComponents": "Checkout Components"
+    "checkoutComponents": "Checkout Components",
+    "pspProvisioning": "PSP Provisioning"
 }
