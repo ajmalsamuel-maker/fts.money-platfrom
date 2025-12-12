@@ -230,7 +230,9 @@ export default function MerchantPricing() {
         });
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = (e) => {
+        e?.preventDefault?.();
+        console.log('Submit clicked', formData);
         const today = new Date().toISOString().split('T')[0];
         const data = {
             ...formData,
@@ -244,6 +246,7 @@ export default function MerchantPricing() {
             minimum_fee: parseFloat(formData.minimum_fee) || 0,
             effective_from: formData.effective_from || today,
         };
+        console.log('Data to save:', data);
         if (editingPricing) {
             updateMutation.mutate({ id: editingPricing.id, data });
         } else {
@@ -650,6 +653,7 @@ export default function MerchantPricing() {
                             <div className="flex gap-2">
                                 <Button variant="outline" onClick={resetForm}>Cancel</Button>
                                 <Button 
+                                    type="button"
                                     onClick={handleSubmit} 
                                     disabled={!formData.merchant_id || !formData.provider_id || !formData.buy_rate_id}
                                     className="bg-blue-600 hover:bg-blue-700"
