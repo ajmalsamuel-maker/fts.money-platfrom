@@ -127,15 +127,16 @@ export default function MIDPricingConfiguration() {
 
     // Populate from merchant pricing when inheritance is enabled
     React.useEffect(() => {
-        if (pricingData.inherits_merchant_pricing && merchantPricing && merchantPricing.length > 0 && selectedMID) {
+        if (pricingData.inherits_merchant_pricing && merchantPricing && merchantPricing.length > 0 && selectedMID && pricingData.fee_configuration.length > 0) {
             const mp = merchantPricing[0];
-            setPricingData(prev => ({
-                ...prev,
-                merchant_pricing_id: mp.id,
-                currency: mp.currency || 'USD',
-                fee_configuration: prev.fee_configuration.map(fc => {
+            console.log('Populating from merchant pricing:', mp);
+            console.log('Current fee_configuration:', pricingData.fee_configuration);
+            
+            setPricingData(prev => {
+                const newConfig = prev.fee_configuration.map(fc => {
                     // For transaction fees, use the sell rate from merchant pricing
                     if (fc.fee_code === 'SALE_TXN') {
+                        console.log('Setting SALE_TXN fee:', mp.sell_fixed_fee, mp.sell_percentage_rate);
                         return {
                             ...fc,
                             enabled: true,
@@ -145,10 +146,29 @@ export default function MIDPricingConfiguration() {
                         };
                     }
                     return fc;
-                })
+                });
+                
+                return {
+                    ...prev,
+                    merchant_pricing_id: mp.id,
+                    currency: mp.currency || 'USD',
+                    fee_configuration: newConfig
+                };
+            });
+        } else if (!pricingData.inherits_merchant_pricing && selectedMID && pricingData.fee_configuration.length > 0) {
+            // Reset to defaults when inheritance is disabled
+            setPricingData(prev => ({
+                ...prev,
+                merchant_pricing_id: '',
+                fee_configuration: prev.fee_configuration.map(fc => ({
+                    ...fc,
+                    enabled: false,
+                    fixed_amount: 0,
+                    percentage: 0
+                }))
             }));
         }
-    }, [pricingData.inherits_merchant_pricing, merchantPricing, selectedMID]);
+    }, [pricingData.inherits_merchant_pricing, merchantPricing, selectedMID, pricingData.fee_configuration.length]);
 
     const saveMutation = useMutation({
         mutationFn: (data) => {
