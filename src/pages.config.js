@@ -95,6 +95,7 @@ import PSPLogin from './pages/PSPLogin';
 import PSPPasswordReset from './pages/PSPPasswordReset';
 import FeeTypeManagement from './pages/FeeTypeManagement';
 import MIDPricingConfiguration from './pages/MIDPricingConfiguration';
+import Invoices from './pages/Invoices';
 import __Layout from './Layout.jsx';
 
 
@@ -196,6 +197,7 @@ export const PAGES = {
     "PSPPasswordReset": PSPPasswordReset,
     "FeeTypeManagement": FeeTypeManagement,
     "MIDPricingConfiguration": MIDPricingConfiguration,
+    "Invoices": Invoices,
 }
 
 export const pagesConfig = {
