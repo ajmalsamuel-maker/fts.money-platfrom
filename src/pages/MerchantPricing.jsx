@@ -635,7 +635,7 @@ export default function MerchantPricing() {
                         <Button variant="outline" onClick={resetForm}>Cancel</Button>
                         <Button 
                             onClick={handleSubmit} 
-                            disabled={!formData.merchant_id || !formData.provider_id || !formData.buy_rate_id || formData.markup_percentage === ''}
+                            disabled={!formData.merchant_id || !formData.provider_id || !formData.buy_rate_id || !formData.markup_percentage}
                         >
                             {editingPricing ? 'Update Pricing' : 'Create Pricing'}
                         </Button>
