@@ -404,10 +404,19 @@ export default function MIDPricingConfiguration() {
                                         </SelectContent>
                                     </Select>
                                     {currentMID && (
-                                        <div className="text-xs text-slate-500 mt-1">
+                                        <div className="text-xs text-slate-500 mt-1 space-y-1">
                                             <div>Account Type: <span className="font-medium">{currentMID.account_type}</span></div>
                                             {currentMID.transaction_types && currentMID.transaction_types.length > 0 && (
-                                                <div>Payment Methods: <span className="font-medium">{currentMID.transaction_types.join(', ')}</span></div>
+                                                <div>Transaction Types: <span className="font-medium">{currentMID.transaction_types.join(', ')}</span></div>
+                                            )}
+                                            {currentMID.supported_card_brands && currentMID.supported_card_brands.length > 0 && (
+                                                <div>Card Brands: <span className="font-medium text-blue-600">{currentMID.supported_card_brands.map(b => b.toUpperCase()).join(', ')}</span></div>
+                                            )}
+                                            {currentMID.supported_apms && currentMID.supported_apms.length > 0 && (
+                                                <div>APMs: <span className="font-medium text-purple-600">{currentMID.supported_apms.map(a => a.replace(/_/g, ' ').toUpperCase()).join(', ')}</span></div>
+                                            )}
+                                            {currentMID.supports_bank_transfer && (
+                                                <div>Bank Transfers: <span className="font-medium text-green-600">Enabled</span></div>
                                             )}
                                         </div>
                                     )}
