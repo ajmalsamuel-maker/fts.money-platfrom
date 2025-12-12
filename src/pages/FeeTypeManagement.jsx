@@ -92,6 +92,7 @@ export default function FeeTypeManagement() {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [editingFee, setEditingFee] = useState(null);
+    const [showTemplates, setShowTemplates] = useState(false);
     const queryClient = useQueryClient();
 
     const { data: feeTypes = [] } = useQuery({
