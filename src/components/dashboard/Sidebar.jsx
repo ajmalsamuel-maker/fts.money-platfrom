@@ -218,12 +218,19 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
     const userRole = user?.app_role || 'viewer';
     const roleConfig = ROLE_CONFIG[userRole] || ROLE_CONFIG.viewer;
 
-    const filteredMenuItems = menuItems.map(group => ({
-        ...group,
-        items: group.items.filter(item => 
-            !item.permission || hasPermission(userRole, item.permission)
-        )
-    })).filter(group => group.items.length > 0);
+    const filteredMenuItems = menuItems
+        .filter(group => {
+            // Filter by role's accessible groups
+            const accessibleGroups = roleConfig.accessibleGroups || [];
+            return accessibleGroups.includes(group.group);
+        })
+        .map(group => ({
+            ...group,
+            items: group.items.filter(item => 
+                !item.permission || hasPermission(userRole, item.permission)
+            )
+        }))
+        .filter(group => group.items.length > 0);
 
     const handleLogout = () => {
         // Check if using staff session

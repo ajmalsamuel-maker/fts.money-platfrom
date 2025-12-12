@@ -5,11 +5,12 @@ import { cn } from "@/lib/utils";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Download, FileText, Database, Code, Map } from 'lucide-react';
+import { Download, FileText, Database, Code, Map, Shield } from 'lucide-react';
 import { FULL_ARCHITECTURE_DOC } from '@/components/docs/FullArchitectureDoc';
 import { FULL_MIGRATION_PLAN } from '@/components/docs/FullMigrationPlan';
 import { FULL_API_SPEC } from '@/components/docs/FullAPISpec';
 import { FULL_SCHEMA_SCRIPT } from '@/components/docs/FullSchemaScript';
+import { ROLE_PERMISSIONS_DOC } from '@/components/docs/RolePermissionsDoc';
 
 export default function Documentation() {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -41,13 +42,104 @@ export default function Documentation() {
                         <p className="text-slate-500">Architecture, migration plans, and API specifications for production deployment</p>
                     </div>
 
-                    <Tabs defaultValue="architecture" className="w-full">
-                        <TabsList className="grid w-full grid-cols-4 mb-6">
+                    <Tabs defaultValue="roles" className="w-full">
+                        <TabsList className="grid w-full grid-cols-5 mb-6">
+                            <TabsTrigger value="roles">Roles & Permissions</TabsTrigger>
                             <TabsTrigger value="architecture">Architecture</TabsTrigger>
                             <TabsTrigger value="migration">Migration Plan</TabsTrigger>
                             <TabsTrigger value="api">API Spec</TabsTrigger>
                             <TabsTrigger value="schema">Schema Export</TabsTrigger>
                         </TabsList>
+
+                        <TabsContent value="roles">
+                            <Card>
+                                <CardHeader className="border-b">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2">
+                                            <Shield className="h-5 w-5 text-purple-600" />
+                                            <CardTitle>User Roles and Permissions</CardTitle>
+                                        </div>
+                                        <Button onClick={() => downloadFile('RolesPermissions.md', ROLE_PERMISSIONS_DOC)} className="gap-2">
+                                            <Download className="h-4 w-4" />
+                                            Download Documentation
+                                        </Button>
+                                    </div>
+                                </CardHeader>
+                                <CardContent className="p-6">
+                                    <div className="space-y-6">
+                                        <div>
+                                            <h3 className="font-semibold text-lg mb-2">Role-Based Access Control (RBAC)</h3>
+                                            <p className="text-slate-600">
+                                                Comprehensive documentation of user roles, permissions, and responsibilities for the PSP platform.
+                                            </p>
+                                        </div>
+
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div className="border rounded-lg p-4">
+                                                <h4 className="font-medium mb-3">Available Roles</h4>
+                                                <div className="space-y-2 text-sm">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="w-2 h-2 rounded-full bg-red-500"></span>
+                                                        <span className="font-medium">Administrator</span> - Full Access
+                                                    </div>
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                                        <span className="font-medium">Finance Manager</span> - Finance & Settlements
+                                                    </div>
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="w-2 h-2 rounded-full bg-purple-500"></span>
+                                                        <span className="font-medium">Operations Manager</span> - Merchants & Transactions
+                                                    </div>
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+                                                        <span className="font-medium">Compliance Officer</span> - Risk & Compliance
+                                                    </div>
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="w-2 h-2 rounded-full bg-cyan-500"></span>
+                                                        <span className="font-medium">Technical Manager</span> - System & Gateways
+                                                    </div>
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                                                        <span className="font-medium">Editor</span> - Content & Analytics
+                                                    </div>
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="w-2 h-2 rounded-full bg-slate-400"></span>
+                                                        <span className="font-medium">Viewer</span> - Read-Only
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="border rounded-lg p-4">
+                                                <h4 className="font-medium mb-3">Key Features</h4>
+                                                <ul className="text-sm text-slate-600 space-y-1">
+                                                    <li>• Granular permission control</li>
+                                                    <li>• Module-based access</li>
+                                                    <li>• Least privilege principle</li>
+                                                    <li>• Audit trail coverage</li>
+                                                    <li>• Role separation enforcement</li>
+                                                    <li>• PCI-DSS compliance</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+
+                                        <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                                            <h4 className="font-medium text-purple-900 mb-2">Documentation Includes</h4>
+                                            <ul className="text-sm text-purple-800 space-y-1">
+                                                <li>✓ Complete role descriptions and responsibilities</li>
+                                                <li>✓ Permission matrix for all modules</li>
+                                                <li>✓ Role assignment guidelines</li>
+                                                <li>✓ Security best practices</li>
+                                                <li>✓ User onboarding/offboarding procedures</li>
+                                                <li>✓ Compliance and audit requirements</li>
+                                            </ul>
+                                        </div>
+
+                                        <div className="text-sm text-slate-500">
+                                            <strong>Management:</strong> Assign and manage user roles in System → User Management
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
 
                         <TabsContent value="architecture">
                             <Card>
