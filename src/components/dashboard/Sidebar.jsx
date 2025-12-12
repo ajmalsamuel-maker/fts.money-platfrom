@@ -57,6 +57,7 @@ const menuItems = [
                 items: [
                     { icon: LayoutDashboard, label: 'dashboard', path: 'Dashboard', permission: 'VIEW_DASHBOARD' },
                     { icon: BarChart3, label: 'analytics', path: 'Analytics', permission: 'VIEW_ANALYTICS' },
+                    { icon: Zap, label: 'realTimeMonitor', path: 'RealTimeMonitor', permission: 'VIEW_DASHBOARD' },
                 ]
             },
             {
@@ -65,9 +66,29 @@ const menuItems = [
                 items: [
                     { icon: ArrowLeftRight, label: 'allTransactions', path: 'Transactions', permission: 'VIEW_TRANSACTIONS' },
                     { icon: Coins, label: 'cryptoTransactions', path: 'CryptoTransactions', permission: 'VIEW_TRANSACTIONS' },
+                    { icon: DollarSign, label: 'refunds', path: 'Refunds', permission: 'VIEW_TRANSACTIONS' },
                     { icon: Receipt, label: 'settlements', path: 'Settlements', permission: 'VIEW_SETTLEMENTS' },
                     { icon: Repeat, label: 'chargebacks', path: 'Chargebacks', permission: 'VIEW_CHARGEBACKS' },
                     { icon: AlertTriangle, label: 'disputes', path: 'Disputes', permission: 'VIEW_DISPUTES' },
+                ]
+            },
+            {
+                group: 'customers',
+                icon: Users,
+                items: [
+                    { icon: Users, label: 'allCustomers', path: 'Customers', permission: 'VIEW_TRANSACTIONS' },
+                    { icon: CreditCard, label: 'paymentMethods', path: 'PaymentMethods', permission: 'VIEW_TRANSACTIONS' },
+                    { icon: BarChart3, label: 'customerAnalytics', path: 'CustomerAnalytics', permission: 'VIEW_ANALYTICS' },
+                ]
+            },
+            {
+                group: 'products',
+                icon: Building,
+                items: [
+                    { icon: Building, label: 'productCatalog', path: 'Products', permission: 'VIEW_MERCHANTS' },
+                    { icon: Repeat, label: 'subscriptions', path: 'Subscriptions', permission: 'VIEW_MERCHANTS' },
+                    { icon: FileText, label: 'paymentLinks', path: 'PaymentLinks', permission: 'VIEW_MERCHANTS' },
+                    { icon: InvoiceIcon, label: 'invoicing', path: 'Invoicing', permission: 'VIEW_MERCHANTS' },
                 ]
             },
             {
@@ -82,8 +103,8 @@ const menuItems = [
                 ]
             },
             {
-                group: 'gateways',
-                icon: CreditCard,
+                group: 'connections',
+                icon: Globe,
                 items: [
                     { icon: Store, label: 'merchantOnboarding', path: 'MerchantOnboarding', permission: 'VIEW_ONBOARDING' },
                     { icon: Globe, label: 'selfServicePortal', path: 'MerchantSelfOnboarding', permission: 'VIEW_ONBOARDING' },
@@ -136,15 +157,26 @@ const menuItems = [
                 items: [
                     { icon: Shield, label: 'fraudPrevention', path: 'FraudPrevention', permission: 'VIEW_FRAUD_PREVENTION' },
                     { icon: AlertTriangle, label: 'fraudMonitoring', path: 'FraudMonitoring', permission: 'VIEW_FRAUD_PREVENTION' },
+                    { icon: Shield, label: '3DSecure', path: 'ThreeDSecure', permission: 'VIEW_FRAUD_PREVENTION' },
                     { icon: Scale, label: 'complianceDashboard', path: 'Compliance', permission: 'VIEW_COMPLIANCE' },
                     { icon: Shield, label: 'fatfAML', path: 'FATFCompliance', permission: 'VIEW_COMPLIANCE' },
+                ]
+            },
+            {
+                group: 'developers',
+                icon: Key,
+                items: [
+                    { icon: Key, label: 'apiKeys', path: 'APIKeys', permission: 'VIEW_SETTINGS' },
+                    { icon: Zap, label: 'webhooks', path: 'Webhooks', permission: 'VIEW_SETTINGS' },
+                    { icon: FileText, label: 'apiLogs', path: 'APILogs', permission: 'VIEW_SETTINGS' },
+                    { icon: Zap, label: 'apiGateway', path: 'APIGateway', permission: 'VIEW_SETTINGS' },
+                    { icon: FileText, label: 'documentation', path: 'Documentation', permission: 'VIEW_DASHBOARD' },
                 ]
             },
             {
                 group: 'system',
                 icon: Settings,
                 items: [
-                    { icon: Zap, label: 'apiGateway', path: 'APIGateway', permission: 'VIEW_SETTINGS' },
                     { icon: Shield, label: 'securityPKI', path: 'SecurityManagement', permission: 'VIEW_SETTINGS' },
                     { icon: UserCog, label: 'userManagement', path: 'UserManagement', permission: 'VIEW_USERS' },
                     { icon: Shield, label: 'auditLogs', path: 'AuditLogs', permission: 'VIEW_USERS' },
@@ -158,7 +190,6 @@ const menuItems = [
                 group: 'resources',
                 icon: HelpCircle,
                 items: [
-                    { icon: FileText, label: 'documentation', path: 'Documentation', permission: 'VIEW_DASHBOARD' },
                     { icon: Headphones, label: 'supportCenter', path: 'Support', permission: 'VIEW_DASHBOARD' },
                 ]
             },

@@ -33,10 +33,20 @@ const menuSections = [
         ]
     },
     {
-        title: 'Payments',
+        title: 'Accept Payments',
         items: [
-            { label: 'Virtual Terminals', icon: CreditCard, path: 'MerchantVirtualTerminals' },
-            { label: 'Crypto Management', icon: Bitcoin, path: 'MerchantCryptoDashboard' },
+            { label: 'Virtual Terminal', icon: CreditCard, path: 'MerchantVirtualTerminals' },
+            { label: 'Payment Links', icon: FileText, path: 'MerchantPaymentLinks' },
+            { label: 'Invoices', icon: FileText, path: 'MerchantInvoices' },
+            { label: 'Subscriptions', icon: Clock, path: 'MerchantSubscriptions' },
+            { label: 'Crypto Payments', icon: Bitcoin, path: 'MerchantCryptoDashboard' },
+        ]
+    },
+    {
+        title: 'Customers',
+        items: [
+            { label: 'All Customers', icon: Users, path: 'MerchantCustomers' },
+            { label: 'Saved Cards', icon: CreditCard, path: 'MerchantSavedCards' },
         ]
     },
     {
@@ -44,6 +54,7 @@ const menuSections = [
         items: [
             { label: 'All Transactions', icon: FileText, path: 'MerchantTransactionList' },
             { label: 'Transaction Data', icon: CreditCard, path: 'MerchantDataTransactions' },
+            { label: 'Refunds', icon: DollarSign, path: 'MerchantRefunds' },
             { label: 'Disputes', icon: AlertCircle, path: 'MerchantDisputeManagement' },
         ]
     },
@@ -58,11 +69,17 @@ const menuSections = [
         ]
     },
     {
+        title: 'Integrations',
+        items: [
+            { label: 'API Credentials', icon: Key, path: 'MerchantAPIKeys' },
+            { label: 'Webhooks', icon: Settings, path: 'MerchantWebhooks' },
+        ]
+    },
+    {
         title: 'Settings',
         items: [
             { label: 'Merchant Info', icon: Building, path: 'MerchantInfo' },
             { label: 'Bank Details', icon: Wallet, path: 'MerchantBankInfo' },
-            { label: 'API Credentials', icon: Key, path: 'MerchantAPIKeys' },
             { label: 'Users & Operators', icon: Users, path: 'MerchantOperators' },
             { label: 'Email Templates', icon: FileText, path: 'MerchantEmailTemplates' },
             { label: 'Appearance', icon: Settings, path: 'MerchantAppearance' },
