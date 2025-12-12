@@ -9,12 +9,21 @@ import { validateBlockchainTransaction, validateAddressFormat } from './iso23257
 
 // ISO 4217 Currency Validation
 export const validateCurrency = (currencyCode) => {
-    const currency = ISO4217_CURRENCIES.find(c => c.code === currencyCode);
+    if (!currencyCode) {
+        return {
+            valid: false,
+            standard: 'ISO 4217',
+            data: null,
+            error: 'Currency code is required'
+        };
+    }
+    const normalizedCode = currencyCode.toUpperCase().trim();
+    const currency = ISO4217_CURRENCIES.find(c => c.code === normalizedCode);
     return {
         valid: !!currency,
         standard: 'ISO 4217',
         data: currency,
-        error: currency ? null : 'Invalid currency code'
+        error: currency ? null : `Invalid currency code: ${currencyCode}`
     };
 };
 
@@ -75,13 +84,21 @@ export const validateDTIFormat = (dti) => {
 
 // Comprehensive Transaction Validation
 export const validateTransaction = (transaction) => {
+    if (!transaction) {
+        return {
+            valid: false,
+            validations: {},
+            standards: []
+        };
+    }
+    
     const validations = {
         currency: validateCurrency(transaction.currency),
-        country: transaction.customer_country ? validateCountry(transaction.customer_country) : { valid: true },
+        country: transaction.customer_country ? validateCountry(transaction.customer_country) : { valid: true, standard: 'ISO 3166-1' },
         amount: {
-            valid: transaction.amount > 0,
+            valid: transaction.amount && transaction.amount > 0,
             standard: 'ISO 4217',
-            error: transaction.amount > 0 ? null : 'Invalid amount'
+            error: (transaction.amount && transaction.amount > 0) ? null : 'Invalid amount'
         }
     };
 
