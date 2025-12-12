@@ -18,7 +18,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { CheckCircle2, XCircle, Clock, AlertCircle, Receipt, FileText, CreditCard } from 'lucide-react';
+import { CheckCircle2, XCircle, Clock, AlertCircle, Receipt, FileText, CreditCard, CheckCircle } from 'lucide-react';
 import CardBrandLogo from './CardBrandLogo';
 import BankInfoDisplay from './BankInfoDisplay';
 import ISO8583Encoder from './ISO8583Encoder';
