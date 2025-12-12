@@ -99,6 +99,7 @@ const menuItems = [
                     { icon: BarChart3, label: 'merchantAnalytics', path: 'MerchantAnalytics', permission: 'VIEW_MERCHANTS' },
                     { icon: Users, label: 'merchantUsers', path: 'MerchantUsers', permission: 'VIEW_USERS' },
                     { icon: CreditCard, label: 'merchantMIDs', path: 'MerchantMIDs', permission: 'VIEW_MERCHANTS' },
+                    { icon: Building2, label: 'subMerchants', path: 'SubMerchants', permission: 'VIEW_MERCHANTS' },
                     { icon: CheckSquare, label: 'approvals', path: 'Approvals', permission: 'APPROVE_ONBOARDING' },
                 ]
             },
@@ -141,6 +142,7 @@ const menuItems = [
                     { icon: Zap, label: 'payoutOrchestration', path: 'PayoutOrchestration', permission: 'VIEW_PAYOUTS' },
                     { icon: CreditCard, label: 'fiatPayouts', path: 'Payouts', permission: 'VIEW_PAYOUTS' },
                     { icon: Coins, label: 'cryptoPayouts', path: 'CryptoPayouts', permission: 'VIEW_PAYOUTS' },
+                    { icon: Zap, label: 'instantPayments', path: 'InstantPayments', permission: 'VIEW_PAYOUTS' },
                     { icon: Percent, label: 'payoutPricing', path: 'MerchantPayoutPricing', permission: 'VIEW_BALANCES' },
                     { icon: ArrowUpDown, label: 'reconciliation', path: 'Reconciliation', permission: 'VIEW_BALANCES' },
                     { icon: FileText, label: 'reports', path: 'Reports', permission: 'VIEW_REPORTS' },
@@ -158,7 +160,11 @@ const menuItems = [
                     { icon: Shield, label: 'fraudPrevention', path: 'FraudPrevention', permission: 'VIEW_FRAUD_PREVENTION' },
                     { icon: AlertTriangle, label: 'fraudMonitoring', path: 'FraudMonitoring', permission: 'VIEW_FRAUD_PREVENTION' },
                     { icon: Shield, label: '3DSecure', path: 'ThreeDSecure', permission: 'VIEW_FRAUD_PREVENTION' },
+                    { icon: CreditCard, label: 'networkTokenization', path: 'NetworkTokenization', permission: 'VIEW_FRAUD_PREVENTION' },
+                    { icon: Repeat, label: 'accountUpdater', path: 'AccountUpdater', permission: 'VIEW_FRAUD_PREVENTION' },
+                    { icon: Repeat, label: 'smartRetry', path: 'SmartRetry', permission: 'VIEW_FRAUD_PREVENTION' },
                     { icon: Scale, label: 'complianceDashboard', path: 'Compliance', permission: 'VIEW_COMPLIANCE' },
+                    { icon: Shield, label: 'pciCompliance', path: 'PCICompliance', permission: 'VIEW_COMPLIANCE' },
                     { icon: Shield, label: 'fatfAML', path: 'FATFCompliance', permission: 'VIEW_COMPLIANCE' },
                 ]
             },
@@ -170,6 +176,7 @@ const menuItems = [
                     { icon: Zap, label: 'webhooks', path: 'Webhooks', permission: 'VIEW_SETTINGS' },
                     { icon: FileText, label: 'apiLogs', path: 'APILogs', permission: 'VIEW_SETTINGS' },
                     { icon: Zap, label: 'apiGateway', path: 'APIGateway', permission: 'VIEW_SETTINGS' },
+                    { icon: Monitor, label: 'checkoutComponents', path: 'CheckoutComponents', permission: 'VIEW_SETTINGS' },
                     { icon: FileText, label: 'documentation', path: 'Documentation', permission: 'VIEW_DASHBOARD' },
                 ]
             },
