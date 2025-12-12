@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
 
-export default function ReviewSubmitStep({ formData }) {
+export default function ReviewSubmitStep({ formData, verificationStatuses }) {
     const { business, lei, contacts, kyb, aml, bank } = formData;
 
     const getStatusIcon = (status) => {
@@ -176,6 +176,33 @@ export default function ReviewSubmitStep({ formData }) {
                 ))}
             </div>
 
+            {verificationStatuses && (
+                <Card className="p-4 bg-purple-50 border-purple-200">
+                    <h4 className="font-medium text-purple-800 mb-3">Verification Summary</h4>
+                    <div className="grid md:grid-cols-2 gap-3">
+                        {Object.entries(verificationStatuses).map(([key, status]) => (
+                            status.status !== 'not_started' && (
+                                <div key={key} className="flex items-center justify-between text-sm p-2 bg-white rounded border">
+                                    <span className="capitalize font-medium">{key}:</span>
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-20 h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                                            <div 
+                                                className={cn(
+                                                    "h-full transition-all",
+                                                    status.progress === 100 ? "bg-green-500" : "bg-blue-500"
+                                                )}
+                                                style={{ width: `${status.progress}%` }}
+                                            />
+                                        </div>
+                                        <span className="text-xs text-slate-600">{status.progress}%</span>
+                                    </div>
+                                </div>
+                            )
+                        ))}
+                    </div>
+                </Card>
+            )}
+
             <Card className="p-4 bg-blue-50 border-blue-200">
                 <h4 className="font-medium text-blue-800 mb-2">What happens next?</h4>
                 <ol className="space-y-2 text-sm text-blue-700">
@@ -185,19 +212,23 @@ export default function ReviewSubmitStep({ formData }) {
                     </li>
                     <li className="flex items-start gap-2">
                         <span className="w-5 h-5 rounded-full bg-blue-200 text-blue-800 flex items-center justify-center text-xs font-medium flex-shrink-0">2</span>
-                        Final review typically takes 1-2 business days
+                        An approval request will be created for review in the Approvals dashboard
                     </li>
                     <li className="flex items-start gap-2">
                         <span className="w-5 h-5 rounded-full bg-blue-200 text-blue-800 flex items-center justify-center text-xs font-medium flex-shrink-0">3</span>
-                        Upon approval, API credentials will be automatically generated
+                        Final review typically takes 1-2 business days
                     </li>
                     <li className="flex items-start gap-2">
                         <span className="w-5 h-5 rounded-full bg-blue-200 text-blue-800 flex items-center justify-center text-xs font-medium flex-shrink-0">4</span>
-                        You'll receive an email with your merchant credentials and API keys
+                        Upon approval, API credentials will be automatically generated
                     </li>
                     <li className="flex items-start gap-2">
                         <span className="w-5 h-5 rounded-full bg-blue-200 text-blue-800 flex items-center justify-center text-xs font-medium flex-shrink-0">5</span>
-                        Access your API credentials anytime in the merchant portal under Settings
+                        You'll receive an email with your merchant credentials and API keys
+                    </li>
+                    <li className="flex items-start gap-2">
+                        <span className="w-5 h-5 rounded-full bg-blue-200 text-blue-800 flex items-center justify-center text-xs font-medium flex-shrink-0">6</span>
+                        Access your merchant portal anytime using your unique merchant code
                     </li>
                 </ol>
             </Card>

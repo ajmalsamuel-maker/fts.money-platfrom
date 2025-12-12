@@ -49,6 +49,12 @@ export default function MerchantOnboarding() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [pspSettings, setPspSettings] = useState(null);
     const [themeSettings, setThemeSettings] = useState(null);
+    const [verificationStatuses, setVerificationStatuses] = useState({
+        kyb: { status: 'not_started', progress: 0 },
+        aml: { status: 'not_started', progress: 0 },
+        lei: { status: 'not_started', progress: 0 },
+        documents: { status: 'not_started', progress: 0 }
+    });
 
     React.useEffect(() => {
         const loadSettings = async () => {
@@ -81,7 +87,7 @@ export default function MerchantOnboarding() {
     const createMerchantMutation = useMutation({
         mutationFn: async (data) => {
             // Generate unique merchant code
-            const merchantCode = generateUniqueMerchantCode(data.business.legal_name, merchants);
+            const merchantCode = generateUniqueMerchantCode(data.business.legal_name, []);
             
             const merchantData = {
                 merchant_id: `MID-${Date.now()}`,
@@ -118,6 +124,23 @@ export default function MerchantOnboarding() {
             };
             
             const merchant = await base44.entities.Merchant.create(merchantData);
+            
+            // Create approval request for compliance review
+            await base44.entities.ApprovalRequest.create({
+                merchant_id: merchant.merchant_id,
+                merchant_name: merchant.business_name,
+                request_type: 'merchant_onboarding',
+                status: 'pending',
+                priority: determineApprovalPriority(data),
+                submitted_by: 'System',
+                submission_date: new Date().toISOString(),
+                kyb_status: data.kyb.kyb_status,
+                aml_status: data.aml.aml_status,
+                lei_status: data.lei.lei_status,
+                risk_score: data.aml.aml_risk_score,
+                notes: generateApprovalNotes(data),
+                application_data: JSON.stringify(data)
+            });
             
             // Auto-create merchant user accounts if merchant is approved
             if (merchant.status === 'active' && data.contacts.contacts?.length > 0) {
@@ -160,16 +183,41 @@ export default function MerchantOnboarding() {
         return 'low';
     };
 
+    const determineApprovalPriority = (data) => {
+        const riskScore = data.aml.aml_risk_score || 0;
+        if (riskScore >= 50 || data.aml.aml_alerts?.length > 0) return 'high';
+        if (riskScore >= 25 || data.kyb.kyb_status === 'pending_review') return 'medium';
+        return 'low';
+    };
+
+    const generateApprovalNotes = (data) => {
+        const notes = [];
+        if (data.kyb.kyb_status === 'pending_review') {
+            notes.push('KYB verification requires manual review');
+        }
+        if (data.aml.aml_alerts?.length > 0) {
+            notes.push(`${data.aml.aml_alerts.length} AML alert(s) detected`);
+        }
+        if (data.aml.aml_risk_score >= 50) {
+            notes.push('High risk score detected');
+        }
+        if (data.business.industry === 'crypto' || data.business.industry === 'gaming') {
+            notes.push('High-risk industry - enhanced due diligence required');
+        }
+        return notes.join('; ') || 'Standard review required';
+    };
+
     const notifyCompliance = async (merchant, data) => {
         try {
             await base44.integrations.Core.SendEmail({
-                to: 'compliance@paymenthub.com',
+                to: pspSettings?.support_email || 'compliance@paymenthub.com',
                 subject: `[Action Required] New Merchant Review: ${merchant.business_name}`,
                 body: `
                     A new merchant application requires compliance review.
                     
                     Merchant: ${merchant.business_name}
                     MID: ${merchant.merchant_id}
+                    Merchant Code: ${merchant.merchant_code}
                     
                     KYB Status: ${data.kyb.kyb_status}
                     AML Status: ${data.aml.aml_status}
@@ -177,7 +225,7 @@ export default function MerchantOnboarding() {
                     
                     ${data.aml.aml_alerts?.length > 0 ? `AML Alerts: ${data.aml.aml_alerts.length} alerts detected` : ''}
                     
-                    Please review this application in the compliance dashboard.
+                    Please review this application in the Approvals dashboard.
                 `
             });
         } catch (error) {
@@ -325,20 +373,42 @@ export default function MerchantOnboarding() {
           return newErrors;
         };
 
+    const updateVerificationStatus = (type, status, progress = 0) => {
+        setVerificationStatuses(prev => ({
+            ...prev,
+            [type]: { status, progress }
+        }));
+    };
+
     const handleNext = async () => {
         const stepErrors = validateStep(currentStep);
         
         if (Object.keys(stepErrors).length > 0) {
             setErrors(stepErrors);
+            toast.error('Please fix validation errors before continuing');
             return;
         }
         
         setErrors({});
         setCompletedSteps(prev => [...new Set([...prev, currentStep])]);
         
+        // Update verification status based on step
+        if (currentStep === 5) {
+            updateVerificationStatus('documents', 'completed', 100);
+        }
+        if (currentStep === 6 && formData.kyb.kyb_status) {
+            updateVerificationStatus('kyb', formData.kyb.kyb_status, formData.kyb.kyb_status === 'approved' ? 100 : 50);
+        }
+        if (currentStep === 7 && formData.aml.aml_status) {
+            updateVerificationStatus('aml', formData.aml.aml_status, formData.aml.aml_status === 'clear' ? 100 : 50);
+        }
+        if (currentStep === 3 && formData.lei.lei_status) {
+            updateVerificationStatus('lei', formData.lei.lei_status, formData.lei.lei_status === 'verified' ? 100 : 50);
+        }
+        
         // Send stage completion email
         const primaryContact = formData.contacts?.contacts?.[0];
-        if (primaryContact?.email) {
+        if (primaryContact?.email && currentStep <= 9) {
             const stageNames = {
                 1: 'Business Information',
                 2: 'Company Structure',
@@ -364,6 +434,7 @@ export default function MerchantOnboarding() {
                 primaryColor: themeSettings?.primary_color,
                 supportEmail: pspSettings?.support_email
             });
+            toast.success('Progress saved - notification sent');
         }
         
         if (currentStep < TOTAL_STEPS) {
@@ -482,20 +553,32 @@ export default function MerchantOnboarding() {
                 return (
                     <KYBVerificationStep 
                         data={formData.kyb} 
-                        onChange={(data) => updateStepData(6, data)}
+                        onChange={(data) => {
+                            updateStepData(6, data);
+                            if (data.kyb_status) {
+                                updateVerificationStatus('kyb', data.kyb_status, data.kyb_status === 'approved' ? 100 : 50);
+                            }
+                        }}
                         errors={errors}
                         businessData={formData.business}
                         contactData={formData.contacts}
+                        onStatusChange={(status, progress) => updateVerificationStatus('kyb', status, progress)}
                     />
                 );
             case 7:
                 return (
                     <AMLScreeningStep 
                         data={formData.aml} 
-                        onChange={(data) => updateStepData(7, data)}
+                        onChange={(data) => {
+                            updateStepData(7, data);
+                            if (data.aml_status) {
+                                updateVerificationStatus('aml', data.aml_status, data.aml_status === 'clear' ? 100 : 50);
+                            }
+                        }}
                         errors={errors}
                         businessData={formData.business}
                         contactData={formData.contacts}
+                        onStatusChange={(status, progress) => updateVerificationStatus('aml', status, progress)}
                     />
                 );
             case 8:
@@ -515,9 +598,12 @@ export default function MerchantOnboarding() {
                       />
                   );
               case 10:
-                  return (
-                      <ReviewSubmitStep formData={formData} />
-                  );
+              return (
+                  <ReviewSubmitStep 
+                      formData={formData} 
+                      verificationStatuses={verificationStatuses}
+                  />
+              );
             default:
                 return null;
         }
@@ -559,6 +645,44 @@ export default function MerchantOnboarding() {
                     {/* Form Content */}
                     <Card className="p-6 mb-6">
                         {renderStep()}
+                        
+                        {/* Real-time Verification Status */}
+                        {(currentStep === 6 || currentStep === 7) && (
+                            <div className="mt-6 p-4 bg-slate-50 rounded-lg border">
+                                <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
+                                    <Shield className="h-4 w-4" />
+                                    Verification Progress
+                                </h4>
+                                <div className="space-y-2">
+                                    {Object.entries(verificationStatuses).map(([key, status]) => (
+                                        status.status !== 'not_started' && (
+                                            <div key={key} className="flex items-center justify-between text-sm">
+                                                <span className="capitalize">{key} Verification:</span>
+                                                <div className="flex items-center gap-2">
+                                                    <div className="w-24 h-2 bg-slate-200 rounded-full overflow-hidden">
+                                                        <div 
+                                                            className="h-full bg-blue-500 transition-all duration-500"
+                                                            style={{ width: `${status.progress}%` }}
+                                                        />
+                                                    </div>
+                                                    <Badge 
+                                                        variant="outline"
+                                                        className={cn(
+                                                            status.status === 'approved' || status.status === 'clear' || status.status === 'verified' ? 'bg-green-50 text-green-700' :
+                                                            status.status === 'pending_review' || status.status === 'monitoring' ? 'bg-amber-50 text-amber-700' :
+                                                            status.status === 'in_progress' ? 'bg-blue-50 text-blue-700' :
+                                                            'bg-slate-50'
+                                                        )}
+                                                    >
+                                                        {status.status}
+                                                    </Badge>
+                                                </div>
+                                            </div>
+                                        )
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </Card>
 
 
