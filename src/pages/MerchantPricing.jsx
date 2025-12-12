@@ -144,12 +144,14 @@ export default function MerchantPricing() {
 
     const handleMerchantChange = (merchantId) => {
         const merchant = merchants.find(m => m.id === merchantId);
+        const today = new Date().toISOString().split('T')[0];
         setFormData({
             ...formData,
             merchant_id: merchantId,
             merchant_name: merchant?.business_name || '',
             mid_id: '',
-            mid: ''
+            mid: '',
+            effective_from: formData.effective_from || today
         });
     };
 
@@ -172,6 +174,7 @@ export default function MerchantPricing() {
         if (rate) {
             const markupPct = parseFloat(formData.markup_percentage) || 0;
             const markupFixed = parseFloat(formData.markup_fixed_fee) || 0;
+            const today = new Date().toISOString().split('T')[0];
             setFormData({
                 ...formData,
                 buy_rate_id: buyRateId,
@@ -186,6 +189,7 @@ export default function MerchantPricing() {
                 buy_fixed_fee: rate.fixed_fee || 0,
                 sell_percentage_rate: (rate.percentage_rate || 0) + markupPct,
                 sell_fixed_fee: (rate.fixed_fee || 0) + markupFixed,
+                effective_from: formData.effective_from || today
             });
         }
     };
