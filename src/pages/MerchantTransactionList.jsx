@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useMerchantAuth } from '@/components/auth/useMerchantAuth';
 import { base44 } from '@/api/base44Client';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -21,10 +21,25 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog";
 import MerchantSidebar from '@/components/merchant/MerchantSidebar';
 import MerchantTopBar from '@/components/merchant/MerchantTopBar';
-import { Search, Download, Filter, CheckCircle2, XCircle, Clock, AlertCircle, Eye, X } from 'lucide-react';
+import { Search, Download, Filter, CheckCircle2, XCircle, Clock, AlertCircle, Eye, MoreVertical, RotateCcw, XOctagon } from 'lucide-react';
 import TransactionDetailsDialog from '@/components/transaction/TransactionDetailsDialog';
+import { toast } from 'sonner';
 
 export default function MerchantTransactionList() {
     const { user, loading, logout } = useMerchantAuth();
@@ -33,7 +48,12 @@ export default function MerchantTransactionList() {
     const [statusFilter, setStatusFilter] = useState('all');
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedTransaction, setSelectedTransaction] = useState(null);
+    const [refundDialogOpen, setRefundDialogOpen] = useState(false);
+    const [voidDialogOpen, setVoidDialogOpen] = useState(false);
+    const [actionTransaction, setActionTransaction] = useState(null);
+    const [refundAmount, setRefundAmount] = useState('');
     const itemsPerPage = 20;
+    const queryClient = useQueryClient();
 
     const { data: merchant } = useQuery({
         queryKey: ['merchant', user?.merchant_id],
@@ -101,6 +121,75 @@ export default function MerchantTransactionList() {
     );
 
     const totalPages = Math.ceil(filteredTransactions.length / itemsPerPage);
+
+    const refundMutation = useMutation({
+        mutationFn: async ({ transactionId, amount }) => {
+            const refund = await base44.entities.Transaction.create({
+                merchant_id: user.merchant_id,
+                type: 'refund',
+                status: 'approved',
+                amount: amount,
+                currency: actionTransaction.currency,
+                card_last_four: actionTransaction.card_last_four,
+                card_brand: actionTransaction.card_brand,
+                customer_email: actionTransaction.customer_email,
+                customer_name: actionTransaction.customer_name,
+                description: `Refund for ${transactionId}`,
+                transaction_id: `REF-${Date.now()}`,
+                mid: actionTransaction.mid
+            });
+            return refund;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries(['transactions']);
+            toast.success('Refund processed successfully');
+            setRefundDialogOpen(false);
+            setActionTransaction(null);
+            setRefundAmount('');
+        },
+        onError: (error) => {
+            toast.error('Failed to process refund');
+        }
+    });
+
+    const voidMutation = useMutation({
+        mutationFn: async (transactionId) => {
+            await base44.entities.Transaction.update(actionTransaction.id, {
+                status: 'voided'
+            });
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries(['transactions']);
+            toast.success('Transaction voided successfully');
+            setVoidDialogOpen(false);
+            setActionTransaction(null);
+        },
+        onError: (error) => {
+            toast.error('Failed to void transaction');
+        }
+    });
+
+    const handleRefund = (transaction) => {
+        setActionTransaction(transaction);
+        setRefundAmount(transaction.amount.toString());
+        setRefundDialogOpen(true);
+    };
+
+    const handleVoid = (transaction) => {
+        setActionTransaction(transaction);
+        setVoidDialogOpen(true);
+    };
+
+    const confirmRefund = () => {
+        refundMutation.mutate({
+            transactionId: actionTransaction.transaction_id,
+            amount: parseFloat(refundAmount)
+        });
+    };
+
+    const confirmVoid = () => {
+        voidMutation.mutate(actionTransaction.transaction_id);
+    };
 
     if (loading || !user) {
         return <div className="flex h-screen items-center justify-center">Loading...</div>;
@@ -196,7 +285,11 @@ export default function MerchantTransactionList() {
                                                 const statusConfig = getStatusConfig(txn.status);
                                                 const StatusIcon = statusConfig.icon;
                                                 return (
-                                                    <TableRow key={txn.id}>
+                                                    <TableRow 
+                                                        key={txn.id}
+                                                        className="cursor-pointer hover:bg-slate-50"
+                                                        onClick={() => setSelectedTransaction(txn)}
+                                                    >
                                                         <TableCell className="font-mono text-sm">
                                                             {txn.transaction_id?.slice(-12) || txn.id.slice(-12)}
                                                         </TableCell>
@@ -221,14 +314,32 @@ export default function MerchantTransactionList() {
                                                                 {statusConfig.label}
                                                             </Badge>
                                                         </TableCell>
-                                                        <TableCell>
-                                                            <Button 
-                                                                variant="ghost" 
-                                                                size="sm"
-                                                                onClick={() => setSelectedTransaction(txn)}
-                                                            >
-                                                                <Eye className="h-4 w-4" />
-                                                            </Button>
+                                                        <TableCell onClick={(e) => e.stopPropagation()}>
+                                                            <DropdownMenu>
+                                                                <DropdownMenuTrigger asChild>
+                                                                    <Button variant="ghost" size="sm">
+                                                                        <MoreVertical className="h-4 w-4" />
+                                                                    </Button>
+                                                                </DropdownMenuTrigger>
+                                                                <DropdownMenuContent align="end">
+                                                                    <DropdownMenuItem onClick={() => setSelectedTransaction(txn)}>
+                                                                        <Eye className="h-4 w-4 mr-2" />
+                                                                        View Details
+                                                                    </DropdownMenuItem>
+                                                                    {(txn.status === 'approved' || txn.status === 'settled') && txn.type === 'sale' && (
+                                                                        <DropdownMenuItem onClick={() => handleRefund(txn)}>
+                                                                            <RotateCcw className="h-4 w-4 mr-2" />
+                                                                            Refund
+                                                                        </DropdownMenuItem>
+                                                                    )}
+                                                                    {txn.status === 'approved' && txn.type === 'sale' && (
+                                                                        <DropdownMenuItem onClick={() => handleVoid(txn)}>
+                                                                            <XOctagon className="h-4 w-4 mr-2" />
+                                                                            Void
+                                                                        </DropdownMenuItem>
+                                                                    )}
+                                                                </DropdownMenuContent>
+                                                            </DropdownMenu>
                                                         </TableCell>
                                                     </TableRow>
                                                 );
@@ -274,6 +385,62 @@ export default function MerchantTransactionList() {
                 open={!!selectedTransaction}
                 onOpenChange={() => setSelectedTransaction(null)}
             />
+
+            {/* Refund Dialog */}
+            <Dialog open={refundDialogOpen} onOpenChange={setRefundDialogOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Refund Transaction</DialogTitle>
+                        <DialogDescription>
+                            Process a refund for transaction {actionTransaction?.transaction_id}
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4 py-4">
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium">Refund Amount</label>
+                            <Input
+                                type="number"
+                                value={refundAmount}
+                                onChange={(e) => setRefundAmount(e.target.value)}
+                                placeholder="0.00"
+                                max={actionTransaction?.amount}
+                            />
+                            <p className="text-xs text-slate-500">
+                                Original amount: ${actionTransaction?.amount?.toFixed(2)}
+                            </p>
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setRefundDialogOpen(false)}>
+                            Cancel
+                        </Button>
+                        <Button onClick={confirmRefund} disabled={refundMutation.isPending}>
+                            {refundMutation.isPending ? 'Processing...' : 'Confirm Refund'}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            {/* Void Dialog */}
+            <Dialog open={voidDialogOpen} onOpenChange={setVoidDialogOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Void Transaction</DialogTitle>
+                        <DialogDescription>
+                            Are you sure you want to void transaction {actionTransaction?.transaction_id}?
+                            This action cannot be undone.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setVoidDialogOpen(false)}>
+                            Cancel
+                        </Button>
+                        <Button variant="destructive" onClick={confirmVoid} disabled={voidMutation.isPending}>
+                            {voidMutation.isPending ? 'Processing...' : 'Confirm Void'}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }
