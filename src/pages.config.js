@@ -100,6 +100,8 @@ import PaymentLinks from './pages/PaymentLinks';
 import Customers from './pages/Customers';
 import Webhooks from './pages/Webhooks';
 import Refunds from './pages/Refunds';
+import RealTimeMonitor from './pages/RealTimeMonitor';
+import ThreeDSecure from './pages/ThreeDSecure';
 import __Layout from './Layout.jsx';
 
 
@@ -206,6 +208,8 @@ export const PAGES = {
     "Customers": Customers,
     "Webhooks": Webhooks,
     "Refunds": Refunds,
+    "RealTimeMonitor": RealTimeMonitor,
+    "ThreeDSecure": ThreeDSecure,
 }
 
 export const pagesConfig = {
