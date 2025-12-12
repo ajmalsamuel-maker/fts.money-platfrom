@@ -46,9 +46,8 @@ export default function MIDPricingConfiguration() {
     const { data: mids = [] } = useQuery({
         queryKey: ['mids', selectedMerchant],
         queryFn: async () => {
-            const merchant = merchants.find(m => m.merchant_id === selectedMerchant);
-            if (!merchant) return [];
-            return await base44.entities.MerchantMID.filter({ merchant_id: merchant.id });
+            if (!selectedMerchant) return [];
+            return await base44.entities.MerchantMID.filter({ merchant_id: selectedMerchant });
         },
         enabled: !!selectedMerchant && merchants.length > 0
     });
@@ -104,7 +103,7 @@ export default function MIDPricingConfiguration() {
             setPricingData(existingPricing);
         } else if (selectedMID) {
             const mid = mids.find(m => m.mid === selectedMID);
-            const merchant = merchants.find(m => m.merchant_id === selectedMerchant);
+            const merchant = merchants.find(m => m.id === selectedMerchant);
             setPricingData(prev => ({
                 ...prev,
                 merchant_id: selectedMerchant,
@@ -212,7 +211,7 @@ export default function MIDPricingConfiguration() {
                                         </SelectTrigger>
                                         <SelectContent>
                                             {merchants.map(m => (
-                                                <SelectItem key={m.id} value={m.merchant_id}>
+                                                <SelectItem key={m.id} value={m.id}>
                                                     {m.business_name}
                                                 </SelectItem>
                                             ))}
