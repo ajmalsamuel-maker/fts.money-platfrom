@@ -84,5 +84,6 @@ export function getStaffSession() {
 
 export function staffLogout() {
     localStorage.removeItem('staff_session');
-    window.location.href = createPageUrl('PSPLogin');
+    // Force navigation to PSPLogin
+    window.location.replace(createPageUrl('PSPLogin'));
 }

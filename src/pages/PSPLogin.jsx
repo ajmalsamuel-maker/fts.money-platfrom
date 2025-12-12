@@ -156,7 +156,8 @@ export default function PSPLogin() {
             role: user.role,
             department: user.department,
             user_id: user.id,
-            timestamp: Date.now()
+            timestamp: Date.now(),
+            expires: Date.now() + (24 * 60 * 60 * 1000) // 24 hours
         };
 
         // Store in localStorage
