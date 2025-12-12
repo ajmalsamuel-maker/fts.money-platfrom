@@ -477,16 +477,16 @@ export default function MerchantPricing() {
                                     </SelectContent>
                                 </Select>
                             </div>
-                            {formData.merchant_id && filteredMIDs.length > 0 && (
+                            {formData.merchant_id && (
                                 <div className="space-y-2">
                                     <Label>MID (Optional - for MID-specific pricing)</Label>
-                                    <Select value={formData.mid_id} onValueChange={handleMIDChange}>
-                                        <SelectTrigger><SelectValue placeholder="Select MID or leave empty for merchant-level pricing" /></SelectTrigger>
+                                    <Select value={formData.mid_id || ""} onValueChange={handleMIDChange}>
+                                        <SelectTrigger><SelectValue placeholder={filteredMIDs.length > 0 ? "Select MID or leave empty for merchant-level pricing" : "No MIDs available - merchant-level pricing"} /></SelectTrigger>
                                         <SelectContent>
                                             <SelectItem value={null}>Merchant-level pricing</SelectItem>
                                             {filteredMIDs.map(m => (
                                                 <SelectItem key={m.id} value={m.id}>
-                                                    {m.mid} - {m.provider_name} ({m.terminal_type})
+                                                    {m.mid} - {m.provider_name} ({m.account_type || m.terminal_type})
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>
