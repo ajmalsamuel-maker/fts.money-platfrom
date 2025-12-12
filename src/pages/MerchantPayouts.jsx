@@ -400,40 +400,92 @@ export default function MerchantPayouts() {
                             </TabsContent>
 
                             <TabsContent value="routes">
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle>Available Payout Routes</CardTitle>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <div className="space-y-3">
-                                            {allRoutes.map(route => (
-                                                <div key={route.id} className="p-4 border rounded-lg">
-                                                    <div className="flex items-start justify-between">
-                                                        <div className="flex-1">
-                                                            <p className="font-medium">{route.route_name}</p>
-                                                            <p className="text-sm text-slate-500">{route.provider}</p>
+                                <div className="space-y-4">
+                                    <Card className="bg-gradient-to-br from-blue-50 to-purple-50 border-blue-200">
+                                        <CardContent className="p-6">
+                                            <h3 className="font-semibold text-lg mb-2">Flexible Payout Options</h3>
+                                            <p className="text-sm text-slate-600">
+                                                We support multiple payout channels including traditional banking, digital wallets, APMs, and cryptocurrency rails.
+                                                Choose the best option for your business needs.
+                                            </p>
+                                        </CardContent>
+                                    </Card>
+
+                                    {/* Traditional Banking */}
+                                    <Card>
+                                        <CardHeader>
+                                            <CardTitle className="text-base">Traditional Banking</CardTitle>
+                                        </CardHeader>
+                                        <CardContent>
+                                            <div className="grid md:grid-cols-2 gap-3">
+                                                {allRoutes.filter(r => ['bank_transfer', 'swift', 'sepa', 'ach'].includes(r.channel_type)).map(route => (
+                                                    <div key={route.id} className="p-3 border rounded-lg hover:shadow-md transition-shadow">
+                                                        <div className="flex items-center justify-between mb-2">
+                                                            <Badge className="bg-blue-100 text-blue-700">{route.channel_type?.toUpperCase()}</Badge>
+                                                            <Badge variant="outline" className="text-xs">{route.speed?.replace(/_/g, ' ')}</Badge>
                                                         </div>
-                                                        <Badge variant="outline">{route.speed?.replace(/_/g, ' ')}</Badge>
+                                                        <p className="text-sm font-medium">{route.route_name}</p>
+                                                        <p className="text-xs text-slate-500">{route.provider}</p>
+                                                        <div className="flex justify-between mt-2 text-xs">
+                                                            <span className="text-slate-600">Fee: {route.cost_percentage}% + ${route.cost_fixed}</span>
+                                                            <span className="text-emerald-600">✓ {route.success_rate || 98}%</span>
+                                                        </div>
                                                     </div>
-                                                    <div className="grid grid-cols-3 gap-4 mt-3 text-sm">
-                                                        <div>
-                                                            <span className="text-slate-500">Cost:</span>
-                                                            <p className="font-medium">{route.cost_percentage}% + ${route.cost_fixed}</p>
+                                                ))}
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+
+                                    {/* Digital Wallets & APMs */}
+                                    <Card>
+                                        <CardHeader>
+                                            <CardTitle className="text-base">Digital Wallets & APMs</CardTitle>
+                                        </CardHeader>
+                                        <CardContent>
+                                            <div className="grid md:grid-cols-3 gap-3">
+                                                {allRoutes.filter(r => ['paypal', 'venmo', 'cashapp', 'alipay', 'wechat_pay', 'gcash', 'paytm', 'm_pesa', 'pix', 'upi', 'wallet'].includes(r.channel_type)).map(route => (
+                                                    <div key={route.id} className="p-3 border rounded-lg hover:shadow-md transition-shadow">
+                                                        <div className="flex items-center justify-between mb-2">
+                                                            <Badge className="bg-purple-100 text-purple-700 text-xs">{route.channel_type?.replace(/_/g, ' ').toUpperCase()}</Badge>
+                                                            <Badge variant="outline" className="text-xs">{route.speed?.replace(/_/g, ' ')}</Badge>
                                                         </div>
-                                                        <div>
-                                                            <span className="text-slate-500">Channel:</span>
-                                                            <p className="font-medium">{route.channel_type?.replace(/_/g, ' ')}</p>
-                                                        </div>
-                                                        <div>
-                                                            <span className="text-slate-500">Currencies:</span>
-                                                            <p className="font-medium">{route.supported_currencies?.length || 0} supported</p>
+                                                        <p className="text-sm font-medium">{route.route_name}</p>
+                                                        <p className="text-xs text-slate-500 mb-2">{route.provider}</p>
+                                                        <div className="flex justify-between text-xs">
+                                                            <span className="text-slate-600">{route.cost_percentage}% fee</span>
+                                                            <span className="text-emerald-600">✓ {route.success_rate || 99}%</span>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </CardContent>
-                                </Card>
+                                                ))}
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+
+                                    {/* Cryptocurrency Rails */}
+                                    <Card>
+                                        <CardHeader>
+                                            <CardTitle className="text-base">Cryptocurrency Rails</CardTitle>
+                                        </CardHeader>
+                                        <CardContent>
+                                            <div className="grid md:grid-cols-2 gap-3">
+                                                {allRoutes.filter(r => ['crypto', 'bitcoin', 'ethereum', 'usdt', 'usdc', 'lightning_network', 'stablecoin'].includes(r.channel_type)).map(route => (
+                                                    <div key={route.id} className="p-3 border rounded-lg hover:shadow-md transition-shadow">
+                                                        <div className="flex items-center justify-between mb-2">
+                                                            <Badge className="bg-amber-100 text-amber-700">{route.channel_type?.toUpperCase()}</Badge>
+                                                            <Badge variant="outline" className="text-xs">{route.speed?.replace(/_/g, ' ')}</Badge>
+                                                        </div>
+                                                        <p className="text-sm font-medium">{route.route_name}</p>
+                                                        <p className="text-xs text-slate-500">{route.provider}</p>
+                                                        <div className="flex justify-between mt-2 text-xs">
+                                                            <span className="text-slate-600">Fee: {route.cost_percentage}% + ${route.cost_fixed}</span>
+                                                            <span className="text-emerald-600">✓ {route.success_rate || 99}%</span>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+                                </div>
                             </TabsContent>
                         </Tabs>
                     </div>

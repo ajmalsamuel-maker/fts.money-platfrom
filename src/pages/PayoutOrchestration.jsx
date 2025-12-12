@@ -366,13 +366,29 @@ export default function PayoutOrchestration() {
                                 <Label>Channel Type</Label>
                                 <Select value={routeForm.channel_type} onValueChange={(val) => setRouteForm({...routeForm, channel_type: val})}>
                                     <SelectTrigger><SelectValue /></SelectTrigger>
-                                    <SelectContent>
+                                    <SelectContent className="max-h-80">
                                         <SelectItem value="bank_transfer">Bank Transfer</SelectItem>
+                                        <SelectItem value="swift">SWIFT</SelectItem>
+                                        <SelectItem value="sepa">SEPA</SelectItem>
+                                        <SelectItem value="ach">ACH</SelectItem>
                                         <SelectItem value="instant_payment">Instant Payment</SelectItem>
                                         <SelectItem value="card_payout">Card Payout</SelectItem>
-                                        <SelectItem value="wallet">Wallet</SelectItem>
-                                        <SelectItem value="crypto">Crypto</SelectItem>
-                                        <SelectItem value="swift">SWIFT</SelectItem>
+                                        <SelectItem value="paypal">PayPal</SelectItem>
+                                        <SelectItem value="venmo">Venmo</SelectItem>
+                                        <SelectItem value="cashapp">Cash App</SelectItem>
+                                        <SelectItem value="alipay">Alipay</SelectItem>
+                                        <SelectItem value="wechat_pay">WeChat Pay</SelectItem>
+                                        <SelectItem value="gcash">GCash</SelectItem>
+                                        <SelectItem value="paytm">Paytm</SelectItem>
+                                        <SelectItem value="m_pesa">M-Pesa</SelectItem>
+                                        <SelectItem value="pix">PIX</SelectItem>
+                                        <SelectItem value="upi">UPI</SelectItem>
+                                        <SelectItem value="bitcoin">Bitcoin</SelectItem>
+                                        <SelectItem value="ethereum">Ethereum</SelectItem>
+                                        <SelectItem value="usdt">USDT (Tether)</SelectItem>
+                                        <SelectItem value="usdc">USDC</SelectItem>
+                                        <SelectItem value="lightning_network">Lightning Network</SelectItem>
+                                        <SelectItem value="stablecoin">Other Stablecoin</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
