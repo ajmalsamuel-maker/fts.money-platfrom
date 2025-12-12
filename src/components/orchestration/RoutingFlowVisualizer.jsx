@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, CheckCircle, XCircle, Clock, Zap, CreditCard } from 'lucide-react';
 import { cn } from "@/lib/utils";
+import { getCountryName } from '@/components/utils/countries';
 
 export default function RoutingFlowVisualizer({ 
     merchants = [], 
@@ -89,7 +90,7 @@ export default function RoutingFlowVisualizer({
                                             </div>
                                         </div>
                                         <Badge variant="outline" className="text-xs mt-2 bg-white">
-                                            {path.merchant.country} • {path.merchant.currency}
+                                            {path.merchant.country || 'N/A'} • {path.merchant.currency || 'USD'}
                                         </Badge>
                                     </div>
 
