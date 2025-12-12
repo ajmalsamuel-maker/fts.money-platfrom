@@ -529,50 +529,20 @@ export default function MIDPricingConfiguration() {
                                                                     className="w-24"
                                                                 />
                                                             </TableCell>
-                                                            {paymentMethodConfig.showCUP && (
-                                                                <>
-                                                                    <TableCell>
-                                                                        <Input
-                                                                            type="number"
-                                                                            step="0.01"
-                                                                            value={config.cup_fixed || 0}
-                                                                            onChange={(e) => updateFeeConfig(config.fee_code, 'cup_fixed', parseFloat(e.target.value) || 0)}
-                                                                            className="w-24"
-                                                                        />
-                                                                    </TableCell>
-                                                                    <TableCell>
-                                                                        <Input
-                                                                            type="number"
-                                                                            step="0.01"
-                                                                            value={config.cup_percentage || 0}
-                                                                            onChange={(e) => updateFeeConfig(config.fee_code, 'cup_percentage', parseFloat(e.target.value) || 0)}
-                                                                            className="w-24"
-                                                                        />
-                                                                    </TableCell>
-                                                                </>
-                                                            )}
-                                                            {paymentMethodConfig.showBankTransfer && (
-                                                                <>
-                                                                    <TableCell>
-                                                                        <Input
-                                                                            type="number"
-                                                                            step="0.01"
-                                                                            value={config.bank_transfer_fixed || 0}
-                                                                            onChange={(e) => updateFeeConfig(config.fee_code, 'bank_transfer_fixed', parseFloat(e.target.value) || 0)}
-                                                                            className="w-24"
-                                                                        />
-                                                                    </TableCell>
-                                                                    <TableCell>
-                                                                        <Input
-                                                                            type="number"
-                                                                            step="0.01"
-                                                                            value={config.bank_transfer_percentage || 0}
-                                                                            onChange={(e) => updateFeeConfig(config.fee_code, 'bank_transfer_percentage', parseFloat(e.target.value) || 0)}
-                                                                            className="w-24"
-                                                                        />
-                                                                    </TableCell>
-                                                                </>
-                                                            )}
+                                                            {paymentMethodColumns.map(col => (
+                                                                <TableCell key={col.id}>
+                                                                    <Input
+                                                                        type="number"
+                                                                        step="0.01"
+                                                                        value={config.payment_method_rates?.[col.id] || 0}
+                                                                        onChange={(e) => {
+                                                                            const newRates = { ...(config.payment_method_rates || {}), [col.id]: parseFloat(e.target.value) || 0 };
+                                                                            updateFeeConfig(config.fee_code, 'payment_method_rates', newRates);
+                                                                        }}
+                                                                        className="w-24"
+                                                                    />
+                                                                </TableCell>
+                                                            ))}
                                                         </TableRow>
                                                     ))}
                                                 </TableBody>
