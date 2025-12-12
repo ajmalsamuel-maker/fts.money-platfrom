@@ -23,15 +23,21 @@ export default function PSPLogin() {
     const [error, setError] = useState('');
     const [tempUser, setTempUser] = useState(null);
 
-    const { data: settings } = useQuery({
-        queryKey: ['psp-login-settings'],
-        queryFn: async () => {
-            const response = await base44.functions.invoke('pspAuth', {
-                action: 'getSettings'
-            });
-            return response.data;
-        },
-    });
+    const [settings, setSettings] = useState(null);
+
+    useEffect(() => {
+        const fetchSettings = async () => {
+            try {
+                const response = await base44.functions.invoke('pspAuth', {
+                    action: 'getSettings'
+                });
+                setSettings(response.data);
+            } catch (err) {
+                console.error('Failed to load settings:', err);
+            }
+        };
+        fetchSettings();
+    }, []);
 
     const pspSettings = settings?.pspSettings;
     const themeSettings = settings?.themeSettings;
