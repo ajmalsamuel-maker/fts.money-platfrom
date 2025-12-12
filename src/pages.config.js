@@ -120,6 +120,7 @@ import CheckoutComponents from './pages/CheckoutComponents';
 import PSPProvisioning from './pages/PSPProvisioning';
 import PSPProvisioningWizard from './pages/PSPProvisioningWizard';
 import PSPDetails from './pages/PSPDetails';
+import FTSMoneyPlatform from './pages/FTSMoneyPlatform';
 import __Layout from './Layout.jsx';
 
 
@@ -246,6 +247,7 @@ export const PAGES = {
     "PSPProvisioning": PSPProvisioning,
     "PSPProvisioningWizard": PSPProvisioningWizard,
     "PSPDetails": PSPDetails,
+    "FTSMoneyPlatform": FTSMoneyPlatform,
 }
 
 export const pagesConfig = {
