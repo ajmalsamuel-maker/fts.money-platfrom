@@ -127,16 +127,31 @@ export default function MIDPricingConfiguration() {
 
     // Populate from merchant pricing when inheritance is enabled
     React.useEffect(() => {
-        if (pricingData.inherits_merchant_pricing && merchantPricing && merchantPricing.length > 0 && selectedMID && pricingData.fee_configuration.length > 0) {
+        console.log('Inheritance effect triggered:', {
+            inherits: pricingData.inherits_merchant_pricing,
+            hasMerchantPricing: merchantPricing?.length > 0,
+            selectedMID,
+            feeConfigLength: pricingData.fee_configuration.length,
+            merchantPricing
+        });
+        
+        if (pricingData.inherits_merchant_pricing && merchantPricing && merchantPricing.length > 0 && selectedMID) {
             const mp = merchantPricing[0];
             console.log('Populating from merchant pricing:', mp);
-            console.log('Current fee_configuration:', pricingData.fee_configuration);
+            
+            // Wait for fee_configuration to be initialized
+            if (pricingData.fee_configuration.length === 0) {
+                console.log('Fee configuration not ready yet, skipping population');
+                return;
+            }
+            
+            console.log('Current fee_configuration before update:', pricingData.fee_configuration);
             
             setPricingData(prev => {
                 const newConfig = prev.fee_configuration.map(fc => {
                     // For transaction fees, use the sell rate from merchant pricing
                     if (fc.fee_code === 'SALE_TXN') {
-                        console.log('Setting SALE_TXN fee:', mp.sell_fixed_fee, mp.sell_percentage_rate);
+                        console.log('Setting SALE_TXN fee - fixed:', mp.sell_fixed_fee, 'percentage:', mp.sell_percentage_rate);
                         return {
                             ...fc,
                             enabled: true,
@@ -148,6 +163,8 @@ export default function MIDPricingConfiguration() {
                     return fc;
                 });
                 
+                console.log('New fee_configuration after update:', newConfig);
+                
                 return {
                     ...prev,
                     merchant_pricing_id: mp.id,
@@ -155,20 +172,8 @@ export default function MIDPricingConfiguration() {
                     fee_configuration: newConfig
                 };
             });
-        } else if (!pricingData.inherits_merchant_pricing && selectedMID && pricingData.fee_configuration.length > 0) {
-            // Reset to defaults when inheritance is disabled
-            setPricingData(prev => ({
-                ...prev,
-                merchant_pricing_id: '',
-                fee_configuration: prev.fee_configuration.map(fc => ({
-                    ...fc,
-                    enabled: false,
-                    fixed_amount: 0,
-                    percentage: 0
-                }))
-            }));
         }
-    }, [pricingData.inherits_merchant_pricing, merchantPricing, selectedMID, pricingData.fee_configuration.length]);
+    }, [pricingData.inherits_merchant_pricing, merchantPricing, selectedMID]);
 
     const saveMutation = useMutation({
         mutationFn: (data) => {
