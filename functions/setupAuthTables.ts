@@ -14,11 +14,11 @@ Deno.serve(async (req) => {
         const { action } = await req.json();
 
         if (action === 'setup') {
-            // Create app_users table
+            // Drop and recreate app_users table to ensure correct schema
+            await pool.query(`DROP TABLE IF EXISTS app_users CASCADE`);
             await pool.query(`
-                CREATE TABLE IF NOT EXISTS app_users (
+                CREATE TABLE app_users (
                     id SERIAL PRIMARY KEY,
-                    user_id TEXT,
                     email TEXT UNIQUE NOT NULL,
                     full_name TEXT,
                     role TEXT DEFAULT 'viewer',
@@ -35,11 +35,11 @@ Deno.serve(async (req) => {
                 )
             `);
 
-            // Create merchant_users table
+            // Drop and recreate merchant_users table to ensure correct schema
+            await pool.query(`DROP TABLE IF EXISTS merchant_users CASCADE`);
             await pool.query(`
-                CREATE TABLE IF NOT EXISTS merchant_users (
+                CREATE TABLE merchant_users (
                     id SERIAL PRIMARY KEY,
-                    user_id TEXT,
                     merchant_id TEXT NOT NULL,
                     merchant_code TEXT NOT NULL,
                     merchant_name TEXT,
@@ -62,9 +62,10 @@ Deno.serve(async (req) => {
                 )
             `);
 
-            // Create psp_settings table
+            // Drop and recreate psp_settings table
+            await pool.query(`DROP TABLE IF EXISTS psp_settings CASCADE`);
             await pool.query(`
-                CREATE TABLE IF NOT EXISTS psp_settings (
+                CREATE TABLE psp_settings (
                     id SERIAL PRIMARY KEY,
                     company_name TEXT,
                     psp_code TEXT,
@@ -93,9 +94,10 @@ Deno.serve(async (req) => {
                 )
             `);
 
-            // Create theme_settings table
+            // Drop and recreate theme_settings table
+            await pool.query(`DROP TABLE IF EXISTS theme_settings CASCADE`);
             await pool.query(`
-                CREATE TABLE IF NOT EXISTS theme_settings (
+                CREATE TABLE theme_settings (
                     id SERIAL PRIMARY KEY,
                     company_name TEXT,
                     logo_url TEXT,
