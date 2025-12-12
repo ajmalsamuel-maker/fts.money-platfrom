@@ -29,7 +29,7 @@ const menuSections = [
         title: 'Overview',
         items: [
             { label: 'Dashboard', icon: LayoutDashboard, path: 'MerchantDashboard' },
-            { label: 'Analytics', icon: BarChart3, path: 'MerchantMonitorTools' },
+            { label: 'Analytics', icon: BarChart3, path: 'MerchantAnalytics' },
         ]
     },
     {
