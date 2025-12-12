@@ -194,7 +194,7 @@ const generateUETR = () => {
 
 // Generate sample IBAN (for demo purposes)
 const generateIBAN = (country = 'US') => {
-    const countryCode = country.substring(0, 2).toUpperCase();
+    const countryCode = (country || 'US').substring(0, 2).toUpperCase();
     const checkDigits = '89';
     const bankCode = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
     const accountNumber = Math.floor(Math.random() * 10000000000).toString().padStart(10, '0');
