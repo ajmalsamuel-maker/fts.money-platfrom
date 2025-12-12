@@ -46,12 +46,12 @@ export function useStaffAuth() {
         localStorage.removeItem('staff_session');
         setUser(null);
         setIsAuthenticated(false);
-        navigate(createPageUrl('StaffLogin'));
+        navigate(createPageUrl('PSPLogin'));
     };
 
     const requireAuth = () => {
         if (!isLoading && !isAuthenticated) {
-            navigate(createPageUrl('StaffLogin'));
+            navigate(createPageUrl('PSPLogin'));
         }
     };
 
@@ -84,5 +84,5 @@ export function getStaffSession() {
 
 export function staffLogout() {
     localStorage.removeItem('staff_session');
-    window.location.href = createPageUrl('StaffLogin');
+    window.location.href = createPageUrl('PSPLogin');
 }
