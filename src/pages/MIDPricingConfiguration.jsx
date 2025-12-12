@@ -52,6 +52,35 @@ export default function MIDPricingConfiguration() {
         enabled: !!selectedMerchant && merchants.length > 0
     });
 
+    // Get current MID details to determine supported payment methods
+    const currentMID = React.useMemo(() => {
+        return mids.find(m => m.mid === selectedMID);
+    }, [mids, selectedMID]);
+
+    // Determine which payment method columns to show based on MID configuration
+    const paymentMethodConfig = React.useMemo(() => {
+        if (!currentMID) return { showCUP: false, showBankTransfer: false, showWallet: false };
+        
+        const transactionTypes = currentMID.transaction_types || [];
+        const accountType = currentMID.account_type || '';
+        
+        return {
+            // Show CUP columns if card transactions are supported (UnionPay)
+            showCUP: transactionTypes.includes('card_present') || 
+                     transactionTypes.includes('card_not_present') ||
+                     transactionTypes.includes('ecommerce'),
+            
+            // Show Bank Transfer columns if bank payment methods are configured
+            showBankTransfer: accountType === 'bank_transfer' || 
+                             transactionTypes.some(t => t.includes('bank')) ||
+                             currentMID.description?.toLowerCase().includes('bank'),
+            
+            // Show Wallet columns if wallet/digital payment methods are configured  
+            showWallet: accountType === 'wallet' ||
+                       transactionTypes.some(t => t.includes('wallet'))
+        };
+    }, [currentMID]);
+
     const { data: feeTypes = [] } = useQuery({
         queryKey: ['feeTypes'],
         queryFn: () => base44.entities.FeeType.filter({ status: 'active' })
