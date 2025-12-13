@@ -9,9 +9,11 @@ const pool = new Pool({
 
 Deno.serve(async (req) => {
     try {
-        // Create psp_settings table if it doesn't exist
+        // Drop and recreate psp_settings table
+        await pool.query(`DROP TABLE IF EXISTS psp_settings CASCADE`);
+        
         await pool.query(`
-            CREATE TABLE IF NOT EXISTS psp_settings (
+            CREATE TABLE psp_settings (
                 id SERIAL PRIMARY KEY,
                 psp_code VARCHAR(50) UNIQUE NOT NULL,
                 psp_name VARCHAR(255) NOT NULL,
