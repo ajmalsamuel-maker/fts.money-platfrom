@@ -296,9 +296,9 @@ export default function PSPSetupWizard() {
                                                                 <CreditCard className="h-6 w-6 text-blue-600" />
                                                             </div>
                                                             <div>
-                                                                <h3 className="font-bold text-lg">{provider.provider_name}</h3>
-                                                                {provider.provider_type && (
-                                                                    <p className="text-sm text-slate-600 capitalize">{provider.provider_type}</p>
+                                                                <h3 className="font-bold text-lg">{provider.name}</h3>
+                                                                {provider.type && (
+                                                                    <p className="text-sm text-slate-600 capitalize">{provider.type}</p>
                                                                 )}
                                                             </div>
                                                         </div>
@@ -314,7 +314,7 @@ export default function PSPSetupWizard() {
                                                         <Alert className="bg-emerald-50 border-emerald-200">
                                                             <CheckCircle className="h-4 w-4 text-emerald-600" />
                                                             <AlertDescription className="text-emerald-900">
-                                                                {provider.provider_name} will be enabled for your PSP
+                                                                {provider.name} will be enabled for your PSP
                                                             </AlertDescription>
                                                         </Alert>
                                                     </CardContent>
@@ -525,7 +525,7 @@ export default function PSPSetupWizard() {
                                             const provider = paymentProviders.find(p => p.id === id);
                                             return provider ? (
                                                 <Badge key={id} className="bg-blue-100 text-blue-700">
-                                                    {provider.provider_name}
+                                                    {provider.name}
                                                 </Badge>
                                             ) : null;
                                         })}
