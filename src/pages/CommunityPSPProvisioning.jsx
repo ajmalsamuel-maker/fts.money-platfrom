@@ -535,18 +535,30 @@ export default function CommunityPSPProvisioning() {
                                             <Label>PSP Name *</Label>
                                             <Input
                                                 value={formData.psp_name}
-                                                onChange={(e) => setFormData({ ...formData, psp_name: e.target.value })}
+                                                onChange={(e) => {
+                                                    const name = e.target.value;
+                                                    const code = name
+                                                        .split(' ')
+                                                        .filter(word => word.length > 0)
+                                                        .map(word => word[0])
+                                                        .join('')
+                                                        .toUpperCase()
+                                                        .slice(0, 6) || name.replace(/[^A-Za-z0-9]/g, '').toUpperCase().slice(0, 6);
+                                                    setFormData({ ...formData, psp_name: name, psp_code: code });
+                                                }}
                                                 placeholder="Acme Payments"
                                             />
                                         </div>
                                         <div>
-                                            <Label>PSP Code *</Label>
+                                            <Label>PSP Code (Auto-generated) *</Label>
                                             <Input
                                                 value={formData.psp_code}
                                                 onChange={(e) => setFormData({ ...formData, psp_code: e.target.value.toUpperCase() })}
-                                                placeholder="ACME"
-                                                maxLength={10}
+                                                placeholder="AP"
+                                                maxLength={6}
+                                                className="bg-slate-50"
                                             />
+                                            <p className="text-xs text-slate-500 mt-1">Editable if needed</p>
                                         </div>
                                         <div>
                                             <Label>Legal Entity Name *</Label>
