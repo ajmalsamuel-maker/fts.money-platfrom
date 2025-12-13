@@ -537,13 +537,15 @@ export default function CommunityPSPProvisioning() {
                                                 value={formData.psp_name}
                                                 onChange={(e) => {
                                                     const name = e.target.value;
-                                                    const code = name
+                                                    const letters = name
                                                         .split(' ')
                                                         .filter(word => word.length > 0)
                                                         .map(word => word[0])
                                                         .join('')
                                                         .toUpperCase()
-                                                        .slice(0, 6) || name.replace(/[^A-Za-z0-9]/g, '').toUpperCase().slice(0, 6);
+                                                        .slice(0, 3) || name.replace(/[^A-Za-z]/g, '').toUpperCase().slice(0, 3);
+                                                    const randomNum = Math.floor(1000 + Math.random() * 9000);
+                                                    const code = `${letters}${randomNum}`.slice(0, 8);
                                                     setFormData({ ...formData, psp_name: name, psp_code: code });
                                                 }}
                                                 placeholder="Acme Payments"
@@ -554,11 +556,11 @@ export default function CommunityPSPProvisioning() {
                                             <Input
                                                 value={formData.psp_code}
                                                 onChange={(e) => setFormData({ ...formData, psp_code: e.target.value.toUpperCase() })}
-                                                placeholder="AP"
-                                                maxLength={6}
+                                                placeholder="AP2534"
+                                                maxLength={8}
                                                 className="bg-slate-50"
                                             />
-                                            <p className="text-xs text-slate-500 mt-1">Editable if needed</p>
+                                            <p className="text-xs text-slate-500 mt-1">Format: Letters + 4-digit number (editable)</p>
                                         </div>
                                         <div>
                                             <Label>Legal Entity Name *</Label>
