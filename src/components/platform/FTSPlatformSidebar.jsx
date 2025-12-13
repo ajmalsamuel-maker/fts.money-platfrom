@@ -18,7 +18,8 @@ import {
     Zap,
     FileText,
     Activity,
-    BookOpen
+    BookOpen,
+    Plus
 } from 'lucide-react';
 
 const menuItems = [
