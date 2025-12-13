@@ -147,6 +147,7 @@ import CommunityAccountSettings from './pages/CommunityAccountSettings';
 import PSPSetupWizard from './pages/PSPSetupWizard';
 import FTSProvisioningQueue from './pages/FTSProvisioningQueue';
 import MyServiceRequests from './pages/MyServiceRequests';
+import PSPUserManagement from './pages/PSPUserManagement';
 import __Layout from './Layout.jsx';
 
 
@@ -300,6 +301,7 @@ export const PAGES = {
     "PSPSetupWizard": PSPSetupWizard,
     "FTSProvisioningQueue": FTSProvisioningQueue,
     "MyServiceRequests": MyServiceRequests,
+    "PSPUserManagement": PSPUserManagement,
 }
 
 export const pagesConfig = {

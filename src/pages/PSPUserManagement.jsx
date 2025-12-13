@@ -1,0 +1,222 @@
+import React, { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { base44 } from '@/api/base44Client';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
+import { Users, Plus, Edit, Trash2, Mail, Shield } from 'lucide-react';
+
+export default function PSPUserManagement() {
+    const queryClient = useQueryClient();
+    const [selectedPSP, setSelectedPSP] = useState('');
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [formData, setFormData] = useState({
+        email: '',
+        full_name: '',
+        role: 'user',
+        psp_code: '',
+        password: 'Welcome123!',
+        status: 'active'
+    });
+
+    const { data: psps = [] } = useQuery({
+        queryKey: ['psp-list'],
+        queryFn: async () => {
+            const result = await base44.functions.invoke('managePSPUsers', { action: 'list' });
+            const uniquePSPs = [...new Set(result.data.users?.map(u => u.psp_code).filter(Boolean))];
+            return uniquePSPs;
+        }
+    });
+
+    const { data: users = [], isLoading } = useQuery({
+        queryKey: ['psp-users', selectedPSP],
+        queryFn: async () => {
+            const result = await base44.functions.invoke('managePSPUsers', { 
+                action: 'list',
+                psp_code: selectedPSP || undefined
+            });
+            return result.data.users || [];
+        }
+    });
+
+    const createMutation = useMutation({
+        mutationFn: (data) => base44.functions.invoke('managePSPUsers', { action: 'create', ...data }),
+        onSuccess: () => {
+            queryClient.invalidateQueries(['psp-users']);
+            setDialogOpen(false);
+            setFormData({ email: '', full_name: '', role: 'user', psp_code: '', password: 'Welcome123!', status: 'active' });
+        }
+    });
+
+    const deleteMutation = useMutation({
+        mutationFn: (user_id) => base44.functions.invoke('managePSPUsers', { action: 'delete', user_id }),
+        onSuccess: () => {
+            queryClient.invalidateQueries(['psp-users']);
+        }
+    });
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        createMutation.mutate(formData);
+    };
+
+    return (
+        <div className="min-h-screen bg-slate-50 p-6">
+            <div className="max-w-7xl mx-auto">
+                <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-3">
+                        <Users className="h-8 w-8 text-blue-600" />
+                        <div>
+                            <h1 className="text-3xl font-bold text-slate-900">PSP User Management</h1>
+                            <p className="text-slate-600">Manage users for PSP instances</p>
+                        </div>
+                    </div>
+                    <Button onClick={() => setDialogOpen(true)}>
+                        <Plus className="h-4 w-4 mr-2" />
+                        Add User
+                    </Button>
+                </div>
+
+                <Card className="mb-6">
+                    <CardHeader>
+                        <CardTitle className="text-sm">Filter by PSP</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <Select value={selectedPSP} onValueChange={setSelectedPSP}>
+                            <SelectTrigger>
+                                <SelectValue placeholder="All PSPs" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value={null}>All PSPs</SelectItem>
+                                {psps.map(psp => (
+                                    <SelectItem key={psp} value={psp}>{psp}</SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Users ({users.length})</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        {isLoading ? (
+                            <p className="text-center py-4 text-slate-600">Loading...</p>
+                        ) : users.length === 0 ? (
+                            <p className="text-center py-4 text-slate-600">No users found</p>
+                        ) : (
+                            <div className="space-y-3">
+                                {users.map(user => (
+                                    <div key={user.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-slate-50">
+                                        <div className="flex items-center gap-4 flex-1">
+                                            <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                                                <Mail className="h-5 w-5 text-blue-600" />
+                                            </div>
+                                            <div className="flex-1">
+                                                <p className="font-medium text-slate-900">{user.full_name}</p>
+                                                <p className="text-sm text-slate-600">{user.email}</p>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <Badge variant="outline">{user.psp_code}</Badge>
+                                                <Badge className={user.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}>
+                                                    <Shield className="h-3 w-3 mr-1" />
+                                                    {user.role}
+                                                </Badge>
+                                                <Badge variant={user.status === 'active' ? 'default' : 'secondary'}>
+                                                    {user.status}
+                                                </Badge>
+                                            </div>
+                                        </div>
+                                        <Button 
+                                            variant="ghost" 
+                                            size="sm"
+                                            onClick={() => deleteMutation.mutate(user.id)}
+                                        >
+                                            <Trash2 className="h-4 w-4 text-red-600" />
+                                        </Button>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </CardContent>
+                </Card>
+
+                <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Add New User</DialogTitle>
+                        </DialogHeader>
+                        <form onSubmit={handleSubmit} className="space-y-4">
+                            <div>
+                                <Label>Email</Label>
+                                <Input
+                                    type="email"
+                                    value={formData.email}
+                                    onChange={(e) => setFormData({...formData, email: e.target.value})}
+                                    required
+                                />
+                            </div>
+                            <div>
+                                <Label>Full Name</Label>
+                                <Input
+                                    value={formData.full_name}
+                                    onChange={(e) => setFormData({...formData, full_name: e.target.value})}
+                                    required
+                                />
+                            </div>
+                            <div>
+                                <Label>PSP Code</Label>
+                                <Input
+                                    value={formData.psp_code}
+                                    onChange={(e) => setFormData({...formData, psp_code: e.target.value})}
+                                    placeholder="e.g., EP1274"
+                                    required
+                                />
+                            </div>
+                            <div>
+                                <Label>Role</Label>
+                                <Select value={formData.role} onValueChange={(value) => setFormData({...formData, role: value})}>
+                                    <SelectTrigger>
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="user">User</SelectItem>
+                                        <SelectItem value="admin">Admin</SelectItem>
+                                        <SelectItem value="staff">Staff</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div>
+                                <Label>Default Password</Label>
+                                <Input
+                                    value={formData.password}
+                                    onChange={(e) => setFormData({...formData, password: e.target.value})}
+                                />
+                            </div>
+                            <div>
+                                <Label>Status</Label>
+                                <Select value={formData.status} onValueChange={(value) => setFormData({...formData, status: value})}>
+                                    <SelectTrigger>
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="active">Active</SelectItem>
+                                        <SelectItem value="inactive">Inactive</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <Button type="submit" className="w-full">
+                                Create User
+                            </Button>
+                        </form>
+                    </DialogContent>
+                </Dialog>
+            </div>
+        </div>
+    );
+}
