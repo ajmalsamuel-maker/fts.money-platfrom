@@ -17,7 +17,8 @@ import {
     Wallet,
     Zap,
     FileText,
-    Activity
+    Activity,
+    BookOpen
 } from 'lucide-react';
 
 const menuItems = [
@@ -30,7 +31,8 @@ const menuItems = [
     { icon: Zap, label: 'Fee Templates', path: 'FTSFeeTemplates', description: 'Pricing templates', new: true },
     { icon: Shield, label: 'Compliance', path: 'FTSCompliance', description: 'Policy templates', new: true },
     { icon: FileText, label: 'Audit Logs', path: 'FTSAuditLogs', description: 'System audit', new: true },
-    { icon: Settings, label: 'Platform Settings', path: 'FTSSettings', description: 'Configuration' }
+    { icon: Settings, label: 'Platform Settings', path: 'FTSSettings', description: 'Configuration' },
+    { icon: FileText, label: 'Architecture Docs', path: 'FTSArchitectureDoc', description: 'System blueprint', new: true }
 ];
 
 export default function FTSPlatformSidebar({ currentPage, userRole }) {
