@@ -35,9 +35,9 @@ export default function CommunityPortalSidebar({ currentPage, userEmail }) {
     };
 
     return (
-        <aside className="w-64 flex flex-col h-screen" style={{ backgroundColor: FTS_COLORS.navy }}>
+        <aside className="w-64 flex flex-col h-screen bg-white border-r border-slate-200">
             {/* Logo */}
-            <div className="h-16 flex items-center justify-center px-4" style={{ borderBottom: `1px solid ${FTS_COLORS.royalBlue}` }}>
+            <div className="h-16 flex items-center justify-center px-4 border-b border-slate-200">
                 <div className="flex items-center gap-2">
                     <img 
                         src={FTS_LOGOS.symbol} 
@@ -45,17 +45,17 @@ export default function CommunityPortalSidebar({ currentPage, userEmail }) {
                         className="h-10 w-10 object-contain"
                     />
                     <div>
-                        <h1 className="text-sm font-bold text-white" style={{ fontFamily: 'Montserrat, sans-serif' }}>FTS.Money</h1>
-                        <p className="text-[10px]" style={{ color: FTS_COLORS.aqua }}>Community Portal</p>
+                        <h1 className="text-sm font-bold text-slate-900" style={{ fontFamily: 'Montserrat, sans-serif' }}>FTS.Money</h1>
+                        <p className="text-[10px] text-slate-600">Community Portal</p>
                     </div>
                 </div>
             </div>
 
             {/* User Info */}
             {userEmail && (
-                <div className="px-4 py-3" style={{ borderBottom: `1px solid ${FTS_COLORS.royalBlue}` }}>
-                    <p className="text-xs" style={{ color: FTS_COLORS.sky }}>Signed in as</p>
-                    <p className="text-sm text-white truncate">{userEmail}</p>
+                <div className="px-4 py-3 border-b border-slate-200">
+                    <p className="text-xs text-slate-600">Signed in as</p>
+                    <p className="text-sm text-slate-900 font-medium truncate">{userEmail}</p>
                 </div>
             )}
 
@@ -70,18 +70,26 @@ export default function CommunityPortalSidebar({ currentPage, userEmail }) {
                                 key={item.path}
                                 to={createPageUrl(item.path)}
                                 className={cn(
-                                    "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-sm",
+                                    "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-sm group relative overflow-hidden",
                                     isActive
-                                        ? "text-white"
-                                        : "hover:text-white"
+                                        ? "bg-gradient-to-r from-blue-50 to-cyan-50 text-slate-900 font-medium"
+                                        : "text-slate-700 hover:bg-slate-50"
                                 )}
-                                style={isActive 
-                                    ? { backgroundColor: FTS_COLORS.royalBlue }
-                                    : { color: FTS_COLORS.sky }
-                                }
                             >
-                                <Icon className="h-4 w-4 flex-shrink-0" />
+                                <Icon 
+                                    className={cn(
+                                        "h-4 w-4 flex-shrink-0",
+                                        isActive && "text-transparent bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text"
+                                    )}
+                                    style={isActive ? { 
+                                        strokeWidth: 2,
+                                        filter: 'drop-shadow(0 0 2px rgba(0, 191, 255, 0.3))'
+                                    } : {}}
+                                />
                                 <span>{item.label}</span>
+                                {isActive && (
+                                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-600 to-cyan-500"></div>
+                                )}
                             </Link>
                         );
                     })}
@@ -89,12 +97,11 @@ export default function CommunityPortalSidebar({ currentPage, userEmail }) {
             </nav>
 
             {/* Logout */}
-            <div className="p-3" style={{ borderTop: `1px solid ${FTS_COLORS.royalBlue}` }}>
+            <div className="p-3 border-t border-slate-200">
                 <Button
                     onClick={handleLogout}
                     variant="ghost"
-                    className="w-full justify-start hover:text-white"
-                    style={{ color: FTS_COLORS.sky }}
+                    className="w-full justify-start text-slate-700 hover:text-slate-900 hover:bg-slate-50"
                 >
                     <LogOut className="h-4 w-4 mr-3" />
                     Sign Out
