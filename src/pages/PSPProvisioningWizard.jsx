@@ -21,7 +21,8 @@ import {
     Shield,
     DollarSign,
     Globe,
-    Rocket
+    Rocket,
+    Wallet
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
 
@@ -174,58 +175,75 @@ export default function PSPProvisioningWizard() {
         provisionMutation.mutate(data);
     };
 
+    const { data: paymentProviders = [] } = useQuery({
+        queryKey: ['payment-providers'],
+        queryFn: () => base44.entities.PaymentProvider.list()
+    });
+
+    const { data: payoutRoutes = [] } = useQuery({
+        queryKey: ['payout-routes'],
+        queryFn: () => base44.entities.PayoutRoute.list()
+    });
+
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6">
-            <div className="max-w-6xl mx-auto">
+        <div className="min-h-screen bg-slate-50 p-6">
+            <div className="max-w-7xl mx-auto">
                 {/* Header */}
-                <div className="mb-8">
+                <div className="mb-8 bg-white rounded-lg p-6 border border-slate-200">
                     <Button 
                         variant="ghost" 
-                        onClick={() => navigate(createPageUrl('PSPProvisioning'))}
-                        className="mb-4 text-slate-400 hover:text-white"
+                        onClick={() => navigate(createPageUrl('FTSMoneyPlatform'))}
+                        className="mb-4"
                     >
                         <ArrowLeft className="h-4 w-4 mr-2" />
-                        Back to Dashboard
+                        Back to Platform
                     </Button>
-                    <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
-                            <Sparkles className="h-6 w-6 text-white" />
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            <div className="w-14 h-14 rounded-lg bg-blue-600 flex items-center justify-center">
+                                <Sparkles className="h-7 w-7 text-white" />
+                            </div>
+                            <div>
+                                <h1 className="text-2xl font-bold text-slate-900">PSP Instance Provisioning</h1>
+                                <p className="text-sm text-slate-600">Infrastructure deployment and configuration</p>
+                            </div>
                         </div>
-                        <div>
-                            <h1 className="text-3xl font-bold text-white">Provision New PSP</h1>
-                            <p className="text-slate-400">Launch your white-label payment platform in minutes</p>
-                        </div>
+                        <Badge variant="outline" className="text-xs">System Admin Panel</Badge>
                     </div>
                 </div>
 
                 {/* Progress Steps */}
-                <div className="flex items-center justify-center mb-8">
+                <div className="flex items-center justify-between mb-8 bg-white rounded-lg p-6 border border-slate-200">
                     {[1, 2, 3, 4, 5].map((s) => (
                         <React.Fragment key={s}>
-                            <div className={cn(
-                                "flex flex-col items-center"
-                            )}>
+                            <div className="flex items-center gap-3">
                                 <div className={cn(
-                                    "flex items-center justify-center w-10 h-10 rounded-full font-semibold",
-                                    step >= s ? "bg-blue-600 text-white" : "bg-slate-300 text-slate-600"
+                                    "flex items-center justify-center w-10 h-10 rounded-full font-semibold border-2",
+                                    step >= s ? "bg-blue-600 text-white border-blue-600" : "bg-white text-slate-400 border-slate-300"
                                 )}>
                                     {step > s ? <Check className="h-5 w-5" /> : s}
                                 </div>
-                                <span className={cn(
-                                    "text-xs mt-1",
-                                    step >= s ? "text-slate-900" : "text-slate-500"
-                                )}>
-                                    {s === 1 && 'Tier'}
-                                    {s === 2 && 'Info'}
-                                    {s === 3 && 'Branding'}
-                                    {s === 4 && 'Methods'}
-                                    {s === 5 && 'Review'}
-                                </span>
+                                <div>
+                                    <p className={cn("text-sm font-medium", step >= s ? "text-slate-900" : "text-slate-500")}>
+                                        {s === 1 && 'Service Tier'}
+                                        {s === 2 && 'Instance Config'}
+                                        {s === 3 && 'Fee Structure'}
+                                        {s === 4 && 'Payment Providers'}
+                                        {s === 5 && 'Deploy'}
+                                    </p>
+                                    <p className="text-xs text-slate-500">
+                                        {s === 1 && 'Select tier & limits'}
+                                        {s === 2 && 'Network & identity'}
+                                        {s === 3 && 'Pricing config'}
+                                        {s === 4 && 'Provider mapping'}
+                                        {s === 5 && 'Review & launch'}
+                                    </p>
+                                </div>
                             </div>
                             {s < 5 && (
                                 <div className={cn(
-                                    "w-16 h-1 mx-2 mt-[-20px]",
-                                    step > s ? "bg-blue-600" : "bg-slate-300"
+                                    "flex-1 h-0.5 mx-4",
+                                    step > s ? "bg-blue-600" : "bg-slate-200"
                                 )} />
                             )}
                         </React.Fragment>
@@ -235,79 +253,51 @@ export default function PSPProvisioningWizard() {
                 {/* Step 1: Select Tier */}
                 {step === 1 && (
                     <div className="space-y-6">
-                        <div className="text-center mb-8">
-                            <h2 className="text-2xl font-bold text-white mb-2">Choose Your Plan</h2>
-                            <p className="text-slate-400">Select the tier that best fits your needs</p>
-                        </div>
-                        <div className="grid grid-cols-2 gap-6">
-                            {tiers.map((tier) => {
-                                const Icon = tier.icon;
-                                return (
-                                    <Card
-                                        key={tier.id}
-                                        className={cn(
-                                            "cursor-pointer transition-all border-2",
-                                            selectedTier === tier.id 
-                                                ? "border-blue-500 bg-slate-800/80 shadow-lg shadow-blue-500/20" 
-                                                : "border-slate-700 bg-slate-800/50 hover:border-slate-600"
-                                        )}
-                                        onClick={() => setSelectedTier(tier.id)}
-                                    >
-                                        <CardHeader>
-                                            <div className="flex items-start justify-between">
-                                                <div className="flex items-center gap-3">
-                                                    <div className={cn("w-12 h-12 rounded-xl bg-gradient-to-br flex items-center justify-center", tier.color)}>
-                                                        <Icon className="h-6 w-6 text-white" />
+                        <Card className="bg-white border-slate-200">
+                            <CardHeader>
+                                <CardTitle>Service Tier Selection</CardTitle>
+                                <CardDescription>Choose the infrastructure tier and resource allocation for this PSP instance</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="grid grid-cols-2 gap-4">
+                                    {tiers.map((tier) => {
+                                        const Icon = tier.icon;
+                                        return (
+                                            <div
+                                                key={tier.id}
+                                                className={cn(
+                                                    "cursor-pointer transition-all border-2 rounded-lg p-4",
+                                                    selectedTier === tier.id 
+                                                        ? "border-blue-600 bg-blue-50" 
+                                                        : "border-slate-200 bg-white hover:border-slate-300"
+                                                )}
+                                                onClick={() => setSelectedTier(tier.id)}
+                                            >
+                                                <div className="flex items-start gap-3 mb-3">
+                                                    <div className="w-10 h-10 rounded bg-blue-100 flex items-center justify-center">
+                                                        <Icon className="h-5 w-5 text-blue-600" />
                                                     </div>
                                                     <div>
-                                                        <CardTitle className="text-white">{tier.name}</CardTitle>
-                                                        <CardDescription className="text-slate-400">{tier.description}</CardDescription>
+                                                        <h3 className="font-semibold text-slate-900">{tier.name}</h3>
+                                                        <p className="text-xs text-slate-600">{tier.description}</p>
                                                     </div>
                                                 </div>
-                                                {tier.popular && (
-                                                    <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">Popular</Badge>
-                                                )}
-                                            </div>
-                                            <div className="mt-4">
-                                                <p className="text-3xl font-bold text-white">{tier.price}</p>
-                                                <p className="text-sm text-slate-400 mt-1">or {tier.revenue_share}% revenue share</p>
-                                            </div>
-                                        </CardHeader>
-                                        <CardContent className="space-y-3">
-                                            <div>
-                                                <p className="text-xs font-semibold text-slate-400 mb-2">CORE FEATURES</p>
-                                                <div className="space-y-1">
-                                                    {tier.features.core.map(f => (
-                                                        <div key={f} className="flex items-center gap-2 text-sm text-slate-300">
-                                                            <Check className="h-4 w-4 text-emerald-400" />
-                                                            {f.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                                                        </div>
-                                                    ))}
+                                                <div className="space-y-2 text-sm">
+                                                    <p><span className="font-medium">Pricing:</span> {tier.price}</p>
+                                                    <p><span className="font-medium">Revenue Share:</span> {tier.revenue_share}%</p>
+                                                    <p><span className="font-medium">Max Providers:</span> {tier.features.limits.max_payment_providers || '∞'}</p>
+                                                    <p><span className="font-medium">Max Merchants:</span> {tier.features.limits.max_merchants || '∞'}</p>
                                                 </div>
                                             </div>
-                                            <div>
-                                                <p className="text-xs font-semibold text-slate-400 mb-2">ADVANCED FEATURES</p>
-                                                <div className="space-y-1">
-                                                    {tier.features.advanced.slice(0, 3).map(f => (
-                                                        <div key={f} className="flex items-center gap-2 text-sm text-slate-300">
-                                                            <Check className="h-4 w-4 text-blue-400" />
-                                                            {f.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                                                        </div>
-                                                    ))}
-                                                    {tier.features.advanced.length > 3 && (
-                                                        <p className="text-xs text-slate-500">+ {tier.features.advanced.length - 3} more...</p>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </CardContent>
-                                    </Card>
-                                );
-                            })}
-                        </div>
+                                        );
+                                    })}
+                                </div>
+                            </CardContent>
+                        </Card>
                         <div className="flex justify-end">
-                            <Button size="lg" onClick={() => setStep(2)} className="gap-2">
-                                Continue
-                                <ArrowRight className="h-5 w-5" />
+                            <Button size="lg" onClick={() => setStep(2)} className="bg-blue-600 hover:bg-blue-700">
+                                Continue to Configuration
+                                <ArrowRight className="h-5 w-5 ml-2" />
                             </Button>
                         </div>
                     </div>
@@ -315,19 +305,19 @@ export default function PSPProvisioningWizard() {
 
                 {/* Step 2: Basic Info */}
                 {step === 2 && (
-                    <Card className="bg-slate-800/50 border-slate-700">
+                    <Card className="bg-white border-slate-200">
                         <CardHeader>
-                            <CardTitle className="text-white">Basic Information</CardTitle>
-                            <CardDescription className="text-slate-400">Configure your PSP identity</CardDescription>
+                            <CardTitle>Instance Configuration</CardTitle>
+                            <CardDescription>Network identity, domain setup, and regional configuration</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-6">
                             {templates.length > 0 && (
-                                <div className="flex items-center justify-between p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg">
+                                <div className="flex items-center justify-between p-4 bg-blue-50 border border-blue-200 rounded-lg">
                                     <div className="flex items-center gap-3">
-                                        <Building2 className="h-5 w-5 text-blue-400" />
+                                        <Building2 className="h-5 w-5 text-blue-600" />
                                         <div>
-                                            <p className="text-sm font-medium text-white">Clone from existing PSP</p>
-                                            <p className="text-xs text-slate-400">Use NetXHub configuration as template</p>
+                                            <p className="text-sm font-medium text-slate-900">Clone Configuration</p>
+                                            <p className="text-xs text-slate-600">Import settings from existing PSP instance</p>
                                         </div>
                                     </div>
                                     <Switch checked={useTemplate} onCheckedChange={setUseTemplate} />
@@ -336,74 +326,69 @@ export default function PSPProvisioningWizard() {
                             
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <Label className="text-slate-300">PSP Code *</Label>
+                                    <Label>PSP Code *</Label>
                                     <Input
                                         value={formData.psp_code}
                                         onChange={(e) => setFormData({...formData, psp_code: e.target.value.toUpperCase()})}
                                         placeholder="ACME"
-                                        className="bg-slate-900 border-slate-700 text-white"
                                     />
+                                    <p className="text-xs text-slate-500 mt-1">Unique identifier for routing and API access</p>
                                 </div>
                                 <div>
-                                    <Label className="text-slate-300">PSP Name *</Label>
+                                    <Label>PSP Name *</Label>
                                     <Input
                                         value={formData.psp_name}
                                         onChange={(e) => setFormData({...formData, psp_name: e.target.value})}
                                         placeholder="Acme Payments"
-                                        className="bg-slate-900 border-slate-700 text-white"
                                     />
                                 </div>
                                 <div className="col-span-2">
-                                    <Label className="text-slate-300">Legal Entity Name</Label>
+                                    <Label>Legal Entity Name</Label>
                                     <Input
                                         value={formData.legal_entity_name}
                                         onChange={(e) => setFormData({...formData, legal_entity_name: e.target.value})}
                                         placeholder="Acme Payments Ltd"
-                                        className="bg-slate-900 border-slate-700 text-white"
                                     />
                                 </div>
                                 <div>
-                                    <Label className="text-slate-300">Custom Domain</Label>
+                                    <Label>Custom Domain</Label>
                                     <Input
                                         value={formData.domain}
                                         onChange={(e) => setFormData({...formData, domain: e.target.value})}
                                         placeholder="pay.acme.com"
-                                        className="bg-slate-900 border-slate-700 text-white"
                                     />
+                                    <p className="text-xs text-slate-500 mt-1">DNS configuration required post-deployment</p>
                                 </div>
                                 <div>
-                                    <Label className="text-slate-300">FTS Subdomain</Label>
+                                    <Label>FTS Subdomain</Label>
                                     <div className="flex items-center gap-2">
                                         <Input
                                             value={formData.subdomain}
                                             onChange={(e) => setFormData({...formData, subdomain: e.target.value})}
                                             placeholder="acme"
-                                            className="bg-slate-900 border-slate-700 text-white"
                                         />
                                         <span className="text-slate-500 text-sm">.fts.money</span>
                                     </div>
                                 </div>
                                 <div>
-                                    <Label className="text-slate-300">Contact Email *</Label>
+                                    <Label>Contact Email *</Label>
                                     <Input
                                         type="email"
                                         value={formData.contact_email}
                                         onChange={(e) => setFormData({...formData, contact_email: e.target.value})}
-                                        className="bg-slate-900 border-slate-700 text-white"
                                     />
                                 </div>
                                 <div>
-                                    <Label className="text-slate-300">Contact Phone</Label>
+                                    <Label>Contact Phone</Label>
                                     <Input
                                         value={formData.contact_phone}
                                         onChange={(e) => setFormData({...formData, contact_phone: e.target.value})}
-                                        className="bg-slate-900 border-slate-700 text-white"
                                     />
                                 </div>
                                 <div>
-                                    <Label className="text-slate-300">License Type</Label>
+                                    <Label>License Type</Label>
                                     <Select value={formData.license_type} onValueChange={(v) => setFormData({...formData, license_type: v})}>
-                                        <SelectTrigger className="bg-slate-900 border-slate-700 text-white">
+                                        <SelectTrigger>
                                             <SelectValue />
                                         </SelectTrigger>
                                         <SelectContent>
@@ -415,261 +400,330 @@ export default function PSPProvisioningWizard() {
                                     </Select>
                                 </div>
                                 <div>
-                                    <Label className="text-slate-300">Country</Label>
+                                    <Label>Operating Country</Label>
                                     <Input
                                         value={formData.country}
                                         onChange={(e) => setFormData({...formData, country: e.target.value})}
                                         placeholder="US"
-                                        className="bg-slate-900 border-slate-700 text-white"
                                     />
                                 </div>
                                 <div>
-                                    <Label className="text-slate-300">Primary Color</Label>
-                                    <Input
-                                        type="color"
-                                        value={formData.branding.primary_color}
-                                        onChange={(e) => setFormData({...formData, branding: {...formData.branding, primary_color: e.target.value}})}
-                                        className="bg-slate-900 border-slate-700 h-10"
-                                    />
+                                    <Label>Default Currency</Label>
+                                    <Select value={formData.currency} onValueChange={(v) => setFormData({...formData, currency: v})}>
+                                        <SelectTrigger>
+                                            <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="USD">USD</SelectItem>
+                                            <SelectItem value="EUR">EUR</SelectItem>
+                                            <SelectItem value="GBP">GBP</SelectItem>
+                                            <SelectItem value="SGD">SGD</SelectItem>
+                                            <SelectItem value="HKD">HKD</SelectItem>
+                                        </SelectContent>
+                                    </Select>
                                 </div>
                                 <div>
-                                    <Label className="text-slate-300">Secondary Color</Label>
+                                    <Label>Timezone</Label>
+                                    <Select value={formData.timezone} onValueChange={(v) => setFormData({...formData, timezone: v})}>
+                                        <SelectTrigger>
+                                            <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="UTC">UTC</SelectItem>
+                                            <SelectItem value="America/New_York">EST (New York)</SelectItem>
+                                            <SelectItem value="Europe/London">GMT (London)</SelectItem>
+                                            <SelectItem value="Asia/Singapore">SGT (Singapore)</SelectItem>
+                                            <SelectItem value="Asia/Hong_Kong">HKT (Hong Kong)</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div>
+                                    <Label>Logo URL</Label>
                                     <Input
-                                        type="color"
-                                        value={formData.branding.secondary_color}
-                                        onChange={(e) => setFormData({...formData, branding: {...formData.branding, secondary_color: e.target.value}})}
-                                        className="bg-slate-900 border-slate-700 h-10"
+                                        value={formData.branding.logo_url}
+                                        onChange={(e) => setFormData({...formData, branding: {...formData.branding, logo_url: e.target.value}})}
+                                        placeholder="https://example.com/logo.png"
                                     />
                                 </div>
                             </div>
                         </CardContent>
-                        <div className="flex justify-between p-6 border-t border-slate-700">
-                            <Button variant="outline" onClick={() => setStep(1)} className="border-slate-600 text-slate-300">
+                        <div className="flex justify-between p-6 border-t border-slate-200">
+                            <Button variant="outline" onClick={() => setStep(1)}>
                                 <ArrowLeft className="h-4 w-4 mr-2" />
                                 Back
                             </Button>
-                            <Button onClick={() => setStep(3)} className="gap-2">
-                                Continue
-                                <ArrowRight className="h-4 w-4" />
+                            <Button onClick={() => setStep(3)} className="bg-blue-600 hover:bg-blue-700">
+                                Continue to Fee Structure
+                                <ArrowRight className="h-4 w-4 ml-2" />
                             </Button>
                         </div>
                     </Card>
                 )}
 
-                {/* Step 3: Branding & Fees */}
+                {/* Step 3: Fee Structure */}
                 {step === 3 && (
-                    <Card className="bg-slate-800/50 border-slate-700">
+                    <Card className="bg-white border-slate-200">
                         <CardHeader>
-                            <CardTitle className="text-white">Branding & Fee Configuration</CardTitle>
-                            <CardDescription className="text-slate-400">Configure appearance and fee structure</CardDescription>
+                            <CardTitle>Fee Structure Configuration</CardTitle>
+                            <CardDescription>Configure automated pricing based on commercial tier</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-6">
-                            <div>
-                                <h3 className="text-white font-semibold mb-4">Branding</h3>
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <Label className="text-slate-300">Logo URL</Label>
-                                        <Input
-                                            value={formData.branding.logo_url}
-                                            onChange={(e) => setFormData({...formData, branding: {...formData.branding, logo_url: e.target.value}})}
-                                            placeholder="https://example.com/logo.png"
-                                            className="bg-slate-900 border-slate-700 text-white"
-                                        />
-                                    </div>
-                                    <div>
-                                        <Label className="text-slate-300">Favicon URL</Label>
-                                        <Input
-                                            value={formData.branding.favicon_url}
-                                            onChange={(e) => setFormData({...formData, branding: {...formData.branding, favicon_url: e.target.value}})}
-                                            placeholder="https://example.com/favicon.ico"
-                                            className="bg-slate-900 border-slate-700 text-white"
-                                        />
-                                    </div>
-                                </div>
+                            <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                                <p className="text-sm font-medium text-blue-900 mb-1">Automated Configuration</p>
+                                <p className="text-xs text-blue-700">Fee structures will be auto-generated based on the selected tier ({tiers.find(t => t.id === selectedTier)?.name}) and can be customized post-deployment.</p>
                             </div>
 
                             <div>
-                                <h3 className="text-white font-semibold mb-4">Transaction Fees</h3>
+                                <h3 className="font-semibold text-slate-900 mb-4">Default Transaction Fees</h3>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <Label className="text-slate-300">Card Processing Fee (%)</Label>
+                                        <Label>Card Processing Fee (%)</Label>
                                         <Input
                                             type="number"
                                             step="0.01"
                                             value={formData.transaction_fees.card_percentage}
                                             onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, card_percentage: parseFloat(e.target.value)}})}
-                                            className="bg-slate-900 border-slate-700 text-white"
                                         />
+                                        <p className="text-xs text-slate-500 mt-1">Percentage charged per card transaction</p>
                                     </div>
                                     <div>
-                                        <Label className="text-slate-300">Fixed Fee per Transaction</Label>
+                                        <Label>Fixed Fee per Transaction</Label>
                                         <Input
                                             type="number"
                                             step="0.01"
                                             value={formData.transaction_fees.fixed_fee}
                                             onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, fixed_fee: parseFloat(e.target.value)}})}
-                                            className="bg-slate-900 border-slate-700 text-white"
                                         />
                                     </div>
                                     <div>
-                                        <Label className="text-slate-300">International Fee (%)</Label>
+                                        <Label>International Fee (%)</Label>
                                         <Input
                                             type="number"
                                             step="0.01"
                                             value={formData.transaction_fees.international_percentage}
                                             onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, international_percentage: parseFloat(e.target.value)}})}
-                                            className="bg-slate-900 border-slate-700 text-white"
                                         />
                                     </div>
                                     <div>
-                                        <Label className="text-slate-300">Crypto Processing Fee (%)</Label>
+                                        <Label>Crypto Processing Fee (%)</Label>
                                         <Input
                                             type="number"
                                             step="0.01"
                                             value={formData.transaction_fees.crypto_percentage}
                                             onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, crypto_percentage: parseFloat(e.target.value)}})}
-                                            className="bg-slate-900 border-slate-700 text-white"
                                         />
                                     </div>
                                 </div>
                             </div>
+
+                            <div>
+                                <h3 className="font-semibold text-slate-900 mb-2">Tiered Pricing</h3>
+                                <p className="text-sm text-slate-600 mb-4">Volume-based fee tiers will be configured based on commercial agreement</p>
+                                <div className="space-y-2">
+                                    <div className="flex items-center justify-between p-3 bg-slate-50 rounded border border-slate-200">
+                                        <div>
+                                            <p className="text-sm font-medium">$0 - $100K monthly volume</p>
+                                            <p className="text-xs text-slate-600">Standard rates apply</p>
+                                        </div>
+                                        <Badge variant="outline">Base Tier</Badge>
+                                    </div>
+                                    <div className="flex items-center justify-between p-3 bg-slate-50 rounded border border-slate-200">
+                                        <div>
+                                            <p className="text-sm font-medium">$100K - $1M monthly volume</p>
+                                            <p className="text-xs text-slate-600">-0.2% discount</p>
+                                        </div>
+                                        <Badge variant="outline">Volume Tier 1</Badge>
+                                    </div>
+                                    <div className="flex items-center justify-between p-3 bg-slate-50 rounded border border-slate-200">
+                                        <div>
+                                            <p className="text-sm font-medium">$1M+ monthly volume</p>
+                                            <p className="text-xs text-slate-600">-0.5% discount</p>
+                                        </div>
+                                        <Badge variant="outline">Volume Tier 2</Badge>
+                                    </div>
+                                </div>
+                            </div>
                         </CardContent>
-                        <div className="flex justify-between p-6 border-t border-slate-700">
-                            <Button variant="outline" onClick={() => setStep(2)} className="border-slate-600 text-slate-300">
+                        <div className="flex justify-between p-6 border-t border-slate-200">
+                            <Button variant="outline" onClick={() => setStep(2)}>
                                 <ArrowLeft className="h-4 w-4 mr-2" />
                                 Back
                             </Button>
-                            <Button onClick={() => setStep(4)} className="gap-2">
-                                Continue
-                                <ArrowRight className="h-4 w-4" />
+                            <Button onClick={() => setStep(4)} className="bg-blue-600 hover:bg-blue-700">
+                                Configure Payment Providers
+                                <ArrowRight className="h-4 w-4 ml-2" />
                             </Button>
                         </div>
                     </Card>
                 )}
 
-                {/* Step 4: Payment & Payout Methods */}
+                {/* Step 4: Provider Mapping */}
                 {step === 4 && (
-                    <Card className="bg-slate-800/50 border-slate-700">
+                    <Card className="bg-white border-slate-200">
                         <CardHeader>
-                            <CardTitle className="text-white">Payment & Payout Methods</CardTitle>
-                            <CardDescription className="text-slate-400">Select available methods for this PSP</CardDescription>
+                            <CardTitle>Payment Provider Mapping</CardTitle>
+                            <CardDescription>Map payment and payout providers based on commercial agreements</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-6">
                             <div>
-                                <h3 className="text-white font-semibold mb-4">Payment Methods</h3>
-                                <div className="grid grid-cols-2 gap-3">
-                                    {['Visa', 'Mastercard', 'Amex', 'Crypto', 'PayPal', 'Apple Pay', 'Google Pay', 'Bank Transfer'].map((method) => (
-                                        <div key={method} className="flex items-center justify-between p-3 bg-slate-900 rounded-lg border border-slate-700">
-                                            <span className="text-slate-300">{method}</span>
+                                <div className="flex items-center justify-between mb-4">
+                                    <h3 className="font-semibold text-slate-900">Payment Providers</h3>
+                                    <Badge>{formData.enabled_payment_methods.length} selected</Badge>
+                                </div>
+                                <div className="space-y-2">
+                                    {paymentProviders.length > 0 ? paymentProviders.map((provider) => (
+                                        <div key={provider.id} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-10 h-10 rounded bg-white border border-slate-200 flex items-center justify-center">
+                                                    <span className="text-xs font-semibold">{provider.name.substring(0, 2).toUpperCase()}</span>
+                                                </div>
+                                                <div>
+                                                    <p className="font-medium text-sm">{provider.name}</p>
+                                                    <p className="text-xs text-slate-600">{provider.type}</p>
+                                                </div>
+                                            </div>
                                             <Switch
-                                                checked={formData.enabled_payment_methods.includes(method)}
+                                                checked={formData.enabled_payment_methods.includes(provider.id)}
                                                 onCheckedChange={(checked) => {
                                                     const methods = checked
-                                                        ? [...formData.enabled_payment_methods, method]
-                                                        : formData.enabled_payment_methods.filter(m => m !== method);
+                                                        ? [...formData.enabled_payment_methods, provider.id]
+                                                        : formData.enabled_payment_methods.filter(m => m !== provider.id);
                                                     setFormData({...formData, enabled_payment_methods: methods});
                                                 }}
                                             />
                                         </div>
-                                    ))}
+                                    )) : (
+                                        <div className="text-center py-8 text-slate-500">
+                                            <p>No payment providers configured yet</p>
+                                            <p className="text-xs mt-1">Default providers will be assigned</p>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
 
                             <div>
-                                <h3 className="text-white font-semibold mb-4">Payout Methods</h3>
-                                <div className="grid grid-cols-2 gap-3">
-                                    {['Bank Transfer', 'Instant Payout', 'Crypto Payout', 'Digital Wallet'].map((method) => (
-                                        <div key={method} className="flex items-center justify-between p-3 bg-slate-900 rounded-lg border border-slate-700">
-                                            <span className="text-slate-300">{method}</span>
+                                <div className="flex items-center justify-between mb-4">
+                                    <h3 className="font-semibold text-slate-900">Payout Routes</h3>
+                                    <Badge>{formData.enabled_payout_methods.length} selected</Badge>
+                                </div>
+                                <div className="space-y-2">
+                                    {payoutRoutes.length > 0 ? payoutRoutes.map((route) => (
+                                        <div key={route.id} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-10 h-10 rounded bg-white border border-slate-200 flex items-center justify-center">
+                                                    <Wallet className="h-5 w-5 text-slate-600" />
+                                                </div>
+                                                <div>
+                                                    <p className="font-medium text-sm">{route.route_name}</p>
+                                                    <p className="text-xs text-slate-600">{route.channel_type} • {route.provider}</p>
+                                                </div>
+                                            </div>
                                             <Switch
-                                                checked={formData.enabled_payout_methods.includes(method)}
+                                                checked={formData.enabled_payout_methods.includes(route.id)}
                                                 onCheckedChange={(checked) => {
                                                     const methods = checked
-                                                        ? [...formData.enabled_payout_methods, method]
-                                                        : formData.enabled_payout_methods.filter(m => m !== method);
+                                                        ? [...formData.enabled_payout_methods, route.id]
+                                                        : formData.enabled_payout_methods.filter(m => m !== route.id);
                                                     setFormData({...formData, enabled_payout_methods: methods});
                                                 }}
                                             />
                                         </div>
-                                    ))}
+                                    )) : (
+                                        <div className="text-center py-8 text-slate-500">
+                                            <p>No payout routes configured yet</p>
+                                            <p className="text-xs mt-1">Default routes will be assigned</p>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </CardContent>
-                        <div className="flex justify-between p-6 border-t border-slate-700">
-                            <Button variant="outline" onClick={() => setStep(3)} className="border-slate-600 text-slate-300">
+                        <div className="flex justify-between p-6 border-t border-slate-200">
+                            <Button variant="outline" onClick={() => setStep(3)}>
                                 <ArrowLeft className="h-4 w-4 mr-2" />
                                 Back
                             </Button>
-                            <Button onClick={() => setStep(5)} className="gap-2">
-                                Continue
-                                <ArrowRight className="h-4 w-4" />
+                            <Button onClick={() => setStep(5)} className="bg-blue-600 hover:bg-blue-700">
+                                Review Configuration
+                                <ArrowRight className="h-4 w-4 ml-2" />
                             </Button>
                         </div>
                     </Card>
                 )}
 
-                {/* Step 5: Review & Launch */}
+                {/* Step 5: Deploy */}
                 {step === 5 && (
-                    <Card className="bg-slate-800/50 border-slate-700">
+                    <Card className="bg-white border-slate-200">
                         <CardHeader>
-                            <CardTitle className="text-white">Review & Launch</CardTitle>
-                            <CardDescription className="text-slate-400">Confirm your configuration and provision</CardDescription>
+                            <CardTitle>Deployment Review</CardTitle>
+                            <CardDescription>Verify configuration before infrastructure provisioning</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-6">
-                            <div className="grid grid-cols-2 gap-6">
-                                <div className="space-y-4">
-                                    <div>
-                                        <p className="text-xs text-slate-500 mb-1">PSP NAME</p>
-                                        <p className="text-white font-medium">{formData.psp_name}</p>
-                                    </div>
-                                    <div>
-                                        <p className="text-xs text-slate-500 mb-1">PSP CODE</p>
-                                        <p className="text-white font-mono">{formData.psp_code}</p>
-                                    </div>
-                                    <div>
-                                        <p className="text-xs text-slate-500 mb-1">DOMAIN</p>
-                                        <p className="text-white">{formData.domain || `${formData.subdomain}.fts.money`}</p>
-                                    </div>
+                            <div className="grid grid-cols-3 gap-4">
+                                <div>
+                                    <p className="text-xs text-slate-500 mb-1">PSP Code</p>
+                                    <p className="font-mono font-semibold">{formData.psp_code}</p>
                                 </div>
-                                <div className="space-y-4">
-                                    <div>
-                                        <p className="text-xs text-slate-500 mb-1">TIER</p>
-                                        <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">
-                                            {tiers.find(t => t.id === selectedTier)?.name}
-                                        </Badge>
-                                    </div>
-                                    <div>
-                                        <p className="text-xs text-slate-500 mb-1">PRICING</p>
-                                        <p className="text-white">{tiers.find(t => t.id === selectedTier)?.price}</p>
-                                        <p className="text-xs text-slate-500">or {tiers.find(t => t.id === selectedTier)?.revenue_share}% revenue share</p>
-                                    </div>
+                                <div>
+                                    <p className="text-xs text-slate-500 mb-1">PSP Name</p>
+                                    <p className="font-semibold">{formData.psp_name}</p>
+                                </div>
+                                <div>
+                                    <p className="text-xs text-slate-500 mb-1">Service Tier</p>
+                                    <Badge variant="outline">{tiers.find(t => t.id === selectedTier)?.name}</Badge>
+                                </div>
+                                <div>
+                                    <p className="text-xs text-slate-500 mb-1">Domain</p>
+                                    <p className="text-sm">{formData.domain || `${formData.subdomain}.fts.money`}</p>
+                                </div>
+                                <div>
+                                    <p className="text-xs text-slate-500 mb-1">Currency / Timezone</p>
+                                    <p className="text-sm">{formData.currency} / {formData.timezone}</p>
+                                </div>
+                                <div>
+                                    <p className="text-xs text-slate-500 mb-1">Contact</p>
+                                    <p className="text-sm">{formData.contact_email}</p>
                                 </div>
                             </div>
 
-                            <div className="p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg">
-                                <p className="text-sm text-blue-400 font-medium mb-2">What happens next?</p>
-                                <ul className="space-y-1 text-sm text-slate-300">
-                                    <li>✓ Instant infrastructure provisioning</li>
-                                    <li>✓ Database and storage allocation</li>
-                                    <li>✓ SSL certificate generation</li>
-                                    <li>✓ Feature activation based on tier</li>
-                                    <li>✓ Admin credentials sent to email</li>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                                    <h4 className="font-semibold text-sm mb-2">Payment Providers</h4>
+                                    <p className="text-2xl font-bold text-blue-600">{formData.enabled_payment_methods.length}</p>
+                                    <p className="text-xs text-slate-600">Providers mapped</p>
+                                </div>
+                                <div className="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                                    <h4 className="font-semibold text-sm mb-2">Payout Routes</h4>
+                                    <p className="text-2xl font-bold text-emerald-600">{formData.enabled_payout_methods.length}</p>
+                                    <p className="text-xs text-slate-600">Routes configured</p>
+                                </div>
+                            </div>
+
+                            <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                                <p className="text-sm font-medium text-blue-900 mb-2">Automated Deployment Process</p>
+                                <ul className="space-y-1 text-sm text-blue-800">
+                                    <li>• Infrastructure allocation and network configuration</li>
+                                    <li>• Database provisioning with automated schema deployment</li>
+                                    <li>• SSL/TLS certificate generation and DNS setup</li>
+                                    <li>• Payment provider integration and credential mapping</li>
+                                    <li>• Fee structure deployment based on tier configuration</li>
+                                    <li>• Admin portal access and credential distribution</li>
+                                    <li>• Monitoring and alerting configuration</li>
                                 </ul>
                             </div>
                         </CardContent>
-                        <div className="flex justify-between p-6 border-t border-slate-700">
-                            <Button variant="outline" onClick={() => setStep(4)} className="border-slate-600 text-slate-300">
+                        <div className="flex justify-between p-6 border-t border-slate-200">
+                            <Button variant="outline" onClick={() => setStep(4)}>
                                 <ArrowLeft className="h-4 w-4 mr-2" />
                                 Back
                             </Button>
                             <Button 
                                 onClick={handleProvision} 
                                 disabled={provisionMutation.isPending}
-                                className="gap-2 bg-gradient-to-r from-blue-600 to-purple-600"
+                                className="bg-blue-600 hover:bg-blue-700"
                                 size="lg"
                             >
-                                {provisionMutation.isPending ? 'Provisioning...' : 'Launch PSP'}
-                                <Rocket className="h-5 w-5" />
+                                {provisionMutation.isPending ? 'Deploying Infrastructure...' : 'Deploy PSP Instance'}
+                                <Rocket className="h-5 w-5 ml-2" />
                             </Button>
                         </div>
                     </Card>
