@@ -29,10 +29,11 @@ const menuItems = [
     { icon: Database, label: 'Provider Pool', path: 'FTSProviderPool', description: 'Payment providers', new: true },
     { icon: Wallet, label: 'Payout Routes', path: 'FTSPayoutRoutes', description: 'Payout methods', new: true },
     { icon: Zap, label: 'Fee Templates', path: 'FTSFeeTemplates', description: 'Pricing templates', new: true },
+    { icon: Sparkles, label: 'Service Registry', path: 'FTSServiceRegistry', description: 'Marketplace services', new: true },
     { icon: Shield, label: 'Compliance', path: 'FTSCompliance', description: 'Policy templates', new: true },
     { icon: FileText, label: 'Audit Logs', path: 'FTSAuditLogs', description: 'System audit', new: true },
     { icon: Settings, label: 'Platform Settings', path: 'FTSSettings', description: 'Configuration' },
-    { icon: FileText, label: 'Architecture Docs', path: 'FTSArchitectureDoc', description: 'System blueprint', new: true }
+    { icon: BookOpen, label: 'Architecture Docs', path: 'FTSArchitectureDoc', description: 'System blueprint', new: true }
 ];
 
 export default function FTSPlatformSidebar({ currentPage, userRole }) {
