@@ -48,10 +48,11 @@ export default function MyServiceRequests() {
         return null;
     }
 
-    const { data: myPSPs = [] } = useQuery({
+    const { data: myPSPs = [], isLoading: loadingPSPs } = useQuery({
         queryKey: ['my-psps', session.email],
         queryFn: async () => {
             const psps = await base44.entities.ProvisionedPSP.filter({ created_by: session.email });
+            console.log('My PSPs:', psps);
             return psps;
         }
     });
@@ -60,13 +61,21 @@ export default function MyServiceRequests() {
 
     const { data: paymentProviders = [] } = useQuery({
         queryKey: ['payment-providers'],
-        queryFn: () => base44.entities.PaymentProvider.list(),
+        queryFn: async () => {
+            const result = await base44.entities.PaymentProvider.list();
+            console.log('Payment Providers:', result);
+            return result;
+        },
         enabled: !!activePSP
     });
 
     const { data: payoutRoutes = [] } = useQuery({
         queryKey: ['payout-routes'],
-        queryFn: () => base44.entities.PayoutRoute.list(),
+        queryFn: async () => {
+            const result = await base44.entities.PayoutRoute.list();
+            console.log('Payout Routes:', result);
+            return result;
+        },
         enabled: !!activePSP
     });
 

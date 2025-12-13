@@ -53,11 +53,15 @@ export default function CommunityMarketplace() {
     const [selectedService, setSelectedService] = useState(null);
     const [selectedPSP, setSelectedPSP] = useState('');
 
-    const { data: services = [] } = useQuery({
+    const { data: services = [], isLoading: loadingServices } = useQuery({
         queryKey: ['marketplace-services'],
-        queryFn: () => base44.entities.ServiceCatalog.filter({ 
-            status: { $in: ['active', 'certified'] }
-        })
+        queryFn: async () => {
+            const result = await base44.entities.ServiceCatalog.filter({ 
+                status: { $in: ['active', 'certified'] }
+            });
+            console.log('Fetched services:', result);
+            return result;
+        }
     });
 
     const { data: providers = [] } = useQuery({
@@ -65,9 +69,13 @@ export default function CommunityMarketplace() {
         queryFn: () => base44.entities.ServiceProvider.list()
     });
 
-    const { data: psps = [] } = useQuery({
+    const { data: psps = [], isLoading: loadingPSPs } = useQuery({
         queryKey: ['provisioned-psps'],
-        queryFn: () => base44.entities.ProvisionedPSP.filter({ status: 'active' })
+        queryFn: async () => {
+            const result = await base44.entities.ProvisionedPSP.filter({ status: 'active' });
+            console.log('Fetched PSPs:', result);
+            return result;
+        }
     });
 
     const { data: subscriptions = [] } = useQuery({
