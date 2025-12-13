@@ -135,6 +135,7 @@ import FTSCompliance from './pages/FTSCompliance';
 import FTSArchitectureDoc from './pages/FTSArchitectureDoc';
 import FTSServiceRegistry from './pages/FTSServiceRegistry';
 import FTSServiceProviders from './pages/FTSServiceProviders';
+import CommunityMarketplace from './pages/CommunityMarketplace';
 import __Layout from './Layout.jsx';
 
 
@@ -276,6 +277,7 @@ export const PAGES = {
     "FTSArchitectureDoc": FTSArchitectureDoc,
     "FTSServiceRegistry": FTSServiceRegistry,
     "FTSServiceProviders": FTSServiceProviders,
+    "CommunityMarketplace": CommunityMarketplace,
 }
 
 export const pagesConfig = {

@@ -23,6 +23,7 @@ import {
 
 const menuItems = [
     { icon: Building2, label: 'PSP Instances', path: 'PSPProvisioning', description: 'Manage PSPs' },
+    { icon: Sparkles, label: 'Community Market', path: 'CommunityMarketplace', description: 'Browse & subscribe', new: true },
     { icon: BarChart3, label: 'Analytics', path: 'FTSAnalytics', description: 'Cross-PSP metrics' },
     { icon: DollarSign, label: 'Revenue', path: 'FTSRevenue', description: 'Billing & revenue' },
     { icon: Users, label: 'Clients', path: 'FTSClients', description: 'Client management' },
