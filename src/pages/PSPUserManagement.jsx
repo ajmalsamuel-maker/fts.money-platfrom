@@ -92,7 +92,9 @@ export default function PSPUserManagement() {
                             <SelectContent>
                                 <SelectItem value={null}>All PSPs</SelectItem>
                                 {psps.map(psp => (
-                                    <SelectItem key={psp} value={psp}>{psp}</SelectItem>
+                                    <SelectItem key={psp.psp_code} value={psp.psp_code}>
+                                        {psp.psp_name} ({psp.psp_code})
+                                    </SelectItem>
                                 ))}
                             </SelectContent>
                         </Select>
