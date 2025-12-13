@@ -203,7 +203,7 @@ export default function PSPProvisioning() {
                                                 <Button 
                                                     size="sm"
                                                     variant="outline"
-                                                    onClick={() => navigate(createPageUrl('PSPInstanceManagement', `?id=${psp.id}`))}
+                                                    onClick={() => navigate(createPageUrl('PSPInstanceManagement') + `?id=${psp.id}`)}
                                                 >
                                                     Manage
                                                 </Button>
@@ -214,11 +214,11 @@ export default function PSPProvisioning() {
                                                         </Button>
                                                     </DropdownMenuTrigger>
                                                     <DropdownMenuContent align="end">
-                                                        <DropdownMenuItem onClick={() => navigate(createPageUrl('PSPInstanceConfig', `?id=${psp.id}`))}>
+                                                        <DropdownMenuItem onClick={() => navigate(createPageUrl('PSPInstanceConfig') + `?id=${psp.id}`)}>
                                                             <Settings className="h-4 w-4 mr-2" />
                                                             Configure
                                                         </DropdownMenuItem>
-                                                        <DropdownMenuItem onClick={() => navigate(createPageUrl('PSPInstanceManagement', `?id=${psp.id}`))}>
+                                                        <DropdownMenuItem onClick={() => navigate(createPageUrl('PSPInstanceManagement') + `?id=${psp.id}`)}>
                                                             <Activity className="h-4 w-4 mr-2" />
                                                             View Logs
                                                         </DropdownMenuItem>
