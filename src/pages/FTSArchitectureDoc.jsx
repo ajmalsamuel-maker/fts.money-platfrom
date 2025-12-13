@@ -17,11 +17,2326 @@ import {
     Target,
     TrendingUp,
     CheckCircle2,
-    Calendar
+    Calendar,
+    Download,
+    FileText
 } from 'lucide-react';
 
 export default function FTSArchitectureDoc() {
     const navigate = useNavigate();
+
+    const handleDownloadPDF = () => {
+        // Create detailed markdown content
+        const content = generateMarkdownDocument();
+        const blob = new Blob([content], { type: 'text/markdown' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'FTS-Money-Ecosystem-Architecture.md';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        a.remove();
+    };
+
+    const generateMarkdownDocument = () => {
+        return `# FTS.Money Ecosystem Architecture
+## Complete Platform, Marketplace & Community Blueprint
+**Version 1.0 | December 2025**
+
+---
+
+## Executive Summary
+
+FTS.Money is undergoing a fundamental architectural transformation—evolving from a traditional white-label Payment Service Provider (PSP) platform into a sophisticated three-layer ecosystem. This document outlines the complete strategy for building a Platform-as-a-Service (PaaS) model with an integrated community marketplace, positioning FTS.Money as the industry-leading infrastructure for payment service providers globally.
+
+### The Strategic Shift
+
+**From:** Individual PSP instances with duplicate features and siloed operations  
+**To:** A unified control plane powering a two-sided marketplace where service providers offer best-in-class capabilities that PSPs subscribe to on-demand.
+
+### Market Opportunity
+
+The global payments infrastructure market is valued at $2.3 trillion, with PSPs and payment orchestration platforms representing the fastest-growing segment. However, most PSPs struggle with:
+
+- **High Development Costs:** Building compliance, fraud detection, and orchestration systems from scratch
+- **Slow Time-to-Market:** 12-18 months to launch with basic features
+- **Limited Innovation:** Resources focused on infrastructure rather than differentiation
+- **Fragmented Provider Management:** Separate contracts with dozens of vendors
+
+FTS.Money's ecosystem model solves these challenges by providing instant access to enterprise-grade services through a single platform, dramatically reducing PSP operational complexity while unlocking new revenue streams through marketplace commissions and service subscriptions.
+
+---
+
+## 1. Strategic Vision & Concept
+
+### 1.1 The Paradigm Shift
+
+Traditional PSP platforms operate as isolated instances, each requiring independent development, provider relationships, and compliance infrastructure. This model is:
+
+- **Inefficient:** Features must be rebuilt for each PSP client
+- **Costly:** Each PSP negotiates separate terms with service providers
+- **Slow:** Updates and new features take months to deploy across instances
+- **Limited:** Small PSPs can't access enterprise-grade tools
+
+The FTS.Money ecosystem introduces a fundamentally different approach inspired by successful platform models like Stripe Connect, Shopify App Store, and AWS Marketplace.
+
+### 1.2 The Three-Layer Model
+
+**Layer 1: FTS.Money Control Plane**  
+The infrastructure foundation that provisions PSP instances, manages global provider pools, sets compliance policies, and curates the marketplace. Think of this as AWS for payment platforms—centralized management of distributed infrastructure.
+
+**Layer 2: FTS Community Marketplace**  
+A two-sided platform connecting vetted service providers (payment rails, compliance vendors, crypto infrastructure, developer tools) with PSP subscribers who can enable services with one click. This is where the ecosystem monetization occurs through service subscriptions and usage-based fees.
+
+**Layer 3: PSP Portal (Lightweight Consumer)**  
+Individual PSP instances become lightweight service consumers rather than monolithic applications. They maintain branded interfaces and merchant relationships while orchestrating backend services from the marketplace. This reduces PSP operational overhead by 70%.
+
+**Layer 4: Merchant Portal**  
+End merchants interact with their PSP's branded portal, transparently consuming the services their PSP has enabled—completely unaware of the underlying marketplace architecture.
+
+### 1.3 Market Validation
+
+This model isn't theoretical—it's proven by industry leaders:
+
+**Stripe Connect ($95B valuation):**  
+- Platform model with 100+ app integrations
+- Revenue from platform fees + transaction share
+- Powers marketplaces like Shopify, Instacart, Lyft
+
+**Plaid Exchange ($13.4B valuation):**  
+- Ecosystem of 50+ data providers
+- Single API for financial institutions
+- 25% commission on partner revenue
+
+**Shopify App Store:**  
+- 8,000+ third-party apps
+- $1B+ annual partner revenue
+- Average merchant subscribes to 6 apps
+
+FTS.Money uniquely combines these models specifically for the PSP infrastructure market—a $50B+ opportunity with no dominant platform player.
+
+---
+
+## 2. Four-Layer Architecture Deep Dive
+
+### 2.1 Layer 1: FTS.Money Control Plane
+
+**Role:** Platform operator, infrastructure provisioner, marketplace curator, compliance enforcer
+
+**Core Responsibilities:**
+
+1. **PSP Instance Provisioning**
+   - Automated infrastructure deployment (compute, storage, networking)
+   - Database provisioning with schema migration
+   - SSL/TLS certificate generation and DNS configuration
+   - Subdomain allocation (e.g., acme.fts.money) or custom domain mapping
+   - Admin portal access and credential distribution
+   - Service tier configuration (Starter/Professional/Enterprise/Custom)
+
+2. **Global Provider Pool Management**
+   - Payment provider onboarding and certification
+   - Acquirer relationship management
+   - Bank MID allocation and routing
+   - Crypto exchange integrations
+   - Alternative payment method (APM) partnerships
+   - Provider performance monitoring and SLA enforcement
+
+3. **Payout Route Configuration**
+   - Global payout method registry (SWIFT, SEPA, ACH, PIX, UPI, crypto)
+   - Banking partner integrations
+   - Instant payment rail connections (FedNow, Faster Payments)
+   - Payout orchestration rules and failover logic
+   - Settlement account management
+
+4. **Fee Template Administration**
+   - Tier-based pricing models
+   - Volume-based discount structures
+   - Currency-specific fee configurations
+   - Payment method pricing (card, crypto, APM)
+   - Revenue share calculations
+   - Automated billing and invoicing
+
+5. **Marketplace Curation**
+   - Service provider certification process
+   - Security and compliance audits (SOC 2, PCI-DSS)
+   - API quality standards enforcement
+   - Performance benchmarking (uptime, latency, error rates)
+   - Service rating and review system
+   - Dispute resolution between providers and PSPs
+
+6. **Compliance Policy Setting**
+   - Global KYB/KYC standards
+   - AML screening requirements by jurisdiction
+   - PCI-DSS compliance monitoring
+   - FATF compliance enforcement
+   - Data residency and privacy (GDPR, CCPA)
+   - Audit trail and regulatory reporting
+
+**Technical Components:**
+
+\`\`\`
+ProvisionedPSP Entity
+├─ Infrastructure Configuration
+├─ Service Subscriptions
+├─ Provider Pool Assignments
+├─ Payout Route Mappings
+├─ Fee Structure Templates
+├─ Compliance Rule Sets
+└─ Usage Metrics & Billing
+
+PSPAuditTrail Entity
+├─ Configuration Changes
+├─ Service Activations
+├─ Provider Updates
+├─ User Actions
+└─ System Events
+
+PSPInstanceLog Entity
+├─ Deployment Logs
+├─ Error Tracking
+├─ Performance Metrics
+└─ Security Events
+\`\`\`
+
+### 2.2 Layer 2: FTS Community Marketplace
+
+**The Heart of the Ecosystem:** This is where the platform's network effects compound. More service providers → more PSP value → more PSPs → more provider revenue → more providers join.
+
+#### 2.2.1 Left Side: Service Provider Ecosystem
+
+**A. Payment Infrastructure Providers**
+
+*Card Networks*
+- Visa, Mastercard, American Express, Discover
+- Network tokenization services
+- 3DS authentication servers
+- Chargeback management integrations
+- **Revenue Model:** Per-transaction fees + interchange
+
+*Acquirers & Payment Processors*
+- Stripe, Adyen, Checkout.com, Worldpay
+- Local acquirers in 50+ markets
+- Specialized processors (high-risk, crypto-friendly)
+- ISO partnerships
+- **Revenue Model:** Processing fees + volume bonuses
+
+*Alternative Payment Methods*
+- Digital wallets: PayPal, Apple Pay, Google Pay, Samsung Pay
+- Asian payments: Alipay, WeChat Pay, UnionPay, Paytm, GCash
+- European: Klarna, Sofort, iDEAL, Bancontact, Giropay
+- Latin America: Pix, Mercado Pago, OXXO
+- BNPL: Affirm, Afterpay, Zip, Sezzle
+- **Revenue Model:** 1.5-3.5% per transaction
+
+*Crypto Infrastructure*
+- Exchanges: Coinbase Commerce, Binance Pay, Kraken
+- On/Off Ramps: MoonPay, Wyre, Simplex
+- Custody: Fireblocks, BitGo, Anchorage, Copper
+- Blockchain Analytics: Chainalysis, Elliptic, TRM Labs
+- **Revenue Model:** 1-2% + network fees
+
+*Instant Payment Rails*
+- US: FedNow, RTP (The Clearing House)
+- Brazil: PIX
+- India: UPI
+- UK: Faster Payments
+- EU: SEPA Instant, Target Instant Payment Settlement (TIPS)
+- Singapore: PayNow
+- **Revenue Model:** Fixed fee per transaction ($0.01-0.50)
+
+*Banking-as-a-Service*
+- Solarisbank, Railsbank, Treasury Prime
+- Embedded banking accounts
+- Multi-currency accounts
+- Virtual IBANs
+- **Revenue Model:** Monthly + transaction fees
+
+**B. Compliance & Identity Service Providers**
+
+*KYB/KYC Verification*
+- **Trulioo:** Global business verification in 195+ countries ($5-8 per check)
+- **Jumio:** Document verification with liveness detection ($6-10 per verification)
+- **Onfido:** Video KYC and biometric authentication ($8-12 per check)
+- **IDnow:** EU-focused identity verification ($5-8 per check)
+- **Persona:** Customizable identity flows ($3-6 per check)
+- **FTS AI Basic:** Entry-level verification ($2 per check)
+
+*Strategy:* PSPs choose providers based on:
+- Geographic coverage (Trulioo best for emerging markets)
+- Verification depth (Onfido for high-risk merchants)
+- Cost (FTS AI for low-risk checks)
+- Compliance requirements (IDnow for EU regulations)
+
+*AML Screening & Transaction Monitoring*
+- **ComplyAdvantage:** Real-time watchlist screening ($2-5 per check)
+- **Chainalysis:** Crypto AML and transaction monitoring ($0.50-2 per check)
+- **Elliptic:** Crypto risk scoring and forensics ($1-3 per check)
+- **World-Check (Refinitiv):** Premium screening ($5-10 per check)
+- **FTS AI Basic:** Rule-based screening ($0.50 per check)
+
+*Ongoing Monitoring:* $25-100/month per merchant for continuous screening
+
+*LEI/vLEI Services*
+- **Bloomberg LEI:** Global coverage ($180 issuance, $90 annual renewal)
+- **Refinitiv LEI:** Americas focus ($150 issuance, $75 renewal)
+- **London Stock Exchange (LSEG):** EU coverage ($165 issuance)
+- **DTCC LEI:** US-centric ($140 issuance)
+- **Regional RAs:** Cost-effective local options ($100-120 issuance)
+
+*vLEI (Verifiable LEI):*
+- Blockchain-based digital credentials
+- Instant verification without API calls to GLEIF
+- One-time issuance: +$50 to standard LEI cost
+- Verification: $5 per check
+- Annual renewal: $60
+
+*Strategic Opportunity:* FTS.Money could become a GLEIF-accredited Registration Agent (RA):
+- One-time accreditation cost: ~$50,000
+- Keep 100% of LEI issuance fees (vs 15-20% commission)
+- Control entire verification workflow
+- Differentiator for enterprise PSPs
+
+*Fraud Detection & Prevention*
+- **Sift:** ML-based fraud scoring ($0.05-0.10 per transaction)
+- **Kount:** Advanced risk assessment ($0.08-0.15 per transaction)
+- **Forter:** Chargeback guarantee model ($0.10-0.20 per transaction)
+- **Riskified:** E-commerce fraud prevention ($0.10-0.25 per transaction)
+- **FTS AI Fraud Suite:** Integrated with orchestration ($0.05 per check)
+
+*Document Verification*
+- **Onfido:** Passport, ID, driver's license ($3-6 per document)
+- **Jumio:** 4,000+ document types ($3-7 per document)
+- **AU10TIX:** Government ID verification ($2-5 per document)
+- **FTS AI OCR:** Basic extraction ($1 per document)
+
+*3D Secure Services*
+- Visa 3DS Server
+- Mastercard Identity Check
+- Cardinal Commerce (Visa-owned)
+- **Pricing:** $0.05-0.15 per authentication
+
+**C. Financial Service Providers**
+
+*Treasury Management*
+- FX optimization and hedging
+- Multi-currency treasury accounts
+- Yield optimization on reserves
+- **Revenue Model:** Basis points on balances + FX spread
+
+*Embedded Lending*
+- Merchant cash advances
+- Invoice financing
+- BNPL for merchant customers
+- **Revenue Model:** Interest spread + origination fees
+
+*Insurance & Risk Transfer*
+- Chargeback insurance
+- Fraud loss coverage
+- Cyber liability
+- **Revenue Model:** % of insured volume
+
+**D. Technology Service Providers**
+
+*Smart Routing Engines*
+- ML-based provider selection
+- Real-time performance optimization
+- Cost optimization algorithms
+- **Revenue Model:** Subscription + % of optimized savings
+
+*Reconciliation & Accounting*
+- Automated transaction matching
+- Multi-provider reconciliation
+- Accounting system integrations (QuickBooks, Xero, NetSuite)
+- **Revenue Model:** Monthly subscription + per-record fees
+
+*Reporting & Business Intelligence*
+- Advanced analytics dashboards
+- Predictive modeling
+- Merchant benchmarking
+- **Revenue Model:** Tiered subscriptions
+
+*Developer Tools*
+- Testing frameworks
+- API documentation generators
+- SDK maintenance
+- Monitoring and observability
+- **Revenue Model:** Usage-based or flat fee
+
+#### 2.2.2 Right Side: PSP Subscriber Experience
+
+**Service Discovery**
+- Searchable catalog with filters (category, pricing, region, ratings)
+- Featured services and recommendations
+- Integration complexity indicators
+- Case studies and success metrics
+
+**One-Click Subscription**
+- Pre-negotiated terms (no individual contracts needed)
+- Instant API key provisioning
+- Automated webhook configuration
+- Usage-based billing starts immediately
+
+**Service Configuration**
+- Custom parameter settings per PSP
+- Merchant-level routing rules
+- Fallback and failover configuration
+- Real-time testing and validation
+
+**Usage Monitoring**
+- Live usage dashboards
+- Cost tracking and projections
+- Performance metrics (success rates, latency, errors)
+- Alert configuration for anomalies
+
+**Service Management**
+- One-click enable/disable
+- Version updates (automated or manual)
+- Support ticket integration
+- Rate and review services
+
+#### 2.2.3 Community Features
+
+**Member Profiles**
+- **FinTech Role:** PSP operators, payment companies, financial institutions
+  - Access to service marketplace
+  - Participation in challenges
+  - Industry networking
+  
+- **Developer Role:** Technical integrators, solution builders
+  - API access and SDKs
+  - Hackathon participation
+  - Code repository access
+  
+- **Influencer Role:** Industry experts, consultants, advisors
+  - Thought leadership platform
+  - Mentorship programs
+  - Content creation rewards
+  
+- **Service Provider Role:** Marketplace vendors
+  - Service listings
+  - Revenue analytics dashboard
+  - Customer feedback system
+
+**Fluidity Index Gamification**
+
+A proprietary scoring system that measures member engagement, impact, and value contribution:
+
+*Score Components:*
+1. **Transaction Volume (40%):** Total payment volume processed
+2. **Community Engagement (20%):** Forum posts, event participation, mentorship
+3. **ESG Impact (15%):** Financial inclusion metrics, green payment adoption
+4. **Innovation Index (15%):** New services launched, patents filed, hackathon wins
+5. **Compliance Score (10%):** Audit pass rates, incident-free operations
+
+*Score Benefits:*
+- 0-30: Basic member
+- 31-60: Featured in directory, access to beta features
+- 61-80: Priority support, reduced marketplace fees (-5%)
+- 81-100: VIP tier (reduced fees -10%, exclusive events, dedicated account manager)
+
+*Monetization:*
+- Members pay to boost visibility
+- Leaderboards drive competitive behavior
+- Unlocks premium features and discounts
+
+**Challenges & Hackathons**
+
+*Monthly Innovation Challenges:*
+- Build the best fraud detection model (prize: $10,000)
+- Fastest payment orchestration algorithm
+- Most innovative crypto on-ramp solution
+- Best merchant onboarding UX
+
+*Quarterly Hackathons:*
+- 48-hour coding events
+- Themes: AI in payments, DeFi integration, ESG metrics
+- Prizes: Cash + marketplace credits + FTS partnership opportunities
+
+*Benefits:*
+- Community engagement and content generation
+- Talent recruitment pipeline
+- Product innovation crowdsourcing
+- Platform differentiation
+
+**Discussion Forums**
+
+*Categories:*
+- Technical Q&A
+- Regulatory updates and interpretation
+- Payment industry news
+- Integration troubleshooting
+- Best practices and case studies
+
+*Moderation:*
+- FTS team + community moderators
+- Reputation system (upvotes, accepted answers)
+- Expert badges and verification
+
+### 2.3 Layer 3: PSP Portal (Lightweight Service Consumer)
+
+**Strategic Reorientation:** The PSP Portal transforms from a feature-rich monolith to a thin orchestration layer. Instead of building merchant onboarding, fraud detection, routing, and reporting from scratch, PSPs now configure and consume these as services.
+
+**Core Features (Kept in PSP Portal):**
+
+1. **Dashboard**
+   - PSP-branded interface with their logo and colors
+   - High-level metrics (daily volume, active merchants, success rate)
+   - Recent transactions and alerts
+   - Service status indicators
+
+2. **Merchant Onboarding Hub**
+   - Workflow designer for onboarding steps
+   - Calls marketplace services (KYB, AML, LEI, document verification)
+   - Aggregates results and displays unified approval screen
+   - Manages merchant lifecycle (approved → active → suspended)
+
+3. **Basic Merchant List**
+   - Read-only view of merchants
+   - Search and filtering
+   - Quick actions (view details, suspend, contact)
+
+4. **Transaction Viewer**
+   - Simple transaction history
+   - Status tracking
+   - Basic filtering (date, amount, status)
+   - Links to detailed reports (powered by Advanced Analytics service)
+
+5. **Service Marketplace UI**
+   - Browse available services
+   - Subscribe/unsubscribe to services
+   - Configure service parameters
+   - Monitor usage and costs
+
+6. **Settings & Appearance**
+   - Branding customization (logo, colors, domain)
+   - User management (invite staff, assign roles)
+   - Notification preferences
+   - API key management
+
+**Removed/Deprecated Features:**
+- Smart routing engine → Migrated to FTS Payment Orchestration Service
+- Fraud detection → Migrated to FTS AI Fraud Suite
+- Crypto gateway → Migrated to FTS Crypto Gateway Service
+- Advanced analytics → Migrated to FTS Advanced Analytics Service
+- Compliance automation → Migrated to FTS Compliance Suite
+- Sub-merchant management → Migrated to FTS Sub-Merchant Platform
+
+**Key Insight:** PSPs no longer build or maintain complex features. They focus on:
+- Merchant relationships and sales
+- Brand differentiation
+- Customer support
+- Service configuration and optimization
+
+This reduces PSP operational overhead by ~70% and time-to-market from 12-18 months to 4-6 weeks.
+
+### 2.4 Layer 4: Merchant Portal
+
+**Minimal Changes Required**
+
+Merchants continue to interact with their PSP's branded portal without knowing about the underlying marketplace architecture. The experience is seamless:
+
+- Payment forms and checkouts work identically
+- Transaction history shows the same details
+- Settlement schedules remain consistent
+- Support is still provided by their PSP
+
+**Transparency:** Merchants are unaware that their PSP is consuming services from the FTS marketplace. From their perspective, everything is provided directly by their PSP—which it is, just orchestrated rather than built in-house.
+
+---
+
+## 3. Critical Use Case: Merchant Onboarding Workflow
+
+Merchant onboarding is the perfect example of marketplace orchestration. Traditionally, each PSP would:
+- Build their own onboarding form
+- Integrate separately with Trulioo, ComplyAdvantage, GLEIF, etc.
+- Develop custom logic for approval rules
+- Manually review documents
+
+With the FTS marketplace, this becomes automated service orchestration:
+
+### 3.1 Complete Onboarding Flow
+
+**Step 1: PSP Portal (Information Collection)**
+
+Merchant completes application form:
+- Business Information: Legal name, trading name, website, business type
+- Contact Details: Email, phone, address
+- Business Structure: Sole proprietor, LLC, corporation, etc.
+- Tax Information: EIN/VAT, tax jurisdiction
+- Processing Details: Expected volume, average ticket, MCC code
+- Bank Account: For settlements
+- Document Upload: Registration certificates, licenses, utility bills
+
+**Step 2: PSP Portal → Marketplace (KYB Verification)**
+
+\`\`\`
+POST /marketplace/services/kyb
+{
+  "service_id": "trulioo_business_verification",
+  "merchant_data": {
+    "business_name": "Acme Corp",
+    "registration_number": "12345678",
+    "country": "US",
+    "address": {...}
+  }
+}
+
+Response:
+{
+  "verification_id": "kyb_abc123",
+  "status": "verified",
+  "confidence_score": 0.94,
+  "match_details": {
+    "business_name": "MATCH",
+    "registration_number": "MATCH",
+    "address": "MATCH"
+  },
+  "cost": 5.00,
+  "provider": "Trulioo"
+}
+\`\`\`
+
+**Cost:** $5.00 charged to PSP's marketplace account
+
+**Step 3: PSP Portal → Marketplace (Document Verification)**
+
+\`\`\`
+POST /marketplace/services/document-verification
+{
+  "service_id": "onfido_document_check",
+  "documents": [
+    {
+      "type": "business_registration",
+      "file_url": "https://..."
+    },
+    {
+      "type": "proof_of_address",
+      "file_url": "https://..."
+    }
+  ]
+}
+
+Response:
+{
+  "verification_id": "doc_xyz789",
+  "status": "clear",
+  "documents": [
+    {
+      "type": "business_registration",
+      "extracted_data": {
+        "company_name": "Acme Corp",
+        "registration_date": "2020-01-15",
+        "registration_number": "12345678"
+      },
+      "authenticity_score": 0.98
+    },
+    {...}
+  ],
+  "cost": 8.00,
+  "provider": "Onfido"
+}
+\`\`\`
+
+**Cost:** $8.00 per document verification
+
+**Step 4: PSP Portal → Marketplace (LEI Issuance - Large Merchants Only)**
+
+For merchants processing >$10M annually or operating in regulated markets, LEI is required:
+
+\`\`\`
+POST /marketplace/services/lei-issuance
+{
+  "service_id": "bloomberg_lei",
+  "merchant_data": {
+    "legal_name": "Acme Corp",
+    "legal_form": "LLC",
+    "registration_authority": "Delaware",
+    "headquarters_address": {...}
+  }
+}
+
+Response:
+{
+  "lei": "549300ABCDEF12345678",
+  "issuance_date": "2025-01-15",
+  "expiration_date": "2026-01-15",
+  "status": "issued",
+  "cost": 150.00,
+  "annual_renewal_cost": 75.00,
+  "provider": "Bloomberg LEI"
+}
+\`\`\`
+
+**Cost:** $150 issuance (passed to merchant as onboarding fee)  
+**Annual Renewal:** $75 (recurring charge to merchant)
+
+**Optional vLEI:**
+- Additional $50 for blockchain-based verifiable credential
+- Enables instant verification without API calls
+
+**Step 5: PSP Portal → Marketplace (AML Screening)**
+
+\`\`\`
+POST /marketplace/services/aml-screening
+{
+  "service_id": "complyadvantage_screening",
+  "entity": {
+    "type": "business",
+    "name": "Acme Corp",
+    "registration_number": "12345678",
+    "country": "US",
+    "ubo_list": [
+      {"name": "John Smith", "ownership": 60},
+      {"name": "Jane Doe", "ownership": 40}
+    ]
+  }
+}
+
+Response:
+{
+  "screening_id": "aml_def456",
+  "status": "no_match",
+  "watchlist_checks": {
+    "sanctions": "clear",
+    "pep": "clear",
+    "adverse_media": "clear"
+  },
+  "risk_score": 12,  // Low risk (0-100 scale)
+  "ongoing_monitoring": {
+    "enabled": true,
+    "monthly_cost": 25.00
+  },
+  "cost": 2.00,
+  "provider": "ComplyAdvantage"
+}
+\`\`\`
+
+**Cost:** $2.00 initial screening + $25/month ongoing monitoring
+
+**Step 6: PSP Portal → Marketplace (Risk Assessment)**
+
+\`\`\`
+POST /marketplace/services/risk-scoring
+{
+  "service_id": "fts_ai_risk",
+  "merchant_profile": {
+    "kyb_result": {...},
+    "aml_result": {...},
+    "industry": "E-commerce",
+    "expected_volume": 500000,
+    "average_ticket": 75,
+    "chargeback_rate_estimate": 0.003
+  }
+}
+
+Response:
+{
+  "risk_score": 45,  // Medium-low risk
+  "risk_category": "standard",
+  "recommended_actions": [
+    "3DS required for transactions >$100",
+    "Daily settlement (no reserves needed)",
+    "Standard chargeback monitoring"
+  ],
+  "cost": 1.00,
+  "provider": "FTS AI"
+}
+\`\`\`
+
+**Cost:** $1.00 (included in PSP tier pricing)
+
+**Step 7: PSP Portal (Final Decision)**
+
+PSP reviews aggregated results:
+- ✅ KYB: Verified
+- ✅ Documents: Authentic
+- ✅ LEI: Issued (for enterprise merchants)
+- ✅ AML: No matches, low risk
+- ✅ Risk Score: 45 (acceptable)
+
+**Approval Decision:**
+- Auto-approve if all checks pass and risk score < 50
+- Manual review if any check fails or risk score 50-70
+- Auto-reject if risk score > 70 or sanctions match
+
+**Total Onboarding Cost:**
+- KYB: $5
+- Document Verification: $8
+- LEI (optional): $150
+- AML: $2
+- Risk Scoring: $1
+- **Total: $16-166 per merchant**
+
+PSP can:
+- Absorb cost (merchant acquisition investment)
+- Pass to merchant as onboarding fee
+- Build into monthly subscription
+
+**Key Advantages:**
+1. **No Direct Contracts:** PSP doesn't negotiate with Trulioo, Onfido, ComplyAdvantage—FTS handles it
+2. **One API:** All services called through unified FTS marketplace API
+3. **Instant Updates:** When ComplyAdvantage updates their database, all PSPs benefit immediately
+4. **Cost Transparency:** Real-time cost tracking per merchant
+5. **Flexibility:** PSPs can choose which services to use based on merchant risk profile
+
+### 3.2 Multi-Provider Strategy
+
+PSPs on Professional or Enterprise tiers can configure routing rules:
+
+\`\`\`yaml
+kyb_routing:
+  - if merchant_country in [US, CA, UK, EU]:
+      use: trulioo_business_verification
+  - else if merchant_country in [BR, MX, AR]:
+      use: regional_provider_latam
+  - else:
+      use: fts_ai_basic_kyb
+
+document_verification_routing:
+  - if merchant_risk_score > 60:
+      use: onfido_enhanced  # Higher accuracy, $10 per document
+  - else:
+      use: fts_ai_ocr  # Cost-effective, $2 per document
+\`\`\`
+
+This gives PSPs the best of both worlds:
+- High-quality verification for high-risk merchants
+- Cost-effective verification for low-risk merchants
+- Automatic failover if primary provider is down
+
+---
+
+## 4. Monetization Model & Financial Projections
+
+### 4.1 Five Revenue Streams
+
+**Revenue Stream 1: PSP Platform Subscriptions**
+
+*Tier Structure:*
+
+**Starter Tier**
+- Monthly Fee: $2,000
+- Revenue Share: 30%
+- Max Payment Providers: 1
+- Max Merchants: 100
+- Core Features: Payment processing, merchant portal, virtual terminal, reporting
+- Advanced Features: API access
+- Compliance: PCI-DSS, KYB, AML basic
+- Support: Email (48hr response)
+- Target Market: New PSPs, regional players, testing market fit
+
+**Professional Tier** ⭐ Most Popular
+- Monthly Fee: $5,000
+- Revenue Share: 25%
+- Max Payment Providers: 3
+- Max Merchants: 1,000
+- Core Features: All Starter features
+- Advanced Features: Smart routing, AI fraud detection, crypto payments, API access, webhooks, smart retry
+- Compliance: PCI-DSS, KYB, AML advanced, FATF
+- Support: Priority (24hr response)
+- Target Market: Growth-stage PSPs, multi-market operators
+
+**Enterprise Tier**
+- Monthly Fee: $10,000
+- Revenue Share: 20%
+- Max Payment Providers: 10
+- Max Merchants: Unlimited
+- Core Features: All Professional features
+- Advanced Features: Network tokenization, account updater, sub-merchant platform, split payments, instant settlements
+- Compliance: PCI-DSS, KYB, AML enterprise, FATF, LEI verification
+- Support: Dedicated account manager (4hr response, Slack channel)
+- Target Market: Established PSPs, enterprise clients, marketplace platforms
+
+**Custom Tier**
+- Monthly Fee: Custom (typically $15,000-50,000)
+- Revenue Share: 15%
+- Max Payment Providers: Unlimited
+- Max Merchants: Unlimited
+- Core Features: All Enterprise features
+- Advanced Features: Custom integrations, white-glove onboarding, regulatory consultation
+- Compliance: Custom compliance frameworks
+- Support: Dedicated team, 1hr SLA, on-call support
+- Target Market: Large PSPs, banks, regulated entities
+
+**Revenue Stream 2: FTS-Owned Service Subscriptions**
+
+These services are developed and operated by FTS, so margins are 100%:
+
+*Payment Orchestration Service*
+- Base: $500/month
+- Volume-Based: + 0.05% per transaction routed
+- Features: Smart routing, MID routing, load balancing, cascade logic, real-time failover
+- Target Users: Professional+ tier PSPs
+- Estimated ARR: $6,000 base + $30,000 volume (avg PSP) = $36,000 per PSP/year
+
+*AI Fraud Suite*
+- Base: $1,000/month
+- Usage-Based: + $0.10 per fraud check
+- Features: ML scoring, anomaly detection, network tokenization, account updater, 3DS orchestration
+- Target Users: All tiers (fraud is critical)
+- Estimated ARR: $12,000 base + $24,000 usage = $36,000 per PSP/year
+
+*Crypto Gateway Service*
+- Base: $2,000/month
+- Volume-Based: + 1% per crypto transaction
+- Features: Multi-chain support, on/off ramp, custody integration, compliance, tax reporting
+- Target Users: PSPs serving crypto merchants
+- Estimated ARR: $24,000 base + $60,000 volume (3% crypto adoption) = $84,000 per PSP/year
+
+*Advanced Analytics Service*
+- Base: $750/month
+- Features: BI dashboards, predictive analytics, merchant benchmarking, cohort analysis
+- Target Users: Professional+ tier PSPs
+- Estimated ARR: $9,000 per PSP/year
+
+*Sub-Merchant Platform*
+- Base: $1,500/month
+- Split Fee: + 0.5% per split payment
+- Features: Marketplace infrastructure, automated split payments, sub-merchant onboarding, separate payouts
+- Target Users: Marketplace platforms (Shopify-like PSPs)
+- Estimated ARR: $18,000 base + $40,000 split fees = $58,000 per PSP/year
+
+*Developer API Suite*
+- Base: $300/month
+- Usage Tiers: Free (10K API calls/mo), $300 (100K), $500 (1M), $1,000 (unlimited)
+- Features: Unified API, webhooks, SDKs (Python, Node, PHP, Ruby), sandbox environment, Postman collection
+- Target Users: All tiers with developers
+- Estimated ARR: $3,600-12,000 per PSP/year
+
+**Revenue Stream 3: Marketplace Commissions (Third-Party Services)**
+
+FTS takes 15-25% commission on all third-party service subscriptions:
+
+*Commission Structure:*
+- Standard Partners: 20% commission
+- Strategic Partners (Trulioo, ComplyAdvantage): 15% commission (volume discounts)
+- Premium Listings: +$500-2,000/year for featured placement
+
+*Example Calculation:*
+
+A Professional tier PSP with 500 merchants onboards 50 new merchants per month:
+- KYB checks (Trulioo): 50 × $5 = $250/month → FTS earns $50 (20%)
+- Document verification (Onfido): 50 × $8 = $400/month → FTS earns $80 (20%)
+- AML screening (ComplyAdvantage): 50 × $2 + (500 × $25/month monitoring) = $12,600/month → FTS earns $1,890 (15%)
+- LEI issuance (5 enterprise merchants/month): 5 × $150 = $750 → FTS earns $150 (20%)
+
+**Total Monthly Commission:** $2,170/month = $26,040/year per PSP
+
+**Revenue Stream 4: Premium Community Memberships**
+
+*Tier Structure:*
+
+**Basic Membership: Free**
+- Access to forums
+- View marketplace catalog
+- Basic Fluidity Index score
+- Attend public webinars
+
+**Influencer Membership: $99/month**
+- Featured profile in directory
+- Publish thought leadership content
+- Mentor program access
+- Early access to beta features
+- Fluidity Index boost (+5 points)
+- Quarterly industry reports
+
+**Service Provider Membership: $499/month**
+- Service listing in marketplace
+- Revenue analytics dashboard
+- Customer feedback system
+- Priority support for integrations
+- Quarterly business reviews with FTS
+- Co-marketing opportunities
+
+*Additional Revenue:*
+- Sponsored content placements: $5,000-20,000 per campaign
+- Event sponsorships (hackathons, conferences): $10,000-50,000
+- Data licensing (anonymized payment trends): $50,000-200,000/year to research firms
+
+**Revenue Stream 5: Transaction & Usage Fees**
+
+Micro-charges on high-volume services:
+
+- API calls (above free tier): $0.001-0.01 per call
+- Routing decisions: $0.001 per routing calculation
+- Fraud checks: $0.05 per check (FTS AI)
+- Webhook deliveries: $0.0001 per webhook
+
+These are typically negligible for small PSPs but add up significantly for large-volume operators.
+
+### 4.2 Revenue Projections
+
+**Scenario: 100 PSPs on FTS Platform**
+
+*PSP Tier Distribution:*
+- 30 Starter tier
+- 50 Professional tier
+- 15 Enterprise tier
+- 5 Custom tier
+
+**Monthly Recurring Revenue (MRR) Calculation:**
+
+*PSP Platform Subscriptions:*
+- Starter: 30 × $2,000 = $60,000
+- Professional: 50 × $5,000 = $250,000
+- Enterprise: 15 × $10,000 = $150,000
+- Custom: 5 × $25,000 (avg) = $125,000
+- **Total PSP Subscriptions: $585,000/month**
+
+*FTS-Owned Service Add-Ons (avg 3 services per PSP):*
+- Payment Orchestration: 70 PSPs × $500 = $35,000
+- AI Fraud Suite: 90 PSPs × $1,000 = $90,000
+- Crypto Gateway: 40 PSPs × $2,000 = $80,000
+- Advanced Analytics: 60 PSPs × $750 = $45,000
+- Sub-Merchant Platform: 20 PSPs × $1,500 = $30,000
+- Developer API Suite: 80 PSPs × $300 = $24,000
+- **Total Service Subscriptions: $304,000/month**
+
+*Marketplace Commissions (avg $2,000/PSP/month):*
+- 100 PSPs × $2,000 = $200,000/month
+- **Total Marketplace Revenue: $200,000/month**
+
+*Community Memberships:*
+- 150 Influencers × $99 = $14,850
+- 40 Service Providers × $499 = $19,960
+- **Total Community Revenue: $34,810/month**
+
+**Total MRR: $1,123,810/month**  
+**Annual Run Rate: $13,485,720**
+
+**Revenue Share Income (Variable):**
+
+Average PSP processes $10M monthly volume:
+- 100 PSPs × $10M = $1B monthly volume
+- Average merchant fee: 2.7%
+- Total merchant fees collected: $27M/month
+- FTS revenue share (average 25%): $6.75M/month
+- **Annual Revenue Share: $81M/year**
+
+**Total Annual Revenue Potential:**
+- MRR-based: $13.5M
+- Revenue share: $81M
+- **Total: $94.5M/year**
+
+**At Scale (500 PSPs):**
+- MRR-based: $67.5M
+- Revenue share: $405M
+- **Total: $472.5M/year**
+
+### 4.3 Unit Economics
+
+*Customer Acquisition Cost (CAC) per PSP:*
+- Sales & Marketing: $15,000
+- Onboarding & Implementation: $5,000
+- **Total CAC: $20,000**
+
+*Lifetime Value (LTV) per PSP:*
+- Average monthly revenue per PSP (subscriptions + services): $11,238
+- Average customer lifetime: 5 years
+- Churn rate: 10% annually
+- **LTV: $11,238 × 12 × 4.5 years = $606,846**
+
+**LTV:CAC Ratio: 30:1** (exceptional; industry benchmark is 3:1)
+
+*Payback Period:*
+- Monthly revenue per PSP: $11,238
+- CAC: $20,000
+- **Payback: 1.8 months**
+
+*Gross Margin:*
+- Platform infrastructure costs: 15% of revenue
+- Service delivery costs: 10% of revenue
+- Marketplace commissions paid out: 75-85% of marketplace revenue (so FTS keeps 15-25%)
+- **Blended Gross Margin: 65-70%**
+
+### 4.4 Marketplace Network Effects
+
+The marketplace exhibits powerful network effects:
+
+1. **Supply-Side Network Effects**
+   - More service providers → more PSP value → more PSPs join → more provider revenue → more providers join
+
+2. **Data Network Effects**
+   - More transaction data → better fraud detection → higher success rates → more merchants → more data
+
+3. **Ecosystem Network Effects**
+   - More community members → more integrations built → more ecosystem value → more members join
+
+**Projected Growth:**
+- Year 1: 20 PSPs, 10 service providers
+- Year 2: 100 PSPs, 50 service providers
+- Year 3: 500 PSPs, 150 service providers
+- Year 4: 2,000 PSPs, 400 service providers
+- Year 5: 5,000 PSPs, 800 service providers (market leadership position)
+
+---
+
+## 5. Stakeholder Onboarding & Integration
+
+### 5.1 Service Provider Onboarding Process
+
+**Phase 1: Company Registration (2-3 days)**
+
+*Information Collected:*
+- Legal Entity Details
+  - Company name (legal and trading)
+  - Registration number and jurisdiction
+  - Tax identification number (EIN, VAT, etc.)
+  - Business address (headquarters and operational)
+  - Company structure (private, public, subsidiary)
+  
+- Financial Information
+  - Funding stage: Pre-Seed, Seed, Series A/B/C, IPO, Profitable
+  - Annual revenue range
+  - Bank account details (for revenue share payments)
+  - Preferred payment schedule (weekly, monthly)
+  
+- Contact Information
+  - Primary contact (name, email, phone)
+  - Technical contact (API support)
+  - Business development contact
+  - Support escalation contact
+  
+- Organization Structure
+  - Key executives and ownership
+  - Data protection officer (DPO)
+  - Compliance officer
+
+*Required Documents:*
+- Certificate of incorporation
+- Tax registration certificate
+- Proof of business address (utility bill, lease agreement)
+- Financial services license (if applicable for regulated entities)
+- Insurance certificates:
+  - Professional indemnity insurance ($2M minimum)
+  - Cyber liability insurance ($5M minimum)
+  - Errors & omissions insurance (for compliance providers)
+
+*FTS Review:*
+- Entity verification through business registries
+- Credit check and financial stability assessment
+- Background checks on key executives
+- Review of any regulatory actions or lawsuits
+
+**Phase 2: Service Submission (5-7 days)**
+
+*Technical Specifications:*
+- Service Description
+  - Category (payment rail, compliance, fraud, analytics, etc.)
+  - Target customer (PSP tier, merchant type, geography)
+  - Key features and differentiation
+  - Integration complexity (simple, moderate, complex)
+  
+- API Documentation
+  - OpenAPI 3.0 specification (required)
+  - Authentication method: OAuth 2.0 or API key
+  - Rate limiting: Requests per second/minute
+  - Webhook support (for asynchronous operations)
+  - Error codes and handling
+  - Sample requests and responses
+  - SDKs (optional but recommended): Python, Node.js, PHP, Ruby, Go
+  
+- Pricing Model
+  - Per-transaction: $X per API call
+  - Fixed subscription: $Y per month
+  - Tiered pricing based on volume
+  - Setup fees (if any)
+  - Overage charges
+  - Enterprise pricing (custom quotes)
+  
+- Service Level Agreement (SLA)
+  - Uptime commitment: 99.5%, 99.9%, or 99.95%
+  - Response time (p50, p95, p99 latency)
+  - Support response times: Critical (1hr), High (4hr), Medium (24hr), Low (48hr)
+  - Downtime credits or refunds
+  
+- Security & Compliance
+  - SOC 2 Type II certification (required)
+  - ISO 27001 (optional but preferred)
+  - PCI-DSS (for payment handling services)
+  - GDPR compliance documentation
+  - Data residency options (US, EU, APAC)
+  - Encryption standards (at rest and in transit)
+  - Penetration testing schedule
+
+*Test Environment:*
+- Sandbox credentials provided
+- Test data sets for validation
+- Postman collection or Swagger UI
+- Sample integration code
+
+**Phase 3: FTS Certification Process (7-14 days)**
+
+*Technical Review:*
+- API Testing
+  - Functional testing of all endpoints
+  - Load testing: Can the service handle 10,000 requests/second?
+  - Latency benchmarks: p99 latency must be <500ms
+  - Error handling: Graceful degradation and retries
+  - Authentication and authorization flows
+  - Webhook delivery and retry logic
+  
+- Integration Testing
+  - Test in FTS staging environment
+  - Integration with multiple PSP configurations
+  - Edge case handling
+  - Backward compatibility (if updating existing service)
+  
+*Security Audit:*
+- Vulnerability Scanning
+  - Automated scans using tools like Qualys, Nessus
+  - OWASP Top 10 coverage
+  - Dependency checks (outdated libraries, known CVEs)
+  
+- Penetration Testing
+  - API security assessment
+  - Authentication bypass attempts
+  - Injection attacks (SQL, XSS, etc.)
+  - Rate limiting validation
+  - Data leakage testing
+  
+- Compliance Verification
+  - SOC 2 report review (must be <12 months old)
+  - GDPR compliance checklist
+  - Data processing agreement (DPA) review
+  - Subprocessor disclosure
+
+*Performance Benchmarking:*
+- Latency: Average and p99 response times
+- Throughput: Transactions per second capacity
+- Error Rate: Must be <0.1% under normal load
+- Uptime: Historical uptime from status page (requires 6 months data)
+
+*Business Review:*
+- Pricing competitiveness vs alternatives
+- Target market fit (do PSPs need this?)
+- Differentiation analysis
+- Reference customers (3 required)
+
+**Phase 4: Go Live (1-2 days)**
+
+*Marketplace Listing:*
+- Service page creation
+  - Description, features, pricing
+  - Screenshots, demo videos
+  - Case studies and testimonials
+  - Integration guide and documentation links
+  
+- Initial Placement
+  - New services get "Recently Added" badge for 30 days
+  - Featured placement available for $2,000/month
+  
+*Monitoring Setup:*
+- Uptime monitoring (Pingdom, UptimeRobot)
+- Latency tracking (synthetic transactions every 5 minutes)
+- Error rate dashboards
+- Usage analytics (API calls, active PSPs, revenue)
+
+*Revenue Sharing Begins:*
+- PSPs can now subscribe to the service
+- FTS takes 15-25% commission
+- Payments processed weekly or monthly (provider choice)
+- Detailed invoices with per-PSP usage breakdown
+
+### 5.2 Bank & Financial Institution Onboarding
+
+Banks are special-category service providers requiring enhanced due diligence:
+
+**Required Certifications:**
+1. **Banking License Verification**
+   - License issued by national regulator (Fed, ECB, FSA, etc.)
+   - License type: Full banking license, payments institution, e-money institution
+   - Geographic scope: Single jurisdiction or passported across EU, etc.
+   - Expiration date and renewal status
+
+2. **Regulatory Approval**
+   - No enforcement actions in last 5 years
+   - Clean regulatory audit history
+   - Adequate capital ratios (Basel III compliance)
+   - Anti-money laundering program in place
+
+3. **Deposit Insurance Proof**
+   - FDIC (US), FSCS (UK), DGS (EU)
+   - Coverage limits and eligibility
+
+4. **Anti-Fraud Systems**
+   - Transaction monitoring capabilities
+   - Suspicious activity reporting (SAR) procedures
+   - Know Your Customer (KYC) and Know Your Business (KYB) processes
+
+5. **ISO 20022 Compliance**
+   - Support for modern payment messaging standards
+   - SWIFT gpi (global payments innovation) membership
+   - SEPA instant payments capability (for EU banks)
+
+**Services Banks Can Offer in Marketplace:**
+
+*Settlement Accounts*
+- Merchant settlement accounts with IBANs/account numbers
+- Multi-currency accounts (up to 30 currencies)
+- Instant account opening via API
+- Pricing: $50/month per account + transaction fees
+
+*SWIFT/SEPA Connectivity*
+- International wire transfers
+- SEPA credit transfers (EU)
+- SEPA instant (settlement in <10 seconds)
+- Pricing: $15-25 per international wire, $0.20-0.50 per SEPA transfer
+
+*Instant Payment Rails*
+- FedNow connectivity (US)
+- Faster Payments (UK)
+- PIX integration (Brazil)
+- UPI gateway (India)
+- Pricing: 0.5-1% per instant payment
+
+*Treasury Services*
+- Foreign exchange (FX) spot and forward contracts
+- Currency hedging for PSPs with multi-currency operations
+- Pricing: FX spread of 0.1-0.5%
+
+*Credit Lines*
+- Merchant cash advance programs
+- Invoice financing
+- Working capital loans
+- Pricing: Interest rates at prevailing commercial rates + origination fees
+
+**Example: Regional Bank Partnership**
+
+*Bank Profile:*
+- Name: Coastal Community Bank
+- License: State-chartered bank (FDIC insured)
+- Service: Settlement accounts + SEPA connectivity
+
+*Onboarding:*
+- FDIC license verified ✓
+- No regulatory actions ✓
+- Insurance: $250K per depositor ✓
+- APIs: RESTful with ISO 20022 support ✓
+
+*Marketplace Offering:*
+- Settlement accounts: $40/month per account (20% below market)
+- SEPA transfers: $0.15 per transfer
+- FTS commission: 20%
+- **Bank Revenue:** $8/account + $0.03/transfer
+- **FTS Revenue:** $32/account + $0.12/transfer
+
+### 5.3 Payment Method Provider Onboarding
+
+**Category A: Digital Wallet Providers**
+
+Examples: PayPal, Apple Pay, Google Pay, Alipay, WeChat Pay
+
+*Integration Requirements:*
+- OAuth 2.0 authentication flow
+- Transaction notification webhooks
+- Refund and chargeback APIs
+- Settlement reconciliation reports
+
+*Pricing Models:*
+- Percentage per transaction: 2.5-3.5%
+- Fixed fee: $0.30-0.50 per transaction
+- No monthly fees (volume-based only)
+
+*Onboarding Checklist:*
+- ✓ Wallet provider agreement signed
+- ✓ Merchant application process documented
+- ✓ API credentials provisioned (sandbox and production)
+- ✓ Test transactions completed ($1 authorization, refund, void)
+- ✓ Webhook endpoints registered and tested
+- ✓ Compliance: PCI-DSS (wallet providers handle card data)
+
+**Category B: Buy Now, Pay Later (BNPL) Providers**
+
+Examples: Klarna, Afterpay, Affirm, Zip
+
+*Integration Requirements:*
+- Widget/iframe for checkout
+- Credit check API (real-time approval)
+- Installment schedule management
+- Settlement notifications (when BNPL provider pays merchant)
+
+*Pricing Models:*
+- Merchant fee: 3-6% per transaction (paid by merchant, not customer)
+- No monthly fees
+- Instant merchant payout (BNPL provider assumes credit risk)
+
+*Onboarding Checklist:*
+- ✓ BNPL provider credit license verified
+- ✓ Widget integration tested (mobile and desktop)
+- ✓ Consumer disclosure compliance (Truth in Lending Act for US)
+- ✓ Merchant eligibility criteria documented
+- ✓ Settlement account configured
+
+**Category C: Crypto Exchange Integrations**
+
+Examples: Coinbase Commerce, Binance Pay, Kraken, local exchanges
+
+*Integration Requirements:*
+- Wallet address generation API
+- Payment notification webhooks (when crypto received)
+- Exchange rate API (real-time conversion)
+- On-chain transaction monitoring
+- Settlement: Auto-convert to fiat or hold in crypto
+
+*Pricing Models:*
+- Transaction fee: 1-2% (low compared to cards)
+- Network fees: Passed through to customer (variable based on blockchain congestion)
+- Conversion fee: 0.5-1% if auto-converting to fiat
+- Settlement time: Instant (if holding crypto) or T+1 (if converting to fiat)
+
+*Compliance Requirements:*
+- Exchange license or money transmitter license (state-by-state in US)
+- AML program with transaction monitoring
+- Sanctions screening (OFAC compliance)
+- Travel Rule compliance (for transactions >$3,000)
+- Customer due diligence (CDD) for large transactions
+
+*Onboarding Checklist:*
+- ✓ Exchange license verified in operating jurisdictions
+- ✓ AML program review (Chainalysis or Elliptic integration confirmed)
+- ✓ Supported cryptocurrencies listed (BTC, ETH, USDT, USDC, etc.)
+- ✓ API credentials and webhook endpoints configured
+- ✓ Test transactions on testnet completed
+- ✓ Settlement account configured (fiat or crypto)
+
+**Category D: Alternative Payment Methods (APMs)**
+
+Regional payment methods dominate certain markets:
+- Europe: iDEAL (Netherlands), Bancontact (Belgium), Sofort (Germany), Multibanco (Portugal)
+- Latin America: OXXO (Mexico cash payments), Boleto (Brazil)
+- Asia: Alipay, WeChat Pay (China), GrabPay (Southeast Asia), GCash (Philippines)
+
+*Integration Patterns:*
+- Redirect flow: Customer redirects to APM site, then back to merchant
+- QR code: Customer scans code with mobile wallet app
+- Bank transfer: Customer initiates transfer from their bank account
+
+*Pricing:*
+- Typically 0.5-2% per transaction (lower than cards)
+- Fixed fee: $0.10-0.50 per transaction
+
+*Compliance:*
+- Local payment licenses required (varies by country)
+- Data residency (must store payment data in-country for many jurisdictions)
+
+### 5.4 Crypto Infrastructure Provider Onboarding
+
+**Sub-Category A: Custody Providers**
+
+Examples: Fireblocks, BitGo, Anchorage Digital, Copper
+
+*What They Provide:*
+- Multi-signature wallets for secure crypto storage
+- Hot wallet (for instant payments) and cold storage (for reserves)
+- Transaction signing and approval workflows
+- Insurance on deposits (up to $100M for institutional custodians)
+
+*Integration:*
+- API for wallet creation and transaction signing
+- Webhooks for deposit notifications
+- Multi-party computation (MPC) for key management (no single point of failure)
+
+*Pricing:*
+- Setup fee: $5,000-50,000 (depending on custody volume)
+- Monthly custody fee: 0.1-0.5% of assets under management (AUM)
+- Transaction fee: $1-10 per withdrawal
+
+*Onboarding Requirements:*
+- SOC 2 Type II certification ✓
+- Insurance policy verification ✓
+- Multi-sig setup (typically 2-of-3 or 3-of-5) ✓
+- Disaster recovery and key recovery procedures ✓
+
+**Sub-Category B: Blockchain Analytics Providers**
+
+Examples: Chainalysis, Elliptic, TRM Labs
+
+*What They Provide:*
+- Transaction risk scoring (is this wallet associated with illicit activity?)
+- Sanctions screening (OFAC SDN list)
+- Compliance reporting (FINCEN reports for crypto businesses)
+
+*Integration:*
+- Real-time API: Check wallet address before accepting payment
+- Batch screening: Analyze historical transactions
+- Ongoing monitoring: Alerts if previously-clean wallet is flagged
+
+*Pricing:*
+- Per-address screening: $0.50-2.00
+- Monthly monitoring: $500-5,000 (based on transaction volume)
+- Enterprise: $50,000-250,000/year for unlimited screening
+
+**Sub-Category C: On/Off Ramp Providers**
+
+Examples: MoonPay, Wyre, Simplex, Ramp Network
+
+*What They Provide:*
+- Fiat-to-crypto conversion (customer pays with card, receives crypto)
+- Crypto-to-fiat conversion (customer sends crypto, receives bank transfer)
+
+*Integration:*
+- Widget for embedded checkout
+- KYC/AML flows integrated (providers handle compliance)
+- Multiple fiat currencies and crypto assets
+
+*Pricing:*
+- Fee: 3-5% per transaction (higher than card fees due to fraud risk)
+- Instant settlement to merchant (provider assumes chargeback risk)
+
+*Compliance:*
+- Money transmitter licenses in all US states
+- FCA registration (UK)
+- MiCA compliance (EU, upcoming)
+
+---
+
+## 6. Execution Roadmap
+
+### Phase 1: Control Plane Service Architecture (Weeks 1-2)
+
+**Objective:** Build the foundational registry and subscription system that enables the marketplace.
+
+**New Entities:**
+
+\`\`\`json
+ServiceCatalog {
+  "service_id": "uuid",
+  "service_name": "string",
+  "service_category": "enum[payment_rail, compliance, fraud, analytics, crypto, developer_tools]",
+  "provider_id": "uuid",  // Reference to ServiceProvider
+  "description": "string",
+  "long_description": "markdown",
+  "features": ["array of strings"],
+  "pricing_model": "enum[fixed, per_transaction, tiered, custom]",
+  "base_price": "number",
+  "variable_price": "number",
+  "pricing_tiers": [{volume_min, volume_max, price}],
+  "trial_available": "boolean",
+  "trial_duration_days": "number",
+  "integration_complexity": "enum[simple, moderate, complex]",
+  "estimated_setup_time": "string",
+  "documentation_url": "string",
+  "api_spec_url": "string",
+  "status": "enum[draft, under_review, certified, active, deprecated]",
+  "certification_date": "date",
+  "uptime_sla": "number",
+  "avg_latency_ms": "number",
+  "rating": "number",
+  "total_reviews": "number",
+  "total_subscribers": "number"
+}
+
+ServiceProvider {
+  "provider_id": "uuid",
+  "company_name": "string",
+  "legal_name": "string",
+  "website": "string",
+  "logo_url": "string",
+  "description": "string",
+  "founding_year": "number",
+  "funding_stage": "enum[pre_seed, seed, series_a, series_b, series_c, public, profitable]",
+  "headquarters_country": "string",
+  "contact_email": "string",
+  "support_email": "string",
+  "support_phone": "string",
+  "certifications": ["SOC2", "ISO27001", "PCI_DSS"],
+  "status": "enum[pending, approved, active, suspended]",
+  "approval_date": "date",
+  "commission_rate": "number",  // e.g., 0.20 for 20%
+  "payment_schedule": "enum[weekly, monthly]",
+  "total_revenue_earned": "number",
+  "total_services": "number"
+}
+
+PSPServiceSubscription {
+  "subscription_id": "uuid",
+  "psp_id": "uuid",
+  "service_id": "uuid",
+  "subscribed_date": "date",
+  "status": "enum[active, paused, cancelled]",
+  "configuration": "json",  // Service-specific config
+  "billing_cycle": "enum[monthly, annual]",
+  "current_period_start": "date",
+  "current_period_end": "date",
+  "usage_limits": "json",  // e.g., max API calls per month
+  "current_usage": "json"
+}
+
+ServiceUsageMetric {
+  "metric_id": "uuid",
+  "psp_id": "uuid",
+  "service_id": "uuid",
+  "subscription_id": "uuid",
+  "usage_date": "date",
+  "metric_type": "enum[api_call, transaction_routed, fraud_check, etc.]",
+  "quantity": "number",
+  "unit_cost": "number",
+  "total_cost": "number",
+  "metadata": "json"  // Additional context
+}
+\`\`\`
+
+**New Pages:**
+
+1. **FTSServiceRegistry** (Control Plane)
+   - View all services in catalog
+   - Filter by category, status, provider
+   - Approve/reject services pending certification
+   - View service performance metrics
+   - Manage commission rates
+
+**Deliverables:**
+- ✓ 4 new entities created with schema definitions
+- ✓ Service registry UI (admin only)
+- ✓ API endpoints for service CRUD operations
+- ✓ Basic subscription management (enable/disable services for PSPs)
+
+**Success Metrics:**
+- All FTS-owned services registered in catalog
+- Test PSP can subscribe to and use a service
+- Usage metrics captured correctly
+
+### Phase 2: Core Services Migration (Weeks 3-4)
+
+**Objective:** Migrate 7 flagship features from PSP Portal to FTS Services, making them subscribable through the marketplace.
+
+**Services to Migrate:**
+
+1. **Payment Orchestration Service**
+   - Smart routing engine
+   - MID routing rules
+   - Load balancing across providers
+   - Cascade logic (failover)
+   - Real-time provider performance tracking
+
+2. **AI Fraud Detection Suite**
+   - ML-based fraud scoring
+   - Network tokenization management
+   - Account updater service
+   - 3DS orchestration
+   - Velocity checks and anomaly detection
+
+3. **Crypto Gateway Service**
+   - Multi-chain support (Bitcoin, Ethereum, Polygon, BSC, Solana)
+   - On/off ramp integrations
+   - Custody provider connections
+   - Compliance and AML screening (Chainalysis integration)
+   - Tax reporting (cost basis tracking)
+
+4. **Advanced Analytics Service**
+   - Business intelligence dashboards
+   - Predictive analytics (churn prediction, revenue forecasting)
+   - Merchant benchmarking (compare merchant performance to cohorts)
+   - Custom report builder
+
+5. **Compliance Automation Service**
+   - KYB orchestration (call multiple providers, aggregate results)
+   - AML screening and monitoring
+   - PCI-DSS compliance checklists
+   - FATF compliance workflows
+
+6. **Sub-Merchant Platform**
+   - Marketplace infrastructure (platforms like Shopify, Etsy)
+   - Split payment calculations
+   - Sub-merchant onboarding and KYB
+   - Separate settlement accounts and payouts
+
+7. **Developer API Suite**
+   - Unified REST API
+   - Webhook management
+   - SDKs (Python, Node.js, PHP, Ruby, Go)
+   - Sandbox environment
+   - API documentation portal (Swagger/OpenAPI)
+
+**Migration Process per Service:**
+
+1. Refactor service code to be tenant-aware (multi-PSP support)
+2. Add configuration layer (PSPs can customize behavior)
+3. Implement usage metering (count API calls, transactions, etc.)
+4. Create service-specific documentation
+5. Register service in ServiceCatalog
+6. Test with pilot PSP
+7. Migrate existing PSPs from built-in feature to subscribed service
+
+**Deliverables:**
+- 7 services fully migrated and available in marketplace
+- Each service has:
+  - API documentation
+  - Pricing page
+  - Configuration UI for PSPs
+  - Usage dashboard
+- Existing PSPs automatically subscribed (no disruption)
+
+**Success Metrics:**
+- All services have >99.5% uptime
+- Avg latency <200ms for critical services (routing, fraud)
+- PSPs can enable/disable services without downtime
+- Usage metrics accurately tracked
+
+### Phase 3: Marketplace Foundation (Weeks 5-7)
+
+**Objective:** Build the two-sided marketplace UI where service providers register and PSPs subscribe.
+
+**New Entities:**
+
+\`\`\`json
+MarketplaceService {
+  // Extends ServiceCatalog with marketplace-specific fields
+  "featured": "boolean",
+  "featured_until": "date",
+  "banner_image_url": "string",
+  "screenshots": ["array of URLs"],
+  "demo_video_url": "string",
+  "case_studies": ["array of objects"],
+  "integration_guide_url": "string",
+  "changelog": ["array of version updates"]
+}
+
+ServiceIntegration {
+  "integration_id": "uuid",
+  "psp_id": "uuid",
+  "service_id": "uuid",
+  "integration_status": "enum[not_started, in_progress, testing, live]",
+  "api_credentials": "encrypted_json",
+  "webhook_url": "string",
+  "configuration": "json",
+  "test_results": "json",
+  "go_live_date": "date"
+}
+
+ServiceReview {
+  "review_id": "uuid",
+  "service_id": "uuid",
+  "psp_id": "uuid",
+  "reviewer_name": "string",
+  "rating": "number",  // 1-5 stars
+  "review_text": "string",
+  "created_date": "date",
+  "helpful_count": "number"
+}
+
+ServiceInvoice {
+  "invoice_id": "uuid",
+  "psp_id": "uuid",
+  "billing_period_start": "date",
+  "billing_period_end": "date",
+  "line_items": [{
+    "service_id": "uuid",
+    "service_name": "string",
+    "quantity": "number",
+    "unit_price": "number",
+    "total": "number"
+  }],
+  "subtotal": "number",
+  "tax": "number",
+  "total_amount": "number",
+  "status": "enum[draft, sent, paid, overdue]",
+  "due_date": "date",
+  "paid_date": "date"
+}
+\`\`\`
+
+**New Pages:**
+
+1. **FTSMarketplace** (PSP-facing)
+   - Browse service catalog
+   - Filter by category, price, rating
+   - Search functionality
+   - Service detail pages (description, pricing, reviews, integration guide)
+   - Subscribe button (1-click enable)
+
+2. **ProviderPortal** (Service Provider-facing)
+   - Dashboard showing subscriber count, revenue, usage
+   - Service listing management (edit description, pricing, screenshots)
+   - Analytics (which PSPs are using the service, how often)
+   - Support ticket system (PSPs can contact provider)
+   - Revenue reports and payment history
+
+3. **ServiceDetails** (per service)
+   - Full description and features
+   - Pricing calculator (estimate monthly cost based on usage)
+   - Integration guide and API docs
+   - Screenshots and demo video
+   - Customer reviews and ratings
+   - Related services ("Customers who use this also use...")
+
+4. **SubscriptionManagement** (PSP-facing)
+   - View all active subscriptions
+   - Configure each service
+   - Monitor usage and costs in real-time
+   - Upgrade/downgrade plans
+   - Cancel subscriptions
+
+**UI Components:**
+
+- Service Card: Compact view in catalog
+- Service Comparison Table: Compare pricing and features of similar services
+- Integration Wizard: Step-by-step setup for new service
+- Cost Estimator: Calculate monthly bill based on expected usage
+- Rating Widget: 5-star rating with filtering by rating
+
+**Deliverables:**
+- Marketplace catalog UI (browse, search, filter)
+- Service provider portal (manage listings)
+- PSP subscription interface (1-click enable/disable)
+- Service certification workflow (FTS approves new services)
+- Billing integration (usage tracking → invoice generation)
+
+**Success Metrics:**
+- 5 external service providers onboarded
+- 10 services listed in marketplace
+- PSPs can browse and subscribe in <5 minutes
+- Service provider receives payment within 7 days of month-end
+
+### Phase 4: Community Features (Weeks 8-10)
+
+**Objective:** Build community engagement layer to drive network effects and platform stickiness.
+
+**New Entities:**
+
+\`\`\`json
+CommunityMember {
+  "member_id": "uuid",
+  "user_id": "uuid",  // Link to AppUser or external auth
+  "member_type": "enum[fintech, developer, influencer, service_provider]",
+  "display_name": "string",
+  "avatar_url": "string",
+  "bio": "string",
+  "company": "string",
+  "title": "string",
+  "location": "string",
+  "website": "string",
+  "linkedin_url": "string",
+  "twitter_handle": "string",
+  "fluidity_score": "number",
+  "badges": ["array of badge IDs"],
+  "reputation_points": "number",
+  "join_date": "date",
+  "last_active": "date"
+}
+
+FluidityScore {
+  "score_id": "uuid",
+  "member_id": "uuid",
+  "current_score": "number",  // 0-100
+  "transaction_volume_score": "number",
+  "engagement_score": "number",
+  "esg_impact_score": "number",
+  "innovation_score": "number",
+  "compliance_score": "number",
+  "last_updated": "date",
+  "score_history": ["array of {date, score}"]
+}
+
+Challenge {
+  "challenge_id": "uuid",
+  "title": "string",
+  "description": "markdown",
+  "category": "enum[ai_ml, fraud_detection, payment_innovation, crypto, esg]",
+  "start_date": "date",
+  "end_date": "date",
+  "prize_pool": "number",
+  "sponsor": "string",
+  "rules": "markdown",
+  "submission_requirements": "json",
+  "status": "enum[upcoming, active, judging, completed]",
+  "participant_count": "number",
+  "submission_count": "number"
+}
+
+ChallengeSubmission {
+  "submission_id": "uuid",
+  "challenge_id": "uuid",
+  "member_id": "uuid",
+  "submission_date": "date",
+  "title": "string",
+  "description": "markdown",
+  "github_repo": "string",
+  "demo_url": "string",
+  "video_url": "string",
+  "score": "number",
+  "judges_feedback": "array of {judge_name, score, comments}",
+  "status": "enum[submitted, under_review, winner, finalist, not_selected]"
+}
+
+MemberConnection {
+  "connection_id": "uuid",
+  "member_id_1": "uuid",
+  "member_id_2": "uuid",
+  "connection_type": "enum[follow, mentor, partner]",
+  "status": "enum[pending, accepted, declined]",
+  "created_date": "date"
+}
+
+ForumPost {
+  "post_id": "uuid",
+  "author_id": "uuid",
+  "category": "enum[technical_qa, regulatory, news, best_practices, integration_help]",
+  "title": "string",
+  "content": "markdown",
+  "tags": ["array of strings"],
+  "views": "number",
+  "upvotes": "number",
+  "created_date": "date",
+  "last_activity": "date",
+  "is_answered": "boolean",
+  "accepted_answer_id": "uuid"
+}
+
+ForumComment {
+  "comment_id": "uuid",
+  "post_id": "uuid",
+  "author_id": "uuid",
+  "content": "markdown",
+  "upvotes": "number",
+  "created_date": "date",
+  "is_accepted_answer": "boolean"
+}
+\`\`\`
+
+**New Pages:**
+
+1. **CommunityHome**
+   - Activity feed (recent posts, challenges, new members)
+   - Fluidity Index leaderboard (top 10)
+   - Upcoming events (hackathons, webinars)
+   - Featured members of the month
+
+2. **MemberDirectory**
+   - Search members by role, company, location
+   - Filter by Fluidity Index score range
+   - Member profiles (bio, badges, recent activity)
+   - Connect button (send connection request)
+
+3. **FluidityLeaderboard**
+   - Global leaderboard (all members)
+   - Category leaderboards (FinTech, Developer, Influencer, Provider)
+   - Score breakdown (transaction volume, engagement, ESG, innovation, compliance)
+   - Score history chart (track improvement over time)
+
+4. **Challenges**
+   - Browse active and upcoming challenges
+   - Challenge detail page (rules, prizes, deadlines)
+   - Submit project (GitHub repo, demo, video)
+   - Voting and judging interface
+   - Winner announcement and showcase
+
+5. **Forums**
+   - Category view (Technical Q&A, Regulatory, etc.)
+   - Thread view with comments
+   - Post creation (markdown editor)
+   - Upvote/downvote
+   - Accept answer (for question threads)
+   - Search and filtering
+
+**Gamification Mechanics:**
+
+*Badges:*
+- Early Adopter (joined in first 100 members)
+- Transaction Titan (processed >$100M)
+- Community Champion (100+ forum posts)
+- ESG Leader (high sustainability score)
+- Innovation Award (challenge winner)
+- Compliance Star (zero incidents)
+
+*Reputation System:*
+- +10 points: Post helpful answer
+- +5 points: Upvoted content
+- +50 points: Accepted answer
+- +100 points: Challenge finalist
+- +500 points: Challenge winner
+
+*Levels:*
+- 0-100 points: Novice
+- 101-500: Contributor
+- 501-2000: Expert
+- 2001-5000: Leader
+- 5001+: Legend
+
+**Deliverables:**
+- Member profiles with Fluidity Index scores
+- Challenge platform (create, submit, judge)
+- Discussion forums with Q&A
+- Networking features (connections, mentorship)
+- Leaderboards and gamification
+
+**Success Metrics:**
+- 500+ community members
+- 100+ forum posts per week
+- 50+ submissions per challenge
+- 80% member engagement rate (active in last 30 days)
+
+### Phase 5: Partner Ecosystem Opening (Month 4+)
+
+**Objective:** Open the marketplace to vetted third-party service providers and scale the ecosystem.
+
+**Partner Outreach Strategy:**
+
+*Wave 1: Strategic Partners (Months 4-5)*
+
+Target: High-value providers with established reputations
+
+**Compliance Providers:**
+- Trulioo (KYB/KYC) – Target: 10 PSPs onboarded by Month 6
+- ComplyAdvantage (AML) – Target: 15 PSPs onboarded by Month 6
+- Bloomberg LEI (LEI issuance) – Target: 5 enterprise PSPs
+- Onfido (document verification) – Target: 12 PSPs
+- Jumio (identity verification) – Target: 8 PSPs
+
+**Fraud & Security:**
+- Sift (fraud detection) – Target: 20 PSPs
+- Kount (fraud prevention) – Target: 15 PSPs
+- Cardinal Commerce (3DS) – Target: 25 PSPs
+
+**Crypto Infrastructure:**
+- Coinbase Commerce (crypto payments) – Target: 10 PSPs
+- Fireblocks (custody) – Target: 5 institutional PSPs
+- Chainalysis (AML for crypto) – Target: 12 PSPs
+
+**Developer Tools:**
+- Postman (API testing) – Target: 50 PSPs
+- Datadog (monitoring) – Target: 30 PSPs
+- Sentry (error tracking) – Target: 40 PSPs
+
+*Outreach Tactics:*
+- Personal introductions from FTS leadership
+- Co-marketing webinar series
+- Revenue share guarantees (minimum monthly revenue commitment)
+- Featured placement for first 90 days
+- Dedicated integration support
+
+*Wave 2: Mid-Tier Providers (Months 6-8)*
+
+Target: 50 additional service providers across categories
+
+*Wave 3: Long-Tail Providers (Months 9-12)*
+
+Target: Open marketplace to all qualified providers
+
+**Partner Success Program:**
+
+*Onboarding Support:*
+- Dedicated partner success manager
+- Technical integration assistance
+- Co-marketing materials (case studies, webinars, blog posts)
+- Quarterly business reviews
+
+*Certification Fast-Track:*
+- Expedited review for providers with existing certifications (SOC 2, ISO 27001)
+- Reduced commission rate (15% vs 20%) for first 6 months
+
+*Revenue Guarantees:*
+- Minimum $10,000 monthly revenue for strategic partners
+- If target not met, FTS covers the difference for first 3 months
+
+**Marketplace Growth Targets:**
+
+- Month 4: 10 service providers, 20 services
+- Month 6: 30 service providers, 60 services
+- Month 9: 75 service providers, 150 services
+- Month 12: 150 service providers, 300 services
+- Month 24: 400 service providers, 800 services
+
+**Network Effects Indicators:**
+
+*Supply-Side:*
+- Provider join rate increasing month-over-month
+- Average services per provider increasing (providers launch additional offerings)
+
+*Demand-Side:*
+- PSPs subscribing to more services over time (2 → 3 → 5 services avg)
+- Higher-tier PSP adoption increasing
+
+*Cross-Side:*
+- PSPs requesting specific services → FTS recruits those providers
+- Providers suggesting features → FTS builds into platform
+
+### Phased Rollout Summary
+
+| Phase | Timeline | Key Deliverables | Success Criteria |
+|-------|----------|------------------|------------------|
+| 1: Control Plane | Weeks 1-2 | Service registry, subscriptions | Test PSP can subscribe to FTS service |
+| 2: Service Migration | Weeks 3-4 | 7 FTS services migrated | All services >99.5% uptime |
+| 3: Marketplace | Weeks 5-7 | Catalog UI, provider portal | 5 external providers onboarded |
+| 4: Community | Weeks 8-10 | Forums, challenges, Fluidity Index | 500 members, 100 posts/week |
+| 5: Partner Opening | Month 4+ | 150 service providers | 300 services live |
+
+**Total Timeline:** 10 weeks to MVP, 12 months to market leadership
+
+---
+
+## 7. Success Metrics & KPIs
+
+### 7.1 Platform Health Metrics
+
+**Infrastructure:**
+- Service Uptime: 99.9% (industry standard)
+- API Latency: p50 <100ms, p95 <250ms, p99 <500ms
+- Error Rate: <0.1% of all API calls
+- Incident Response Time: Critical issues resolved in <1 hour
+
+**PSP Metrics:**
+- Total PSP Instances: Target 100 in Year 1, 500 in Year 2, 2000 in Year 3
+- PSP Tier Distribution: 30% Starter, 50% Professional, 15% Enterprise, 5% Custom
+- Average Services per PSP: 3-5 services (indicates engagement)
+- PSP Churn Rate: <10% annually (industry benchmark: 15-20%)
+- Net Revenue Retention (NRR): >120% (PSPs upgrading tiers and adding services)
+
+**Transaction Metrics:**
+- Total Payment Volume: Track monthly and annual growth
+- Average Transaction Value: Benchmark across PSPs
+- Success Rate: >95% (failed transactions indicate provider or orchestration issues)
+- Chargeback Rate: <0.5% (industry average: 0.6-0.8%)
+
+### 7.2 Marketplace Growth Metrics
+
+**Supply-Side (Service Providers):**
+- Total Service Providers: Target 50 by Month 6, 150 by Month 12
+- Services per Provider: >1.5 (providers expanding offerings)
+- Provider Revenue Growth: Month-over-month increase
+- Provider Satisfaction Score: >8/10 (quarterly survey)
+- Provider Retention: >90% annually
+
+**Demand-Side (PSPs):**
+- Service Adoption Rate: % of PSPs using at least 1 marketplace service
+- Services per PSP: Avg 3-5 (engagement indicator)
+- Subscription Growth: Month-over-month new subscriptions
+- Service Utilization: Active usage vs inactive subscriptions
+- Service Satisfaction: >4.2/5 stars average rating
+
+**Marketplace Efficiency:**
+- Time to Service Activation: <24 hours from subscription to go-live
+- Service Discovery Rate: % of PSPs finding services via search/browse (vs direct URL)
+- Cross-Sell Rate: % of PSPs who subscribe to 2nd service after 1st
+- Revenue per Service: Average revenue generated per marketplace service
+
+### 7.3 Community Engagement Metrics
+
+**Member Metrics:**
+- Total Community Members: Target 500 by Month 6, 2000 by Month 12
+- Member Type Distribution: 40% FinTech, 30% Developer, 20% Influencer, 10% Provider
+- Active Members: >80% active in last 30 days
+- Premium Membership Conversion: 10% of free members upgrade
+
+**Engagement Metrics:**
+- Forum Posts per Week: >100 posts
+- Challenge Submissions per Challenge: >20 submissions
+- Fluidity Index Activity: >50% of members actively improving their score
+- Networking Connections: Avg 10 connections per member
+
+**Content Metrics:**
+- Blog Posts Published: 2 per week (company + community-generated)
+- Webinar Attendance: >200 attendees per webinar
+- Video Content Views: YouTube channel with >10K monthly views
+- Social Media Engagement: Twitter, LinkedIn followers growing 10% monthly
+
+### 7.4 Financial Metrics
+
+**Revenue Metrics:**
+- Monthly Recurring Revenue (MRR): Track growth month-over-month
+- Annual Recurring Revenue (ARR): Project from MRR
+- Revenue by Stream: Breakdown (subscriptions, marketplace commissions, revenue share)
+- Average Revenue per PSP (ARPP): Target >$10,000/month
+- Customer Lifetime Value (LTV): Target >$500,000
+
+**Profitability Metrics:**
+- Gross Margin: Target 65-70%
+- Operating Margin: Breakeven by Month 18, 25% by Year 3
+- Customer Acquisition Cost (CAC): <$20,000 per PSP
+- LTV:CAC Ratio: >25:1 (exceptional)
+- Payback Period: <2 months
+
+**Cash Flow Metrics:**
+- Cash Burn Rate: Track monthly (target breakeven by Month 18)
+- Runway: Maintain 24+ months runway
+- Days Sales Outstanding (DSO): <30 days (fast payment collection)
+
+### 7.5 Competitive Positioning Metrics
+
+**Market Share:**
+- % of global PSPs using FTS.Money: Target 5% by Year 3
+- Competitive Win Rate: >60% of RFPs won
+- Brand Awareness: Unprompted recall in target market surveys
+
+**Product Leadership:**
+- Feature Release Velocity: New marketplace service every 2 weeks
+- Innovation Index: Customer-rated innovativeness score
+- Ecosystem Strength: Number of integrations built by community
+
+---
+
+## 8. Risk Mitigation & Contingencies
+
+### 8.1 Technical Risks
+
+**Risk: Service Provider Downtime**
+- Mitigation: Multi-provider redundancy (PSPs can configure failover)
+- Contingency: FTS provides backup services for critical functions
+
+**Risk: API Performance Degradation**
+- Mitigation: Auto-scaling infrastructure, rate limiting
+- Contingency: Performance SLA credits to affected PSPs
+
+**Risk: Security Breach**
+- Mitigation: SOC 2 Type II, penetration testing, bug bounty program
+- Contingency: Cyber insurance, incident response plan, customer notifications
+
+### 8.2 Business Risks
+
+**Risk: Slow PSP Adoption**
+- Mitigation: Aggressive sales team, free trials, migration assistance
+- Contingency: Pivot to B2C fintech (direct consumer payments app)
+
+**Risk: Service Provider Conflicts**
+- Mitigation: Clear terms of service, conflict resolution process
+- Contingency: FTS develops competing services in-house
+
+**Risk: Regulatory Changes**
+- Mitigation: Compliance team monitoring global regulations
+- Contingency: Rapid feature adaptation, region-specific offerings
+
+### 8.3 Market Risks
+
+**Risk: Competitor Launches Similar Platform**
+- Mitigation: Move fast (10 weeks to MVP), lock in strategic providers
+- Contingency: M&A strategy (acquire competing platforms)
+
+**Risk: Economic Downturn**
+- Mitigation: Focus on cost-saving services, efficiency tools
+- Contingency: Reduce pricing, extend payment terms for struggling PSPs
+
+---
+
+## 9. Conclusion & Next Steps
+
+### 9.1 Strategic Advantages
+
+FTS.Money's ecosystem approach delivers five strategic advantages:
+
+1. **Network Effects:** Platform value grows exponentially with each new PSP and service provider
+2. **Switching Costs:** PSPs become deeply integrated, reducing churn
+3. **Data Moat:** Aggregated transaction data improves fraud detection and routing for all users
+4. **Monetization Optionality:** Multiple revenue streams (subscriptions, commissions, revenue share)
+5. **Defensibility:** Two-sided marketplace is harder to replicate than single-product companies
+
+### 9.2 Immediate Next Steps
+
+**Week 1-2:**
+- Create ServiceCatalog, ServiceProvider, PSPServiceSubscription, ServiceUsageMetric entities
+- Build FTSServiceRegistry page
+- Register first FTS-owned service (Payment Orchestration)
+- Test subscription workflow with pilot PSP
+
+**Week 3-4:**
+- Migrate remaining 6 FTS services
+- Document each service (API specs, pricing, config)
+- Deploy service-specific dashboards
+- Validate usage metering accuracy
+
+**Week 5-7:**
+- Launch marketplace UI (browse, search, subscribe)
+- Onboard first 5 external service providers
+- Build provider portal (revenue dashboards, analytics)
+- Test billing workflow (usage → invoice → payment)
+
+### 9.3 Critical Decision Points
+
+**Decision 1: Build vs Buy vs Partner**
+
+For each service category, decide:
+- Build in-house (FTS-owned service, 100% margin)
+- Partner with best-in-class provider (marketplace commission)
+- Acquire smaller provider (if strategic)
+
+**Recommendation:** 
+- Build: Core orchestration, fraud, analytics (differentiation)
+- Partner: Compliance, crypto custody, payment rails (commodity)
+
+**Decision 2: Geographic Expansion**
+
+Launch order:
+- Year 1: North America, UK, EU
+- Year 2: Latin America, Southeast Asia
+- Year 3: Middle East, Africa
+
+**Recommendation:** Follow PSP demand, not arbitrary geography.
+
+**Decision 3: Become LEI Registration Agent**
+
+Should FTS.Money become GLEIF-accredited to issue LEIs directly?
+
+**Pros:**
+- 100% revenue (vs 15-20% commission)
+- Control over merchant onboarding workflow
+- Differentiation for enterprise PSPs
+
+**Cons:**
+- $50K accreditation cost
+- Ongoing compliance and audit requirements
+- Operational complexity
+
+**Recommendation:** Yes, pursue accreditation in Year 2 once scale justifies investment.
+
+### 9.4 Success Criteria
+
+This ecosystem will be deemed successful when:
+
+✅ 100+ PSPs provisioned and active  
+✅ 50+ third-party service providers live in marketplace  
+✅ $10M+ ARR from subscriptions and marketplace commissions  
+✅ 500+ active community members  
+✅ 99.9%+ platform uptime  
+✅ Net Promoter Score (NPS) >50 from PSPs  
+
+**Target Date:** 12 months from project kickoff
+
+---
+
+## Appendices
+
+### Appendix A: Glossary
+
+- **APM:** Alternative Payment Method
+- **ARR:** Annual Recurring Revenue
+- **CAC:** Customer Acquisition Cost
+- **KYB:** Know Your Business
+- **KYC:** Know Your Customer
+- **LEI:** Legal Entity Identifier
+- **MID:** Merchant Identifier
+- **MRR:** Monthly Recurring Revenue
+- **NRR:** Net Revenue Retention
+- **PSP:** Payment Service Provider
+- **vLEI:** Verifiable Legal Entity Identifier
+
+### Appendix B: References
+
+- Stripe Connect Platform Documentation
+- Plaid Exchange Partner Program
+- Shopify App Store Best Practices
+- GLEIF LEI Issuance Standards
+- PCI-DSS Compliance Requirements
+- ISO 20022 Payment Messaging Standards
+
+### Appendix C: Contact
+
+For questions about this architecture:
+- **Strategic:** Contact FTS Platform Team
+- **Technical:** Contact FTS Engineering
+- **Partnerships:** Contact FTS Business Development
+
+---
+
+**Document Version:** 1.0  
+**Last Updated:** December 2025  
+**Next Review:** Quarterly or upon major architectural changes
+
+---
+
+*This document is confidential and proprietary to FTS.Money. Do not distribute without authorization.*
+`;
+    };
 
     return (
         <div className="min-h-screen bg-slate-50 p-6">
@@ -45,10 +2360,19 @@ export default function FTSArchitectureDoc() {
                             <p className="text-slate-600">Complete Platform, Marketplace & Community Blueprint</p>
                         </div>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex items-center gap-2">
                         <Badge className="bg-blue-100 text-blue-700">Version 1.0</Badge>
                         <Badge variant="outline">Strategic Planning Document</Badge>
                         <Badge variant="outline">December 2025</Badge>
+                        <Button 
+                            variant="outline" 
+                            size="sm" 
+                            onClick={handleDownloadPDF}
+                            className="ml-auto gap-2"
+                        >
+                            <Download className="h-4 w-4" />
+                            Download Full Document
+                        </Button>
                     </div>
                 </div>
 
