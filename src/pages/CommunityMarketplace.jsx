@@ -53,14 +53,19 @@ export default function CommunityMarketplace() {
     const [selectedService, setSelectedService] = useState(null);
     const [selectedPSP, setSelectedPSP] = useState('');
 
-    const { data: services = [], isLoading: loadingServices } = useQuery({
+    const { data: services = [], isLoading: loadingServices, error: servicesError } = useQuery({
         queryKey: ['marketplace-services'],
         queryFn: async () => {
-            const result = await base44.entities.ServiceCatalog.filter({ 
-                status: { $in: ['active', 'certified'] }
-            });
-            console.log('Fetched services:', result);
-            return result;
+            try {
+                const result = await base44.entities.ServiceCatalog.list();
+                const filtered = result.filter(s => s.status === 'active' || s.status === 'certified');
+                console.log('All services:', result);
+                console.log('Filtered services:', filtered);
+                return filtered;
+            } catch (err) {
+                console.error('Error fetching services:', err);
+                throw err;
+            }
         }
     });
 
@@ -190,6 +195,21 @@ export default function CommunityMarketplace() {
                 </header>
 
                 <div className="p-6">
+                    {servicesError && (
+                        <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded">
+                            <p className="text-red-800">Error loading services: {servicesError.message}</p>
+                        </div>
+                    )}
+                    {loadingServices && (
+                        <div className="text-center py-12">
+                            <p className="text-slate-600">Loading services...</p>
+                        </div>
+                    )}
+                    {!selectedPSP && psps.length > 0 && (
+                        <div className="mb-4 p-4 bg-amber-50 border border-amber-200 rounded">
+                            <p className="text-amber-800">Please select a PSP from the dropdown above to subscribe to services</p>
+                        </div>
+                    )}
                     <Tabs defaultValue="all" className="space-y-6">
                         <TabsList>
                             <TabsTrigger value="all">All Services ({filteredServices.length})</TabsTrigger>
