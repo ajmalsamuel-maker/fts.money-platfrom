@@ -64,7 +64,7 @@ export default function CommunityPortalLogin() {
                         <img 
                             src={FTS_LOGOS.symbol} 
                             alt="FTS.Money" 
-                            className="h-20 w-20 object-contain"
+                            className="h-32 w-32 object-contain"
                         />
                         <div>
                             <h1 className="text-3xl font-bold text-white" style={{ fontFamily: 'Montserrat, sans-serif' }}>
@@ -75,12 +75,12 @@ export default function CommunityPortalLogin() {
                             </p>
                         </div>
                     </div>
-                    <p className="text-white/80 text-lg">Your Gateway to Payment Infrastructure</p>
+                    <p className="text-slate-700 text-lg font-medium">Your Gateway to Global Payment Infrastructure</p>
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-6">
+                <div className="max-w-md mx-auto">
                     {/* Login Card */}
-                    <Card className="bg-white/95 backdrop-blur border-slate-200">
+                    <Card className="bg-white/95 backdrop-blur border-slate-200 shadow-xl">
                         <CardHeader>
                             <CardTitle>Sign In</CardTitle>
                         </CardHeader>
@@ -130,64 +130,9 @@ export default function CommunityPortalLogin() {
                             </form>
                         </CardContent>
                     </Card>
-
-                    {/* New Customer Signup */}
-                    <Card className="border-2" style={{ background: FTS_GRADIENTS.light2, borderColor: FTS_COLORS.sky }}>
-                        <CardHeader>
-                            <CardTitle style={{ color: FTS_COLORS.navy }}>New Customer?</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            <p className="text-slate-700">Join the FTS.Money ecosystem and access:</p>
-                            
-                            <div className="space-y-3">
-                                <div className="flex items-start gap-3">
-                                    <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: FTS_COLORS.royalBlue }}>
-                                        <Building2 className="h-5 w-5 text-white" />
-                                    </div>
-                                    <div>
-                                        <p className="font-semibold text-slate-900">Launch Your PSP</p>
-                                        <p className="text-sm text-slate-600">Self-service provisioning in minutes</p>
-                                    </div>
-                                </div>
-
-                                <div className="flex items-start gap-3">
-                                    <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: FTS_COLORS.navy }}>
-                                        <Globe className="h-5 w-5 text-white" />
-                                    </div>
-                                    <div>
-                                        <p className="font-semibold text-slate-900">Service Marketplace</p>
-                                        <p className="text-sm text-slate-600">150+ payment services & integrations</p>
-                                    </div>
-                                </div>
-
-                                <div className="flex items-start gap-3">
-                                    <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: FTS_GRADIENTS.dark1 }}>
-                                        <Users className="h-5 w-5 text-white" />
-                                    </div>
-                                    <div>
-                                        <p className="font-semibold text-slate-900">Provider Network</p>
-                                        <p className="text-sm text-slate-600">Connect with payment providers globally</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <Button 
-                                onClick={handleSignup}
-                                className="w-full text-white hover:opacity-90"
-                                style={{ background: FTS_GRADIENTS.dark1 }}
-                            >
-                                Sign Up Now
-                                <ArrowRight className="ml-2 h-4 w-4" />
-                            </Button>
-
-                            <p className="text-xs text-center text-slate-600">
-                                Your request will be processed by our team within 24 hours
-                            </p>
-                        </CardContent>
-                    </Card>
                 </div>
 
-                <p className="text-center text-white/60 text-sm mt-6" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                <p className="text-center text-slate-600 text-sm mt-6" style={{ fontFamily: 'Montserrat, sans-serif' }}>
                     © 2025 FTS.Money - Fluid global payments
                 </p>
             </div>
