@@ -14,6 +14,7 @@ export default function PSPUserManagement() {
     const queryClient = useQueryClient();
     const [selectedPSP, setSelectedPSP] = useState('');
     const [dialogOpen, setDialogOpen] = useState(false);
+    const [editingUser, setEditingUser] = useState(null);
     const [formData, setFormData] = useState({
         email: '',
         full_name: '',
@@ -47,6 +48,17 @@ export default function PSPUserManagement() {
         onSuccess: () => {
             queryClient.invalidateQueries(['psp-users']);
             setDialogOpen(false);
+            setEditingUser(null);
+            setFormData({ email: '', full_name: '', role: 'user', psp_code: '', password: 'Welcome123!', status: 'active' });
+        }
+    });
+
+    const updateMutation = useMutation({
+        mutationFn: (data) => base44.functions.invoke('managePSPUsers', { action: 'update', ...data }),
+        onSuccess: () => {
+            queryClient.invalidateQueries(['psp-users']);
+            setDialogOpen(false);
+            setEditingUser(null);
             setFormData({ email: '', full_name: '', role: 'user', psp_code: '', password: 'Welcome123!', status: 'active' });
         }
     });
@@ -60,7 +72,24 @@ export default function PSPUserManagement() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        createMutation.mutate(formData);
+        if (editingUser) {
+            updateMutation.mutate({ ...formData, user_id: editingUser.id });
+        } else {
+            createMutation.mutate(formData);
+        }
+    };
+
+    const handleEdit = (user) => {
+        setEditingUser(user);
+        setFormData({
+            email: user.email,
+            full_name: user.full_name,
+            role: user.role,
+            psp_code: user.psp_code || '',
+            password: '',
+            status: user.status
+        });
+        setDialogOpen(true);
     };
 
     return (
@@ -133,13 +162,22 @@ export default function PSPUserManagement() {
                                                 </Badge>
                                             </div>
                                         </div>
-                                        <Button 
-                                            variant="ghost" 
-                                            size="sm"
-                                            onClick={() => deleteMutation.mutate(user.id)}
-                                        >
-                                            <Trash2 className="h-4 w-4 text-red-600" />
-                                        </Button>
+                                        <div className="flex gap-2">
+                                            <Button 
+                                                variant="ghost" 
+                                                size="sm"
+                                                onClick={() => handleEdit(user)}
+                                            >
+                                                <Edit className="h-4 w-4 text-blue-600" />
+                                            </Button>
+                                            <Button 
+                                                variant="ghost" 
+                                                size="sm"
+                                                onClick={() => deleteMutation.mutate(user.id)}
+                                            >
+                                                <Trash2 className="h-4 w-4 text-red-600" />
+                                            </Button>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
@@ -147,10 +185,16 @@ export default function PSPUserManagement() {
                     </CardContent>
                 </Card>
 
-                <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                <Dialog open={dialogOpen} onOpenChange={(open) => {
+                    setDialogOpen(open);
+                    if (!open) {
+                        setEditingUser(null);
+                        setFormData({ email: '', full_name: '', role: 'user', psp_code: '', password: 'Welcome123!', status: 'active' });
+                    }
+                }}>
                     <DialogContent>
                         <DialogHeader>
-                            <DialogTitle>Add New User</DialogTitle>
+                            <DialogTitle>{editingUser ? 'Edit User' : 'Add New User'}</DialogTitle>
                         </DialogHeader>
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <div>
@@ -160,6 +204,7 @@ export default function PSPUserManagement() {
                                     value={formData.email}
                                     onChange={(e) => setFormData({...formData, email: e.target.value})}
                                     required
+                                    disabled={!!editingUser}
                                 />
                             </div>
                             <div>
@@ -172,12 +217,18 @@ export default function PSPUserManagement() {
                             </div>
                             <div>
                                 <Label>PSP Code</Label>
-                                <Input
-                                    value={formData.psp_code}
-                                    onChange={(e) => setFormData({...formData, psp_code: e.target.value})}
-                                    placeholder="e.g., EP1274"
-                                    required
-                                />
+                                <Select value={formData.psp_code} onValueChange={(value) => setFormData({...formData, psp_code: value})}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select PSP" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {psps.map(psp => (
+                                            <SelectItem key={psp.psp_code} value={psp.psp_code}>
+                                                {psp.psp_name} ({psp.psp_code})
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
                             </div>
                             <div>
                                 <Label>Role</Label>
@@ -212,7 +263,7 @@ export default function PSPUserManagement() {
                                 </Select>
                             </div>
                             <Button type="submit" className="w-full">
-                                Create User
+                                {editingUser ? 'Update User' : 'Create User'}
                             </Button>
                         </form>
                     </DialogContent>

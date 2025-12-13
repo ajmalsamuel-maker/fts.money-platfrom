@@ -83,10 +83,11 @@ Deno.serve(async (req) => {
                 SET full_name = COALESCE($1, full_name),
                     role = COALESCE($2, role),
                     status = COALESCE($3, status),
+                    psp_code = COALESCE($4, psp_code),
                     updated_at = NOW()
-                WHERE id = $4
+                WHERE id = $5
                 RETURNING *
-            `, [full_name, role, status, user_id]);
+            `, [full_name, role, status, psp_code, user_id]);
 
             return Response.json({
                 success: true,
