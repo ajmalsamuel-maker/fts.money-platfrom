@@ -128,7 +128,7 @@ export default function CommunityMarketplace() {
 
     return (
         <div className="flex h-screen bg-slate-50">
-            <CommunityPortalSidebar currentPage="CommunityMarketplace" userEmail={localStorage.getItem('community_portal_session') ? JSON.parse(localStorage.getItem('community_portal_session')).email : null} />
+            <CommunityPortalSidebar currentPage="CommunityMarketplace" userEmail={localStorage.getItem('communitySession') ? JSON.parse(localStorage.getItem('communitySession')).email : null} />
 
             <div className="flex-1 overflow-auto">
                 {/* Header */}

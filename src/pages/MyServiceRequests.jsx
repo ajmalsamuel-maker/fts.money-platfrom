@@ -107,7 +107,7 @@ export default function MyServiceRequests() {
             psp_name: activePSP.psp_name,
             request_type: requestType,
             service_id: selectedService.id,
-            service_name: selectedService.provider_name || selectedService.route_name,
+            service_name: selectedService.name || selectedService.route_name,
             business_justification: formData.business_justification,
             expected_volume: parseFloat(formData.expected_volume) || 0,
             status: 'pending'
@@ -188,9 +188,9 @@ export default function MyServiceRequests() {
                                                             <CreditCard className="h-5 w-5 text-blue-600" />
                                                         </div>
                                                         <div>
-                                                            <p className="font-medium text-slate-900">{provider.provider_name}</p>
-                                                            {provider.provider_type && (
-                                                                <p className="text-xs text-slate-500 capitalize">{provider.provider_type}</p>
+                                                            <p className="font-medium text-slate-900">{provider.name}</p>
+                                                            {provider.type && (
+                                                                <p className="text-xs text-slate-500 capitalize">{provider.type}</p>
                                                             )}
                                                         </div>
                                                     </div>
@@ -231,7 +231,7 @@ export default function MyServiceRequests() {
                                                             <div className="flex items-center gap-2 text-xs text-slate-500">
                                                                 <span className="capitalize">{route.channel_type}</span>
                                                                 <span>•</span>
-                                                                <span>{route.settlement_speed}</span>
+                                                                <span>{route.speed}</span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -319,7 +319,7 @@ export default function MyServiceRequests() {
             }}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Request {selectedService?.provider_name || selectedService?.route_name}</DialogTitle>
+                        <DialogTitle>Request {selectedService?.name || selectedService?.route_name}</DialogTitle>
                     </DialogHeader>
                     <form onSubmit={handleSubmitRequest} className="space-y-4">
                         <div>
