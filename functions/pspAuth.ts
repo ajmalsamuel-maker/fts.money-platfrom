@@ -12,17 +12,8 @@ Deno.serve(async (req) => {
         const { action, psp_code, email, password } = await req.json();
 
         if (action === 'verifyPSP') {
-            // Query ProvisionedPSP from entities table
-            const result = await pool.query(`
-                SELECT data->>'psp_code' as psp_code, 
-                       data->>'psp_name' as psp_name,
-                       data->'branding' as branding,
-                       id
-                FROM entities 
-                WHERE entity_name = 'ProvisionedPSP' 
-                AND is_deleted = false
-                AND UPPER(data->>'psp_code') = UPPER($1)
-            `, [psp_code]);
+            // Check PSP code from psp_settings table
+            const result = await pool.query('SELECT * FROM psp_settings WHERE UPPER(psp_code) = UPPER($1) LIMIT 1', [psp_code]);
             
             const psp = result.rows[0];
             
@@ -39,16 +30,12 @@ Deno.serve(async (req) => {
         }
 
         if (action === 'verifyEmail') {
-            // Query User entity from database
+            // Query app_users table
             const result = await pool.query(`
-                SELECT id, 
-                       data->>'email' as email,
-                       data->>'full_name' as full_name,
-                       data->>'role' as role
-                FROM entities 
-                WHERE entity_name = 'User' 
-                AND is_deleted = false
-                AND data->>'email' = $1
+                SELECT id, email, full_name, role, status
+                FROM app_users 
+                WHERE email = $1
+                LIMIT 1
             `, [email]);
             
             const user = result.rows[0];
@@ -57,6 +44,13 @@ Deno.serve(async (req) => {
                 return Response.json({
                     success: false,
                     error: 'No account found with this email'
+                });
+            }
+
+            if (user.status !== 'active') {
+                return Response.json({
+                    success: false,
+                    error: 'Account is not active'
                 });
             }
 
@@ -72,28 +66,24 @@ Deno.serve(async (req) => {
         }
 
         if (action === 'login') {
-            // Query User entity
+            // Query app_users
             const result = await pool.query(`
-                SELECT id, 
-                       data->>'email' as email,
-                       data->>'full_name' as full_name,
-                       data->>'role' as role
-                FROM entities 
-                WHERE entity_name = 'User' 
-                AND is_deleted = false
-                AND data->>'email' = $1
+                SELECT id, email, full_name, role, status, password_hash
+                FROM app_users 
+                WHERE email = $1
+                LIMIT 1
             `, [email]);
 
             const user = result.rows[0];
 
-            if (!user) {
+            if (!user || user.status !== 'active') {
                 return Response.json({
                     success: false,
                     error: 'Invalid credentials'
                 });
             }
 
-            // For demo: accept any password (in production, verify properly)
+            // For demo: accept any password (in production, verify password_hash)
             return Response.json({
                 success: true,
                 session: {
