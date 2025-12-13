@@ -76,15 +76,25 @@ export default function PSPSetupWizard() {
         enabled: !!pspId
     });
 
-    const { data: paymentProviders = [] } = useQuery({
+    const { data: paymentProviders = [], isLoading: loadingProviders } = useQuery({
         queryKey: ['payment-providers'],
         queryFn: () => base44.entities.PaymentProvider.list()
     });
 
-    const { data: payoutRoutes = [] } = useQuery({
+    const { data: payoutRoutes = [], isLoading: loadingRoutes } = useQuery({
         queryKey: ['payout-routes'],
         queryFn: () => base44.entities.PayoutRoute.list()
     });
+
+    // Debug logging
+    React.useEffect(() => {
+        if (paymentProviders.length > 0) {
+            console.log('Payment Providers:', paymentProviders);
+        }
+        if (payoutRoutes.length > 0) {
+            console.log('Payout Routes:', payoutRoutes);
+        }
+    }, [paymentProviders, payoutRoutes]);
 
     const updatePSPMutation = useMutation({
         mutationFn: async (data) => {
