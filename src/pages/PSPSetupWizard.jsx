@@ -19,57 +19,7 @@ import {
     CheckCircle, AlertCircle, Info
 } from 'lucide-react';
 
-const paymentProviders = [
-    {
-        id: 'stripe',
-        name: 'Stripe',
-        logo: '💳',
-        description: 'Global payment processing with extensive API',
-        features: ['Cards', '3DS', 'ACH', 'Apple Pay', 'Google Pay'],
-        setup_time: '5 minutes',
-        documentation: 'https://stripe.com/docs',
-        credentials: [
-            { key: 'publishable_key', label: 'Publishable Key', type: 'text', placeholder: 'pk_live_...' },
-            { key: 'secret_key', label: 'Secret Key', type: 'password', placeholder: 'sk_live_...' },
-            { key: 'webhook_secret', label: 'Webhook Secret', type: 'password', placeholder: 'whsec_...' }
-        ]
-    },
-    {
-        id: 'paypal',
-        name: 'PayPal',
-        logo: '🅿️',
-        description: 'Accept PayPal, Venmo, and credit cards',
-        features: ['PayPal', 'Venmo', 'Cards', 'Buy Now Pay Later'],
-        setup_time: '10 minutes',
-        documentation: 'https://developer.paypal.com/docs',
-        credentials: [
-            { key: 'client_id', label: 'Client ID', type: 'text', placeholder: 'Your Client ID' },
-            { key: 'client_secret', label: 'Client Secret', type: 'password', placeholder: 'Your Client Secret' },
-            { key: 'mode', label: 'Environment', type: 'select', options: ['sandbox', 'live'] }
-        ]
-    },
-    {
-        id: 'adyen',
-        name: 'Adyen',
-        logo: '🌐',
-        description: 'Enterprise payment platform with global reach',
-        features: ['Cards', 'Local Methods', 'POS', 'Issuing'],
-        setup_time: '15 minutes',
-        documentation: 'https://docs.adyen.com',
-        credentials: [
-            { key: 'api_key', label: 'API Key', type: 'password', placeholder: 'Your API Key' },
-            { key: 'merchant_account', label: 'Merchant Account', type: 'text', placeholder: 'YourMerchantAccount' },
-            { key: 'client_key', label: 'Client Key', type: 'text', placeholder: 'Your Client Key' }
-        ]
-    }
-];
 
-const payoutMethods = [
-    { id: 'bank_transfer', name: 'Bank Transfer / ACH', icon: Building2, processing_time: '1-3 days', fee: '$0.25' },
-    { id: 'instant_payout', name: 'Instant Payout', icon: Sparkles, processing_time: 'Real-time', fee: '1.5%' },
-    { id: 'paypal_payout', name: 'PayPal Payout', icon: Wallet, processing_time: '1 day', fee: '$0.50' },
-    { id: 'debit_card', name: 'Debit Card', icon: CreditCard, processing_time: 'Instant', fee: '2%' }
-];
 
 const complianceRequirements = [
     {
@@ -126,6 +76,16 @@ export default function PSPSetupWizard() {
         enabled: !!pspId
     });
 
+    const { data: paymentProviders = [] } = useQuery({
+        queryKey: ['payment-providers'],
+        queryFn: () => base44.entities.PaymentProvider.list()
+    });
+
+    const { data: payoutRoutes = [] } = useQuery({
+        queryKey: ['payout-routes'],
+        queryFn: () => base44.entities.PayoutRoute.list()
+    });
+
     const updatePSPMutation = useMutation({
         mutationFn: async (data) => {
             return await base44.entities.ProvisionedPSP.update(pspId, data);
@@ -166,43 +126,14 @@ export default function PSPSetupWizard() {
     };
 
     const validateProviderConfig = (providerId) => {
-        const provider = paymentProviders.find(p => p.id === providerId);
-        const config = providerConfigs[providerId] || {};
-        return provider.credentials.every(cred => config[cred.key]);
+        return true; // No credentials needed for platform-level providers
     };
 
     const handleCompleteSetup = async () => {
-        // Create payment providers
-        for (const providerId of selectedProviders) {
-            const provider = paymentProviders.find(p => p.id === providerId);
-            const config = providerConfigs[providerId];
-            
-            await createPaymentProviderMutation.mutateAsync({
-                psp_id: pspId,
-                psp_code: psp?.psp_code,
-                provider_name: provider.name,
-                provider_type: providerId,
-                status: 'active',
-                credentials: config,
-                supported_methods: provider.features,
-                is_primary: selectedProviders[0] === providerId
-            });
-        }
-
-        // Create payout route
-        await createPayoutRouteMutation.mutateAsync({
-            psp_id: pspId,
-            psp_code: psp?.psp_code,
-            route_name: 'Default Payout Route',
-            payout_method: payoutConfig.default_method,
-            schedule: payoutConfig.schedule,
-            minimum_amount: payoutConfig.minimum_payout,
-            currency: payoutConfig.currency,
-            status: 'active'
-        });
-
-        // Update PSP with setup completion
+        // Update PSP with enabled providers and routes
         await updatePSPMutation.mutateAsync({
+            enabled_payment_methods: selectedProviders,
+            enabled_payout_methods: [payoutConfig.default_method],
             setup_completed: true,
             setup_completed_date: new Date().toISOString(),
             compliance_config: complianceConfig
@@ -275,7 +206,7 @@ export default function PSPSetupWizard() {
                                         <CreditCard className="h-6 w-6 text-blue-600 flex-shrink-0 mt-1" />
                                         <div>
                                             <h3 className="font-semibold text-slate-900">Payment Provider Integration</h3>
-                                            <p className="text-sm text-slate-600">Connect Stripe, PayPal, or Adyen</p>
+                                            <p className="text-sm text-slate-600">Select from available payment gateways</p>
                                         </div>
                                     </div>
                                     
@@ -340,105 +271,58 @@ export default function PSPSetupWizard() {
                                 </p>
                             </CardHeader>
                             <CardContent className="space-y-6">
-                                {paymentProviders.map((provider) => {
-                                    const isSelected = selectedProviders.includes(provider.id);
-                                    const isConfigured = validateProviderConfig(provider.id);
-                                    
-                                    return (
-                                        <Card 
-                                            key={provider.id}
-                                            className={cn(
-                                                "transition-all",
-                                                isSelected ? "border-2 border-blue-500 shadow-lg" : "border-slate-200"
-                                            )}
-                                        >
-                                            <CardHeader>
-                                                <div className="flex items-center justify-between">
-                                                    <div className="flex items-center gap-3">
-                                                        <div className="text-4xl">{provider.logo}</div>
-                                                        <div>
-                                                            <h3 className="font-bold text-lg">{provider.name}</h3>
-                                                            <p className="text-sm text-slate-600">{provider.description}</p>
-                                                        </div>
-                                                    </div>
-                                                    <Switch
-                                                        checked={isSelected}
-                                                        onCheckedChange={() => toggleProvider(provider.id)}
-                                                    />
-                                                </div>
-                                            </CardHeader>
-                                            
-                                            {isSelected && (
-                                                <CardContent className="space-y-4">
-                                                    <div className="flex flex-wrap gap-2">
-                                                        {provider.features.map((feature) => (
-                                                            <Badge key={feature} variant="outline">{feature}</Badge>
-                                                        ))}
-                                                        <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200">
-                                                            ⏱️ {provider.setup_time}
-                                                        </Badge>
-                                                    </div>
-
-                                                    <Alert className="bg-blue-50 border-blue-200">
-                                                        <Key className="h-4 w-4 text-blue-600" />
-                                                        <AlertDescription className="text-blue-900 text-sm">
-                                                            Enter your {provider.name} API credentials. 
-                                                            <a 
-                                                                href={provider.documentation} 
-                                                                target="_blank" 
-                                                                rel="noopener noreferrer"
-                                                                className="ml-1 underline inline-flex items-center gap-1"
-                                                            >
-                                                                View documentation
-                                                                <ExternalLink className="h-3 w-3" />
-                                                            </a>
-                                                        </AlertDescription>
-                                                    </Alert>
-
-                                                    <div className="grid gap-4">
-                                                        {provider.credentials.map((cred) => (
-                                                            <div key={cred.key}>
-                                                                <Label>{cred.label} *</Label>
-                                                                {cred.type === 'select' ? (
-                                                                    <Select
-                                                                        value={providerConfigs[provider.id]?.[cred.key] || ''}
-                                                                        onValueChange={(val) => updateProviderConfig(provider.id, cred.key, val)}
-                                                                    >
-                                                                        <SelectTrigger>
-                                                                            <SelectValue placeholder={`Select ${cred.label}`} />
-                                                                        </SelectTrigger>
-                                                                        <SelectContent>
-                                                                            {cred.options.map(opt => (
-                                                                                <SelectItem key={opt} value={opt}>{opt}</SelectItem>
-                                                                            ))}
-                                                                        </SelectContent>
-                                                                    </Select>
-                                                                ) : (
-                                                                    <Input
-                                                                        type={cred.type}
-                                                                        placeholder={cred.placeholder}
-                                                                        value={providerConfigs[provider.id]?.[cred.key] || ''}
-                                                                        onChange={(e) => updateProviderConfig(provider.id, cred.key, e.target.value)}
-                                                                        className="font-mono"
-                                                                    />
+                                {paymentProviders.length === 0 ? (
+                                    <div className="text-center py-8 text-slate-500">
+                                        <CreditCard className="h-12 w-12 mx-auto mb-2 text-slate-400" />
+                                        <p>No payment providers available</p>
+                                        <p className="text-sm">Contact FTS admin to add providers to the pool</p>
+                                    </div>
+                                ) : (
+                                    paymentProviders.map((provider) => {
+                                        const isSelected = selectedProviders.includes(provider.id);
+                                        
+                                        return (
+                                            <Card 
+                                                key={provider.id}
+                                                className={cn(
+                                                    "transition-all",
+                                                    isSelected ? "border-2 border-blue-500 shadow-lg" : "border-slate-200"
+                                                )}
+                                            >
+                                                <CardHeader>
+                                                    <div className="flex items-center justify-between">
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="w-12 h-12 rounded-lg bg-blue-50 flex items-center justify-center">
+                                                                <CreditCard className="h-6 w-6 text-blue-600" />
+                                                            </div>
+                                                            <div>
+                                                                <h3 className="font-bold text-lg">{provider.provider_name}</h3>
+                                                                {provider.provider_type && (
+                                                                    <p className="text-sm text-slate-600 capitalize">{provider.provider_type}</p>
                                                                 )}
                                                             </div>
-                                                        ))}
+                                                        </div>
+                                                        <Switch
+                                                            checked={isSelected}
+                                                            onCheckedChange={() => toggleProvider(provider.id)}
+                                                        />
                                                     </div>
-
-                                                    {isConfigured && (
+                                                </CardHeader>
+                                                
+                                                {isSelected && (
+                                                    <CardContent className="space-y-4">
                                                         <Alert className="bg-emerald-50 border-emerald-200">
                                                             <CheckCircle className="h-4 w-4 text-emerald-600" />
                                                             <AlertDescription className="text-emerald-900">
-                                                                {provider.name} configuration complete
+                                                                {provider.provider_name} will be enabled for your PSP
                                                             </AlertDescription>
                                                         </Alert>
-                                                    )}
-                                                </CardContent>
-                                            )}
-                                        </Card>
-                                    );
-                                })}
+                                                    </CardContent>
+                                                )}
+                                            </Card>
+                                        );
+                                    })
+                                )}
                             </CardContent>
                         </Card>
 
@@ -475,40 +359,47 @@ export default function PSPSetupWizard() {
                             <CardContent className="space-y-6">
                                 <div>
                                     <Label className="text-base mb-4 block">Default Payout Method</Label>
-                                    <div className="grid md:grid-cols-2 gap-4">
-                                        {payoutMethods.map((method) => {
-                                            const Icon = method.icon;
-                                            const isSelected = payoutConfig.default_method === method.id;
-                                            
-                                            return (
-                                                <button
-                                                    key={method.id}
-                                                    onClick={() => setPayoutConfig({ ...payoutConfig, default_method: method.id })}
-                                                    className={cn(
-                                                        "p-4 rounded-xl border-2 text-left transition-all",
-                                                        isSelected 
-                                                            ? "border-purple-500 bg-purple-50 shadow-lg" 
-                                                            : "border-slate-200 hover:border-purple-300 bg-white"
-                                                    )}
-                                                >
-                                                    <div className="flex items-start gap-3">
-                                                        <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0">
-                                                            <Icon className="h-6 w-6 text-white" />
-                                                        </div>
-                                                        <div className="flex-1">
-                                                            <h3 className="font-semibold">{method.name}</h3>
-                                                            <p className="text-sm text-slate-600 mt-1">
-                                                                {method.processing_time} • {method.fee}
-                                                            </p>
-                                                        </div>
-                                                        {isSelected && (
-                                                            <CheckCircle2 className="h-5 w-5 text-purple-600" />
+                                    {payoutRoutes.length === 0 ? (
+                                        <div className="text-center py-8 text-slate-500">
+                                            <Wallet className="h-12 w-12 mx-auto mb-2 text-slate-400" />
+                                            <p>No payout routes available</p>
+                                            <p className="text-sm">Contact FTS admin to add payout routes</p>
+                                        </div>
+                                    ) : (
+                                        <div className="grid md:grid-cols-2 gap-4">
+                                            {payoutRoutes.map((route) => {
+                                                const isSelected = payoutConfig.default_method === route.id;
+                                                
+                                                return (
+                                                    <button
+                                                        key={route.id}
+                                                        onClick={() => setPayoutConfig({ ...payoutConfig, default_method: route.id })}
+                                                        className={cn(
+                                                            "p-4 rounded-xl border-2 text-left transition-all",
+                                                            isSelected 
+                                                                ? "border-purple-500 bg-purple-50 shadow-lg" 
+                                                                : "border-slate-200 hover:border-purple-300 bg-white"
                                                         )}
-                                                    </div>
-                                                </button>
-                                            );
-                                        })}
-                                    </div>
+                                                    >
+                                                        <div className="flex items-start gap-3">
+                                                            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0">
+                                                                <Wallet className="h-6 w-6 text-white" />
+                                                            </div>
+                                                            <div className="flex-1">
+                                                                <h3 className="font-semibold">{route.route_name}</h3>
+                                                                <p className="text-sm text-slate-600 mt-1 capitalize">
+                                                                    {route.channel_type} • {route.settlement_speed}
+                                                                </p>
+                                                            </div>
+                                                            {isSelected && (
+                                                                <CheckCircle2 className="h-5 w-5 text-purple-600" />
+                                                            )}
+                                                        </div>
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className="grid md:grid-cols-2 gap-4">
@@ -632,11 +523,11 @@ export default function PSPSetupWizard() {
                                     <div className="flex flex-wrap gap-2">
                                         {selectedProviders.map(id => {
                                             const provider = paymentProviders.find(p => p.id === id);
-                                            return (
+                                            return provider ? (
                                                 <Badge key={id} className="bg-blue-100 text-blue-700">
-                                                    {provider.logo} {provider.name}
+                                                    {provider.provider_name}
                                                 </Badge>
-                                            );
+                                            ) : null;
                                         })}
                                     </div>
                                 </div>
@@ -645,7 +536,7 @@ export default function PSPSetupWizard() {
                                     <p className="text-sm text-slate-600 mb-2">Payout Configuration</p>
                                     <div className="grid md:grid-cols-3 gap-4 text-sm">
                                         <div>
-                                            <span className="font-semibold">Method:</span> {payoutMethods.find(m => m.id === payoutConfig.default_method)?.name}
+                                            <span className="font-semibold">Method:</span> {payoutRoutes.find(r => r.id === payoutConfig.default_method)?.route_name}
                                         </div>
                                         <div>
                                             <span className="font-semibold">Schedule:</span> {payoutConfig.schedule}
