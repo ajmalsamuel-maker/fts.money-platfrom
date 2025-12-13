@@ -429,7 +429,9 @@ export default function PSPInstanceConfig() {
                                                 </div>
                                                 <div>
                                                     <p className="font-medium text-slate-900">{provider.provider_name}</p>
-                                                    <p className="text-xs text-slate-500">{provider.provider_type || 'Payment Gateway'}</p>
+                                                    {provider.provider_type && (
+                                                        <p className="text-xs text-slate-500 capitalize">{provider.provider_type}</p>
+                                                    )}
                                                 </div>
                                             </div>
                                             <Switch
