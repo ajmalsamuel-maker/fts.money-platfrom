@@ -97,6 +97,7 @@ export default function PSPLogin() {
             }
 
             // Complete login with session data from backend
+            console.log('Login successful, storing session with PSP code:', data.session.psp_code);
             localStorage.setItem('staff_session', JSON.stringify(data.session));
             
             // Force reload to clear any cached data
