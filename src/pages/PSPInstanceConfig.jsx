@@ -62,11 +62,17 @@ export default function PSPInstanceConfig() {
         enabled_payout_methods: []
     });
 
-    // Populate config when PSP data loads
+    // Populate config when PSP data loads - map from provisioning fields
     React.useEffect(() => {
         if (psp) {
             setConfig({
-                branding: psp.branding || { company_name: psp.psp_name },
+                branding: {
+                    company_name: psp.psp_name || '',
+                    logo_url: psp.branding?.logo_url || '',
+                    primary_color: psp.branding?.primary_color || '#3b82f6',
+                    secondary_color: psp.branding?.secondary_color || '#8b5cf6',
+                    favicon_url: psp.branding?.favicon_url || ''
+                },
                 transaction_fees: psp.transaction_fees || {},
                 region_settings: {
                     default_currency: psp.currency || 'USD',
