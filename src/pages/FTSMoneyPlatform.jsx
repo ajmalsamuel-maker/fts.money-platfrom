@@ -186,7 +186,7 @@ export default function FTSMoneyPlatform() {
                                 <Card 
                                     key={psp.id} 
                                     className="bg-white border-slate-200 hover:border-blue-300 hover:shadow-md transition-all cursor-pointer group"
-                                    onClick={() => navigate(createPageUrl('PSPInstanceConfig', `?id=${psp.id}`))}
+                                    onClick={() => navigate(createPageUrl('PSPInstanceConfig') + `?id=${psp.id}`)}
                                 >
                                     <CardContent className="p-4">
                                         <div className="flex items-start justify-between mb-3">
