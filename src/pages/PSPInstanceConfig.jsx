@@ -46,12 +46,14 @@ export default function PSPInstanceConfig() {
 
     const { data: paymentProviders = [] } = useQuery({
         queryKey: ['payment-providers'],
-        queryFn: () => base44.entities.PaymentProvider.list()
+        queryFn: () => base44.entities.PaymentProvider.list(),
+        enabled: !!pspId
     });
 
-    const { data: payoutMethods = [] } = useQuery({
-        queryKey: ['payout-methods'],
-        queryFn: () => base44.entities.PayoutRoute.list()
+    const { data: payoutRoutes = [] } = useQuery({
+        queryKey: ['payout-routes'],
+        queryFn: () => base44.entities.PayoutRoute.list(),
+        enabled: !!pspId
     });
 
     const [config, setConfig] = useState({
@@ -409,32 +411,39 @@ export default function PSPInstanceConfig() {
                     <TabsContent value="payments">
                         <Card className="bg-white border-slate-200">
                             <CardHeader>
-                                <CardTitle>Payment Method Configuration</CardTitle>
-                                <CardDescription>Select which payment methods to enable for this PSP</CardDescription>
+                                <CardTitle>Payment Provider Configuration</CardTitle>
+                                <CardDescription>Enable payment providers for this PSP instance</CardDescription>
                             </CardHeader>
-                            <CardContent className="space-y-4">
-                                {paymentProviders.map((provider) => (
-                                    <div key={provider.id} className="flex items-center justify-between p-4 border border-slate-200 rounded-lg">
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded bg-slate-100 flex items-center justify-center">
-                                                <CreditCard className="h-5 w-5 text-slate-600" />
-                                            </div>
-                                            <div>
-                                                <p className="font-medium text-slate-900">{provider.provider_name}</p>
-                                                <p className="text-xs text-slate-500">{provider.provider_type}</p>
-                                            </div>
-                                        </div>
-                                        <Switch
-                                            checked={config.enabled_payment_methods?.includes(provider.id)}
-                                            onCheckedChange={(checked) => {
-                                                const methods = checked
-                                                    ? [...(config.enabled_payment_methods || []), provider.id]
-                                                    : (config.enabled_payment_methods || []).filter(id => id !== provider.id);
-                                                setConfig({...config, enabled_payment_methods: methods});
-                                            }}
-                                        />
+                            <CardContent className="space-y-3">
+                                {paymentProviders.length === 0 ? (
+                                    <div className="text-center py-8 text-slate-500">
+                                        <CreditCard className="h-12 w-12 mx-auto mb-2 text-slate-400" />
+                                        <p>No payment providers available in the pool</p>
                                     </div>
-                                ))}
+                                ) : (
+                                    paymentProviders.map((provider) => (
+                                        <div key={provider.id} className="flex items-center justify-between p-4 border border-slate-200 rounded-lg hover:border-blue-300 transition-colors">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-10 h-10 rounded bg-blue-50 flex items-center justify-center">
+                                                    <CreditCard className="h-5 w-5 text-blue-600" />
+                                                </div>
+                                                <div>
+                                                    <p className="font-medium text-slate-900">{provider.provider_name}</p>
+                                                    <p className="text-xs text-slate-500">{provider.provider_type || 'Payment Gateway'}</p>
+                                                </div>
+                                            </div>
+                                            <Switch
+                                                checked={config.enabled_payment_methods?.includes(provider.id)}
+                                                onCheckedChange={(checked) => {
+                                                    const methods = checked
+                                                        ? [...(config.enabled_payment_methods || []), provider.id]
+                                                        : (config.enabled_payment_methods || []).filter(id => id !== provider.id);
+                                                    setConfig({...config, enabled_payment_methods: methods});
+                                                }}
+                                            />
+                                        </div>
+                                    ))
+                                )}
                             </CardContent>
                         </Card>
                     </TabsContent>
@@ -443,29 +452,43 @@ export default function PSPInstanceConfig() {
                     <TabsContent value="payouts">
                         <Card className="bg-white border-slate-200">
                             <CardHeader>
-                                <CardTitle>Payout Method Configuration</CardTitle>
-                                <CardDescription>Configure available payout methods based on commercial agreements</CardDescription>
+                                <CardTitle>Payout Route Configuration</CardTitle>
+                                <CardDescription>Enable payout routes for merchant settlements</CardDescription>
                             </CardHeader>
-                            <CardContent className="space-y-4">
-                                <div className="grid grid-cols-2 gap-4">
-                                    {['Bank Transfer', 'Instant Payout', 'Crypto Payout', 'Digital Wallet'].map((method) => (
-                                        <div key={method} className="flex items-center justify-between p-4 border border-slate-200 rounded-lg">
+                            <CardContent className="space-y-3">
+                                {payoutRoutes.length === 0 ? (
+                                    <div className="text-center py-8 text-slate-500">
+                                        <Wallet className="h-12 w-12 mx-auto mb-2 text-slate-400" />
+                                        <p>No payout routes configured in the platform</p>
+                                    </div>
+                                ) : (
+                                    payoutRoutes.map((route) => (
+                                        <div key={route.id} className="flex items-center justify-between p-4 border border-slate-200 rounded-lg hover:border-emerald-300 transition-colors">
                                             <div className="flex items-center gap-3">
-                                                <Wallet className="h-5 w-5 text-slate-600" />
-                                                <span className="font-medium text-slate-900">{method}</span>
+                                                <div className="w-10 h-10 rounded bg-emerald-50 flex items-center justify-center">
+                                                    <Wallet className="h-5 w-5 text-emerald-600" />
+                                                </div>
+                                                <div>
+                                                    <p className="font-medium text-slate-900">{route.route_name}</p>
+                                                    <div className="flex items-center gap-2 text-xs text-slate-500">
+                                                        <span className="capitalize">{route.channel_type}</span>
+                                                        <span>•</span>
+                                                        <span>{route.settlement_speed}</span>
+                                                    </div>
+                                                </div>
                                             </div>
                                             <Switch
-                                                checked={config.enabled_payout_methods?.includes(method)}
+                                                checked={config.enabled_payout_methods?.includes(route.id)}
                                                 onCheckedChange={(checked) => {
                                                     const methods = checked
-                                                        ? [...(config.enabled_payout_methods || []), method]
-                                                        : (config.enabled_payout_methods || []).filter(m => m !== method);
+                                                        ? [...(config.enabled_payout_methods || []), route.id]
+                                                        : (config.enabled_payout_methods || []).filter(id => id !== route.id);
                                                     setConfig({...config, enabled_payout_methods: methods});
                                                 }}
                                             />
                                         </div>
-                                    ))}
-                                </div>
+                                    ))
+                                )}
                             </CardContent>
                         </Card>
                     </TabsContent>
