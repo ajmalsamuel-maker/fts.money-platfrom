@@ -43,8 +43,15 @@ export default function CommunityPortalLogin() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-6" style={{ background: FTS_GRADIENTS.dark2 }}>
-            <div className="w-full max-w-6xl">
+        <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden" style={{ backgroundColor: '#0a0e27' }}>
+            {/* Animated Background */}
+            <div className="absolute inset-0 opacity-30">
+                <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full blur-3xl" style={{ background: 'radial-gradient(circle, rgba(45, 108, 223, 0.4), transparent)' }}></div>
+                <div className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full blur-3xl" style={{ background: 'radial-gradient(circle, rgba(0, 191, 255, 0.3), transparent)' }}></div>
+                <div className="absolute top-1/2 right-1/3 w-64 h-64 rounded-full blur-3xl" style={{ background: 'radial-gradient(circle, rgba(135, 206, 235, 0.2), transparent)' }}></div>
+            </div>
+            
+            <div className="w-full max-w-6xl relative z-10">
                 <div className="text-center mb-8">
                     <div className="inline-flex flex-col items-center gap-4 mb-4">
                         <img 
