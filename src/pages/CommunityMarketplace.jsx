@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
+import CommunityPortalSidebar from '@/components/community/CommunityPortalSidebar';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -128,7 +128,7 @@ export default function CommunityMarketplace() {
 
     return (
         <div className="flex h-screen bg-slate-50">
-            <FTSPlatformSidebar currentPage="CommunityMarketplace" />
+            <CommunityPortalSidebar currentPage="CommunityMarketplace" userEmail={localStorage.getItem('community_portal_session') ? JSON.parse(localStorage.getItem('community_portal_session')).email : null} />
 
             <div className="flex-1 overflow-auto">
                 {/* Header */}
