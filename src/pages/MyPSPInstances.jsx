@@ -16,7 +16,8 @@ import {
     Settings,
     TrendingUp,
     Users,
-    DollarSign
+    DollarSign,
+    Sparkles
 } from 'lucide-react';
 
 export default function MyPSPInstances() {
@@ -126,6 +127,16 @@ export default function MyPSPInstances() {
                                         </div>
 
                                         <div className="flex items-center gap-2">
+                                            {psp.status === 'active' && !psp.setup_completed && (
+                                                <Button 
+                                                    size="sm"
+                                                    onClick={() => navigate(createPageUrl('PSPSetupWizard') + `?psp_id=${psp.id}`)}
+                                                    className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white"
+                                                >
+                                                    <Sparkles className="h-4 w-4 mr-2" />
+                                                    Complete Setup
+                                                </Button>
+                                            )}
                                             <Button 
                                                 variant="outline" 
                                                 size="sm"
