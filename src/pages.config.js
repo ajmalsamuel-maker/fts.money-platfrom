@@ -133,6 +133,7 @@ import FTSFeeTemplates from './pages/FTSFeeTemplates';
 import FTSAuditLogs from './pages/FTSAuditLogs';
 import FTSCompliance from './pages/FTSCompliance';
 import FTSArchitectureDoc from './pages/FTSArchitectureDoc';
+import FTSServiceRegistry from './pages/FTSServiceRegistry';
 import __Layout from './Layout.jsx';
 
 
@@ -272,6 +273,7 @@ export const PAGES = {
     "FTSAuditLogs": FTSAuditLogs,
     "FTSCompliance": FTSCompliance,
     "FTSArchitectureDoc": FTSArchitectureDoc,
+    "FTSServiceRegistry": FTSServiceRegistry,
 }
 
 export const pagesConfig = {
