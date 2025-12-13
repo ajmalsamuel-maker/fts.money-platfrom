@@ -26,9 +26,8 @@ export default function PSPUserManagement() {
     const { data: psps = [] } = useQuery({
         queryKey: ['psp-list'],
         queryFn: async () => {
-            const result = await base44.functions.invoke('managePSPUsers', { action: 'list' });
-            const uniquePSPs = [...new Set(result.data.users?.map(u => u.psp_code).filter(Boolean))];
-            return uniquePSPs;
+            const result = await base44.functions.invoke('managePSPUsers', { action: 'listPSPs' });
+            return result.data.psps || [];
         }
     });
 

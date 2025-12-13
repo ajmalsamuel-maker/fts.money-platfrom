@@ -76,6 +76,14 @@ Deno.serve(async (req) => {
             return Response.json({ success: true });
         }
 
+        if (action === 'listPSPs') {
+            const result = await pool.query('SELECT psp_code, psp_name FROM psp_settings ORDER BY psp_name');
+            return Response.json({
+                success: true,
+                psps: result.rows
+            });
+        }
+
         return Response.json({
             success: false,
             error: 'Invalid action'
