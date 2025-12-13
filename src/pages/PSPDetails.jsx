@@ -31,7 +31,7 @@ export default function PSPDetails() {
     const urlParams = new URLSearchParams(window.location.search);
     const pspId = urlParams.get('id');
 
-    const { data: psp } = useQuery({
+    const { data: psp, isLoading } = useQuery({
         queryKey: ['psp', pspId],
         queryFn: async () => {
             const psps = await base44.entities.ProvisionedPSP.filter({ id: pspId });
@@ -56,7 +56,8 @@ export default function PSPDetails() {
         }
     });
 
-    if (!psp) return <div className="min-h-screen bg-slate-900 flex items-center justify-center text-white">Loading...</div>;
+    if (isLoading) return <div className="min-h-screen bg-slate-900 flex items-center justify-center text-white">Loading PSP...</div>;
+    if (!psp) return <div className="min-h-screen bg-slate-900 flex items-center justify-center text-white">PSP not found</div>;
 
     const volumeData = [
         { month: 'Jan', volume: 2400000 },

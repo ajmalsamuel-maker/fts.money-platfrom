@@ -39,7 +39,7 @@ export default function PSPInstanceManagement() {
     const pspId = urlParams.get('id');
     const [activeTab, setActiveTab] = useState('overview');
 
-    const { data: psp } = useQuery({
+    const { data: psp, isLoading: pspLoading } = useQuery({
         queryKey: ['psp-instance', pspId],
         queryFn: async () => {
             const psps = await base44.entities.ProvisionedPSP.filter({ id: pspId });
@@ -48,16 +48,16 @@ export default function PSPInstanceManagement() {
         enabled: !!pspId
     });
 
-    const { data: logs = [] } = useQuery({
+    const { data: logs = [], isLoading: logsLoading } = useQuery({
         queryKey: ['psp-logs', pspId],
         queryFn: () => base44.entities.PSPInstanceLog.filter({ psp_id: pspId }, '-created_date', 50),
-        enabled: !!pspId
+        enabled: !!pspId && !!psp
     });
 
-    const { data: auditTrail = [] } = useQuery({
+    const { data: auditTrail = [], isLoading: auditLoading } = useQuery({
         queryKey: ['psp-audit', pspId],
         queryFn: () => base44.entities.PSPAuditTrail.filter({ psp_id: pspId }, '-created_date', 100),
-        enabled: !!pspId
+        enabled: !!pspId && !!psp
     });
 
     const updateStatusMutation = useMutation({
@@ -112,7 +112,8 @@ export default function PSPInstanceManagement() {
         queryClient.invalidateQueries(['psp-logs']);
     };
 
-    if (!psp) return <div className="flex items-center justify-center h-screen">Loading...</div>;
+    if (pspLoading) return <div className="flex items-center justify-center h-screen">Loading PSP...</div>;
+    if (!psp) return <div className="flex items-center justify-center h-screen">PSP not found</div>;
 
     const logTypeIcons = {
         info: <CheckCircle2 className="h-4 w-4 text-blue-600" />,
