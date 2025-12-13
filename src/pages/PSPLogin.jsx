@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,6 +22,19 @@ export default function PSPLogin() {
     useEffect(() => {
         // Clear any existing session on login page load
         localStorage.removeItem('staff_session');
+        
+        // Check if already logged in
+        const checkExistingSession = () => {
+            try {
+                const sessionData = JSON.parse(localStorage.getItem('staff_session') || '{}');
+                if (sessionData.email && sessionData.expires > Date.now()) {
+                    window.location.href = '/Dashboard';
+                }
+            } catch (err) {
+                // Ignore
+            }
+        };
+        checkExistingSession();
     }, []);
 
     const handleStep1 = async (e) => {
@@ -31,13 +43,19 @@ export default function PSPLogin() {
         setIsLoading(true);
 
         try {
-            const response = await base44.functions.invoke('pspAuth', {
-                action: 'verifyPSP',
-                psp_code: pspCode
+            const response = await fetch('/api/functions/pspAuth', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'verifyPSP',
+                    psp_code: pspCode
+                })
             });
+            
+            const data = await response.json();
 
-            if (!response.data.success) {
-                throw new Error(response.data.error || 'Invalid PSP code');
+            if (!data.success) {
+                throw new Error(data.error || 'Invalid PSP code');
             }
             setStep(2);
         } catch (err) {
@@ -52,17 +70,23 @@ export default function PSPLogin() {
         setIsLoading(true);
 
         try {
-            const response = await base44.functions.invoke('pspAuth', {
-                action: 'verifyEmail',
-                email: email,
-                psp_code: pspCode
+            const response = await fetch('/api/functions/pspAuth', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'verifyEmail',
+                    email: email,
+                    psp_code: pspCode
+                })
             });
+            
+            const data = await response.json();
 
-            if (!response.data.success) {
-                throw new Error(response.data.error || 'Email verification failed');
+            if (!data.success) {
+                throw new Error(data.error || 'Email verification failed');
             }
 
-            setTempUser(response.data.user);
+            setTempUser(data.user);
             setStep(3);
         } catch (err) {
             setError(err.message);
@@ -76,28 +100,34 @@ export default function PSPLogin() {
         setIsLoading(true);
 
         try {
-            const response = await base44.functions.invoke('pspAuth', {
-                action: 'login',
-                email: email,
-                password: password,
-                psp_code: pspCode
+            const response = await fetch('/api/functions/pspAuth', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'login',
+                    email: email,
+                    password: password,
+                    psp_code: pspCode
+                })
             });
+            
+            const data = await response.json();
 
-            if (!response.data.success) {
-                throw new Error(response.data.error || 'Login failed');
+            if (!data.success) {
+                throw new Error(data.error || 'Login failed');
             }
 
             // Check if 2FA is required
-            if (response.data.two_factor_enabled) {
+            if (data.two_factor_enabled) {
                 setStep(4);
                 setIsLoading(false);
-                const method = response.data.two_factor_method || 'email';
+                const method = data.two_factor_method || 'email';
                 toast.success(`2FA code sent via ${method}`);
                 return;
             }
 
             // Complete login with session data from backend
-            localStorage.setItem('staff_session', JSON.stringify(response.data.session));
+            localStorage.setItem('staff_session', JSON.stringify(data.session));
             window.location.href = '/Dashboard';
         } catch (err) {
             setError(err.message);
@@ -121,14 +151,21 @@ export default function PSPLogin() {
             }
 
             // Complete login with session data
-            const response = await base44.functions.invoke('pspAuth', {
-                action: 'login',
-                email: email,
-                password: password
+            const response = await fetch('/api/functions/pspAuth', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'login',
+                    email: email,
+                    password: password,
+                    psp_code: pspCode
+                })
             });
+            
+            const data = await response.json();
 
-            if (response.data.success) {
-                localStorage.setItem('staff_session', JSON.stringify(response.data.session));
+            if (data.success) {
+                localStorage.setItem('staff_session', JSON.stringify(data.session));
                 window.location.href = '/Dashboard';
             }
         } catch (err) {
