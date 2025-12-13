@@ -110,7 +110,24 @@ export default function PSPProvisioningWizard() {
         timezone: 'UTC',
         branding: {
             primary_color: '#3b82f6',
-            secondary_color: '#8b5cf6'
+            secondary_color: '#8b5cf6',
+            logo_url: '',
+            favicon_url: ''
+        },
+        transaction_fees: {
+            card_percentage: 2.9,
+            fixed_fee: 0.30,
+            international_percentage: 3.9,
+            crypto_percentage: 1.5
+        },
+        fee_tiers: [],
+        currency_specific_fees: {},
+        enabled_payment_methods: [],
+        enabled_payout_methods: [],
+        email_templates: {
+            merchant_onboarding: '',
+            transaction_notification: '',
+            settlement_notification: ''
         }
     });
 
@@ -183,18 +200,32 @@ export default function PSPProvisioningWizard() {
 
                 {/* Progress Steps */}
                 <div className="flex items-center justify-center mb-8">
-                    {[1, 2, 3].map((s) => (
+                    {[1, 2, 3, 4, 5].map((s) => (
                         <React.Fragment key={s}>
                             <div className={cn(
-                                "flex items-center justify-center w-10 h-10 rounded-full font-semibold",
-                                step >= s ? "bg-blue-600 text-white" : "bg-slate-700 text-slate-400"
+                                "flex flex-col items-center"
                             )}>
-                                {step > s ? <Check className="h-5 w-5" /> : s}
-                            </div>
-                            {s < 3 && (
                                 <div className={cn(
-                                    "w-24 h-1 mx-2",
-                                    step > s ? "bg-blue-600" : "bg-slate-700"
+                                    "flex items-center justify-center w-10 h-10 rounded-full font-semibold",
+                                    step >= s ? "bg-blue-600 text-white" : "bg-slate-300 text-slate-600"
+                                )}>
+                                    {step > s ? <Check className="h-5 w-5" /> : s}
+                                </div>
+                                <span className={cn(
+                                    "text-xs mt-1",
+                                    step >= s ? "text-slate-900" : "text-slate-500"
+                                )}>
+                                    {s === 1 && 'Tier'}
+                                    {s === 2 && 'Info'}
+                                    {s === 3 && 'Branding'}
+                                    {s === 4 && 'Methods'}
+                                    {s === 5 && 'Review'}
+                                </span>
+                            </div>
+                            {s < 5 && (
+                                <div className={cn(
+                                    "w-16 h-1 mx-2 mt-[-20px]",
+                                    step > s ? "bg-blue-600" : "bg-slate-300"
                                 )} />
                             )}
                         </React.Fragment>
@@ -425,8 +456,160 @@ export default function PSPProvisioningWizard() {
                     </Card>
                 )}
 
-                {/* Step 3: Review & Launch */}
+                {/* Step 3: Branding & Fees */}
                 {step === 3 && (
+                    <Card className="bg-slate-800/50 border-slate-700">
+                        <CardHeader>
+                            <CardTitle className="text-white">Branding & Fee Configuration</CardTitle>
+                            <CardDescription className="text-slate-400">Configure appearance and fee structure</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
+                            <div>
+                                <h3 className="text-white font-semibold mb-4">Branding</h3>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <Label className="text-slate-300">Logo URL</Label>
+                                        <Input
+                                            value={formData.branding.logo_url}
+                                            onChange={(e) => setFormData({...formData, branding: {...formData.branding, logo_url: e.target.value}})}
+                                            placeholder="https://example.com/logo.png"
+                                            className="bg-slate-900 border-slate-700 text-white"
+                                        />
+                                    </div>
+                                    <div>
+                                        <Label className="text-slate-300">Favicon URL</Label>
+                                        <Input
+                                            value={formData.branding.favicon_url}
+                                            onChange={(e) => setFormData({...formData, branding: {...formData.branding, favicon_url: e.target.value}})}
+                                            placeholder="https://example.com/favicon.ico"
+                                            className="bg-slate-900 border-slate-700 text-white"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h3 className="text-white font-semibold mb-4">Transaction Fees</h3>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <Label className="text-slate-300">Card Processing Fee (%)</Label>
+                                        <Input
+                                            type="number"
+                                            step="0.01"
+                                            value={formData.transaction_fees.card_percentage}
+                                            onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, card_percentage: parseFloat(e.target.value)}})}
+                                            className="bg-slate-900 border-slate-700 text-white"
+                                        />
+                                    </div>
+                                    <div>
+                                        <Label className="text-slate-300">Fixed Fee per Transaction</Label>
+                                        <Input
+                                            type="number"
+                                            step="0.01"
+                                            value={formData.transaction_fees.fixed_fee}
+                                            onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, fixed_fee: parseFloat(e.target.value)}})}
+                                            className="bg-slate-900 border-slate-700 text-white"
+                                        />
+                                    </div>
+                                    <div>
+                                        <Label className="text-slate-300">International Fee (%)</Label>
+                                        <Input
+                                            type="number"
+                                            step="0.01"
+                                            value={formData.transaction_fees.international_percentage}
+                                            onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, international_percentage: parseFloat(e.target.value)}})}
+                                            className="bg-slate-900 border-slate-700 text-white"
+                                        />
+                                    </div>
+                                    <div>
+                                        <Label className="text-slate-300">Crypto Processing Fee (%)</Label>
+                                        <Input
+                                            type="number"
+                                            step="0.01"
+                                            value={formData.transaction_fees.crypto_percentage}
+                                            onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, crypto_percentage: parseFloat(e.target.value)}})}
+                                            className="bg-slate-900 border-slate-700 text-white"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </CardContent>
+                        <div className="flex justify-between p-6 border-t border-slate-700">
+                            <Button variant="outline" onClick={() => setStep(2)} className="border-slate-600 text-slate-300">
+                                <ArrowLeft className="h-4 w-4 mr-2" />
+                                Back
+                            </Button>
+                            <Button onClick={() => setStep(4)} className="gap-2">
+                                Continue
+                                <ArrowRight className="h-4 w-4" />
+                            </Button>
+                        </div>
+                    </Card>
+                )}
+
+                {/* Step 4: Payment & Payout Methods */}
+                {step === 4 && (
+                    <Card className="bg-slate-800/50 border-slate-700">
+                        <CardHeader>
+                            <CardTitle className="text-white">Payment & Payout Methods</CardTitle>
+                            <CardDescription className="text-slate-400">Select available methods for this PSP</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
+                            <div>
+                                <h3 className="text-white font-semibold mb-4">Payment Methods</h3>
+                                <div className="grid grid-cols-2 gap-3">
+                                    {['Visa', 'Mastercard', 'Amex', 'Crypto', 'PayPal', 'Apple Pay', 'Google Pay', 'Bank Transfer'].map((method) => (
+                                        <div key={method} className="flex items-center justify-between p-3 bg-slate-900 rounded-lg border border-slate-700">
+                                            <span className="text-slate-300">{method}</span>
+                                            <Switch
+                                                checked={formData.enabled_payment_methods.includes(method)}
+                                                onCheckedChange={(checked) => {
+                                                    const methods = checked
+                                                        ? [...formData.enabled_payment_methods, method]
+                                                        : formData.enabled_payment_methods.filter(m => m !== method);
+                                                    setFormData({...formData, enabled_payment_methods: methods});
+                                                }}
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div>
+                                <h3 className="text-white font-semibold mb-4">Payout Methods</h3>
+                                <div className="grid grid-cols-2 gap-3">
+                                    {['Bank Transfer', 'Instant Payout', 'Crypto Payout', 'Digital Wallet'].map((method) => (
+                                        <div key={method} className="flex items-center justify-between p-3 bg-slate-900 rounded-lg border border-slate-700">
+                                            <span className="text-slate-300">{method}</span>
+                                            <Switch
+                                                checked={formData.enabled_payout_methods.includes(method)}
+                                                onCheckedChange={(checked) => {
+                                                    const methods = checked
+                                                        ? [...formData.enabled_payout_methods, method]
+                                                        : formData.enabled_payout_methods.filter(m => m !== method);
+                                                    setFormData({...formData, enabled_payout_methods: methods});
+                                                }}
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </CardContent>
+                        <div className="flex justify-between p-6 border-t border-slate-700">
+                            <Button variant="outline" onClick={() => setStep(3)} className="border-slate-600 text-slate-300">
+                                <ArrowLeft className="h-4 w-4 mr-2" />
+                                Back
+                            </Button>
+                            <Button onClick={() => setStep(5)} className="gap-2">
+                                Continue
+                                <ArrowRight className="h-4 w-4" />
+                            </Button>
+                        </div>
+                    </Card>
+                )}
+
+                {/* Step 5: Review & Launch */}
+                {step === 5 && (
                     <Card className="bg-slate-800/50 border-slate-700">
                         <CardHeader>
                             <CardTitle className="text-white">Review & Launch</CardTitle>
@@ -475,7 +658,7 @@ export default function PSPProvisioningWizard() {
                             </div>
                         </CardContent>
                         <div className="flex justify-between p-6 border-t border-slate-700">
-                            <Button variant="outline" onClick={() => setStep(2)} className="border-slate-600 text-slate-300">
+                            <Button variant="outline" onClick={() => setStep(4)} className="border-slate-600 text-slate-300">
                                 <ArrowLeft className="h-4 w-4 mr-2" />
                                 Back
                             </Button>

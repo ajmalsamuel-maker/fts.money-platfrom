@@ -122,6 +122,10 @@ import PSPProvisioningWizard from './pages/PSPProvisioningWizard';
 import PSPDetails from './pages/PSPDetails';
 import FTSMoneyPlatform from './pages/FTSMoneyPlatform';
 import PSPInstanceConfig from './pages/PSPInstanceConfig';
+import FTSAnalytics from './pages/FTSAnalytics';
+import FTSRevenue from './pages/FTSRevenue';
+import FTSClients from './pages/FTSClients';
+import FTSSettings from './pages/FTSSettings';
 import __Layout from './Layout.jsx';
 
 
@@ -250,6 +254,10 @@ export const PAGES = {
     "PSPDetails": PSPDetails,
     "FTSMoneyPlatform": FTSMoneyPlatform,
     "PSPInstanceConfig": PSPInstanceConfig,
+    "FTSAnalytics": FTSAnalytics,
+    "FTSRevenue": FTSRevenue,
+    "FTSClients": FTSClients,
+    "FTSSettings": FTSSettings,
 }
 
 export const pagesConfig = {
