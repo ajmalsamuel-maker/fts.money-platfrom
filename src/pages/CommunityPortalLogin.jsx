@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Sparkles, Building2, Users, Globe, ArrowRight } from 'lucide-react';
+import { FTS_COLORS, FTS_GRADIENTS, FTS_LOGOS } from '@/components/community/FTSBrandColors';
 
 export default function CommunityPortalLogin() {
     const navigate = useNavigate();
@@ -42,19 +43,25 @@ export default function CommunityPortalLogin() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center p-6">
+        <div className="min-h-screen flex items-center justify-center p-6" style={{ background: FTS_GRADIENTS.dark2 }}>
             <div className="w-full max-w-6xl">
                 <div className="text-center mb-8">
-                    <div className="inline-flex items-center gap-3 mb-4">
-                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
-                            <Sparkles className="h-8 w-8 text-white" />
-                        </div>
-                        <div className="text-left">
-                            <h1 className="text-3xl font-bold text-white">FTS.Money</h1>
-                            <p className="text-blue-200">Community Portal</p>
+                    <div className="inline-flex flex-col items-center gap-4 mb-4">
+                        <img 
+                            src={FTS_LOGOS.symbol} 
+                            alt="FTS.Money" 
+                            className="h-20 w-20 object-contain"
+                        />
+                        <div>
+                            <h1 className="text-3xl font-bold text-white" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                                FTS.Money Community
+                            </h1>
+                            <p className="text-lg mt-1" style={{ color: FTS_COLORS.aqua }}>
+                                Fluid global payments
+                            </p>
                         </div>
                     </div>
-                    <p className="text-slate-300 text-lg">Your Gateway to Payment Infrastructure</p>
+                    <p className="text-white/80 text-lg">Your Gateway to Payment Infrastructure</p>
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-6">
@@ -95,7 +102,8 @@ export default function CommunityPortalLogin() {
 
                                 <Button 
                                     type="submit" 
-                                    className="w-full bg-blue-600 hover:bg-blue-700"
+                                    className="w-full text-white"
+                                    style={{ background: FTS_GRADIENTS.dark1 }}
                                     disabled={loading}
                                 >
                                     {loading ? 'Signing in...' : 'Sign In'}
@@ -110,16 +118,16 @@ export default function CommunityPortalLogin() {
                     </Card>
 
                     {/* New Customer Signup */}
-                    <Card className="bg-gradient-to-br from-blue-50 to-cyan-50 border-blue-200">
+                    <Card className="border-2" style={{ background: FTS_GRADIENTS.light2, borderColor: FTS_COLORS.sky }}>
                         <CardHeader>
-                            <CardTitle className="text-blue-900">New Customer?</CardTitle>
+                            <CardTitle style={{ color: FTS_COLORS.navy }}>New Customer?</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <p className="text-slate-700">Join the FTS.Money ecosystem and access:</p>
                             
                             <div className="space-y-3">
                                 <div className="flex items-start gap-3">
-                                    <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center flex-shrink-0">
+                                    <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: FTS_COLORS.royalBlue }}>
                                         <Building2 className="h-5 w-5 text-white" />
                                     </div>
                                     <div>
@@ -129,7 +137,7 @@ export default function CommunityPortalLogin() {
                                 </div>
 
                                 <div className="flex items-start gap-3">
-                                    <div className="w-10 h-10 rounded-lg bg-purple-600 flex items-center justify-center flex-shrink-0">
+                                    <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: FTS_COLORS.navy }}>
                                         <Globe className="h-5 w-5 text-white" />
                                     </div>
                                     <div>
@@ -139,7 +147,7 @@ export default function CommunityPortalLogin() {
                                 </div>
 
                                 <div className="flex items-start gap-3">
-                                    <div className="w-10 h-10 rounded-lg bg-emerald-600 flex items-center justify-center flex-shrink-0">
+                                    <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: FTS_GRADIENTS.dark1 }}>
                                         <Users className="h-5 w-5 text-white" />
                                     </div>
                                     <div>
@@ -151,7 +159,8 @@ export default function CommunityPortalLogin() {
 
                             <Button 
                                 onClick={handleSignup}
-                                className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700"
+                                className="w-full text-white hover:opacity-90"
+                                style={{ background: FTS_GRADIENTS.dark1 }}
                             >
                                 Sign Up Now
                                 <ArrowRight className="ml-2 h-4 w-4" />
@@ -164,8 +173,8 @@ export default function CommunityPortalLogin() {
                     </Card>
                 </div>
 
-                <p className="text-center text-slate-400 text-sm mt-6">
-                    © 2025 FTS.Money - Payment Infrastructure for the Modern World
+                <p className="text-center text-white/60 text-sm mt-6" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                    © 2025 FTS.Money - Fluid global payments
                 </p>
             </div>
         </div>

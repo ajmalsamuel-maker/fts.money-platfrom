@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import CommunityPortalSidebar from '@/components/community/CommunityPortalSidebar';
+import { FTS_COLORS, FTS_GRADIENTS } from '@/components/community/FTSBrandColors';
 import { 
     Building2, 
     Plus, 
@@ -108,12 +109,14 @@ export default function CommunityPortalDashboard() {
 
                 <div className="p-6">
                     {/* Hero Section */}
-                    <Card className="mb-6 bg-gradient-to-br from-blue-600 to-cyan-600 border-0 text-white">
+                    <Card className="mb-6 border-0 text-white" style={{ background: FTS_GRADIENTS.dark1 }}>
                         <CardContent className="p-8">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <h1 className="text-3xl font-bold mb-2">Build Your Payment Infrastructure</h1>
-                                    <p className="text-blue-100 mb-6 text-lg">
+                                    <h1 className="text-3xl font-bold mb-2" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                                        Build Your Payment Infrastructure
+                                    </h1>
+                                    <p className="mb-6 text-lg" style={{ color: FTS_COLORS.mist }}>
                                         Everything you need to launch and scale your PSP business
                                     </p>
                                     <div className="grid grid-cols-2 gap-4 mb-6">
@@ -129,7 +132,8 @@ export default function CommunityPortalDashboard() {
                                     </div>
                                     <Button 
                                         onClick={() => navigate(createPageUrl('CommunityPSPProvisioning'))}
-                                        className="bg-white text-blue-600 hover:bg-blue-50"
+                                        className="bg-white hover:bg-white/90"
+                                        style={{ color: FTS_COLORS.royalBlue, fontFamily: 'Montserrat, sans-serif' }}
                                     >
                                         Get Started
                                         <ArrowRight className="ml-2 h-4 w-4" />

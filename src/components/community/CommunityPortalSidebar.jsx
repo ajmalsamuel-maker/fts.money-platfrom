@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { FTS_COLORS, FTS_LOGOS } from '@/components/community/FTSBrandColors';
 import { 
     LayoutDashboard,
     Building2,
@@ -34,24 +35,26 @@ export default function CommunityPortalSidebar({ currentPage, userEmail }) {
     };
 
     return (
-        <aside className="w-64 bg-slate-900 flex flex-col h-screen">
+        <aside className="w-64 flex flex-col h-screen" style={{ backgroundColor: FTS_COLORS.navy }}>
             {/* Logo */}
-            <div className="h-16 flex items-center justify-center border-b border-slate-800 px-4">
+            <div className="h-16 flex items-center justify-center px-4" style={{ borderBottom: `1px solid ${FTS_COLORS.royalBlue}` }}>
                 <div className="flex items-center gap-2">
-                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
-                        <Sparkles className="h-5 w-5 text-white" />
-                    </div>
+                    <img 
+                        src={FTS_LOGOS.symbol} 
+                        alt="FTS.Money" 
+                        className="h-10 w-10 object-contain"
+                    />
                     <div>
-                        <h1 className="text-lg font-bold text-white">FTS.Money</h1>
-                        <p className="text-[10px] text-slate-400">Community Portal</p>
+                        <h1 className="text-sm font-bold text-white" style={{ fontFamily: 'Montserrat, sans-serif' }}>FTS.Money</h1>
+                        <p className="text-[10px]" style={{ color: FTS_COLORS.aqua }}>Community Portal</p>
                     </div>
                 </div>
             </div>
 
             {/* User Info */}
             {userEmail && (
-                <div className="px-4 py-3 border-b border-slate-800">
-                    <p className="text-xs text-slate-400">Signed in as</p>
+                <div className="px-4 py-3" style={{ borderBottom: `1px solid ${FTS_COLORS.royalBlue}` }}>
+                    <p className="text-xs" style={{ color: FTS_COLORS.sky }}>Signed in as</p>
                     <p className="text-sm text-white truncate">{userEmail}</p>
                 </div>
             )}
@@ -69,9 +72,13 @@ export default function CommunityPortalSidebar({ currentPage, userEmail }) {
                                 className={cn(
                                     "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-sm",
                                     isActive
-                                        ? "bg-slate-800 text-white"
-                                        : "text-slate-400 hover:bg-slate-800/50 hover:text-white"
+                                        ? "text-white"
+                                        : "hover:text-white"
                                 )}
+                                style={isActive 
+                                    ? { backgroundColor: FTS_COLORS.royalBlue }
+                                    : { color: FTS_COLORS.sky }
+                                }
                             >
                                 <Icon className="h-4 w-4 flex-shrink-0" />
                                 <span>{item.label}</span>
@@ -82,11 +89,12 @@ export default function CommunityPortalSidebar({ currentPage, userEmail }) {
             </nav>
 
             {/* Logout */}
-            <div className="border-t border-slate-800 p-3">
+            <div className="p-3" style={{ borderTop: `1px solid ${FTS_COLORS.royalBlue}` }}>
                 <Button
                     onClick={handleLogout}
                     variant="ghost"
-                    className="w-full justify-start text-slate-400 hover:text-white hover:bg-slate-800"
+                    className="w-full justify-start hover:text-white"
+                    style={{ color: FTS_COLORS.sky }}
                 >
                     <LogOut className="h-4 w-4 mr-3" />
                     Sign Out
