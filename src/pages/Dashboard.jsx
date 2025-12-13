@@ -19,6 +19,15 @@ import RecurringRevenueCard from '@/components/dashboard/RecurringRevenueCard';
 import AIPerformanceCard from '@/components/dashboard/AIPerformanceCard';
 import SubscriptionHealthCard from '@/components/dashboard/SubscriptionHealthCard';
 import CryptoAnalyticsCard from '@/components/dashboard/CryptoAnalyticsCard';
+
+// Suppress MetaMask connection errors if wallet not installed
+if (typeof window !== 'undefined' && !window.ethereum) {
+    const originalConsoleInfo = console.info;
+    console.info = (...args) => {
+        if (args[0]?.includes?.('MetaMask')) return;
+        originalConsoleInfo.apply(console, args);
+    };
+}
 import { 
     DollarSign, 
     ArrowLeftRight, 
