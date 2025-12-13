@@ -126,6 +126,7 @@ import FTSAnalytics from './pages/FTSAnalytics';
 import FTSRevenue from './pages/FTSRevenue';
 import FTSClients from './pages/FTSClients';
 import FTSSettings from './pages/FTSSettings';
+import PSPInstanceManagement from './pages/PSPInstanceManagement';
 import __Layout from './Layout.jsx';
 
 
@@ -258,6 +259,7 @@ export const PAGES = {
     "FTSRevenue": FTSRevenue,
     "FTSClients": FTSClients,
     "FTSSettings": FTSSettings,
+    "PSPInstanceManagement": PSPInstanceManagement,
 }
 
 export const pagesConfig = {
