@@ -11,20 +11,43 @@ Deno.serve(async (req) => {
     try {
         const { action, email, full_name, role, psp_code, password, user_id, status } = await req.json();
 
-        // Create app_users table if not exists
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS app_users (
-                id SERIAL PRIMARY KEY,
-                email VARCHAR(255) UNIQUE NOT NULL,
-                full_name VARCHAR(255),
-                role VARCHAR(50) DEFAULT 'user',
-                psp_code VARCHAR(50),
-                password_hash TEXT,
-                status VARCHAR(50) DEFAULT 'active',
-                created_at TIMESTAMP DEFAULT NOW(),
-                updated_at TIMESTAMP DEFAULT NOW()
-            )
+        // Check existing table structure
+        const checkTable = await pool.query(`
+            SELECT column_name 
+            FROM information_schema.columns 
+            WHERE table_name = 'app_users'
         `);
+        
+        const hasTable = checkTable.rows.length > 0;
+        const columnNames = checkTable.rows.map(r => r.column_name);
+        
+        // If table doesn't have our expected columns, add them
+        if (hasTable) {
+            if (!columnNames.includes('psp_code')) {
+                await pool.query('ALTER TABLE app_users ADD COLUMN IF NOT EXISTS psp_code VARCHAR(50)');
+            }
+            if (!columnNames.includes('created_at')) {
+                await pool.query('ALTER TABLE app_users ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT NOW()');
+            }
+            if (!columnNames.includes('updated_at')) {
+                await pool.query('ALTER TABLE app_users ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT NOW()');
+            }
+        } else {
+            // Create table if it doesn't exist
+            await pool.query(`
+                CREATE TABLE app_users (
+                    id SERIAL PRIMARY KEY,
+                    email VARCHAR(255) UNIQUE NOT NULL,
+                    full_name VARCHAR(255),
+                    role VARCHAR(50) DEFAULT 'user',
+                    psp_code VARCHAR(50),
+                    password_hash TEXT,
+                    status VARCHAR(50) DEFAULT 'active',
+                    created_at TIMESTAMP DEFAULT NOW(),
+                    updated_at TIMESTAMP DEFAULT NOW()
+                )
+            `);
+        }
 
         if (action === 'create') {
             const result = await pool.query(`
@@ -41,8 +64,8 @@ Deno.serve(async (req) => {
 
         if (action === 'list') {
             const query = psp_code 
-                ? 'SELECT * FROM app_users WHERE UPPER(psp_code) = UPPER($1) ORDER BY created_at DESC'
-                : 'SELECT * FROM app_users ORDER BY created_at DESC';
+                ? 'SELECT * FROM app_users WHERE UPPER(COALESCE(psp_code, \'\')) = UPPER($1) ORDER BY id DESC'
+                : 'SELECT * FROM app_users ORDER BY id DESC';
             
             const result = psp_code 
                 ? await pool.query(query, [psp_code])
