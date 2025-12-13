@@ -22,6 +22,7 @@ const menuItems = [
     { icon: Building2, label: 'Launch PSP', path: 'CommunityPSPProvisioning' },
     { icon: Globe, label: 'Marketplace', path: 'CommunityMarketplace' },
     { icon: Zap, label: 'My PSP Instances', path: 'MyPSPInstances' },
+    { icon: Sparkles, label: 'Service Requests', path: 'MyServiceRequests' },
     { icon: FileText, label: 'My Subscriptions', path: 'MySubscriptions' },
     { icon: DollarSign, label: 'Billing', path: 'CommunityBilling' },
     { icon: Users, label: 'Provider Registration', path: 'ServiceProviderRegistration' },
