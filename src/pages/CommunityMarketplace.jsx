@@ -90,10 +90,19 @@ export default function CommunityMarketplace() {
     });
 
     const subscribeMutation = useMutation({
-        mutationFn: (data) => base44.entities.PSPServiceSubscription.create(data),
-        onSuccess: () => {
+        mutationFn: (data) => {
+            console.log('Creating subscription:', data);
+            return base44.entities.PSPServiceSubscription.create(data);
+        },
+        onSuccess: (result) => {
+            console.log('Subscription created:', result);
             queryClient.invalidateQueries(['psp-subscriptions']);
             setDetailsOpen(false);
+            alert('Successfully subscribed to ' + result.service_name);
+        },
+        onError: (error) => {
+            console.error('Subscription failed:', error);
+            alert('Failed to subscribe: ' + error.message);
         }
     });
 
@@ -104,17 +113,22 @@ export default function CommunityMarketplace() {
         }
 
         const psp = psps.find(p => p.id === selectedPSP);
+        if (!psp) {
+            alert('PSP not found');
+            return;
+        }
+
         const trialEndDate = isTrial && service.trial_available 
             ? new Date(Date.now() + service.trial_duration_days * 24 * 60 * 60 * 1000).toISOString()
             : null;
 
-        subscribeMutation.mutate({
+        const subscriptionData = {
             psp_id: selectedPSP,
             psp_code: psp.psp_code,
             psp_name: psp.psp_name,
             service_id: service.id,
             service_name: service.service_name,
-            provider_id: service.provider_id,
+            provider_id: service.provider_id || '',
             subscribed_date: new Date().toISOString(),
             status: isTrial ? 'trial' : 'active',
             trial_ends_at: trialEndDate,
@@ -122,7 +136,10 @@ export default function CommunityMarketplace() {
             variable_fee: service.variable_price || 0,
             billing_cycle: 'monthly',
             auto_renew: true
-        });
+        };
+
+        console.log('Attempting to subscribe:', subscriptionData);
+        subscribeMutation.mutate(subscriptionData);
     };
 
     const filteredServices = services.filter(service => {
