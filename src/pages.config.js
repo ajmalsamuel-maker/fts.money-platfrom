@@ -142,6 +142,8 @@ import CommunityPSPProvisioning from './pages/CommunityPSPProvisioning';
 import MyPSPInstances from './pages/MyPSPInstances';
 import ServiceProviderRegistration from './pages/ServiceProviderRegistration';
 import CommunityBilling from './pages/CommunityBilling';
+import MySubscriptions from './pages/MySubscriptions';
+import CommunityAccountSettings from './pages/CommunityAccountSettings';
 import __Layout from './Layout.jsx';
 
 
@@ -290,6 +292,8 @@ export const PAGES = {
     "MyPSPInstances": MyPSPInstances,
     "ServiceProviderRegistration": ServiceProviderRegistration,
     "CommunityBilling": CommunityBilling,
+    "MySubscriptions": MySubscriptions,
+    "CommunityAccountSettings": CommunityAccountSettings,
 }
 
 export const pagesConfig = {
