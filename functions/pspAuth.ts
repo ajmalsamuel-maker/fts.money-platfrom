@@ -1,14 +1,30 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
+import pg from 'npm:pg@8.11.3';
+
+const { Pool } = pg;
+
+const pool = new Pool({
+    connectionString: Deno.env.get("DATABASE_URL"),
+    ssl: { rejectUnauthorized: false }
+});
 
 Deno.serve(async (req) => {
     try {
-        const base44 = createClientFromRequest(req);
         const { action, psp_code, email, password } = await req.json();
 
         if (action === 'verifyPSP') {
-            // Check against ProvisionedPSP entity
-            const psps = await base44.asServiceRole.entities.ProvisionedPSP.list();
-            const psp = psps.find(p => p.psp_code?.toUpperCase() === psp_code?.toUpperCase());
+            // Query ProvisionedPSP from entities table
+            const result = await pool.query(`
+                SELECT data->>'psp_code' as psp_code, 
+                       data->>'psp_name' as psp_name,
+                       data->'branding' as branding,
+                       id
+                FROM entities 
+                WHERE entity_name = 'ProvisionedPSP' 
+                AND is_deleted = false
+                AND UPPER(data->>'psp_code') = UPPER($1)
+            `, [psp_code]);
+            
+            const psp = result.rows[0];
             
             return Response.json({
                 success: !!psp,
@@ -23,9 +39,19 @@ Deno.serve(async (req) => {
         }
 
         if (action === 'verifyEmail') {
-            // Check against User entity with staff roles
-            const users = await base44.asServiceRole.entities.User.list();
-            const user = users.find(u => u.email === email && u.role === 'admin');
+            // Query User entity from database
+            const result = await pool.query(`
+                SELECT id, 
+                       data->>'email' as email,
+                       data->>'full_name' as full_name,
+                       data->>'role' as role
+                FROM entities 
+                WHERE entity_name = 'User' 
+                AND is_deleted = false
+                AND data->>'email' = $1
+            `, [email]);
+            
+            const user = result.rows[0];
             
             if (!user) {
                 return Response.json({
@@ -46,9 +72,19 @@ Deno.serve(async (req) => {
         }
 
         if (action === 'login') {
-            // Simple password check (in production use proper auth)
-            const users = await base44.asServiceRole.entities.User.list();
-            const user = users.find(u => u.email === email);
+            // Query User entity
+            const result = await pool.query(`
+                SELECT id, 
+                       data->>'email' as email,
+                       data->>'full_name' as full_name,
+                       data->>'role' as role
+                FROM entities 
+                WHERE entity_name = 'User' 
+                AND is_deleted = false
+                AND data->>'email' = $1
+            `, [email]);
+
+            const user = result.rows[0];
 
             if (!user) {
                 return Response.json({
