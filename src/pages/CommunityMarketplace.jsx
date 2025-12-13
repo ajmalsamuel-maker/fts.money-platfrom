@@ -393,7 +393,13 @@ export default function CommunityMarketplace() {
                                 )}
                                 <Button 
                                     className="flex-1 bg-blue-600 hover:bg-blue-700"
-                                    onClick={() => handleSubscribe(selectedService, false)}
+                                    onClick={() => {
+                                        console.log('Dialog subscribe button clicked');
+                                        console.log('Selected service:', selectedService);
+                                        console.log('Selected PSP:', selectedPSP);
+                                        console.log('Is subscribed:', isSubscribed(selectedService.id));
+                                        handleSubscribe(selectedService, false);
+                                    }}
                                     disabled={!selectedPSP || isSubscribed(selectedService.id)}
                                 >
                                     {isSubscribed(selectedService.id) ? (
@@ -505,7 +511,11 @@ function ServiceGrid({ services, providers, isSubscribed, onViewDetails, onSubsc
                                     <Button 
                                         size="sm" 
                                         className="flex-1 bg-blue-600 hover:bg-blue-700"
-                                        onClick={() => onSubscribe(service, false)}
+                                        onClick={() => {
+                                            console.log('Subscribe button clicked for:', service.service_name);
+                                            console.log('Selected PSP:', selectedPSP);
+                                            onSubscribe(service, false);
+                                        }}
                                         disabled={!selectedPSP}
                                     >
                                         Subscribe
