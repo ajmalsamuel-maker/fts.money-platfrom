@@ -144,6 +144,7 @@ import ServiceProviderRegistration from './pages/ServiceProviderRegistration';
 import CommunityBilling from './pages/CommunityBilling';
 import MySubscriptions from './pages/MySubscriptions';
 import CommunityAccountSettings from './pages/CommunityAccountSettings';
+import PSPSetupWizard from './pages/PSPSetupWizard';
 import __Layout from './Layout.jsx';
 
 
@@ -294,6 +295,7 @@ export const PAGES = {
     "CommunityBilling": CommunityBilling,
     "MySubscriptions": MySubscriptions,
     "CommunityAccountSettings": CommunityAccountSettings,
+    "PSPSetupWizard": PSPSetupWizard,
 }
 
 export const pagesConfig = {
