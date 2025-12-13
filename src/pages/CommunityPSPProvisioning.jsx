@@ -11,11 +11,12 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { cn } from "@/lib/utils";
 import { FTS_COLORS } from '@/components/community/FTSBrandColors';
 import { 
     Building2, ArrowRight, CheckCircle2, Sparkles, Zap, Shield, DollarSign,
-    Globe, CreditCard, Wallet, TrendingUp, Lock, Code, BarChart3, Brain
+    Globe, CreditCard, Wallet, TrendingUp, Lock, Code, BarChart3, Brain, Search, ExternalLink
 } from 'lucide-react';
 
 const frameworks = [
@@ -118,8 +119,12 @@ export default function CommunityPSPProvisioning() {
         contact_email: '',
         contact_phone: '',
         country: '',
-        subdomain: ''
+        subdomain: '',
+        custom_domain: '',
+        domain_option: 'subdomain' // 'subdomain', 'custom', 'purchase'
     });
+    const [domainSuggestions, setDomainSuggestions] = useState([]);
+    const [checkingDomain, setCheckingDomain] = useState(false);
 
     useEffect(() => {
         const sessionData = localStorage.getItem('community_portal_session');
@@ -142,6 +147,35 @@ export default function CommunityPSPProvisioning() {
         }
     });
 
+    const checkDomainAvailability = async (domain) => {
+        setCheckingDomain(true);
+        try {
+            // Call backend function to check with GoDaddy API
+            const response = await base44.functions.invoke('checkDomainAvailability', { domain });
+            return response.data;
+        } catch (error) {
+            console.error('Domain check failed:', error);
+            return { available: false, error: error.message };
+        } finally {
+            setCheckingDomain(false);
+        }
+    };
+
+    const generateDomainSuggestions = async (businessName) => {
+        setCheckingDomain(true);
+        try {
+            const response = await base44.functions.invoke('suggestDomains', { 
+                businessName,
+                count: 5 
+            });
+            setDomainSuggestions(response.data.suggestions || []);
+        } catch (error) {
+            console.error('Domain suggestions failed:', error);
+        } finally {
+            setCheckingDomain(false);
+        }
+    };
+
     const handleProvision = async () => {
         const framework = frameworks.find(f => f.id === selectedFramework);
         const pricing = pricingModels.find(p => p.id === selectedPricing);
@@ -159,11 +193,14 @@ export default function CommunityPSPProvisioning() {
             status: 'provisioning',
             provisioning_progress: 0,
             subdomain: formData.subdomain || formData.psp_code.toLowerCase(),
+            domain: formData.domain_option === 'custom' ? formData.custom_domain : null,
+            domain_option: formData.domain_option,
             pricing_model: selectedPricing,
             revenue_share_percentage: pricing.percentage || 0,
             monthly_fee: totalMonthlyFee,
             setup_fee: pricing.setup || 0,
-            enabled_features: [...coreComponents.map(c => c.id), ...selectedComponents]
+            enabled_features: [...coreComponents.map(c => c.id), ...selectedComponents],
+            ssl_enabled: formData.domain_option !== 'subdomain' // Auto SSL for custom domains
         };
 
         provisionMutation.mutate(pspData);
@@ -544,15 +581,126 @@ export default function CommunityPSPProvisioning() {
                                             />
                                         </div>
                                         <div className="md:col-span-2">
-                                            <Label>Subdomain</Label>
-                                            <Input
-                                                value={formData.subdomain}
-                                                onChange={(e) => setFormData({ ...formData, subdomain: e.target.value.toLowerCase() })}
-                                                placeholder="acme"
-                                            />
-                                            <p className="text-xs text-slate-500 mt-1">
-                                                Your PSP will be available at: <span className="font-semibold text-blue-600">{formData.subdomain || 'yourname'}.fts.money</span>
-                                            </p>
+                                            <Label className="mb-3 block">Domain Configuration</Label>
+                                            <RadioGroup 
+                                                value={formData.domain_option} 
+                                                onValueChange={(value) => setFormData({ ...formData, domain_option: value })}
+                                                className="space-y-3"
+                                            >
+                                                {/* Subdomain Option */}
+                                                <div className="flex items-start space-x-3 p-4 border-2 rounded-lg hover:bg-slate-50 transition-colors">
+                                                    <RadioGroupItem value="subdomain" id="subdomain" className="mt-1" />
+                                                    <div className="flex-1">
+                                                        <Label htmlFor="subdomain" className="font-semibold cursor-pointer">FTS.Money Subdomain (Free)</Label>
+                                                        <p className="text-sm text-slate-600 mb-2">Quick setup with automatic SSL</p>
+                                                        {formData.domain_option === 'subdomain' && (
+                                                            <div className="mt-3">
+                                                                <Input
+                                                                    value={formData.subdomain}
+                                                                    onChange={(e) => setFormData({ ...formData, subdomain: e.target.value.toLowerCase() })}
+                                                                    placeholder="acme"
+                                                                />
+                                                                <p className="text-xs text-slate-500 mt-1">
+                                                                    <Globe className="inline h-3 w-3 mr-1" />
+                                                                    Your PSP: <span className="font-semibold text-blue-600">{formData.subdomain || 'yourname'}.fts.money</span>
+                                                                </p>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+
+                                                {/* Custom Domain Option */}
+                                                <div className="flex items-start space-x-3 p-4 border-2 rounded-lg hover:bg-slate-50 transition-colors">
+                                                    <RadioGroupItem value="custom" id="custom" className="mt-1" />
+                                                    <div className="flex-1">
+                                                        <Label htmlFor="custom" className="font-semibold cursor-pointer">Use My Own Domain</Label>
+                                                        <p className="text-sm text-slate-600 mb-2">Connect your existing domain with free SSL</p>
+                                                        {formData.domain_option === 'custom' && (
+                                                            <div className="mt-3 space-y-2">
+                                                                <Input
+                                                                    value={formData.custom_domain}
+                                                                    onChange={(e) => setFormData({ ...formData, custom_domain: e.target.value.toLowerCase() })}
+                                                                    placeholder="payments.yourdomain.com"
+                                                                />
+                                                                <Alert className="bg-blue-50 border-blue-200">
+                                                                    <AlertDescription className="text-xs">
+                                                                        <Lock className="inline h-3 w-3 mr-1" />
+                                                                        Free SSL certificate will be automatically provisioned via Let's Encrypt
+                                                                    </AlertDescription>
+                                                                </Alert>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+
+                                                {/* Purchase Domain Option */}
+                                                <div className="flex items-start space-x-3 p-4 border-2 rounded-lg hover:bg-slate-50 transition-colors">
+                                                    <RadioGroupItem value="purchase" id="purchase" className="mt-1" />
+                                                    <div className="flex-1">
+                                                        <Label htmlFor="purchase" className="font-semibold cursor-pointer">Find & Purchase Domain</Label>
+                                                        <p className="text-sm text-slate-600 mb-2">Powered by GoDaddy • Starting at $12.99/year</p>
+                                                        {formData.domain_option === 'purchase' && (
+                                                            <div className="mt-3 space-y-3">
+                                                                <div className="flex gap-2">
+                                                                    <Input
+                                                                        placeholder="Enter business name for suggestions"
+                                                                        value={formData.psp_name}
+                                                                        disabled
+                                                                    />
+                                                                    <Button
+                                                                        type="button"
+                                                                        variant="outline"
+                                                                        onClick={() => generateDomainSuggestions(formData.psp_name)}
+                                                                        disabled={!formData.psp_name || checkingDomain}
+                                                                    >
+                                                                        {checkingDomain ? (
+                                                                            <>
+                                                                                <Search className="h-4 w-4 mr-2 animate-spin" />
+                                                                                Searching...
+                                                                            </>
+                                                                        ) : (
+                                                                            <>
+                                                                                <Search className="h-4 w-4 mr-2" />
+                                                                                Search
+                                                                            </>
+                                                                        )}
+                                                                    </Button>
+                                                                </div>
+                                                                
+                                                                {domainSuggestions.length > 0 && (
+                                                                    <div className="border rounded-lg p-3 bg-white">
+                                                                        <p className="text-xs font-semibold text-slate-700 mb-2">Available Domains:</p>
+                                                                        <div className="space-y-2">
+                                                                            {domainSuggestions.map((suggestion, idx) => (
+                                                                                <button
+                                                                                    key={idx}
+                                                                                    type="button"
+                                                                                    onClick={() => setFormData({ ...formData, custom_domain: suggestion.domain })}
+                                                                                    className="w-full flex items-center justify-between p-2 rounded hover:bg-blue-50 text-left border border-slate-200"
+                                                                                >
+                                                                                    <div className="flex items-center gap-2">
+                                                                                        <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                                                                                        <span className="font-semibold text-sm">{suggestion.domain}</span>
+                                                                                    </div>
+                                                                                    <Badge variant="outline" className="text-xs">
+                                                                                        ${suggestion.price}/yr
+                                                                                    </Badge>
+                                                                                </button>
+                                                                            ))}
+                                                                        </div>
+                                                                        <Button variant="link" size="sm" className="mt-2 text-xs" asChild>
+                                                                            <a href="https://www.godaddy.com" target="_blank" rel="noopener noreferrer">
+                                                                                <ExternalLink className="h-3 w-3 mr-1" />
+                                                                                View more on GoDaddy
+                                                                            </a>
+                                                                        </Button>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </RadioGroup>
                                         </div>
                                     </div>
                                 </CardContent>
