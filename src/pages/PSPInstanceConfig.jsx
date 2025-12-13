@@ -215,56 +215,160 @@ export default function PSPInstanceConfig() {
 
                     {/* Transaction Fees Tab */}
                     <TabsContent value="fees">
-                        <Card className="bg-white border-slate-200">
-                            <CardHeader>
-                                <CardTitle>Default Transaction Fees</CardTitle>
-                                <CardDescription>Set default fee structure for this PSP instance</CardDescription>
-                            </CardHeader>
-                            <CardContent className="space-y-6">
-                                <div className="grid grid-cols-2 gap-6">
-                                    <div>
-                                        <Label>Card Processing Fee (%)</Label>
-                                        <Input
-                                            type="number"
-                                            step="0.01"
-                                            value={config.transaction_fees.card_percentage || ''}
-                                            onChange={(e) => setConfig({...config, transaction_fees: {...config.transaction_fees, card_percentage: parseFloat(e.target.value)}})}
-                                            placeholder="2.9"
-                                        />
+                        <div className="space-y-6">
+                            {/* Base Fee Configuration */}
+                            <Card className="bg-white border-slate-200">
+                                <CardHeader>
+                                    <CardTitle>Base Fee Structure</CardTitle>
+                                    <CardDescription>Default transaction fees applied to all merchants in this PSP instance</CardDescription>
+                                </CardHeader>
+                                <CardContent className="space-y-6">
+                                    <div className="grid grid-cols-2 gap-6">
+                                        <div>
+                                            <Label>Card Processing Fee (%)</Label>
+                                            <Input
+                                                type="number"
+                                                step="0.01"
+                                                value={config.transaction_fees?.card_percentage || ''}
+                                                onChange={(e) => setConfig({...config, transaction_fees: {...config.transaction_fees, card_percentage: parseFloat(e.target.value)}})}
+                                                placeholder="2.9"
+                                            />
+                                        </div>
+                                        <div>
+                                            <Label>Fixed Fee per Transaction</Label>
+                                            <Input
+                                                type="number"
+                                                step="0.01"
+                                                value={config.transaction_fees?.fixed_fee || ''}
+                                                onChange={(e) => setConfig({...config, transaction_fees: {...config.transaction_fees, fixed_fee: parseFloat(e.target.value)}})}
+                                                placeholder="0.30"
+                                            />
+                                        </div>
+                                        <div>
+                                            <Label>International Fee (%)</Label>
+                                            <Input
+                                                type="number"
+                                                step="0.01"
+                                                value={config.transaction_fees?.international_percentage || ''}
+                                                onChange={(e) => setConfig({...config, transaction_fees: {...config.transaction_fees, international_percentage: parseFloat(e.target.value)}})}
+                                                placeholder="3.9"
+                                            />
+                                        </div>
+                                        <div>
+                                            <Label>Crypto Processing Fee (%)</Label>
+                                            <Input
+                                                type="number"
+                                                step="0.01"
+                                                value={config.transaction_fees?.crypto_percentage || ''}
+                                                onChange={(e) => setConfig({...config, transaction_fees: {...config.transaction_fees, crypto_percentage: parseFloat(e.target.value)}})}
+                                                placeholder="1.5"
+                                            />
+                                        </div>
                                     </div>
-                                    <div>
-                                        <Label>Fixed Fee per Transaction</Label>
-                                        <Input
-                                            type="number"
-                                            step="0.01"
-                                            value={config.transaction_fees.fixed_fee || ''}
-                                            onChange={(e) => setConfig({...config, transaction_fees: {...config.transaction_fees, fixed_fee: parseFloat(e.target.value)}})}
-                                            placeholder="0.30"
-                                        />
+                                </CardContent>
+                            </Card>
+
+                            {/* Volume-Based Tiered Fees */}
+                            <Card className="bg-white border-slate-200">
+                                <CardHeader>
+                                    <CardTitle>Volume-Based Fee Tiers</CardTitle>
+                                    <CardDescription>Automatic fee reductions based on merchant transaction volume</CardDescription>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="space-y-3">
+                                        {[
+                                            { min: 0, max: 100000, discount: 0, label: 'Base Tier (Standard rates)' },
+                                            { min: 100000, max: 1000000, discount: 0.2, label: 'Volume Tier 1 (-0.2% discount)' },
+                                            { min: 1000000, max: null, discount: 0.5, label: 'Volume Tier 2 (-0.5% discount)' }
+                                        ].map((tier, idx) => (
+                                            <div key={idx} className="flex items-center justify-between p-4 bg-slate-50 border border-slate-200 rounded-lg">
+                                                <div>
+                                                    <p className="font-medium text-sm">${(tier.min / 1000).toFixed(0)}k - {tier.max ? `$${(tier.max / 1000).toFixed(0)}k` : '∞'} monthly volume</p>
+                                                    <p className="text-xs text-slate-600">{tier.label}</p>
+                                                </div>
+                                                <Badge variant="outline">{tier.discount}% discount</Badge>
+                                            </div>
+                                        ))}
                                     </div>
-                                    <div>
-                                        <Label>International Fee (%)</Label>
-                                        <Input
-                                            type="number"
-                                            step="0.01"
-                                            value={config.transaction_fees.international_percentage || ''}
-                                            onChange={(e) => setConfig({...config, transaction_fees: {...config.transaction_fees, international_percentage: parseFloat(e.target.value)}})}
-                                            placeholder="3.9"
-                                        />
+                                </CardContent>
+                            </Card>
+
+                            {/* Currency-Specific Fees */}
+                            <Card className="bg-white border-slate-200">
+                                <CardHeader>
+                                    <CardTitle>Currency-Specific Fees</CardTitle>
+                                    <CardDescription>Override base fees for specific currencies</CardDescription>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="space-y-4">
+                                        {['USD', 'EUR', 'GBP', 'SGD', 'HKD'].map((currency) => (
+                                            <div key={currency} className="grid grid-cols-3 gap-4 p-4 bg-slate-50 border border-slate-200 rounded-lg">
+                                                <div className="flex items-center gap-2">
+                                                    <Badge variant="outline" className="font-mono">{currency}</Badge>
+                                                    <span className="text-sm font-medium">{currency === 'USD' ? 'US Dollar' : currency === 'EUR' ? 'Euro' : currency === 'GBP' ? 'British Pound' : currency === 'SGD' ? 'Singapore Dollar' : 'Hong Kong Dollar'}</span>
+                                                </div>
+                                                <div>
+                                                    <Label className="text-xs">Percentage (%)</Label>
+                                                    <Input
+                                                        type="number"
+                                                        step="0.01"
+                                                        placeholder="2.9"
+                                                        className="h-9"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <Label className="text-xs">Fixed Fee</Label>
+                                                    <Input
+                                                        type="number"
+                                                        step="0.01"
+                                                        placeholder="0.30"
+                                                        className="h-9"
+                                                    />
+                                                </div>
+                                            </div>
+                                        ))}
                                     </div>
-                                    <div>
-                                        <Label>Crypto Processing Fee (%)</Label>
-                                        <Input
-                                            type="number"
-                                            step="0.01"
-                                            value={config.transaction_fees.crypto_percentage || ''}
-                                            onChange={(e) => setConfig({...config, transaction_fees: {...config.transaction_fees, crypto_percentage: parseFloat(e.target.value)}})}
-                                            placeholder="1.5"
-                                        />
+                                </CardContent>
+                            </Card>
+
+                            {/* Fee Type Controls */}
+                            <Card className="bg-white border-slate-200">
+                                <CardHeader>
+                                    <CardTitle>Additional Fee Types</CardTitle>
+                                    <CardDescription>Enable/disable specific fee types for this PSP instance</CardDescription>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="space-y-3">
+                                        {[
+                                            { id: 'chargeback', name: 'Chargeback Fees', description: 'Fee charged when a chargeback occurs', defaultAmount: 15 },
+                                            { id: 'refund', name: 'Refund Processing Fees', description: 'Fee for processing refunds', defaultAmount: 0.50 },
+                                            { id: 'monthly_minimum', name: 'Monthly Minimum Fee', description: 'Minimum monthly fee charged to merchants', defaultAmount: 25 },
+                                            { id: 'retrieval', name: 'Retrieval Request Fee', description: 'Fee for dispute retrieval requests', defaultAmount: 10 },
+                                            { id: 'batch', name: 'Batch Processing Fee', description: 'Fee per batch settlement', defaultAmount: 0.25 }
+                                        ].map((feeType) => (
+                                            <div key={feeType.id} className="flex items-center justify-between p-4 bg-slate-50 border border-slate-200 rounded-lg">
+                                                <div className="flex items-center gap-3 flex-1">
+                                                    <Switch />
+                                                    <div>
+                                                        <p className="font-medium text-sm">{feeType.name}</p>
+                                                        <p className="text-xs text-slate-600">{feeType.description}</p>
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-center gap-2">
+                                                    <Input
+                                                        type="number"
+                                                        step="0.01"
+                                                        placeholder={feeType.defaultAmount.toString()}
+                                                        className="w-24 h-9"
+                                                    />
+                                                    <span className="text-sm text-slate-600">{feeType.id === 'refund' || feeType.id === 'batch' ? 'per transaction' : 'USD'}</span>
+                                                </div>
+                                            </div>
+                                        ))}
                                     </div>
-                                </div>
-                            </CardContent>
-                        </Card>
+                                </CardContent>
+                            </Card>
+                        </div>
                     </TabsContent>
 
                     {/* Payment Methods Tab */}
