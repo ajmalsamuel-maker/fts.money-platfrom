@@ -65,7 +65,8 @@ export default function PSPLogin() {
         try {
             const response = await base44.functions.invoke('pspAuth', {
                 action: 'verifyEmail',
-                email: email
+                email: email,
+                psp_code: pspCode
             });
 
             if (!response.data.success) {
@@ -89,7 +90,8 @@ export default function PSPLogin() {
             const response = await base44.functions.invoke('pspAuth', {
                 action: 'login',
                 email: email,
-                password: password
+                password: password,
+                psp_code: pspCode
             });
 
             if (!response.data.success) {
