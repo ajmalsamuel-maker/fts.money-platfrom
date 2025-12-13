@@ -41,7 +41,7 @@ Deno.serve(async (req) => {
 
         if (action === 'list') {
             const query = psp_code 
-                ? 'SELECT * FROM app_users WHERE psp_code = $1 ORDER BY created_at DESC'
+                ? 'SELECT * FROM app_users WHERE UPPER(psp_code) = UPPER($1) ORDER BY created_at DESC'
                 : 'SELECT * FROM app_users ORDER BY created_at DESC';
             
             const result = psp_code 
