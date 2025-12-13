@@ -21,19 +21,8 @@ export default function PSPLogin() {
     const [tempUser, setTempUser] = useState(null);
 
     useEffect(() => {
-        const checkAuth = async () => {
-            try {
-                const sessionData = JSON.parse(localStorage.getItem('staff_session') || '{}');
-                if (sessionData.email && sessionData.expires > Date.now()) {
-                    window.location.href = '/Dashboard';
-                } else {
-                    localStorage.removeItem('staff_session');
-                }
-            } catch (err) {
-                localStorage.removeItem('staff_session');
-            }
-        };
-        checkAuth();
+        // Clear any existing session on login page load
+        localStorage.removeItem('staff_session');
     }, []);
 
     const handleStep1 = async (e) => {
