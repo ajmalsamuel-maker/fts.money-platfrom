@@ -121,6 +121,7 @@ import PSPProvisioning from './pages/PSPProvisioning';
 import PSPProvisioningWizard from './pages/PSPProvisioningWizard';
 import PSPDetails from './pages/PSPDetails';
 import FTSMoneyPlatform from './pages/FTSMoneyPlatform';
+import PSPInstanceConfig from './pages/PSPInstanceConfig';
 import __Layout from './Layout.jsx';
 
 
@@ -248,6 +249,7 @@ export const PAGES = {
     "PSPProvisioningWizard": PSPProvisioningWizard,
     "PSPDetails": PSPDetails,
     "FTSMoneyPlatform": FTSMoneyPlatform,
+    "PSPInstanceConfig": PSPInstanceConfig,
 }
 
 export const pagesConfig = {
