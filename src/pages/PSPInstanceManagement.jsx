@@ -42,8 +42,8 @@ export default function PSPInstanceManagement() {
     const { data: psp } = useQuery({
         queryKey: ['psp-instance', pspId],
         queryFn: async () => {
-            const psps = await base44.entities.ProvisionedPSP.list();
-            return psps.find(p => p.id === pspId);
+            const psps = await base44.entities.ProvisionedPSP.filter({ id: pspId });
+            return psps[0];
         },
         enabled: !!pspId
     });
