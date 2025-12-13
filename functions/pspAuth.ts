@@ -32,18 +32,18 @@ Deno.serve(async (req) => {
         if (action === 'verifyEmail') {
             // Query app_users table
             const result = await pool.query(`
-                SELECT id, email, full_name, role, status
+                SELECT id, email, full_name, role, status, psp_code
                 FROM app_users 
-                WHERE email = $1
+                WHERE email = $1 AND UPPER(COALESCE(psp_code, '')) = UPPER($2)
                 LIMIT 1
-            `, [email]);
+            `, [email, psp_code]);
             
             const user = result.rows[0];
             
             if (!user) {
                 return Response.json({
                     success: false,
-                    error: 'No account found with this email'
+                    error: 'No account found with this email for this PSP'
                 });
             }
 
@@ -60,7 +60,8 @@ Deno.serve(async (req) => {
                     id: user.id,
                     email: user.email,
                     full_name: user.full_name,
-                    role: user.role
+                    role: user.role,
+                    psp_code: user.psp_code
                 }
             });
         }
@@ -68,11 +69,11 @@ Deno.serve(async (req) => {
         if (action === 'login') {
             // Query app_users
             const result = await pool.query(`
-                SELECT id, email, full_name, role, status, password_hash
+                SELECT id, email, full_name, role, status, password_hash, psp_code
                 FROM app_users 
-                WHERE email = $1
+                WHERE email = $1 AND UPPER(COALESCE(psp_code, '')) = UPPER($2)
                 LIMIT 1
-            `, [email]);
+            `, [email, psp_code]);
 
             const user = result.rows[0];
 
@@ -91,6 +92,7 @@ Deno.serve(async (req) => {
                     full_name: user.full_name,
                     role: user.role,
                     user_id: user.id,
+                    psp_code: user.psp_code,
                     timestamp: Date.now(),
                     expires: Date.now() + (24 * 60 * 60 * 1000)
                 },
