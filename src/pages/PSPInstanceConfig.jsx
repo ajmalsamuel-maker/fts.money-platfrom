@@ -56,12 +56,30 @@ export default function PSPInstanceConfig() {
     });
 
     const [config, setConfig] = useState({
-        branding: psp?.branding || {},
-        transaction_fees: psp?.transaction_fees || {},
-        region_settings: psp?.region_settings || {},
-        enabled_payment_methods: psp?.enabled_payment_methods || [],
-        enabled_payout_methods: psp?.enabled_payout_methods || []
+        branding: {},
+        transaction_fees: {},
+        region_settings: {},
+        enabled_payment_methods: [],
+        enabled_payout_methods: []
     });
+
+    // Populate config when PSP data loads
+    React.useEffect(() => {
+        if (psp) {
+            setConfig({
+                branding: psp.branding || { company_name: psp.psp_name },
+                transaction_fees: psp.transaction_fees || {},
+                region_settings: {
+                    default_currency: psp.currency || 'USD',
+                    timezone: psp.timezone || 'UTC',
+                    region: psp.country || '',
+                    language: 'en'
+                },
+                enabled_payment_methods: psp.enabled_payment_methods || [],
+                enabled_payout_methods: psp.enabled_payout_methods || []
+            });
+        }
+    }, [psp]);
 
     const updateMutation = useMutation({
         mutationFn: async (data) => {
