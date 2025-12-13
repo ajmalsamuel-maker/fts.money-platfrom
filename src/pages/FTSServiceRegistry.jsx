@@ -59,6 +59,7 @@ export default function FTSServiceRegistry() {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [detailsOpen, setDetailsOpen] = useState(false);
     const [selectedService, setSelectedService] = useState(null);
+    const [editMode, setEditMode] = useState(false);
 
     const [formData, setFormData] = useState({
         service_name: '',
@@ -114,6 +115,9 @@ export default function FTSServiceRegistry() {
         mutationFn: ({ id, data }) => base44.entities.ServiceCatalog.update(id, data),
         onSuccess: () => {
             queryClient.invalidateQueries(['service-catalog']);
+            setDialogOpen(false);
+            setEditMode(false);
+            setSelectedService(null);
         }
     });
 
@@ -128,14 +132,44 @@ export default function FTSServiceRegistry() {
     const handleSubmit = (e) => {
         e.preventDefault();
         const provider = providers.find(p => p.id === formData.provider_id);
-        createServiceMutation.mutate({
-            ...formData,
-            service_id: `svc_${Date.now()}`,
-            provider_name: provider?.company_name || 'FTS.Money',
-            total_subscribers: 0,
-            total_reviews: 0,
-            rating: 0
+        
+        if (editMode && selectedService) {
+            updateServiceMutation.mutate({
+                id: selectedService.id,
+                data: {
+                    ...formData,
+                    provider_name: provider?.company_name || formData.provider_name || 'FTS.Money'
+                }
+            });
+        } else {
+            createServiceMutation.mutate({
+                ...formData,
+                service_id: `svc_${Date.now()}`,
+                provider_name: provider?.company_name || 'FTS.Money',
+                total_subscribers: 0,
+                total_reviews: 0,
+                rating: 0
+            });
+        }
+    };
+    
+    const handleEdit = (service) => {
+        setSelectedService(service);
+        setFormData({
+            service_name: service.service_name,
+            service_category: service.service_category,
+            provider_id: service.provider_id || '',
+            is_fts_owned: service.is_fts_owned,
+            description: service.description || '',
+            pricing_model: service.pricing_model,
+            base_price: service.base_price || 0,
+            variable_price: service.variable_price || 0,
+            status: service.status,
+            uptime_sla: service.uptime_sla || 99.9,
+            features: service.features || []
         });
+        setEditMode(true);
+        setDialogOpen(true);
     };
 
     const handleStatusChange = (service, newStatus) => {
@@ -164,7 +198,26 @@ export default function FTSServiceRegistry() {
                         <h2 className="text-lg font-semibold text-slate-900">Service Registry</h2>
                         <p className="text-xs text-slate-600">Manage marketplace service catalog</p>
                     </div>
-                    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                    <Dialog open={dialogOpen} onOpenChange={(open) => {
+                        setDialogOpen(open);
+                        if (!open) {
+                            setEditMode(false);
+                            setSelectedService(null);
+                            setFormData({
+                                service_name: '',
+                                service_category: 'payment_rail',
+                                provider_id: '',
+                                is_fts_owned: true,
+                                description: '',
+                                pricing_model: 'fixed',
+                                base_price: 0,
+                                variable_price: 0,
+                                status: 'draft',
+                                uptime_sla: 99.9,
+                                features: []
+                            });
+                        }
+                    }}>
                         <DialogTrigger asChild>
                             <Button className="gap-2 bg-blue-600 hover:bg-blue-700">
                                 <Plus className="h-4 w-4" />
@@ -173,7 +226,7 @@ export default function FTSServiceRegistry() {
                         </DialogTrigger>
                         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                             <DialogHeader>
-                                <DialogTitle>Register New Service</DialogTitle>
+                                <DialogTitle>{editMode ? 'Edit Service' : 'Register New Service'}</DialogTitle>
                             </DialogHeader>
                             <form onSubmit={handleSubmit} className="space-y-4">
                                 <div className="grid grid-cols-2 gap-4">
@@ -278,13 +331,28 @@ export default function FTSServiceRegistry() {
                                             onChange={(e) => setFormData({...formData, uptime_sla: parseFloat(e.target.value)})}
                                         />
                                     </div>
+                                    <div>
+                                        <Label>Status</Label>
+                                        <Select value={formData.status} onValueChange={(v) => setFormData({...formData, status: v})}>
+                                            <SelectTrigger>
+                                                <SelectValue />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="draft">Draft</SelectItem>
+                                                <SelectItem value="under_review">Under Review</SelectItem>
+                                                <SelectItem value="certified">Certified</SelectItem>
+                                                <SelectItem value="active">Active</SelectItem>
+                                                <SelectItem value="deprecated">Deprecated</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
                                 </div>
                                 <div className="flex justify-end gap-3 pt-4">
                                     <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
                                         Cancel
                                     </Button>
                                     <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
-                                        Register Service
+                                        {editMode ? 'Update Service' : 'Register Service'}
                                     </Button>
                                 </div>
                             </form>
@@ -447,16 +515,15 @@ export default function FTSServiceRegistry() {
                                                 <Eye className="h-3 w-3 mr-1" />
                                                 Details
                                             </Button>
-                                            {service.status === 'under_review' && (
-                                                <Button
-                                                    size="sm"
-                                                    className="flex-1 bg-emerald-600 hover:bg-emerald-700"
-                                                    onClick={() => handleStatusChange(service, 'active')}
-                                                >
-                                                    <CheckCircle2 className="h-3 w-3 mr-1" />
-                                                    Approve
-                                                </Button>
-                                            )}
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                className="flex-1"
+                                                onClick={() => handleEdit(service)}
+                                            >
+                                                <SettingsIcon className="h-3 w-3 mr-1" />
+                                                Edit
+                                            </Button>
                                         </div>
                                     </CardContent>
                                 </Card>

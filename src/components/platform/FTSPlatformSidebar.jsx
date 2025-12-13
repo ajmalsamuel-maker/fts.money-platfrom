@@ -30,6 +30,7 @@ const menuItems = [
     { icon: Wallet, label: 'Payout Routes', path: 'FTSPayoutRoutes', description: 'Payout methods', new: true },
     { icon: Zap, label: 'Fee Templates', path: 'FTSFeeTemplates', description: 'Pricing templates', new: true },
     { icon: Sparkles, label: 'Service Registry', path: 'FTSServiceRegistry', description: 'Marketplace services', new: true },
+    { icon: Users, label: 'Service Providers', path: 'FTSServiceProviders', description: '3rd party providers', new: true },
     { icon: Shield, label: 'Compliance', path: 'FTSCompliance', description: 'Policy templates', new: true },
     { icon: FileText, label: 'Audit Logs', path: 'FTSAuditLogs', description: 'System audit', new: true },
     { icon: Settings, label: 'Platform Settings', path: 'FTSSettings', description: 'Configuration' },

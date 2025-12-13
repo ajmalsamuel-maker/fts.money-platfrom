@@ -134,6 +134,7 @@ import FTSAuditLogs from './pages/FTSAuditLogs';
 import FTSCompliance from './pages/FTSCompliance';
 import FTSArchitectureDoc from './pages/FTSArchitectureDoc';
 import FTSServiceRegistry from './pages/FTSServiceRegistry';
+import FTSServiceProviders from './pages/FTSServiceProviders';
 import __Layout from './Layout.jsx';
 
 
@@ -274,6 +275,7 @@ export const PAGES = {
     "FTSCompliance": FTSCompliance,
     "FTSArchitectureDoc": FTSArchitectureDoc,
     "FTSServiceRegistry": FTSServiceRegistry,
+    "FTSServiceProviders": FTSServiceProviders,
 }
 
 export const pagesConfig = {
