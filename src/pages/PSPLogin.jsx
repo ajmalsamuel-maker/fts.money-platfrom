@@ -35,17 +35,19 @@ export default function PSPLogin() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     action: 'verifyPSP',
-                    psp_code: pspCode
+                    psp_code: pspCode.trim()
                 })
             });
             
             const data = await response.json();
+            console.log('PSP verify response:', data);
 
             if (!data.success) {
                 throw new Error(data.error || 'Invalid PSP code');
             }
             setStep(2);
         } catch (err) {
+            console.error('PSP verify error:', err);
             setError(err.message);
         }
         setIsLoading(false);
