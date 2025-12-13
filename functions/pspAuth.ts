@@ -13,7 +13,9 @@ Deno.serve(async (req) => {
 
         if (action === 'verifyPSP') {
             // Check PSP code from psp_settings table
+            console.log('Verifying PSP code:', psp_code);
             const result = await pool.query('SELECT * FROM psp_settings WHERE UPPER(psp_code) = UPPER($1) LIMIT 1', [psp_code]);
+            console.log('Query result:', result.rows);
             
             const psp = result.rows[0];
             
