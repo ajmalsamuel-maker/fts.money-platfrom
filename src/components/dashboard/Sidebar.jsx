@@ -247,11 +247,31 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
     useEffect(() => {
         const loadPspSettings = async () => {
             try {
-                const settings = await base44.entities.PSPSettings.list();
-                if (settings && settings.length > 0) {
-                    setPspSettings(settings[0]);
+                const staffSession = getStaffSession();
+                const pspCode = staffSession?.psp_code;
+                
+                console.log('Loading PSP settings for:', pspCode);
+                
+                if (pspCode) {
+                    // Fetch PSP settings from database based on psp_code
+                    const result = await base44.functions.invoke('getPSPSettings', { psp_code: pspCode });
+                    console.log('PSP settings result:', result.data);
+                    if (result.data.success && result.data.settings) {
+                        setPspSettings(result.data.settings);
+                    } else {
+                        console.error('Failed to load PSP settings for code:', pspCode);
+                    }
+                } else {
+                    console.warn('No PSP code in session, using default');
+                    // Fallback to first PSP
+                    const settings = await base44.entities.PSPSettings.list();
+                    if (settings && settings.length > 0) {
+                        setPspSettings(settings[0]);
+                    }
                 }
-            } catch (err) {}
+            } catch (err) {
+                console.error('Error loading PSP settings:', err);
+            }
         };
         loadPspSettings();
     }, []);

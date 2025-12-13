@@ -22,19 +22,6 @@ export default function PSPLogin() {
     useEffect(() => {
         // Clear any existing session on login page load
         localStorage.removeItem('staff_session');
-        
-        // Check if already logged in
-        const checkExistingSession = () => {
-            try {
-                const sessionData = JSON.parse(localStorage.getItem('staff_session') || '{}');
-                if (sessionData.email && sessionData.expires > Date.now()) {
-                    window.location.href = '/Dashboard';
-                }
-            } catch (err) {
-                // Ignore
-            }
-        };
-        checkExistingSession();
     }, []);
 
     const handleStep1 = async (e) => {
@@ -127,8 +114,13 @@ export default function PSPLogin() {
             }
 
             // Complete login with session data from backend
+            console.log('Storing session:', data.session);
             localStorage.setItem('staff_session', JSON.stringify(data.session));
-            window.location.href = '/Dashboard';
+            
+            // Force reload to clear any cached data
+            setTimeout(() => {
+                window.location.href = '/Dashboard';
+            }, 100);
         } catch (err) {
             setError(err.message);
             setIsLoading(false);
