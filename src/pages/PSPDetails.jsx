@@ -31,11 +31,15 @@ export default function PSPDetails() {
     const urlParams = new URLSearchParams(window.location.search);
     const pspId = urlParams.get('id');
 
-    const { data: psp, isLoading } = useQuery({
+    const { data: psp, isLoading, error } = useQuery({
         queryKey: ['psp', pspId],
         queryFn: async () => {
             const psps = await base44.entities.ProvisionedPSP.list();
-            return psps.find(p => p.id === pspId);
+            console.log('All PSPs:', psps);
+            console.log('Looking for ID:', pspId);
+            const found = psps.find(p => p.id === pspId);
+            console.log('Found PSP:', found);
+            return found;
         },
         enabled: !!pspId
     });
@@ -57,7 +61,14 @@ export default function PSPDetails() {
     });
 
     if (isLoading) return <div className="min-h-screen bg-slate-900 flex items-center justify-center text-white">Loading PSP...</div>;
-    if (!psp) return <div className="min-h-screen bg-slate-900 flex items-center justify-center text-white">PSP not found</div>;
+    if (error) return <div className="min-h-screen bg-slate-900 flex items-center justify-center text-white">Error: {error.message}</div>;
+    if (!psp) return (
+        <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center text-white gap-4">
+            <p className="text-lg">PSP not found</p>
+            <p className="text-sm text-slate-400">PSP ID: {pspId}</p>
+            <Button onClick={() => navigate(createPageUrl('PSPProvisioning'))}>Back to PSPs</Button>
+        </div>
+    );
 
     const volumeData = [
         { month: 'Jan', volume: 2400000 },

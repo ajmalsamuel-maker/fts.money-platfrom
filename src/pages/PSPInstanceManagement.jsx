@@ -39,11 +39,15 @@ export default function PSPInstanceManagement() {
     const pspId = urlParams.get('id');
     const [activeTab, setActiveTab] = useState('overview');
 
-    const { data: psp, isLoading: pspLoading } = useQuery({
+    const { data: psp, isLoading: pspLoading, error } = useQuery({
         queryKey: ['psp-instance', pspId],
         queryFn: async () => {
             const psps = await base44.entities.ProvisionedPSP.list();
-            return psps.find(p => p.id === pspId);
+            console.log('All PSPs:', psps);
+            console.log('Looking for ID:', pspId);
+            const found = psps.find(p => p.id === pspId);
+            console.log('Found PSP:', found);
+            return found;
         },
         enabled: !!pspId
     });
@@ -113,7 +117,14 @@ export default function PSPInstanceManagement() {
     };
 
     if (pspLoading) return <div className="flex items-center justify-center h-screen">Loading PSP...</div>;
-    if (!psp) return <div className="flex items-center justify-center h-screen">PSP not found</div>;
+    if (error) return <div className="flex items-center justify-center h-screen">Error: {error.message}</div>;
+    if (!psp) return (
+        <div className="flex flex-col items-center justify-center h-screen gap-4">
+            <p className="text-lg">PSP not found</p>
+            <p className="text-sm text-slate-600">PSP ID: {pspId}</p>
+            <Button onClick={() => navigate(createPageUrl('PSPProvisioning'))}>Back to PSPs</Button>
+        </div>
+    );
 
     const logTypeIcons = {
         info: <CheckCircle2 className="h-4 w-4 text-blue-600" />,
