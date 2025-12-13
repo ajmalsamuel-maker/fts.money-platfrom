@@ -428,9 +428,9 @@ export default function PSPInstanceConfig() {
                                                     <CreditCard className="h-5 w-5 text-blue-600" />
                                                 </div>
                                                 <div>
-                                                    <p className="font-medium text-slate-900">{provider.provider_name}</p>
-                                                    {provider.provider_type && (
-                                                        <p className="text-xs text-slate-500 capitalize">{provider.provider_type}</p>
+                                                    <p className="font-medium text-slate-900">{provider.name || 'Unnamed Provider'}</p>
+                                                    {provider.type && (
+                                                        <p className="text-xs text-slate-500 capitalize">{provider.type.replace(/_/g, ' ')}</p>
                                                     )}
                                                 </div>
                                             </div>
