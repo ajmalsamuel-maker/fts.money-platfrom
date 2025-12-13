@@ -4,6 +4,7 @@ import { createPageUrl } from '@/utils';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import CommunityPortalSidebar from '@/components/community/CommunityPortalSidebar';
+import LEIVerificationStep from '@/components/onboarding/LEIVerificationStep';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,8 +13,11 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { FTS_COLORS } from '@/components/community/FTSBrandColors';
+import { getAllCountries, getCurrencyForCountry, getTimezoneForCountry } from '@/components/utils/countries';
+import { ISO4217_CURRENCIES } from '@/components/utils/iso4217';
 import { 
     Building2, ArrowRight, CheckCircle2, Sparkles, Zap, Shield, DollarSign,
     Globe, CreditCard, Wallet, TrendingUp, Lock, Code, BarChart3, Brain, Search, ExternalLink
@@ -116,15 +120,24 @@ export default function CommunityPSPProvisioning() {
         psp_name: '',
         psp_code: '',
         legal_entity_name: '',
+        lei: '',
+        lei_verification_result: null,
         contact_email: '',
         contact_phone: '',
         country: '',
+        currency: 'USD',
+        timezone: 'UTC',
         subdomain: '',
         custom_domain: '',
         domain_option: 'subdomain' // 'subdomain', 'custom', 'purchase'
     });
     const [domainSuggestions, setDomainSuggestions] = useState([]);
     const [checkingDomain, setCheckingDomain] = useState(false);
+    const [countries, setCountries] = useState([]);
+
+    useEffect(() => {
+        setCountries(getAllCountries());
+    }, []);
 
     useEffect(() => {
         const sessionData = localStorage.getItem('community_portal_session');
@@ -200,7 +213,9 @@ export default function CommunityPSPProvisioning() {
             monthly_fee: totalMonthlyFee,
             setup_fee: pricing.setup || 0,
             enabled_features: [...coreComponents.map(c => c.id), ...selectedComponents],
-            ssl_enabled: formData.domain_option !== 'subdomain' // Auto SSL for custom domains
+            ssl_enabled: formData.domain_option !== 'subdomain', // Auto SSL for custom domains
+            lei_status: formData.lei_verification_result?.verified ? 'verified' : 'pending',
+            lei_verified_date: formData.lei_verification_result?.verified ? new Date().toISOString().split('T')[0] : null
         };
 
         provisionMutation.mutate(pspData);
@@ -571,12 +586,65 @@ export default function CommunityPSPProvisioning() {
                                             />
                                         </div>
                                         <div>
-                                            <Label>Country *</Label>
+                                            <Label>Country (ISO 3166-1) *</Label>
+                                            <Select 
+                                                value={formData.country} 
+                                                onValueChange={(value) => {
+                                                    const currency = getCurrencyForCountry(value);
+                                                    const timezone = getTimezoneForCountry(value);
+                                                    setFormData({ 
+                                                        ...formData, 
+                                                        country: value,
+                                                        currency,
+                                                        timezone
+                                                    });
+                                                }}
+                                            >
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select country" />
+                                                </SelectTrigger>
+                                                <SelectContent className="max-h-64">
+                                                    {countries.map((country) => (
+                                                        <SelectItem key={country.code} value={country.code}>
+                                                            {country.name} ({country.code})
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                        <div>
+                                            <Label>Default Currency (ISO 4217) *</Label>
+                                            <Select 
+                                                value={formData.currency} 
+                                                onValueChange={(value) => setFormData({ ...formData, currency: value })}
+                                            >
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select currency" />
+                                                </SelectTrigger>
+                                                <SelectContent className="max-h-64">
+                                                    {ISO4217_CURRENCIES.map((currency) => (
+                                                        <SelectItem key={currency.code} value={currency.code}>
+                                                            {currency.code} - {currency.name}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                            {formData.currency && (
+                                                <p className="text-xs text-slate-500 mt-1">
+                                                    Minor units: {ISO4217_CURRENCIES.find(c => c.code === formData.currency)?.minorUnit || 2}
+                                                </p>
+                                            )}
+                                        </div>
+                                        <div>
+                                            <Label>Timezone *</Label>
                                             <Input
-                                                value={formData.country}
-                                                onChange={(e) => setFormData({ ...formData, country: e.target.value })}
-                                                placeholder="United States"
+                                                value={formData.timezone}
+                                                onChange={(e) => setFormData({ ...formData, timezone: e.target.value })}
+                                                placeholder="UTC"
+                                                disabled
+                                                className="bg-slate-50"
                                             />
+                                            <p className="text-xs text-slate-500 mt-1">Auto-set based on country</p>
                                         </div>
                                         <div>
                                             <Label>Contact Email *</Label>
@@ -718,9 +786,33 @@ export default function CommunityPSPProvisioning() {
                                         </div>
                                     </div>
                                 </CardContent>
-                            </Card>
+                                </Card>
 
-                            {/* Configuration Summary */}
+                                {/* LEI Verification */}
+                                <Card>
+                                <CardHeader>
+                                   <CardTitle className="flex items-center gap-2">
+                                       <Shield className="h-5 w-5" />
+                                       Legal Entity Identifier (LEI)
+                                   </CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                   <LEIVerificationStep
+                                       data={{
+                                           lei: formData.lei,
+                                           lei_verification_result: formData.lei_verification_result
+                                       }}
+                                       onChange={(leiData) => setFormData({ ...formData, ...leiData })}
+                                       errors={{}}
+                                       businessData={{
+                                           legal_name: formData.legal_entity_name,
+                                           country: formData.country
+                                       }}
+                                   />
+                                </CardContent>
+                                </Card>
+
+                                {/* Configuration Summary */}
                             <Card className="border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-cyan-50">
                                 <CardHeader>
                                     <CardTitle className="flex items-center gap-2">
