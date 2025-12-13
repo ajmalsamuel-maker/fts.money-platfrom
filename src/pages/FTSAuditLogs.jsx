@@ -20,7 +20,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { Search, Shield, User, Settings, Database, Power } from 'lucide-react';
+import { Search, Shield, User, Settings, Database, Power, Plus, Trash2 } from 'lucide-react';
 import { cn } from "@/lib/utils";
 
 export default function FTSAuditLogs() {

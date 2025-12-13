@@ -60,7 +60,7 @@ export default function FTSClients() {
                         <Card 
                             key={psp.id}
                             className="cursor-pointer hover:shadow-md transition-shadow"
-                            onClick={() => navigate(createPageUrl('PSPInstanceConfig', `?id=${psp.id}`))}
+                            onClick={() => navigate(createPageUrl('PSPInstanceConfig') + `?id=${psp.id}`)}
                         >
                             <CardContent className="p-6">
                                 <div className="flex items-start justify-between">
