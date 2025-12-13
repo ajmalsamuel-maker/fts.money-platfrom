@@ -136,6 +136,11 @@ import FTSArchitectureDoc from './pages/FTSArchitectureDoc';
 import FTSServiceRegistry from './pages/FTSServiceRegistry';
 import FTSServiceProviders from './pages/FTSServiceProviders';
 import CommunityMarketplace from './pages/CommunityMarketplace';
+import CommunityPortalLogin from './pages/CommunityPortalLogin';
+import CommunityPortalDashboard from './pages/CommunityPortalDashboard';
+import CommunityPSPProvisioning from './pages/CommunityPSPProvisioning';
+import MyPSPInstances from './pages/MyPSPInstances';
+import ServiceProviderRegistration from './pages/ServiceProviderRegistration';
 import __Layout from './Layout.jsx';
 
 
@@ -278,6 +283,11 @@ export const PAGES = {
     "FTSServiceRegistry": FTSServiceRegistry,
     "FTSServiceProviders": FTSServiceProviders,
     "CommunityMarketplace": CommunityMarketplace,
+    "CommunityPortalLogin": CommunityPortalLogin,
+    "CommunityPortalDashboard": CommunityPortalDashboard,
+    "CommunityPSPProvisioning": CommunityPSPProvisioning,
+    "MyPSPInstances": MyPSPInstances,
+    "ServiceProviderRegistration": ServiceProviderRegistration,
 }
 
 export const pagesConfig = {
