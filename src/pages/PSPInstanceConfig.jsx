@@ -88,7 +88,17 @@ export default function PSPInstanceConfig() {
 
     const updateMutation = useMutation({
         mutationFn: async (data) => {
-            return await base44.entities.ProvisionedPSP.update(pspId, data);
+            // Map config structure back to PSP entity fields
+            const pspUpdateData = {
+                branding: data.branding,
+                transaction_fees: data.transaction_fees,
+                currency: data.region_settings?.default_currency,
+                timezone: data.region_settings?.timezone,
+                country: data.region_settings?.region,
+                enabled_payment_methods: data.enabled_payment_methods,
+                enabled_payout_methods: data.enabled_payout_methods
+            };
+            return await base44.entities.ProvisionedPSP.update(pspId, pspUpdateData);
         },
         onSuccess: () => {
             queryClient.invalidateQueries(['psp-config']);
