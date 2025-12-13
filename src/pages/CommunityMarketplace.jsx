@@ -173,7 +173,63 @@ export default function CommunityMarketplace() {
                             From compliance tools to payment orchestration, find everything you need to scale.
                         </p>
                     </div>
-                    <div className="px-6 pb-6">
+                    <div className="px-6 pb-6 space-y-4">
+                        {/* PSP Selection - Prominent */}
+                        {psps.length > 0 && !selectedPSP && (
+                            <div className="bg-white border-2 border-amber-400 rounded-lg p-4 shadow-lg">
+                                <div className="flex items-start gap-3">
+                                    <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
+                                        <Building2 className="h-5 w-5 text-amber-600" />
+                                    </div>
+                                    <div className="flex-1">
+                                        <h3 className="text-sm font-semibold text-slate-900 mb-1">Select Your PSP Instance</h3>
+                                        <p className="text-xs text-slate-600 mb-3">Choose which PSP instance you want to subscribe services to</p>
+                                        <Select value={selectedPSP} onValueChange={setSelectedPSP}>
+                                            <SelectTrigger className="w-full h-12 text-base border-2 border-amber-300 hover:border-amber-400 bg-white">
+                                                <SelectValue placeholder="👉 Click here to select your PSP" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {psps.map(psp => (
+                                                    <SelectItem key={psp.id} value={psp.id} className="text-base py-3">
+                                                        <div className="flex items-center gap-2">
+                                                            <Building2 className="h-4 w-4" />
+                                                            <span className="font-medium">{psp.psp_name}</span>
+                                                            <span className="text-slate-500">({psp.psp_code})</span>
+                                                        </div>
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Selected PSP Display */}
+                        {selectedPSP && psps.find(p => p.id === selectedPSP) && (
+                            <div className="bg-white border-2 border-emerald-400 rounded-lg p-4 shadow-md">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
+                                            <CheckCircle2 className="h-5 w-5 text-emerald-600" />
+                                        </div>
+                                        <div>
+                                            <p className="text-xs text-slate-600">Subscribing for</p>
+                                            <p className="font-semibold text-slate-900">{psps.find(p => p.id === selectedPSP).psp_name}</p>
+                                        </div>
+                                    </div>
+                                    <Button 
+                                        variant="outline" 
+                                        size="sm"
+                                        onClick={() => setSelectedPSP('')}
+                                    >
+                                        Change
+                                    </Button>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Search and Filters */}
                         <div className="flex gap-4">
                             <div className="relative flex-1 max-w-lg">
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
@@ -192,18 +248,6 @@ export default function CommunityMarketplace() {
                                     <SelectItem value="all">All Categories</SelectItem>
                                     {Object.entries(categoryConfig).map(([key, config]) => (
                                         <SelectItem key={key} value={key}>{config.label}</SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                            <Select value={selectedPSP} onValueChange={setSelectedPSP}>
-                                <SelectTrigger className="w-64 bg-white">
-                                    <SelectValue placeholder="Select PSP to Subscribe" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {psps.map(psp => (
-                                        <SelectItem key={psp.id} value={psp.id}>
-                                            {psp.psp_name} ({psp.psp_code})
-                                        </SelectItem>
                                     ))}
                                 </SelectContent>
                             </Select>
