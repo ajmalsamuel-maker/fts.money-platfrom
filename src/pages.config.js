@@ -127,6 +127,11 @@ import FTSRevenue from './pages/FTSRevenue';
 import FTSClients from './pages/FTSClients';
 import FTSSettings from './pages/FTSSettings';
 import PSPInstanceManagement from './pages/PSPInstanceManagement';
+import FTSProviderPool from './pages/FTSProviderPool';
+import FTSPayoutRoutes from './pages/FTSPayoutRoutes';
+import FTSFeeTemplates from './pages/FTSFeeTemplates';
+import FTSAuditLogs from './pages/FTSAuditLogs';
+import FTSCompliance from './pages/FTSCompliance';
 import __Layout from './Layout.jsx';
 
 
@@ -260,6 +265,11 @@ export const PAGES = {
     "FTSClients": FTSClients,
     "FTSSettings": FTSSettings,
     "PSPInstanceManagement": PSPInstanceManagement,
+    "FTSProviderPool": FTSProviderPool,
+    "FTSPayoutRoutes": FTSPayoutRoutes,
+    "FTSFeeTemplates": FTSFeeTemplates,
+    "FTSAuditLogs": FTSAuditLogs,
+    "FTSCompliance": FTSCompliance,
 }
 
 export const pagesConfig = {

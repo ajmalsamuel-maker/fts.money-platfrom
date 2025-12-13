@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
+import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -21,24 +22,36 @@ import {
     Zap,
     Globe,
     LogOut,
-    Menu
+    Menu,
+    Database,
+    Wallet
 } from 'lucide-react';
 
-const menuItems = [
-    { icon: Building2, label: 'PSP Instances', path: 'PSPProvisioning' },
-    { icon: BarChart3, label: 'Analytics', path: 'FTSAnalytics' },
-    { icon: DollarSign, label: 'Revenue', path: 'FTSRevenue' },
-    { icon: Users, label: 'Clients', path: 'FTSClients' },
-    { icon: Settings, label: 'Platform Settings', path: 'FTSSettings' }
+const quickActions = [
+    { icon: Building2, label: 'PSP Instances', path: 'PSPProvisioning', color: 'bg-blue-50 text-blue-700 border-blue-200' },
+    { icon: Database, label: 'Provider Pool', path: 'FTSProviderPool', color: 'bg-purple-50 text-purple-700 border-purple-200' },
+    { icon: Wallet, label: 'Payout Routes', path: 'FTSPayoutRoutes', color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+    { icon: Zap, label: 'Fee Templates', path: 'FTSFeeTemplates', color: 'bg-amber-50 text-amber-700 border-amber-200' },
+    { icon: BarChart3, label: 'Analytics', path: 'FTSAnalytics', color: 'bg-cyan-50 text-cyan-700 border-cyan-200' },
+    { icon: DollarSign, label: 'Revenue', path: 'FTSRevenue', color: 'bg-pink-50 text-pink-700 border-pink-200' }
 ];
 
 export default function FTSMoneyPlatform() {
     const navigate = useNavigate();
-    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
     const { data: psps = [] } = useQuery({
         queryKey: ['provisioned-psps'],
         queryFn: () => base44.entities.ProvisionedPSP.list('-created_date')
+    });
+
+    const { data: providers = [] } = useQuery({
+        queryKey: ['payment-providers'],
+        queryFn: () => base44.entities.PaymentProvider.list()
+    });
+
+    const { data: routes = [] } = useQuery({
+        queryKey: ['payout-routes'],
+        queryFn: () => base44.entities.PayoutRoute.list()
     });
 
     const totalVolume = psps.reduce((sum, p) => sum + (p.monthly_volume || 0), 0);
@@ -48,79 +61,15 @@ export default function FTSMoneyPlatform() {
 
     return (
         <div className="flex h-screen bg-slate-50">
-            {/* Sidebar */}
-            <aside 
-                className={cn(
-                    "bg-white border-r border-slate-200 flex flex-col transition-all shadow-sm",
-                    sidebarCollapsed ? "w-20" : "w-64"
-                )}
-            >
-                {/* Logo */}
-                <div className="h-16 flex items-center justify-center border-b border-slate-200 px-4 bg-white">
-                    {sidebarCollapsed ? (
-                        <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center">
-                            <Sparkles className="h-5 w-5 text-white" />
-                        </div>
-                    ) : (
-                        <div className="flex items-center gap-2">
-                            <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center">
-                                <Sparkles className="h-5 w-5 text-white" />
-                            </div>
-                            <div>
-                                <h1 className="text-lg font-bold text-slate-900">FTS.Money</h1>
-                                <p className="text-[10px] text-slate-600">PSP Platform</p>
-                            </div>
-                        </div>
-                    )}
-                </div>
-
-                {/* Menu */}
-                <nav className="flex-1 p-3 space-y-1">
-                    {menuItems.map((item) => {
-                        const Icon = item.icon;
-                        return (
-                            <button
-                                key={item.path}
-                                onClick={() => navigate(createPageUrl(item.path))}
-                                className={cn(
-                                    "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-all",
-                                    sidebarCollapsed && "justify-center"
-                                )}
-                                title={sidebarCollapsed ? item.label : undefined}
-                            >
-                                <Icon className="h-5 w-5 flex-shrink-0" />
-                                {!sidebarCollapsed && <span className="text-sm font-medium">{item.label}</span>}
-                            </button>
-                        );
-                    })}
-                </nav>
-
-                {/* Footer */}
-                <div className="border-t border-slate-200 p-3">
-                    <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:bg-red-50 hover:text-red-600 transition-all">
-                        <LogOut className="h-5 w-5 flex-shrink-0" />
-                        {!sidebarCollapsed && <span className="text-sm font-medium">Logout</span>}
-                    </button>
-                </div>
-            </aside>
+            <FTSPlatformSidebar currentPage="FTSMoneyPlatform" userRole="Platform Admin" />
 
             {/* Main Content */}
             <div className="flex-1 overflow-auto bg-slate-50">
                 {/* Header */}
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
-                    <div className="flex items-center gap-3">
-                        <Button 
-                            variant="ghost" 
-                            size="icon"
-                            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-                            className="text-slate-600 hover:text-slate-900"
-                        >
-                            <Menu className="h-5 w-5" />
-                        </Button>
-                        <div>
-                            <h2 className="text-lg font-semibold text-slate-900">Platform Overview</h2>
-                            <p className="text-xs text-slate-600">Manage your white-label PSP infrastructure</p>
-                        </div>
+                    <div>
+                        <h2 className="text-lg font-semibold text-slate-900">Control Plane Dashboard</h2>
+                        <p className="text-xs text-slate-600">Unified management for all PSP instances and global configurations</p>
                     </div>
                     <Button 
                         onClick={() => navigate(createPageUrl('PSPProvisioningWizard'))}
@@ -132,13 +81,36 @@ export default function FTSMoneyPlatform() {
                 </header>
 
                 <div className="p-6">
+                    {/* Quick Actions */}
+                    <div className="mb-6">
+                        <h3 className="text-sm font-semibold text-slate-900 mb-3">Quick Actions</h3>
+                        <div className="grid grid-cols-6 gap-3">
+                            {quickActions.map((action) => {
+                                const Icon = action.icon;
+                                return (
+                                    <button
+                                        key={action.path}
+                                        onClick={() => navigate(createPageUrl(action.path))}
+                                        className={cn(
+                                            "p-4 rounded-lg border-2 hover:shadow-md transition-all text-left",
+                                            action.color
+                                        )}
+                                    >
+                                        <Icon className="h-6 w-6 mb-2" />
+                                        <p className="text-sm font-medium">{action.label}</p>
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    </div>
+
                     {/* Stats Grid */}
-                    <div className="grid grid-cols-4 gap-4 mb-6">
+                    <div className="grid grid-cols-5 gap-4 mb-6">
                         <Card className="bg-white border-slate-200">
                             <CardContent className="p-6">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-sm text-slate-600">Total PSPs</p>
+                                        <p className="text-sm text-slate-600">PSP Instances</p>
                                         <p className="text-3xl font-bold text-slate-900 mt-1">{psps.length}</p>
                                         <p className="text-xs text-emerald-600 mt-1">{activePSPs} active</p>
                                     </div>
@@ -166,12 +138,12 @@ export default function FTSMoneyPlatform() {
                             <CardContent className="p-6">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-sm text-slate-600">Monthly Volume</p>
-                                        <p className="text-3xl font-bold text-slate-900 mt-1">${(totalVolume / 1000000).toFixed(1)}M</p>
-                                        <p className="text-xs text-emerald-600 mt-1">+12.5% vs last month</p>
+                                        <p className="text-sm text-slate-600">Payment Providers</p>
+                                        <p className="text-3xl font-bold text-slate-900 mt-1">{providers.length}</p>
+                                        <p className="text-xs text-slate-500 mt-1">In provider pool</p>
                                     </div>
-                                    <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center">
-                                        <TrendingUp className="h-6 w-6 text-emerald-600" />
+                                    <div className="w-12 h-12 rounded-xl bg-cyan-100 flex items-center justify-center">
+                                        <Database className="h-6 w-6 text-cyan-600" />
                                     </div>
                                 </div>
                             </CardContent>
@@ -180,9 +152,23 @@ export default function FTSMoneyPlatform() {
                             <CardContent className="p-6">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-sm text-slate-600">Monthly Revenue</p>
+                                        <p className="text-sm text-slate-600">Payout Routes</p>
+                                        <p className="text-3xl font-bold text-slate-900 mt-1">{routes.length}</p>
+                                        <p className="text-xs text-slate-500 mt-1">Available methods</p>
+                                    </div>
+                                    <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center">
+                                        <Wallet className="h-6 w-6 text-emerald-600" />
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                        <Card className="bg-white border-slate-200">
+                            <CardContent className="p-6">
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <p className="text-sm text-slate-600">Platform Revenue</p>
                                         <p className="text-3xl font-bold text-slate-900 mt-1">${(totalRevenue / 1000).toFixed(0)}k</p>
-                                        <p className="text-xs text-slate-500 mt-1">FTS.Money earnings</p>
+                                        <p className="text-xs text-emerald-600 mt-1">+15.3% MoM</p>
                                     </div>
                                     <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center">
                                         <DollarSign className="h-6 w-6 text-amber-600" />

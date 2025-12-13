@@ -150,15 +150,15 @@ export default function PSPProvisioningWizard() {
         }
     });
 
-    const handleProvision = () => {
+    const handleProvision = async () => {
         const tier = tiers.find(t => t.id === selectedTier);
         const data = {
             ...formData,
             tier: selectedTier,
             pricing_model: 'revenue_share',
             revenue_share_percentage: tier.revenue_share,
-            status: 'provisioning',
-            provisioning_progress: 0,
+            status: 'active',
+            provisioning_progress: 100,
             core_features: {
                 payment_processing: true,
                 merchant_portal: true,
@@ -172,7 +172,28 @@ export default function PSPProvisioningWizard() {
             sla_tier: selectedTier === 'enterprise' || selectedTier === 'custom' ? 'enterprise' : selectedTier === 'professional' ? 'premium' : 'standard',
             support_level: selectedTier === 'enterprise' || selectedTier === 'custom' ? 'dedicated' : selectedTier === 'professional' ? 'priority' : 'email'
         };
-        provisionMutation.mutate(data);
+        
+        const psp = await provisionMutation.mutateAsync(data);
+        
+        // Create audit log
+        await base44.entities.PSPAuditTrail.create({
+            psp_id: psp.id,
+            psp_code: psp.psp_code,
+            action: 'created',
+            user_email: 'admin@fts.money',
+            user_role: 'platform_operator',
+            metadata: { tier: selectedTier }
+        });
+        
+        // Create initial log
+        await base44.entities.PSPInstanceLog.create({
+            psp_id: psp.id,
+            psp_code: psp.psp_code,
+            log_type: 'deployment',
+            severity: 'medium',
+            message: 'PSP instance successfully provisioned',
+            source: 'system'
+        });
     };
 
     const { data: paymentProviders = [] } = useQuery({
