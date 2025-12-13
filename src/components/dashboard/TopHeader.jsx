@@ -66,12 +66,25 @@ export default function TopHeader({ onToggleSidebar, collapsed }) {
     useEffect(() => {
         const loadTheme = async () => {
             try {
-                const settings = await base44.entities.ThemeSettings.list();
-                if (settings && settings.length > 0) {
-                    setThemeSettings(settings[0]);
+                const staffSession = getStaffSession();
+                const pspCode = staffSession?.psp_code;
+                
+                console.log('TopHeader: Loading theme for PSP code:', pspCode);
+                
+                if (!pspCode) {
+                    console.error('TopHeader: No PSP code in session');
+                    return;
+                }
+                
+                // Fetch PSP-specific theme settings
+                const result = await base44.functions.invoke('getPSPSettings', { psp_code: pspCode });
+                console.log('TopHeader: PSP settings loaded:', result.data);
+                
+                if (result.data.success && result.data.settings) {
+                    setThemeSettings(result.data.settings);
                 }
             } catch (err) {
-                // Theme settings not available
+                console.error('TopHeader: Error loading theme:', err);
             }
         };
         loadTheme();
