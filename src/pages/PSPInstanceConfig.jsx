@@ -27,7 +27,6 @@ import {
 } from 'lucide-react';
 import { logAuditAction } from '@/components/platform/AuditLogger';
 import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
 import { PLATFORM_ROLES, getRoleLabel } from '@/components/auth/usePlatformAuth';
 
 export default function PSPInstanceConfig() {
