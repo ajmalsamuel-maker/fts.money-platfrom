@@ -1,147 +1,82 @@
-import pg from 'npm:pg@8.11.3';
-
-const { Pool } = pg;
-
-const pool = new Pool({
-    connectionString: Deno.env.get("DATABASE_URL"),
-    ssl: { rejectUnauthorized: false }
-});
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
 
 Deno.serve(async (req) => {
     try {
-        // First, ensure columns exist
-        await pool.query(`
-            DO $$ 
-            BEGIN
-                BEGIN
-                    ALTER TABLE provisioned_psp ADD COLUMN owner_email TEXT;
-                EXCEPTION
-                    WHEN duplicate_column THEN NULL;
-                END;
-                BEGIN
-                    ALTER TABLE provisioned_psp ADD COLUMN is_template BOOLEAN DEFAULT false;
-                EXCEPTION
-                    WHEN duplicate_column THEN NULL;
-                END;
-                BEGIN
-                    ALTER TABLE provisioned_psp ADD COLUMN visibility TEXT DEFAULT 'private';
-                EXCEPTION
-                    WHEN duplicate_column THEN NULL;
-                END;
-                BEGIN
-                    ALTER TABLE provisioned_psp ADD COLUMN template_source TEXT;
-                EXCEPTION
-                    WHEN duplicate_column THEN NULL;
-                END;
-            END $$;
-        `);
+        const base44 = createClientFromRequest(req);
+        const { action, psp_code, owner_email, visibility, template_source } = await req.json();
 
-        const { action, psp_code, owner_email } = await req.json();
+        switch (action) {
+            case 'markAsTemplate':
+                await base44.asServiceRole.entities.ProvisionedPSP.update(psp_code, {
+                    is_template: true,
+                    visibility: 'template',
+                    owner_email: 'tech@fts.money'
+                });
+                return Response.json({ success: true, message: 'PSP marked as template' });
 
-        if (action === 'markAsTemplate') {
-            // Mark NETXHUB as a template
-            const result = await pool.query(`
-                UPDATE provisioned_psp
-                SET is_template = true, 
-                    visibility = 'template'
-                WHERE UPPER(psp_code) = UPPER($1)
-                RETURNING *
-            `, [psp_code]);
-
-            return Response.json({
-                success: true,
-                message: `${psp_code} marked as template`,
-                psp: result.rows[0]
-            });
-        }
-
-        if (action === 'setOwner') {
-            // Set owner for a PSP
-            const result = await pool.query(`
-                UPDATE provisioned_psp
-                SET owner_email = $1,
-                    is_template = false,
-                    visibility = 'private'
-                WHERE UPPER(psp_code) = UPPER($2)
-                RETURNING *
-            `, [owner_email, psp_code]);
-
-            return Response.json({
-                success: true,
-                message: `Owner set for ${psp_code}`,
-                psp: result.rows[0]
-            });
-        }
-
-        if (action === 'listAll') {
-            // List all PSPs with their ownership status
-            const result = await pool.query(`
-                SELECT 
-                    id,
-                    psp_code, 
-                    psp_name, 
+            case 'setOwner':
+                await base44.asServiceRole.entities.ProvisionedPSP.update(psp_code, {
                     owner_email,
-                    is_template,
-                    visibility,
-                    created_date
-                FROM provisioned_psp
-                ORDER BY created_date DESC
-            `);
+                    visibility: visibility || 'private',
+                    template_source: template_source || null
+                });
+                return Response.json({ success: true, message: 'Ownership updated' });
 
-            return Response.json({
-                success: true,
-                psps: result.rows
-            });
+            case 'listAll':
+                const psps = await base44.asServiceRole.entities.ProvisionedPSP.list();
+                return Response.json({ 
+                    success: true, 
+                    psps: psps.map(p => ({
+                        psp_code: p.psp_code,
+                        psp_name: p.psp_name,
+                        owner_email: p.owner_email || 'Not set',
+                        is_template: p.is_template || false,
+                        visibility: p.visibility || 'private',
+                        template_source: p.template_source || null
+                    }))
+                });
+
+            case 'migrateAll':
+                // Get all PSPs
+                const allPsps = await base44.asServiceRole.entities.ProvisionedPSP.list();
+                
+                // Mark NETXHUB as template
+                const netxhub = allPsps.find(p => p.psp_code === 'NETXHUB');
+                if (netxhub) {
+                    await base44.asServiceRole.entities.ProvisionedPSP.update(netxhub.id, {
+                        is_template: true,
+                        visibility: 'template',
+                        owner_email: 'tech@fts.money'
+                    });
+                }
+
+                // Update all other PSPs
+                for (const psp of allPsps) {
+                    if (psp.psp_code !== 'NETXHUB') {
+                        await base44.asServiceRole.entities.ProvisionedPSP.update(psp.id, {
+                            is_template: false,
+                            visibility: 'private',
+                            owner_email: psp.contact_email || 'unknown@fts.money',
+                            template_source: 'NETXHUB'
+                        });
+                    }
+                }
+
+                return Response.json({ 
+                    success: true, 
+                    message: `Migrated ${allPsps.length} PSPs`,
+                    details: {
+                        total: allPsps.length,
+                        template: 1,
+                        instances: allPsps.length - 1
+                    }
+                });
+
+            default:
+                return Response.json({ success: false, error: 'Invalid action' }, { status: 400 });
         }
-
-        if (action === 'migrateAll') {
-            // Automatically migrate existing PSPs:
-            // 1. Mark NETXHUB as template
-            // 2. Set owner for all other PSPs based on contact_email
-            
-            await pool.query(`
-                UPDATE provisioned_psp
-                SET is_template = true, 
-                    visibility = 'template'
-                WHERE UPPER(psp_code) = 'NETXHUB'
-            `);
-
-            await pool.query(`
-                UPDATE provisioned_psp
-                SET owner_email = contact_email,
-                    is_template = false,
-                    visibility = 'private'
-                WHERE UPPER(psp_code) != 'NETXHUB'
-                AND owner_email IS NULL
-            `);
-
-            const result = await pool.query(`
-                SELECT 
-                    psp_code, 
-                    psp_name, 
-                    owner_email,
-                    is_template,
-                    visibility
-                FROM provisioned_psp
-                ORDER BY psp_code
-            `);
-
-            return Response.json({
-                success: true,
-                message: 'Migration completed',
-                psps: result.rows
-            });
-        }
-
-        return Response.json({
-            success: false,
-            error: 'Invalid action. Use: markAsTemplate, setOwner, listAll, or migrateAll'
-        }, { status: 400 });
-
     } catch (error) {
-        return Response.json({
-            success: false,
-            error: error.message
-        }, { status: 500 });
+        console.error('Migration error:', error);
+        return Response.json({ success: false, error: error.message }, { status: 500 });
     }
 });
