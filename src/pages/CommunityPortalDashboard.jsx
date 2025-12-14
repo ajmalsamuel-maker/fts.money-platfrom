@@ -36,8 +36,17 @@ export default function CommunityPortalDashboard() {
     }, [navigate]);
 
     const { data: myPSPs = [] } = useQuery({
-        queryKey: ['my-psp-instances'],
-        queryFn: () => base44.entities.ProvisionedPSP.list()
+        queryKey: ['my-psp-instances', session?.email],
+        queryFn: async () => {
+            const all = await base44.entities.ProvisionedPSP.list('-created_date');
+            // Filter to only show PSPs owned by current user (exclude templates)
+            return all.filter(psp => 
+                psp.owner_email === session?.email && 
+                !psp.is_template && 
+                psp.visibility !== 'template'
+            );
+        },
+        enabled: !!session?.email
     });
 
     const { data: services = [] } = useQuery({
