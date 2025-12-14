@@ -80,7 +80,7 @@ export default function PlatformUserManagement() {
         mutationFn: async ({ userId, role }) => {
             const user = users.find(u => u.id === userId);
             await base44.asServiceRole.entities.AuthUser.update(userId, {
-                ...user.data,
+                ...user,
                 platform_role: role
             });
         },
