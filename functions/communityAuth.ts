@@ -28,7 +28,7 @@ Deno.serve(async (req) => {
                 }
 
                 // Check if user already exists
-                const existingUsers = await base44.asServiceRole.entities.User.filter({ email });
+                const existingUsers = await base44.asServiceRole.entities.AuthUser.filter({ email });
                 if (existingUsers.length > 0) {
                     return Response.json({ success: false, error: 'Email already registered' }, { status: 400 });
                 }
@@ -37,7 +37,7 @@ Deno.serve(async (req) => {
                 const hashedPassword = await hashPassword(password);
 
                 // Create community user
-                const user = await base44.asServiceRole.entities.User.create({
+                const user = await base44.asServiceRole.entities.AuthUser.create({
                     email,
                     full_name: full_name || email.split('@')[0],
                     role: 'user',
@@ -62,7 +62,7 @@ Deno.serve(async (req) => {
                 }
 
                 // Find user
-                const users = await base44.asServiceRole.entities.User.filter({ 
+                const users = await base44.asServiceRole.entities.AuthUser.filter({ 
                     email,
                     account_type: 'community'
                 });
