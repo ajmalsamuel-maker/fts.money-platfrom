@@ -154,6 +154,7 @@ import PlatformAdminLogin from './pages/PlatformAdminLogin';
 import PlatformAdminRegister from './pages/PlatformAdminRegister';
 import PlatformUserManagement from './pages/PlatformUserManagement';
 import PlatformAuditLogs from './pages/PlatformAuditLogs';
+import TenantManagement from './pages/TenantManagement';
 import __Layout from './Layout.jsx';
 
 
@@ -314,6 +315,7 @@ export const PAGES = {
     "PlatformAdminRegister": PlatformAdminRegister,
     "PlatformUserManagement": PlatformUserManagement,
     "PlatformAuditLogs": PlatformAuditLogs,
+    "TenantManagement": TenantManagement,
 }
 
 export const pagesConfig = {
