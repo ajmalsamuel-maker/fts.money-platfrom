@@ -160,6 +160,7 @@ export default function FTSAnalytics() {
                         </CardContent>
                     </Card>
                 </div>
+                </div>
             </div>
         </div>
     );
