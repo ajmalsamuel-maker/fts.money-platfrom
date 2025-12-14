@@ -73,7 +73,9 @@ export default function PlatformUserManagement() {
 
     const updateRoleMutation = useMutation({
         mutationFn: async ({ userId, role }) => {
+            const user = users.find(u => u.id === userId);
             await base44.asServiceRole.entities.AuthUser.update(userId, {
+                ...user.data,
                 platform_role: role
             });
         },
@@ -202,15 +204,15 @@ export default function PlatformUserManagement() {
                                                 <Shield className="h-5 w-5 text-blue-600" />
                                             </div>
                                             <div>
-                                                <p className="font-medium text-slate-900">{user.full_name}</p>
-                                                <p className="text-sm text-slate-600">{user.email}</p>
+                                                <p className="font-medium text-slate-900">{user.data.full_name}</p>
+                                                <p className="text-sm text-slate-600">{user.data.email}</p>
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-3">
                                             <Select
-                                                value={user.platform_role}
+                                                value={user.data.platform_role}
                                                 onValueChange={(v) => updateRoleMutation.mutate({ userId: user.id, role: v })}
-                                                disabled={user.email === platformUser?.email}
+                                                disabled={user.data.email === platformUser?.email}
                                             >
                                                 <SelectTrigger className="w-40">
                                                     <SelectValue />
@@ -225,13 +227,13 @@ export default function PlatformUserManagement() {
                                                 </SelectContent>
                                             </Select>
                                             <Badge className={
-                                                user.platform_role === PLATFORM_ROLES.SUPER_ADMIN ? 'bg-red-100 text-red-700' :
-                                                user.platform_role === PLATFORM_ROLES.PLATFORM_ADMIN ? 'bg-blue-100 text-blue-700' :
+                                                user.data.platform_role === PLATFORM_ROLES.SUPER_ADMIN ? 'bg-red-100 text-red-700' :
+                                                user.data.platform_role === PLATFORM_ROLES.PLATFORM_ADMIN ? 'bg-blue-100 text-blue-700' :
                                                 'bg-slate-100 text-slate-700'
                                             }>
-                                                {getRoleLabel(user.platform_role)}
+                                                {getRoleLabel(user.data.platform_role)}
                                             </Badge>
-                                            {user.email !== platformUser?.email && (
+                                            {user.data.email !== platformUser?.email && (
                                                 <Button
                                                     variant="ghost"
                                                     size="icon"
@@ -255,7 +257,7 @@ export default function PlatformUserManagement() {
                     <AlertDialogHeader>
                         <AlertDialogTitle>Delete User</AlertDialogTitle>
                         <AlertDialogDescription>
-                            Are you sure you want to delete {deleteUser?.full_name}? This action cannot be undone.
+                            Are you sure you want to delete {deleteUser?.data?.full_name}? This action cannot be undone.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
