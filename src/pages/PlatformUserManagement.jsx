@@ -209,9 +209,9 @@ export default function PlatformUserManagement() {
                                                 <Shield className="h-5 w-5 text-blue-600" />
                                             </div>
                                             <div>
-                                                <p className="font-medium text-slate-900">{user.data.full_name}</p>
-                                                <p className="text-sm text-slate-600">{user.data.email}</p>
-                                            </div>
+                                                    <p className="font-medium text-slate-900">{user.full_name}</p>
+                                                    <p className="text-sm text-slate-600">{user.email}</p>
+                                                </div>
                                         </div>
                                         <div className="flex items-center gap-3">
                                             <Select
