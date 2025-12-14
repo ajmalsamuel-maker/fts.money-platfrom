@@ -40,10 +40,6 @@ const quickActions = [
 export default function FTSMoneyPlatform() {
     const navigate = useNavigate();
     const { platformUser, loading } = usePlatformAuth();
-    
-    if (loading) {
-        return <div className="flex items-center justify-center h-screen">Loading...</div>;
-    }
 
     const { data: psps = [] } = useQuery({
         queryKey: ['provisioned-psps'],
@@ -59,6 +55,10 @@ export default function FTSMoneyPlatform() {
         queryKey: ['payout-routes'],
         queryFn: () => base44.entities.PayoutRoute.list()
     });
+    
+    if (loading) {
+        return <div className="flex items-center justify-center h-screen">Loading...</div>;
+    }
 
     const totalVolume = psps.reduce((sum, p) => sum + (p.monthly_volume || 0), 0);
     const totalRevenue = psps.reduce((sum, p) => sum + (p.monthly_revenue || 0), 0);
