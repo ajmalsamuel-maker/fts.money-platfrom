@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
+import { useNavigate } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
+import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
+import { usePlatformAuth, PLATFORM_ROLES, getRoleLabel } from '@/components/auth/usePlatformAuth';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,10 +12,12 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { Users, Plus, Edit, Trash2, Mail, Shield } from 'lucide-react';
+import { Users, Plus, Edit, Trash2, Mail, Shield, ArrowLeft } from 'lucide-react';
 
 export default function PSPUserManagement() {
+    const navigate = useNavigate();
     const queryClient = useQueryClient();
+    const { platformUser, loading } = usePlatformAuth();
     const [selectedPSP, setSelectedPSP] = useState('');
     const [dialogOpen, setDialogOpen] = useState(false);
     const [editingUser, setEditingUser] = useState(null);
@@ -23,6 +29,10 @@ export default function PSPUserManagement() {
         password: 'Welcome123!',
         status: 'active'
     });
+
+    if (loading) {
+        return <div className="flex items-center justify-center h-screen">Loading...</div>;
+    }
 
     const { data: psps = [] } = useQuery({
         queryKey: ['psp-list'],
@@ -93,21 +103,45 @@ export default function PSPUserManagement() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 p-6">
-            <div className="max-w-7xl mx-auto">
-                <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center gap-3">
-                        <Users className="h-8 w-8 text-blue-600" />
+        <div className="flex h-screen bg-slate-50">
+            <FTSPlatformSidebar 
+                currentPage="PSPUserManagement" 
+                userRole={getRoleLabel(platformUser?.platform_role)} 
+                userEmail={platformUser?.email}
+                isSuperAdmin={platformUser?.platform_role === PLATFORM_ROLES.SUPER_ADMIN}
+            />
+
+            <div className="flex-1 overflow-auto">
+                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
+                    <div className="flex items-center gap-4">
+                        <Button 
+                            variant="ghost" 
+                            size="icon"
+                            onClick={() => navigate(createPageUrl('FTSMoneyPlatform'))}
+                        >
+                            <ArrowLeft className="h-4 w-4" />
+                        </Button>
                         <div>
-                            <h1 className="text-3xl font-bold text-slate-900">PSP User Management</h1>
-                            <p className="text-slate-600">Manage users for PSP instances</p>
+                            <h2 className="text-lg font-semibold text-slate-900">PSP User Management</h2>
+                            <p className="text-xs text-slate-600">Manage users for PSP instances</p>
                         </div>
                     </div>
-                    <Button onClick={() => setDialogOpen(true)}>
-                        <Plus className="h-4 w-4 mr-2" />
-                        Add User
-                    </Button>
-                </div>
+                    <div className="flex items-center gap-3">
+                        <div className="text-right mr-2">
+                            <p className="text-xs text-slate-600">Logged in as</p>
+                            <p className="text-sm font-medium text-slate-900">{platformUser?.email}</p>
+                            <Badge className="mt-1 bg-blue-600 text-white text-xs">
+                                {getRoleLabel(platformUser?.platform_role)}
+                            </Badge>
+                        </div>
+                        <Button onClick={() => setDialogOpen(true)} className="gap-2 bg-blue-600 hover:bg-blue-700">
+                            <Plus className="h-4 w-4" />
+                            Add User
+                        </Button>
+                    </div>
+                </header>
+
+                <div className="p-6">
 
                 <Card className="mb-6">
                     <CardHeader>
@@ -268,6 +302,7 @@ export default function PSPUserManagement() {
                         </form>
                     </DialogContent>
                 </Dialog>
+                </div>
             </div>
         </div>
     );

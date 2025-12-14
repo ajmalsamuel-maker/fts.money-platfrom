@@ -27,6 +27,8 @@ import {
 } from 'lucide-react';
 import { logAuditAction } from '@/components/platform/AuditLogger';
 import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
+import { PLATFORM_ROLES, getRoleLabel } from '@/components/auth/usePlatformAuth';
 
 export default function PSPInstanceConfig() {
     const navigate = useNavigate();
@@ -35,6 +37,8 @@ export default function PSPInstanceConfig() {
     const pspId = urlParams.get('id');
 
     const [activeTab, setActiveTab] = useState('appearance');
+    
+    const platformUser = JSON.parse(localStorage.getItem('platform_admin_session') || '{}');
 
     const { data: psp, isLoading } = useQuery({
         queryKey: ['psp-config', pspId],
@@ -135,14 +139,22 @@ export default function PSPInstanceConfig() {
             {/* Header */}
             <div className="bg-white border-b border-slate-200">
                 <div className="max-w-7xl mx-auto px-6 py-4">
-                    <Button 
-                        variant="ghost" 
-                        onClick={() => navigate(createPageUrl('FTSMoneyPlatform'))}
-                        className="mb-3"
-                    >
-                        <ArrowLeft className="h-4 w-4 mr-2" />
-                        Back to Platform
-                    </Button>
+                    <div className="flex items-center justify-between mb-3">
+                        <Button 
+                            variant="ghost" 
+                            onClick={() => navigate(createPageUrl('FTSMoneyPlatform'))}
+                        >
+                            <ArrowLeft className="h-4 w-4 mr-2" />
+                            Back to Platform
+                        </Button>
+                        <div className="text-right">
+                            <p className="text-xs text-slate-600">Logged in as</p>
+                            <p className="text-sm font-medium text-slate-900">{platformUser?.email}</p>
+                            <Badge className="mt-1 bg-blue-600 text-white text-xs">
+                                {getRoleLabel(platformUser?.platform_role)}
+                            </Badge>
+                        </div>
+                    </div>
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
                             <div 
