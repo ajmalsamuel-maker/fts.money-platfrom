@@ -1,11 +1,11 @@
 import { Pool } from 'npm:pg@8.11.3';
 
-Deno.serve(async (req) => {
-    const pool = new Pool({
-        connectionString: Deno.env.get('DATABASE_URL'),
-        ssl: { rejectUnauthorized: false }
-    });
+const pool = new Pool({
+    connectionString: Deno.env.get('DATABASE_URL'),
+    ssl: { rejectUnauthorized: false }
+});
 
+Deno.serve(async (req) => {
     let client;
     
     try {
@@ -32,30 +32,26 @@ Deno.serve(async (req) => {
             END $$;
         `);
 
-        let response;
-        
         switch (action) {
             case 'markAsTemplate':
                 await client.query(
                     'UPDATE psp_settings SET is_template = true, visibility = $1, owner_email = $2 WHERE psp_code = $3',
                     ['template', 'tech@fts.money', psp_code]
                 );
-                response = Response.json({ success: true, message: 'PSP marked as template' });
-                break;
+                return Response.json({ success: true, message: 'PSP marked as template' });
 
             case 'setOwner':
                 await client.query(
                     'UPDATE psp_settings SET owner_email = $1, visibility = $2, template_source = $3 WHERE psp_code = $4',
                     [owner_email, visibility || 'private', template_source, psp_code]
                 );
-                response = Response.json({ success: true, message: 'Ownership updated' });
-                break;
+                return Response.json({ success: true, message: 'Ownership updated' });
 
             case 'listAll':
                 const pspsResult = await client.query(
                     'SELECT psp_code, company_name, owner_email, is_template, visibility, template_source FROM psp_settings'
                 );
-                response = Response.json({ 
+                return Response.json({ 
                     success: true, 
                     psps: pspsResult.rows.map(p => ({
                         psp_code: p.psp_code,
@@ -66,7 +62,6 @@ Deno.serve(async (req) => {
                         template_source: p.template_source || null
                     }))
                 });
-                break;
 
             case 'migrateAll':
                 // Mark NETXHUB as template
@@ -95,7 +90,7 @@ Deno.serve(async (req) => {
                     );
                 }
 
-                response = Response.json({ 
+                return Response.json({ 
                     success: true, 
                     message: `Migrated ${allPspsResult.rows.length + 1} PSPs`,
                     details: {
@@ -104,19 +99,15 @@ Deno.serve(async (req) => {
                         instances: allPspsResult.rows.length
                     }
                 });
-                break;
 
             default:
-                response = Response.json({ success: false, error: 'Invalid action' }, { status: 400 });
+                return Response.json({ success: false, error: 'Invalid action' }, { status: 400 });
         }
-        
-        return response;
         
     } catch (error) {
         console.error('Migration error:', error);
         return Response.json({ success: false, error: error.message }, { status: 500 });
     } finally {
         if (client) client.release();
-        await pool.end();
     }
 });
