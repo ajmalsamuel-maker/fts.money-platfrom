@@ -121,6 +121,7 @@ export default function FTSRevenue() {
                         </Table>
                     </CardContent>
                 </Card>
+                </div>
             </div>
         </div>
     );
