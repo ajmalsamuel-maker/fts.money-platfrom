@@ -37,8 +37,8 @@ export default function PSPOwnershipMigration() {
             });
             
             if (data.success) {
-                setPsps(data.psps);
-                setMessage('✅ Migration completed successfully!');
+                setMessage(`✅ Migration completed successfully! ${data.message}`);
+                await loadPSPs();
             }
         } catch (error) {
             setMessage(`❌ Error: ${error.message}`);
