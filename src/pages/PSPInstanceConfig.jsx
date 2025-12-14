@@ -412,39 +412,65 @@ export default function PSPInstanceConfig() {
                         <Card className="bg-white border-slate-200">
                             <CardHeader>
                                 <CardTitle>Payment Provider Configuration</CardTitle>
-                                <CardDescription>Enable payment providers for this PSP instance</CardDescription>
+                                <CardDescription>Enable payment providers for this PSP instance (Total: {paymentProviders.length})</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-3">
                                 {paymentProviders.length === 0 ? (
                                     <div className="text-center py-8 text-slate-500">
                                         <CreditCard className="h-12 w-12 mx-auto mb-2 text-slate-400" />
-                                        <p>No payment providers available in the pool</p>
+                                        <p className="font-semibold mb-2">No payment providers available</p>
+                                        <p className="text-xs">Contact FTS admin to add payment providers to the pool</p>
                                     </div>
                                 ) : (
-                                    paymentProviders.map((provider) => (
-                                        <div key={provider.id} className="flex items-center justify-between p-4 border border-slate-200 rounded-lg hover:border-blue-300 transition-colors">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded bg-blue-50 flex items-center justify-center">
-                                                    <CreditCard className="h-5 w-5 text-blue-600" />
-                                                </div>
-                                                <div>
-                                                    <p className="font-medium text-slate-900">{provider.name || 'Unnamed Provider'}</p>
-                                                    {provider.type && (
-                                                        <p className="text-xs text-slate-500 capitalize">{provider.type.replace(/_/g, ' ')}</p>
-                                                    )}
-                                                </div>
-                                            </div>
-                                            <Switch
-                                                checked={config.enabled_payment_methods?.includes(provider.id)}
-                                                onCheckedChange={(checked) => {
-                                                    const methods = checked
-                                                        ? [...(config.enabled_payment_methods || []), provider.id]
-                                                        : (config.enabled_payment_methods || []).filter(id => id !== provider.id);
-                                                    setConfig({...config, enabled_payment_methods: methods});
-                                                }}
-                                            />
+                                    <div className="space-y-3">
+                                        <div className="text-xs text-slate-500 mb-2">
+                                            {config.enabled_payment_methods?.length || 0} of {paymentProviders.length} enabled
                                         </div>
-                                    ))
+                                        {paymentProviders.map((provider) => {
+                                            const isEnabled = config.enabled_payment_methods?.includes(provider.id);
+                                            return (
+                                                <div 
+                                                    key={provider.id} 
+                                                    className={cn(
+                                                        "flex items-center justify-between p-4 border-2 rounded-lg transition-all",
+                                                        isEnabled 
+                                                            ? "border-blue-500 bg-blue-50" 
+                                                            : "border-slate-200 hover:border-blue-300"
+                                                    )}
+                                                >
+                                                    <div className="flex items-center gap-3">
+                                                        <div className={cn(
+                                                            "w-10 h-10 rounded flex items-center justify-center",
+                                                            isEnabled ? "bg-blue-600" : "bg-blue-50"
+                                                        )}>
+                                                            <CreditCard className={cn(
+                                                                "h-5 w-5",
+                                                                isEnabled ? "text-white" : "text-blue-600"
+                                                            )} />
+                                                        </div>
+                                                        <div>
+                                                            <p className="font-medium text-slate-900">{provider.name || 'Unnamed Provider'}</p>
+                                                            {provider.type && (
+                                                                <p className="text-xs text-slate-500 capitalize">{provider.type.replace(/_/g, ' ')}</p>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-center gap-3">
+                                                        {isEnabled && <Badge className="bg-emerald-600">Enabled</Badge>}
+                                                        <Switch
+                                                            checked={isEnabled}
+                                                            onCheckedChange={(checked) => {
+                                                                const methods = checked
+                                                                    ? [...(config.enabled_payment_methods || []), provider.id]
+                                                                    : (config.enabled_payment_methods || []).filter(id => id !== provider.id);
+                                                                setConfig({...config, enabled_payment_methods: methods});
+                                                            }}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
                                 )}
                             </CardContent>
                         </Card>
