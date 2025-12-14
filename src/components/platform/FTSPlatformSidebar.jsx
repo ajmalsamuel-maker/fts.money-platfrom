@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 
 const menuItems = [
+    { icon: Building2, label: 'Tenants', path: 'TenantManagement', description: 'Multi-tenancy', new: true, superAdminOnly: true },
     { icon: Building2, label: 'PSP Instances', path: 'PSPProvisioning', description: 'Manage PSPs' },
     { icon: Activity, label: 'Provisioning Queue', path: 'FTSProvisioningQueue', description: 'Deploy PSPs', new: true },
     { icon: Users, label: 'Platform Users', path: 'PlatformUserManagement', description: 'Admin users', new: true },
@@ -43,7 +44,7 @@ const menuItems = [
     { icon: BookOpen, label: 'Architecture Docs', path: 'FTSArchitectureDoc', description: 'System blueprint', new: true }
 ];
 
-export default function FTSPlatformSidebar({ currentPage, userRole, userEmail }) {
+export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, isSuperAdmin }) {
     return (
         <aside className="w-64 bg-white border-r border-slate-200 flex flex-col h-screen">
             {/* Logo */}
@@ -82,7 +83,7 @@ export default function FTSPlatformSidebar({ currentPage, userRole, userEmail })
             {/* Menu */}
             <nav className="flex-1 overflow-y-auto p-3">
                 <div className="space-y-1">
-                    {menuItems.map((item) => {
+                    {menuItems.filter(item => !item.superAdminOnly || isSuperAdmin).map((item) => {
                         const Icon = item.icon;
                         const isActive = currentPage === item.path;
                         return (

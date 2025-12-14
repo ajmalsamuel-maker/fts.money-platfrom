@@ -4,7 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
-import { usePlatformAuth, PLATFORM_PERMISSIONS, getRoleLabel } from '@/components/auth/usePlatformAuth';
+import { usePlatformAuth, PLATFORM_PERMISSIONS, PLATFORM_ROLES, getRoleLabel } from '@/components/auth/usePlatformAuth';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -67,7 +67,12 @@ export default function FTSMoneyPlatform() {
 
     return (
         <div className="flex h-screen bg-slate-50">
-            <FTSPlatformSidebar currentPage="FTSMoneyPlatform" userRole={getRoleLabel(platformUser?.role)} userEmail={platformUser?.email} />
+            <FTSPlatformSidebar 
+                currentPage="FTSMoneyPlatform" 
+                userRole={getRoleLabel(platformUser?.platform_role)} 
+                userEmail={platformUser?.email}
+                isSuperAdmin={platformUser?.platform_role === PLATFORM_ROLES.SUPER_ADMIN}
+            />
 
             {/* Main Content */}
             <div className="flex-1 overflow-auto bg-slate-50">
