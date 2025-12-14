@@ -61,8 +61,9 @@ Deno.serve(async (req) => {
                     return Response.json({ success: false, error: 'Email and password required' }, { status: 400 });
                 }
 
-                // Find user
-                const users = await base44.asServiceRole.entities.AuthUser.filter({ email });
+                // Find user - list all and filter manually since Base44 filter may not work on nested fields
+                const allUsers = await base44.asServiceRole.entities.AuthUser.list();
+                const users = allUsers.filter(u => u.email === email);
                 console.log('Found users:', users.length, users.map(u => ({ email: u.email, account_type: u.account_type })));
                 
                 const platformUsers = users.filter(u => u.account_type === 'platform_admin');

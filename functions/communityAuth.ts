@@ -60,17 +60,15 @@ Deno.serve(async (req) => {
                     return Response.json({ success: false, error: 'Email and password required' }, { status: 400 });
                 }
 
-                // Find user
-                const users = await base44.asServiceRole.entities.AuthUser.filter({ 
-                    email,
-                    account_type: 'community'
-                });
+                // Find user - list all and filter manually
+                const allUsers = await base44.asServiceRole.entities.AuthUser.list();
+                const users = allUsers.filter(u => u.email === email && u.account_type === 'community');
 
                 if (users.length === 0) {
                     return Response.json({ success: false, error: 'Invalid credentials' }, { status: 401 });
                 }
 
-                const user = users[0];
+                const user = users.sort((a, b) => new Date(b.created_date) - new Date(a.created_date))[0];
 
                 // Verify password
                 const isValid = await verifyPassword(password, user.password_hash);
