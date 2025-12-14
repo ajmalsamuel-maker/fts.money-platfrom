@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
+import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,7 +19,7 @@ export default function PlatformAdminLogin() {
     const [role, setRole] = useState(PLATFORM_ROLES.PLATFORM_ADMIN);
     const [error, setError] = useState('');
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
         setError('');
 
@@ -27,15 +28,22 @@ export default function PlatformAdminLogin() {
             return;
         }
 
-        // Simulate login - store platform admin session
-        const session = {
-            email,
-            role,
-            login_time: new Date().toISOString()
-        };
+        try {
+            const response = await base44.functions.invoke('platformAuth', {
+                action: 'login',
+                email,
+                password
+            });
 
-        localStorage.setItem('platform_admin_session', JSON.stringify(session));
-        navigate(createPageUrl('FTSMoneyPlatform'));
+            if (response.data.success) {
+                localStorage.setItem('platform_admin_session', JSON.stringify(response.data.user));
+                navigate(createPageUrl('FTSMoneyPlatform'));
+            } else {
+                setError(response.data.error || 'Login failed');
+            }
+        } catch (error) {
+            setError('Login failed. Please try again.');
+        }
     };
 
     return (
@@ -84,21 +92,7 @@ export default function PlatformAdminLogin() {
                                 />
                             </div>
 
-                            <div>
-                                <Label>Role</Label>
-                                <Select value={role} onValueChange={setRole}>
-                                    <SelectTrigger>
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {Object.values(PLATFORM_ROLES).map((roleValue) => (
-                                            <SelectItem key={roleValue} value={roleValue}>
-                                                {getRoleLabel(roleValue)}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
+
 
                             {error && (
                                 <Alert variant="destructive">
