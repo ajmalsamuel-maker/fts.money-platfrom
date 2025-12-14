@@ -121,15 +121,13 @@ export default function TenantManagement() {
                                 {getRoleLabel(platformUser?.platform_role)}
                             </Badge>
                         </div>
-                    <Dialog open={createOpen} onOpenChange={setCreateOpen}>
-                        <DialogTrigger asChild>
-                            <Button className="gap-2 bg-blue-600 hover:bg-blue-700">
-                                <Plus className="h-4 w-4" />
-                                Create Tenant
-                            </Button>
-                        </div>
-                    </div>
-                        </DialogTrigger>
+                        <Dialog open={createOpen} onOpenChange={setCreateOpen}>
+                            <DialogTrigger asChild>
+                                <Button className="gap-2 bg-blue-600 hover:bg-blue-700">
+                                    <Plus className="h-4 w-4" />
+                                    Create Tenant
+                                </Button>
+                            </DialogTrigger>
                         <DialogContent className="max-w-2xl">
                             <DialogHeader>
                                 <DialogTitle>Create New Tenant</DialogTitle>
@@ -271,7 +269,8 @@ export default function TenantManagement() {
                                 </Button>
                             </div>
                         </DialogContent>
-                    </Dialog>
+                        </Dialog>
+                    </div>
                 </header>
 
                 <div className="p-6">

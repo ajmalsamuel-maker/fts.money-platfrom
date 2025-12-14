@@ -116,15 +116,13 @@ export default function PlatformUserManagement() {
                                 {getRoleLabel(platformUser?.platform_role)}
                             </Badge>
                         </div>
-                    <Dialog open={inviteOpen} onOpenChange={setInviteOpen}>
-                        <DialogTrigger asChild>
-                            <Button className="gap-2 bg-blue-600 hover:bg-blue-700">
-                                <UserPlus className="h-4 w-4" />
-                                Invite User
-                            </Button>
-                        </div>
-                    </div>
-                        </DialogTrigger>
+                        <Dialog open={inviteOpen} onOpenChange={setInviteOpen}>
+                            <DialogTrigger asChild>
+                                <Button className="gap-2 bg-blue-600 hover:bg-blue-700">
+                                    <UserPlus className="h-4 w-4" />
+                                    Invite User
+                                </Button>
+                            </DialogTrigger>
                         <DialogContent>
                             <DialogHeader>
                                 <DialogTitle>Invite New Platform User</DialogTitle>
@@ -182,7 +180,8 @@ export default function PlatformUserManagement() {
                                 </Button>
                             </div>
                         </DialogContent>
-                    </Dialog>
+                        </Dialog>
+                    </div>
                 </header>
 
                 <div className="p-6">
