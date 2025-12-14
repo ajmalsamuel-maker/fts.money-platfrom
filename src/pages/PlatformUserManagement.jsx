@@ -18,7 +18,7 @@ import { Users, UserPlus, Shield, Mail, Trash2, Ban, CheckCircle } from 'lucide-
 export default function PlatformUserManagement() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
-    const { platformUser, loading } = usePlatformAuth([PLATFORM_PERMISSIONS.USER_MANAGE]);
+    const { platformUser, loading } = usePlatformAuth();
     
     const [inviteOpen, setInviteOpen] = useState(false);
     const [deleteUser, setDeleteUser] = useState(null);
