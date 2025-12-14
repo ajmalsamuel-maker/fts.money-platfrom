@@ -95,7 +95,12 @@ export default function PlatformUserManagement() {
 
     return (
         <div className="flex h-screen bg-slate-50">
-            <FTSPlatformSidebar currentPage="PlatformUserManagement" userRole={getRoleLabel(platformUser?.platform_role)} userEmail={platformUser?.email} />
+            <FTSPlatformSidebar 
+                currentPage="PlatformUserManagement" 
+                userRole={getRoleLabel(platformUser?.platform_role)} 
+                userEmail={platformUser?.email}
+                isSuperAdmin={platformUser?.platform_role === PLATFORM_ROLES.SUPER_ADMIN}
+            />
 
             <div className="flex-1 overflow-auto">
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
@@ -103,12 +108,22 @@ export default function PlatformUserManagement() {
                         <h2 className="text-lg font-semibold text-slate-900">User Management</h2>
                         <p className="text-xs text-slate-600">Manage platform administrators and their permissions</p>
                     </div>
+                    <div className="flex items-center gap-3">
+                        <div className="text-right mr-2">
+                            <p className="text-xs text-slate-600">Logged in as</p>
+                            <p className="text-sm font-medium text-slate-900">{platformUser?.email}</p>
+                            <Badge className="mt-1 bg-blue-600 text-white text-xs">
+                                {getRoleLabel(platformUser?.platform_role)}
+                            </Badge>
+                        </div>
                     <Dialog open={inviteOpen} onOpenChange={setInviteOpen}>
                         <DialogTrigger asChild>
                             <Button className="gap-2 bg-blue-600 hover:bg-blue-700">
                                 <UserPlus className="h-4 w-4" />
                                 Invite User
                             </Button>
+                        </div>
+                    </div>
                         </DialogTrigger>
                         <DialogContent>
                             <DialogHeader>

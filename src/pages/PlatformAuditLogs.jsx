@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { FileText, Search, Filter, User, Calendar, Activity } from 'lucide-react';
 import { format } from 'date-fns';
+import { PLATFORM_ROLES } from '@/components/auth/usePlatformAuth';
 
 export default function PlatformAuditLogs() {
     const { platformUser, loading } = usePlatformAuth();
@@ -45,13 +46,25 @@ export default function PlatformAuditLogs() {
 
     return (
         <div className="flex h-screen bg-slate-50">
-            <FTSPlatformSidebar currentPage="PlatformAuditLogs" userRole={getRoleLabel(platformUser?.platform_role)} userEmail={platformUser?.email} />
+            <FTSPlatformSidebar 
+                currentPage="PlatformAuditLogs" 
+                userRole={getRoleLabel(platformUser?.platform_role)} 
+                userEmail={platformUser?.email}
+                isSuperAdmin={platformUser?.platform_role === PLATFORM_ROLES.SUPER_ADMIN}
+            />
 
             <div className="flex-1 overflow-auto">
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
                     <div>
                         <h2 className="text-lg font-semibold text-slate-900">Audit Logs</h2>
                         <p className="text-xs text-slate-600">Track all platform actions and changes</p>
+                    </div>
+                    <div className="text-right">
+                        <p className="text-xs text-slate-600">Logged in as</p>
+                        <p className="text-sm font-medium text-slate-900">{platformUser?.email}</p>
+                        <Badge className="mt-1 bg-blue-600 text-white text-xs">
+                            {getRoleLabel(platformUser?.platform_role)}
+                        </Badge>
                     </div>
                 </header>
 

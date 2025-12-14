@@ -100,7 +100,12 @@ export default function TenantManagement() {
 
     return (
         <div className="flex h-screen bg-slate-50">
-            <FTSPlatformSidebar currentPage="TenantManagement" userRole={getRoleLabel(platformUser?.platform_role)} userEmail={platformUser?.email} />
+            <FTSPlatformSidebar 
+                currentPage="TenantManagement" 
+                userRole={getRoleLabel(platformUser?.platform_role)} 
+                userEmail={platformUser?.email}
+                isSuperAdmin={platformUser?.platform_role === PLATFORM_ROLES.SUPER_ADMIN}
+            />
 
             <div className="flex-1 overflow-auto">
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
@@ -108,12 +113,22 @@ export default function TenantManagement() {
                         <h2 className="text-lg font-semibold text-slate-900">Tenant Management</h2>
                         <p className="text-xs text-slate-600">Manage client organizations and their configurations</p>
                     </div>
+                    <div className="flex items-center gap-3">
+                        <div className="text-right mr-2">
+                            <p className="text-xs text-slate-600">Logged in as</p>
+                            <p className="text-sm font-medium text-slate-900">{platformUser?.email}</p>
+                            <Badge className="mt-1 bg-blue-600 text-white text-xs">
+                                {getRoleLabel(platformUser?.platform_role)}
+                            </Badge>
+                        </div>
                     <Dialog open={createOpen} onOpenChange={setCreateOpen}>
                         <DialogTrigger asChild>
                             <Button className="gap-2 bg-blue-600 hover:bg-blue-700">
                                 <Plus className="h-4 w-4" />
                                 Create Tenant
                             </Button>
+                        </div>
+                    </div>
                         </DialogTrigger>
                         <DialogContent className="max-w-2xl">
                             <DialogHeader>
@@ -380,6 +395,14 @@ export default function TenantManagement() {
                                             )}>
                                                 {tenant.status}
                                             </Badge>
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={() => navigate(createPageUrl('TenantUserManagement') + `?tenant_id=${tenant.id}`)}
+                                            >
+                                                <Users className="h-4 w-4 mr-2" />
+                                                Users
+                                            </Button>
                                             <Button
                                                 variant="ghost"
                                                 size="icon"
