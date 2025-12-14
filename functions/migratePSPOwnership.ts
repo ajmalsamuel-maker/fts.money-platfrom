@@ -1,10 +1,8 @@
-import postgres from 'npm:postgres@3.4.4';
+import { Pool } from 'npm:pg@8.11.3';
 
-const sql = postgres(Deno.env.get('DATABASE_URL'), { 
-    ssl: 'require',
-    max: 1,
-    idle_timeout: 20,
-    connect_timeout: 10
+const pool = new Pool({
+    connectionString: Deno.env.get('DATABASE_URL'),
+    ssl: { rejectUnauthorized: false }
 });
 
 Deno.serve(async (req) => {
