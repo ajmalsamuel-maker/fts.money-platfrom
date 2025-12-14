@@ -232,13 +232,13 @@ export default function PlatformUserManagement() {
                                                 </SelectContent>
                                             </Select>
                                             <Badge className={
-                                                user.data.platform_role === PLATFORM_ROLES.SUPER_ADMIN ? 'bg-red-100 text-red-700' :
-                                                user.data.platform_role === PLATFORM_ROLES.PLATFORM_ADMIN ? 'bg-blue-100 text-blue-700' :
+                                                user.platform_role === PLATFORM_ROLES.SUPER_ADMIN ? 'bg-red-100 text-red-700' :
+                                                user.platform_role === PLATFORM_ROLES.PLATFORM_ADMIN ? 'bg-blue-100 text-blue-700' :
                                                 'bg-slate-100 text-slate-700'
                                             }>
-                                                {getRoleLabel(user.data.platform_role)}
+                                                {getRoleLabel(user.platform_role)}
                                             </Badge>
-                                            {user.data.email !== platformUser?.email && (
+                                            {user.email !== platformUser?.email && (
                                                 <Button
                                                     variant="ghost"
                                                     size="icon"
