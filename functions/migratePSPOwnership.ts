@@ -31,80 +31,79 @@ Deno.serve(async (req) => {
                 END $$;
             `);
 
-        switch (action) {
-            case 'markAsTemplate':
-                await sql`
-                    UPDATE psp_settings 
-                    SET is_template = true, visibility = 'template', owner_email = 'tech@fts.money'
-                    WHERE psp_code = ${psp_code}
-                `;
-                return Response.json({ success: true, message: 'PSP marked as template' });
+            switch (action) {
+                case 'markAsTemplate':
+                    await client.query(
+                        'UPDATE psp_settings SET is_template = true, visibility = $1, owner_email = $2 WHERE psp_code = $3',
+                        ['template', 'tech@fts.money', psp_code]
+                    );
+                    return Response.json({ success: true, message: 'PSP marked as template' });
 
-            case 'setOwner':
-                await sql`
-                    UPDATE psp_settings 
-                    SET owner_email = ${owner_email}, 
-                        visibility = ${visibility || 'private'},
-                        template_source = ${template_source}
-                    WHERE psp_code = ${psp_code}
-                `;
-                return Response.json({ success: true, message: 'Ownership updated' });
+                case 'setOwner':
+                    await client.query(
+                        'UPDATE psp_settings SET owner_email = $1, visibility = $2, template_source = $3 WHERE psp_code = $4',
+                        [owner_email, visibility || 'private', template_source, psp_code]
+                    );
+                    return Response.json({ success: true, message: 'Ownership updated' });
 
-            case 'listAll':
-                const psps = await sql`
-                    SELECT psp_code, company_name, owner_email, is_template, visibility, template_source 
-                    FROM psp_settings
-                `;
-                return Response.json({ 
-                    success: true, 
-                    psps: psps.map(p => ({
-                        psp_code: p.psp_code,
-                        psp_name: p.company_name,
-                        owner_email: p.owner_email || 'Not set',
-                        is_template: p.is_template || false,
-                        visibility: p.visibility || 'private',
-                        template_source: p.template_source || null
-                    }))
-                });
+                case 'listAll':
+                    const pspsResult = await client.query(
+                        'SELECT psp_code, company_name, owner_email, is_template, visibility, template_source FROM psp_settings'
+                    );
+                    return Response.json({ 
+                        success: true, 
+                        psps: pspsResult.rows.map(p => ({
+                            psp_code: p.psp_code,
+                            psp_name: p.company_name,
+                            owner_email: p.owner_email || 'Not set',
+                            is_template: p.is_template || false,
+                            visibility: p.visibility || 'private',
+                            template_source: p.template_source || null
+                        }))
+                    });
 
-            case 'migrateAll':
-                // Mark NETXHUB as template
-                await sql`
-                    UPDATE psp_settings 
-                    SET is_template = true, visibility = 'template', owner_email = 'tech@fts.money'
-                    WHERE psp_code = 'NETXHUB'
-                `;
+                case 'migrateAll':
+                    // Mark NETXHUB as template
+                    await client.query(
+                        'UPDATE psp_settings SET is_template = true, visibility = $1, owner_email = $2 WHERE psp_code = $3',
+                        ['template', 'tech@fts.money', 'NETXHUB']
+                    );
 
-                // Get contact emails from psp_settings
-                const allPsps = await sql`SELECT psp_code, company_name FROM psp_settings WHERE psp_code != 'NETXHUB'`;
-                
-                // Get corresponding emails from app_users table
-                for (const psp of allPsps) {
-                    const users = await sql`SELECT email FROM app_users WHERE psp_code = ${psp.psp_code} LIMIT 1`;
-                    const ownerEmail = users.length > 0 ? users[0].email : 'unknown@fts.money';
+                    // Get all PSPs except NETXHUB
+                    const allPspsResult = await client.query(
+                        'SELECT psp_code, company_name FROM psp_settings WHERE psp_code != $1',
+                        ['NETXHUB']
+                    );
                     
-                    await sql`
-                        UPDATE psp_settings 
-                        SET is_template = false, 
-                            visibility = 'private', 
-                            owner_email = ${ownerEmail},
-                            template_source = 'NETXHUB'
-                        WHERE psp_code = ${psp.psp_code}
-                    `;
-                }
-
-                return Response.json({ 
-                    success: true, 
-                    message: `Migrated ${allPsps.length + 1} PSPs`,
-                    details: {
-                        total: allPsps.length + 1,
-                        template: 1,
-                        instances: allPsps.length
+                    // Get corresponding emails from app_users table
+                    for (const psp of allPspsResult.rows) {
+                        const usersResult = await client.query(
+                            'SELECT email FROM app_users WHERE psp_code = $1 LIMIT 1',
+                            [psp.psp_code]
+                        );
+                        const ownerEmail = usersResult.rows.length > 0 ? usersResult.rows[0].email : 'unknown@fts.money';
+                        
+                        await client.query(
+                            'UPDATE psp_settings SET is_template = false, visibility = $1, owner_email = $2, template_source = $3 WHERE psp_code = $4',
+                            ['private', ownerEmail, 'NETXHUB', psp.psp_code]
+                        );
                     }
-                });
 
-            default:
-                return Response.json({ success: false, error: 'Invalid action' }, { status: 400 });
+                    return Response.json({ 
+                        success: true, 
+                        message: `Migrated ${allPspsResult.rows.length + 1} PSPs`,
+                        details: {
+                            total: allPspsResult.rows.length + 1,
+                            template: 1,
+                            instances: allPspsResult.rows.length
+                        }
+                    });
+
+                default:
+                    return Response.json({ success: false, error: 'Invalid action' }, { status: 400 });
+            }
+        } finally {
+            client.release();
         }
     } catch (error) {
         console.error('Migration error:', error);
