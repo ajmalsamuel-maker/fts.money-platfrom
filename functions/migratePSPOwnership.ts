@@ -41,7 +41,7 @@ Deno.serve(async (req) => {
         if (action === 'markAsTemplate') {
             // Mark NETXHUB as a template
             const result = await pool.query(`
-                UPDATE provisioned_psps 
+                UPDATE "ProvisionedPSP"
                 SET is_template = true, 
                     visibility = 'template'
                 WHERE UPPER(psp_code) = UPPER($1)
@@ -84,7 +84,7 @@ Deno.serve(async (req) => {
                     is_template,
                     visibility,
                     created_date
-                FROM provisioned_psps 
+                FROM "ProvisionedPSP"
                 ORDER BY created_date DESC
             `);
 
@@ -122,7 +122,7 @@ Deno.serve(async (req) => {
                     owner_email,
                     is_template,
                     visibility
-                FROM provisioned_psps 
+                FROM "ProvisionedPSP"
                 ORDER BY psp_code
             `);
 
