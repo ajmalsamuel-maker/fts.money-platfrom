@@ -1,10 +1,24 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
-import * as bcrypt from 'npm:bcrypt@5.1.1';
 
 Deno.serve(async (req) => {
     try {
         const base44 = createClientFromRequest(req);
         const { action, email, password, role, full_name } = await req.json();
+
+        // Simple hash function (for demo - use proper bcrypt in production)
+        const hashPassword = async (password) => {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(password + 'fts_salt_2025');
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            return Array.from(new Uint8Array(hashBuffer))
+                .map(b => b.toString(16).padStart(2, '0'))
+                .join('');
+        };
+
+        const verifyPassword = async (password, hash) => {
+            const computed = await hashPassword(password);
+            return computed === hash;
+        };
 
         switch (action) {
             case 'register': {
@@ -20,7 +34,7 @@ Deno.serve(async (req) => {
                 }
 
                 // Hash password
-                const hashedPassword = await bcrypt.hash(password, 10);
+                const hashedPassword = await hashPassword(password);
 
                 // Create platform admin user
                 const user = await base44.asServiceRole.entities.User.create({
@@ -61,7 +75,7 @@ Deno.serve(async (req) => {
                 const user = users[0];
 
                 // Verify password
-                const isValid = await bcrypt.compare(password, user.password_hash);
+                const isValid = await verifyPassword(password, user.password_hash);
                 if (!isValid) {
                     return Response.json({ success: false, error: 'Invalid credentials' }, { status: 401 });
                 }
