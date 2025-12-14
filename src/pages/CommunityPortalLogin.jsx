@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
+import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,17 +23,27 @@ export default function CommunityPortalLogin() {
         setLoading(true);
         setError('');
 
-        try {
-            // Store community portal session
-            localStorage.setItem('community_portal_session', JSON.stringify({
-                email,
-                logged_in_at: new Date().toISOString(),
-                user_type: 'community_user'
-            }));
+        if (!email || !password) {
+            setError('Please enter email and password');
+            setLoading(false);
+            return;
+        }
 
-            navigate(createPageUrl('CommunityPortalDashboard'));
+        try {
+            const response = await base44.functions.invoke('communityAuth', {
+                action: 'login',
+                email,
+                password
+            });
+
+            if (response.data.success) {
+                localStorage.setItem('community_portal_session', JSON.stringify(response.data.user));
+                navigate(createPageUrl('CommunityPortalDashboard'));
+            } else {
+                setError(response.data.error || 'Invalid credentials');
+            }
         } catch (err) {
-            setError(err.message || 'Login failed');
+            setError('Login failed. Please check your credentials.');
         } finally {
             setLoading(false);
         }

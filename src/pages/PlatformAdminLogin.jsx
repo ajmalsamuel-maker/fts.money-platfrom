@@ -107,6 +107,17 @@ export default function PlatformAdminLogin() {
                                 <Lock className="h-4 w-4 mr-2" />
                                 Sign In to Control Plane
                             </Button>
+
+                            <p className="text-center text-sm text-slate-600 mt-4">
+                                Need an account?{' '}
+                                <button
+                                    type="button"
+                                    onClick={() => navigate(createPageUrl('PlatformAdminRegister'))}
+                                    className="text-blue-600 hover:underline"
+                                >
+                                    Register here
+                                </button>
+                            </p>
                         </form>
                     </CardContent>
                 </Card>
