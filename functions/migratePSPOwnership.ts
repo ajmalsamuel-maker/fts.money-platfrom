@@ -1,6 +1,11 @@
 import postgres from 'npm:postgres@3.4.4';
 
-const sql = postgres(Deno.env.get('DATABASE_URL'), { ssl: 'require' });
+const sql = postgres(Deno.env.get('DATABASE_URL'), { 
+    ssl: 'require',
+    max: 1,
+    idle_timeout: 20,
+    connect_timeout: 10
+});
 
 Deno.serve(async (req) => {
     try {
