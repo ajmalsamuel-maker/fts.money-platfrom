@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
+import { usePlatformAuth, PLATFORM_ROLES, getRoleLabel } from '@/components/auth/usePlatformAuth';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -40,6 +41,7 @@ import { cn } from "@/lib/utils";
 
 export default function FTSPayoutRoutes() {
     const queryClient = useQueryClient();
+    const { platformUser, loading } = usePlatformAuth();
     const [showDialog, setShowDialog] = useState(false);
     const [editingRoute, setEditingRoute] = useState(null);
     const [formData, setFormData] = useState({
@@ -105,23 +107,39 @@ export default function FTSPayoutRoutes() {
         }
     };
 
+    if (loading) {
+        return <div className="flex items-center justify-center h-screen">Loading...</div>;
+    }
+
     return (
         <div className="flex h-screen bg-slate-50">
-            <FTSPlatformSidebar currentPage="FTSPayoutRoutes" userRole="Platform Operator" />
+            <FTSPlatformSidebar 
+                currentPage="FTSPayoutRoutes" 
+                userRole={getRoleLabel(platformUser?.platform_role)} 
+                userEmail={platformUser?.email}
+                isSuperAdmin={platformUser?.platform_role === PLATFORM_ROLES.SUPER_ADMIN}
+            />
             
             <div className="flex-1 overflow-auto">
-                <div className="bg-white border-b border-slate-200 px-6 py-4">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <h1 className="text-2xl font-bold text-slate-900">Payout Route Pool</h1>
-                            <p className="text-sm text-slate-600">Global payout methods available for PSP assignment</p>
+                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
+                    <div>
+                        <h2 className="text-lg font-semibold text-slate-900">Payout Route Pool</h2>
+                        <p className="text-xs text-slate-600">Global payout methods available for PSP assignment</p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                        <div className="text-right mr-2">
+                            <p className="text-xs text-slate-600">Logged in as</p>
+                            <p className="text-sm font-medium text-slate-900">{platformUser?.email}</p>
+                            <Badge className="mt-1 bg-blue-600 text-white text-xs">
+                                {getRoleLabel(platformUser?.platform_role)}
+                            </Badge>
                         </div>
                         <Button onClick={() => setShowDialog(true)} className="bg-blue-600 hover:bg-blue-700">
                             <Plus className="h-4 w-4 mr-2" />
                             Add Payout Route
                         </Button>
                     </div>
-                </div>
+                </header>
 
                 <div className="p-6">
                     <Card>

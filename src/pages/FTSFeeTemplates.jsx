@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
+import { usePlatformAuth, PLATFORM_ROLES, getRoleLabel } from '@/components/auth/usePlatformAuth';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -81,20 +82,37 @@ const tierTemplates = {
 };
 
 export default function FTSFeeTemplates() {
+    const { platformUser, loading } = usePlatformAuth();
     const [selectedTier, setSelectedTier] = useState('professional');
     const template = tierTemplates[selectedTier];
 
+    if (loading) {
+        return <div className="flex items-center justify-center h-screen">Loading...</div>;
+    }
+
     return (
         <div className="flex h-screen bg-slate-50">
-            <FTSPlatformSidebar currentPage="FTSFeeTemplates" userRole="Platform Operator" />
+            <FTSPlatformSidebar 
+                currentPage="FTSFeeTemplates" 
+                userRole={getRoleLabel(platformUser?.platform_role)} 
+                userEmail={platformUser?.email}
+                isSuperAdmin={platformUser?.platform_role === PLATFORM_ROLES.SUPER_ADMIN}
+            />
             
             <div className="flex-1 overflow-auto">
-                <div className="bg-white border-b border-slate-200 px-6 py-4">
+                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
                     <div>
-                        <h1 className="text-2xl font-bold text-slate-900">Fee Structure Templates</h1>
-                        <p className="text-sm text-slate-600">Tier-based automated fee configuration for PSP instances</p>
+                        <h2 className="text-lg font-semibold text-slate-900">Fee Structure Templates</h2>
+                        <p className="text-xs text-slate-600">Tier-based automated fee configuration for PSP instances</p>
                     </div>
-                </div>
+                    <div className="text-right">
+                        <p className="text-xs text-slate-600">Logged in as</p>
+                        <p className="text-sm font-medium text-slate-900">{platformUser?.email}</p>
+                        <Badge className="mt-1 bg-blue-600 text-white text-xs">
+                            {getRoleLabel(platformUser?.platform_role)}
+                        </Badge>
+                    </div>
+                </header>
 
                 <div className="p-6">
                     {/* Tier Selection */}

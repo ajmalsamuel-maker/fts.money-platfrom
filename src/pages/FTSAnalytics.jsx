@@ -3,8 +3,11 @@ import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
+import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
+import { usePlatformAuth, PLATFORM_ROLES, getRoleLabel } from '@/components/auth/usePlatformAuth';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { 
     ArrowLeft, 
     TrendingUp,
@@ -17,6 +20,7 @@ import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, R
 
 export default function FTSAnalytics() {
     const navigate = useNavigate();
+    const { platformUser, loading } = usePlatformAuth();
     
     const { data: psps = [] } = useQuery({
         queryKey: ['provisioned-psps'],
@@ -41,24 +45,35 @@ export default function FTSAnalytics() {
         { month: 'Jun', revenue: 82 }
     ];
 
-    return (
-        <div className="min-h-screen bg-slate-50">
-            <div className="bg-white border-b border-slate-200">
-                <div className="max-w-7xl mx-auto px-6 py-4">
-                    <Button 
-                        variant="ghost" 
-                        onClick={() => navigate(createPageUrl('FTSMoneyPlatform'))}
-                        className="mb-3"
-                    >
-                        <ArrowLeft className="h-4 w-4 mr-2" />
-                        Back to Platform
-                    </Button>
-                    <h1 className="text-2xl font-bold text-slate-900">Platform Analytics</h1>
-                    <p className="text-sm text-slate-600">Comprehensive performance metrics and insights</p>
-                </div>
-            </div>
+    if (loading) {
+        return <div className="flex items-center justify-center h-screen">Loading...</div>;
+    }
 
-            <div className="max-w-7xl mx-auto px-6 py-8 space-y-6">
+    return (
+        <div className="flex h-screen bg-slate-50">
+            <FTSPlatformSidebar 
+                currentPage="FTSAnalytics" 
+                userRole={getRoleLabel(platformUser?.platform_role)} 
+                userEmail={platformUser?.email}
+                isSuperAdmin={platformUser?.platform_role === PLATFORM_ROLES.SUPER_ADMIN}
+            />
+
+            <div className="flex-1 overflow-auto">
+                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
+                    <div>
+                        <h2 className="text-lg font-semibold text-slate-900">Platform Analytics</h2>
+                        <p className="text-xs text-slate-600">Comprehensive performance metrics and insights</p>
+                    </div>
+                    <div className="text-right">
+                        <p className="text-xs text-slate-600">Logged in as</p>
+                        <p className="text-sm font-medium text-slate-900">{platformUser?.email}</p>
+                        <Badge className="mt-1 bg-blue-600 text-white text-xs">
+                            {getRoleLabel(platformUser?.platform_role)}
+                        </Badge>
+                    </div>
+                </header>
+
+                <div className="p-6 space-y-6">
                 <div className="grid grid-cols-4 gap-4">
                     <Card>
                         <CardContent className="p-6">
