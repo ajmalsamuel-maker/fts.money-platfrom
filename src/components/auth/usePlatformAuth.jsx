@@ -113,7 +113,7 @@ export function usePlatformAuth(requiredPermissions = []) {
                 navigate(createPageUrl('FTSMoneyPlatform')); // Redirect to dashboard
             }
         }
-    }, [navigate, requiredPermissions]);
+    }, [navigate, JSON.stringify(requiredPermissions)]);
 
     return { platformUser, loading };
 }
