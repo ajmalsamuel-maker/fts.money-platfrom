@@ -1,34 +1,59 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
+import postgres from 'npm:postgres@3.4.4';
+
+const sql = postgres(Deno.env.get('DATABASE_URL'), { ssl: 'require' });
 
 Deno.serve(async (req) => {
     try {
-        const base44 = createClientFromRequest(req);
         const { action, psp_code, owner_email, visibility, template_source } = await req.json();
+
+        // Ensure columns exist
+        await sql.unsafe(`
+            DO $$ 
+            BEGIN
+                IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='psp_settings' AND column_name='owner_email') THEN
+                    ALTER TABLE psp_settings ADD COLUMN owner_email TEXT;
+                END IF;
+                IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='psp_settings' AND column_name='is_template') THEN
+                    ALTER TABLE psp_settings ADD COLUMN is_template BOOLEAN DEFAULT false;
+                END IF;
+                IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='psp_settings' AND column_name='visibility') THEN
+                    ALTER TABLE psp_settings ADD COLUMN visibility TEXT DEFAULT 'private';
+                END IF;
+                IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='psp_settings' AND column_name='template_source') THEN
+                    ALTER TABLE psp_settings ADD COLUMN template_source TEXT;
+                END IF;
+            END $$;
+        `);
 
         switch (action) {
             case 'markAsTemplate':
-                await base44.asServiceRole.entities.ProvisionedPSP.update(psp_code, {
-                    is_template: true,
-                    visibility: 'template',
-                    owner_email: 'tech@fts.money'
-                });
+                await sql`
+                    UPDATE psp_settings 
+                    SET is_template = true, visibility = 'template', owner_email = 'tech@fts.money'
+                    WHERE psp_code = ${psp_code}
+                `;
                 return Response.json({ success: true, message: 'PSP marked as template' });
 
             case 'setOwner':
-                await base44.asServiceRole.entities.ProvisionedPSP.update(psp_code, {
-                    owner_email,
-                    visibility: visibility || 'private',
-                    template_source: template_source || null
-                });
+                await sql`
+                    UPDATE psp_settings 
+                    SET owner_email = ${owner_email}, 
+                        visibility = ${visibility || 'private'},
+                        template_source = ${template_source}
+                    WHERE psp_code = ${psp_code}
+                `;
                 return Response.json({ success: true, message: 'Ownership updated' });
 
             case 'listAll':
-                const psps = await base44.asServiceRole.entities.ProvisionedPSP.list();
+                const psps = await sql`
+                    SELECT psp_code, company_name, owner_email, is_template, visibility, template_source 
+                    FROM psp_settings
+                `;
                 return Response.json({ 
                     success: true, 
                     psps: psps.map(p => ({
                         psp_code: p.psp_code,
-                        psp_name: p.psp_name,
+                        psp_name: p.company_name,
                         owner_email: p.owner_email || 'Not set',
                         is_template: p.is_template || false,
                         visibility: p.visibility || 'private',
@@ -37,38 +62,38 @@ Deno.serve(async (req) => {
                 });
 
             case 'migrateAll':
-                // Get all PSPs
-                const allPsps = await base44.asServiceRole.entities.ProvisionedPSP.list();
-                
                 // Mark NETXHUB as template
-                const netxhub = allPsps.find(p => p.psp_code === 'NETXHUB');
-                if (netxhub) {
-                    await base44.asServiceRole.entities.ProvisionedPSP.update(netxhub.id, {
-                        is_template: true,
-                        visibility: 'template',
-                        owner_email: 'tech@fts.money'
-                    });
-                }
+                await sql`
+                    UPDATE psp_settings 
+                    SET is_template = true, visibility = 'template', owner_email = 'tech@fts.money'
+                    WHERE psp_code = 'NETXHUB'
+                `;
 
-                // Update all other PSPs
+                // Get contact emails from psp_settings
+                const allPsps = await sql`SELECT psp_code, company_name FROM psp_settings WHERE psp_code != 'NETXHUB'`;
+                
+                // Get corresponding emails from app_users table
                 for (const psp of allPsps) {
-                    if (psp.psp_code !== 'NETXHUB') {
-                        await base44.asServiceRole.entities.ProvisionedPSP.update(psp.id, {
-                            is_template: false,
-                            visibility: 'private',
-                            owner_email: psp.contact_email || 'unknown@fts.money',
-                            template_source: 'NETXHUB'
-                        });
-                    }
+                    const users = await sql`SELECT email FROM app_users WHERE psp_code = ${psp.psp_code} LIMIT 1`;
+                    const ownerEmail = users.length > 0 ? users[0].email : 'unknown@fts.money';
+                    
+                    await sql`
+                        UPDATE psp_settings 
+                        SET is_template = false, 
+                            visibility = 'private', 
+                            owner_email = ${ownerEmail},
+                            template_source = 'NETXHUB'
+                        WHERE psp_code = ${psp.psp_code}
+                    `;
                 }
 
                 return Response.json({ 
                     success: true, 
-                    message: `Migrated ${allPsps.length} PSPs`,
+                    message: `Migrated ${allPsps.length + 1} PSPs`,
                     details: {
-                        total: allPsps.length,
+                        total: allPsps.length + 1,
                         template: 1,
-                        instances: allPsps.length - 1
+                        instances: allPsps.length
                     }
                 });
 
