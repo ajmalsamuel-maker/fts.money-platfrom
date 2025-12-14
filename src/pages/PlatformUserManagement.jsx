@@ -262,7 +262,7 @@ export default function PlatformUserManagement() {
                     <AlertDialogHeader>
                         <AlertDialogTitle>Delete User</AlertDialogTitle>
                         <AlertDialogDescription>
-                            Are you sure you want to delete {deleteUser?.data?.full_name}? This action cannot be undone.
+                            Are you sure you want to delete {deleteUser?.full_name}? This action cannot be undone.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
