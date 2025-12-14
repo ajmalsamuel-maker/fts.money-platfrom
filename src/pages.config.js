@@ -149,6 +149,7 @@ import FTSProvisioningQueue from './pages/FTSProvisioningQueue';
 import MyServiceRequests from './pages/MyServiceRequests';
 import PSPUserManagement from './pages/PSPUserManagement';
 import PSPOwnershipMigration from './pages/PSPOwnershipMigration';
+import TestPSPOwnership from './pages/TestPSPOwnership';
 import __Layout from './Layout.jsx';
 
 
@@ -304,6 +305,7 @@ export const PAGES = {
     "MyServiceRequests": MyServiceRequests,
     "PSPUserManagement": PSPUserManagement,
     "PSPOwnershipMigration": PSPOwnershipMigration,
+    "TestPSPOwnership": TestPSPOwnership,
 }
 
 export const pagesConfig = {
