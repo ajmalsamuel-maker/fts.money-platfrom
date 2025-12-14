@@ -30,10 +30,6 @@ export default function PSPUserManagement() {
         status: 'active'
     });
 
-    if (loading) {
-        return <div className="flex items-center justify-center h-screen">Loading...</div>;
-    }
-
     const { data: psps = [] } = useQuery({
         queryKey: ['psp-list'],
         queryFn: async () => {
@@ -101,6 +97,10 @@ export default function PSPUserManagement() {
         });
         setDialogOpen(true);
     };
+
+    if (loading) {
+        return <div className="flex items-center justify-center h-screen">Loading...</div>;
+    }
 
     return (
         <div className="flex h-screen bg-slate-50">
