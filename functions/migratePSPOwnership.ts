@@ -47,13 +47,13 @@ Deno.serve(async (req) => {
 
             case 'listAll':
                 const pspsResult = await pool.query(
-                    'SELECT psp_code, company_name, owner_email, is_template, visibility, template_source FROM psp_settings'
+                    'SELECT psp_code, owner_email, is_template, visibility, template_source FROM psp_settings'
                 );
                 return Response.json({ 
                     success: true, 
                     psps: pspsResult.rows.map(p => ({
                         psp_code: p.psp_code,
-                        psp_name: p.company_name,
+                        psp_name: p.psp_code,
                         owner_email: p.owner_email || 'Not set',
                         is_template: p.is_template || false,
                         visibility: p.visibility || 'private',
@@ -70,7 +70,7 @@ Deno.serve(async (req) => {
 
                 // Get all PSPs except NETXHUB
                 const allPspsResult = await pool.query(
-                    'SELECT psp_code, company_name FROM psp_settings WHERE psp_code != $1',
+                    'SELECT psp_code FROM psp_settings WHERE psp_code != $1',
                     ['NETXHUB']
                 );
                 
