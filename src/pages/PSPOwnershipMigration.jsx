@@ -98,7 +98,7 @@ export default function PSPOwnershipMigration() {
                         <CardContent>
                             <div className="space-y-3">
                                 {psps.map((psp) => (
-                                    <div key={psp.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
+                                    <div key={psp.psp_code} className="flex items-center justify-between p-4 bg-slate-50 rounded-lg">
                                         <div>
                                             <div className="flex items-center gap-3">
                                                 <p className="font-semibold">{psp.psp_name}</p>
