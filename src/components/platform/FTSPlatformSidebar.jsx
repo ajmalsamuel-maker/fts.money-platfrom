@@ -68,15 +68,10 @@ export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, i
                             {userEmail.charAt(0).toUpperCase()}
                         </div>
                         <div className="flex-1 min-w-0">
-                            <p className="text-[10px] text-slate-600">Logged in as</p>
-                            <p className="text-xs font-medium text-slate-900 truncate">{userEmail}</p>
-                        </div>
-                    </div>
-                    {userRole && (
-                        <Badge className="bg-blue-600 text-white text-[10px]">
-                            {userRole}
-                        </Badge>
-                    )}
+                                        <p className="text-xs font-medium text-slate-900 truncate">{userEmail}</p>
+                                        <p className="text-[10px] text-slate-600">Role: {userRole || 'Admin'}</p>
+                                    </div>
+                                </div>
                 </div>
             )}
 
