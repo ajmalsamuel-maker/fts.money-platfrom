@@ -68,10 +68,11 @@ Deno.serve(async (req) => {
                 });
 
                 if (users.length === 0) {
-                    return Response.json({ success: false, error: 'Invalid credentials' }, { status: 401 });
+                    return Response.json({ success: false, error: 'User not found' }, { status: 401 });
                 }
 
-                const user = users[0];
+                // Sort by created_date descending and take the most recent one
+                const user = users.sort((a, b) => new Date(b.created_date) - new Date(a.created_date))[0];
 
                 // Verify password
                 const isValid = await verifyPassword(password, user.password_hash);
