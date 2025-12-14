@@ -159,11 +159,11 @@ export default function MyPSPInstances() {
                                                 Open Portal
                                             </Button>
                                             <Button 
-                                                size="sm"
-                                                onClick={() => navigate(createPageUrl('PSPInstanceConfig', `?id=${psp.id}`))}
+                                               size="sm"
+                                               onClick={() => navigate(createPageUrl('PSPInstanceConfig') + `?id=${psp.id}`)}
                                             >
-                                                <Settings className="h-4 w-4 mr-2" />
-                                                Configure
+                                               <Settings className="h-4 w-4 mr-2" />
+                                               Configure
                                             </Button>
                                             <Button 
                                                 size="sm"

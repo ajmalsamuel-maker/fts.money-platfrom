@@ -4,6 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
+import { usePlatformAuth, PLATFORM_PERMISSIONS, getRoleLabel } from '@/components/auth/usePlatformAuth';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -38,6 +39,11 @@ const quickActions = [
 
 export default function FTSMoneyPlatform() {
     const navigate = useNavigate();
+    const { platformUser, loading } = usePlatformAuth();
+    
+    if (loading) {
+        return <div className="flex items-center justify-center h-screen">Loading...</div>;
+    }
 
     const { data: psps = [] } = useQuery({
         queryKey: ['provisioned-psps'],
@@ -61,7 +67,7 @@ export default function FTSMoneyPlatform() {
 
     return (
         <div className="flex h-screen bg-slate-50">
-            <FTSPlatformSidebar currentPage="FTSMoneyPlatform" userRole="Platform Admin" />
+            <FTSPlatformSidebar currentPage="FTSMoneyPlatform" userRole={getRoleLabel(platformUser?.role)} userEmail={platformUser?.email} />
 
             {/* Main Content */}
             <div className="flex-1 overflow-auto bg-slate-50">
