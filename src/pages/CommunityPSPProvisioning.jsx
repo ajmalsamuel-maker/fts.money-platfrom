@@ -202,6 +202,10 @@ export default function CommunityPSPProvisioning() {
 
         const pspData = {
             ...formData,
+            owner_email: session.email, // Track ownership
+            is_template: false, // Regular PSP, not a template
+            template_source: 'NETXHUB', // Created from NETXHUB template
+            visibility: 'private', // Only visible to owner
             tier: selectedFramework,
             status: 'provisioning',
             provisioning_progress: 0,

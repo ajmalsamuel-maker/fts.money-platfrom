@@ -33,10 +33,22 @@ export default function MyPSPInstances() {
         setSession(JSON.parse(sessionData));
     }, [navigate]);
 
-    const { data: psps = [] } = useQuery({
-        queryKey: ['my-psp-instances'],
-        queryFn: () => base44.entities.ProvisionedPSP.list('-created_date')
+    // Filter PSPs by ownership - only show PSPs owned by current user
+    const { data: allPSPs = [] } = useQuery({
+        queryKey: ['my-psp-instances', session?.email],
+        queryFn: async () => {
+            const all = await base44.entities.ProvisionedPSP.list('-created_date');
+            // Filter to only show PSPs owned by current user (exclude templates)
+            return all.filter(psp => 
+                psp.owner_email === session?.email && 
+                !psp.is_template && 
+                psp.visibility !== 'template'
+            );
+        },
+        enabled: !!session?.email
     });
+    
+    const psps = allPSPs || [];
 
     if (!session) return null;
 
@@ -127,7 +139,7 @@ export default function MyPSPInstances() {
                                         </div>
 
                                         <div className="flex items-center gap-2">
-                                            {psp.status === 'active' && !psp.setup_completed && (
+                                            {!psp.setup_completed && (
                                                 <Button 
                                                     size="sm"
                                                     onClick={() => navigate(createPageUrl('PSPSetupWizard') + `?psp_id=${psp.id}`)}
