@@ -215,9 +215,9 @@ export default function PlatformUserManagement() {
                                         </div>
                                         <div className="flex items-center gap-3">
                                             <Select
-                                                value={user.data.platform_role}
+                                                value={user.platform_role}
                                                 onValueChange={(v) => updateRoleMutation.mutate({ userId: user.id, role: v })}
-                                                disabled={user.data.email === platformUser?.email}
+                                                disabled={user.email === platformUser?.email}
                                             >
                                                 <SelectTrigger className="w-40">
                                                     <SelectValue />
