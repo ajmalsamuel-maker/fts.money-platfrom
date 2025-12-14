@@ -14,22 +14,22 @@ Deno.serve(async (req) => {
             DO $$ 
             BEGIN
                 BEGIN
-                    ALTER TABLE provisioned_psps ADD COLUMN owner_email TEXT;
+                    ALTER TABLE "ProvisionedPSP" ADD COLUMN owner_email TEXT;
                 EXCEPTION
                     WHEN duplicate_column THEN NULL;
                 END;
                 BEGIN
-                    ALTER TABLE provisioned_psps ADD COLUMN is_template BOOLEAN DEFAULT false;
+                    ALTER TABLE "ProvisionedPSP" ADD COLUMN is_template BOOLEAN DEFAULT false;
                 EXCEPTION
                     WHEN duplicate_column THEN NULL;
                 END;
                 BEGIN
-                    ALTER TABLE provisioned_psps ADD COLUMN visibility TEXT DEFAULT 'private';
+                    ALTER TABLE "ProvisionedPSP" ADD COLUMN visibility TEXT DEFAULT 'private';
                 EXCEPTION
                     WHEN duplicate_column THEN NULL;
                 END;
                 BEGIN
-                    ALTER TABLE provisioned_psps ADD COLUMN template_source TEXT;
+                    ALTER TABLE "ProvisionedPSP" ADD COLUMN template_source TEXT;
                 EXCEPTION
                     WHEN duplicate_column THEN NULL;
                 END;
@@ -58,7 +58,7 @@ Deno.serve(async (req) => {
         if (action === 'setOwner') {
             // Set owner for a PSP
             const result = await pool.query(`
-                UPDATE provisioned_psps 
+                UPDATE "ProvisionedPSP"
                 SET owner_email = $1,
                     is_template = false,
                     visibility = 'private'
@@ -100,14 +100,14 @@ Deno.serve(async (req) => {
             // 2. Set owner for all other PSPs based on contact_email
             
             await pool.query(`
-                UPDATE provisioned_psps 
+                UPDATE "ProvisionedPSP"
                 SET is_template = true, 
                     visibility = 'template'
                 WHERE UPPER(psp_code) = 'NETXHUB'
             `);
 
             await pool.query(`
-                UPDATE provisioned_psps 
+                UPDATE "ProvisionedPSP"
                 SET owner_email = contact_email,
                     is_template = false,
                     visibility = 'private'
