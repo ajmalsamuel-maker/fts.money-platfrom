@@ -200,6 +200,16 @@ export default function PlatformUserManagement() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
+                            {/* Debug info */}
+                            <div className="mb-4 p-4 bg-slate-100 rounded text-xs font-mono">
+                                <p>Total users fetched: {users.length}</p>
+                                {users.length === 0 && <p className="text-red-600">No users found matching account_type === 'platform_admin'</p>}
+                                {users[0] && (
+                                    <pre className="mt-2 overflow-auto max-h-40">
+                                        {JSON.stringify(users[0], null, 2)}
+                                    </pre>
+                                )}
+                            </div>
                             <div className="space-y-3">
                                 {users.map((user) => (
                                     <div key={user.id} className="flex items-center justify-between p-4 border border-slate-200 rounded-lg">
