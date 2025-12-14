@@ -25,7 +25,8 @@ import {
 const menuItems = [
     { icon: Building2, label: 'PSP Instances', path: 'PSPProvisioning', description: 'Manage PSPs' },
     { icon: Activity, label: 'Provisioning Queue', path: 'FTSProvisioningQueue', description: 'Deploy PSPs', new: true },
-    { icon: Users, label: 'PSP Users', path: 'PSPUserManagement', description: 'Manage PSP users', new: true },
+    { icon: Users, label: 'Platform Users', path: 'PlatformUserManagement', description: 'Admin users', new: true },
+    { icon: Users, label: 'PSP Users', path: 'PSPUserManagement', description: 'Manage PSP users' },
     { icon: Sparkles, label: 'Community Market', path: 'CommunityMarketplace', description: 'Browse & subscribe', new: true },
     { icon: BarChart3, label: 'Analytics', path: 'FTSAnalytics', description: 'Cross-PSP metrics' },
     { icon: DollarSign, label: 'Revenue', path: 'FTSRevenue', description: 'Billing & revenue' },
@@ -36,12 +37,12 @@ const menuItems = [
     { icon: Sparkles, label: 'Service Registry', path: 'FTSServiceRegistry', description: 'Marketplace services', new: true },
     { icon: Users, label: 'Service Providers', path: 'FTSServiceProviders', description: '3rd party providers', new: true },
     { icon: Shield, label: 'Compliance', path: 'FTSCompliance', description: 'Policy templates', new: true },
-    { icon: FileText, label: 'Audit Logs', path: 'FTSAuditLogs', description: 'System audit', new: true },
+    { icon: FileText, label: 'Audit Logs', path: 'PlatformAuditLogs', description: 'Activity tracking', new: true },
     { icon: Settings, label: 'Platform Settings', path: 'FTSSettings', description: 'Configuration' },
     { icon: BookOpen, label: 'Architecture Docs', path: 'FTSArchitectureDoc', description: 'System blueprint', new: true }
 ];
 
-export default function FTSPlatformSidebar({ currentPage, userRole }) {
+export default function FTSPlatformSidebar({ currentPage, userRole, userEmail }) {
     return (
         <aside className="w-64 bg-white border-r border-slate-200 flex flex-col h-screen">
             {/* Logo */}
@@ -57,12 +58,23 @@ export default function FTSPlatformSidebar({ currentPage, userRole }) {
                 </div>
             </div>
 
-            {/* Role Badge */}
-            {userRole && (
-                <div className="px-4 py-3 border-b border-slate-200">
-                    <Badge className="bg-blue-100 text-blue-700">
-                        {userRole}
-                    </Badge>
+            {/* User Info */}
+            {userEmail && (
+                <div className="px-4 py-3 border-b border-slate-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+                    <div className="flex items-center gap-2 mb-2">
+                        <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold">
+                            {userEmail.charAt(0).toUpperCase()}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <p className="text-[10px] text-slate-600">Logged in as</p>
+                            <p className="text-xs font-medium text-slate-900 truncate">{userEmail}</p>
+                        </div>
+                    </div>
+                    {userRole && (
+                        <Badge className="bg-blue-600 text-white text-[10px]">
+                            {userRole}
+                        </Badge>
+                    )}
                 </div>
             )}
 
