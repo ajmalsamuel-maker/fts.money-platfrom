@@ -9,6 +9,33 @@ const pool = new Pool({
 
 Deno.serve(async (req) => {
     try {
+        // First, ensure columns exist
+        await pool.query(`
+            DO $$ 
+            BEGIN
+                BEGIN
+                    ALTER TABLE provisioned_psps ADD COLUMN owner_email TEXT;
+                EXCEPTION
+                    WHEN duplicate_column THEN NULL;
+                END;
+                BEGIN
+                    ALTER TABLE provisioned_psps ADD COLUMN is_template BOOLEAN DEFAULT false;
+                EXCEPTION
+                    WHEN duplicate_column THEN NULL;
+                END;
+                BEGIN
+                    ALTER TABLE provisioned_psps ADD COLUMN visibility TEXT DEFAULT 'private';
+                EXCEPTION
+                    WHEN duplicate_column THEN NULL;
+                END;
+                BEGIN
+                    ALTER TABLE provisioned_psps ADD COLUMN template_source TEXT;
+                EXCEPTION
+                    WHEN duplicate_column THEN NULL;
+                END;
+            END $$;
+        `);
+
         const { action, psp_code, owner_email } = await req.json();
 
         if (action === 'markAsTemplate') {
