@@ -1,4 +1,6 @@
-import { Pool } from 'npm:pg@8.11.3';
+import pg from 'npm:pg@8.11.3';
+
+const { Pool } = pg;
 
 const pool = new Pool({
     connectionString: Deno.env.get('DATABASE_URL'),
@@ -6,15 +8,11 @@ const pool = new Pool({
 });
 
 Deno.serve(async (req) => {
-    let client;
-    
     try {
         const { action, psp_code, owner_email, visibility, template_source } = await req.json();
 
-        client = await pool.connect();
-        
         // Ensure columns exist
-        await client.query(`
+        await pool.query(`
             DO $$ 
             BEGIN
                 IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='psp_settings' AND column_name='owner_email') THEN
@@ -34,21 +32,21 @@ Deno.serve(async (req) => {
 
         switch (action) {
             case 'markAsTemplate':
-                await client.query(
+                await pool.query(
                     'UPDATE psp_settings SET is_template = true, visibility = $1, owner_email = $2 WHERE psp_code = $3',
                     ['template', 'tech@fts.money', psp_code]
                 );
                 return Response.json({ success: true, message: 'PSP marked as template' });
 
             case 'setOwner':
-                await client.query(
+                await pool.query(
                     'UPDATE psp_settings SET owner_email = $1, visibility = $2, template_source = $3 WHERE psp_code = $4',
                     [owner_email, visibility || 'private', template_source, psp_code]
                 );
                 return Response.json({ success: true, message: 'Ownership updated' });
 
             case 'listAll':
-                const pspsResult = await client.query(
+                const pspsResult = await pool.query(
                     'SELECT psp_code, company_name, owner_email, is_template, visibility, template_source FROM psp_settings'
                 );
                 return Response.json({ 
@@ -65,26 +63,26 @@ Deno.serve(async (req) => {
 
             case 'migrateAll':
                 // Mark NETXHUB as template
-                await client.query(
+                await pool.query(
                     'UPDATE psp_settings SET is_template = true, visibility = $1, owner_email = $2 WHERE psp_code = $3',
                     ['template', 'tech@fts.money', 'NETXHUB']
                 );
 
                 // Get all PSPs except NETXHUB
-                const allPspsResult = await client.query(
+                const allPspsResult = await pool.query(
                     'SELECT psp_code, company_name FROM psp_settings WHERE psp_code != $1',
                     ['NETXHUB']
                 );
                 
                 // Get corresponding emails from app_users table
                 for (const psp of allPspsResult.rows) {
-                    const usersResult = await client.query(
+                    const usersResult = await pool.query(
                         'SELECT email FROM app_users WHERE psp_code = $1 LIMIT 1',
                         [psp.psp_code]
                     );
                     const ownerEmail = usersResult.rows.length > 0 ? usersResult.rows[0].email : 'unknown@fts.money';
                     
-                    await client.query(
+                    await pool.query(
                         'UPDATE psp_settings SET is_template = false, visibility = $1, owner_email = $2, template_source = $3 WHERE psp_code = $4',
                         ['private', ownerEmail, 'NETXHUB', psp.psp_code]
                     );
@@ -107,7 +105,5 @@ Deno.serve(async (req) => {
     } catch (error) {
         console.error('Migration error:', error);
         return Response.json({ success: false, error: error.message }, { status: 500 });
-    } finally {
-        if (client) client.release();
     }
 });
