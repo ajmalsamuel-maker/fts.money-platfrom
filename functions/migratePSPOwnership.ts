@@ -14,22 +14,22 @@ Deno.serve(async (req) => {
             DO $$ 
             BEGIN
                 BEGIN
-                    ALTER TABLE "ProvisionedPSP" ADD COLUMN owner_email TEXT;
+                    ALTER TABLE provisionedpsp ADD COLUMN owner_email TEXT;
                 EXCEPTION
                     WHEN duplicate_column THEN NULL;
                 END;
                 BEGIN
-                    ALTER TABLE "ProvisionedPSP" ADD COLUMN is_template BOOLEAN DEFAULT false;
+                    ALTER TABLE provisionedpsp ADD COLUMN is_template BOOLEAN DEFAULT false;
                 EXCEPTION
                     WHEN duplicate_column THEN NULL;
                 END;
                 BEGIN
-                    ALTER TABLE "ProvisionedPSP" ADD COLUMN visibility TEXT DEFAULT 'private';
+                    ALTER TABLE provisionedpsp ADD COLUMN visibility TEXT DEFAULT 'private';
                 EXCEPTION
                     WHEN duplicate_column THEN NULL;
                 END;
                 BEGIN
-                    ALTER TABLE "ProvisionedPSP" ADD COLUMN template_source TEXT;
+                    ALTER TABLE provisionedpsp ADD COLUMN template_source TEXT;
                 EXCEPTION
                     WHEN duplicate_column THEN NULL;
                 END;
@@ -41,7 +41,7 @@ Deno.serve(async (req) => {
         if (action === 'markAsTemplate') {
             // Mark NETXHUB as a template
             const result = await pool.query(`
-                UPDATE "ProvisionedPSP"
+                UPDATE provisionedpsp
                 SET is_template = true, 
                     visibility = 'template'
                 WHERE UPPER(psp_code) = UPPER($1)
@@ -58,7 +58,7 @@ Deno.serve(async (req) => {
         if (action === 'setOwner') {
             // Set owner for a PSP
             const result = await pool.query(`
-                UPDATE "ProvisionedPSP"
+                UPDATE provisionedpsp
                 SET owner_email = $1,
                     is_template = false,
                     visibility = 'private'
@@ -84,7 +84,7 @@ Deno.serve(async (req) => {
                     is_template,
                     visibility,
                     created_date
-                FROM "ProvisionedPSP"
+                FROM provisionedpsp
                 ORDER BY created_date DESC
             `);
 
@@ -100,14 +100,14 @@ Deno.serve(async (req) => {
             // 2. Set owner for all other PSPs based on contact_email
             
             await pool.query(`
-                UPDATE "ProvisionedPSP"
+                UPDATE provisionedpsp
                 SET is_template = true, 
                     visibility = 'template'
                 WHERE UPPER(psp_code) = 'NETXHUB'
             `);
 
             await pool.query(`
-                UPDATE "ProvisionedPSP"
+                UPDATE provisionedpsp
                 SET owner_email = contact_email,
                     is_template = false,
                     visibility = 'private'
@@ -122,7 +122,7 @@ Deno.serve(async (req) => {
                     owner_email,
                     is_template,
                     visibility
-                FROM "ProvisionedPSP"
+                FROM provisionedpsp
                 ORDER BY psp_code
             `);
 
