@@ -152,6 +152,8 @@ import PSPOwnershipMigration from './pages/PSPOwnershipMigration';
 import TestPSPOwnership from './pages/TestPSPOwnership';
 import PlatformAdminLogin from './pages/PlatformAdminLogin';
 import PlatformAdminRegister from './pages/PlatformAdminRegister';
+import PlatformUserManagement from './pages/PlatformUserManagement';
+import PlatformAuditLogs from './pages/PlatformAuditLogs';
 import __Layout from './Layout.jsx';
 
 
@@ -310,6 +312,8 @@ export const PAGES = {
     "TestPSPOwnership": TestPSPOwnership,
     "PlatformAdminLogin": PlatformAdminLogin,
     "PlatformAdminRegister": PlatformAdminRegister,
+    "PlatformUserManagement": PlatformUserManagement,
+    "PlatformAuditLogs": PlatformAuditLogs,
 }
 
 export const pagesConfig = {

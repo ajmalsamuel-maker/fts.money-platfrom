@@ -77,13 +77,19 @@ export default function FTSMoneyPlatform() {
                         <h2 className="text-lg font-semibold text-slate-900">Control Plane Dashboard</h2>
                         <p className="text-xs text-slate-600">Unified management for all PSP instances and global configurations</p>
                     </div>
-                    <Button 
-                        onClick={() => navigate(createPageUrl('PSPProvisioningWizard'))}
-                        className="gap-2 bg-blue-600 hover:bg-blue-700"
-                    >
-                        <Plus className="h-4 w-4" />
-                        Provision New PSP
-                    </Button>
+                    <div className="flex items-center gap-3">
+                        <div className="text-right mr-2">
+                            <p className="text-xs text-slate-600">Logged in as</p>
+                            <p className="text-sm font-medium text-slate-900">{platformUser?.email}</p>
+                        </div>
+                        <Button 
+                            onClick={() => navigate(createPageUrl('PSPProvisioningWizard'))}
+                            className="gap-2 bg-blue-600 hover:bg-blue-700"
+                        >
+                            <Plus className="h-4 w-4" />
+                            Provision New PSP
+                        </Button>
+                    </div>
                 </header>
 
                 <div className="p-6">

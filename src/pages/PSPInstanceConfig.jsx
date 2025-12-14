@@ -25,6 +25,7 @@ import {
     Check,
     X
 } from 'lucide-react';
+import { logAuditAction } from '@/components/platform/AuditLogger';
 import { cn } from "@/lib/utils";
 
 export default function PSPInstanceConfig() {
@@ -102,9 +103,22 @@ export default function PSPInstanceConfig() {
             };
             return await base44.entities.ProvisionedPSP.update(pspId, pspUpdateData);
         },
-        onSuccess: () => {
+        onSuccess: async (updatedPSP) => {
             queryClient.invalidateQueries(['psp-config']);
             queryClient.invalidateQueries(['provisioned-psps']);
+            
+            // Log audit action
+            const session = JSON.parse(localStorage.getItem('platform_admin_session') || '{}');
+            if (session.email) {
+                await logAuditAction({
+                    psp_id: pspId,
+                    psp_code: psp?.psp_code,
+                    action: 'configuration_changed',
+                    field_changed: 'PSP Configuration',
+                    user_email: session.email,
+                    user_role: session.platform_role || 'platform_admin'
+                });
+            }
         }
     });
 
