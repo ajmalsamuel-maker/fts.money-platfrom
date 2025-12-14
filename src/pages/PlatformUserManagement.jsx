@@ -30,12 +30,13 @@ export default function PlatformUserManagement() {
     });
     const [error, setError] = useState('');
 
-    const { data: users = [] } = useQuery({
+    const { data: users = [], isLoading: usersLoading } = useQuery({
         queryKey: ['platform-users'],
         queryFn: async () => {
             const allUsers = await base44.asServiceRole.entities.AuthUser.list();
             return allUsers.filter(u => u.account_type === 'platform_admin');
-        }
+        },
+        enabled: !loading
     });
 
     const inviteMutation = useMutation({
@@ -89,7 +90,7 @@ export default function PlatformUserManagement() {
         inviteMutation.mutate(inviteForm);
     };
 
-    if (loading) {
+    if (loading || usersLoading) {
         return <div className="flex items-center justify-center h-screen">Loading...</div>;
     }
 
