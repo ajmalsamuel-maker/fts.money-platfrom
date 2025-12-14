@@ -33,8 +33,14 @@ export default function PlatformUserManagement() {
     const { data: users = [], isLoading: usersLoading } = useQuery({
         queryKey: ['platform-users'],
         queryFn: async () => {
-            const allUsers = await base44.asServiceRole.entities.AuthUser.filter({ account_type: 'platform_admin' });
-            return allUsers || [];
+            const allUsers = await base44.asServiceRole.entities.AuthUser.list();
+            console.log('All users:', allUsers);
+            const filtered = allUsers.filter(u => {
+                const accountType = u.account_type || u.data?.account_type;
+                return accountType === 'platform_admin';
+            });
+            console.log('Filtered users:', filtered);
+            return filtered;
         },
         enabled: !loading
     });
