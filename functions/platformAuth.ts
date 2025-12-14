@@ -76,6 +76,7 @@ Deno.serve(async (req) => {
 
                 // Verify password
                 const isValid = await verifyPassword(password, user.password_hash);
+                console.log('Password verification:', { isValid, providedPassword: password, storedHash: user.password_hash });
                 if (!isValid) {
                     return Response.json({ success: false, error: 'Invalid credentials' }, { status: 401 });
                 }
