@@ -34,7 +34,7 @@ export default function PlatformUserManagement() {
         queryKey: ['platform-users'],
         queryFn: async () => {
             const allUsers = await base44.asServiceRole.entities.AuthUser.list();
-            return allUsers.filter(u => u.account_type === 'platform_admin');
+            return allUsers.filter(u => u.data?.account_type === 'platform_admin');
         },
         enabled: !loading
     });
