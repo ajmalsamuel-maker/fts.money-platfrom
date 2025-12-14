@@ -105,11 +105,11 @@ export function usePlatformAuth(requiredPermissions = []) {
 
         // Check if user has required permissions
         if (requiredPermissions.length > 0) {
-            const hasPermission = requiredPermissions.every(permission => 
-                hasPermission(session.role, permission)
+            const hasAllPermissions = requiredPermissions.every(permission => 
+                hasPermission(session.platform_role, permission)
             );
             
-            if (!hasPermission) {
+            if (!hasAllPermissions) {
                 navigate(createPageUrl('FTSMoneyPlatform')); // Redirect to dashboard
             }
         }
