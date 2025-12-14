@@ -62,17 +62,17 @@ Deno.serve(async (req) => {
                 }
 
                 // Find user
-                const users = await base44.asServiceRole.entities.AuthUser.filter({ 
-                    email,
-                    account_type: 'platform_admin'
-                });
+                const users = await base44.asServiceRole.entities.AuthUser.filter({ email });
+                console.log('Found users:', users.length, users.map(u => ({ email: u.email, account_type: u.account_type })));
+                
+                const platformUsers = users.filter(u => u.account_type === 'platform_admin');
 
-                if (users.length === 0) {
+                if (platformUsers.length === 0) {
                     return Response.json({ success: false, error: 'User not found' }, { status: 401 });
                 }
 
                 // Sort by created_date descending and take the most recent one
-                const user = users.sort((a, b) => new Date(b.created_date) - new Date(a.created_date))[0];
+                const user = platformUsers.sort((a, b) => new Date(b.created_date) - new Date(a.created_date))[0];
 
                 // Verify password
                 const isValid = await verifyPassword(password, user.password_hash);
