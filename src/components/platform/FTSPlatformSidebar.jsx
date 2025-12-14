@@ -19,7 +19,8 @@ import {
     FileText,
     Activity,
     BookOpen,
-    Plus
+    Plus,
+    LogOut
 } from 'lucide-react';
 
 const menuItems = [
@@ -110,7 +111,17 @@ export default function FTSPlatformSidebar({ currentPage, userRole, userEmail })
             </nav>
 
             {/* Footer */}
-            <div className="border-t border-slate-200 p-4">
+            <div className="border-t border-slate-200 p-4 space-y-3">
+                <button
+                    onClick={() => {
+                        localStorage.removeItem('platform_admin_session');
+                        window.location.href = '/PlatformAdminLogin';
+                    }}
+                    className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
+                >
+                    <LogOut className="h-4 w-4" />
+                    Logout
+                </button>
                 <div className="text-xs text-slate-500">
                     <p className="font-medium">Platform Status</p>
                     <div className="flex items-center gap-2 mt-2">
