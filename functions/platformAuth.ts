@@ -40,7 +40,6 @@ Deno.serve(async (req) => {
                 const user = await base44.asServiceRole.entities.AuthUser.create({
                     email,
                     full_name: full_name || email.split('@')[0],
-                    role: 'admin',
                     password_hash: hashedPassword,
                     platform_role: role,
                     account_type: 'platform_admin'
