@@ -9,24 +9,27 @@ Deno.serve(async (req) => {
     try {
         const { action, psp_code, owner_email, visibility, template_source } = await req.json();
 
-        // Ensure columns exist
-        await sql.unsafe(`
-            DO $$ 
-            BEGIN
-                IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='psp_settings' AND column_name='owner_email') THEN
-                    ALTER TABLE psp_settings ADD COLUMN owner_email TEXT;
-                END IF;
-                IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='psp_settings' AND column_name='is_template') THEN
-                    ALTER TABLE psp_settings ADD COLUMN is_template BOOLEAN DEFAULT false;
-                END IF;
-                IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='psp_settings' AND column_name='visibility') THEN
-                    ALTER TABLE psp_settings ADD COLUMN visibility TEXT DEFAULT 'private';
-                END IF;
-                IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='psp_settings' AND column_name='template_source') THEN
-                    ALTER TABLE psp_settings ADD COLUMN template_source TEXT;
-                END IF;
-            END $$;
-        `);
+        const client = await pool.connect();
+        
+        try {
+            // Ensure columns exist
+            await client.query(`
+                DO $$ 
+                BEGIN
+                    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='psp_settings' AND column_name='owner_email') THEN
+                        ALTER TABLE psp_settings ADD COLUMN owner_email TEXT;
+                    END IF;
+                    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='psp_settings' AND column_name='is_template') THEN
+                        ALTER TABLE psp_settings ADD COLUMN is_template BOOLEAN DEFAULT false;
+                    END IF;
+                    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='psp_settings' AND column_name='visibility') THEN
+                        ALTER TABLE psp_settings ADD COLUMN visibility TEXT DEFAULT 'private';
+                    END IF;
+                    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='psp_settings' AND column_name='template_source') THEN
+                        ALTER TABLE psp_settings ADD COLUMN template_source TEXT;
+                    END IF;
+                END $$;
+            `);
 
         switch (action) {
             case 'markAsTemplate':
