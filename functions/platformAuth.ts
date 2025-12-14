@@ -55,6 +55,17 @@ Deno.serve(async (req) => {
                 });
             }
 
+            case 'listPlatformUsers': {
+                // List all platform admin users
+                const allUsers = await base44.asServiceRole.entities.AuthUser.list();
+                const platformUsers = allUsers.filter(u => u.account_type === 'platform_admin');
+                
+                return Response.json({
+                    success: true,
+                    users: platformUsers
+                });
+            }
+
             case 'login': {
                 // Login platform admin
                 if (!email || !password) {
