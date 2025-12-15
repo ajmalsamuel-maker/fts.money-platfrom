@@ -50,14 +50,22 @@ export default function Dashboard() {
     const [helpOpen, setHelpOpen] = useState(false);
     const { t, language } = useTranslation();
 
+    // Get current PSP session
+    const sessionData = localStorage.getItem('staff_session');
+    const session = sessionData ? JSON.parse(sessionData) : null;
+    const userPspCode = session?.psp_code;
+
+    // Filter data by PSP code
     const { data: transactions = [] } = useQuery({
-        queryKey: ['transactions'],
-        queryFn: () => base44.entities.Transaction.list('-created_date', 10),
+        queryKey: ['transactions', userPspCode],
+        queryFn: () => base44.entities.Transaction.filter({ psp_code: userPspCode }, '-created_date', 10),
+        enabled: !!userPspCode
     });
 
     const { data: merchants = [] } = useQuery({
-        queryKey: ['merchants'],
-        queryFn: () => base44.entities.Merchant.list(),
+        queryKey: ['merchants', userPspCode],
+        queryFn: () => base44.entities.Merchant.filter({ psp_code: userPspCode }),
+        enabled: !!userPspCode
     });
 
     // Separate crypto and fiat transactions
