@@ -1,4 +1,5 @@
 import pg from 'npm:pg@8.11.3';
+import bcrypt from 'npm:bcrypt@5.1.1';
 
 const { Pool } = pg;
 
@@ -100,6 +101,25 @@ Deno.serve(async (req) => {
                 const user = result.rows[0];
 
                 if (!user || user.status !== 'active') {
+                    return Response.json({
+                        success: false,
+                        error: 'Invalid credentials'
+                    });
+                }
+
+                // Verify password
+                const passwordMatch = await bcrypt.compare(password, user.password_hash);
+                if (!passwordMatch) {
+                    // Log failed attempt
+                    await client.query(`
+                        INSERT INTO audit_logs (action, user_email, details)
+                        VALUES ($1, $2, $3)
+                    `, ['LOGIN_FAILED', email, JSON.stringify({ 
+                        psp_code, 
+                        reason: 'Invalid password',
+                        timestamp: new Date().toISOString()
+                    })]);
+                    
                     return Response.json({
                         success: false,
                         error: 'Invalid credentials'
