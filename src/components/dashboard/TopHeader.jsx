@@ -65,7 +65,6 @@ export default function TopHeader({ onToggleSidebar, collapsed }) {
 
     // Theme settings loaded via PSP settings only
 
-    const staffSession = getStaffSession();
     const [pspSettings, setPspSettings] = useState(null);
     
     useEffect(() => {
@@ -74,7 +73,10 @@ export default function TopHeader({ onToggleSidebar, collapsed }) {
                 const session = getStaffSession();
                 const pspCode = session?.psp_code;
                 
-                if (!pspCode) return;
+                if (!pspCode) {
+                    window.location.href = '/PSPLogin';
+                    return;
+                }
                 
                 const result = await base44.functions.invoke('getPSPSettings', { psp_code: pspCode });
                 if (result.data.success && result.data.settings) {

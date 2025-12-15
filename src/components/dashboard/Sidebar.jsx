@@ -240,25 +240,19 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                 const staffSession = getStaffSession();
                 const pspCode = staffSession?.psp_code;
                 
-                console.log('Loading PSP settings for PSP code:', pspCode);
-                
                 if (!pspCode) {
-                    console.error('No PSP code in session - redirecting to login');
                     window.location.href = '/PSPLogin';
                     return;
                 }
 
-                // Fetch PSP settings from database based on psp_code
                 const result = await base44.functions.invoke('getPSPSettings', { psp_code: pspCode });
-                console.log('PSP settings loaded:', result.data);
                 
                 if (result.data.success && result.data.settings) {
                     setPspSettings(result.data.settings);
-                } else {
-                    console.error('Failed to load PSP settings for code:', pspCode);
                 }
             } catch (err) {
                 console.error('Error loading PSP settings:', err);
+                window.location.href = '/PSPLogin';
             }
         };
         loadPspSettings();

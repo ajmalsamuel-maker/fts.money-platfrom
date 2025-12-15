@@ -50,17 +50,18 @@ export default function Dashboard() {
     const [helpOpen, setHelpOpen] = useState(false);
     const { t, language } = useTranslation();
 
-    // Get current PSP session
+    // Get current PSP session - CRITICAL: Each PSP must be completely isolated
     const sessionData = localStorage.getItem('staff_session');
     const session = sessionData ? JSON.parse(sessionData) : null;
     const userPspCode = session?.psp_code;
 
-    // Redirect if no session
+    // Redirect if no session or PSP code
     React.useEffect(() => {
-        if (!session) {
+        if (!session || !userPspCode) {
+            localStorage.removeItem('staff_session');
             navigate(createPageUrl('PSPLogin'));
         }
-    }, [session, navigate]);
+    }, [session, userPspCode, navigate]);
 
     // Fetch data from isolated PSP schema (PCI Level 1 & GDPR compliant)
     const { data: transactions = [] } = useQuery({
