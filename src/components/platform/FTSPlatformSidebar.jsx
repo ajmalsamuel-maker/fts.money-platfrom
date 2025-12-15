@@ -24,30 +24,65 @@ import {
     Package
 } from 'lucide-react';
 
-const menuItems = [
-    { icon: Building2, label: 'Tenants', path: 'TenantManagement', description: 'Multi-tenancy', new: true, superAdminOnly: true },
-    { icon: Building2, label: 'PSP Instances', path: 'PSPProvisioning', description: 'Manage PSPs' },
-    { icon: Activity, label: 'Provisioning Queue', path: 'FTSProvisioningQueue', description: 'Deploy PSPs', new: true },
-    { icon: Users, label: 'Platform Users', path: 'PlatformUserManagement', description: 'Admin users', new: true },
-    { icon: Users, label: 'PSP Users', path: 'PSPUserManagement', description: 'Manage PSP users' },
-    { icon: BarChart3, label: 'Reports', path: 'FTSReporting', description: 'Advanced reporting', new: true },
-    { icon: BarChart3, label: 'Analytics', path: 'FTSAnalytics', description: 'Cross-PSP metrics' },
-    { icon: DollarSign, label: 'Revenue', path: 'FTSRevenue', description: 'Billing & revenue' },
-    { icon: Users, label: 'Clients', path: 'FTSClients', description: 'Client management' },
-    { icon: Package, label: 'Service Catalog', path: 'FTSServiceManager', description: 'NetXHub services', new: true },
-    { icon: Database, label: 'Provider Pool', path: 'FTSProviderPool', description: 'Payment providers', new: true },
-    { icon: Wallet, label: 'Payout Routes', path: 'FTSPayoutRoutes', description: 'Payout methods', new: true },
-    { icon: Database, label: 'Financial Registries', path: 'FTSFinancialRegistries', description: 'BIN, IBAN, BIC/SWIFT', new: true },
-    { icon: Globe, label: 'Domain & SSL', path: 'FTSDomainManagement', description: 'Domains & certificates', new: true },
-    { icon: Globe, label: 'Blockchain Integration', path: 'FTSBlockchainIntegration', description: 'Crypto rails & ISO', new: true },
-    { icon: Zap, label: 'API Gateway', path: 'APIGatewayConfiguration', description: 'Kong + Orchestration', new: true },
-    { icon: Zap, label: 'Fee Templates', path: 'FTSFeeTemplates', description: 'Pricing templates', new: true },
-    { icon: Users, label: 'Service Providers', path: 'FTSServiceProviders', description: '3rd party providers', new: true },
-    { icon: Shield, label: 'Compliance', path: 'FTSCompliance', description: 'Policy templates', new: true },
-    { icon: FileText, label: 'Audit Logs', path: 'PlatformAuditLogs', description: 'Activity tracking', new: true },
-    { icon: Settings, label: 'Platform Settings', path: 'FTSSettings', description: 'Configuration' },
-    { icon: BookOpen, label: 'Architecture Docs', path: 'FTSArchitectureDoc', description: 'System blueprint', new: true },
-    { icon: Package, label: 'Product Catalog', path: 'CommunityProductCatalog', description: 'Community products', new: true }
+const menuSections = [
+    {
+        title: 'Core Management',
+        items: [
+            { icon: Building2, label: 'Tenants', path: 'TenantManagement', description: 'Multi-tenancy', superAdminOnly: true },
+            { icon: Building2, label: 'PSP Instances', path: 'PSPProvisioning', description: 'Manage PSPs' },
+            { icon: Activity, label: 'Provisioning Queue', path: 'FTSProvisioningQueue', description: 'Deploy PSPs' },
+            { icon: Users, label: 'Platform Users', path: 'PlatformUserManagement', description: 'Admin users' },
+            { icon: Users, label: 'PSP Users', path: 'PSPUserManagement', description: 'PSP access' },
+            { icon: Users, label: 'Clients', path: 'FTSClients', description: 'Client accounts' }
+        ]
+    },
+    {
+        title: 'Analytics & Reporting',
+        items: [
+            { icon: BarChart3, label: 'Analytics', path: 'FTSAnalytics', description: 'Cross-PSP metrics' },
+            { icon: FileText, label: 'Reports', path: 'FTSReporting', description: 'Advanced reporting' },
+            { icon: DollarSign, label: 'Revenue', path: 'FTSRevenue', description: 'Billing & revenue' }
+        ]
+    },
+    {
+        title: 'Marketplace & Services',
+        items: [
+            { icon: Package, label: 'Service Catalog', path: 'FTSServiceManager', description: 'NetXHub services' },
+            { icon: Users, label: 'Service Providers', path: 'FTSServiceProviders', description: '3rd party providers' },
+            { icon: Package, label: 'Product Catalog', path: 'CommunityProductCatalog', description: 'Community products' },
+            { icon: Database, label: 'Provider Pool', path: 'FTSProviderPool', description: 'Payment providers' },
+            { icon: Wallet, label: 'Payout Routes', path: 'FTSPayoutRoutes', description: 'Payout methods' }
+        ]
+    },
+    {
+        title: 'Infrastructure',
+        items: [
+            { icon: Zap, label: 'API Gateway', path: 'APIGatewayConfiguration', description: 'Kong + Orchestration' },
+            { icon: Globe, label: 'Domain & SSL', path: 'FTSDomainManagement', description: 'Domains & certificates' },
+            { icon: Globe, label: 'Blockchain', path: 'FTSBlockchainIntegration', description: 'Crypto rails & ISO' },
+            { icon: Database, label: 'Financial Registries', path: 'FTSFinancialRegistries', description: 'BIN, IBAN, BIC/SWIFT' }
+        ]
+    },
+    {
+        title: 'Financial Management',
+        items: [
+            { icon: Zap, label: 'Fee Templates', path: 'FTSFeeTemplates', description: 'Pricing templates' }
+        ]
+    },
+    {
+        title: 'Compliance & Security',
+        items: [
+            { icon: Shield, label: 'Compliance', path: 'FTSCompliance', description: 'Policy templates' },
+            { icon: FileText, label: 'Audit Logs', path: 'PlatformAuditLogs', description: 'Activity tracking' }
+        ]
+    },
+    {
+        title: 'System',
+        items: [
+            { icon: Settings, label: 'Platform Settings', path: 'FTSSettings', description: 'Configuration' },
+            { icon: BookOpen, label: 'Architecture Docs', path: 'FTSArchitectureDoc', description: 'System blueprint' }
+        ]
+    }
 ];
 
 export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, isSuperAdmin }) {
@@ -83,32 +118,40 @@ export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, i
 
             {/* Menu */}
             <nav className="flex-1 overflow-y-auto p-3">
-                <div className="space-y-1">
-                    {menuItems.filter(item => !item.superAdminOnly || isSuperAdmin).map((item) => {
-                        const Icon = item.icon;
-                        const isActive = currentPage === item.path;
-                        return (
-                            <Link
-                                key={item.path}
-                                to={createPageUrl(item.path)}
-                                className={cn(
-                                    "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group",
-                                    isActive
-                                        ? "bg-blue-50 text-blue-700"
-                                        : "text-slate-700 hover:bg-slate-50"
-                                )}
-                            >
-                                <Icon className="h-5 w-5 flex-shrink-0" />
-                                <div className="flex-1">
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-sm font-medium">{item.label}</span>
-                                        {item.new && <Badge variant="secondary" className="text-[10px] px-1 py-0">NEW</Badge>}
-                                    </div>
-                                    <p className="text-xs text-slate-500">{item.description}</p>
-                                </div>
-                            </Link>
-                        );
-                    })}
+                <div className="space-y-5">
+                    {menuSections.map((section) => (
+                        <div key={section.title}>
+                            <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider px-3 mb-2">
+                                {section.title}
+                            </h3>
+                            <div className="space-y-1">
+                                {section.items.filter(item => !item.superAdminOnly || isSuperAdmin).map((item) => {
+                                    const Icon = item.icon;
+                                    const isActive = currentPage === item.path;
+                                    return (
+                                        <Link
+                                            key={item.path}
+                                            to={createPageUrl(item.path)}
+                                            className={cn(
+                                                "flex items-center gap-3 px-3 py-2 rounded-lg transition-all group",
+                                                isActive
+                                                    ? "bg-blue-50 text-blue-700"
+                                                    : "text-slate-700 hover:bg-slate-50"
+                                            )}
+                                        >
+                                            <Icon className="h-4 w-4 flex-shrink-0" />
+                                            <div className="flex-1 min-w-0">
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-sm font-medium truncate">{item.label}</span>
+                                                </div>
+                                                <p className="text-xs text-slate-500 truncate">{item.description}</p>
+                                            </div>
+                                        </Link>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </nav>
 
