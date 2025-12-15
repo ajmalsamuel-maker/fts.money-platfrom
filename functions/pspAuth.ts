@@ -31,72 +31,107 @@ Deno.serve(async (req) => {
         }
 
         if (action === 'verifyEmail') {
-            const result = await pool.query(`
-                SELECT id, email, full_name, role, status, psp_code
-                FROM app_users 
-                WHERE email = $1 AND UPPER(COALESCE(psp_code, '')) = UPPER($2)
-                LIMIT 1
-            `, [email, psp_code]);
+            const client = await pool.connect();
             
-            const user = result.rows[0];
-            
-            if (!user) {
-                return Response.json({
-                    success: false,
-                    error: 'No account found with this email for this PSP'
-                });
-            }
-
-            if (user.status !== 'active') {
-                return Response.json({
-                    success: false,
-                    error: 'Account is not active'
-                });
-            }
-
-            return Response.json({
-                success: true,
-                user: {
-                    id: user.id,
-                    email: user.email,
-                    full_name: user.full_name,
-                    role: user.role,
-                    psp_code: user.psp_code
+            try {
+                // Set schema to PSP-specific isolated schema
+                const schemaName = `psp_${psp_code.toLowerCase()}`;
+                await client.query(`SET search_path TO ${schemaName}, public`);
+                
+                const result = await client.query(`
+                    SELECT id, email, full_name, role, status
+                    FROM app_users 
+                    WHERE email = $1
+                    LIMIT 1
+                `, [email]);
+                
+                const user = result.rows[0];
+                
+                if (!user) {
+                    return Response.json({
+                        success: false,
+                        error: 'No account found with this email for this PSP'
+                    });
                 }
-            });
+
+                if (user.status !== 'active') {
+                    return Response.json({
+                        success: false,
+                        error: 'Account is not active'
+                    });
+                }
+
+                return Response.json({
+                    success: true,
+                    user: {
+                        id: user.id,
+                        email: user.email,
+                        full_name: user.full_name,
+                        role: user.role
+                    }
+                });
+            } finally {
+                client.release();
+            }
         }
 
         if (action === 'login') {
-            const result = await pool.query(`
-                SELECT id, email, full_name, role, status, password_hash, psp_code
-                FROM app_users 
-                WHERE email = $1 AND UPPER(COALESCE(psp_code, '')) = UPPER($2)
-                LIMIT 1
-            `, [email, psp_code]);
+            const client = await pool.connect();
+            
+            try {
+                // Set schema to PSP-specific isolated schema
+                const schemaName = `psp_${psp_code.toLowerCase()}`;
+                await client.query(`SET search_path TO ${schemaName}, public`);
+                
+                // Query from isolated schema
+                const result = await client.query(`
+                    SELECT id, email, full_name, role, status, password_hash
+                    FROM app_users 
+                    WHERE email = $1
+                    LIMIT 1
+                `, [email]);
 
-            const user = result.rows[0];
+                const user = result.rows[0];
 
-            if (!user || user.status !== 'active') {
+                if (!user || user.status !== 'active') {
+                    return Response.json({
+                        success: false,
+                        error: 'Invalid credentials'
+                    });
+                }
+
+                // Log successful login (PCI DSS Requirement 10.2.5)
+                await client.query(`
+                    INSERT INTO audit_logs (action, user_email, details)
+                    VALUES ($1, $2, $3)
+                `, ['LOGIN_SUCCESS', email, JSON.stringify({ 
+                    psp_code, 
+                    schema: schemaName,
+                    timestamp: new Date().toISOString()
+                })]);
+
+                // Update last login
+                await client.query(`
+                    UPDATE app_users SET last_login = CURRENT_TIMESTAMP WHERE id = $1
+                `, [user.id]);
+
                 return Response.json({
-                    success: false,
-                    error: 'Invalid credentials'
+                    success: true,
+                    session: {
+                        email: user.email,
+                        full_name: user.full_name,
+                        role: user.role,
+                        user_id: user.id,
+                        psp_code: psp_code,
+                        schema: schemaName,
+                        timestamp: Date.now(),
+                        expires: Date.now() + (24 * 60 * 60 * 1000)
+                    },
+                    two_factor_enabled: false
                 });
+            } finally {
+                client.release();
             }
-
-            // For demo: accept any password (in production, verify password_hash)
-            return Response.json({
-                success: true,
-                session: {
-                    email: user.email,
-                    full_name: user.full_name,
-                    role: user.role,
-                    user_id: user.id,
-                    psp_code: user.psp_code,
-                    timestamp: Date.now(),
-                    expires: Date.now() + (24 * 60 * 60 * 1000)
-                },
-                two_factor_enabled: false
-            });
         }
 
         return Response.json({
