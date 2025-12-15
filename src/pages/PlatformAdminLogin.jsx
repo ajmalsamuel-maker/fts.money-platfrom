@@ -47,21 +47,42 @@ export default function PlatformAdminLogin() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center p-6">
-            <div className="w-full max-w-md">
+        <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden bg-white">
+            {/* FTS.Money Wave Background - Bottom */}
+            <div className="absolute bottom-0 left-0 right-0 h-1/3">
+                <svg className="absolute bottom-0 w-full h-full" viewBox="0 0 1440 320" preserveAspectRatio="none">
+                    <path fill="url(#wave-gradient)" fillOpacity="1" d="M0,192L48,197.3C96,203,192,213,288,229.3C384,245,480,267,576,250.7C672,235,768,181,864,181.3C960,181,1056,235,1152,234.7C1248,235,1344,181,1392,154.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+                    <defs>
+                        <linearGradient id="wave-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" style={{ stopColor: '#0066CC', stopOpacity: 0.8 }} />
+                            <stop offset="50%" style={{ stopColor: '#00BFFF', stopOpacity: 0.8 }} />
+                            <stop offset="100%" style={{ stopColor: '#87CEEB', stopOpacity: 0.7 }} />
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+            
+            <div className="w-full max-w-md relative z-10">
                 <div className="text-center mb-8">
-                    <img 
-                        src={FTS_LOGOS.symbol} 
-                        alt="FTS.Money" 
-                        className="h-16 w-16 mx-auto mb-4"
-                    />
-                    <h1 className="text-3xl font-bold text-white mb-2" style={{ fontFamily: 'Montserrat, sans-serif' }}>
-                        FTS.Money Platform
-                    </h1>
-                    <p className="text-blue-200">Control Panel Administration</p>
+                    <div className="inline-flex flex-col items-center gap-4 mb-4">
+                        <img 
+                            src={FTS_LOGOS.symbol} 
+                            alt="FTS.Money" 
+                            className="h-32 w-32 object-contain"
+                        />
+                        <div>
+                            <h1 className="text-3xl font-bold text-white" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                                FTS.Money Platform
+                            </h1>
+                            <p className="text-lg mt-1" style={{ color: FTS_COLORS.aqua }}>
+                                Fluid global payments
+                            </p>
+                        </div>
+                    </div>
+                    <p className="text-slate-700 text-lg font-medium">Control Panel Administration</p>
                 </div>
 
-                <Card className="border-2 border-blue-400/20 bg-white/95 backdrop-blur">
+                <Card className="bg-white/95 backdrop-blur border-slate-200 shadow-xl">
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                             <Shield className="h-5 w-5 text-blue-600" />
@@ -102,10 +123,11 @@ export default function PlatformAdminLogin() {
 
                             <Button 
                                 type="submit" 
-                                className="w-full bg-blue-600 hover:bg-blue-700"
+                                className="w-full text-white"
+                                style={{ background: FTS_GRADIENTS.dark1 }}
                             >
-                                <Lock className="h-4 w-4 mr-2" />
                                 Sign In to Control Panel
+                                <ArrowRight className="h-4 w-4 ml-2" />
                             </Button>
 
                             <p className="text-center text-sm text-slate-600 mt-4">
@@ -119,9 +141,13 @@ export default function PlatformAdminLogin() {
                                 </button>
                             </p>
                         </form>
-                    </CardContent>
-                </Card>
-            </div>
-        </div>
-    );
-}
+                        </CardContent>
+                        </Card>
+
+                        <p className="text-center text-slate-600 text-sm mt-6" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                        © 2025 FTS.Money - Fluid global payments
+                        </p>
+                        </div>
+                        </div>
+                        );
+                        }
