@@ -100,15 +100,14 @@ export default function PSPLogin() {
             console.log('Login successful, storing session with PSP code:', data.session.psp_code);
             console.log('Session data:', data.session);
             
-            // Clear all storage first to prevent any cache issues
-            localStorage.clear();
-            sessionStorage.clear();
+            // Remove any old session data only
+            localStorage.removeItem('staff_session');
             
             // Set new session
             localStorage.setItem('staff_session', JSON.stringify(data.session));
             
-            // Force hard reload to clear any cached data
-            window.location.href = '/Dashboard';
+            // Force navigation
+            window.location.replace('/Dashboard');
         } catch (err) {
             setError(err.message || 'Login failed');
             setIsLoading(false);
