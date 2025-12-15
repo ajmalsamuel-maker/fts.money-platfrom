@@ -51,37 +51,19 @@ export default function Dashboard() {
     const { t, language } = useTranslation();
 
     // Get current PSP session - CRITICAL: Each PSP must be completely isolated
-    const [session, setSession] = useState(null);
-    const [loading, setLoading] = useState(true);
-
-    React.useEffect(() => {
-        const sessionData = localStorage.getItem('staff_session');
-        if (!sessionData) {
-            navigate(createPageUrl('PSPLogin'));
-            return;
-        }
-        
-        try {
-            const parsedSession = JSON.parse(sessionData);
-            console.log('Dashboard loaded with session:', parsedSession);
-            
-            if (!parsedSession.psp_code) {
-                console.error('No PSP code in session');
-                navigate(createPageUrl('PSPLogin'));
-                return;
-            }
-            
-            setSession(parsedSession);
-            setLoading(false);
-        } catch (err) {
-            console.error('Failed to parse session:', err);
-            navigate(createPageUrl('PSPLogin'));
-        }
-    }, [navigate]);
-
+    const sessionData = localStorage.getItem('staff_session');
+    const session = sessionData ? JSON.parse(sessionData) : null;
     const userPspCode = session?.psp_code;
 
-    if (loading || !session) {
+    // Only redirect if no session (don't run on every render)
+    React.useEffect(() => {
+        if (!sessionData) {
+            window.location.href = '/PSPLogin';
+        }
+    }, []); // Empty dependency array - only run once on mount
+
+    // Show loading while checking session
+    if (!session || !userPspCode) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-slate-50">
                 <div className="text-center">
