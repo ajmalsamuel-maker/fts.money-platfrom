@@ -55,16 +55,24 @@ export default function Dashboard() {
     const session = sessionData ? JSON.parse(sessionData) : null;
     const userPspCode = session?.psp_code;
 
-    // Filter data by PSP code
+    // Redirect if no session
+    React.useEffect(() => {
+        if (!session) {
+            navigate(createPageUrl('PSPLogin'));
+        }
+    }, [session, navigate]);
+
+    // Data is automatically isolated by schema - no need for psp_code filter
+    // Each PSP has its own database schema for PCI/GDPR compliance
     const { data: transactions = [] } = useQuery({
         queryKey: ['transactions', userPspCode],
-        queryFn: () => base44.entities.Transaction.filter({ psp_code: userPspCode }, '-created_date', 10),
+        queryFn: () => base44.entities.Transaction.list('-created_date', 10),
         enabled: !!userPspCode
     });
 
     const { data: merchants = [] } = useQuery({
         queryKey: ['merchants', userPspCode],
-        queryFn: () => base44.entities.Merchant.filter({ psp_code: userPspCode }),
+        queryFn: () => base44.entities.Merchant.list(),
         enabled: !!userPspCode
     });
 
