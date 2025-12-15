@@ -177,6 +177,30 @@ Deno.serve(async (req) => {
             });
         }
 
+        // Manually create BIN
+        if (action === 'create') {
+            const { binData } = await req.json();
+            
+            // Check if BIN already exists
+            const existing = await base44.asServiceRole.entities.BIN.filter({ bin: binData.bin });
+            if (existing.length > 0) {
+                return Response.json({ 
+                    success: false, 
+                    error: 'BIN already exists' 
+                }, { status: 400 });
+            }
+
+            const created = await base44.asServiceRole.entities.BIN.create({
+                ...binData,
+                status: binData.status || 'active'
+            });
+
+            return Response.json({ 
+                success: true, 
+                data: created 
+            });
+        }
+
         return Response.json({ 
             error: 'Invalid action' 
         }, { status: 400 });

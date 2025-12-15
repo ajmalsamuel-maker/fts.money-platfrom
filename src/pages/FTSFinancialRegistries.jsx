@@ -40,6 +40,18 @@ export default function FTSFinancialRegistries() {
     const [lookupBIC, setLookupBIC] = useState('');
     const [selectedBin, setSelectedBin] = useState(null);
     const [editDialogOpen, setEditDialogOpen] = useState(false);
+    const [addBinDialogOpen, setAddBinDialogOpen] = useState(false);
+    const [newBinData, setNewBinData] = useState({
+        bin: '',
+        scheme: '',
+        type: '',
+        brand: '',
+        bank_name: '',
+        bank_city: '',
+        country: '',
+        country_name: '',
+        status: 'active'
+    });
 
     // BIN queries
     const { data: bins = [], isLoading: binsLoading } = useQuery({
@@ -93,6 +105,33 @@ export default function FTSFinancialRegistries() {
             setEditDialogOpen(false);
         },
         onError: () => toast.error('Failed to update BIN')
+    });
+
+    const createBinMutation = useMutation({
+        mutationFn: async (binData) => {
+            const response = await base44.functions.invoke('binLookup', { 
+                action: 'create',
+                binData
+            });
+            return response.data;
+        },
+        onSuccess: () => {
+            toast.success('BIN added successfully');
+            queryClient.invalidateQueries(['bins']);
+            setAddBinDialogOpen(false);
+            setNewBinData({
+                bin: '',
+                scheme: '',
+                type: '',
+                brand: '',
+                bank_name: '',
+                bank_city: '',
+                country: '',
+                country_name: '',
+                status: 'active'
+            });
+        },
+        onError: (error) => toast.error('Failed to add BIN: ' + (error.message || 'Unknown error'))
     });
 
     // IBAN validation
@@ -262,6 +301,13 @@ export default function FTSFinancialRegistries() {
                                         >
                                             {bulkImportBinsMutation.isPending ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Upload className="h-4 w-4 mr-2" />}
                                             Import Common BINs
+                                        </Button>
+                                        <Button 
+                                            onClick={() => setAddBinDialogOpen(true)}
+                                            className="bg-emerald-600 hover:bg-emerald-700"
+                                        >
+                                            <CreditCard className="h-4 w-4 mr-2" />
+                                            Add BIN Manually
                                         </Button>
                                     </div>
                                     <p className="text-xs text-slate-500">Fetches from binlist.net API and stores in registry</p>
@@ -618,6 +664,120 @@ export default function FTSFinancialRegistries() {
                     </Tabs>
                 </div>
             </div>
+
+            {/* Add BIN Dialog */}
+            <Dialog open={addBinDialogOpen} onOpenChange={setAddBinDialogOpen}>
+                <DialogContent className="max-w-2xl">
+                    <DialogHeader>
+                        <DialogTitle>Add BIN Manually</DialogTitle>
+                    </DialogHeader>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <Label>BIN Number *</Label>
+                            <Input
+                                placeholder="6-8 digits"
+                                value={newBinData.bin}
+                                onChange={(e) => setNewBinData({...newBinData, bin: e.target.value.replace(/\D/g, '').slice(0, 8)})}
+                                maxLength={8}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Scheme</Label>
+                            <Select value={newBinData.scheme} onValueChange={(value) => setNewBinData({...newBinData, scheme: value})}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select scheme" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="visa">Visa</SelectItem>
+                                    <SelectItem value="mastercard">Mastercard</SelectItem>
+                                    <SelectItem value="amex">American Express</SelectItem>
+                                    <SelectItem value="discover">Discover</SelectItem>
+                                    <SelectItem value="jcb">JCB</SelectItem>
+                                    <SelectItem value="unionpay">UnionPay</SelectItem>
+                                    <SelectItem value="diners club">Diners Club</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Type</Label>
+                            <Select value={newBinData.type} onValueChange={(value) => setNewBinData({...newBinData, type: value})}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select type" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="debit">Debit</SelectItem>
+                                    <SelectItem value="credit">Credit</SelectItem>
+                                    <SelectItem value="prepaid">Prepaid</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Brand</Label>
+                            <Input
+                                placeholder="e.g., Classic, Platinum"
+                                value={newBinData.brand}
+                                onChange={(e) => setNewBinData({...newBinData, brand: e.target.value})}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Bank Name</Label>
+                            <Input
+                                placeholder="Issuing bank name"
+                                value={newBinData.bank_name}
+                                onChange={(e) => setNewBinData({...newBinData, bank_name: e.target.value})}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Bank City</Label>
+                            <Input
+                                placeholder="City"
+                                value={newBinData.bank_city}
+                                onChange={(e) => setNewBinData({...newBinData, bank_city: e.target.value})}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Country Code</Label>
+                            <Input
+                                placeholder="e.g., US, GB, DE"
+                                value={newBinData.country}
+                                onChange={(e) => setNewBinData({...newBinData, country: e.target.value.toUpperCase().slice(0, 2)})}
+                                maxLength={2}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Country Name</Label>
+                            <Input
+                                placeholder="e.g., United States"
+                                value={newBinData.country_name}
+                                onChange={(e) => setNewBinData({...newBinData, country_name: e.target.value})}
+                            />
+                        </div>
+                        <div className="space-y-2 col-span-2">
+                            <Label>Status</Label>
+                            <Select value={newBinData.status} onValueChange={(value) => setNewBinData({...newBinData, status: value})}>
+                                <SelectTrigger>
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="active">Active</SelectItem>
+                                    <SelectItem value="inactive">Inactive</SelectItem>
+                                    <SelectItem value="blocked">Blocked</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setAddBinDialogOpen(false)}>Cancel</Button>
+                        <Button 
+                            onClick={() => createBinMutation.mutate(newBinData)}
+                            disabled={createBinMutation.isPending || !newBinData.bin || newBinData.bin.length < 6}
+                        >
+                            {createBinMutation.isPending ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
+                            Add BIN
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
 
             {/* Edit BIN Dialog */}
             <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
