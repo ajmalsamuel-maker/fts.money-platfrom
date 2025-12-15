@@ -58,7 +58,7 @@ export default function PlatformAdminLogin() {
                     <h1 className="text-3xl font-bold text-white mb-2" style={{ fontFamily: 'Montserrat, sans-serif' }}>
                         FTS.Money Platform
                     </h1>
-                    <p className="text-blue-200">Control Plane Administration</p>
+                    <p className="text-blue-200">Control Panel Administration</p>
                 </div>
 
                 <Card className="border-2 border-blue-400/20 bg-white/95 backdrop-blur">
@@ -105,7 +105,7 @@ export default function PlatformAdminLogin() {
                                 className="w-full bg-blue-600 hover:bg-blue-700"
                             >
                                 <Lock className="h-4 w-4 mr-2" />
-                                Sign In to Control Plane
+                                Sign In to Control Panel
                             </Button>
 
                             <p className="text-center text-sm text-slate-600 mt-4">
