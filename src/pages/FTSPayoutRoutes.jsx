@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
     Dialog,
     DialogContent,
@@ -30,7 +31,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { Plus, Wallet, Edit, Trash2, MoreVertical } from 'lucide-react';
+import { Plus, Wallet, Edit, Trash2, MoreVertical, DollarSign, Save } from 'lucide-react';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -44,6 +45,8 @@ export default function FTSPayoutRoutes() {
     const { platformUser, loading } = usePlatformAuth();
     const [showDialog, setShowDialog] = useState(false);
     const [editingRoute, setEditingRoute] = useState(null);
+    const [activeTab, setActiveTab] = useState('pool');
+    const [editedPrices, setEditedPrices] = useState({});
     const [formData, setFormData] = useState({
         route_name: '',
         channel_type: 'bank_transfer',
@@ -87,6 +90,18 @@ export default function FTSPayoutRoutes() {
         onSuccess: () => queryClient.invalidateQueries(['payout-routes'])
     });
 
+    const updatePricingMutation = useMutation({
+        mutationFn: async (updates) => {
+            await Promise.all(updates.map(({ id, cost_percentage, cost_fixed }) =>
+                base44.entities.PayoutRoute.update(id, { cost_percentage, cost_fixed })
+            ));
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries(['payout-routes']);
+            setEditedPrices({});
+        }
+    });
+
     const resetForm = () => {
         setShowDialog(false);
         setEditingRoute(null);
@@ -105,6 +120,18 @@ export default function FTSPayoutRoutes() {
         } else {
             createMutation.mutate(formData);
         }
+    };
+
+    const handleSavePricing = () => {
+        const updates = Object.entries(editedPrices).map(([routeId, prices]) => {
+            const route = routes.find(r => r.id === routeId);
+            return {
+                id: routeId,
+                cost_percentage: prices.cost_percentage ?? route.cost_percentage ?? 0,
+                cost_fixed: prices.cost_fixed ?? route.cost_fixed ?? 0
+            };
+        });
+        updatePricingMutation.mutate(updates);
     };
 
     if (loading) {
@@ -142,7 +169,22 @@ export default function FTSPayoutRoutes() {
                 </header>
 
                 <div className="p-6">
-                    <Card>
+                    <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+                        <div className="flex items-center justify-between">
+                            <TabsList>
+                                <TabsTrigger value="pool">Payout Routes</TabsTrigger>
+                                <TabsTrigger value="pricing">Pricing Matrix</TabsTrigger>
+                            </TabsList>
+                            {activeTab === 'pricing' && Object.keys(editedPrices).length > 0 && (
+                                <Button onClick={handleSavePricing} className="bg-blue-600 hover:bg-blue-700">
+                                    <Save className="h-4 w-4 mr-2" />
+                                    Save Pricing Changes ({Object.keys(editedPrices).length})
+                                </Button>
+                            )}
+                        </div>
+
+                        <TabsContent value="pool">
+                            <Card>
                         <CardHeader>
                             <CardTitle>All Payout Routes ({routes.length})</CardTitle>
                         </CardHeader>
@@ -210,8 +252,98 @@ export default function FTSPayoutRoutes() {
                                     })}
                                 </TableBody>
                             </Table>
-                        </CardContent>
-                    </Card>
+                            </CardContent>
+                        </Card>
+                        </TabsContent>
+
+                        <TabsContent value="pricing">
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle className="flex items-center gap-2">
+                                        <DollarSign className="h-5 w-5" />
+                                        Master Pricing Matrix - Payout Routes
+                                    </CardTitle>
+                                    <p className="text-sm text-slate-600">Manage payout costs for all routes</p>
+                                </CardHeader>
+                                <CardContent>
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow>
+                                                <TableHead>Route Name</TableHead>
+                                                <TableHead>Channel Type</TableHead>
+                                                <TableHead>Provider</TableHead>
+                                                <TableHead>Cost %</TableHead>
+                                                <TableHead>Fixed Cost</TableHead>
+                                                <TableHead>Speed</TableHead>
+                                                <TableHead>Status</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {routes.map((route) => {
+                                                const editedPrice = editedPrices[route.id];
+                                                const costPercentage = editedPrice?.cost_percentage ?? route.cost_percentage ?? 0;
+                                                const costFixed = editedPrice?.cost_fixed ?? route.cost_fixed ?? 0;
+
+                                                return (
+                                                    <TableRow key={route.id}>
+                                                        <TableCell className="font-medium">{route.route_name}</TableCell>
+                                                        <TableCell>
+                                                            <Badge variant="outline">{route.channel_type?.replace('_', ' ')}</Badge>
+                                                        </TableCell>
+                                                        <TableCell>{route.provider}</TableCell>
+                                                        <TableCell>
+                                                            <div className="flex items-center gap-2">
+                                                                <Input
+                                                                    type="number"
+                                                                    step="0.01"
+                                                                    value={costPercentage}
+                                                                    onChange={(e) => setEditedPrices({
+                                                                        ...editedPrices,
+                                                                        [route.id]: {
+                                                                            ...editedPrices[route.id],
+                                                                            cost_percentage: parseFloat(e.target.value) || 0
+                                                                        }
+                                                                    })}
+                                                                    className="w-24"
+                                                                />
+                                                                <span className="text-sm text-slate-600">%</span>
+                                                            </div>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <div className="flex items-center gap-2">
+                                                                <span className="text-sm text-slate-600">$</span>
+                                                                <Input
+                                                                    type="number"
+                                                                    step="0.01"
+                                                                    value={costFixed}
+                                                                    onChange={(e) => setEditedPrices({
+                                                                        ...editedPrices,
+                                                                        [route.id]: {
+                                                                            ...editedPrices[route.id],
+                                                                            cost_fixed: parseFloat(e.target.value) || 0
+                                                                        }
+                                                                    })}
+                                                                    className="w-24"
+                                                                />
+                                                            </div>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <Badge variant="secondary">{route.speed?.replace('_', ' ')}</Badge>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <Badge className={route.status === 'active' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-700'}>
+                                                                {route.status}
+                                                            </Badge>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                );
+                                            })}
+                                        </TableBody>
+                                    </Table>
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
+                    </Tabs>
                 </div>
             </div>
 

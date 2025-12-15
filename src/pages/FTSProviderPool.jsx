@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
     Dialog,
     DialogContent,
@@ -41,7 +42,9 @@ import {
     Bitcoin,
     Edit,
     Trash2,
-    MoreVertical
+    MoreVertical,
+    DollarSign,
+    Save
 } from 'lucide-react';
 import {
     DropdownMenu,
@@ -65,6 +68,8 @@ export default function FTSProviderPool() {
     const { platformUser, loading } = usePlatformAuth();
     const [showDialog, setShowDialog] = useState(false);
     const [editingProvider, setEditingProvider] = useState(null);
+    const [activeTab, setActiveTab] = useState('pool');
+    const [editedPrices, setEditedPrices] = useState({});
     const [formData, setFormData] = useState({
         name: '',
         type: 'card_scheme',
@@ -104,6 +109,18 @@ export default function FTSProviderPool() {
         onSuccess: () => queryClient.invalidateQueries(['payment-providers'])
     });
 
+    const updatePricingMutation = useMutation({
+        mutationFn: async (updates) => {
+            await Promise.all(updates.map(({ id, cost_percentage, cost_fixed }) =>
+                base44.entities.PaymentProvider.update(id, { cost_percentage, cost_fixed })
+            ));
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries(['payment-providers']);
+            setEditedPrices({});
+        }
+    });
+
     const resetForm = () => {
         setShowDialog(false);
         setEditingProvider(null);
@@ -122,6 +139,18 @@ export default function FTSProviderPool() {
         } else {
             createMutation.mutate(formData);
         }
+    };
+
+    const handleSavePricing = () => {
+        const updates = Object.entries(editedPrices).map(([providerId, prices]) => {
+            const provider = providers.find(p => p.id === providerId);
+            return {
+                id: providerId,
+                cost_percentage: prices.cost_percentage ?? provider.cost_percentage ?? 0,
+                cost_fixed: prices.cost_fixed ?? provider.cost_fixed ?? 0
+            };
+        });
+        updatePricingMutation.mutate(updates);
     };
 
     if (loading) {
@@ -159,8 +188,23 @@ export default function FTSProviderPool() {
                 </header>
 
                 <div className="p-6">
-                    {/* Stats */}
-                    <div className="grid grid-cols-6 gap-4 mb-6">
+                    <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+                        <div className="flex items-center justify-between">
+                            <TabsList>
+                                <TabsTrigger value="pool">Provider Pool</TabsTrigger>
+                                <TabsTrigger value="pricing">Pricing Matrix</TabsTrigger>
+                            </TabsList>
+                            {activeTab === 'pricing' && Object.keys(editedPrices).length > 0 && (
+                                <Button onClick={handleSavePricing} className="bg-blue-600 hover:bg-blue-700">
+                                    <Save className="h-4 w-4 mr-2" />
+                                    Save Pricing Changes ({Object.keys(editedPrices).length})
+                                </Button>
+                            )}
+                        </div>
+
+                        <TabsContent value="pool" className="space-y-6">
+                            {/* Stats */}
+                            <div className="grid grid-cols-6 gap-4">
                         {Object.entries(typeIcons).map(([type, { Icon, color }]) => {
                             const count = providers.filter(p => p.type === type).length;
                             return (
@@ -252,8 +296,102 @@ export default function FTSProviderPool() {
                                     })}
                                 </TableBody>
                             </Table>
-                        </CardContent>
-                    </Card>
+                            </CardContent>
+                        </Card>
+                        </TabsContent>
+
+                        <TabsContent value="pricing">
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle className="flex items-center gap-2">
+                                        <DollarSign className="h-5 w-5" />
+                                        Master Pricing Matrix - Payment Providers
+                                    </CardTitle>
+                                    <p className="text-sm text-slate-600">Manage transaction costs for all payment providers</p>
+                                </CardHeader>
+                                <CardContent>
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow>
+                                                <TableHead>Provider</TableHead>
+                                                <TableHead>Type</TableHead>
+                                                <TableHead>Cost %</TableHead>
+                                                <TableHead>Fixed Cost</TableHead>
+                                                <TableHead>Status</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {providers.map((provider) => {
+                                                const { Icon, color } = typeIcons[provider.type] || typeIcons.apm;
+                                                const editedPrice = editedPrices[provider.id];
+                                                const costPercentage = editedPrice?.cost_percentage ?? provider.cost_percentage ?? 0;
+                                                const costFixed = editedPrice?.cost_fixed ?? provider.cost_fixed ?? 0;
+
+                                                return (
+                                                    <TableRow key={provider.id}>
+                                                        <TableCell>
+                                                            <div className="flex items-center gap-3">
+                                                                <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center", color)}>
+                                                                    <Icon className="h-4 w-4" />
+                                                                </div>
+                                                                <span className="font-medium">{provider.name}</span>
+                                                            </div>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <Badge variant="outline" className={color}>
+                                                                {provider.type?.replace('_', ' ')}
+                                                            </Badge>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <div className="flex items-center gap-2">
+                                                                <Input
+                                                                    type="number"
+                                                                    step="0.01"
+                                                                    value={costPercentage}
+                                                                    onChange={(e) => setEditedPrices({
+                                                                        ...editedPrices,
+                                                                        [provider.id]: {
+                                                                            ...editedPrices[provider.id],
+                                                                            cost_percentage: parseFloat(e.target.value) || 0
+                                                                        }
+                                                                    })}
+                                                                    className="w-24"
+                                                                />
+                                                                <span className="text-sm text-slate-600">%</span>
+                                                            </div>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <div className="flex items-center gap-2">
+                                                                <span className="text-sm text-slate-600">$</span>
+                                                                <Input
+                                                                    type="number"
+                                                                    step="0.01"
+                                                                    value={costFixed}
+                                                                    onChange={(e) => setEditedPrices({
+                                                                        ...editedPrices,
+                                                                        [provider.id]: {
+                                                                            ...editedPrices[provider.id],
+                                                                            cost_fixed: parseFloat(e.target.value) || 0
+                                                                        }
+                                                                    })}
+                                                                    className="w-24"
+                                                                />
+                                                            </div>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <Badge className={provider.status === 'active' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-700'}>
+                                                                {provider.status}
+                                                            </Badge>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                );
+                                            })}
+                                        </TableBody>
+                                    </Table>
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
+                    </Tabs>
                 </div>
             </div>
 
