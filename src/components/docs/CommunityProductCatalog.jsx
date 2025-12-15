@@ -927,7 +927,8 @@ export default function CommunityProductCatalog() {
                                                         <p className="text-sm text-slate-600 mb-2">+ {tier.revenue_share}% revenue share</p>
                                                     )}
                                                     {tier.per_transaction && (
-                                                        <p className="text-sm text-slate-600 mb-2">+ ${tier.per_transaction} per transaction</p>}
+                                                        <p className="text-sm text-slate-600 mb-2">+ ${tier.per_transaction} per transaction</p>
+                                                    )}
                                                     {tier.per_message && (
                                                         <p className="text-sm text-slate-600 mb-2">+ ${tier.per_message} per message</p>
                                                     )}
