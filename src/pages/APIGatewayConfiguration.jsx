@@ -137,7 +137,7 @@ export default function APIGatewayConfiguration() {
     const queryClient = useQueryClient();
     const { platformUser, loading } = usePlatformAuth();
     const [activeTab, setActiveTab] = useState('overview');
-    const [selectedProvider, setSelectedProvider] = useState('kong');
+    const [selectedProviders, setSelectedProviders] = useState(['kong']);
     const [kongConfig, setKongConfig] = useState({
         deployment_type: 'kong_oss',
         admin_url: 'http://localhost:8001',
@@ -395,46 +395,55 @@ export default function APIGatewayConfiguration() {
                         <TabsContent value="providers" className="space-y-6">
                             <Card>
                                 <CardHeader>
-                                    <CardTitle>Select Your API Gateway</CardTitle>
-                                    <p className="text-sm text-slate-600">Choose the gateway that best fits your payment infrastructure needs</p>
+                                    <CardTitle>Select Your API Gateways (Multi-Select)</CardTitle>
+                                    <p className="text-sm text-slate-600">Choose one or more gateways - use different gateways for different purposes or regions</p>
                                 </CardHeader>
                                 <CardContent>
                                     <div className="grid grid-cols-3 gap-4">
-                                        {API_GATEWAY_PROVIDERS.map((provider) => (
-                                            <Card 
-                                                key={provider.id}
-                                                className={cn(
-                                                    "cursor-pointer transition-all hover:shadow-md",
-                                                    selectedProvider === provider.id 
-                                                        ? "border-2 border-blue-500 bg-blue-50" 
-                                                        : "border border-slate-200"
-                                                )}
-                                                onClick={() => setSelectedProvider(provider.id)}
-                                            >
-                                                <CardContent className="p-4">
-                                                    <div className="flex items-start justify-between mb-3">
-                                                        <div className="text-3xl">{provider.icon}</div>
-                                                        {selectedProvider === provider.id && (
-                                                            <CheckCircle2 className="h-5 w-5 text-blue-600" />
-                                                        )}
-                                                    </div>
-                                                    <h4 className="font-semibold text-slate-900 mb-1">{provider.name}</h4>
-                                                    <Badge variant="outline" className="mb-2 text-xs capitalize">
-                                                        {provider.type}
-                                                    </Badge>
-                                                    <p className="text-xs text-slate-600 mb-2">{provider.description}</p>
-                                                    <p className="text-xs font-medium text-slate-900 mb-3">{provider.pricing}</p>
-                                                    <div className="space-y-1">
-                                                        {provider.features.map((feature, i) => (
-                                                            <div key={i} className="flex items-center gap-1 text-xs text-slate-700">
-                                                                <CheckCircle2 className="h-3 w-3 text-emerald-600" />
-                                                                {feature}
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                </CardContent>
-                                            </Card>
-                                        ))}
+                                        {API_GATEWAY_PROVIDERS.map((provider) => {
+                                            const isSelected = selectedProviders.includes(provider.id);
+                                            return (
+                                                <Card 
+                                                    key={provider.id}
+                                                    className={cn(
+                                                        "cursor-pointer transition-all hover:shadow-md",
+                                                        isSelected 
+                                                            ? "border-2 border-blue-500 bg-blue-50" 
+                                                            : "border border-slate-200"
+                                                    )}
+                                                    onClick={() => {
+                                                        if (isSelected) {
+                                                            setSelectedProviders(selectedProviders.filter(p => p !== provider.id));
+                                                        } else {
+                                                            setSelectedProviders([...selectedProviders, provider.id]);
+                                                        }
+                                                    }}
+                                                >
+                                                    <CardContent className="p-4">
+                                                        <div className="flex items-start justify-between mb-3">
+                                                            <div className="text-3xl">{provider.icon}</div>
+                                                            {isSelected && (
+                                                                <CheckCircle2 className="h-5 w-5 text-blue-600" />
+                                                            )}
+                                                        </div>
+                                                        <h4 className="font-semibold text-slate-900 mb-1">{provider.name}</h4>
+                                                        <Badge variant="outline" className="mb-2 text-xs capitalize">
+                                                            {provider.type}
+                                                        </Badge>
+                                                        <p className="text-xs text-slate-600 mb-2">{provider.description}</p>
+                                                        <p className="text-xs font-medium text-slate-900 mb-3">{provider.pricing}</p>
+                                                        <div className="space-y-1">
+                                                            {provider.features.map((feature, i) => (
+                                                                <div key={i} className="flex items-center gap-1 text-xs text-slate-700">
+                                                                    <CheckCircle2 className="h-3 w-3 text-emerald-600" />
+                                                                    {feature}
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    </CardContent>
+                                                </Card>
+                                            );
+                                        })}
                                     </div>
                                 </CardContent>
                             </Card>
@@ -442,14 +451,17 @@ export default function APIGatewayConfiguration() {
 
                         {/* Configuration */}
                         <TabsContent value="configuration" className="space-y-6">
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle>{API_GATEWAY_PROVIDERS.find(p => p.id === selectedProvider)?.name} Configuration</CardTitle>
-                                    <p className="text-sm text-slate-600">Configure your {selectedProvider} gateway settings</p>
-                                </CardHeader>
-                                <CardContent className="space-y-6">
-                                    {/* Kong Configuration */}
-                                    {selectedProvider === 'kong' && (
+                            {selectedProviders.map((providerId) => {
+                                const provider = API_GATEWAY_PROVIDERS.find(p => p.id === providerId);
+                                return (
+                                    <Card key={providerId}>
+                                        <CardHeader>
+                                            <CardTitle>{provider?.name} Configuration</CardTitle>
+                                            <p className="text-sm text-slate-600">Configure your {providerId} gateway settings</p>
+                                        </CardHeader>
+                                        <CardContent className="space-y-6">
+                                            {/* Kong Configuration */}
+                                            {providerId === 'kong' && (
                                         <>
                                             <div className="grid grid-cols-2 gap-6">
                                                 <div>
@@ -536,8 +548,8 @@ export default function APIGatewayConfiguration() {
                                         </>
                                     )}
 
-                                    {/* Apigee Configuration */}
-                                    {selectedProvider === 'apigee' && (
+                                            {/* Apigee Configuration */}
+                                            {providerId === 'apigee' && (
                                         <div className="space-y-4">
                                             <div className="grid grid-cols-2 gap-4">
                                                 <div>
@@ -566,8 +578,8 @@ export default function APIGatewayConfiguration() {
                                         </div>
                                     )}
 
-                                    {/* Azure API Management */}
-                                    {selectedProvider === 'azure' && (
+                                            {/* Azure API Management */}
+                                            {providerId === 'azure' && (
                                         <div className="space-y-4">
                                             <div className="grid grid-cols-2 gap-4">
                                                 <div>
@@ -590,8 +602,8 @@ export default function APIGatewayConfiguration() {
                                         </div>
                                     )}
 
-                                    {/* MuleSoft */}
-                                    {selectedProvider === 'mulesoft' && (
+                                            {/* MuleSoft */}
+                                            {providerId === 'mulesoft' && (
                                         <div className="space-y-4">
                                             <div className="grid grid-cols-2 gap-4">
                                                 <div>
@@ -616,19 +628,21 @@ export default function APIGatewayConfiguration() {
                                         </div>
                                     )}
 
-                                    {/* Other providers - simplified configs */}
-                                    {['tyk', 'gravitee', 'wso2', 'gloo', 'krakend'].includes(selectedProvider) && (
-                                        <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                                            <p className="text-sm text-blue-900">
-                                                <strong>{API_GATEWAY_PROVIDERS.find(p => p.id === selectedProvider)?.name}</strong> configuration available.
-                                                Connect your {selectedProvider} instance to the FTS orchestration endpoint shown in the API Endpoints tab.
-                                            </p>
-                                        </div>
-                                    )}
-                                </CardContent>
-                            </Card>
+                                            {/* Other providers - simplified configs */}
+                                            {['tyk', 'gravitee', 'wso2', 'gloo', 'krakend'].includes(providerId) && (
+                                                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                                                    <p className="text-sm text-blue-900">
+                                                        <strong>{provider?.name}</strong> configuration available.
+                                                        Connect your {providerId} instance to the FTS orchestration endpoint shown in the API Endpoints tab.
+                                                    </p>
+                                                </div>
+                                            )}
+                                        </CardContent>
+                                    </Card>
+                                );
+                            })}
 
-                            {selectedProvider === 'kong' && (
+                            {selectedProviders.includes('kong') && (
                                 <Card>
                                     <CardHeader>
                                         <CardTitle>Kong Plugins</CardTitle>
