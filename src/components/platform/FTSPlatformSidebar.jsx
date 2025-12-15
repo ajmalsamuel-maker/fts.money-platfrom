@@ -37,6 +37,7 @@ const menuItems = [
     { icon: Package, label: 'Service Catalog', path: 'FTSServiceManager', description: 'NetXHub services', new: true },
     { icon: Database, label: 'Provider Pool', path: 'FTSProviderPool', description: 'Payment providers', new: true },
     { icon: Wallet, label: 'Payout Routes', path: 'FTSPayoutRoutes', description: 'Payout methods', new: true },
+    { icon: Globe, label: 'Domain & SSL', path: 'FTSDomainManagement', description: 'Domains & certificates', new: true },
     { icon: Globe, label: 'Blockchain Integration', path: 'FTSBlockchainIntegration', description: 'Crypto rails & ISO', new: true },
     { icon: Zap, label: 'API Gateway', path: 'APIGatewayConfiguration', description: 'Kong + Orchestration', new: true },
     { icon: Zap, label: 'Fee Templates', path: 'FTSFeeTemplates', description: 'Pricing templates', new: true },
