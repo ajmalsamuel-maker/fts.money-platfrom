@@ -162,6 +162,7 @@ import FTSBlockchainIntegration from './pages/FTSBlockchainIntegration';
 import APIGatewayConfiguration from './pages/APIGatewayConfiguration';
 import FTSReporting from './pages/FTSReporting';
 import FTSDomainManagement from './pages/FTSDomainManagement';
+import FTSFinancialRegistries from './pages/FTSFinancialRegistries';
 import __Layout from './Layout.jsx';
 
 
@@ -330,6 +331,7 @@ export const PAGES = {
     "APIGatewayConfiguration": APIGatewayConfiguration,
     "FTSReporting": FTSReporting,
     "FTSDomainManagement": FTSDomainManagement,
+    "FTSFinancialRegistries": FTSFinancialRegistries,
 }
 
 export const pagesConfig = {
