@@ -138,8 +138,16 @@ export default function FTSServiceManager() {
 5. Real-world examples of how major companies use this service
 6. Current trends and recent developments (2024-2025)
 
+**FTS.Money Platform Business Use Cases:**
+7. How Payment Service Providers (PSPs) on FTS.Money can use this service for their merchant customers
+8. Specific scenarios where PSPs would provision this service to their clients
+9. Revenue opportunities and business models for PSPs using this service
+10. Integration workflows within the FTS.Money platform ecosystem
+
 Service Category: ${service.service_category}
 Service Description: ${service.description}
+
+Context: FTS.Money is a white-label payment platform that provisions isolated PSP instances. Each PSP serves multiple merchants. Services from NetXHub are imported into FTS.Money and then provisioned to PSPs, who in turn offer them to their merchants.
 
 Make the response detailed, authoritative, and include the most recent information available.`,
                 add_context_from_internet: true
