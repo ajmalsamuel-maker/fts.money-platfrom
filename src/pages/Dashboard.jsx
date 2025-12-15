@@ -51,27 +51,38 @@ export default function Dashboard() {
     const { t, language } = useTranslation();
 
     // Get current PSP session - CRITICAL: Each PSP must be completely isolated
-    const sessionData = localStorage.getItem('staff_session');
-    const session = sessionData ? JSON.parse(sessionData) : null;
-    const userPspCode = session?.psp_code;
+    const [userPspCode, setUserPspCode] = useState(null);
+    const [isReady, setIsReady] = useState(false);
 
-    // Only redirect if no session (don't run on every render)
     React.useEffect(() => {
+        const sessionData = localStorage.getItem('staff_session');
+        
         if (!sessionData) {
             window.location.href = '/PSPLogin';
+            return;
         }
-    }, []); // Empty dependency array - only run once on mount
 
-    // Show loading while checking session
-    if (!session || !userPspCode) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-slate-50">
-                <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-                    <p className="mt-4 text-slate-600">Loading...</p>
-                </div>
-            </div>
-        );
+        try {
+            const session = JSON.parse(sessionData);
+            console.log('Dashboard session:', session);
+            
+            if (session?.psp_code) {
+                setUserPspCode(session.psp_code);
+                setIsReady(true);
+            } else {
+                console.error('No PSP code in session');
+                localStorage.clear();
+                window.location.href = '/PSPLogin';
+            }
+        } catch (err) {
+            console.error('Session parse error:', err);
+            localStorage.clear();
+            window.location.href = '/PSPLogin';
+        }
+    }, []);
+
+    if (!isReady) {
+        return null; // Don't show anything while redirecting
     }
 
     // Fetch data from isolated PSP schema (PCI Level 1 & GDPR compliant)
