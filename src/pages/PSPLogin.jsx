@@ -99,15 +99,32 @@ export default function PSPLogin() {
             // Complete login with session data from backend
             console.log('Login successful, storing session with PSP code:', data.session.psp_code);
             console.log('Session data:', data.session);
-            
-            // Remove any old session data only
-            localStorage.removeItem('staff_session');
-            
-            // Set new session
-            localStorage.setItem('staff_session', JSON.stringify(data.session));
-            
-            // Force navigation
-            window.location.replace('/Dashboard');
+
+            // CRITICAL: Clear ALL storage before setting new session
+            localStorage.clear();
+            sessionStorage.clear();
+
+            // Set new session with PSP code
+            const sessionToStore = {
+                email: data.session.email,
+                full_name: data.session.full_name,
+                role: data.session.role,
+                user_id: data.session.user_id,
+                psp_code: pspCode, // Use the PSP code from state, not from response
+                schema: data.session.schema,
+                timestamp: data.session.timestamp,
+                expires: data.session.expires
+            };
+
+            console.log('Storing session:', sessionToStore);
+            localStorage.setItem('staff_session', JSON.stringify(sessionToStore));
+
+            // Verify storage
+            const storedSession = JSON.parse(localStorage.getItem('staff_session'));
+            console.log('Verified stored session:', storedSession);
+
+            // Force hard reload to clear any cached state
+            window.location.href = '/Dashboard';
         } catch (err) {
             setError(err.message || 'Login failed');
             setIsLoading(false);
