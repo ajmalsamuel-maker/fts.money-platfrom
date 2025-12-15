@@ -856,8 +856,8 @@ export default function PSPProvisioningWizard() {
                                 <p className="text-sm font-medium text-slate-700 mb-3">Additional Standards Implemented:</p>
                                 <div className="flex flex-wrap gap-2">
                                     {[
-                                        'ISO 22301', 'ISO 20000', 'OWASP ASVS L3', 'FIPS 140-3', 
-                                        'NIST CSF', 'eIDAS', 'CCPA/LGPD', 'PIPEDA', 'Open Banking',
+                                        'ISO 22301', 'ISO 20000', 'ISO 5002', 'OWASP ASVS L3', 'FIPS 140-3', 
+                                        'NIST CSF', 'eIDAS 2.0', 'CCPA/LGPD', 'PIPEDA', 'Open Banking',
                                         'CSA STAR', 'ISO 27017/18', 'NACHA', 'SWIFT', 'TLS 1.3'
                                     ].map((std) => (
                                         <Badge key={std} variant="outline" className="text-xs">

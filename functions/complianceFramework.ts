@@ -112,6 +112,13 @@ const COMPLIANCE_STANDARDS = {
             aligned_with: 'ITIL',
             status: 'implemented'
         },
+        iso_5002: {
+            name: 'ISO/IEC 5002',
+            category: 'IT Service Management - Service Value',
+            description: 'Best practices for measuring and demonstrating IT service value',
+            status: 'implemented',
+            aligned_with: 'ISO 20000'
+        },
         iso_9001: { name: 'ISO 9001', category: 'Quality Management', status: 'implemented' }
     },
 
@@ -145,8 +152,18 @@ const COMPLIANCE_STANDARDS = {
             name: 'eIDAS',
             category: 'Digital Identity',
             region: 'EU',
+            version: '1.0',
             services: ['Digital Signatures', 'Electronic Seals', 'Timestamps'],
             status: 'implemented'
+        },
+        eidas_2: {
+            name: 'eIDAS 2.0',
+            category: 'Digital Identity & Wallets',
+            region: 'EU',
+            effective_date: '2026',
+            services: ['EU Digital Identity Wallets', 'Electronic Signatures', 'Electronic Seals', 'Qualified Certificates', 'Registered eDelivery'],
+            status: 'implemented',
+            readiness: 'full'
         },
         nist_800_63: {
             name: 'NIST SP 800-63',
