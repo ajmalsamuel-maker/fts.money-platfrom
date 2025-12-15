@@ -163,6 +163,7 @@ import APIGatewayConfiguration from './pages/APIGatewayConfiguration';
 import FTSReporting from './pages/FTSReporting';
 import FTSDomainManagement from './pages/FTSDomainManagement';
 import FTSFinancialRegistries from './pages/FTSFinancialRegistries';
+import CommunityProductCatalog from './pages/CommunityProductCatalog';
 import __Layout from './Layout.jsx';
 
 
@@ -332,6 +333,7 @@ export const PAGES = {
     "FTSReporting": FTSReporting,
     "FTSDomainManagement": FTSDomainManagement,
     "FTSFinancialRegistries": FTSFinancialRegistries,
+    "CommunityProductCatalog": CommunityProductCatalog,
 }
 
 export const pagesConfig = {

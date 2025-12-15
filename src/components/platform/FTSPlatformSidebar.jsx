@@ -46,7 +46,8 @@ const menuItems = [
     { icon: Shield, label: 'Compliance', path: 'FTSCompliance', description: 'Policy templates', new: true },
     { icon: FileText, label: 'Audit Logs', path: 'PlatformAuditLogs', description: 'Activity tracking', new: true },
     { icon: Settings, label: 'Platform Settings', path: 'FTSSettings', description: 'Configuration' },
-    { icon: BookOpen, label: 'Architecture Docs', path: 'FTSArchitectureDoc', description: 'System blueprint', new: true }
+    { icon: BookOpen, label: 'Architecture Docs', path: 'FTSArchitectureDoc', description: 'System blueprint', new: true },
+    { icon: Package, label: 'Product Catalog', path: 'CommunityProductCatalog', description: 'Community products', new: true }
 ];
 
 export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, isSuperAdmin }) {
