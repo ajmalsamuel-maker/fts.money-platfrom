@@ -51,17 +51,46 @@ export default function Dashboard() {
     const { t, language } = useTranslation();
 
     // Get current PSP session - CRITICAL: Each PSP must be completely isolated
-    const sessionData = localStorage.getItem('staff_session');
-    const session = sessionData ? JSON.parse(sessionData) : null;
-    const userPspCode = session?.psp_code;
+    const [session, setSession] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-    // Redirect if no session or PSP code
     React.useEffect(() => {
-        if (!session || !userPspCode) {
-            localStorage.removeItem('staff_session');
+        const sessionData = localStorage.getItem('staff_session');
+        if (!sessionData) {
+            navigate(createPageUrl('PSPLogin'));
+            return;
+        }
+        
+        try {
+            const parsedSession = JSON.parse(sessionData);
+            console.log('Dashboard loaded with session:', parsedSession);
+            
+            if (!parsedSession.psp_code) {
+                console.error('No PSP code in session');
+                navigate(createPageUrl('PSPLogin'));
+                return;
+            }
+            
+            setSession(parsedSession);
+            setLoading(false);
+        } catch (err) {
+            console.error('Failed to parse session:', err);
             navigate(createPageUrl('PSPLogin'));
         }
-    }, [session, userPspCode, navigate]);
+    }, [navigate]);
+
+    const userPspCode = session?.psp_code;
+
+    if (loading || !session) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-slate-50">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+                    <p className="mt-4 text-slate-600">Loading...</p>
+                </div>
+            </div>
+        );
+    }
 
     // Fetch data from isolated PSP schema (PCI Level 1 & GDPR compliant)
     const { data: transactions = [] } = useQuery({
