@@ -34,6 +34,7 @@ import {
     ExternalLink
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { cn } from "@/lib/utils";
 
 const API_GATEWAY_PROVIDERS = [
     { 
