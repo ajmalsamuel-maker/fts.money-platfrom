@@ -3,14 +3,11 @@ import pg from 'npm:pg@8.11.3';
 
 const { Pool } = pg;
 
-// Get PSP-isolated database connection
-const getPSPPool = (pspCode) => {
-    return new Pool({
-        connectionString: Deno.env.get("DATABASE_URL"),
-        ssl: { rejectUnauthorized: false },
-        options: `-c search_path=psp_${pspCode.toLowerCase()},public`
-    });
-};
+// Get PSP-isolated database connection pool
+const pool = new Pool({
+    connectionString: Deno.env.get("DATABASE_URL"),
+    ssl: { rejectUnauthorized: false }
+});
 
 Deno.serve(async (req) => {
     try {
@@ -21,7 +18,6 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'PSP code required' }, { status: 400 });
         }
 
-        const pool = getPSPPool(psp_code);
         const client = await pool.connect();
 
         try {
@@ -103,7 +99,6 @@ Deno.serve(async (req) => {
             }
         } finally {
             client.release();
-            await pool.end();
         }
 
     } catch (error) {
