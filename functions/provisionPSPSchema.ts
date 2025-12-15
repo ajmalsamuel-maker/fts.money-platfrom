@@ -52,7 +52,7 @@ Deno.serve(async (req) => {
                 CREATE TABLE IF NOT EXISTS ${schemaName}.transactions (
                     id SERIAL PRIMARY KEY,
                     transaction_id VARCHAR(100) UNIQUE NOT NULL,
-                    merchant_id INTEGER REFERENCES ${schemaName}.merchants(id),
+                    merchant_id INTEGER,
                     amount DECIMAL(15, 2) NOT NULL,
                     currency VARCHAR(10) DEFAULT 'USD',
                     status VARCHAR(50) DEFAULT 'pending',
@@ -61,7 +61,8 @@ Deno.serve(async (req) => {
                     card_brand VARCHAR(50),
                     created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    created_by VARCHAR(255)
+                    created_by VARCHAR(255),
+                    CONSTRAINT fk_merchant FOREIGN KEY (merchant_id) REFERENCES ${schemaName}.merchants(id)
                 );
 
                 -- App Users Table (PSP staff)
