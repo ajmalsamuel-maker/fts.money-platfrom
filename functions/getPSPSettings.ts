@@ -19,9 +19,9 @@ Deno.serve(async (req) => {
             }, { status: 400 });
         }
 
-        // Set search path to PSP-isolated schema
+        // CRITICAL: Set search path to PSP-isolated schema ONLY (PCI/GDPR compliance)
         const schemaName = `psp_${psp_code.toLowerCase()}`;
-        await client.query(`SET search_path TO ${schemaName}, public`);
+        await client.query(`SET search_path TO ${schemaName}`);
 
         // Query from isolated schema
         const result = await client.query(
