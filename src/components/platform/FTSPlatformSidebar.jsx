@@ -20,7 +20,8 @@ import {
     Activity,
     BookOpen,
     Plus,
-    LogOut
+    LogOut,
+    Package
 } from 'lucide-react';
 
 const menuItems = [
@@ -32,6 +33,7 @@ const menuItems = [
     { icon: BarChart3, label: 'Analytics', path: 'FTSAnalytics', description: 'Cross-PSP metrics' },
     { icon: DollarSign, label: 'Revenue', path: 'FTSRevenue', description: 'Billing & revenue' },
     { icon: Users, label: 'Clients', path: 'FTSClients', description: 'Client management' },
+    { icon: Package, label: 'Service Catalog', path: 'FTSServiceManager', description: 'NetXHub services', new: true },
     { icon: Database, label: 'Provider Pool', path: 'FTSProviderPool', description: 'Payment providers', new: true },
     { icon: Wallet, label: 'Payout Routes', path: 'FTSPayoutRoutes', description: 'Payout methods', new: true },
     { icon: Zap, label: 'Fee Templates', path: 'FTSFeeTemplates', description: 'Pricing templates', new: true },
@@ -54,7 +56,7 @@ export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, i
                     </div>
                     <div>
                         <h1 className="text-lg font-bold text-slate-900">FTS.Money</h1>
-                        <p className="text-[10px] text-slate-600">Control Plane</p>
+                        <p className="text-[10px] text-slate-600">Control Panel</p>
                     </div>
                 </div>
             </div>

@@ -49,7 +49,7 @@ export default function FTSServiceManager() {
     return (
         <div className="flex h-screen bg-slate-50">
             <FTSPlatformSidebar 
-                currentPage="FTSServiceRegistry" 
+                currentPage="FTSServiceManager" 
                 userRole={getRoleLabel(platformUser?.platform_role)} 
                 userEmail={platformUser?.email}
             />
