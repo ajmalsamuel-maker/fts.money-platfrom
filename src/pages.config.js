@@ -165,6 +165,8 @@ import FTSDomainManagement from './pages/FTSDomainManagement';
 import FTSFinancialRegistries from './pages/FTSFinancialRegistries';
 import CommunityProductCatalog from './pages/CommunityProductCatalog';
 import XeroIntegration from './pages/XeroIntegration';
+import EnhancedAuditLogs from './pages/EnhancedAuditLogs';
+import DataRetentionManagement from './pages/DataRetentionManagement';
 import __Layout from './Layout.jsx';
 
 
@@ -336,6 +338,8 @@ export const PAGES = {
     "FTSFinancialRegistries": FTSFinancialRegistries,
     "CommunityProductCatalog": CommunityProductCatalog,
     "XeroIntegration": XeroIntegration,
+    "EnhancedAuditLogs": EnhancedAuditLogs,
+    "DataRetentionManagement": DataRetentionManagement,
 }
 
 export const pagesConfig = {
