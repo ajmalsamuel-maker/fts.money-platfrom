@@ -142,7 +142,16 @@ export default function PSPProvisioningWizard() {
 
     const provisionMutation = useMutation({
         mutationFn: async (data) => {
-            return await base44.entities.ProvisionedPSP.create(data);
+            // Create PSP record
+            const psp = await base44.entities.ProvisionedPSP.create(data);
+            
+            // Automatically provision PCI Level 1 & GDPR compliant isolated schema
+            await base44.functions.invoke('provisionPSPSchema', {
+                psp_code: data.psp_code,
+                template_psp_code: 'NETXHUB' // Copy payment providers from template
+            });
+            
+            return psp;
         },
         onSuccess: () => {
             queryClient.invalidateQueries(['provisioned-psps']);
