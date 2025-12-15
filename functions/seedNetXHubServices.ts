@@ -478,6 +478,289 @@ const NETXHUB_SERVICES = [
         variable_price: 0.005,
         base_price: 99,
         tier_requirement: 'professional'
+    },
+
+    // ISO Standards & Compliance Framework
+    {
+        service_id: 'iso_27001',
+        service_name: 'ISO 27001 - Information Security',
+        service_category: 'compliance',
+        description: 'Information Security Management System (ISMS) compliance',
+        is_fts_owned: true,
+        pricing_model: 'fixed',
+        base_price: 299,
+        tier_requirement: 'professional'
+    },
+    {
+        service_id: 'iso_27017',
+        service_name: 'ISO 27017 - Cloud Security',
+        service_category: 'compliance',
+        description: 'Cloud services information security controls',
+        is_fts_owned: true,
+        pricing_model: 'fixed',
+        base_price: 199,
+        tier_requirement: 'professional'
+    },
+    {
+        service_id: 'iso_27018',
+        service_name: 'ISO 27018 - Cloud Privacy',
+        service_category: 'compliance',
+        description: 'Protection of PII in public cloud',
+        is_fts_owned: true,
+        pricing_model: 'fixed',
+        base_price: 199,
+        tier_requirement: 'professional'
+    },
+    {
+        service_id: 'iso_22301',
+        service_name: 'ISO 22301 - Business Continuity',
+        service_category: 'compliance',
+        description: 'Business Continuity Management System (BCMS)',
+        is_fts_owned: true,
+        pricing_model: 'fixed',
+        base_price: 249,
+        tier_requirement: 'enterprise'
+    },
+    {
+        service_id: 'iso_20000',
+        service_name: 'ISO 20000 - IT Service Management',
+        service_category: 'compliance',
+        description: 'IT Service Management System (ITSMS)',
+        is_fts_owned: true,
+        pricing_model: 'fixed',
+        base_price: 199,
+        tier_requirement: 'professional'
+    },
+    {
+        service_id: 'iso_9001',
+        service_name: 'ISO 9001 - Quality Management',
+        service_category: 'compliance',
+        description: 'Quality Management System (QMS) compliance',
+        is_fts_owned: true,
+        pricing_model: 'fixed',
+        base_price: 149,
+        tier_requirement: 'starter'
+    },
+    {
+        service_id: 'iso_20022',
+        service_name: 'ISO 20022 - Financial Messaging',
+        service_category: 'compliance',
+        description: 'Universal financial industry message scheme',
+        is_fts_owned: true,
+        pricing_model: 'fixed',
+        base_price: 399,
+        tier_requirement: 'professional'
+    },
+    {
+        service_id: 'iso_8583',
+        service_name: 'ISO 8583 - Card Transactions',
+        service_category: 'compliance',
+        description: 'Card transaction messaging standard',
+        is_fts_owned: true,
+        pricing_model: 'fixed',
+        base_price: 299,
+        tier_requirement: 'starter'
+    },
+    {
+        service_id: 'iso_4217',
+        service_name: 'ISO 4217 - Currency Codes',
+        service_category: 'compliance',
+        description: 'Currency code and fund code standard',
+        is_fts_owned: true,
+        pricing_model: 'fixed',
+        base_price: 0,
+        tier_requirement: 'starter'
+    },
+    {
+        service_id: 'iso_3166',
+        service_name: 'ISO 3166 - Country Codes',
+        service_category: 'compliance',
+        description: 'Country and subdivision code standard',
+        is_fts_owned: true,
+        pricing_model: 'fixed',
+        base_price: 0,
+        tier_requirement: 'starter'
+    },
+    {
+        service_id: 'iso_13616',
+        service_name: 'ISO 13616 - IBAN Standard',
+        service_category: 'compliance',
+        description: 'International Bank Account Number validation',
+        is_fts_owned: true,
+        pricing_model: 'per_transaction',
+        variable_price: 0.001,
+        base_price: 49,
+        tier_requirement: 'starter'
+    },
+    {
+        service_id: 'iso_9362',
+        service_name: 'ISO 9362 - BIC/SWIFT Codes',
+        service_category: 'compliance',
+        description: 'Bank Identifier Code standard',
+        is_fts_owned: true,
+        pricing_model: 'fixed',
+        base_price: 0,
+        tier_requirement: 'starter'
+    },
+    {
+        service_id: 'iso_23257',
+        service_name: 'ISO 23257 - Merchant Category Codes',
+        service_category: 'compliance',
+        description: 'Standardized merchant classification',
+        is_fts_owned: true,
+        pricing_model: 'fixed',
+        base_price: 0,
+        tier_requirement: 'starter'
+    },
+    {
+        service_id: 'iso_24165',
+        service_name: 'ISO 24165 - Digital Token Identifier',
+        service_category: 'compliance',
+        description: 'Cryptocurrency and digital asset identification',
+        is_fts_owned: true,
+        pricing_model: 'fixed',
+        base_price: 99,
+        tier_requirement: 'professional'
+    },
+    {
+        service_id: 'soc2_type2',
+        service_name: 'SOC 2 Type II Compliance',
+        service_category: 'compliance',
+        description: 'Trust Services Criteria audit compliance',
+        is_fts_owned: true,
+        pricing_model: 'fixed',
+        base_price: 499,
+        tier_requirement: 'enterprise'
+    },
+    {
+        service_id: 'psd2_sca',
+        service_name: 'PSD2 & SCA Compliance',
+        service_category: 'compliance',
+        description: 'Strong Customer Authentication for EU',
+        is_fts_owned: true,
+        pricing_model: 'fixed',
+        base_price: 299,
+        tier_requirement: 'professional'
+    },
+    {
+        service_id: 'eidas',
+        service_name: 'eIDAS 2.0 Compliance',
+        service_category: 'compliance',
+        description: 'EU electronic identification and trust services',
+        is_fts_owned: true,
+        pricing_model: 'fixed',
+        base_price: 249,
+        tier_requirement: 'professional'
+    },
+    {
+        service_id: 'fatf_recommendations',
+        service_name: 'FATF Recommendations',
+        service_category: 'compliance',
+        description: 'Financial Action Task Force compliance',
+        is_fts_owned: true,
+        pricing_model: 'fixed',
+        base_price: 399,
+        tier_requirement: 'professional'
+    },
+    {
+        service_id: 'ccpa_lgpd',
+        service_name: 'CCPA/LGPD Compliance',
+        service_category: 'compliance',
+        description: 'California and Brazil privacy laws',
+        is_fts_owned: true,
+        pricing_model: 'fixed',
+        base_price: 199,
+        tier_requirement: 'professional'
+    },
+    {
+        service_id: 'pipeda',
+        service_name: 'PIPEDA Compliance',
+        service_category: 'compliance',
+        description: 'Canadian Personal Information Protection',
+        is_fts_owned: true,
+        pricing_model: 'fixed',
+        base_price: 149,
+        tier_requirement: 'professional'
+    },
+    {
+        service_id: 'open_banking',
+        service_name: 'Open Banking Standards',
+        service_category: 'compliance',
+        description: 'UK/EU Open Banking API compliance',
+        is_fts_owned: true,
+        pricing_model: 'fixed',
+        base_price: 349,
+        tier_requirement: 'professional'
+    },
+    {
+        service_id: 'fips_140_3',
+        service_name: 'FIPS 140-3 Cryptography',
+        service_category: 'compliance',
+        description: 'Federal cryptographic module validation',
+        is_fts_owned: true,
+        pricing_model: 'fixed',
+        base_price: 399,
+        tier_requirement: 'enterprise'
+    },
+    {
+        service_id: 'nist_csf',
+        service_name: 'NIST Cybersecurity Framework',
+        service_category: 'compliance',
+        description: 'US cybersecurity framework compliance',
+        is_fts_owned: true,
+        pricing_model: 'fixed',
+        base_price: 299,
+        tier_requirement: 'enterprise'
+    },
+    {
+        service_id: 'owasp_asvs',
+        service_name: 'OWASP ASVS Level 3',
+        service_category: 'compliance',
+        description: 'Application Security Verification Standard',
+        is_fts_owned: true,
+        pricing_model: 'fixed',
+        base_price: 249,
+        tier_requirement: 'professional'
+    },
+    {
+        service_id: 'csa_star',
+        service_name: 'CSA STAR Certification',
+        service_category: 'compliance',
+        description: 'Cloud Security Alliance attestation',
+        is_fts_owned: true,
+        pricing_model: 'fixed',
+        base_price: 299,
+        tier_requirement: 'enterprise'
+    },
+    {
+        service_id: 'nacha_rules',
+        service_name: 'NACHA ACH Rules',
+        service_category: 'compliance',
+        description: 'US ACH network operating rules',
+        is_fts_owned: true,
+        pricing_model: 'fixed',
+        base_price: 199,
+        tier_requirement: 'professional'
+    },
+    {
+        service_id: 'swift_standards',
+        service_name: 'SWIFT Messaging Standards',
+        service_category: 'compliance',
+        description: 'SWIFT network messaging compliance',
+        is_fts_owned: true,
+        pricing_model: 'fixed',
+        base_price: 399,
+        tier_requirement: 'professional'
+    },
+    {
+        service_id: 'sepa_compliance',
+        service_name: 'SEPA Payment Standards',
+        service_category: 'compliance',
+        description: 'Single Euro Payments Area compliance',
+        is_fts_owned: true,
+        pricing_model: 'fixed',
+        base_price: 249,
+        tier_requirement: 'professional'
     }
 ];
 
