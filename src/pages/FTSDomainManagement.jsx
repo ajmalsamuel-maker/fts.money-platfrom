@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
+import { useNavigate } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
 import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
 import { usePlatformAuth, PLATFORM_ROLES, getRoleLabel } from '@/components/auth/usePlatformAuth';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -23,6 +25,7 @@ import { format } from 'date-fns';
 import { toast } from 'sonner';
 
 export default function FTSDomainManagement() {
+    const navigate = useNavigate();
     const queryClient = useQueryClient();
     const { platformUser, loading } = usePlatformAuth();
     const [searchQuery, setSearchQuery] = useState('');
@@ -252,7 +255,11 @@ export default function FTSDomainManagement() {
                                                             {getSSLStatusBadge(getExpiryStatus(domain.ssl_expiry))}
                                                         </td>
                                                         <td className="py-3 px-4 text-center">
-                                                            <Button variant="ghost" size="sm">
+                                                            <Button 
+                                                                variant="ghost" 
+                                                                size="sm"
+                                                                onClick={() => navigate(createPageUrl('PSPInstanceConfig') + `?id=${domain.psp_id}`)}
+                                                            >
                                                                 <Settings className="h-4 w-4" />
                                                             </Button>
                                                         </td>
