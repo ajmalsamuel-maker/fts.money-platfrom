@@ -10,7 +10,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, RefreshCw, CheckCircle, Package, DollarSign, Save, CreditCard, Shield, Activity, BarChart3, Code, Zap, Wallet, TrendingUp } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { ArrowLeft, RefreshCw, CheckCircle, Package, DollarSign, Save, CreditCard, Shield, Activity, BarChart3, Code, Zap, Wallet, TrendingUp, Info, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { AuditLogger } from '@/components/platform/EnhancedAuditLogger';
 
@@ -31,6 +32,9 @@ export default function FTSServiceManager() {
     const { platformUser, loading } = usePlatformAuth();
     const [editedPrices, setEditedPrices] = useState({});
     const [activeTab, setActiveTab] = useState('catalog');
+    const [selectedService, setSelectedService] = useState(null);
+    const [serviceDetails, setServiceDetails] = useState(null);
+    const [loadingDetails, setLoadingDetails] = useState(false);
 
     const { data: services = [] } = useQuery({
         queryKey: ['service-catalog'],
@@ -116,6 +120,37 @@ export default function FTSServiceManager() {
             };
         });
         updatePricingMutation.mutate(updates);
+    };
+
+    const handleViewDetails = async (service) => {
+        setSelectedService(service);
+        setServiceDetails(null);
+        setLoadingDetails(true);
+
+        try {
+            const response = await base44.integrations.Core.InvokeLLM({
+                prompt: `Provide a comprehensive, detailed explanation of "${service.service_name}" in the context of payment processing and fintech. Include:
+
+1. What is this service and what problem does it solve?
+2. Common use cases and applications in the payment industry
+3. Key benefits for Payment Service Providers (PSPs) and merchants
+4. Industry standards and compliance requirements associated with this service
+5. Real-world examples of how major companies use this service
+6. Current trends and recent developments (2024-2025)
+
+Service Category: ${service.service_category}
+Service Description: ${service.description}
+
+Make the response detailed, authoritative, and include the most recent information available.`,
+                add_context_from_internet: true
+            });
+
+            setServiceDetails(response);
+        } catch (error) {
+            setServiceDetails('Failed to load service details. Please try again.');
+        } finally {
+            setLoadingDetails(false);
+        }
     };
 
     if (loading) {
@@ -258,33 +293,44 @@ export default function FTSServiceManager() {
                                     </CardHeader>
                                     <CardContent>
                                     <div className="grid grid-cols-3 gap-3">
-                                        {categoryServices.map((service) => (
-                                            <div
-                                                key={service.id}
-                                                className="p-4 border border-slate-200 rounded-lg hover:border-blue-300 transition-colors"
-                                            >
-                                                <div className="flex items-start justify-between mb-2">
-                                                    <p className="font-medium text-sm">{service.service_name}</p>
-                                                    <Badge className="bg-emerald-600 text-white text-xs">Active</Badge>
-                                                </div>
-                                                <p className="text-xs text-slate-600 mb-3">{service.description}</p>
-                                                <div className="flex gap-2">
-                                                    {service.pricing_model === 'per_transaction' && (
-                                                        <Badge variant="outline" className="text-xs">
-                                                            {service.variable_price}% per txn
-                                                        </Badge>
-                                                    )}
-                                                    {service.base_price > 0 && (
-                                                        <Badge variant="outline" className="text-xs">
-                                                            ${service.base_price}/mo
-                                                        </Badge>
-                                                    )}
-                                                    {service.pricing_model === 'fixed' && service.base_price === 0 && (
-                                                        <Badge variant="outline" className="text-xs">Free</Badge>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        ))}
+                                       {categoryServices.map((service) => (
+                                           <div
+                                               key={service.id}
+                                               className="p-4 border border-slate-200 rounded-lg hover:border-blue-300 transition-colors"
+                                           >
+                                               <div className="flex items-start justify-between mb-2">
+                                                   <p className="font-medium text-sm">{service.service_name}</p>
+                                                   <Badge className="bg-emerald-600 text-white text-xs">Active</Badge>
+                                               </div>
+                                               <p className="text-xs text-slate-600 mb-3">{service.description}</p>
+                                               <div className="flex items-center justify-between gap-2">
+                                                   <div className="flex gap-2 flex-wrap">
+                                                       {service.pricing_model === 'per_transaction' && (
+                                                           <Badge variant="outline" className="text-xs">
+                                                               {service.variable_price}% per txn
+                                                           </Badge>
+                                                       )}
+                                                       {service.base_price > 0 && (
+                                                           <Badge variant="outline" className="text-xs">
+                                                               ${service.base_price}/mo
+                                                           </Badge>
+                                                       )}
+                                                       {service.pricing_model === 'fixed' && service.base_price === 0 && (
+                                                           <Badge variant="outline" className="text-xs">Free</Badge>
+                                                       )}
+                                                   </div>
+                                                   <Button
+                                                       variant="ghost"
+                                                       size="sm"
+                                                       onClick={() => handleViewDetails(service)}
+                                                       className="h-7 px-2 text-xs"
+                                                   >
+                                                       <Info className="h-3 w-3 mr-1" />
+                                                       Details
+                                                   </Button>
+                                               </div>
+                                           </div>
+                                       ))}
                                     </div>
                                     </CardContent>
                                 </Card>
@@ -402,6 +448,58 @@ export default function FTSServiceManager() {
                             </Card>
                         </TabsContent>
                     </Tabs>
+
+                    {/* Service Details Dialog */}
+                    <Dialog open={!!selectedService} onOpenChange={() => setSelectedService(null)}>
+                        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+                            <DialogHeader>
+                                <DialogTitle className="flex items-center gap-2">
+                                    {selectedService && (
+                                        <>
+                                            {React.createElement(categoryIcons[selectedService.service_category] || Package, {
+                                                className: "h-5 w-5 text-blue-600"
+                                            })}
+                                            {selectedService.service_name}
+                                        </>
+                                    )}
+                                </DialogTitle>
+                                <DialogDescription>
+                                    {selectedService?.description}
+                                </DialogDescription>
+                            </DialogHeader>
+
+                            <div className="space-y-4">
+                                {loadingDetails ? (
+                                    <div className="flex items-center justify-center py-12">
+                                        <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+                                        <p className="ml-3 text-slate-600">Gathering latest information from industry sources...</p>
+                                    </div>
+                                ) : serviceDetails ? (
+                                    <div className="prose prose-sm max-w-none">
+                                        <div className="bg-slate-50 rounded-lg p-4 mb-4">
+                                            <div className="grid grid-cols-2 gap-4 text-sm">
+                                                <div>
+                                                    <span className="text-slate-600">Category:</span>
+                                                    <Badge variant="outline" className="ml-2 capitalize">
+                                                        {selectedService?.service_category?.replace(/_/g, ' ')}
+                                                    </Badge>
+                                                </div>
+                                                <div>
+                                                    <span className="text-slate-600">Pricing Model:</span>
+                                                    <Badge variant="outline" className="ml-2 capitalize">
+                                                        {selectedService?.pricing_model?.replace(/_/g, ' ')}
+                                                    </Badge>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="text-slate-700 whitespace-pre-wrap leading-relaxed">
+                                            {serviceDetails}
+                                        </div>
+                                    </div>
+                                ) : null}
+                            </div>
+                        </DialogContent>
+                    </Dialog>
                 </div>
             </div>
         </div>
