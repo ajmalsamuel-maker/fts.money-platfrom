@@ -16,7 +16,7 @@ Deno.serve(async (req) => {
             try {
                 // CRITICAL: Query from isolated PSP schema for PCI/GDPR compliance
                 const schemaName = `psp_${psp_code.toLowerCase()}`;
-                await client.query(`SET search_path TO ${schemaName}, public`);
+                await client.query(`SET search_path TO ${schemaName}`);
                 
                 const result = await client.query('SELECT * FROM psp_settings WHERE UPPER(psp_code) = UPPER($1) LIMIT 1', [psp_code]);
                 const psp = result.rows[0];
