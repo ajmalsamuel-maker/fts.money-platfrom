@@ -25,8 +25,18 @@ Deno.serve(async (req) => {
         const client = await pool.connect();
 
         try {
-            // Set schema search path for complete isolation
-            await client.query(`SET search_path TO psp_${psp_code.toLowerCase()}, public`);
+            // CRITICAL: Verify isolated schema exists (PCI Level 1 & GDPR compliance)
+            const schemaName = `psp_${psp_code.toLowerCase()}`;
+            const schemaCheck = await client.query(`
+                SELECT schema_name FROM information_schema.schemata WHERE schema_name = $1
+            `, [schemaName]);
+            
+            if (schemaCheck.rows.length === 0) {
+                throw new Error(`Isolated schema ${schemaName} does not exist for PSP ${psp_code}. Contact administrator.`);
+            }
+            
+            // Set schema search path to ISOLATED schema ONLY (no public fallback)
+            await client.query(`SET search_path TO ${schemaName}`);
 
             switch (action) {
                 case 'listTransactions': {
