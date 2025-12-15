@@ -3,6 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { 
     ArrowRight, 
     TrendingUp, 
@@ -830,7 +832,10 @@ export default function CommunityProductCatalog() {
                                     <p className="text-sm text-slate-700 bg-purple-50 p-3 rounded-lg">{product.gtm}</p>
                                 </div>
 
-                                <Button className="w-full bg-blue-600 hover:bg-blue-700">
+                                <Button 
+                                    className="w-full bg-blue-600 hover:bg-blue-700"
+                                    onClick={() => setSelectedProduct(product)}
+                                >
                                     View Full Business Plan
                                     <ArrowRight className="h-4 w-4 ml-2" />
                                 </Button>
@@ -866,6 +871,126 @@ export default function CommunityProductCatalog() {
                     </CardContent>
                 </Card>
             </div>
+
+            {/* Business Plan Dialog */}
+            <Dialog open={!!selectedProduct} onOpenChange={() => setSelectedProduct(null)}>
+                <DialogContent className="max-w-4xl max-h-[90vh]">
+                    <DialogHeader>
+                        <DialogTitle className="text-2xl">{selectedProduct?.name}</DialogTitle>
+                        <p className="text-slate-600">{selectedProduct?.tagline}</p>
+                    </DialogHeader>
+                    <ScrollArea className="h-[70vh] pr-4">
+                        {selectedProduct && (
+                            <div className="space-y-6">
+                                {/* Executive Summary */}
+                                <div>
+                                    <h3 className="text-lg font-semibold text-slate-900 mb-2">Executive Summary</h3>
+                                    <p className="text-slate-700">{selectedProduct.description}</p>
+                                </div>
+
+                                {/* Market Opportunity */}
+                                <div>
+                                    <h3 className="text-lg font-semibold text-slate-900 mb-2">Market Opportunity</h3>
+                                    <div className="bg-blue-50 p-4 rounded-lg">
+                                        <p className="text-sm font-semibold text-blue-900 mb-1">Target Market</p>
+                                        <p className="text-sm text-blue-800">{selectedProduct.target_market}</p>
+                                        <p className="text-sm font-semibold text-blue-900 mt-3 mb-1">ARR Potential</p>
+                                        <p className="text-lg font-bold text-blue-900">{selectedProduct.arr_potential}</p>
+                                    </div>
+                                </div>
+
+                                {/* Technical Infrastructure */}
+                                <div>
+                                    <h3 className="text-lg font-semibold text-slate-900 mb-2">Technical Infrastructure</h3>
+                                    <p className="text-sm text-slate-700 bg-slate-50 p-4 rounded-lg">{selectedProduct.infrastructure}</p>
+                                </div>
+
+                                {/* Pricing Strategy */}
+                                <div>
+                                    <h3 className="text-lg font-semibold text-slate-900 mb-2">Pricing Strategy</h3>
+                                    <div className="space-y-3">
+                                        {selectedProduct.pricing_tiers.map((tier, idx) => (
+                                            <Card key={idx}>
+                                                <CardContent className="p-4">
+                                                    <div className="flex items-center justify-between mb-2">
+                                                        <h4 className="font-semibold text-slate-900">{tier.tier}</h4>
+                                                        <div className="text-right">
+                                                            {tier.monthly && <p className="font-bold text-slate-900">${tier.monthly.toLocaleString()}/month</p>}
+                                                            {tier.setup_fee && <p className="text-sm text-slate-600">${tier.setup_fee.toLocaleString()} setup</p>}
+                                                            {tier.custom && <p className="font-bold text-slate-900">Custom Pricing</p>}
+                                                        </div>
+                                                    </div>
+                                                    {tier.transaction_fee && (
+                                                        <p className="text-sm text-slate-600 mb-2">+ {tier.transaction_fee}% per transaction</p>
+                                                    )}
+                                                    {tier.revenue_share && (
+                                                        <p className="text-sm text-slate-600 mb-2">+ {tier.revenue_share}% revenue share</p>
+                                                    )}
+                                                    {tier.per_transaction && (
+                                                        <p className="text-sm text-slate-600 mb-2">+ ${tier.per_transaction} per transaction</p>}
+                                                    {tier.per_message && (
+                                                        <p className="text-sm text-slate-600 mb-2">+ ${tier.per_message} per message</p>
+                                                    )}
+                                                    <div className="mt-2">
+                                                        <p className="text-xs font-semibold text-slate-500 uppercase mb-1">Features</p>
+                                                        <ul className="space-y-1">
+                                                            {tier.features.map((feature, fidx) => (
+                                                                <li key={fidx} className="flex items-center gap-2 text-sm text-slate-700">
+                                                                    <CheckCircle2 className="h-3 w-3 text-emerald-600" />
+                                                                    {feature}
+                                                                </li>
+                                                            ))}
+                                                        </ul>
+                                                    </div>
+                                                </CardContent>
+                                            </Card>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Revenue Models */}
+                                <div>
+                                    <h3 className="text-lg font-semibold text-slate-900 mb-2">Revenue Models</h3>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        {selectedProduct.revenue_models.map((model, idx) => (
+                                            <div key={idx} className="flex items-center gap-2 bg-emerald-50 px-3 py-2 rounded-lg">
+                                                <DollarSign className="h-4 w-4 text-emerald-600" />
+                                                <span className="text-sm text-slate-900">{model}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Unique Selling Proposition */}
+                                <div>
+                                    <h3 className="text-lg font-semibold text-slate-900 mb-2">Unique Selling Proposition</h3>
+                                    <div className="bg-gradient-to-r from-purple-50 to-blue-50 p-4 rounded-lg border-2 border-purple-200">
+                                        <p className="text-slate-900 font-medium">{selectedProduct.usp}</p>
+                                    </div>
+                                </div>
+
+                                {/* Go-to-Market Strategy */}
+                                <div>
+                                    <h3 className="text-lg font-semibold text-slate-900 mb-2">Go-to-Market Strategy</h3>
+                                    <p className="text-slate-700 bg-slate-50 p-4 rounded-lg">{selectedProduct.gtm}</p>
+                                </div>
+
+                                {/* Implementation Timeline */}
+                                <div>
+                                    <h3 className="text-lg font-semibold text-slate-900 mb-2">Implementation Timeline</h3>
+                                    <div className="flex items-center gap-3 bg-blue-50 p-4 rounded-lg">
+                                        <Clock className="h-8 w-8 text-blue-600" />
+                                        <div>
+                                            <p className="font-semibold text-blue-900">Setup Time</p>
+                                            <p className="text-xl font-bold text-blue-900">{selectedProduct.setup_time}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </ScrollArea>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }
