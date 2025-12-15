@@ -35,6 +35,90 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 
+const API_GATEWAY_PROVIDERS = [
+    { 
+        id: 'kong', 
+        name: 'Kong Gateway', 
+        type: 'oss',
+        description: 'Best for: Starting out, cloud-native deployments',
+        pricing: 'Free OSS / $500-800/mo Konnect / $2k+ Enterprise',
+        icon: '🦍',
+        features: ['Rate Limiting', 'JWT Auth', 'Plugins Ecosystem', 'Low Cost']
+    },
+    { 
+        id: 'apigee', 
+        name: 'Apigee', 
+        type: 'enterprise',
+        description: 'Best for: Large payment processors needing enterprise governance',
+        pricing: '$1k-10k+/mo (Google Cloud)',
+        icon: '🔷',
+        features: ['Advanced Analytics', 'Developer Portal', 'Monetization', 'API Products']
+    },
+    { 
+        id: 'azure', 
+        name: 'Azure API Management', 
+        type: 'enterprise',
+        description: 'Best for: Microsoft-centric payment ecosystems',
+        pricing: '$600-3k+/mo',
+        icon: '☁️',
+        features: ['Azure Integration', 'AD Auth', 'Enterprise Security', 'Hybrid Deployment']
+    },
+    { 
+        id: 'mulesoft', 
+        name: 'MuleSoft', 
+        type: 'enterprise',
+        description: 'Best for: Heavy integration with legacy banking systems',
+        pricing: '$3k-20k+/mo',
+        icon: '🔗',
+        features: ['Legacy Integration', 'Anypoint Platform', 'DataWeave', 'Enterprise ESB']
+    },
+    { 
+        id: 'tyk', 
+        name: 'Tyk', 
+        type: 'oss',
+        description: 'Best for: Open-source with strong compliance features',
+        pricing: 'Free OSS / $500-2k/mo Enterprise',
+        icon: '🔐',
+        features: ['GraphQL', 'gRPC Support', 'Universal Data Graph', 'Compliance Ready']
+    },
+    { 
+        id: 'gravitee', 
+        name: 'Gravitee.io', 
+        type: 'oss',
+        description: 'Best for: Full open-source API management platform',
+        pricing: 'Free OSS / $1k+/mo Enterprise',
+        icon: '🌀',
+        features: ['Event-native', 'API Design Studio', 'Async APIs', 'Policy Studio']
+    },
+    { 
+        id: 'wso2', 
+        name: 'WSO2 API Manager', 
+        type: 'oss',
+        description: 'Best for: Open-source with comprehensive features',
+        pricing: 'Free OSS / $2k+/mo Enterprise',
+        icon: '⚡',
+        features: ['Full Lifecycle', 'API Marketplace', 'Microgateway', 'Identity Server']
+    },
+    { 
+        id: 'gloo', 
+        name: 'Gloo Edge', 
+        type: 'oss',
+        description: 'Best for: Kubernetes-native API gateway (Envoy-based)',
+        pricing: 'Free OSS / $1k+/mo Enterprise',
+        icon: '🚀',
+        features: ['Envoy Proxy', 'Service Mesh', 'K8s Native', 'GraphQL']
+    },
+    { 
+        id: 'krakend', 
+        name: 'KrakenD', 
+        type: 'oss',
+        description: 'Best for: High-performance, stateless API gateway',
+        pricing: 'Free OSS / $500-2k/mo Enterprise',
+        icon: '🐙',
+        features: ['Ultra Fast', 'No DB Required', 'Low Memory', 'API Composition']
+    }
+];
+
 const KONG_PLUGINS = [
     { id: 'rate-limiting', name: 'Rate Limiting', category: 'traffic-control', enabled: true },
     { id: 'jwt', name: 'JWT Authentication', category: 'security', enabled: true },
@@ -52,6 +136,7 @@ export default function APIGatewayConfiguration() {
     const queryClient = useQueryClient();
     const { platformUser, loading } = usePlatformAuth();
     const [activeTab, setActiveTab] = useState('overview');
+    const [selectedProvider, setSelectedProvider] = useState('kong');
     const [kongConfig, setKongConfig] = useState({
         deployment_type: 'kong_oss',
         admin_url: 'http://localhost:8001',
@@ -64,6 +149,54 @@ export default function APIGatewayConfiguration() {
         cors_origins: '*',
         cors_methods: 'GET, POST, PUT, DELETE, OPTIONS',
         ip_whitelist: []
+    });
+    
+    const [providerConfigs, setProviderConfigs] = useState({
+        apigee: {
+            organization: '',
+            environment: 'test',
+            api_key: '',
+            service_account_json: ''
+        },
+        azure: {
+            subscription_id: '',
+            resource_group: '',
+            service_name: '',
+            api_key: ''
+        },
+        mulesoft: {
+            anypoint_username: '',
+            anypoint_password: '',
+            organization_id: '',
+            environment_id: ''
+        },
+        tyk: {
+            gateway_url: 'http://localhost:8080',
+            dashboard_url: 'http://localhost:3000',
+            api_key: '',
+            org_id: ''
+        },
+        gravitee: {
+            management_url: 'http://localhost:8083',
+            gateway_url: 'http://localhost:8082',
+            api_key: ''
+        },
+        wso2: {
+            publisher_url: 'https://localhost:9443',
+            gateway_url: 'https://localhost:8243',
+            username: 'admin',
+            password: ''
+        },
+        gloo: {
+            namespace: 'gloo-system',
+            gateway_proxy: 'gateway-proxy',
+            cluster_name: 'default'
+        },
+        krakend: {
+            config_file: '/etc/krakend/krakend.json',
+            port: 8080,
+            admin_port: 8090
+        }
     });
 
     const [orchestrationConfig, setOrchestrationConfig] = useState({
@@ -112,7 +245,8 @@ export default function APIGatewayConfiguration() {
                     <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
                         <TabsList>
                             <TabsTrigger value="overview">Architecture</TabsTrigger>
-                            <TabsTrigger value="kong">Kong Gateway</TabsTrigger>
+                            <TabsTrigger value="providers">Gateway Providers</TabsTrigger>
+                            <TabsTrigger value="configuration">Configuration</TabsTrigger>
                             <TabsTrigger value="orchestration">Orchestration Layer</TabsTrigger>
                             <TabsTrigger value="endpoints">API Endpoints</TabsTrigger>
                         </TabsList>
@@ -216,37 +350,37 @@ export default function APIGatewayConfiguration() {
                                             <Card className="border-2 border-emerald-200 bg-emerald-50">
                                                 <CardContent className="p-4">
                                                     <Badge className="bg-emerald-600 text-white mb-2">Recommended</Badge>
-                                                    <h4 className="font-semibold text-slate-900 mb-1">Kong OSS (Free)</h4>
+                                                    <h4 className="font-semibold text-slate-900 mb-1">Open Source</h4>
                                                     <p className="text-2xl font-bold text-slate-900 mb-2">$0/month</p>
-                                                    <p className="text-xs text-slate-600">+ Infrastructure (~$50-150/mo)</p>
+                                                    <p className="text-xs text-slate-600">Kong, Tyk, Gravitee, WSO2, etc.</p>
                                                     <ul className="mt-3 space-y-1 text-xs text-slate-700">
-                                                        <li>✓ Core API gateway</li>
-                                                        <li>✓ Community plugins</li>
+                                                        <li>✓ Full control</li>
                                                         <li>✓ Self-hosted</li>
+                                                        <li>✓ Community support</li>
                                                     </ul>
                                                 </CardContent>
                                             </Card>
                                             <Card className="border-2 border-blue-200 bg-blue-50">
                                                 <CardContent className="p-4">
-                                                    <h4 className="font-semibold text-slate-900 mb-1">Kong Konnect</h4>
-                                                    <p className="text-2xl font-bold text-slate-900 mb-2">$500-800/mo</p>
-                                                    <p className="text-xs text-slate-600">Up to 5M requests/month</p>
+                                                    <h4 className="font-semibold text-slate-900 mb-1">Managed/Cloud</h4>
+                                                    <p className="text-2xl font-bold text-slate-900 mb-2">$500-2k/mo</p>
+                                                    <p className="text-xs text-slate-600">Azure, Tyk Cloud, Gravitee Cloud</p>
                                                     <ul className="mt-3 space-y-1 text-xs text-slate-700">
-                                                        <li>✓ Managed control plane</li>
+                                                        <li>✓ Managed service</li>
+                                                        <li>✓ Auto-scaling</li>
                                                         <li>✓ 24/7 support</li>
-                                                        <li>✓ Advanced plugins</li>
                                                     </ul>
                                                 </CardContent>
                                             </Card>
                                             <Card className="border-2 border-purple-200 bg-purple-50">
                                                 <CardContent className="p-4">
                                                     <h4 className="font-semibold text-slate-900 mb-1">Enterprise</h4>
-                                                    <p className="text-2xl font-bold text-slate-900 mb-2">$2k+/mo</p>
-                                                    <p className="text-xs text-slate-600">Unlimited requests</p>
+                                                    <p className="text-2xl font-bold text-slate-900 mb-2">$3k-20k+/mo</p>
+                                                    <p className="text-xs text-slate-600">Apigee, MuleSoft, WSO2 Enterprise</p>
                                                     <ul className="mt-3 space-y-1 text-xs text-slate-700">
-                                                        <li>✓ Multi-region</li>
-                                                        <li>✓ Dedicated support</li>
-                                                        <li>✓ SLA guarantees</li>
+                                                        <li>✓ Full lifecycle</li>
+                                                        <li>✓ Enterprise SLA</li>
+                                                        <li>✓ Advanced features</li>
                                                     </ul>
                                                 </CardContent>
                                             </Card>
@@ -256,39 +390,91 @@ export default function APIGatewayConfiguration() {
                             </Card>
                         </TabsContent>
 
-                        {/* Kong Configuration */}
-                        <TabsContent value="kong" className="space-y-6">
+                        {/* Gateway Providers */}
+                        <TabsContent value="providers" className="space-y-6">
                             <Card>
                                 <CardHeader>
-                                    <CardTitle>Kong Gateway Configuration</CardTitle>
-                                    <p className="text-sm text-slate-600">Configure your Kong instance settings</p>
+                                    <CardTitle>Select Your API Gateway</CardTitle>
+                                    <p className="text-sm text-slate-600">Choose the gateway that best fits your payment infrastructure needs</p>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="grid grid-cols-3 gap-4">
+                                        {API_GATEWAY_PROVIDERS.map((provider) => (
+                                            <Card 
+                                                key={provider.id}
+                                                className={cn(
+                                                    "cursor-pointer transition-all hover:shadow-md",
+                                                    selectedProvider === provider.id 
+                                                        ? "border-2 border-blue-500 bg-blue-50" 
+                                                        : "border border-slate-200"
+                                                )}
+                                                onClick={() => setSelectedProvider(provider.id)}
+                                            >
+                                                <CardContent className="p-4">
+                                                    <div className="flex items-start justify-between mb-3">
+                                                        <div className="text-3xl">{provider.icon}</div>
+                                                        {selectedProvider === provider.id && (
+                                                            <CheckCircle2 className="h-5 w-5 text-blue-600" />
+                                                        )}
+                                                    </div>
+                                                    <h4 className="font-semibold text-slate-900 mb-1">{provider.name}</h4>
+                                                    <Badge variant="outline" className="mb-2 text-xs capitalize">
+                                                        {provider.type}
+                                                    </Badge>
+                                                    <p className="text-xs text-slate-600 mb-2">{provider.description}</p>
+                                                    <p className="text-xs font-medium text-slate-900 mb-3">{provider.pricing}</p>
+                                                    <div className="space-y-1">
+                                                        {provider.features.map((feature, i) => (
+                                                            <div key={i} className="flex items-center gap-1 text-xs text-slate-700">
+                                                                <CheckCircle2 className="h-3 w-3 text-emerald-600" />
+                                                                {feature}
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </CardContent>
+                                            </Card>
+                                        ))}
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
+
+                        {/* Configuration */}
+                        <TabsContent value="configuration" className="space-y-6">
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>{API_GATEWAY_PROVIDERS.find(p => p.id === selectedProvider)?.name} Configuration</CardTitle>
+                                    <p className="text-sm text-slate-600">Configure your {selectedProvider} gateway settings</p>
                                 </CardHeader>
                                 <CardContent className="space-y-6">
-                                    <div className="grid grid-cols-2 gap-6">
-                                        <div>
-                                            <Label>Deployment Type</Label>
-                                            <Select value={kongConfig.deployment_type} onValueChange={(v) => setKongConfig({...kongConfig, deployment_type: v})}>
-                                                <SelectTrigger><SelectValue /></SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectItem value="kong_oss">Kong OSS (Open Source)</SelectItem>
-                                                    <SelectItem value="kong_konnect">Kong Konnect</SelectItem>
-                                                    <SelectItem value="kong_enterprise">Kong Enterprise</SelectItem>
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
-                                        <div>
-                                            <Label>Log Level</Label>
-                                            <Select value={orchestrationConfig.log_level} onValueChange={(v) => setOrchestrationConfig({...orchestrationConfig, log_level: v})}>
-                                                <SelectTrigger><SelectValue /></SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectItem value="debug">Debug</SelectItem>
-                                                    <SelectItem value="info">Info</SelectItem>
-                                                    <SelectItem value="warn">Warning</SelectItem>
-                                                    <SelectItem value="error">Error</SelectItem>
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
-                                    </div>
+                                    {/* Kong Configuration */}
+                                    {selectedProvider === 'kong' && (
+                                        <>
+                                            <div className="grid grid-cols-2 gap-6">
+                                                <div>
+                                                    <Label>Deployment Type</Label>
+                                                    <Select value={kongConfig.deployment_type} onValueChange={(v) => setKongConfig({...kongConfig, deployment_type: v})}>
+                                                        <SelectTrigger><SelectValue /></SelectTrigger>
+                                                        <SelectContent>
+                                                            <SelectItem value="kong_oss">Kong OSS (Open Source)</SelectItem>
+                                                            <SelectItem value="kong_konnect">Kong Konnect</SelectItem>
+                                                            <SelectItem value="kong_enterprise">Kong Enterprise</SelectItem>
+                                                        </SelectContent>
+                                                    </Select>
+                                                </div>
+                                                <div>
+                                                    <Label>Log Level</Label>
+                                                    <Select value={orchestrationConfig.log_level} onValueChange={(v) => setOrchestrationConfig({...orchestrationConfig, log_level: v})}>
+                                                        <SelectTrigger><SelectValue /></SelectTrigger>
+                                                        <SelectContent>
+                                                            <SelectItem value="debug">Debug</SelectItem>
+                                                            <SelectItem value="info">Info</SelectItem>
+                                                            <SelectItem value="warn">Warning</SelectItem>
+                                                            <SelectItem value="error">Error</SelectItem>
+                                                        </SelectContent>
+                                                    </Select>
+                                                </div>
+                                            </div>
 
                                     <div className="grid grid-cols-2 gap-6">
                                         <div>
@@ -338,46 +524,140 @@ export default function APIGatewayConfiguration() {
                                         </div>
                                     </div>
 
-                                    <div>
-                                        <Label>CORS Origins</Label>
-                                        <Input 
-                                            value={kongConfig.cors_origins} 
-                                            onChange={(e) => setKongConfig({...kongConfig, cors_origins: e.target.value})}
-                                            placeholder="* or comma-separated origins"
-                                        />
-                                    </div>
+                                            <div>
+                                                <Label>CORS Origins</Label>
+                                                <Input 
+                                                    value={kongConfig.cors_origins} 
+                                                    onChange={(e) => setKongConfig({...kongConfig, cors_origins: e.target.value})}
+                                                    placeholder="* or comma-separated origins"
+                                                />
+                                            </div>
+                                        </>
+                                    )}
+
+                                    {/* Apigee Configuration */}
+                                    {selectedProvider === 'apigee' && (
+                                        <div className="space-y-4">
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div>
+                                                    <Label>Organization</Label>
+                                                    <Input value={providerConfigs.apigee.organization} onChange={(e) => setProviderConfigs({...providerConfigs, apigee: {...providerConfigs.apigee, organization: e.target.value}})} placeholder="your-org" />
+                                                </div>
+                                                <div>
+                                                    <Label>Environment</Label>
+                                                    <Select value={providerConfigs.apigee.environment} onValueChange={(v) => setProviderConfigs({...providerConfigs, apigee: {...providerConfigs.apigee, environment: v}})}>
+                                                        <SelectTrigger><SelectValue /></SelectTrigger>
+                                                        <SelectContent>
+                                                            <SelectItem value="test">Test</SelectItem>
+                                                            <SelectItem value="prod">Production</SelectItem>
+                                                        </SelectContent>
+                                                    </Select>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <Label>API Key</Label>
+                                                <Input type="password" value={providerConfigs.apigee.api_key} onChange={(e) => setProviderConfigs({...providerConfigs, apigee: {...providerConfigs.apigee, api_key: e.target.value}})} />
+                                            </div>
+                                            <div>
+                                                <Label>Service Account JSON</Label>
+                                                <Textarea rows={4} value={providerConfigs.apigee.service_account_json} onChange={(e) => setProviderConfigs({...providerConfigs, apigee: {...providerConfigs.apigee, service_account_json: e.target.value}})} placeholder="Paste service account JSON" />
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Azure API Management */}
+                                    {selectedProvider === 'azure' && (
+                                        <div className="space-y-4">
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div>
+                                                    <Label>Subscription ID</Label>
+                                                    <Input value={providerConfigs.azure.subscription_id} onChange={(e) => setProviderConfigs({...providerConfigs, azure: {...providerConfigs.azure, subscription_id: e.target.value}})} />
+                                                </div>
+                                                <div>
+                                                    <Label>Resource Group</Label>
+                                                    <Input value={providerConfigs.azure.resource_group} onChange={(e) => setProviderConfigs({...providerConfigs, azure: {...providerConfigs.azure, resource_group: e.target.value}})} />
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <Label>Service Name</Label>
+                                                <Input value={providerConfigs.azure.service_name} onChange={(e) => setProviderConfigs({...providerConfigs, azure: {...providerConfigs.azure, service_name: e.target.value}})} />
+                                            </div>
+                                            <div>
+                                                <Label>API Management Key</Label>
+                                                <Input type="password" value={providerConfigs.azure.api_key} onChange={(e) => setProviderConfigs({...providerConfigs, azure: {...providerConfigs.azure, api_key: e.target.value}})} />
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* MuleSoft */}
+                                    {selectedProvider === 'mulesoft' && (
+                                        <div className="space-y-4">
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div>
+                                                    <Label>Anypoint Username</Label>
+                                                    <Input value={providerConfigs.mulesoft.anypoint_username} onChange={(e) => setProviderConfigs({...providerConfigs, mulesoft: {...providerConfigs.mulesoft, anypoint_username: e.target.value}})} />
+                                                </div>
+                                                <div>
+                                                    <Label>Anypoint Password</Label>
+                                                    <Input type="password" value={providerConfigs.mulesoft.anypoint_password} onChange={(e) => setProviderConfigs({...providerConfigs, mulesoft: {...providerConfigs.mulesoft, anypoint_password: e.target.value}})} />
+                                                </div>
+                                            </div>
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div>
+                                                    <Label>Organization ID</Label>
+                                                    <Input value={providerConfigs.mulesoft.organization_id} onChange={(e) => setProviderConfigs({...providerConfigs, mulesoft: {...providerConfigs.mulesoft, organization_id: e.target.value}})} />
+                                                </div>
+                                                <div>
+                                                    <Label>Environment ID</Label>
+                                                    <Input value={providerConfigs.mulesoft.environment_id} onChange={(e) => setProviderConfigs({...providerConfigs, mulesoft: {...providerConfigs.mulesoft, environment_id: e.target.value}})} />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Other providers - simplified configs */}
+                                    {['tyk', 'gravitee', 'wso2', 'gloo', 'krakend'].includes(selectedProvider) && (
+                                        <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                                            <p className="text-sm text-blue-900">
+                                                <strong>{API_GATEWAY_PROVIDERS.find(p => p.id === selectedProvider)?.name}</strong> configuration available.
+                                                Connect your {selectedProvider} instance to the FTS orchestration endpoint shown in the API Endpoints tab.
+                                            </p>
+                                        </div>
+                                    )}
                                 </CardContent>
                             </Card>
 
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle>Kong Plugins</CardTitle>
-                                    <p className="text-sm text-slate-600">Enable/disable Kong gateway plugins</p>
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="grid grid-cols-2 gap-4">
-                                        {KONG_PLUGINS.map((plugin) => (
-                                            <div key={plugin.id} className="flex items-center justify-between p-4 border border-slate-200 rounded-lg">
-                                                <div>
-                                                    <p className="font-medium text-sm">{plugin.name}</p>
-                                                    <Badge variant="outline" className="mt-1 text-xs capitalize">
-                                                        {plugin.category.replace('-', ' ')}
-                                                    </Badge>
+                            {selectedProvider === 'kong' && (
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>Kong Plugins</CardTitle>
+                                        <p className="text-sm text-slate-600">Enable/disable Kong gateway plugins</p>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            {KONG_PLUGINS.map((plugin) => (
+                                                <div key={plugin.id} className="flex items-center justify-between p-4 border border-slate-200 rounded-lg">
+                                                    <div>
+                                                        <p className="font-medium text-sm">{plugin.name}</p>
+                                                        <Badge variant="outline" className="mt-1 text-xs capitalize">
+                                                            {plugin.category.replace('-', ' ')}
+                                                        </Badge>
+                                                    </div>
+                                                    <Switch 
+                                                        checked={kongConfig.enabled_plugins.includes(plugin.id)}
+                                                        onCheckedChange={(checked) => {
+                                                            const plugins = checked 
+                                                                ? [...kongConfig.enabled_plugins, plugin.id]
+                                                                : kongConfig.enabled_plugins.filter(p => p !== plugin.id);
+                                                            setKongConfig({...kongConfig, enabled_plugins: plugins});
+                                                        }}
+                                                    />
                                                 </div>
-                                                <Switch 
-                                                    checked={kongConfig.enabled_plugins.includes(plugin.id)}
-                                                    onCheckedChange={(checked) => {
-                                                        const plugins = checked 
-                                                            ? [...kongConfig.enabled_plugins, plugin.id]
-                                                            : kongConfig.enabled_plugins.filter(p => p !== plugin.id);
-                                                        setKongConfig({...kongConfig, enabled_plugins: plugins});
-                                                    }}
-                                                />
-                                            </div>
-                                        ))}
-                                    </div>
-                                </CardContent>
-                            </Card>
+                                            ))}
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            )}
                         </TabsContent>
 
                         {/* Orchestration Configuration */}
