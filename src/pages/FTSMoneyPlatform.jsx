@@ -201,47 +201,83 @@ export default function FTSMoneyPlatform() {
                     <div>
                         <h3 className="text-lg font-semibold text-slate-900 mb-4">Active PSP Instances</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {psps.map((psp) => (
-                                <Card 
-                                    key={psp.id} 
-                                    className="bg-white border-slate-200 hover:border-blue-300 hover:shadow-md transition-all cursor-pointer group"
-                                    onClick={() => navigate(createPageUrl('PSPInstanceConfig') + `?id=${psp.id}`)}
-                                >
-                                    <CardContent className="p-4">
-                                        <div className="flex items-start justify-between mb-3">
-                                            <div className="flex items-center gap-3">
-                                                <div 
-                                                    className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-bold text-sm"
-                                                    style={{ background: psp.branding?.primary_color || '#3b82f6' }}
-                                                >
-                                                    {psp.psp_code?.substring(0, 2)}
+                            {psps.map((psp) => {
+                                const isTemplate = psp.psp_code === 'NETXHUB' || psp.is_template;
+                                
+                                return (
+                                    <Card 
+                                        key={psp.id} 
+                                        className={cn(
+                                            "bg-white border-slate-200 hover:border-blue-300 hover:shadow-md transition-all group relative",
+                                            isTemplate && "border-amber-300 bg-amber-50/30"
+                                        )}
+                                    >
+                                        <CardContent className="p-4">
+                                            {isTemplate && (
+                                                <div className="absolute top-2 right-2">
+                                                    <Badge className="bg-amber-100 text-amber-700 border-amber-300 gap-1">
+                                                        <Star className="h-3 w-3" />
+                                                        Template
+                                                    </Badge>
+                                                </div>
+                                            )}
+                                            
+                                            <div 
+                                                className="flex items-start justify-between mb-3 cursor-pointer"
+                                                onClick={() => navigate(createPageUrl('PSPInstanceConfig') + `?id=${psp.id}`)}
+                                            >
+                                                <div className="flex items-center gap-3">
+                                                    <div 
+                                                        className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-bold text-sm"
+                                                        style={{ background: psp.branding?.primary_color || '#3b82f6' }}
+                                                    >
+                                                        {psp.psp_code?.substring(0, 2)}
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-semibold text-slate-900">{psp.psp_name}</p>
+                                                        <p className="text-xs text-slate-500 font-mono">{psp.psp_code}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div className="grid grid-cols-2 gap-2 text-sm mb-3">
+                                                <div>
+                                                    <p className="text-slate-500 text-xs">Merchants</p>
+                                                    <p className="text-slate-900 font-semibold">{psp.total_merchants || 0}</p>
                                                 </div>
                                                 <div>
-                                                    <p className="font-semibold text-slate-900">{psp.psp_name}</p>
-                                                    <p className="text-xs text-slate-500 font-mono">{psp.psp_code}</p>
+                                                    <p className="text-slate-500 text-xs">Volume</p>
+                                                    <p className="text-slate-900 font-semibold">${((psp.monthly_volume || 0) / 1000000).toFixed(1)}M</p>
                                                 </div>
                                             </div>
-                                            <Badge className={cn(
-                                                "text-xs",
-                                                psp.status === 'active' ? 'bg-emerald-100 text-emerald-700 border-emerald-200' :
-                                                'bg-blue-100 text-blue-700 border-blue-200'
-                                            )}>
-                                                {psp.status}
-                                            </Badge>
-                                        </div>
-                                        <div className="grid grid-cols-2 gap-2 text-sm">
-                                            <div>
-                                                <p className="text-slate-500 text-xs">Merchants</p>
-                                                <p className="text-slate-900 font-semibold">{psp.total_merchants || 0}</p>
-                                            </div>
-                                            <div>
-                                                <p className="text-slate-500 text-xs">Volume</p>
-                                                <p className="text-slate-900 font-semibold">${((psp.monthly_volume || 0) / 1000000).toFixed(1)}M</p>
-                                            </div>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            ))}
+                                            
+                                            {!isTemplate && (
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    className="w-full text-red-600 hover:text-red-700 hover:bg-red-50"
+                                                    onClick={async (e) => {
+                                                        e.stopPropagation();
+                                                        if (confirm(`Delete ${psp.psp_name}? This action cannot be undone.`)) {
+                                                            await base44.entities.ProvisionedPSP.delete(psp.id);
+                                                            window.location.reload();
+                                                        }
+                                                    }}
+                                                >
+                                                    <Trash2 className="h-4 w-4 mr-2" />
+                                                    Delete PSP
+                                                </Button>
+                                            )}
+                                            
+                                            {isTemplate && (
+                                                <div className="text-xs text-amber-700 text-center pt-2 border-t border-amber-200">
+                                                    Protected template - cannot be deleted
+                                                </div>
+                                            )}
+                                        </CardContent>
+                                    </Card>
+                                );
+                            })}
                             
                             {psps.length === 0 && (
                                 <div className="col-span-3 text-center py-12">
