@@ -66,7 +66,8 @@ const menuSections = [
     {
         title: 'Financial Management',
         items: [
-            { icon: Zap, label: 'Fee Templates', path: 'FTSFeeTemplates', description: 'Pricing templates' }
+            { icon: Zap, label: 'Fee Templates', path: 'FTSFeeTemplates', description: 'Pricing templates' },
+            { icon: DollarSign, label: 'Xero Integration', path: 'XeroIntegration', description: 'Accounting sync' }
         ]
     },
     {
