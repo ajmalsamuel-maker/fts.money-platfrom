@@ -107,7 +107,40 @@ Deno.serve(async (req) => {
                     user_email VARCHAR(255),
                     created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 );
+
+                -- PSP Settings Table (Branding and Configuration)
+                CREATE TABLE IF NOT EXISTS ${schemaName}.psp_settings (
+                    id SERIAL PRIMARY KEY,
+                    psp_code VARCHAR(50) UNIQUE NOT NULL,
+                    psp_name VARCHAR(255) NOT NULL,
+                    branding JSONB,
+                    settings JSONB,
+                    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                );
             `);
+
+            // Copy PSP settings from ProvisionedPSP entity
+            const pspData = await base44.asServiceRole.entities.ProvisionedPSP.filter({ psp_code });
+            if (pspData && pspData.length > 0) {
+                const psp = pspData[0];
+                await client.query(`
+                    INSERT INTO ${schemaName}.psp_settings (psp_code, psp_name, branding, settings)
+                    VALUES ($1, $2, $3, $4)
+                    ON CONFLICT (psp_code) DO UPDATE
+                    SET psp_name = $2, branding = $3, settings = $4, updated_date = CURRENT_TIMESTAMP
+                `, [
+                    psp.psp_code,
+                    psp.psp_name,
+                    JSON.stringify(psp.branding || {}),
+                    JSON.stringify({
+                        tier: psp.tier,
+                        status: psp.status,
+                        domain: psp.domain,
+                        subdomain: psp.subdomain
+                    })
+                ]);
+            }
 
             // If template_psp_code provided, copy configuration data (not customer data)
             if (template_psp_code) {
