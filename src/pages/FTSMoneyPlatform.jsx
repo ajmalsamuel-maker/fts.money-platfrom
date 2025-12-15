@@ -25,7 +25,9 @@ import {
     LogOut,
     Menu,
     Database,
-    Wallet
+    Wallet,
+    Trash2,
+    Star
 } from 'lucide-react';
 
 const quickActions = [
