@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { ArrowLeft, RefreshCw, CheckCircle, Package, DollarSign, Save, CreditCard, Shield, Activity, BarChart3, Code, Zap, Wallet, TrendingUp, Info, Loader2 } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
 import { toast } from 'sonner';
 import { AuditLogger } from '@/components/platform/EnhancedAuditLogger';
 
@@ -147,9 +148,9 @@ export default function FTSServiceManager() {
 Service Category: ${service.service_category}
 Service Description: ${service.description}
 
-Context: FTS.Money is a white-label payment platform that provisions isolated PSP instances. Each PSP serves multiple merchants. Services from NetXHub are imported into FTS.Money and then provisioned to PSPs, who in turn offer them to their merchants.
+Context: FTS.Money is a white-label payment platform that provisions isolated PSP instances. Each PSP serves multiple merchants. All services are provisioned and managed by FTS.Money, who then makes them available to PSPs, who in turn offer them to their merchants.
 
-Make the response detailed, authoritative, and include the most recent information available.`,
+Make the response detailed, authoritative, and include the most recent information available. Format the response in markdown with proper headings, bold text, and bullet points.`,
                 add_context_from_internet: true
             });
 
@@ -500,9 +501,9 @@ Make the response detailed, authoritative, and include the most recent informati
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="text-slate-700 whitespace-pre-wrap leading-relaxed">
+                                        <ReactMarkdown className="text-slate-700 leading-relaxed">
                                             {serviceDetails}
-                                        </div>
+                                        </ReactMarkdown>
                                     </div>
                                 ) : null}
                             </div>
