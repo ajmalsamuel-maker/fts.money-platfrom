@@ -148,9 +148,10 @@ export default function VirtualTerminalLogin() {
                 </CardContent>
             </Card>
 
-            <p className="text-center text-slate-600 text-sm mt-6" style={{ fontFamily: 'Montserrat, sans-serif' }}>
-                © 2025 FTS.Money - Fluid global payments
-            </p>
+                <p className="text-center text-slate-600 text-sm mt-6" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                    © 2025 FTS.Money - Fluid global payments
+                </p>
+            </div>
         </div>
     );
 }
