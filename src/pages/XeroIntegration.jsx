@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
 import Sidebar from '@/components/dashboard/Sidebar';
 import TopHeader from '@/components/dashboard/TopHeader';
 import { 
@@ -15,14 +16,19 @@ import {
     DollarSign,
     FileText,
     Users,
-    TrendingUp
+    TrendingUp,
+    AlertCircle,
+    BarChart3,
+    Calendar
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { format } from 'date-fns';
+import { format, subDays } from 'date-fns';
 
 export default function XeroIntegration() {
     const queryClient = useQueryClient();
     const [selectedTransactions, setSelectedTransactions] = useState([]);
+    const [dateFrom, setDateFrom] = useState(format(subDays(new Date(), 30), 'yyyy-MM-dd'));
+    const [dateTo, setDateTo] = useState(format(new Date(), 'yyyy-MM-dd'));
 
     const { data: xeroStatus, isLoading: statusLoading } = useQuery({
         queryKey: ['xero-status'],
@@ -38,6 +44,19 @@ export default function XeroIntegration() {
     const { data: transactions = [] } = useQuery({
         queryKey: ['transactions'],
         queryFn: () => base44.entities.Transaction.list('-created_date', 100)
+    });
+
+    const { data: metrics, isLoading: metricsLoading, refetch: refetchMetrics } = useQuery({
+        queryKey: ['xero-metrics', dateFrom, dateTo],
+        queryFn: async () => {
+            const response = await base44.functions.invoke('xeroMetrics', {
+                psp_id: 'current',
+                date_from: dateFrom,
+                date_to: dateTo
+            });
+            return response.data;
+        },
+        enabled: !!xeroStatus?.connected
     });
 
     const connectMutation = useMutation({
@@ -172,13 +191,254 @@ export default function XeroIntegration() {
                     </Card>
 
                     {xeroStatus?.connected && (
-                        <Tabs defaultValue="transactions" className="space-y-6">
+                        <Tabs defaultValue="dashboard" className="space-y-6">
                             <TabsList>
+                                <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
                                 <TabsTrigger value="transactions">Transactions</TabsTrigger>
                                 <TabsTrigger value="invoices">Invoices</TabsTrigger>
                                 <TabsTrigger value="contacts">Contacts</TabsTrigger>
                                 <TabsTrigger value="settings">Settings</TabsTrigger>
                             </TabsList>
+
+                            <TabsContent value="dashboard">
+                                {/* Date Range Filter */}
+                                <Card className="mb-6">
+                                    <CardContent className="p-4">
+                                        <div className="flex items-center gap-4">
+                                            <Calendar className="h-5 w-5 text-slate-600" />
+                                            <div className="flex items-center gap-3 flex-1">
+                                                <div>
+                                                    <label className="text-xs text-slate-600 mb-1 block">From</label>
+                                                    <Input 
+                                                        type="date" 
+                                                        value={dateFrom}
+                                                        onChange={(e) => setDateFrom(e.target.value)}
+                                                        className="w-40"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label className="text-xs text-slate-600 mb-1 block">To</label>
+                                                    <Input 
+                                                        type="date" 
+                                                        value={dateTo}
+                                                        onChange={(e) => setDateTo(e.target.value)}
+                                                        className="w-40"
+                                                    />
+                                                </div>
+                                                <Button 
+                                                    onClick={() => refetchMetrics()}
+                                                    disabled={metricsLoading}
+                                                    className="mt-5"
+                                                >
+                                                    <RefreshCw className={`h-4 w-4 mr-2 ${metricsLoading ? 'animate-spin' : ''}`} />
+                                                    Refresh
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+
+                                {metricsLoading ? (
+                                    <div className="text-center py-12">
+                                        <RefreshCw className="h-8 w-8 text-blue-600 animate-spin mx-auto mb-3" />
+                                        <p className="text-slate-600">Loading metrics from Xero...</p>
+                                    </div>
+                                ) : metrics?.success ? (
+                                    <>
+                                        {/* Key Metrics */}
+                                        <div className="grid grid-cols-4 gap-4 mb-6">
+                                            <Card className="bg-gradient-to-br from-blue-500 to-blue-600 text-white">
+                                                <CardContent className="p-6">
+                                                    <div className="flex items-center justify-between mb-2">
+                                                        <DollarSign className="h-8 w-8 opacity-80" />
+                                                        <TrendingUp className="h-5 w-5 opacity-60" />
+                                                    </div>
+                                                    <p className="text-xs text-blue-100 mb-1">Total Invoiced</p>
+                                                    <p className="text-2xl font-bold">
+                                                        ${metrics.metrics.total_invoiced.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                                    </p>
+                                                    <p className="text-xs text-blue-100 mt-2">
+                                                        {metrics.metrics.total_invoices} invoices
+                                                    </p>
+                                                </CardContent>
+                                            </Card>
+
+                                            <Card className="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white">
+                                                <CardContent className="p-6">
+                                                    <div className="flex items-center justify-between mb-2">
+                                                        <CheckCircle2 className="h-8 w-8 opacity-80" />
+                                                    </div>
+                                                    <p className="text-xs text-emerald-100 mb-1">Total Paid</p>
+                                                    <p className="text-2xl font-bold">
+                                                        ${metrics.metrics.total_paid.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                                    </p>
+                                                    <p className="text-xs text-emerald-100 mt-2">
+                                                        {((metrics.metrics.total_paid / metrics.metrics.total_invoiced) * 100).toFixed(1)}% collected
+                                                    </p>
+                                                </CardContent>
+                                            </Card>
+
+                                            <Card className="bg-gradient-to-br from-amber-500 to-amber-600 text-white">
+                                                <CardContent className="p-6">
+                                                    <div className="flex items-center justify-between mb-2">
+                                                        <AlertCircle className="h-8 w-8 opacity-80" />
+                                                    </div>
+                                                    <p className="text-xs text-amber-100 mb-1">Outstanding Balance</p>
+                                                    <p className="text-2xl font-bold">
+                                                        ${metrics.metrics.outstanding_balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                                    </p>
+                                                    <p className="text-xs text-amber-100 mt-2">
+                                                        {metrics.metrics.overdue_invoices} overdue
+                                                    </p>
+                                                </CardContent>
+                                            </Card>
+
+                                            <Card className="bg-gradient-to-br from-purple-500 to-purple-600 text-white">
+                                                <CardContent className="p-6">
+                                                    <div className="flex items-center justify-between mb-2">
+                                                        <Users className="h-8 w-8 opacity-80" />
+                                                    </div>
+                                                    <p className="text-xs text-purple-100 mb-1">Total Contacts</p>
+                                                    <p className="text-2xl font-bold">
+                                                        {metrics.metrics.total_contacts}
+                                                    </p>
+                                                    <p className="text-xs text-purple-100 mt-2">
+                                                        Active customers
+                                                    </p>
+                                                </CardContent>
+                                            </Card>
+                                        </div>
+
+                                        {/* Financial Performance */}
+                                        <div className="grid grid-cols-3 gap-4 mb-6">
+                                            <Card>
+                                                <CardHeader className="pb-3">
+                                                    <CardTitle className="text-sm flex items-center gap-2">
+                                                        <TrendingUp className="h-4 w-4 text-emerald-600" />
+                                                        Revenue
+                                                    </CardTitle>
+                                                </CardHeader>
+                                                <CardContent>
+                                                    <p className="text-2xl font-bold text-emerald-600">
+                                                        ${metrics.metrics.revenue.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                                                    </p>
+                                                </CardContent>
+                                            </Card>
+
+                                            <Card>
+                                                <CardHeader className="pb-3">
+                                                    <CardTitle className="text-sm flex items-center gap-2">
+                                                        <DollarSign className="h-4 w-4 text-red-600" />
+                                                        Expenses
+                                                    </CardTitle>
+                                                </CardHeader>
+                                                <CardContent>
+                                                    <p className="text-2xl font-bold text-red-600">
+                                                        ${metrics.metrics.expenses.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                                                    </p>
+                                                </CardContent>
+                                            </Card>
+
+                                            <Card>
+                                                <CardHeader className="pb-3">
+                                                    <CardTitle className="text-sm flex items-center gap-2">
+                                                        <BarChart3 className="h-4 w-4 text-blue-600" />
+                                                        Net Profit
+                                                    </CardTitle>
+                                                </CardHeader>
+                                                <CardContent>
+                                                    <p className={`text-2xl font-bold ${metrics.metrics.net_profit >= 0 ? 'text-blue-600' : 'text-red-600'}`}>
+                                                        ${metrics.metrics.net_profit.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                                                    </p>
+                                                </CardContent>
+                                            </Card>
+                                        </div>
+
+                                        {/* Invoice Status Breakdown */}
+                                        <Card className="mb-6">
+                                            <CardHeader>
+                                                <CardTitle>Invoice Status Breakdown</CardTitle>
+                                            </CardHeader>
+                                            <CardContent>
+                                                <div className="grid grid-cols-5 gap-3">
+                                                    <div className="bg-slate-50 p-4 rounded-lg text-center">
+                                                        <p className="text-xs text-slate-600 mb-1">Draft</p>
+                                                        <p className="text-2xl font-bold text-slate-900">{metrics.invoices_by_status.draft}</p>
+                                                    </div>
+                                                    <div className="bg-blue-50 p-4 rounded-lg text-center">
+                                                        <p className="text-xs text-blue-600 mb-1">Submitted</p>
+                                                        <p className="text-2xl font-bold text-blue-900">{metrics.invoices_by_status.submitted}</p>
+                                                    </div>
+                                                    <div className="bg-amber-50 p-4 rounded-lg text-center">
+                                                        <p className="text-xs text-amber-600 mb-1">Authorised</p>
+                                                        <p className="text-2xl font-bold text-amber-900">{metrics.invoices_by_status.authorised}</p>
+                                                    </div>
+                                                    <div className="bg-emerald-50 p-4 rounded-lg text-center">
+                                                        <p className="text-xs text-emerald-600 mb-1">Paid</p>
+                                                        <p className="text-2xl font-bold text-emerald-900">{metrics.invoices_by_status.paid}</p>
+                                                    </div>
+                                                    <div className="bg-red-50 p-4 rounded-lg text-center">
+                                                        <p className="text-xs text-red-600 mb-1">Voided</p>
+                                                        <p className="text-2xl font-bold text-red-900">{metrics.invoices_by_status.voided}</p>
+                                                    </div>
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+
+                                        {/* Recent Invoices */}
+                                        <Card>
+                                            <CardHeader>
+                                                <CardTitle>Recent Invoices</CardTitle>
+                                            </CardHeader>
+                                            <CardContent>
+                                                <div className="overflow-x-auto">
+                                                    <table className="w-full text-sm">
+                                                        <thead>
+                                                            <tr className="border-b">
+                                                                <th className="text-left py-3 px-4 font-semibold">Invoice #</th>
+                                                                <th className="text-left py-3 px-4 font-semibold">Contact</th>
+                                                                <th className="text-left py-3 px-4 font-semibold">Date</th>
+                                                                <th className="text-left py-3 px-4 font-semibold">Due Date</th>
+                                                                <th className="text-right py-3 px-4 font-semibold">Total</th>
+                                                                <th className="text-right py-3 px-4 font-semibold">Amount Due</th>
+                                                                <th className="text-center py-3 px-4 font-semibold">Status</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {metrics.recent_invoices.map((inv) => (
+                                                                <tr key={inv.id} className="border-b hover:bg-slate-50">
+                                                                    <td className="py-3 px-4 font-mono text-xs">{inv.number}</td>
+                                                                    <td className="py-3 px-4">{inv.contact}</td>
+                                                                    <td className="py-3 px-4">{format(new Date(inv.date), 'MMM dd, yyyy')}</td>
+                                                                    <td className="py-3 px-4">{format(new Date(inv.due_date), 'MMM dd, yyyy')}</td>
+                                                                    <td className="py-3 px-4 text-right font-mono">${inv.total.toFixed(2)}</td>
+                                                                    <td className="py-3 px-4 text-right font-mono">${inv.amount_due.toFixed(2)}</td>
+                                                                    <td className="py-3 px-4 text-center">
+                                                                        <Badge className={
+                                                                            inv.status === 'PAID' ? 'bg-emerald-100 text-emerald-700' :
+                                                                            inv.status === 'AUTHORISED' ? 'bg-amber-100 text-amber-700' :
+                                                                            inv.status === 'DRAFT' ? 'bg-slate-100 text-slate-700' :
+                                                                            'bg-blue-100 text-blue-700'
+                                                                        }>
+                                                                            {inv.status}
+                                                                        </Badge>
+                                                                    </td>
+                                                                </tr>
+                                                            ))}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+                                    </>
+                                ) : (
+                                    <Card>
+                                        <CardContent className="p-12 text-center">
+                                            <p className="text-slate-600">Unable to load metrics</p>
+                                        </CardContent>
+                                    </Card>
+                                )}
+                            </TabsContent>
 
                             <TabsContent value="transactions">
                                 <Card>
