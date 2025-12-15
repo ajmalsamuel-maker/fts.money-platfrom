@@ -128,6 +128,7 @@ export default function PSPProvisioningWizard() {
         currency_specific_fees: {},
         enabled_payment_methods: [],
         enabled_payout_methods: [],
+        enabled_services: [],
         email_templates: {
             merchant_onboarding: '',
             transaction_notification: '',
@@ -228,6 +229,11 @@ export default function PSPProvisioningWizard() {
         queryFn: () => base44.entities.PayoutRoute.list()
     });
 
+    const { data: services = [] } = useQuery({
+        queryKey: ['services'],
+        queryFn: () => base44.entities.ServiceCatalog.list()
+    });
+
     return (
         <div className="min-h-screen bg-slate-50 p-6">
             <div className="max-w-7xl mx-auto">
@@ -257,7 +263,7 @@ export default function PSPProvisioningWizard() {
 
                 {/* Progress Steps */}
                 <div className="flex items-center justify-between mb-8 bg-white rounded-lg p-6 border border-slate-200">
-                    {[1, 2, 3, 4, 5].map((s) => (
+                    {[1, 2, 3, 4, 5, 6].map((s) => (
                         <React.Fragment key={s}>
                             <div className="flex items-center gap-3">
                                 <div className={cn(
@@ -270,16 +276,18 @@ export default function PSPProvisioningWizard() {
                                     <p className={cn("text-sm font-medium", step >= s ? "text-slate-900" : "text-slate-500")}>
                                         {s === 1 && 'Service Tier'}
                                         {s === 2 && 'Instance Config'}
-                                        {s === 3 && 'Fee Structure'}
-                                        {s === 4 && 'Payment Providers'}
-                                        {s === 5 && 'Deploy'}
+                                        {s === 3 && 'Services'}
+                                        {s === 4 && 'Fee Structure'}
+                                        {s === 5 && 'Providers'}
+                                        {s === 6 && 'Deploy'}
                                     </p>
                                     <p className="text-xs text-slate-500">
                                         {s === 1 && 'Select tier & limits'}
                                         {s === 2 && 'Network & identity'}
-                                        {s === 3 && 'Pricing config'}
-                                        {s === 4 && 'Provider mapping'}
-                                        {s === 5 && 'Review & launch'}
+                                        {s === 3 && 'Feature selection'}
+                                        {s === 4 && 'Pricing config'}
+                                        {s === 5 && 'Provider mapping'}
+                                        {s === 6 && 'Review & launch'}
                                     </p>
                                 </div>
                             </div>
@@ -496,6 +504,80 @@ export default function PSPProvisioningWizard() {
                                 Back
                             </Button>
                             <Button onClick={() => setStep(3)} className="bg-blue-600 hover:bg-blue-700">
+                                Continue to Services
+                                <ArrowRight className="h-4 w-4 ml-2" />
+                            </Button>
+                        </div>
+                    </Card>
+                )}
+
+                {/* Step 3: Services Selection */}
+                {step === 3 && (
+                    <Card className="bg-white border-slate-200">
+                        <CardHeader>
+                            <CardTitle>Service Selection</CardTitle>
+                            <CardDescription>Choose which NetXHub services to enable for this PSP instance</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
+                            {['payment_rail', 'orchestration', 'fraud_detection', 'compliance', 'payout', 'analytics', 'developer_tools'].map((category) => {
+                                const categoryServices = services.filter(s => s.service_category === category);
+                                if (categoryServices.length === 0) return null;
+                                
+                                return (
+                                    <div key={category}>
+                                        <h3 className="font-semibold text-slate-900 mb-3 capitalize">{category.replace(/_/g, ' ')}</h3>
+                                        <div className="space-y-2">
+                                            {categoryServices.map((service) => {
+                                                const isEnabled = formData.enabled_services.includes(service.service_id);
+                                                return (
+                                                    <div
+                                                        key={service.service_id}
+                                                        className={cn(
+                                                            "flex items-center justify-between p-4 border-2 rounded-lg cursor-pointer transition-all",
+                                                            isEnabled ? "border-blue-500 bg-blue-50" : "border-slate-200 hover:border-blue-300"
+                                                        )}
+                                                        onClick={() => {
+                                                            const newServices = isEnabled
+                                                                ? formData.enabled_services.filter(s => s !== service.service_id)
+                                                                : [...formData.enabled_services, service.service_id];
+                                                            setFormData({...formData, enabled_services: newServices});
+                                                        }}
+                                                    >
+                                                        <div className="flex items-center gap-3">
+                                                            <div className={cn(
+                                                                "w-10 h-10 rounded flex items-center justify-center",
+                                                                isEnabled ? "bg-blue-600" : "bg-blue-50"
+                                                            )}>
+                                                                {isEnabled ? <Check className="h-5 w-5 text-white" /> : <Zap className="h-5 w-5 text-blue-600" />}
+                                                            </div>
+                                                            <div>
+                                                                <p className="font-medium text-sm">{service.service_name}</p>
+                                                                <p className="text-xs text-slate-600">{service.description}</p>
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex items-center gap-3">
+                                                            {service.pricing_model === 'per_transaction' && (
+                                                                <Badge variant="outline">{service.variable_price}% per txn</Badge>
+                                                            )}
+                                                            {service.base_price > 0 && (
+                                                                <Badge variant="outline">${service.base_price}/mo</Badge>
+                                                            )}
+                                                            <Switch checked={isEnabled} />
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </CardContent>
+                        <div className="flex justify-between p-6 border-t border-slate-200">
+                            <Button variant="outline" onClick={() => setStep(2)}>
+                                <ArrowLeft className="h-4 w-4 mr-2" />
+                                Back
+                            </Button>
+                            <Button onClick={() => setStep(4)} className="bg-blue-600 hover:bg-blue-700">
                                 Continue to Fee Structure
                                 <ArrowRight className="h-4 w-4 ml-2" />
                             </Button>
@@ -503,8 +585,8 @@ export default function PSPProvisioningWizard() {
                     </Card>
                 )}
 
-                {/* Step 3: Fee Structure */}
-                {step === 3 && (
+                {/* Step 4: Fee Structure */}
+                {step === 4 && (
                     <Card className="bg-white border-slate-200">
                         <CardHeader>
                             <CardTitle>Fee Structure Configuration</CardTitle>
@@ -588,11 +670,11 @@ export default function PSPProvisioningWizard() {
                             </div>
                         </CardContent>
                         <div className="flex justify-between p-6 border-t border-slate-200">
-                            <Button variant="outline" onClick={() => setStep(2)}>
+                            <Button variant="outline" onClick={() => setStep(3)}>
                                 <ArrowLeft className="h-4 w-4 mr-2" />
                                 Back
                             </Button>
-                            <Button onClick={() => setStep(4)} className="bg-blue-600 hover:bg-blue-700">
+                            <Button onClick={() => setStep(5)} className="bg-blue-600 hover:bg-blue-700">
                                 Configure Payment Providers
                                 <ArrowRight className="h-4 w-4 ml-2" />
                             </Button>
@@ -600,8 +682,8 @@ export default function PSPProvisioningWizard() {
                     </Card>
                 )}
 
-                {/* Step 4: Provider Mapping */}
-                {step === 4 && (
+                {/* Step 5: Provider Mapping */}
+                {step === 5 && (
                     <Card className="bg-white border-slate-200">
                         <CardHeader>
                             <CardTitle>Payment Provider Mapping</CardTitle>
@@ -681,11 +763,11 @@ export default function PSPProvisioningWizard() {
                             </div>
                         </CardContent>
                         <div className="flex justify-between p-6 border-t border-slate-200">
-                            <Button variant="outline" onClick={() => setStep(3)}>
+                            <Button variant="outline" onClick={() => setStep(4)}>
                                 <ArrowLeft className="h-4 w-4 mr-2" />
                                 Back
                             </Button>
-                            <Button onClick={() => setStep(5)} className="bg-blue-600 hover:bg-blue-700">
+                            <Button onClick={() => setStep(6)} className="bg-blue-600 hover:bg-blue-700">
                                 Review Configuration
                                 <ArrowRight className="h-4 w-4 ml-2" />
                             </Button>
@@ -693,8 +775,8 @@ export default function PSPProvisioningWizard() {
                     </Card>
                 )}
 
-                {/* Step 5: Deploy */}
-                {step === 5 && !provisioningComplete && (
+                {/* Step 6: Deploy */}
+                {step === 6 && !provisioningComplete && (
                     <Card className="bg-white border-slate-200">
                         <CardHeader>
                             <CardTitle>Deployment Review</CardTitle>

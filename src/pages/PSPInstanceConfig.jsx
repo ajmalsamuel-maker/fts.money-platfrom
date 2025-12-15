@@ -35,7 +35,7 @@ export default function PSPInstanceConfig() {
     const urlParams = new URLSearchParams(window.location.search);
     const pspId = urlParams.get('id');
 
-    const [activeTab, setActiveTab] = useState('appearance');
+    const [activeTab, setActiveTab] = useState('services');
     
     const platformUser = JSON.parse(localStorage.getItem('platform_admin_session') || '{}');
 
@@ -60,12 +60,19 @@ export default function PSPInstanceConfig() {
         enabled: !!pspId
     });
 
+    const { data: services = [] } = useQuery({
+        queryKey: ['services'],
+        queryFn: () => base44.entities.ServiceCatalog.list(),
+        enabled: !!pspId
+    });
+
     const [config, setConfig] = useState({
         branding: {},
         transaction_fees: {},
         region_settings: {},
         enabled_payment_methods: [],
-        enabled_payout_methods: []
+        enabled_payout_methods: [],
+        enabled_services: []
     });
 
     // Populate config when PSP data loads - map from provisioning fields
@@ -87,7 +94,8 @@ export default function PSPInstanceConfig() {
                     language: 'en'
                 },
                 enabled_payment_methods: psp.enabled_payment_methods || [],
-                enabled_payout_methods: psp.enabled_payout_methods || []
+                enabled_payout_methods: psp.enabled_payout_methods || [],
+                enabled_services: psp.enabled_services || []
             });
         }
     }, [psp]);
@@ -102,7 +110,8 @@ export default function PSPInstanceConfig() {
                 timezone: data.region_settings?.timezone,
                 country: data.region_settings?.region,
                 enabled_payment_methods: data.enabled_payment_methods,
-                enabled_payout_methods: data.enabled_payout_methods
+                enabled_payout_methods: data.enabled_payout_methods,
+                enabled_services: data.enabled_services
             };
             return await base44.entities.ProvisionedPSP.update(pspId, pspUpdateData);
         },
@@ -182,6 +191,10 @@ export default function PSPInstanceConfig() {
             <div className="max-w-7xl mx-auto px-6 py-8">
                 <Tabs value={activeTab} onValueChange={setActiveTab}>
                     <TabsList className="bg-white border border-slate-200 mb-6">
+                        <TabsTrigger value="services" className="gap-2">
+                            <Settings className="h-4 w-4" />
+                            Services
+                        </TabsTrigger>
                         <TabsTrigger value="appearance" className="gap-2">
                             <Palette className="h-4 w-4" />
                             Appearance
@@ -203,6 +216,75 @@ export default function PSPInstanceConfig() {
                             Regional Settings
                         </TabsTrigger>
                     </TabsList>
+
+                    {/* Services Tab */}
+                    <TabsContent value="services">
+                        <Card className="bg-white border-slate-200">
+                            <CardHeader>
+                                <CardTitle>NetXHub Services</CardTitle>
+                                <CardDescription>Enable or disable services for this PSP instance based on tier and commercial agreements</CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-6">
+                                {['payment_rail', 'orchestration', 'fraud_detection', 'compliance', 'payout', 'analytics', 'developer_tools'].map((category) => {
+                                    const categoryServices = services.filter(s => s.service_category === category);
+                                    if (categoryServices.length === 0) return null;
+                                    
+                                    return (
+                                        <div key={category}>
+                                            <h3 className="font-semibold text-slate-900 mb-3 capitalize flex items-center gap-2">
+                                                <Shield className="h-4 w-4" />
+                                                {category.replace(/_/g, ' ')}
+                                            </h3>
+                                            <div className="space-y-2">
+                                                {categoryServices.map((service) => {
+                                                    const isEnabled = config.enabled_services?.includes(service.service_id);
+                                                    return (
+                                                        <div
+                                                            key={service.service_id}
+                                                            className={cn(
+                                                                "flex items-center justify-between p-4 border-2 rounded-lg transition-all",
+                                                                isEnabled ? "border-emerald-500 bg-emerald-50" : "border-slate-200"
+                                                            )}
+                                                        >
+                                                            <div className="flex items-center gap-3">
+                                                                <div className={cn(
+                                                                    "w-10 h-10 rounded flex items-center justify-center",
+                                                                    isEnabled ? "bg-emerald-600" : "bg-slate-100"
+                                                                )}>
+                                                                    {isEnabled ? <Check className="h-5 w-5 text-white" /> : <X className="h-5 w-5 text-slate-400" />}
+                                                                </div>
+                                                                <div>
+                                                                    <p className="font-medium text-sm">{service.service_name}</p>
+                                                                    <p className="text-xs text-slate-600">{service.description}</p>
+                                                                </div>
+                                                            </div>
+                                                            <div className="flex items-center gap-3">
+                                                                {service.pricing_model === 'per_transaction' && (
+                                                                    <Badge variant="outline">{service.variable_price}% per txn</Badge>
+                                                                )}
+                                                                {service.base_price > 0 && (
+                                                                    <Badge variant="outline">${service.base_price}/mo</Badge>
+                                                                )}
+                                                                <Switch 
+                                                                    checked={isEnabled}
+                                                                    onCheckedChange={(checked) => {
+                                                                        const newServices = checked
+                                                                            ? [...(config.enabled_services || []), service.service_id]
+                                                                            : (config.enabled_services || []).filter(s => s !== service.service_id);
+                                                                        setConfig({...config, enabled_services: newServices});
+                                                                    }}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </CardContent>
+                        </Card>
+                    </TabsContent>
 
                     {/* Appearance Tab */}
                     <TabsContent value="appearance">
