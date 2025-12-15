@@ -74,6 +74,84 @@ FTS.Money's ecosystem model solves these challenges by providing instant access 
 
 ## 1. Strategic Vision & Concept
 
+### 1.0 Recent Platform Enhancements (December 2025)
+
+**Compliance & Security Infrastructure:**
+
+The platform has been significantly enhanced with enterprise-grade compliance and security features:
+
+1. **GDPR & Privacy Compliance Suite**
+   - GDPRConsent entity: Track consent management across all data processing activities
+   - DataSubjectRequest entity: Handle DSAR (Data Subject Access Requests) with 30-day SLA tracking
+   - PrivacyImpactAssessment entity: Document high-risk processing activities
+   - Full GDPR Article 5(1) compliance: Lawfulness, purpose limitation, data minimization
+
+2. **Data Breach & Incident Management**
+   - DataBreachIncident entity: Track security incidents with 72-hour regulatory notification timelines
+   - SecurityIncident entity: Log access violations, malware, DDoS, API abuse
+   - Automated incident response workflows with severity classification
+   - Integration with regulatory reporting (ICO, DPA notifications)
+
+3. **Access Control & Audit Trail**
+   - AccessControlLog entity: Comprehensive audit logging of all platform access
+   - AI-powered anomaly detection with risk scoring (0-100 scale)
+   - Behavioral analytics: Unusual IP, time-of-day, resource access patterns
+   - Enhanced Audit Logs dashboard with hourly trends and top user analytics
+
+4. **Data Retention & Lifecycle Management**
+   - DataRetentionPolicy entity: Define retention periods per data category
+   - Automated scheduler: Daily enforcement with archive-before-delete capability
+   - Compliance with PCI DSS (7-year transaction retention), GDPR (data minimization)
+   - Cold storage integration (S3/Glacier) for archived data
+   - Dry-run mode for testing retention policies before enforcement
+
+5. **Compliance Certification Tracking**
+   - ComplianceCertification entity: Track PCI DSS, ISO27001, SOC2, GDPR certifications
+   - Automated expiry alerts (90-day, 60-day, 30-day warnings)
+   - Multi-PSP certification management
+   - Audit findings and remediation tracking
+
+**Financial Integration:**
+
+6. **Xero Accounting Integration**
+   - OAuth 2.0 connection to Xero API
+   - Automated transaction sync (invoices, payments, contacts)
+   - Multi-organization support for PSPs with multiple entities
+   - Real-time financial metrics: Outstanding balances, invoiced amounts
+   - Date range filtering and reconciliation tools
+
+**Backend Functions Added:**
+
+- \`complianceDataManagement\`: GDPR DSAR handling, data export, erasure, retention enforcement
+- \`auditAnomalyDetection\`: AI-powered security anomaly detection with behavioral analysis
+- \`dataRetentionScheduler\`: Automated data deletion/archival based on retention policies
+- \`xeroIntegration\`: Full OAuth flow, token management, API calls to Xero
+- \`xeroMetrics\`: Financial dashboard data aggregation from Xero
+
+**Navigation Reorganization:**
+
+The FTS Control Panel menu has been restructured into 7 logical sections:
+1. Core Management (Tenants, PSPs, Users, Provisioning Queue)
+2. Analytics & Reporting (Analytics, Reports, Revenue)
+3. Marketplace & Services (Service Catalog, Providers, Product Catalog, Provider Pool, Payout Routes)
+4. Infrastructure (API Gateway, Domains, Blockchain, Financial Registries)
+5. Financial Management (Fee Templates, Xero Integration)
+6. Compliance & Security (Compliance Policies, Standard Audit Logs, Enhanced Audit Logs, Data Retention)
+7. System (Platform Settings, Architecture Docs)
+
+**Impact on Architecture:**
+
+These additions strengthen the platform's enterprise readiness by providing:
+- Full regulatory compliance (GDPR, PCI DSS, ISO27001)
+- Automated data governance and lifecycle management
+- AI-powered security monitoring with anomaly detection
+- Financial system integration for accounting automation
+- Comprehensive audit trails for regulatory reporting
+
+---
+
+## 1. Strategic Vision & Concept
+
 ### 1.1 The Paradigm Shift
 
 Traditional PSP platforms operate as isolated instances, each requiring independent development, provider relationships, and compliance infrastructure. This model is:
@@ -201,6 +279,19 @@ PSPInstanceLog Entity
 ├─ Error Tracking
 ├─ Performance Metrics
 └─ Security Events
+
+Compliance & Security Entities (New - Dec 2025)
+├─ GDPRConsent: Consent management & legal basis tracking
+├─ DataSubjectRequest: DSAR handling with 30-day SLA
+├─ DataBreachIncident: Security incident management & notifications
+├─ SecurityIncident: Access violations, malware, attacks
+├─ AccessControlLog: Comprehensive access audit trail
+├─ DataRetentionPolicy: Automated lifecycle management
+├─ ComplianceCertification: PCI DSS, ISO27001, SOC2 tracking
+└─ PrivacyImpactAssessment: High-risk processing documentation
+
+Accounting Integration (New - Dec 2025)
+└─ Xero OAuth Integration: Automated financial sync
 \`\`\`
 
 ### 2.2 Layer 2: FTS Community Marketplace
@@ -1487,6 +1578,31 @@ These costs are shared across all PSPs (not per-instance):
   - \`sqs.messages_delayed\` (processing backlog)
   - \`sqs.messages_in_flight\` (currently being processed)
 
+**Compliance & Security Metrics (New - Dec 2025):**
+
+- **Access Control:**
+  - \`access.anomaly_detected\` (AI-flagged suspicious activities)
+  - \`access.risk_score_avg\` (average risk score across all access logs)
+  - \`access.failed_logins_rate\` (% of login attempts that fail)
+  - \`access.unusual_ip_count\` (access from new/unusual IPs)
+
+- **Data Retention:**
+  - \`retention.records_deleted\` (daily automated cleanup count)
+  - \`retention.records_archived\` (moved to cold storage)
+  - \`retention.policy_violations\` (data exceeding retention period)
+  - \`retention.archive_storage_size\` (S3/Glacier usage)
+
+- **GDPR Compliance:**
+  - \`gdpr.dsar_pending\` (data subject requests awaiting completion)
+  - \`gdpr.dsar_sla_compliance\` (% completed within 30 days)
+  - \`gdpr.consent_rate\` (% users with active consent)
+  - \`gdpr.breach_incidents\` (count of reportable breaches)
+
+- **Certifications:**
+  - \`certs.expiring_soon\` (certifications expiring in <90 days)
+  - \`certs.compliance_coverage\` (% of PSPs with required certs)
+  - \`certs.audit_findings_open\` (unresolved audit issues)
+
 **Alerting (PagerDuty):**
 
 **Critical Alerts (immediate page):**
@@ -1495,17 +1611,28 @@ These costs are shared across all PSPs (not per-instance):
 - RDS CPU >90% for 10 minutes
 - Failed health checks (3 consecutive)
 - Fraud detection service down
+- Data breach incident reported (immediate regulatory notification required)
+- GDPR DSAR SLA breach (>30 days)
+- High-risk anomaly detected (risk score >90)
+- Compliance certification expired (PCI DSS, ISO27001)
 
 **Warning Alerts (email/Slack):**
 - Error rate >0.5% for 10 minutes
 - Cache hit rate <80% for 15 minutes
 - SQS queue depth >10,000 messages
 - Disk usage >80%
+- Anomaly detected (risk score 70-89)
+- Compliance certification expiring in <30 days
+- Failed login attempts >5 from same IP
+- Data retention policy violation detected
 
 **Info Alerts (dashboard only):**
 - New PSP provisioned
 - Service subscription changed
 - Backup completed
+- Data retention scheduler completed successfully
+- GDPR consent updated
+- Compliance certification renewed
 
 ### 3.9 Marketplace Integration Architecture
 
@@ -2118,11 +2245,18 @@ ServiceUsageMetric {
 - ✓ Service registry UI (admin only)
 - ✓ API endpoints for service CRUD operations
 - ✓ Basic subscription management (enable/disable services for PSPs)
+- ✓ 8 compliance entities (GDPR, Data Breach, Security, Access Control, Retention, Certifications, PIA)
+- ✓ Enhanced Audit Logs with AI anomaly detection
+- ✓ Data Retention Management with automated scheduler
+- ✓ Xero accounting integration with OAuth
 
 **Success Metrics:**
 - All FTS-owned services registered in catalog
 - Test PSP can subscribe to and use a service
 - Usage metrics captured correctly
+- Compliance framework operational with automated retention enforcement
+- AI anomaly detection achieving >90% accuracy on suspicious activity flagging
+- Xero integration syncing financial data in real-time
 
 ### Phase 2: Core Services Migration (Weeks 3-4)
 
@@ -4746,13 +4880,16 @@ For questions about this architecture:
                                                 </ul>
                                             </div>
                                             <div>
-                                                <p className="font-medium text-xs text-slate-500 mb-1">NEW PAGES</p>
-                                                <ul className="text-xs space-y-1">
-                                                    <li>✓ FTSProviderPool (completed)</li>
-                                                    <li>✓ FTSPayoutRoutes (completed)</li>
-                                                    <li>✓ FTSFeeTemplates (completed)</li>
-                                                    <li>• FTSServiceRegistry</li>
-                                                </ul>
+                                               <p className="font-medium text-xs text-slate-500 mb-1">NEW PAGES</p>
+                                               <ul className="text-xs space-y-1">
+                                                   <li>✓ FTSProviderPool (completed)</li>
+                                                   <li>✓ FTSPayoutRoutes (completed)</li>
+                                                   <li>✓ FTSFeeTemplates (completed)</li>
+                                                   <li>✓ FTSServiceManager (completed)</li>
+                                                   <li>✓ EnhancedAuditLogs (completed)</li>
+                                                   <li>✓ DataRetentionManagement (completed)</li>
+                                                   <li>✓ XeroIntegration (completed)</li>
+                                               </ul>
                                             </div>
                                         </div>
                                     </div>
