@@ -10,15 +10,27 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, RefreshCw, CheckCircle, Package, DollarSign, Save } from 'lucide-react';
+import { ArrowLeft, RefreshCw, CheckCircle, Package, DollarSign, Save, CreditCard, Shield, Activity, BarChart3, Code, Zap, Wallet, TrendingUp } from 'lucide-react';
 import { toast } from 'sonner';
 import { AuditLogger } from '@/components/platform/EnhancedAuditLogger';
+
+const categoryIcons = {
+    payment_rail: CreditCard,
+    compliance: Shield,
+    fraud_detection: Activity,
+    analytics: BarChart3,
+    developer_tools: Code,
+    orchestration: Zap,
+    payout: Wallet,
+    crypto: TrendingUp
+};
 
 export default function FTSServiceManager() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const { platformUser, loading } = usePlatformAuth();
     const [editedPrices, setEditedPrices] = useState({});
+    const [activeTab, setActiveTab] = useState('catalog');
 
     const { data: services = [] } = useQuery({
         queryKey: ['service-catalog'],
@@ -41,7 +53,10 @@ export default function FTSServiceManager() {
                 { source: 'netxhub' }
             );
             
-            toast.success(`Successfully imported ${data.count} services from NetXHub`);
+            // Switch to pricing matrix tab after import
+            setActiveTab('pricing');
+            
+            toast.success(`Successfully imported ${data.count} services from NetXHub - Review pricing matrix`);
         },
         onError: (error) => {
             toast.error('Failed to seed services: ' + error.message);
@@ -149,7 +164,7 @@ export default function FTSServiceManager() {
                 </header>
 
                 <div className="p-6">
-                    <Tabs defaultValue="catalog" className="w-full">
+                    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                         <TabsList>
                             <TabsTrigger value="catalog">Service Catalog</TabsTrigger>
                             <TabsTrigger value="pricing">Pricing Matrix</TabsTrigger>
@@ -198,14 +213,50 @@ export default function FTSServiceManager() {
                         </Card>
                     </div>
 
+                    {/* Category Navigation */}
+                    {services.length > 0 && (
+                        <Card className="bg-white border-slate-200 mb-6">
+                            <CardContent className="p-4">
+                                <div className="flex items-center gap-3 overflow-x-auto">
+                                    {Object.keys(servicesByCategory).map((category) => {
+                                        const Icon = categoryIcons[category] || Package;
+                                        return (
+                                            <a
+                                                key={category}
+                                                href={`#${category}`}
+                                                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-50 hover:bg-blue-50 hover:text-blue-700 transition-colors whitespace-nowrap"
+                                            >
+                                                <Icon className="h-4 w-4" />
+                                                <span className="text-sm font-medium capitalize">{category.replace(/_/g, ' ')}</span>
+                                                <Badge variant="outline" className="ml-1 text-xs">
+                                                    {servicesByCategory[category].length}
+                                                </Badge>
+                                            </a>
+                                        );
+                                    })}
+                                </div>
+                            </CardContent>
+                        </Card>
+                    )}
+
                     {/* Services by Category */}
                     <div className="space-y-6">
-                        {Object.entries(servicesByCategory).map(([category, categoryServices]) => (
-                            <Card key={category} className="bg-white border-slate-200">
-                                <CardHeader>
-                                    <CardTitle className="capitalize">{category.replace(/_/g, ' ')}</CardTitle>
-                                </CardHeader>
-                                <CardContent>
+                        {Object.entries(servicesByCategory).map(([category, categoryServices]) => {
+                            const Icon = categoryIcons[category] || Package;
+                            return (
+                                <Card key={category} id={category} className="bg-white border-slate-200 scroll-mt-6">
+                                    <CardHeader>
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                                                <Icon className="h-5 w-5 text-blue-600" />
+                                            </div>
+                                            <div>
+                                                <CardTitle className="capitalize">{category.replace(/_/g, ' ')}</CardTitle>
+                                                <p className="text-xs text-slate-500 mt-1">{categoryServices.length} services available</p>
+                                            </div>
+                                        </div>
+                                    </CardHeader>
+                                    <CardContent>
                                     <div className="grid grid-cols-3 gap-3">
                                         {categoryServices.map((service) => (
                                             <div
@@ -235,9 +286,10 @@ export default function FTSServiceManager() {
                                             </div>
                                         ))}
                                     </div>
-                                </CardContent>
-                            </Card>
-                        ))}
+                                    </CardContent>
+                                </Card>
+                            );
+                        })}
                     </div>
 
                     {services.length === 0 && (
