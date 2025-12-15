@@ -62,17 +62,16 @@ export default function Dashboard() {
         }
     }, [session, navigate]);
 
-    // Data is automatically isolated by schema - no need for psp_code filter
-    // Each PSP has its own database schema for PCI/GDPR compliance
+    // Filter by psp_code for data isolation (PCI/GDPR compliance)
     const { data: transactions = [] } = useQuery({
         queryKey: ['transactions', userPspCode],
-        queryFn: () => base44.entities.Transaction.list('-created_date', 10),
+        queryFn: () => base44.entities.Transaction.filter({ psp_code: userPspCode }, '-created_date', 10),
         enabled: !!userPspCode
     });
 
     const { data: merchants = [] } = useQuery({
         queryKey: ['merchants', userPspCode],
-        queryFn: () => base44.entities.Merchant.list(),
+        queryFn: () => base44.entities.Merchant.filter({ psp_code: userPspCode }),
         enabled: !!userPspCode
     });
 
