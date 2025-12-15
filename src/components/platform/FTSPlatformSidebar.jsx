@@ -30,6 +30,7 @@ const menuItems = [
     { icon: Activity, label: 'Provisioning Queue', path: 'FTSProvisioningQueue', description: 'Deploy PSPs', new: true },
     { icon: Users, label: 'Platform Users', path: 'PlatformUserManagement', description: 'Admin users', new: true },
     { icon: Users, label: 'PSP Users', path: 'PSPUserManagement', description: 'Manage PSP users' },
+    { icon: BarChart3, label: 'Reports', path: 'FTSReporting', description: 'Advanced reporting', new: true },
     { icon: BarChart3, label: 'Analytics', path: 'FTSAnalytics', description: 'Cross-PSP metrics' },
     { icon: DollarSign, label: 'Revenue', path: 'FTSRevenue', description: 'Billing & revenue' },
     { icon: Users, label: 'Clients', path: 'FTSClients', description: 'Client management' },
