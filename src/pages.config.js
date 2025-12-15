@@ -157,6 +157,7 @@ import PlatformAuditLogs from './pages/PlatformAuditLogs';
 import TenantManagement from './pages/TenantManagement';
 import TenantUserManagement from './pages/TenantUserManagement';
 import ComplianceFramework from './pages/ComplianceFramework';
+import FTSServiceManager from './pages/FTSServiceManager';
 import __Layout from './Layout.jsx';
 
 
@@ -320,6 +321,7 @@ export const PAGES = {
     "TenantManagement": TenantManagement,
     "TenantUserManagement": TenantUserManagement,
     "ComplianceFramework": ComplianceFramework,
+    "FTSServiceManager": FTSServiceManager,
 }
 
 export const pagesConfig = {
