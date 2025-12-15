@@ -40,9 +40,9 @@ Deno.serve(async (req) => {
             const client = await pool.connect();
             
             try {
-                // Set schema to PSP-specific isolated schema
+                // CRITICAL: Set schema to PSP-isolated schema ONLY (PCI/GDPR compliance)
                 const schemaName = `psp_${psp_code.toLowerCase()}`;
-                await client.query(`SET search_path TO ${schemaName}, public`);
+                await client.query(`SET search_path TO ${schemaName}`);
                 
                 const result = await client.query(`
                     SELECT id, email, full_name, role, status
@@ -85,9 +85,9 @@ Deno.serve(async (req) => {
             const client = await pool.connect();
             
             try {
-                // Set schema to PSP-specific isolated schema
+                // CRITICAL: Set schema to PSP-isolated schema ONLY (PCI/GDPR compliance)
                 const schemaName = `psp_${psp_code.toLowerCase()}`;
-                await client.query(`SET search_path TO ${schemaName}, public`);
+                await client.query(`SET search_path TO ${schemaName}`);
                 
                 // Query from isolated schema
                 const result = await client.query(`
