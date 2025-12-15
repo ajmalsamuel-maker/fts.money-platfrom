@@ -37,6 +37,7 @@ const menuItems = [
     { icon: Database, label: 'Provider Pool', path: 'FTSProviderPool', description: 'Payment providers', new: true },
     { icon: Wallet, label: 'Payout Routes', path: 'FTSPayoutRoutes', description: 'Payout methods', new: true },
     { icon: Globe, label: 'Blockchain Integration', path: 'FTSBlockchainIntegration', description: 'Crypto rails & ISO', new: true },
+    { icon: Zap, label: 'API Gateway', path: 'APIGatewayConfiguration', description: 'Kong + Orchestration', new: true },
     { icon: Zap, label: 'Fee Templates', path: 'FTSFeeTemplates', description: 'Pricing templates', new: true },
     { icon: Users, label: 'Service Providers', path: 'FTSServiceProviders', description: '3rd party providers', new: true },
     { icon: Shield, label: 'Compliance', path: 'FTSCompliance', description: 'Policy templates', new: true },
