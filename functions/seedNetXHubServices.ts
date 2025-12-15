@@ -797,8 +797,9 @@ Deno.serve(async (req) => {
             }
 
             // Import all NetXHub services into FTS.Money catalog
+            const importedServices = [];
             for (const service of NETXHUB_SERVICES) {
-                await base44.asServiceRole.entities.ServiceCatalog.create({
+                const created = await base44.asServiceRole.entities.ServiceCatalog.create({
                     ...service,
                     provider_id: 'netxhub',
                     provider_name: 'NetXHub',
@@ -808,12 +809,35 @@ Deno.serve(async (req) => {
                     features: [],
                     tags: [service.service_category, service.tier_requirement]
                 });
+                importedServices.push(created);
             }
+
+            // Audit log for service import
+            await base44.asServiceRole.entities.PSPAuditTrail.create({
+                psp_id: 'platform',
+                psp_code: 'FTS_PLATFORM',
+                action: 'services_imported',
+                field_changed: 'service_catalog',
+                new_value: `Imported ${NETXHUB_SERVICES.length} services from NetXHub`,
+                user_email: 'system@fts.money',
+                user_role: 'platform_system',
+                metadata: {
+                    service_count: NETXHUB_SERVICES.length,
+                    iso_standards: NETXHUB_SERVICES.filter(s => s.service_id.includes('iso_')).map(s => s.service_id),
+                    compliance_frameworks: ['ISO 20022', 'ISO 8583', 'ISO 4217', 'ISO 3166', 'ISO 27001', 'ISO 22301', 'ISO 9001'],
+                    action_timestamp: new Date().toISOString()
+                }
+            });
+
+            const isoStandards = NETXHUB_SERVICES
+                .filter(s => s.service_id.includes('iso_'))
+                .map(s => s.service_id);
 
             return Response.json({ 
                 success: true, 
                 message: `Imported ${NETXHUB_SERVICES.length} services from NetXHub to FTS.Money catalog`,
-                count: NETXHUB_SERVICES.length
+                count: NETXHUB_SERVICES.length,
+                iso_standards: isoStandards
             });
         }
 

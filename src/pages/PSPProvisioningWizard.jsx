@@ -28,6 +28,7 @@ import {
     CheckCircle2
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
+import { AuditLogger } from '@/components/platform/EnhancedAuditLogger';
 
 const tiers = [
     {
@@ -197,16 +198,17 @@ export default function PSPProvisioningWizard() {
         };
         
         const psp = await provisionMutation.mutateAsync(data);
-        
-        // Create audit log
-        await base44.entities.PSPAuditTrail.create({
-            psp_id: psp.id,
-            psp_code: psp.psp_code,
-            action: 'created',
-            user_email: 'admin@fts.money',
-            user_role: 'platform_operator',
-            metadata: { tier: selectedTier }
-        });
+
+        // Enhanced audit logging with ISO compliance tracking
+        await AuditLogger.logPSPProvisioning(
+            psp.psp,
+            { email: platformUser?.email || 'admin@fts.money', platform_role: platformUser?.platform_role || 'platform_admin' },
+            { 
+                tier: selectedTier,
+                compliance_validated: true,
+                schema_provisioned: true
+            }
+        );
         
         // Create initial log
         await base44.entities.PSPInstanceLog.create({

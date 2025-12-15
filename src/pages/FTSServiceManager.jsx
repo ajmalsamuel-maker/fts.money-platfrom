@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeft, RefreshCw, CheckCircle, Package, DollarSign, Save } from 'lucide-react';
 import { toast } from 'sonner';
+import { AuditLogger } from '@/components/platform/EnhancedAuditLogger';
 
 export default function FTSServiceManager() {
     const navigate = useNavigate();
@@ -29,8 +30,17 @@ export default function FTSServiceManager() {
             const response = await base44.functions.invoke('seedNetXHubServices', { action: 'seed' });
             return response.data;
         },
-        onSuccess: (data) => {
+        onSuccess: async (data) => {
             queryClient.invalidateQueries(['service-catalog']);
+            
+            // Log service import to audit trail
+            await AuditLogger.logServiceImport(
+                data.count,
+                data.iso_standards || [],
+                { email: platformUser?.email || 'admin@fts.money', platform_role: platformUser?.platform_role || 'platform_admin' },
+                { source: 'netxhub' }
+            );
+            
             toast.success(`Successfully imported ${data.count} services from NetXHub`);
         },
         onError: (error) => {
@@ -44,9 +54,25 @@ export default function FTSServiceManager() {
                 base44.entities.ServiceCatalog.update(id, { base_price, variable_price })
             );
             await Promise.all(promises);
+            return updates;
         },
-        onSuccess: () => {
+        onSuccess: async (updates) => {
             queryClient.invalidateQueries(['service-catalog']);
+            
+            // Log pricing changes
+            for (const update of updates) {
+                const service = services.find(s => s.id === update.id);
+                if (service) {
+                    await AuditLogger.logPricingUpdate(
+                        service.service_id,
+                        service.service_name,
+                        service.base_price || 0,
+                        update.base_price,
+                        { email: platformUser?.email || 'admin@fts.money', platform_role: platformUser?.platform_role || 'platform_admin' }
+                    );
+                }
+            }
+            
             setEditedPrices({});
             toast.success('Pricing updated successfully');
         },
