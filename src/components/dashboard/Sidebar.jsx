@@ -232,17 +232,7 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
         loadUser();
     }, []);
 
-    useEffect(() => {
-        const loadTheme = async () => {
-            try {
-                const settings = await base44.entities.ThemeSettings.list();
-                if (settings && settings.length > 0) {
-                    setThemeSettings(settings[0]);
-                }
-            } catch (err) {}
-        };
-        loadTheme();
-    }, []);
+    // Theme settings are now loaded from PSP settings only (no public fallback)
 
     useEffect(() => {
         const loadPspSettings = async () => {
@@ -299,12 +289,12 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
         staffLogout();
     };
 
-    const sidebarBg = themeSettings?.sidebar_bg || '#0f172a';
-    const sidebarText = themeSettings?.sidebar_text || '#94a3b8';
-    const primaryColor = pspSettings?.branding?.primary_color || themeSettings?.primary_color || '#3b82f6';
-    const secondaryColor = pspSettings?.branding?.secondary_color || themeSettings?.secondary_color || '#06b6d4';
-    const companyName = pspSettings?.psp_name || pspSettings?.branding?.company_name || themeSettings?.company_name || 'PaymentHub';
-    const logoUrl = pspSettings?.branding?.logo_url || themeSettings?.logo_url;
+    const sidebarBg = '#0f172a';
+    const sidebarText = '#94a3b8';
+    const primaryColor = pspSettings?.branding?.primary_color || '#3b82f6';
+    const secondaryColor = pspSettings?.branding?.secondary_color || '#06b6d4';
+    const companyName = pspSettings?.psp_name || pspSettings?.branding?.company_name || 'PaymentHub';
+    const logoUrl = pspSettings?.branding?.logo_url;
 
     const activeGroupData = filteredMenuItems.find(g => g.group === activeGroup);
 

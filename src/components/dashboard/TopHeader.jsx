@@ -63,35 +63,32 @@ export default function TopHeader({ onToggleSidebar, collapsed }) {
         loadUser();
     }, []);
 
+    // Theme settings loaded via PSP settings only
+
+    const staffSession = getStaffSession();
+    const [pspSettings, setPspSettings] = useState(null);
+    
     useEffect(() => {
-        const loadTheme = async () => {
+        const loadPSPSettings = async () => {
             try {
-                const staffSession = getStaffSession();
-                const pspCode = staffSession?.psp_code;
+                const session = getStaffSession();
+                const pspCode = session?.psp_code;
                 
-                console.log('TopHeader: Loading theme for PSP code:', pspCode);
+                if (!pspCode) return;
                 
-                if (!pspCode) {
-                    console.error('TopHeader: No PSP code in session');
-                    return;
-                }
-                
-                // Fetch PSP-specific theme settings
                 const result = await base44.functions.invoke('getPSPSettings', { psp_code: pspCode });
-                console.log('TopHeader: PSP settings loaded:', result.data);
-                
                 if (result.data.success && result.data.settings) {
-                    setThemeSettings(result.data.settings);
+                    setPspSettings(result.data.settings);
                 }
             } catch (err) {
-                console.error('TopHeader: Error loading theme:', err);
+                console.error('Error loading PSP settings:', err);
             }
         };
-        loadTheme();
+        loadPSPSettings();
     }, []);
 
-    const primaryColor = themeSettings?.branding?.primary_color || themeSettings?.primary_color || '#3b82f6';
-    const secondaryColor = themeSettings?.branding?.secondary_color || themeSettings?.secondary_color || '#06b6d4';
+    const primaryColor = pspSettings?.branding?.primary_color || '#3b82f6';
+    const secondaryColor = pspSettings?.branding?.secondary_color || '#06b6d4';
 
     const userRole = user?.app_role || 'viewer';
     const roleConfig = ROLE_CONFIG[userRole] || ROLE_CONFIG.viewer;
