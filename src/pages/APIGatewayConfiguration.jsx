@@ -257,10 +257,32 @@ export default function APIGatewayConfiguration() {
                             <Card>
                                 <CardHeader>
                                     <CardTitle>Hybrid Architecture</CardTitle>
-                                    <p className="text-sm text-slate-600">Kong Gateway for infrastructure + Custom orchestration for payment logic</p>
+                                    <p className="text-sm text-slate-600">
+                                        {selectedProviders.length > 0 
+                                            ? `${selectedProviders.map(id => API_GATEWAY_PROVIDERS.find(p => p.id === id)?.name).join(', ')} for infrastructure + Custom orchestration for payment logic`
+                                            : 'Select gateways in Providers tab + Custom orchestration for payment logic'
+                                        }
+                                    </p>
                                 </CardHeader>
                                 <CardContent>
                                     <div className="space-y-8">
+                                        {/* Active Gateways */}
+                                        {selectedProviders.length > 0 && (
+                                            <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                                                <h4 className="font-semibold text-slate-900 mb-2">Active API Gateways</h4>
+                                                <div className="flex flex-wrap gap-2">
+                                                    {selectedProviders.map(id => {
+                                                        const provider = API_GATEWAY_PROVIDERS.find(p => p.id === id);
+                                                        return (
+                                                            <Badge key={id} className="bg-blue-600 text-white text-xs">
+                                                                {provider?.icon} {provider?.name}
+                                                            </Badge>
+                                                        );
+                                                    })}
+                                                </div>
+                                            </div>
+                                        )}
+
                                         {/* Flow Diagram */}
                                         <div className="flex items-center justify-between gap-4 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg">
                                             <div className="flex-1 text-center">
@@ -275,7 +297,7 @@ export default function APIGatewayConfiguration() {
                                                 <div className="w-16 h-16 mx-auto rounded-xl bg-purple-600 flex items-center justify-center mb-3">
                                                     <Shield className="h-8 w-8 text-white" />
                                                 </div>
-                                                <p className="font-semibold text-slate-900">Kong Gateway</p>
+                                                <p className="font-semibold text-slate-900">API Gateway(s)</p>
                                                 <p className="text-xs text-slate-600">Auth, Rate Limit, Security</p>
                                             </div>
                                             <ArrowRight className="h-6 w-6 text-slate-400" />
@@ -301,7 +323,7 @@ export default function APIGatewayConfiguration() {
                                             <div className="space-y-4">
                                                 <h3 className="font-semibold text-slate-900 flex items-center gap-2">
                                                     <Shield className="h-5 w-5 text-purple-600" />
-                                                    Kong Gateway Handles
+                                                    API Gateway(s) Handle
                                                 </h3>
                                                 <ul className="space-y-2 text-sm">
                                                     {[
