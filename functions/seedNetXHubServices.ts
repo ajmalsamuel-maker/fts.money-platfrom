@@ -1,6 +1,16 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
 
-// Comprehensive NetXHub service catalog
+/**
+ * NetXHub Service Catalog
+ * 
+ * ARCHITECTURE OVERVIEW:
+ * - NetXHub is the core development platform where new payment functions/services are developed
+ * - Once services are ready on NetXHub, they are imported/seeded into FTS.Money Control Panel
+ * - FTS.Money then provisions these services to its PSP customers
+ * - This creates a clear pipeline: NetXHub (Development) → FTS.Money (Platform) → PSPs (Customers)
+ * 
+ * This catalog represents all services available on NetXHub that can be imported into FTS.Money
+ */
 const NETXHUB_SERVICES = [
     // Payment Processing Core
     {
@@ -777,18 +787,21 @@ Deno.serve(async (req) => {
         const { action } = await req.json();
 
         if (action === 'seed') {
-            // Delete existing services first
+            // Import services from NetXHub development platform into FTS.Money platform
+            // This makes them available for provisioning to PSP customers
+            
+            // Clear existing services first
             const existing = await base44.asServiceRole.entities.ServiceCatalog.list();
             for (const service of existing) {
                 await base44.asServiceRole.entities.ServiceCatalog.delete(service.id);
             }
 
-            // Create all NetXHub services
+            // Import all NetXHub services into FTS.Money catalog
             for (const service of NETXHUB_SERVICES) {
                 await base44.asServiceRole.entities.ServiceCatalog.create({
                     ...service,
-                    provider_id: 'fts_money',
-                    provider_name: 'FTS.Money',
+                    provider_id: 'netxhub',
+                    provider_name: 'NetXHub',
                     status: 'active',
                     trial_available: true,
                     trial_duration_days: 30,
@@ -799,7 +812,7 @@ Deno.serve(async (req) => {
 
             return Response.json({ 
                 success: true, 
-                message: `Seeded ${NETXHUB_SERVICES.length} services`,
+                message: `Imported ${NETXHUB_SERVICES.length} services from NetXHub to FTS.Money catalog`,
                 count: NETXHUB_SERVICES.length
             });
         }

@@ -31,7 +31,7 @@ export default function FTSServiceManager() {
         },
         onSuccess: (data) => {
             queryClient.invalidateQueries(['service-catalog']);
-            toast.success(`Successfully seeded ${data.count} services from NetXHub`);
+            toast.success(`Successfully imported ${data.count} services from NetXHub`);
         },
         onError: (error) => {
             toast.error('Failed to seed services: ' + error.message);
@@ -99,8 +99,8 @@ export default function FTSServiceManager() {
             <div className="flex-1 overflow-auto">
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
                     <div>
-                        <h2 className="text-lg font-semibold text-slate-900">NetXHub Service Catalog</h2>
-                        <p className="text-xs text-slate-600">Manage granular services available to all PSPs</p>
+                        <h2 className="text-lg font-semibold text-slate-900">FTS.Money Service Catalog</h2>
+                        <p className="text-xs text-slate-600">Services seeded from NetXHub development platform for provisioning to PSP customers</p>
                     </div>
                     <div className="flex items-center gap-3">
                         <Button 
@@ -110,7 +110,7 @@ export default function FTSServiceManager() {
                             className="gap-2"
                         >
                             <RefreshCw className={`h-4 w-4 ${seedMutation.isPending ? 'animate-spin' : ''}`} />
-                            {seedMutation.isPending ? 'Seeding...' : 'Seed Services from NetXHub'}
+                            {seedMutation.isPending ? 'Importing...' : 'Import from NetXHub'}
                         </Button>
                         <Button 
                             onClick={() => navigate(createPageUrl('FTSMoneyPlatform'))}
@@ -217,13 +217,14 @@ export default function FTSServiceManager() {
                     {services.length === 0 && (
                         <div className="text-center py-12">
                             <Package className="h-16 w-16 text-slate-400 mx-auto mb-4" />
-                            <p className="text-slate-600 mb-4">No services configured yet</p>
+                            <p className="text-slate-600 mb-4">No services imported yet</p>
+                            <p className="text-xs text-slate-500 mb-6">Import services from NetXHub development platform to make them available for PSP provisioning</p>
                             <Button 
                                 onClick={() => seedMutation.mutate()}
                                 disabled={seedMutation.isPending}
                                 className="bg-blue-600 hover:bg-blue-700"
                             >
-                                Seed Services from NetXHub
+                                Import Services from NetXHub
                             </Button>
                         </div>
                     )}
