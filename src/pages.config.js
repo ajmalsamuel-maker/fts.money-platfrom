@@ -158,6 +158,7 @@ import TenantManagement from './pages/TenantManagement';
 import TenantUserManagement from './pages/TenantUserManagement';
 import ComplianceFramework from './pages/ComplianceFramework';
 import FTSServiceManager from './pages/FTSServiceManager';
+import FTSBlockchainIntegration from './pages/FTSBlockchainIntegration';
 import __Layout from './Layout.jsx';
 
 
@@ -322,6 +323,7 @@ export const PAGES = {
     "TenantUserManagement": TenantUserManagement,
     "ComplianceFramework": ComplianceFramework,
     "FTSServiceManager": FTSServiceManager,
+    "FTSBlockchainIntegration": FTSBlockchainIntegration,
 }
 
 export const pagesConfig = {
