@@ -301,10 +301,10 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
 
     const sidebarBg = themeSettings?.sidebar_bg || '#0f172a';
     const sidebarText = themeSettings?.sidebar_text || '#94a3b8';
-    const primaryColor = themeSettings?.primary_color || '#3b82f6';
-    const secondaryColor = themeSettings?.secondary_color || '#06b6d4';
-    const companyName = pspSettings?.company_name || themeSettings?.company_name || 'PaymentHub';
-    const logoUrl = themeSettings?.logo_url;
+    const primaryColor = pspSettings?.branding?.primary_color || themeSettings?.primary_color || '#3b82f6';
+    const secondaryColor = pspSettings?.branding?.secondary_color || themeSettings?.secondary_color || '#06b6d4';
+    const companyName = pspSettings?.psp_name || pspSettings?.branding?.company_name || themeSettings?.company_name || 'PaymentHub';
+    const logoUrl = pspSettings?.branding?.logo_url || themeSettings?.logo_url;
 
     const activeGroupData = filteredMenuItems.find(g => g.group === activeGroup);
 
