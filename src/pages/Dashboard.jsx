@@ -57,16 +57,21 @@ export default function Dashboard() {
     React.useEffect(() => {
         const sessionData = localStorage.getItem('staff_session');
         
+        console.log('Raw session data from localStorage:', sessionData);
+        
         if (!sessionData) {
+            console.log('No session data found, redirecting to login');
             window.location.href = '/PSPLogin';
             return;
         }
 
         try {
             const session = JSON.parse(sessionData);
-            console.log('Dashboard session:', session);
+            console.log('Parsed dashboard session:', session);
+            console.log('PSP Code from session:', session?.psp_code);
             
             if (session?.psp_code) {
+                console.log('Setting userPspCode to:', session.psp_code);
                 setUserPspCode(session.psp_code);
                 setIsReady(true);
             } else {
