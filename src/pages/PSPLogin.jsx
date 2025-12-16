@@ -289,8 +289,7 @@ export default function PSPLogin() {
                                     </Button>
                                     <Button
                                         type="submit"
-                                        className="flex-1 text-white"
-                                        style={{ background: FTS_GRADIENTS.dark1 }}
+                                        className="flex-1 text-white bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700"
                                         disabled={isLoading}
                                     >
                                         {isLoading ? (
