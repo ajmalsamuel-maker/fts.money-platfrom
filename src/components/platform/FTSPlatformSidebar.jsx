@@ -73,6 +73,7 @@ const menuSections = [
     {
         title: 'Financial Management',
         items: [
+            { icon: DollarSign, label: 'Master Pricing', path: 'MasterPricingManagement', description: 'Comprehensive pricing control' },
             { icon: Zap, label: 'Fee Templates', path: 'FTSFeeTemplates', description: 'Pricing templates' },
             { icon: DollarSign, label: 'Xero Integration', path: 'XeroIntegration', description: 'Accounting sync' }
         ]

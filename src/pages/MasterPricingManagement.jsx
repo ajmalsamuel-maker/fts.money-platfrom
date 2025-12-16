@@ -1,0 +1,519 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { base44 } from '@/api/base44Client';
+import { usePlatformAuth, PLATFORM_PERMISSIONS } from '@/components/auth/usePlatformAuth';
+import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { 
+    DollarSign, 
+    Plus, 
+    TrendingUp, 
+    Search,
+    Edit,
+    Trash2,
+    CheckCircle,
+    AlertCircle,
+    ArrowUpDown,
+    Download,
+    RefreshCw
+} from 'lucide-react';
+import { toast } from 'sonner';
+
+const categories = [
+    { value: 'payment_rail', label: 'Payment Rails' },
+    { value: 'payout_route', label: 'Payout Routes' },
+    { value: 'api_endpoint', label: 'API Endpoints' },
+    { value: 'service', label: 'Services' },
+    { value: 'merchant_onboarding', label: 'Merchant Onboarding' },
+    { value: 'transaction_processing', label: 'Transaction Processing' },
+    { value: 'settlement', label: 'Settlement' },
+    { value: 'compliance_service', label: 'Compliance Services' },
+    { value: 'fraud_detection', label: 'Fraud Detection' },
+    { value: 'network_tokenization', label: 'Network Tokenization' },
+    { value: 'account_updater', label: 'Account Updater' },
+    { value: 'instant_payment', label: 'Instant Payments' },
+    { value: 'crypto_processing', label: 'Crypto Processing' },
+    { value: 'data_storage', label: 'Data Storage' },
+    { value: 'reporting', label: 'Reporting' },
+    { value: 'webhook', label: 'Webhooks' },
+    { value: 'terminal_rental', label: 'Terminal Rental' },
+    { value: 'subscription_management', label: 'Subscription Management' },
+    { value: 'dispute_handling', label: 'Dispute Handling' },
+    { value: 'chargeback_fee', label: 'Chargeback Fees' },
+    { value: 'refund_processing', label: 'Refund Processing' },
+    { value: 'platform_fee', label: 'Platform Fees' },
+    { value: 'setup_fee', label: 'Setup Fees' },
+    { value: 'monthly_fee', label: 'Monthly Fees' }
+];
+
+export default function MasterPricingManagement() {
+    const navigate = useNavigate();
+    const queryClient = useQueryClient();
+    const { platformUser, loading } = usePlatformAuth([PLATFORM_PERMISSIONS.PRICING_VIEW]);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [categoryFilter, setCategoryFilter] = useState('all');
+    const [statusFilter, setStatusFilter] = useState('all');
+    const [showDialog, setShowDialog] = useState(false);
+    const [editingItem, setEditingItem] = useState(null);
+    const [formData, setFormData] = useState({});
+
+    const { data: pricingItems = [] } = useQuery({
+        queryKey: ['master-pricing'],
+        queryFn: () => base44.entities.MasterPricing.list()
+    });
+
+    const createMutation = useMutation({
+        mutationFn: (data) => base44.entities.MasterPricing.create({
+            ...data,
+            item_id: `PRC-${Date.now()}`,
+            approved_by: platformUser?.email,
+            approval_date: new Date().toISOString().split('T')[0]
+        }),
+        onSuccess: () => {
+            queryClient.invalidateQueries(['master-pricing']);
+            setShowDialog(false);
+            setFormData({});
+            toast.success('Pricing item created');
+        }
+    });
+
+    const updateMutation = useMutation({
+        mutationFn: ({ id, data }) => base44.entities.MasterPricing.update(id, data),
+        onSuccess: () => {
+            queryClient.invalidateQueries(['master-pricing']);
+            setShowDialog(false);
+            setEditingItem(null);
+            setFormData({});
+            toast.success('Pricing updated');
+        }
+    });
+
+    const deleteMutation = useMutation({
+        mutationFn: (id) => base44.entities.MasterPricing.delete(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries(['master-pricing']);
+            toast.success('Pricing item deleted');
+        }
+    });
+
+    const filteredItems = pricingItems.filter(item => {
+        const matchesSearch = !searchTerm || 
+            item.item_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item.provider_name?.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesCategory = categoryFilter === 'all' || item.category === categoryFilter;
+        const matchesStatus = statusFilter === 'all' || item.status === statusFilter;
+        return matchesSearch && matchesCategory && matchesStatus;
+    });
+
+    const stats = {
+        total: pricingItems.length,
+        active: pricingItems.filter(i => i.status === 'active').length,
+        totalRevenue: pricingItems.reduce((sum, i) => sum + (i.total_revenue || 0), 0),
+        totalCost: pricingItems.reduce((sum, i) => sum + (i.total_cost || 0), 0),
+        margin: pricingItems.reduce((sum, i) => sum + ((i.total_revenue || 0) - (i.total_cost || 0)), 0)
+    };
+
+    const handleSubmit = () => {
+        const margin = (formData.sell_rate_percentage || 0) - (formData.buy_rate_percentage || 0);
+        const dataToSubmit = {
+            ...formData,
+            margin_percentage: margin
+        };
+
+        if (editingItem) {
+            updateMutation.mutate({ id: editingItem.id, data: dataToSubmit });
+        } else {
+            createMutation.mutate(dataToSubmit);
+        }
+    };
+
+    const handleEdit = (item) => {
+        setEditingItem(item);
+        setFormData(item);
+        setShowDialog(true);
+    };
+
+    const resetForm = () => {
+        setFormData({
+            category: '',
+            item_name: '',
+            buy_rate_type: 'percentage',
+            sell_rate_type: 'percentage',
+            currency: 'USD',
+            status: 'active'
+        });
+        setEditingItem(null);
+    };
+
+    if (loading) return null;
+
+    return (
+        <div className="flex h-screen bg-slate-50">
+            <FTSPlatformSidebar 
+                currentPage="MasterPricingManagement" 
+                userRole={platformUser?.platform_role}
+                userEmail={platformUser?.email}
+                isSuperAdmin={platformUser?.platform_role === 'super_admin'}
+            />
+
+            <div className="flex-1 overflow-auto">
+                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
+                    <div>
+                        <h2 className="text-lg font-semibold text-slate-900">Master Pricing Management</h2>
+                        <p className="text-xs text-slate-600">Comprehensive pricing control & reconciliation</p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                        <Button variant="outline" className="gap-2">
+                            <Download className="h-4 w-4" />
+                            Export to Xero
+                        </Button>
+                        <Button variant="outline" className="gap-2">
+                            <RefreshCw className="h-4 w-4" />
+                            Reconcile
+                        </Button>
+                        <Button onClick={() => { resetForm(); setShowDialog(true); }} className="gap-2 bg-blue-600">
+                            <Plus className="h-4 w-4" />
+                            New Pricing Item
+                        </Button>
+                    </div>
+                </header>
+
+                <main className="p-6">
+                    {/* Stats Cards */}
+                    <div className="grid grid-cols-5 gap-4 mb-6">
+                        <Card>
+                            <CardContent className="p-6">
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <p className="text-sm text-slate-600">Total Items</p>
+                                        <p className="text-3xl font-bold text-slate-900 mt-1">{stats.total}</p>
+                                    </div>
+                                    <DollarSign className="h-8 w-8 text-blue-600" />
+                                </div>
+                            </CardContent>
+                        </Card>
+                        <Card>
+                            <CardContent className="p-6">
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <p className="text-sm text-slate-600">Active</p>
+                                        <p className="text-3xl font-bold text-emerald-600 mt-1">{stats.active}</p>
+                                    </div>
+                                    <CheckCircle className="h-8 w-8 text-emerald-600" />
+                                </div>
+                            </CardContent>
+                        </Card>
+                        <Card>
+                            <CardContent className="p-6">
+                                <div>
+                                    <p className="text-sm text-slate-600">Total Revenue</p>
+                                    <p className="text-2xl font-bold text-blue-600 mt-1">${stats.totalRevenue.toLocaleString()}</p>
+                                </div>
+                            </CardContent>
+                        </Card>
+                        <Card>
+                            <CardContent className="p-6">
+                                <div>
+                                    <p className="text-sm text-slate-600">Total Cost</p>
+                                    <p className="text-2xl font-bold text-red-600 mt-1">${stats.totalCost.toLocaleString()}</p>
+                                </div>
+                            </CardContent>
+                        </Card>
+                        <Card>
+                            <CardContent className="p-6">
+                                <div>
+                                    <p className="text-sm text-slate-600">Gross Margin</p>
+                                    <p className="text-2xl font-bold text-emerald-600 mt-1">${stats.margin.toLocaleString()}</p>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
+
+                    {/* Filters */}
+                    <Card className="mb-6">
+                        <CardContent className="p-4">
+                            <div className="flex gap-4">
+                                <div className="flex-1 relative">
+                                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                                    <Input
+                                        placeholder="Search pricing items..."
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                        className="pl-10"
+                                    />
+                                </div>
+                                <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                                    <SelectTrigger className="w-64">
+                                        <SelectValue placeholder="All Categories" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">All Categories</SelectItem>
+                                        {categories.map(cat => (
+                                            <SelectItem key={cat.value} value={cat.value}>{cat.label}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                                    <SelectTrigger className="w-48">
+                                        <SelectValue placeholder="All Status" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">All Status</SelectItem>
+                                        <SelectItem value="active">Active</SelectItem>
+                                        <SelectItem value="inactive">Inactive</SelectItem>
+                                        <SelectItem value="pending_approval">Pending</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    {/* Pricing Table */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Pricing Matrix</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-sm">
+                                    <thead>
+                                        <tr className="border-b border-slate-200">
+                                            <th className="text-left py-3 px-4 font-semibold">Item</th>
+                                            <th className="text-left py-3 px-4 font-semibold">Category</th>
+                                            <th className="text-left py-3 px-4 font-semibold">Provider</th>
+                                            <th className="text-right py-3 px-4 font-semibold">Buy Rate</th>
+                                            <th className="text-right py-3 px-4 font-semibold">Sell Rate</th>
+                                            <th className="text-right py-3 px-4 font-semibold">Margin</th>
+                                            <th className="text-left py-3 px-4 font-semibold">Status</th>
+                                            <th className="text-right py-3 px-4 font-semibold">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {filteredItems.map((item) => (
+                                            <tr key={item.id} className="border-b border-slate-100 hover:bg-slate-50">
+                                                <td className="py-3 px-4">
+                                                    <div>
+                                                        <p className="font-medium text-slate-900">{item.item_name}</p>
+                                                        <p className="text-xs text-slate-500">{item.item_id}</p>
+                                                    </div>
+                                                </td>
+                                                <td className="py-3 px-4">
+                                                    <Badge variant="outline" className="capitalize">
+                                                        {item.category?.replace(/_/g, ' ')}
+                                                    </Badge>
+                                                </td>
+                                                <td className="py-3 px-4 text-slate-600">{item.provider_name || '-'}</td>
+                                                <td className="py-3 px-4 text-right text-slate-900">
+                                                    {item.buy_rate_percentage ? `${item.buy_rate_percentage}%` : '-'}
+                                                    {item.buy_rate_fixed ? ` + $${item.buy_rate_fixed}` : ''}
+                                                </td>
+                                                <td className="py-3 px-4 text-right text-slate-900">
+                                                    {item.sell_rate_percentage ? `${item.sell_rate_percentage}%` : '-'}
+                                                    {item.sell_rate_fixed ? ` + $${item.sell_rate_fixed}` : ''}
+                                                </td>
+                                                <td className="py-3 px-4 text-right">
+                                                    <span className={item.margin_percentage >= 0 ? 'text-emerald-600 font-medium' : 'text-red-600 font-medium'}>
+                                                        {item.margin_percentage?.toFixed(2)}%
+                                                    </span>
+                                                </td>
+                                                <td className="py-3 px-4">
+                                                    <Badge className={
+                                                        item.status === 'active' ? 'bg-emerald-100 text-emerald-700' :
+                                                        item.status === 'pending_approval' ? 'bg-amber-100 text-amber-700' :
+                                                        'bg-slate-100 text-slate-700'
+                                                    }>
+                                                        {item.status}
+                                                    </Badge>
+                                                </td>
+                                                <td className="py-3 px-4 text-right">
+                                                    <div className="flex justify-end gap-2">
+                                                        <Button size="sm" variant="outline" onClick={() => handleEdit(item)}>
+                                                            <Edit className="h-3 w-3" />
+                                                        </Button>
+                                                        <Button size="sm" variant="outline" onClick={() => deleteMutation.mutate(item.id)} className="text-red-600">
+                                                            <Trash2 className="h-3 w-3" />
+                                                        </Button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                                {filteredItems.length === 0 && (
+                                    <div className="text-center py-12 text-slate-600">
+                                        No pricing items found
+                                    </div>
+                                )}
+                            </div>
+                        </CardContent>
+                    </Card>
+                </main>
+            </div>
+
+            {/* Create/Edit Dialog */}
+            <Dialog open={showDialog} onOpenChange={setShowDialog}>
+                <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+                    <DialogHeader>
+                        <DialogTitle>{editingItem ? 'Edit Pricing Item' : 'New Pricing Item'}</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <Label>Category *</Label>
+                                <Select value={formData.category} onValueChange={(value) => setFormData({...formData, category: value})}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select category" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {categories.map(cat => (
+                                            <SelectItem key={cat.value} value={cat.value}>{cat.label}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div>
+                                <Label>Item Name *</Label>
+                                <Input
+                                    value={formData.item_name || ''}
+                                    onChange={(e) => setFormData({...formData, item_name: e.target.value})}
+                                    placeholder="e.g., Stripe Payment Processing"
+                                />
+                            </div>
+                        </div>
+
+                        <div>
+                            <Label>Description</Label>
+                            <Textarea
+                                value={formData.item_description || ''}
+                                onChange={(e) => setFormData({...formData, item_description: e.target.value})}
+                                placeholder="Detailed description"
+                            />
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <Label>Provider Name</Label>
+                                <Input
+                                    value={formData.provider_name || ''}
+                                    onChange={(e) => setFormData({...formData, provider_name: e.target.value})}
+                                    placeholder="e.g., Stripe, Adyen"
+                                />
+                            </div>
+                            <div>
+                                <Label>Currency</Label>
+                                <Input
+                                    value={formData.currency || 'USD'}
+                                    onChange={(e) => setFormData({...formData, currency: e.target.value})}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="border-t pt-4">
+                            <h4 className="font-semibold text-slate-900 mb-3">Buy Rates (What We Pay)</h4>
+                            <div className="grid grid-cols-3 gap-4">
+                                <div>
+                                    <Label>Percentage (%)</Label>
+                                    <Input
+                                        type="number"
+                                        step="0.01"
+                                        value={formData.buy_rate_percentage || ''}
+                                        onChange={(e) => setFormData({...formData, buy_rate_percentage: parseFloat(e.target.value)})}
+                                    />
+                                </div>
+                                <div>
+                                    <Label>Fixed Amount</Label>
+                                    <Input
+                                        type="number"
+                                        step="0.01"
+                                        value={formData.buy_rate_fixed || ''}
+                                        onChange={(e) => setFormData({...formData, buy_rate_fixed: parseFloat(e.target.value)})}
+                                    />
+                                </div>
+                                <div>
+                                    <Label>Per Transaction Cost</Label>
+                                    <Input
+                                        type="number"
+                                        step="0.01"
+                                        value={formData.cost_per_transaction || ''}
+                                        onChange={(e) => setFormData({...formData, cost_per_transaction: parseFloat(e.target.value)})}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="border-t pt-4">
+                            <h4 className="font-semibold text-slate-900 mb-3">Sell Rates (What We Charge)</h4>
+                            <div className="grid grid-cols-3 gap-4">
+                                <div>
+                                    <Label>Percentage (%)</Label>
+                                    <Input
+                                        type="number"
+                                        step="0.01"
+                                        value={formData.sell_rate_percentage || ''}
+                                        onChange={(e) => setFormData({...formData, sell_rate_percentage: parseFloat(e.target.value)})}
+                                    />
+                                </div>
+                                <div>
+                                    <Label>Fixed Amount</Label>
+                                    <Input
+                                        type="number"
+                                        step="0.01"
+                                        value={formData.sell_rate_fixed || ''}
+                                        onChange={(e) => setFormData({...formData, sell_rate_fixed: parseFloat(e.target.value)})}
+                                    />
+                                </div>
+                                <div>
+                                    <Label>Per Transaction Revenue</Label>
+                                    <Input
+                                        type="number"
+                                        step="0.01"
+                                        value={formData.revenue_per_transaction || ''}
+                                        onChange={(e) => setFormData({...formData, revenue_per_transaction: parseFloat(e.target.value)})}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="border-t pt-4">
+                            <h4 className="font-semibold text-slate-900 mb-3">Xero Integration</h4>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <Label>Xero Account Code</Label>
+                                    <Input
+                                        value={formData.xero_account_code || ''}
+                                        onChange={(e) => setFormData({...formData, xero_account_code: e.target.value})}
+                                        placeholder="e.g., 200"
+                                    />
+                                </div>
+                                <div>
+                                    <Label>Xero Tax Type</Label>
+                                    <Input
+                                        value={formData.xero_tax_type || ''}
+                                        onChange={(e) => setFormData({...formData, xero_tax_type: e.target.value})}
+                                        placeholder="e.g., OUTPUT2"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="flex justify-end gap-3 pt-4">
+                            <Button variant="outline" onClick={() => setShowDialog(false)}>Cancel</Button>
+                            <Button onClick={handleSubmit} className="bg-blue-600">
+                                {editingItem ? 'Update' : 'Create'}
+                            </Button>
+                        </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
+        </div>
+    );
+}

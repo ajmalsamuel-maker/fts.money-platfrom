@@ -168,6 +168,7 @@ import XeroIntegration from './pages/XeroIntegration';
 import EnhancedAuditLogs from './pages/EnhancedAuditLogs';
 import DataRetentionManagement from './pages/DataRetentionManagement';
 import WorkflowManagement from './pages/WorkflowManagement';
+import MasterPricingManagement from './pages/MasterPricingManagement';
 import __Layout from './Layout.jsx';
 
 
@@ -342,6 +343,7 @@ export const PAGES = {
     "EnhancedAuditLogs": EnhancedAuditLogs,
     "DataRetentionManagement": DataRetentionManagement,
     "WorkflowManagement": WorkflowManagement,
+    "MasterPricingManagement": MasterPricingManagement,
 }
 
 export const pagesConfig = {
