@@ -151,12 +151,14 @@ export default function MerchantPricingEngine() {
     });
 
     const addTier = () => {
+        const lastTier = ruleForm.tiers[ruleForm.tiers.length - 1];
+        const newMin = lastTier ? lastTier.volume_max : 0;
         setRuleForm({
             ...ruleForm,
             tiers: [...ruleForm.tiers, {
                 tier_name: `Tier ${ruleForm.tiers.length + 1}`,
-                volume_min: 0,
-                volume_max: 10000,
+                volume_min: newMin,
+                volume_max: newMin + 10000,
                 percentage: 2.5,
                 fixed: 0.30
             }]
