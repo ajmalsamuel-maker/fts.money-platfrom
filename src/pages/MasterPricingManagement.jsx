@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import PricingSyncManager from '@/components/pricing/PricingSyncManager';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
@@ -288,6 +289,13 @@ export default function MasterPricingManagement() {
                 </header>
 
                 <main className="p-6">
+                    <Tabs defaultValue="pricing" className="mb-6">
+                        <TabsList>
+                            <TabsTrigger value="pricing">Pricing Matrix</TabsTrigger>
+                            <TabsTrigger value="sync">Sync & Reconciliation</TabsTrigger>
+                        </TabsList>
+                        
+                        <TabsContent value="pricing" className="space-y-6 mt-6">
                     {/* Stats Cards */}
                     <div className="grid grid-cols-7 gap-4 mb-6">
                         <Card>
@@ -426,11 +434,11 @@ export default function MasterPricingManagement() {
                         </CardContent>
                     </Card>
 
-                    {/* Pricing Table */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Pricing Matrix</CardTitle>
-                        </CardHeader>
+                        {/* Pricing Table */}
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Pricing Matrix</CardTitle>
+                            </CardHeader>
                         <CardContent>
                             <div className="overflow-x-auto">
                                 <table className="w-full text-sm">
@@ -559,7 +567,13 @@ export default function MasterPricingManagement() {
                                 )}
                             </div>
                         </CardContent>
-                    </Card>
+                        </Card>
+                        </TabsContent>
+
+                        <TabsContent value="sync" className="mt-6">
+                            <PricingSyncManager />
+                        </TabsContent>
+                    </Tabs>
                 </main>
             </div>
 
