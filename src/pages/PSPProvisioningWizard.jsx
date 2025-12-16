@@ -100,6 +100,7 @@ export default function PSPProvisioningWizard() {
     const [step, setStep] = useState(1);
     const [selectedTier, setSelectedTier] = useState('professional');
     const [useTemplate, setUseTemplate] = useState(true);
+    const [customTiers, setCustomTiers] = useState(tiers);
     
     const [formData, setFormData] = useState({
         psp_code: '',
@@ -175,7 +176,7 @@ export default function PSPProvisioningWizard() {
     });
 
     const handleProvision = async () => {
-        const tier = tiers.find(t => t.id === selectedTier);
+        const tier = customTiers.find(t => t.id === selectedTier);
         const data = {
             ...formData,
             tier: selectedTier,
@@ -313,7 +314,7 @@ export default function PSPProvisioningWizard() {
                             </CardHeader>
                             <CardContent>
                                 <div className="grid grid-cols-2 gap-4">
-                                    {tiers.map((tier) => {
+                                    {customTiers.map((tier) => {
                                         const Icon = tier.icon;
                                         return (
                                             <div
@@ -335,9 +336,36 @@ export default function PSPProvisioningWizard() {
                                                         <p className="text-xs text-slate-600">{tier.description}</p>
                                                     </div>
                                                 </div>
-                                                <div className="space-y-2 text-sm">
-                                                    <p><span className="font-medium">Pricing:</span> {tier.price}</p>
-                                                    <p><span className="font-medium">Revenue Share:</span> {tier.revenue_share}%</p>
+                                                <div className="space-y-3 text-sm">
+                                                    <div>
+                                                        <Label className="text-xs">Monthly Price</Label>
+                                                        <Input
+                                                            value={tier.price}
+                                                            onChange={(e) => {
+                                                                const updatedTiers = customTiers.map(t => 
+                                                                    t.id === tier.id ? {...t, price: e.target.value} : t
+                                                                );
+                                                                setCustomTiers(updatedTiers);
+                                                            }}
+                                                            className="h-8 text-sm"
+                                                            onClick={(e) => e.stopPropagation()}
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <Label className="text-xs">Revenue Share (%)</Label>
+                                                        <Input
+                                                            type="number"
+                                                            value={tier.revenue_share}
+                                                            onChange={(e) => {
+                                                                const updatedTiers = customTiers.map(t => 
+                                                                    t.id === tier.id ? {...t, revenue_share: parseFloat(e.target.value)} : t
+                                                                );
+                                                                setCustomTiers(updatedTiers);
+                                                            }}
+                                                            className="h-8 text-sm"
+                                                            onClick={(e) => e.stopPropagation()}
+                                                        />
+                                                    </div>
                                                     <p><span className="font-medium">Max Providers:</span> {tier.features.limits.max_payment_providers || '∞'}</p>
                                                     <p><span className="font-medium">Max Merchants:</span> {tier.features.limits.max_merchants || '∞'}</p>
                                                 </div>
@@ -597,7 +625,7 @@ export default function PSPProvisioningWizard() {
                         <CardContent className="space-y-6">
                             <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
                                 <p className="text-sm font-medium text-blue-900 mb-1">Automated Configuration</p>
-                                <p className="text-xs text-blue-700">Fee structures will be auto-generated based on the selected tier ({tiers.find(t => t.id === selectedTier)?.name}) and can be customized post-deployment.</p>
+                                <p className="text-xs text-blue-700">Fee structures will be auto-generated based on the selected tier ({customTiers.find(t => t.id === selectedTier)?.name}) and can be customized post-deployment.</p>
                             </div>
 
                             <div>
@@ -796,7 +824,7 @@ export default function PSPProvisioningWizard() {
                                 </div>
                                 <div>
                                     <p className="text-xs text-slate-500 mb-1">Service Tier</p>
-                                    <Badge variant="outline">{tiers.find(t => t.id === selectedTier)?.name}</Badge>
+                                    <Badge variant="outline">{customTiers.find(t => t.id === selectedTier)?.name}</Badge>
                                 </div>
                                 <div>
                                     <p className="text-xs text-slate-500 mb-1">Domain</p>
