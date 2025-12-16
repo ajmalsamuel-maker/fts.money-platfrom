@@ -67,6 +67,7 @@ const menuSections = [
             { icon: Zap, label: 'API Gateway', path: 'APIGatewayConfiguration', description: 'Kong + Orchestration' },
             { icon: Globe, label: 'Domain & SSL', path: 'FTSDomainManagement', description: 'Domains & certificates' },
             { icon: Globe, label: 'Blockchain', path: 'FTSBlockchainIntegration', description: 'Crypto rails & ISO' },
+            { icon: CreditCard, label: 'Open Banking', path: 'OpenBankingConfiguration', description: 'TrueLayer, Tink, Brankas' },
             { icon: Database, label: 'Financial Registries', path: 'FTSFinancialRegistries', description: 'BIN, IBAN, BIC/SWIFT' }
         ]
     },
