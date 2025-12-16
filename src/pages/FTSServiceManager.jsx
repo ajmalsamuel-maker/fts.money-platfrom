@@ -36,10 +36,17 @@ export default function FTSServiceManager() {
     const [selectedService, setSelectedService] = useState(null);
     const [serviceDetails, setServiceDetails] = useState(null);
     const [loadingDetails, setLoadingDetails] = useState(false);
+    const [updatingCache, setUpdatingCache] = useState(false);
 
     const { data: services = [] } = useQuery({
         queryKey: ['service-catalog'],
         queryFn: () => base44.entities.ServiceCatalog.list()
+    });
+
+    const { data: cacheData = [], refetch: refetchCache } = useQuery({
+        queryKey: ['service-cache'],
+        queryFn: () => base44.entities.ServiceCatalogCache.list(),
+        refetchInterval: 30000 // Refresh every 30 seconds
     });
 
     const seedMutation = useMutation({
@@ -121,6 +128,29 @@ export default function FTSServiceManager() {
             };
         });
         updatePricingMutation.mutate(updates);
+    };
+
+    const handleUpdateAllCache = async () => {
+        setUpdatingCache(true);
+        try {
+            const response = await base44.functions.invoke('serviceCatalogUpdateScheduler', {});
+            toast.success(`Updated ${response.data.updated} services, ${response.data.failed} failed`);
+            refetchCache();
+        } catch (error) {
+            toast.error('Failed to update cache: ' + error.message);
+        } finally {
+            setUpdatingCache(false);
+        }
+    };
+
+    const handleClearCache = async (cacheId) => {
+        try {
+            await base44.entities.ServiceCatalogCache.delete(cacheId);
+            toast.success('Cache entry deleted');
+            refetchCache();
+        } catch (error) {
+            toast.error('Failed to delete cache: ' + error.message);
+        }
     };
 
     const handleViewDetails = async (service) => {
@@ -245,6 +275,7 @@ Make the response detailed, authoritative, and include the most recent informati
                         <TabsList>
                             <TabsTrigger value="catalog">Service Catalog</TabsTrigger>
                             <TabsTrigger value="pricing">Pricing Matrix</TabsTrigger>
+                            <TabsTrigger value="cache">Cache Management</TabsTrigger>
                         </TabsList>
 
                         <TabsContent value="catalog" className="space-y-6">
@@ -486,6 +517,131 @@ Make the response detailed, authoritative, and include the most recent informati
                                             <p className="text-slate-600">No services available for pricing</p>
                                         </div>
                                     )}
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
+
+                        <TabsContent value="cache">
+                            <Card className="bg-white border-slate-200 mb-6">
+                                <CardHeader>
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <CardTitle>Service Information Cache</CardTitle>
+                                            <p className="text-sm text-slate-600 mt-1">Cached service details are refreshed monthly automatically</p>
+                                        </div>
+                                        <Button 
+                                            onClick={handleUpdateAllCache}
+                                            disabled={updatingCache}
+                                            className="gap-2 bg-blue-600 hover:bg-blue-700"
+                                        >
+                                            <RefreshCw className={`h-4 w-4 ${updatingCache ? 'animate-spin' : ''}`} />
+                                            {updatingCache ? 'Updating...' : 'Update All Now'}
+                                        </Button>
+                                    </div>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="grid grid-cols-4 gap-4 mb-6">
+                                        <Card className="bg-slate-50 border-slate-200">
+                                            <CardContent className="p-4">
+                                                <p className="text-sm text-slate-600">Cached Services</p>
+                                                <p className="text-2xl font-bold text-slate-900 mt-1">{cacheData.length}</p>
+                                            </CardContent>
+                                        </Card>
+                                        <Card className="bg-slate-50 border-slate-200">
+                                            <CardContent className="p-4">
+                                                <p className="text-sm text-slate-600">Due for Update</p>
+                                                <p className="text-2xl font-bold text-orange-600 mt-1">
+                                                    {cacheData.filter(c => c.next_check_date && c.next_check_date <= new Date().toISOString().split('T')[0]).length}
+                                                </p>
+                                            </CardContent>
+                                        </Card>
+                                        <Card className="bg-slate-50 border-slate-200">
+                                            <CardContent className="p-4">
+                                                <p className="text-sm text-slate-600">Avg. Cache Age</p>
+                                                <p className="text-2xl font-bold text-slate-900 mt-1">
+                                                    {cacheData.length > 0 ? Math.round(
+                                                        cacheData.reduce((acc, c) => {
+                                                            const days = Math.floor((new Date() - new Date(c.last_fetched)) / (1000 * 60 * 60 * 24));
+                                                            return acc + days;
+                                                        }, 0) / cacheData.length
+                                                    ) : 0} days
+                                                </p>
+                                            </CardContent>
+                                        </Card>
+                                        <Card className="bg-slate-50 border-slate-200">
+                                            <CardContent className="p-4">
+                                                <p className="text-sm text-slate-600">Next Auto Update</p>
+                                                <p className="text-sm font-bold text-slate-900 mt-1">
+                                                    {cacheData.length > 0 && cacheData[0]?.next_check_date 
+                                                        ? new Date(cacheData[0].next_check_date).toLocaleDateString() 
+                                                        : 'N/A'}
+                                                </p>
+                                            </CardContent>
+                                        </Card>
+                                    </div>
+
+                                    <div className="overflow-x-auto">
+                                        <table className="w-full text-sm">
+                                            <thead>
+                                                <tr className="border-b border-slate-200">
+                                                    <th className="text-left py-3 px-4 font-semibold text-slate-700">Service</th>
+                                                    <th className="text-left py-3 px-4 font-semibold text-slate-700">Last Fetched</th>
+                                                    <th className="text-left py-3 px-4 font-semibold text-slate-700">Next Check</th>
+                                                    <th className="text-left py-3 px-4 font-semibold text-slate-700">Cache Age</th>
+                                                    <th className="text-left py-3 px-4 font-semibold text-slate-700">Status</th>
+                                                    <th className="text-right py-3 px-4 font-semibold text-slate-700">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {cacheData.map((cache) => {
+                                                    const daysOld = Math.floor((new Date() - new Date(cache.last_fetched)) / (1000 * 60 * 60 * 24));
+                                                    const needsUpdate = cache.next_check_date && cache.next_check_date <= new Date().toISOString().split('T')[0];
+                                                    
+                                                    return (
+                                                        <tr key={cache.id} className="border-b border-slate-100 hover:bg-slate-50">
+                                                            <td className="py-3 px-4">
+                                                                <p className="font-medium text-slate-900">{cache.service_name}</p>
+                                                                <p className="text-xs text-slate-500">{cache.service_id}</p>
+                                                            </td>
+                                                            <td className="py-3 px-4 text-slate-600">
+                                                                {new Date(cache.last_fetched).toLocaleString()}
+                                                            </td>
+                                                            <td className="py-3 px-4 text-slate-600">
+                                                                {cache.next_check_date ? new Date(cache.next_check_date).toLocaleDateString() : 'N/A'}
+                                                            </td>
+                                                            <td className="py-3 px-4">
+                                                                <Badge variant={daysOld > 30 ? 'destructive' : 'outline'}>
+                                                                    {daysOld} {daysOld === 1 ? 'day' : 'days'}
+                                                                </Badge>
+                                                            </td>
+                                                            <td className="py-3 px-4">
+                                                                <Badge className={needsUpdate ? 'bg-orange-100 text-orange-700' : 'bg-emerald-100 text-emerald-700'}>
+                                                                    {needsUpdate ? 'Update Due' : 'Fresh'}
+                                                                </Badge>
+                                                            </td>
+                                                            <td className="py-3 px-4 text-right">
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="sm"
+                                                                    onClick={() => handleClearCache(cache.id)}
+                                                                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                                                >
+                                                                    Clear
+                                                                </Button>
+                                                            </td>
+                                                        </tr>
+                                                    );
+                                                })}
+                                            </tbody>
+                                        </table>
+                                        {cacheData.length === 0 && (
+                                            <div className="text-center py-12">
+                                                <Activity className="h-12 w-12 text-slate-400 mx-auto mb-3" />
+                                                <p className="text-slate-600">No cached data yet</p>
+                                                <p className="text-xs text-slate-500 mt-1">Service details will be cached as you view them</p>
+                                            </div>
+                                        )}
+                                    </div>
                                 </CardContent>
                             </Card>
                         </TabsContent>
