@@ -40,6 +40,8 @@ export default function FTSServiceManager() {
     const [updatingCache, setUpdatingCache] = useState(false);
     const [showServiceEditor, setShowServiceEditor] = useState(false);
     const [editingService, setEditingService] = useState(null);
+    const [runningHealthChecks, setRunningHealthChecks] = useState(false);
+    const [generatingDocs, setGeneratingDocs] = useState(false);
 
     const { data: services = [] } = useQuery({
         queryKey: ['service-catalog'],
@@ -185,16 +187,20 @@ export default function FTSServiceManager() {
     };
 
     const handleRunHealthChecks = async () => {
+        setRunningHealthChecks(true);
         try {
             const response = await base44.functions.invoke('serviceHealthCheck', { check_all: true });
             toast.success(`Health check completed for ${response.data.checked} services`);
             queryClient.invalidateQueries(['service-catalog']);
         } catch (error) {
             toast.error('Health check failed: ' + error.message);
+        } finally {
+            setRunningHealthChecks(false);
         }
     };
 
     const handleGenerateDocs = async (serviceId) => {
+        setGeneratingDocs(true);
         try {
             const response = await base44.functions.invoke('generateServiceDocs', {
                 service_id: serviceId || null,
@@ -204,6 +210,8 @@ export default function FTSServiceManager() {
             queryClient.invalidateQueries(['service-catalog']);
         } catch (error) {
             toast.error('Documentation generation failed: ' + error.message);
+        } finally {
+            setGeneratingDocs(false);
         }
     };
 
@@ -307,19 +315,21 @@ Make the response detailed, authoritative, and include the most recent informati
                     <div className="flex items-center gap-3">
                         <Button 
                             onClick={() => handleRunHealthChecks()}
+                            disabled={runningHealthChecks}
                             variant="outline"
                             className="gap-2"
                         >
-                            <Heart className="h-4 w-4" />
-                            Run Health Checks
+                            <Heart className={`h-4 w-4 ${runningHealthChecks ? 'animate-pulse' : ''}`} />
+                            {runningHealthChecks ? 'Checking...' : 'Run Health Checks'}
                         </Button>
                         <Button 
                             onClick={() => handleGenerateDocs()}
+                            disabled={generatingDocs}
                             variant="outline"
                             className="gap-2"
                         >
-                            <FileText className="h-4 w-4" />
-                            Generate Docs
+                            <FileText className={`h-4 w-4 ${generatingDocs ? 'animate-spin' : ''}`} />
+                            {generatingDocs ? 'Generating...' : 'Generate Docs'}
                         </Button>
                         <Button 
                             onClick={() => { setEditingService(null); setShowServiceEditor(true); }}
@@ -660,9 +670,13 @@ Make the response detailed, authoritative, and include the most recent informati
                                             <CardTitle>Service Health & Monitoring</CardTitle>
                                             <p className="text-sm text-slate-600 mt-1">Automated health checks and uptime tracking</p>
                                         </div>
-                                        <Button onClick={handleRunHealthChecks} className="gap-2 bg-emerald-600">
-                                            <Heart className="h-4 w-4" />
-                                            Run All Health Checks
+                                        <Button 
+                                            onClick={handleRunHealthChecks} 
+                                            disabled={runningHealthChecks}
+                                            className="gap-2 bg-emerald-600"
+                                        >
+                                            <Heart className={`h-4 w-4 ${runningHealthChecks ? 'animate-pulse' : ''}`} />
+                                            {runningHealthChecks ? 'Running Checks...' : 'Run All Health Checks'}
                                         </Button>
                                     </div>
                                 </CardHeader>
