@@ -33,6 +33,7 @@ import { COUNTRIES } from '@/components/utils/countries';
 import { TIMEZONES } from '@/components/utils/timezones';
 import { ISO4217_CURRENCIES, getCurrencySymbol } from '@/components/utils/iso4217';
 import DeploymentSelector from '@/components/provisioning/DeploymentSelector';
+import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
 
 const tiers = [
     {
@@ -101,6 +102,7 @@ const tiers = [
 export default function PSPProvisioningWizard() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
+    const { platformUser } = usePlatformAuth();
     const [step, setStep] = useState(1);
     const [selectedTier, setSelectedTier] = useState('professional');
     const [useTemplate, setUseTemplate] = useState(true);
