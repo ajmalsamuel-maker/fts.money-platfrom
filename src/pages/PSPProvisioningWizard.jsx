@@ -32,6 +32,7 @@ import { AuditLogger } from '@/components/platform/EnhancedAuditLogger';
 import { COUNTRIES } from '@/components/utils/countries';
 import { TIMEZONES } from '@/components/utils/timezones';
 import { ISO4217_CURRENCIES, getCurrencySymbol } from '@/components/utils/iso4217';
+import DeploymentSelector from '@/components/provisioning/DeploymentSelector';
 
 const tiers = [
     {
@@ -147,6 +148,11 @@ export default function PSPProvisioningWizard() {
         enabled_payment_methods: [],
         enabled_payout_methods: [],
         enabled_services: [],
+        deployment_config: {
+            primary_cloud: null,
+            dr_cloud: null,
+            dr_enabled: false
+        },
         email_templates: {
             merchant_onboarding: '',
             transaction_notification: '',
@@ -253,6 +259,11 @@ export default function PSPProvisioningWizard() {
         queryFn: () => base44.entities.ServiceCatalog.list()
     });
 
+    const { data: connectors = [] } = useQuery({
+        queryKey: ['cloud-connectors'],
+        queryFn: () => base44.entities.CloudConnector.list()
+    });
+
     return (
         <div className="min-h-screen bg-slate-50 p-6">
             <div className="max-w-7xl mx-auto">
@@ -282,7 +293,7 @@ export default function PSPProvisioningWizard() {
 
                 {/* Progress Steps */}
                 <div className="flex items-center justify-between mb-8 bg-white rounded-lg p-6 border border-slate-200">
-                    {[1, 2, 3, 4, 5, 6].map((s) => (
+                    {[1, 2, 3, 4, 5, 6, 7].map((s) => (
                         <React.Fragment key={s}>
                             <div className="flex items-center gap-3">
                                 <div className={cn(
@@ -298,7 +309,8 @@ export default function PSPProvisioningWizard() {
                                         {s === 3 && 'Services'}
                                         {s === 4 && 'Fee Structure'}
                                         {s === 5 && 'Providers'}
-                                        {s === 6 && 'Deploy'}
+                                        {s === 6 && 'Cloud Deployment'}
+                                        {s === 7 && 'Deploy'}
                                     </p>
                                     <p className="text-xs text-slate-500">
                                         {s === 1 && 'Select tier & limits'}
@@ -306,11 +318,18 @@ export default function PSPProvisioningWizard() {
                                         {s === 3 && 'Feature selection'}
                                         {s === 4 && 'Pricing config'}
                                         {s === 5 && 'Provider mapping'}
-                                        {s === 6 && 'Review & launch'}
+                                        {s === 6 && 'Cloud infrastructure'}
+                                        {s === 7 && 'Review & launch'}
                                     </p>
                                 </div>
                             </div>
                             {s < 5 && (
+                                <div className={cn(
+                                    "flex-1 h-0.5 mx-4",
+                                    step > s ? "bg-blue-600" : "bg-slate-200"
+                                )} />
+                            )}
+                            {s < 7 && (
                                 <div className={cn(
                                     "flex-1 h-0.5 mx-4",
                                     step > s ? "bg-blue-600" : "bg-slate-200"
@@ -847,6 +866,33 @@ export default function PSPProvisioningWizard() {
                                 Back
                             </Button>
                             <Button onClick={() => setStep(6)} className="bg-blue-600 hover:bg-blue-700">
+                                Configure Cloud Deployment
+                                <ArrowRight className="h-4 w-4 ml-2" />
+                            </Button>
+                        </div>
+                    </Card>
+                )}
+
+                {/* Step 6: Cloud Deployment Selection */}
+                {step === 6 && (
+                    <Card className="bg-white border-slate-200">
+                        <CardHeader>
+                            <CardTitle>Cloud Deployment Configuration</CardTitle>
+                            <CardDescription>Select cloud infrastructure for primary and disaster recovery environments</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
+                            <DeploymentSelector
+                                connectors={connectors.filter(c => c.status === 'active')}
+                                formData={formData}
+                                setFormData={setFormData}
+                            />
+                        </CardContent>
+                        <div className="flex justify-between p-6 border-t border-slate-200">
+                            <Button variant="outline" onClick={() => setStep(5)}>
+                                <ArrowLeft className="h-4 w-4 mr-2" />
+                                Back
+                            </Button>
+                            <Button onClick={() => setStep(7)} className="bg-blue-600 hover:bg-blue-700">
                                 Review Configuration
                                 <ArrowRight className="h-4 w-4 ml-2" />
                             </Button>
@@ -854,8 +900,8 @@ export default function PSPProvisioningWizard() {
                     </Card>
                 )}
 
-                {/* Step 6: Deploy */}
-                {step === 6 && !provisioningComplete && (
+                {/* Step 7: Deploy */}
+                {step === 7 && !provisioningComplete && (
                     <Card className="bg-white border-slate-200">
                         <CardHeader>
                             <CardTitle>Deployment Review</CardTitle>
