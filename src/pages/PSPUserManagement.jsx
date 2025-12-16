@@ -33,8 +33,8 @@ export default function PSPUserManagement() {
     const { data: psps = [] } = useQuery({
         queryKey: ['psp-list'],
         queryFn: async () => {
-            const result = await base44.functions.invoke('managePSPUsers', { action: 'listPSPs' });
-            return result.data.psps || [];
+            const allPsps = await base44.entities.ProvisionedPSP.filter({ status: 'active' }, '-created_date');
+            return allPsps || [];
         }
     });
 
