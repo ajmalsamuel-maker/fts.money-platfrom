@@ -13,7 +13,7 @@ import { toast } from 'sonner';
 import WorkflowBuilder from '@/components/workflow/WorkflowBuilder';
 
 export default function WorkflowTemplateLibrary() {
-    const { platformUser, loading } = usePlatformAuth(['platform_admin', 'super_admin']);
+    const { platformUser, loading } = usePlatformAuth();
     const queryClient = useQueryClient();
     const [showDialog, setShowDialog] = useState(false);
     const [editingTemplate, setEditingTemplate] = useState(null);
