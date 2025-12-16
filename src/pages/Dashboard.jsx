@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
+import StaffAuthWrapper from '@/components/auth/StaffAuthWrapper';
 import Sidebar from '@/components/dashboard/Sidebar';
 import TopHeader from '@/components/dashboard/TopHeader';
 import StatsCards from '@/components/dashboard/StatsCards';
@@ -169,8 +170,9 @@ export default function Dashboard() {
     ];
 
     return (
-        <div className="min-h-screen bg-slate-50">
-            <Sidebar 
+        <StaffAuthWrapper>
+            <div className="min-h-screen bg-slate-50">
+                <Sidebar 
                 collapsed={sidebarCollapsed} 
                 onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
                 currentPage="Dashboard"
@@ -264,6 +266,6 @@ export default function Dashboard() {
                     <HelpPanel open={helpOpen} onOpenChange={setHelpOpen} />
                 </main>
             </div>
-        </div>
+        </StaffAuthWrapper>
     );
 }
