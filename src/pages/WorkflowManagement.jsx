@@ -22,6 +22,7 @@ import BPMNDiagramViewer from '@/components/workflow/BPMNDiagramViewer';
 import { useWorkflowRBAC } from '@/components/workflow/useWorkflowRBAC';
 import { WORKFLOW_PERMISSIONS } from '@/components/workflow/WorkflowRBAC';
 import { WorkflowAuditLogger } from '@/components/workflow/WorkflowAuditLogger';
+import WorkflowUsersManagement from '@/components/workflow/WorkflowUsersManagement';
 
 const isoStandards = [
     { 
@@ -230,6 +231,7 @@ export default function WorkflowManagement() {
                             {can(WORKFLOW_PERMISSIONS.VIEW_TEMPLATES) && <TabsTrigger value="templates">Templates</TabsTrigger>}
                             {can(WORKFLOW_PERMISSIONS.VIEW_COMPLIANCE) && <TabsTrigger value="compliance">Compliance Overview</TabsTrigger>}
                             {can(WORKFLOW_PERMISSIONS.VIEW_COMPLIANCE) && <TabsTrigger value="standards">ISO Standards</TabsTrigger>}
+                            <TabsTrigger value="users">Users & Roles</TabsTrigger>
                         </TabsList>
 
                         <TabsContent value="dashboard">
@@ -242,6 +244,10 @@ export default function WorkflowManagement() {
 
                         <TabsContent value="templates">
                             <WorkflowTemplateManager />
+                        </TabsContent>
+
+                        <TabsContent value="users">
+                            <WorkflowUsersManagement />
                         </TabsContent>
 
                         <TabsContent value="workflows" className="space-y-6">
