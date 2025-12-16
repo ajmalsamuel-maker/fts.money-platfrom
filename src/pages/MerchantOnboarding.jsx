@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
+import WorkflowValidator from '@/components/workflow/WorkflowValidator';
 import Sidebar from '@/components/dashboard/Sidebar';
 import TopHeader from '@/components/dashboard/TopHeader';
 import OnboardingProgress from '@/components/onboarding/OnboardingProgress';
@@ -55,6 +56,15 @@ export default function MerchantOnboarding() {
         lei: { status: 'not_started', progress: 0 },
         documents: { status: 'not_started', progress: 0 }
     });
+    const [workflowCompliance, setWorkflowCompliance] = useState(null);
+
+    useEffect(() => {
+        const checkCompliance = async () => {
+            const result = await WorkflowValidator.checkCompliance('merchant_onboarding', ['iso_19510', 'iso_10746', 'iso_9001']);
+            setWorkflowCompliance(result);
+        };
+        checkCompliance();
+    }, []);
 
     React.useEffect(() => {
         const loadSettings = async () => {
@@ -86,8 +96,13 @@ export default function MerchantOnboarding() {
 
     const createMerchantMutation = useMutation({
         mutationFn: async (data) => {
-            // Generate unique merchant code
-            const merchantCode = generateUniqueMerchantCode(data.business.legal_name, []);
+            // Workflow validation wrapper
+            return await WorkflowValidator.executeStep(
+                'merchant_onboarding',
+                'create_merchant',
+                async () => {
+                    // Generate unique merchant code
+                    const merchantCode = generateUniqueMerchantCode(data.business.legal_name, []);
             
             const merchantData = {
                 merchant_id: `MID-${Date.now()}`,
@@ -158,7 +173,10 @@ export default function MerchantOnboarding() {
                 await notifyCompliance(merchant, data);
             }
             
-            return merchant;
+            return { success: true, data: merchant };
+                },
+                { user: 'system' }
+            );
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['merchants'] });
@@ -630,6 +648,12 @@ export default function MerchantOnboarding() {
                                 <h1 className="text-2xl font-bold text-slate-900">Merchant Onboarding</h1>
                                 <p className="text-slate-500">Complete the application with automated KYC/AML verification</p>
                             </div>
+                            {workflowCompliance && (
+                                <Badge className={workflowCompliance.compliant ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}>
+                                    <Shield className="h-3 w-3 mr-1" />
+                                    {workflowCompliance.compliant ? 'ISO Compliant Workflow' : 'Compliance Check'}
+                                </Badge>
+                            )}
                         </div>
                     </div>
 

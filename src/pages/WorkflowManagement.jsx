@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { ArrowLeft, Plus, CheckCircle, GitBranch, Shield, BarChart3, FileText, Settings, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Plus, CheckCircle, GitBranch, Shield, BarChart3, FileText, Settings, AlertCircle, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 
 const isoStandards = [
@@ -161,6 +161,20 @@ export default function WorkflowManagement() {
                         <p className="text-xs text-slate-600">ISO/IEC standards compliance tracking</p>
                     </div>
                     <div className="flex items-center gap-3">
+                        <Button 
+                            onClick={async () => {
+                                const response = await base44.functions.invoke('createDefaultWorkflows', {});
+                                if (response.data.success) {
+                                    toast.success(response.data.message);
+                                    queryClient.invalidateQueries(['workflows']);
+                                }
+                            }} 
+                            variant="outline" 
+                            className="gap-2"
+                        >
+                            <Sparkles className="h-4 w-4" />
+                            Initialize Default Workflows
+                        </Button>
                         <Button onClick={() => setShowCreateDialog(true)} className="gap-2 bg-blue-600 hover:bg-blue-700">
                             <Plus className="h-4 w-4" />
                             New Workflow
