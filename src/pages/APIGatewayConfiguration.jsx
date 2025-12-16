@@ -33,6 +33,10 @@ import {
     Copy,
     ExternalLink
 } from 'lucide-react';
+import APIManagementTab from '@/components/api/APIManagementTab';
+import APIVersioningTab from '@/components/api/APIVersioningTab';
+import RatePoliciesTab from '@/components/api/RatePoliciesTab';
+import UsageAnalyticsTab from '@/components/api/UsageAnalyticsTab';
 import { toast } from 'sonner';
 import { cn } from "@/lib/utils";
 
@@ -249,6 +253,10 @@ export default function APIGatewayConfiguration() {
                             <TabsTrigger value="providers">Gateway Providers</TabsTrigger>
                             <TabsTrigger value="configuration">Configuration</TabsTrigger>
                             <TabsTrigger value="orchestration">Orchestration Layer</TabsTrigger>
+                            <TabsTrigger value="apis">API Management</TabsTrigger>
+                            <TabsTrigger value="versioning">Versioning</TabsTrigger>
+                            <TabsTrigger value="rate-limits">Rate Policies</TabsTrigger>
+                            <TabsTrigger value="analytics">Usage Analytics</TabsTrigger>
                             <TabsTrigger value="endpoints">API Endpoints</TabsTrigger>
                         </TabsList>
 
@@ -797,6 +805,26 @@ export default function APIGatewayConfiguration() {
                                     </div>
                                 </CardContent>
                             </Card>
+                        </TabsContent>
+
+                        {/* API Management */}
+                        <TabsContent value="apis" className="space-y-6">
+                            <APIManagementTab />
+                        </TabsContent>
+
+                        {/* API Versioning */}
+                        <TabsContent value="versioning" className="space-y-6">
+                            <APIVersioningTab />
+                        </TabsContent>
+
+                        {/* Rate Policies */}
+                        <TabsContent value="rate-limits" className="space-y-6">
+                            <RatePoliciesTab />
+                        </TabsContent>
+
+                        {/* Usage Analytics */}
+                        <TabsContent value="analytics" className="space-y-6">
+                            <UsageAnalyticsTab />
                         </TabsContent>
 
                         {/* API Endpoints */}
