@@ -23,6 +23,8 @@ Deno.serve(async (req) => {
                 return await handleTencentCloud(operation, config, resources);
             case 'huawei_cloud':
                 return await handleHuaweiCloud(operation, config, resources);
+            case 'ntc':
+                return await handleNTC(operation, config, resources);
             default:
                 return Response.json({ error: 'Unsupported provider' }, { status: 400 });
         }
@@ -191,6 +193,55 @@ async function handleHuaweiCloud(operation, config, resources) {
                 status: 'active',
                 estimated_monthly_cost_cny: resources.cpu_cores * 190,
                 message: 'Huawei Cloud ECS provisioned (demo mode)'
+            });
+
+        default:
+            return Response.json({ error: 'Unknown operation' }, { status: 400 });
+    }
+}
+
+async function handleNTC(operation, config, resources) {
+    // NTC (National Telecommunication Corporation - Nepal)
+    const NTC_API_KEY = Deno.env.get('NTC_API_KEY');
+    const NTC_API_SECRET = Deno.env.get('NTC_API_SECRET');
+
+    if (!NTC_API_KEY || !NTC_API_SECRET) {
+        return Response.json({ 
+            error: 'NTC credentials not configured',
+            message: 'Set NTC_API_KEY and NTC_API_SECRET secrets'
+        }, { status: 400 });
+    }
+
+    switch (operation) {
+        case 'provision_compute':
+            return Response.json({
+                success: true,
+                provider: 'ntc',
+                operation: 'provision_compute',
+                instance_id: `ntc-vm-${Date.now()}`,
+                datacenter: config.datacenter || 'KTM-DC1', // Kathmandu Data Center
+                cpu_cores: resources.cpu_cores,
+                memory_gb: resources.memory_gb,
+                storage_gb: resources.storage_gb,
+                public_ip: '202.52.xxx.xxx',
+                status: 'active',
+                estimated_monthly_cost_npr: resources.cpu_cores * 5000, // ~5000 NPR per core/month
+                message: 'NTC Nepal instance provisioned (demo mode - integrate NTC API for production)'
+            });
+
+        case 'get_metrics':
+            return Response.json({
+                success: true,
+                provider: 'ntc',
+                operation: 'get_metrics',
+                instance_id: resources.instance_id,
+                metrics: {
+                    cpu_utilization: Math.random() * 100,
+                    memory_utilization: Math.random() * 100,
+                    network_in_mbps: Math.random() * 1000,
+                    network_out_mbps: Math.random() * 1000
+                },
+                message: 'NTC metrics retrieved (demo mode)'
             });
 
         default:
