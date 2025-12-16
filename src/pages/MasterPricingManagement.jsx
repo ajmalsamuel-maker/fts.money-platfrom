@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PricingSyncManager from '@/components/pricing/PricingSyncManager';
 import ProviderAgreementsManager from '@/components/pricing/ProviderAgreementsManager';
+import PricingEnhancedManager from '@/components/pricing/PricingEnhancedManager';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
@@ -319,6 +320,7 @@ export default function MasterPricingManagement() {
                         <TabsList>
                             <TabsTrigger value="pricing">Pricing Matrix</TabsTrigger>
                             <TabsTrigger value="agreements">Provider Agreements</TabsTrigger>
+                            <TabsTrigger value="enhanced">Enhanced Features</TabsTrigger>
                             <TabsTrigger value="sync">Sync & Reconciliation</TabsTrigger>
                         </TabsList>
                         
@@ -614,6 +616,10 @@ export default function MasterPricingManagement() {
 
                         <TabsContent value="agreements" className="mt-6">
                             <ProviderAgreementsManager />
+                        </TabsContent>
+
+                        <TabsContent value="enhanced" className="mt-6">
+                            <PricingEnhancedManager />
                         </TabsContent>
 
                         <TabsContent value="sync" className="mt-6">
