@@ -22,7 +22,8 @@ import {
     Plus,
     LogOut,
     Package,
-    GitBranch
+    GitBranch,
+    Workflow
 } from 'lucide-react';
 
 const menuSections = [
