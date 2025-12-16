@@ -21,10 +21,112 @@ export default function PSPEmpowermentRoadmap() {
     const [selectedPhase, setSelectedPhase] = useState('phase1');
 
     const roadmap = {
+        phase0: {
+            name: "Phase 0: FTS.Money Platform Enhancements",
+            duration: "2-3 weeks",
+            priority: "CRITICAL - FOUNDATION",
+            description: "Platform-level improvements required before PSP empowerment",
+            components: [
+                {
+                    name: "ServiceCatalog Enhancement",
+                    icon: Package,
+                    description: "Upgrade FTS.Money's service catalog with advanced features",
+                    entities: ["ServiceCatalog (enhanced)", "ServiceComponent", "ServiceDependency"],
+                    dependencies: [],
+                    implementation: {
+                        step1: "Add versioning to ServiceCatalog entries",
+                        step2: "Implement service dependency mapping (Service B requires Service A)",
+                        step3: "Create service bundling capability for FTS.Money offerings",
+                        step4: "Add service lifecycle states (beta, GA, deprecated)",
+                        step5: "Implement automated service health checks",
+                        step6: "Create service documentation generator"
+                    },
+                    testPlan: [
+                        "Create service with 2 dependencies and verify validation",
+                        "Bundle 3 services into a package (e.g., 'Payment Suite')",
+                        "Version a service (v1 → v2) and test backward compatibility",
+                        "Deprecate a service and verify PSP migration notifications",
+                        "Run health check on all active services",
+                        "Generate API documentation for a service automatically"
+                    ]
+                },
+                {
+                    name: "MasterPricing Engine Upgrade",
+                    icon: DollarSign,
+                    description: "Enhance pricing to support inheritance and advanced models",
+                    entities: ["MasterPricing (enhanced)", "PricingInheritance", "PricingTemplate"],
+                    dependencies: ["ProviderAgreements (existing)"],
+                    implementation: {
+                        step1: "Implement pricing inheritance model (PSP inherits from Master)",
+                        step2: "Add A/B testing framework for pricing strategies",
+                        step3: "Create promotional pricing campaigns system",
+                        step4: "Build pricing simulation/calculator API",
+                        step5: "Add pricing version control",
+                        step6: "Implement automated pricing optimization suggestions"
+                    },
+                    testPlan: [
+                        "Create master pricing (2.5% + $0.30)",
+                        "PSP inherits and customizes (2.7% + $0.30)",
+                        "Create A/B test (pricing A vs B for new PSPs)",
+                        "Run promotional campaign (20% off for Q1)",
+                        "Simulate pricing impact for 10 PSPs",
+                        "Version pricing and migrate existing PSPs",
+                        "Verify pricing recommendations based on market data"
+                    ]
+                },
+                {
+                    name: "Resource Orchestration Layer",
+                    icon: Activity,
+                    description: "Infrastructure management for multi-tenant PSPs",
+                    entities: ["ResourcePool", "ResourceAllocation", "CapacityPlan"],
+                    dependencies: [],
+                    implementation: {
+                        step1: "Create ResourcePool entity for infrastructure tracking",
+                        step2: "Implement auto-scaling policies per PSP tier",
+                        step3: "Build geographic distribution management",
+                        step4: "Add resource quota enforcement",
+                        step5: "Create capacity planning dashboard",
+                        step6: "Implement resource reservation system"
+                    },
+                    testPlan: [
+                        "Provision PSP and allocate compute/storage from pool",
+                        "Trigger auto-scaling when PSP hits 80% capacity",
+                        "Deploy PSP to 3 geographic regions",
+                        "Enforce resource quota (PSP exceeds limit)",
+                        "View capacity forecast for next 6 months",
+                        "Reserve resources for upcoming PSP launch"
+                    ]
+                },
+                {
+                    name: "API Gateway Platform Layer",
+                    icon: Zap,
+                    description: "Enhanced API management for PSP-level control",
+                    entities: ["APIDefinition", "APIVersion", "APIRatePolicy"],
+                    dependencies: ["APIGatewayConfiguration (existing)"],
+                    implementation: {
+                        step1: "Create comprehensive API definition schema",
+                        step2: "Implement API versioning with deprecation schedules",
+                        step3: "Build PSP-configurable rate limiting",
+                        step4: "Add API monetization layer",
+                        step5: "Create GraphQL federation support",
+                        step6: "Implement API usage analytics per PSP"
+                    },
+                    testPlan: [
+                        "Define new API endpoint with schema",
+                        "Version API (v1 → v2) with 90-day deprecation",
+                        "Set PSP-specific rate limit (1000 req/min)",
+                        "Configure API pricing (per call)",
+                        "Federate 3 GraphQL schemas",
+                        "View API usage breakdown by PSP and endpoint"
+                    ]
+                }
+            ]
+        },
         phase1: {
             name: "Phase 1: Core Product & Workflow Foundation",
             duration: "3-4 weeks",
             priority: "CRITICAL",
+            description: "Enable PSPs to define products and merchant workflows",
             components: [
                 {
                     name: "PSPProductCatalog",
@@ -79,6 +181,7 @@ export default function PSPEmpowermentRoadmap() {
             name: "Phase 2: Pricing & Billing Engine",
             duration: "3-4 weeks",
             priority: "CRITICAL",
+            description: "PSP tools for merchant pricing and billing",
             components: [
                 {
                     name: "MerchantPricingEngine",
@@ -155,9 +258,10 @@ export default function PSPEmpowermentRoadmap() {
             ]
         },
         phase3: {
-            name: "Phase 3: Merchant Portal Framework",
+            name: "Phase 3: Merchant Portal & API Framework",
             duration: "4-5 weeks",
             priority: "HIGH",
+            description: "PSP tools for merchant portals and API management",
             components: [
                 {
                     name: "MerchantPortalBuilder",
@@ -212,7 +316,8 @@ export default function PSPEmpowermentRoadmap() {
         phase4: {
             name: "Phase 4: Analytics & Intelligence",
             duration: "2-3 weeks",
-            priority: "MEDIUM",
+            priority: "HIGH",
+            description: "Advanced analytics for both FTS.Money and PSPs",
             components: [
                 {
                     name: "MerchantAnalyticsDashboard",
@@ -236,6 +341,129 @@ export default function PSPEmpowermentRoadmap() {
                         "Generate revenue forecast (next 3 months)",
                         "Verify automated insight notifications",
                         "Export analytics data to CSV"
+                    ]
+                },
+                {
+                    name: "FTS.Money Analytics Engine",
+                    icon: LineChart,
+                    description: "Platform intelligence for business health",
+                    entities: ["PlatformMetric", "PSPAdoptionTracker", "RevenueForecaster"],
+                    dependencies: [],
+                    implementation: {
+                        step1: "Create platform-wide KPI dashboard",
+                        step2: "Build PSP adoption and churn tracking",
+                        step3: "Implement revenue forecasting models",
+                        step4: "Add cohort analysis for PSPs",
+                        step5: "Create automated business insights",
+                        step6: "Build competitive benchmarking"
+                    },
+                    testPlan: [
+                        "View platform KPIs (total PSPs, revenue, growth)",
+                        "Track PSP adoption funnel (signup → active)",
+                        "Generate revenue forecast (next 12 months)",
+                        "Analyze cohort performance (Q1 2025 PSPs)",
+                        "Receive automated insight (high churn alert)",
+                        "Compare PSP performance vs industry benchmarks"
+                    ]
+                }
+            ]
+        },
+        phase5: {
+            name: "Phase 5: Advanced Marketplace & SLA Features",
+            duration: "3-4 weeks",
+            priority: "MEDIUM",
+            description: "Discovery, contracts, and localization",
+            components: [
+                {
+                    name: "Marketplace & Discovery Engine",
+                    icon: Package,
+                    description: "Search, filter, and discover services",
+                    entities: ["SearchIndex", "RecommendationEngine", "ProductRating"],
+                    dependencies: ["ServiceCatalog", "PSPProductCatalog"],
+                    implementation: {
+                        step1: "Build full-text search for FTS.Money services",
+                        step2: "Implement filtering (by region, type, price)",
+                        step3: "Create recommendation engine (based on PSP profile)",
+                        step4: "Add ratings & reviews for services",
+                        step5: "Build product comparison tool",
+                        step6: "Create trial/sandbox provisioning"
+                    },
+                    testPlan: [
+                        "Search for 'payment processing UK' and verify results",
+                        "Filter services by region (Europe only)",
+                        "View recommendations for new PSP",
+                        "Leave rating/review for a service",
+                        "Compare 3 fraud detection services side-by-side",
+                        "Request sandbox trial of Open Banking service"
+                    ]
+                },
+                {
+                    name: "Contract & SLA Management",
+                    icon: FileText,
+                    description: "Manage agreements and track SLAs",
+                    entities: ["MerchantContractTemplate", "MerchantSLATracker", "SLABreach"],
+                    dependencies: ["ProviderAgreement (existing)"],
+                    implementation: {
+                        step1: "Create MerchantContractTemplate entity",
+                        step2: "Build contract template editor (PSP-customizable)",
+                        step3: "Implement SLA definition framework",
+                        step4: "Create real-time SLA monitoring dashboard",
+                        step5: "Add automated breach alerting",
+                        step6: "Build penalty/credit calculation engine"
+                    },
+                    testPlan: [
+                        "Create merchant contract template (payment terms, SLA)",
+                        "PSP customizes template with their terms",
+                        "Define SLA (99.9% uptime, <200ms response)",
+                        "Monitor real-time SLA compliance",
+                        "Simulate breach and verify alert delivery",
+                        "Calculate penalty for SLA breach automatically"
+                    ]
+                },
+                {
+                    name: "Multi-Currency & Localization",
+                    icon: Globe,
+                    description: "Global commerce support",
+                    entities: ["FXRate", "TaxRule", "LocalizationConfig"],
+                    dependencies: [],
+                    implementation: {
+                        step1: "Integrate real-time FX rate feed",
+                        step2: "Build currency conversion API",
+                        step3: "Implement regional pricing strategies",
+                        step4: "Create tax calculation engine (VAT, GST)",
+                        step5: "Add multi-language support framework",
+                        step6: "Build regional compliance rules"
+                    },
+                    testPlan: [
+                        "Fetch real-time GBP/USD rate",
+                        "Convert $100 USD transaction to EUR",
+                        "Set regional pricing (US: $99, EU: €89)",
+                        "Calculate VAT for UK transaction (20%)",
+                        "Display portal in Spanish",
+                        "Apply GDPR rules for EU merchant"
+                    ]
+                },
+                {
+                    name: "Integration Connector Framework",
+                    icon: Zap,
+                    description: "Universal connector for 3rd party integrations",
+                    entities: ["IntegrationConnector", "ConnectorTemplate", "WebhookOrchestrator"],
+                    dependencies: ["MerchantAPIManager"],
+                    implementation: {
+                        step1: "Create universal connector schema",
+                        step2: "Build connector template library",
+                        step3: "Implement OAuth flow management",
+                        step4: "Create webhook orchestration layer",
+                        step5: "Add integration testing sandbox",
+                        step6: "Build connector marketplace"
+                    },
+                    testPlan: [
+                        "Create Salesforce connector from template",
+                        "Configure OAuth for merchant authorization",
+                        "Orchestrate webhook (payment → Salesforce)",
+                        "Test integration in sandbox environment",
+                        "Publish connector to marketplace",
+                        "PSP installs and configures connector"
                     ]
                 }
             ]
@@ -283,7 +511,7 @@ export default function PSPEmpowermentRoadmap() {
             </div>
 
             {/* Phase Overview */}
-            <div className="grid grid-cols-4 gap-4">
+            <div className="grid grid-cols-6 gap-4">
                 {Object.entries(roadmap).map(([key, phase]) => (
                     <Card 
                         key={key}
@@ -292,13 +520,14 @@ export default function PSPEmpowermentRoadmap() {
                     >
                         <CardContent className="p-4">
                             <Badge className={
+                                phase.priority === 'CRITICAL - FOUNDATION' ? 'bg-purple-100 text-purple-700' :
                                 phase.priority === 'CRITICAL' ? 'bg-red-100 text-red-700' :
                                 phase.priority === 'HIGH' ? 'bg-amber-100 text-amber-700' :
                                 'bg-blue-100 text-blue-700'
                             }>
                                 {phase.priority}
                             </Badge>
-                            <h3 className="font-semibold text-slate-900 mt-3 mb-1">{phase.name}</h3>
+                            <h3 className="font-semibold text-slate-900 mt-3 mb-1 text-sm">{phase.name}</h3>
                             <p className="text-xs text-slate-600">{phase.duration}</p>
                             <div className="flex items-center gap-2 mt-3">
                                 <CheckCircle2 className="w-4 h-4 text-emerald-600" />
@@ -316,6 +545,9 @@ export default function PSPEmpowermentRoadmap() {
                         {roadmap[selectedPhase].name}
                         <Badge>{roadmap[selectedPhase].duration}</Badge>
                     </CardTitle>
+                    {roadmap[selectedPhase].description && (
+                        <p className="text-sm text-slate-600 mt-2">{roadmap[selectedPhase].description}</p>
+                    )}
                 </CardHeader>
                 <CardContent>
                     <div className="space-y-8">
@@ -474,40 +706,85 @@ export default function PSPEmpowermentRoadmap() {
                 <CardContent>
                     <div className="space-y-4">
                         <div className="flex items-center gap-4">
-                            <div className="w-32 text-sm font-semibold text-slate-700">Week 1-4</div>
+                            <div className="w-32 text-sm font-semibold text-slate-700">Week 1-3</div>
+                            <div className="flex-1 h-2 bg-purple-200 rounded-full relative">
+                                <div className="absolute inset-0 bg-purple-500 rounded-full" style={{width: '100%'}}></div>
+                            </div>
+                            <div className="text-sm text-slate-600">Phase 0 Complete</div>
+                        </div>
+                        <div className="flex items-center gap-4">
+                            <div className="w-32 text-sm font-semibold text-slate-700">Week 4-7</div>
                             <div className="flex-1 h-2 bg-red-200 rounded-full relative">
                                 <div className="absolute inset-0 bg-red-500 rounded-full" style={{width: '100%'}}></div>
                             </div>
                             <div className="text-sm text-slate-600">Phase 1 Complete</div>
                         </div>
                         <div className="flex items-center gap-4">
-                            <div className="w-32 text-sm font-semibold text-slate-700">Week 5-8</div>
+                            <div className="w-32 text-sm font-semibold text-slate-700">Week 8-11</div>
                             <div className="flex-1 h-2 bg-amber-200 rounded-full relative">
                                 <div className="absolute inset-0 bg-amber-500 rounded-full" style={{width: '100%'}}></div>
                             </div>
                             <div className="text-sm text-slate-600">Phase 2 Complete</div>
                         </div>
                         <div className="flex items-center gap-4">
-                            <div className="w-32 text-sm font-semibold text-slate-700">Week 9-13</div>
+                            <div className="w-32 text-sm font-semibold text-slate-700">Week 12-16</div>
                             <div className="flex-1 h-2 bg-blue-200 rounded-full relative">
                                 <div className="absolute inset-0 bg-blue-500 rounded-full" style={{width: '100%'}}></div>
                             </div>
                             <div className="text-sm text-slate-600">Phase 3 Complete</div>
                         </div>
                         <div className="flex items-center gap-4">
-                            <div className="w-32 text-sm font-semibold text-slate-700">Week 14-16</div>
+                            <div className="w-32 text-sm font-semibold text-slate-700">Week 17-19</div>
                             <div className="flex-1 h-2 bg-emerald-200 rounded-full relative">
                                 <div className="absolute inset-0 bg-emerald-500 rounded-full" style={{width: '100%'}}></div>
                             </div>
-                            <div className="text-sm text-slate-600">Phase 4 Complete + UAT</div>
+                            <div className="text-sm text-slate-600">Phase 4 Complete</div>
+                        </div>
+                        <div className="flex items-center gap-4">
+                            <div className="w-32 text-sm font-semibold text-slate-700">Week 20-23</div>
+                            <div className="flex-1 h-2 bg-indigo-200 rounded-full relative">
+                                <div className="absolute inset-0 bg-indigo-500 rounded-full" style={{width: '100%'}}></div>
+                            </div>
+                            <div className="text-sm text-slate-600">Phase 5 Complete + UAT</div>
                         </div>
                     </div>
                     <div className="mt-6 p-4 bg-gradient-to-r from-emerald-50 to-blue-50 rounded-lg border border-emerald-200">
-                        <p className="font-semibold text-slate-900">Total Timeline: ~16 weeks (4 months)</p>
+                        <p className="font-semibold text-slate-900">Total Timeline: ~23 weeks (5.5 months)</p>
                         <p className="text-sm text-slate-600 mt-2">
-                            This represents the minimum viable implementation. Each phase can be deployed independently, 
-                            allowing PSPs to start using features as they become available.
+                            Phase 0 must be completed first as it provides the foundation. Phases 1-5 can be deployed 
+                            incrementally, allowing PSPs to adopt features progressively.
                         </p>
+                    </div>
+                    
+                    {/* Mapping to 12 Missing Functionalities */}
+                    <div className="mt-6 p-4 bg-slate-50 rounded-lg border border-slate-200">
+                        <h4 className="font-semibold text-slate-900 mb-3">Coverage of 12 Missing Functionalities</h4>
+                        <div className="grid grid-cols-2 gap-3 text-sm">
+                            <div className="flex items-start gap-2">
+                                <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
+                                <span><strong>Phase 0:</strong> ServiceCatalog, MasterPricing, Resource Orchestration, API Gateway</span>
+                            </div>
+                            <div className="flex items-start gap-2">
+                                <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
+                                <span><strong>Phase 1:</strong> Product Builder & Catalog, Advanced Provisioning Engine</span>
+                            </div>
+                            <div className="flex items-start gap-2">
+                                <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
+                                <span><strong>Phase 2:</strong> Dynamic Pricing, Subscription & Usage-Based Billing</span>
+                            </div>
+                            <div className="flex items-start gap-2">
+                                <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
+                                <span><strong>Phase 3:</strong> Self-Service Portal, Integration & API Marketplace (partial)</span>
+                            </div>
+                            <div className="flex items-start gap-2">
+                                <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
+                                <span><strong>Phase 4:</strong> Analytics & Product Intelligence (both levels)</span>
+                            </div>
+                            <div className="flex items-start gap-2">
+                                <CheckCircle2 className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
+                                <span><strong>Phase 5:</strong> Marketplace & Discovery, Contract & SLA, Multi-Currency, Integration Framework</span>
+                            </div>
+                        </div>
                     </div>
                 </CardContent>
             </Card>

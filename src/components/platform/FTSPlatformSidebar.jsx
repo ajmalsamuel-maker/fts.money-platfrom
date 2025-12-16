@@ -92,7 +92,8 @@ const menuSections = [
         title: 'System',
         items: [
             { icon: Settings, label: 'Platform Settings', path: 'FTSSettings', description: 'Configuration' },
-            { icon: BookOpen, label: 'Architecture Docs', path: 'FTSArchitectureDoc', description: 'System blueprint' }
+            { icon: BookOpen, label: 'Architecture Docs', path: 'FTSArchitectureDoc', description: 'System blueprint' },
+            { icon: BookOpen, label: 'Implementation Roadmap', path: 'PSPEmpowermentRoadmap', description: 'Feature development plan' }
         ]
     }
 ];
