@@ -130,19 +130,23 @@ export default function FTSServiceManager() {
 
         try {
             // Check cache first
-            const cacheResponse = await base44.functions.invoke('serviceCatalogCache', {
-                action: 'get',
-                service_id: service.service_id
-            });
+            try {
+                const cacheResponse = await base44.functions.invoke('serviceCatalogCache', {
+                    action: 'get',
+                    service_id: service.service_id
+                });
 
-            if (cacheResponse.data.success && cacheResponse.data.cached) {
-                // Use cached data immediately
-                setServiceDetails(cacheResponse.data.data);
-                setLoadingDetails(false);
-                return;
+                if (cacheResponse.data.success && cacheResponse.data.cached) {
+                    // Use cached data immediately
+                    setServiceDetails(cacheResponse.data.data);
+                    setLoadingDetails(false);
+                    return;
+                }
+            } catch (cacheError) {
+                console.log('Cache check failed, fetching fresh data:', cacheError.message);
             }
 
-            // Not cached, fetch fresh data
+            // Not cached or cache failed, fetch fresh data
             const response = await base44.integrations.Core.InvokeLLM({
                 prompt: `Provide a comprehensive, detailed explanation of "${service.service_name}" in the context of payment processing and fintech. Include:
 
@@ -170,16 +174,21 @@ Make the response detailed, authoritative, and include the most recent informati
 
             setServiceDetails(response);
 
-            // Cache the response for future use
-            await base44.functions.invoke('serviceCatalogCache', {
-                action: 'set',
-                service_id: service.service_id,
-                service_name: service.service_name,
-                data: response,
-                source_url: 'llm_generated'
-            });
+            // Cache the response for future use (non-blocking)
+            try {
+                await base44.functions.invoke('serviceCatalogCache', {
+                    action: 'set',
+                    service_id: service.service_id,
+                    service_name: service.service_name,
+                    data: response,
+                    source_url: 'llm_generated'
+                });
+            } catch (cacheError) {
+                console.log('Failed to cache response:', cacheError.message);
+            }
 
         } catch (error) {
+            console.error('Service details error:', error);
             setServiceDetails('Failed to load service details. Please try again.');
         } finally {
             setLoadingDetails(false);
