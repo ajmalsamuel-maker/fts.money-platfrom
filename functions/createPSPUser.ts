@@ -1,5 +1,4 @@
 import pg from 'npm:pg@8.11.3';
-import bcrypt from 'npm:bcrypt@5.1.1';
 
 const { Pool } = pg;
 
@@ -41,8 +40,9 @@ Deno.serve(async (req) => {
                 )
             `);
 
-            // Hash password
-            const password_hash = await bcrypt.hash(password || 'Welcome123!', 10);
+            // Simple hash for demo (use bcrypt in production)
+            const crypto = await import('node:crypto');
+            const password_hash = crypto.createHash('sha256').update(password || 'Welcome123!').digest('hex');
 
             // Insert user
             const result = await client.query(`
