@@ -175,27 +175,29 @@ export default function PSPProvisioningWizard() {
 
     const provisionMutation = useMutation({
         mutationFn: async (data) => {
-            // Create PSP record
-            const psp = await base44.entities.ProvisionedPSP.create(data);
-            
-            // Automatically provision PCI Level 1 & GDPR compliant isolated schema
-            const schemaResult = await base44.functions.invoke('provisionPSPSchema', {
-                psp_code: data.psp_code,
-                template_psp_code: 'NETXHUB'
+            // Create PSP record with pending approval status
+            const psp = await base44.entities.ProvisionedPSP.create({
+                ...data,
+                status: 'provisioning'
             });
             
-            // Validate compliance
-            const complianceResult = await base44.functions.invoke('complianceFramework', {
-                action: 'validatePSPCompliance',
-                psp_code: data.psp_code
+            // Create approval request
+            await base44.entities.ApprovalRequest.create({
+                request_type: 'psp_creation',
+                entity_type: 'ProvisionedPSP',
+                entity_id: psp.id,
+                entity_data: data,
+                submitted_by: platformUser?.email || 'admin@fts.money',
+                submitted_by_name: platformUser?.email || 'Admin',
+                priority: 'high'
             });
             
-            return { psp, schema: schemaResult.data, compliance: complianceResult.data };
+            return { psp };
         },
         onSuccess: (result) => {
-            setComplianceReport(result);
             setProvisioningComplete(true);
             queryClient.invalidateQueries(['provisioned-psps']);
+            queryClient.invalidateQueries(['approval-requests']);
         }
     });
 
@@ -224,25 +226,18 @@ export default function PSPProvisioningWizard() {
         
         const psp = await provisionMutation.mutateAsync(data);
 
-        // Enhanced audit logging with ISO compliance tracking
-        await AuditLogger.logPSPProvisioning(
-            psp.psp,
-            { email: platformUser?.email || 'admin@fts.money', platform_role: platformUser?.platform_role || 'platform_admin' },
-            { 
-                tier: selectedTier,
-                compliance_validated: true,
-                schema_provisioned: true
-            }
-        );
-        
-        // Create initial log
-        await base44.entities.PSPInstanceLog.create({
-            psp_id: psp.id,
-            psp_code: psp.psp_code,
-            log_type: 'deployment',
-            severity: 'medium',
-            message: 'PSP instance successfully provisioned',
-            source: 'system'
+        // Log submission
+        await base44.entities.PSPAuditTrail.create({
+            psp_id: psp.psp.id,
+            psp_code: data.psp_code,
+            action: 'psp_creation_requested',
+            field_changed: 'status',
+            old_value: null,
+            new_value: 'provisioning',
+            user_email: platformUser?.email || 'admin@fts.money',
+            user_role: platformUser?.platform_role || 'platform_admin',
+            ip_address: 'system',
+            metadata: { tier: selectedTier, submitted_for_approval: true }
         });
     };
 
@@ -982,142 +977,94 @@ export default function PSPProvisioningWizard() {
                     </Card>
                 )}
 
-                {/* Compliance Confirmation */}
-                {provisioningComplete && complianceReport && (
+                {/* Submission Confirmation */}
+                {provisioningComplete && (
                     <Card className="bg-white border-slate-200">
                         <CardHeader>
                             <div className="flex items-center gap-3 mb-4">
-                                <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center">
-                                    <Shield className="h-8 w-8 text-emerald-600" />
+                                <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center">
+                                    <CheckCircle2 className="h-8 w-8 text-blue-600" />
                                 </div>
                                 <div>
-                                    <CardTitle className="text-2xl text-emerald-900">PSP Successfully Deployed</CardTitle>
-                                    <CardDescription className="text-emerald-700">
-                                        Fully compliant with international standards
+                                    <CardTitle className="text-2xl text-blue-900">PSP Submitted for Approval</CardTitle>
+                                    <CardDescription className="text-blue-700">
+                                        Your request is now in the provisioning queue
                                     </CardDescription>
                                 </div>
                             </div>
                         </CardHeader>
                         <CardContent className="space-y-6">
-                            {/* Compliance Score */}
-                            <div className="bg-emerald-50 border-2 border-emerald-200 rounded-lg p-6">
-                                <div className="flex items-center justify-between mb-4">
-                                    <h3 className="text-lg font-semibold text-emerald-900">Compliance Score</h3>
-                                    <Badge className="bg-emerald-600 text-white text-xl px-4 py-2">
-                                        {complianceReport.compliance?.compliance_score || 100}/100
-                                    </Badge>
+                            {/* Approval Status */}
+                            <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-6">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <Loader2 className="h-6 w-6 text-blue-600 animate-spin" />
+                                    <h3 className="text-lg font-semibold text-blue-900">Pending Approval</h3>
                                 </div>
-                                <p className="text-sm text-emerald-700">
-                                    Your PSP instance meets all mandatory international compliance standards for payment processing.
+                                <p className="text-sm text-blue-700 mb-4">
+                                    Your PSP provisioning request has been submitted and is awaiting approval from the platform administrator.
                                 </p>
+                                <div className="space-y-2 text-sm text-blue-800">
+                                    <p>✓ Request submitted successfully</p>
+                                    <p>⏳ Waiting for approval</p>
+                                    <p>→ Once approved, provisioning will begin automatically</p>
+                                </div>
                             </div>
 
-                            {/* Certifications */}
+                            {/* Next Steps */}
                             <div>
-                                <h3 className="font-semibold text-slate-900 mb-4">Active Certifications & Standards</h3>
-                                <div className="grid grid-cols-2 gap-3">
-                                    <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg border border-slate-200">
-                                        <Shield className="h-5 w-5 text-blue-600" />
+                                <h3 className="font-semibold text-slate-900 mb-4">What Happens Next?</h3>
+                                <div className="space-y-3">
+                                    <div className="flex items-start gap-3 p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                        <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                            <span className="text-blue-700 font-bold">1</span>
+                                        </div>
                                         <div>
-                                            <p className="font-semibold text-sm">PCI DSS Level 1</p>
-                                            <p className="text-xs text-slate-600">Payment Card Industry</p>
+                                            <p className="font-semibold text-sm">Approval Review</p>
+                                            <p className="text-xs text-slate-600">A platform administrator will review your request (typically within 24 hours)</p>
                                         </div>
                                     </div>
-                                    <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg border border-slate-200">
-                                        <Shield className="h-5 w-5 text-purple-600" />
+                                    <div className="flex items-start gap-3 p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                        <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                            <span className="text-blue-700 font-bold">2</span>
+                                        </div>
                                         <div>
-                                            <p className="font-semibold text-sm">GDPR Article 32</p>
-                                            <p className="text-xs text-slate-600">Data Protection</p>
+                                            <p className="font-semibold text-sm">Automated Provisioning</p>
+                                            <p className="text-xs text-slate-600">Once approved, infrastructure will be automatically deployed</p>
                                         </div>
                                     </div>
-                                    <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg border border-slate-200">
-                                        <Award className="h-5 w-5 text-emerald-600" />
+                                    <div className="flex items-start gap-3 p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                        <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                            <span className="text-blue-700 font-bold">3</span>
+                                        </div>
                                         <div>
-                                            <p className="font-semibold text-sm">ISO 27001</p>
-                                            <p className="text-xs text-slate-600">Information Security</p>
+                                            <p className="font-semibold text-sm">Compliance Validation</p>
+                                            <p className="text-xs text-slate-600">Automated compliance checks (PCI DSS, GDPR, ISO 27001, etc.)</p>
                                         </div>
                                     </div>
-                                    <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg border border-slate-200">
-                                        <Award className="h-5 w-5 text-cyan-600" />
-                                        <div>
-                                            <p className="font-semibold text-sm">SOC 2 Type II</p>
-                                            <p className="text-xs text-slate-600">Trust Services</p>
+                                    <div className="flex items-start gap-3 p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                        <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                            <span className="text-blue-700 font-bold">4</span>
                                         </div>
-                                    </div>
-                                    <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg border border-slate-200">
-                                        <Scale className="h-5 w-5 text-amber-600" />
                                         <div>
-                                            <p className="font-semibold text-sm">PSD2 & SCA</p>
-                                            <p className="text-xs text-slate-600">Payment Services</p>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg border border-slate-200">
-                                        <Shield className="h-5 w-5 text-red-600" />
-                                        <div>
-                                            <p className="font-semibold text-sm">AML/CFT (FATF)</p>
-                                            <p className="text-xs text-slate-600">Anti-Money Laundering</p>
+                                            <p className="font-semibold text-sm">Go Live</p>
+                                            <p className="text-xs text-slate-600">You'll receive credentials and can start onboarding merchants</p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Additional Standards */}
-                            <div className="border-t border-slate-200 pt-4">
-                                <p className="text-sm font-medium text-slate-700 mb-3">Additional Standards Implemented:</p>
-                                <div className="flex flex-wrap gap-2">
-                                    {[
-                                        'ISO 22301', 'ISO 20000', 'ISO 5002', 'OWASP ASVS L3', 'FIPS 140-3', 
-                                        'NIST CSF', 'eIDAS 2.0', 'CCPA/LGPD', 'PIPEDA', 'Open Banking',
-                                        'CSA STAR', 'ISO 27017/18', 'NACHA', 'SWIFT', 'TLS 1.3'
-                                    ].map((std) => (
-                                        <Badge key={std} variant="outline" className="text-xs">
-                                            ✓ {std}
-                                        </Badge>
-                                    ))}
-                                </div>
-                            </div>
 
-                            {/* Technical Controls */}
-                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                                <h4 className="font-semibold text-blue-900 mb-3">Technical Security Controls</h4>
-                                <div className="grid grid-cols-2 gap-3 text-sm">
-                                    <div className="flex items-center gap-2">
-                                        <CheckCircle2 className="h-4 w-4 text-blue-600" />
-                                        <span className="text-blue-800">AES-256-GCM Encryption</span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <CheckCircle2 className="h-4 w-4 text-blue-600" />
-                                        <span className="text-blue-800">TLS 1.3 Transport</span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <CheckCircle2 className="h-4 w-4 text-blue-600" />
-                                        <span className="text-blue-800">MFA + FIDO2 Auth</span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <CheckCircle2 className="h-4 w-4 text-blue-600" />
-                                        <span className="text-blue-800">HSM Key Management</span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <CheckCircle2 className="h-4 w-4 text-blue-600" />
-                                        <span className="text-blue-800">Zero Trust Network</span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <CheckCircle2 className="h-4 w-4 text-blue-600" />
-                                        <span className="text-blue-800">Isolated Database</span>
-                                    </div>
-                                </div>
-                            </div>
 
                             <div className="flex justify-between items-center pt-4 border-t border-slate-200">
                                 <p className="text-xs text-slate-500">
-                                    Provisioned: {new Date().toLocaleString()}
+                                    Submitted: {new Date().toLocaleString()}
                                 </p>
                                 <Button 
-                                    onClick={() => navigate(createPageUrl('PSPProvisioning'))}
-                                    className="bg-emerald-600 hover:bg-emerald-700"
+                                    onClick={() => navigate(createPageUrl('FTSProvisioningQueue'))}
+                                    className="bg-blue-600 hover:bg-blue-700"
                                     size="lg"
                                 >
-                                    View PSP Dashboard
+                                    View Provisioning Queue
                                     <ArrowRight className="h-5 w-5 ml-2" />
                                 </Button>
                             </div>

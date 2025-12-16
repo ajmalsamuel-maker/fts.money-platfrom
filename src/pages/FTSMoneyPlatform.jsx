@@ -254,21 +254,56 @@ export default function FTSMoneyPlatform() {
                                             </div>
                                             
                                             {!isTemplate && (
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    className="w-full text-red-600 hover:text-red-700 hover:bg-red-50"
-                                                    onClick={async (e) => {
-                                                        e.stopPropagation();
-                                                        if (confirm(`Delete ${psp.psp_name}? This action cannot be undone.`)) {
-                                                            await base44.entities.ProvisionedPSP.delete(psp.id);
-                                                            window.location.reload();
-                                                        }
-                                                    }}
-                                                >
-                                                    <Trash2 className="h-4 w-4 mr-2" />
-                                                    Delete PSP
-                                                </Button>
+                                                <div className="flex gap-2">
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        className="flex-1 text-amber-600 hover:text-amber-700 hover:bg-amber-50"
+                                                        onClick={async (e) => {
+                                                            e.stopPropagation();
+                                                            const action = psp.status === 'active' ? 'suspend' : 'activate';
+                                                            const newStatus = psp.status === 'active' ? 'suspended' : 'active';
+                                                            if (confirm(`${action === 'suspend' ? 'Suspend' : 'Activate'} ${psp.psp_name}?`)) {
+                                                                await base44.entities.ApprovalRequest.create({
+                                                                    request_type: 'psp_status_change',
+                                                                    entity_type: 'ProvisionedPSP',
+                                                                    entity_id: psp.id,
+                                                                    entity_data: psp,
+                                                                    action_data: { new_status: newStatus },
+                                                                    submitted_by: platformUser?.email || 'admin@fts.money',
+                                                                    submitted_by_name: platformUser?.email || 'Admin',
+                                                                    priority: 'high'
+                                                                });
+                                                                alert('Status change request submitted for approval');
+                                                            }
+                                                        }}
+                                                    >
+                                                        {psp.status === 'active' ? '⏸ Suspend' : '▶ Activate'}
+                                                    </Button>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        className="flex-1 text-red-600 hover:text-red-700 hover:bg-red-50"
+                                                        onClick={async (e) => {
+                                                            e.stopPropagation();
+                                                            if (confirm(`Delete ${psp.psp_name}? This action cannot be undone.`)) {
+                                                                await base44.entities.ApprovalRequest.create({
+                                                                    request_type: 'psp_deletion',
+                                                                    entity_type: 'ProvisionedPSP',
+                                                                    entity_id: psp.id,
+                                                                    entity_data: psp,
+                                                                    submitted_by: platformUser?.email || 'admin@fts.money',
+                                                                    submitted_by_name: platformUser?.email || 'Admin',
+                                                                    priority: 'urgent'
+                                                                });
+                                                                alert('Deletion request submitted for approval');
+                                                            }
+                                                        }}
+                                                    >
+                                                        <Trash2 className="h-4 w-4 mr-2" />
+                                                        Delete
+                                                    </Button>
+                                                </div>
                                             )}
                                             
                                             {isTemplate && (

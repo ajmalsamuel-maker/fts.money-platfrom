@@ -2,16 +2,18 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
+import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { 
     Server, CheckCircle2, Loader2, AlertCircle, Database, 
-    Key, Globe, Shield, Play, XCircle 
+    Key, Globe, Shield, Play, XCircle, UserCheck, Trash2, Power
 } from 'lucide-react';
 
 const provisioningSteps = [
@@ -24,7 +26,9 @@ const provisioningSteps = [
 
 export default function FTSProvisioningQueue() {
     const queryClient = useQueryClient();
+    const { platformUser } = usePlatformAuth();
     const [selectedPSP, setSelectedPSP] = useState(null);
+    const [reviewComments, setReviewComments] = useState('');
 
     const { data: provisioningPSPs = [] } = useQuery({
         queryKey: ['provisioning-psps'],
@@ -35,6 +39,12 @@ export default function FTSProvisioningQueue() {
     const { data: activePSPs = [] } = useQuery({
         queryKey: ['active-psps'],
         queryFn: () => base44.entities.ProvisionedPSP.filter({ status: 'active' }, '-created_date', 10)
+    });
+
+    const { data: approvalRequests = [] } = useQuery({
+        queryKey: ['approval-requests'],
+        queryFn: () => base44.entities.ApprovalRequest.filter({ status: 'pending' }, '-created_date'),
+        refetchInterval: 5000
     });
 
     const executeStepMutation = useMutation({
@@ -113,6 +123,81 @@ export default function FTSProvisioningQueue() {
         }
     });
 
+    const approveRequestMutation = useMutation({
+        mutationFn: async ({ requestId, request }) => {
+            // Update approval request
+            await base44.entities.ApprovalRequest.update(requestId, {
+                status: 'approved',
+                reviewed_by: platformUser?.email,
+                reviewed_by_name: platformUser?.email,
+                review_date: new Date().toISOString(),
+                review_comments: reviewComments
+            });
+
+            // Execute the action
+            if (request.request_type === 'psp_creation') {
+                // Auto-provision the PSP
+                await handleAutoProvision(request.entity_id);
+            } else if (request.request_type === 'psp_status_change') {
+                await base44.entities.ProvisionedPSP.update(request.entity_id, {
+                    status: request.action_data.new_status
+                });
+            } else if (request.request_type === 'psp_deletion') {
+                await base44.entities.ProvisionedPSP.delete(request.entity_id);
+            }
+
+            // Log to audit trail
+            await base44.entities.PSPAuditTrail.create({
+                psp_id: request.entity_id,
+                psp_code: request.entity_data.psp_code,
+                action: `${request.request_type}_approved`,
+                field_changed: 'approval_status',
+                old_value: 'pending',
+                new_value: 'approved',
+                user_email: platformUser?.email,
+                user_role: platformUser?.platform_role,
+                ip_address: 'system',
+                metadata: { request_id: requestId, comments: reviewComments }
+            });
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['approval-requests'] });
+            queryClient.invalidateQueries({ queryKey: ['provisioning-psps'] });
+            queryClient.invalidateQueries({ queryKey: ['provisioned-psps'] });
+            setReviewComments('');
+        }
+    });
+
+    const rejectRequestMutation = useMutation({
+        mutationFn: async ({ requestId, request }) => {
+            await base44.entities.ApprovalRequest.update(requestId, {
+                status: 'rejected',
+                reviewed_by: platformUser?.email,
+                reviewed_by_name: platformUser?.email,
+                review_date: new Date().toISOString(),
+                review_comments: reviewComments
+            });
+
+            // Log to audit trail
+            await base44.entities.PSPAuditTrail.create({
+                psp_id: request.entity_id,
+                psp_code: request.entity_data.psp_code,
+                action: `${request.request_type}_rejected`,
+                field_changed: 'approval_status',
+                old_value: 'pending',
+                new_value: 'rejected',
+                user_email: platformUser?.email,
+                user_role: platformUser?.platform_role,
+                ip_address: 'system',
+                metadata: { request_id: requestId, comments: reviewComments }
+            });
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['approval-requests'] });
+            setReviewComments('');
+        }
+    });
+
     const handleExecuteStep = async (pspId, stepId) => {
         await executeStepMutation.mutateAsync({ pspId, step: stepId });
     };
@@ -148,8 +233,11 @@ export default function FTSProvisioningQueue() {
                 </header>
 
                 <div className="p-6 space-y-6">
-                    <Tabs defaultValue="queue">
+                    <Tabs defaultValue="approvals">
                         <TabsList>
+                            <TabsTrigger value="approvals">
+                                Pending Approvals ({approvalRequests.length})
+                            </TabsTrigger>
                             <TabsTrigger value="queue">
                                 Provisioning Queue ({provisioningPSPs.length})
                             </TabsTrigger>
@@ -157,6 +245,89 @@ export default function FTSProvisioningQueue() {
                                 Recently Activated ({activePSPs.length})
                             </TabsTrigger>
                         </TabsList>
+
+                        <TabsContent value="approvals" className="space-y-4">
+                            {approvalRequests.length === 0 ? (
+                                <Card>
+                                    <CardContent className="text-center py-12">
+                                        <CheckCircle2 className="h-16 w-16 text-emerald-500 mx-auto mb-4" />
+                                        <h3 className="text-lg font-semibold text-slate-900 mb-2">No Pending Approvals</h3>
+                                        <p className="text-slate-600">All requests have been reviewed</p>
+                                    </CardContent>
+                                </Card>
+                            ) : (
+                                approvalRequests.map((request) => (
+                                    <Card key={request.id} className="border-l-4 border-l-amber-500">
+                                        <CardHeader>
+                                            <div className="flex items-center justify-between">
+                                                <div>
+                                                    <CardTitle className="flex items-center gap-2">
+                                                        {request.request_type === 'psp_creation' && <UserCheck className="h-5 w-5" />}
+                                                        {request.request_type === 'psp_deletion' && <Trash2 className="h-5 w-5" />}
+                                                        {request.request_type === 'psp_status_change' && <Power className="h-5 w-5" />}
+                                                        {request.request_type.replace(/_/g, ' ').toUpperCase()}
+                                                    </CardTitle>
+                                                    <p className="text-sm text-slate-600 mt-1">
+                                                        PSP: {request.entity_data?.psp_name} ({request.entity_data?.psp_code})
+                                                    </p>
+                                                    <p className="text-xs text-slate-500 mt-1">
+                                                        Submitted by: {request.submitted_by} • {new Date(request.created_date).toLocaleString()}
+                                                    </p>
+                                                </div>
+                                                <Badge className={cn(
+                                                    request.priority === 'urgent' && 'bg-red-100 text-red-700',
+                                                    request.priority === 'high' && 'bg-orange-100 text-orange-700',
+                                                    request.priority === 'medium' && 'bg-blue-100 text-blue-700',
+                                                    request.priority === 'low' && 'bg-slate-100 text-slate-700'
+                                                )}>
+                                                    {request.priority}
+                                                </Badge>
+                                            </div>
+                                        </CardHeader>
+                                        <CardContent className="space-y-4">
+                                            {request.request_type === 'psp_status_change' && (
+                                                <Alert>
+                                                    <AlertCircle className="h-4 w-4" />
+                                                    <AlertDescription>
+                                                        Status change: <strong>{request.entity_data?.status}</strong> → <strong>{request.action_data?.new_status}</strong>
+                                                    </AlertDescription>
+                                                </Alert>
+                                            )}
+
+                                            <div>
+                                                <label className="text-sm font-medium mb-2 block">Review Comments</label>
+                                                <Textarea
+                                                    placeholder="Add comments about this approval decision..."
+                                                    value={reviewComments}
+                                                    onChange={(e) => setReviewComments(e.target.value)}
+                                                    className="h-20"
+                                                />
+                                            </div>
+
+                                            <div className="flex items-center gap-2 pt-4 border-t">
+                                                <Button
+                                                    onClick={() => approveRequestMutation.mutate({ requestId: request.id, request })}
+                                                    disabled={approveRequestMutation.isPending || rejectRequestMutation.isPending}
+                                                    className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                                                >
+                                                    <CheckCircle2 className="h-4 w-4 mr-2" />
+                                                    Approve
+                                                </Button>
+                                                <Button
+                                                    variant="outline"
+                                                    onClick={() => rejectRequestMutation.mutate({ requestId: request.id, request })}
+                                                    disabled={approveRequestMutation.isPending || rejectRequestMutation.isPending}
+                                                    className="text-red-600 hover:bg-red-50"
+                                                >
+                                                    <XCircle className="h-4 w-4 mr-2" />
+                                                    Reject
+                                                </Button>
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+                                ))
+                            )}
+                        </TabsContent>
 
                         <TabsContent value="queue" className="space-y-4">
                             {provisioningPSPs.length === 0 ? (
