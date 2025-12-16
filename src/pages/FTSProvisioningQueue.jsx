@@ -97,6 +97,48 @@ export default function FTSProvisioningQueue() {
                 cdn_endpoint: `https://cdn.fts.money/${psp.psp_code.toLowerCase()}`
             };
 
+            // Generate initial admin password
+            const initialPassword = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15).toUpperCase();
+
+            // Create initial admin user
+            await base44.functions.invoke('createPSPUser', {
+                psp_code: psp.psp_code,
+                email: psp.owner_email,
+                full_name: psp.psp_name + ' Admin',
+                role: 'psp_admin',
+                password: initialPassword
+            });
+
+            // Send welcome email with credentials
+            await base44.integrations.Core.SendEmail({
+                to: psp.owner_email,
+                subject: `Welcome to ${psp.psp_name} - Your PSP is Ready!`,
+                body: `
+Hello,
+
+Your PSP "${psp.psp_name}" (${psp.psp_code}) has been successfully provisioned and is now active!
+
+🔐 Initial Login Credentials:
+PSP Code: ${psp.psp_code}
+Email: ${psp.owner_email}
+Password: ${initialPassword}
+
+🌐 Login URL: ${window.location.origin}/PSPLogin
+
+⚠️ IMPORTANT: Please change your password immediately after your first login.
+
+Your PSP Dashboard: ${window.location.origin}/Dashboard
+
+Technical Details:
+- API Key: ${technicalConfig.api_key}
+- Database: ${technicalConfig.database_instance}
+- Go Live Date: ${new Date().toISOString().split('T')[0]}
+
+Best regards,
+FTS.Money Platform Team
+                `
+            });
+
             return await base44.entities.ProvisionedPSP.update(pspId, {
                 status: 'active',
                 provisioning_progress: 100,
