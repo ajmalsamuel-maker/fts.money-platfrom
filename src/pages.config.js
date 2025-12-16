@@ -177,6 +177,7 @@ import PSPProductCatalog from './pages/PSPProductCatalog';
 import MerchantOnboardingWorkflows from './pages/MerchantOnboardingWorkflows';
 import MerchantPricingEngine from './pages/MerchantPricingEngine';
 import PSPMerchantPricing from './pages/PSPMerchantPricing';
+import UsageMeteringSystem from './pages/UsageMeteringSystem';
 import __Layout from './Layout.jsx';
 
 
@@ -360,6 +361,7 @@ export const PAGES = {
     "MerchantOnboardingWorkflows": MerchantOnboardingWorkflows,
     "MerchantPricingEngine": MerchantPricingEngine,
     "PSPMerchantPricing": PSPMerchantPricing,
+    "UsageMeteringSystem": UsageMeteringSystem,
 }
 
 export const pagesConfig = {
