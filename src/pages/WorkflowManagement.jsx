@@ -273,10 +273,71 @@ export default function WorkflowManagement() {
                                 </Card>
                             </div>
 
-                            {/* Workflows Table */}
+                            {/* Workflows List with BPMN */}
                             <Card className="bg-white border-slate-200">
                                 <CardHeader>
                                     <CardTitle>Platform Workflows</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="space-y-6">
+                                        {workflows.map((workflow) => (
+                                            <div key={workflow.id} className="border border-slate-200 rounded-lg overflow-hidden">
+                                                <div className="bg-slate-50 p-4 border-b border-slate-200">
+                                                    <div className="flex items-center justify-between">
+                                                        <div className="flex items-center gap-3">
+                                                            <GitBranch className="h-5 w-5 text-blue-600" />
+                                                            <div>
+                                                                <p className="font-medium text-slate-900">{workflow.workflow_name}</p>
+                                                                <p className="text-xs text-slate-500">{workflow.workflow_id}</p>
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex items-center gap-2">
+                                                            <Badge variant="outline" className="capitalize">
+                                                                {workflow.workflow_type.replace(/_/g, ' ')}
+                                                            </Badge>
+                                                            <button onClick={() => handleToggleCompliance(workflow, 'iso_19510_compliant')} title="BPMN 2.0">
+                                                                {workflow.iso_19510_compliant ? (
+                                                                    <CheckCircle className="h-5 w-5 text-emerald-600" />
+                                                                ) : (
+                                                                    <AlertCircle className="h-5 w-5 text-slate-300" />
+                                                                )}
+                                                            </button>
+                                                            <button onClick={() => handleToggleCompliance(workflow, 'iso_10746_compliant')} title="ODP">
+                                                                {workflow.iso_10746_compliant ? (
+                                                                    <CheckCircle className="h-5 w-5 text-emerald-600" />
+                                                                ) : (
+                                                                    <AlertCircle className="h-5 w-5 text-slate-300" />
+                                                                )}
+                                                            </button>
+                                                            <button onClick={() => handleToggleCompliance(workflow, 'iso_9001_compliant')} title="ISO 9001">
+                                                                {workflow.iso_9001_compliant ? (
+                                                                    <CheckCircle className="h-5 w-5 text-emerald-600" />
+                                                                ) : (
+                                                                    <AlertCircle className="h-5 w-5 text-slate-300" />
+                                                                )}
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="p-4">
+                                                    <BPMNDiagramViewer workflow={workflow} />
+                                                </div>
+                                            </div>
+                                        ))}
+                                        {workflows.length === 0 && (
+                                            <div className="text-center py-12">
+                                                <GitBranch className="h-12 w-12 text-slate-400 mx-auto mb-3" />
+                                                <p className="text-slate-600">No workflows defined yet</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </CardContent>
+                            </Card>
+
+                            {/* Legacy Table View */}
+                            <Card className="bg-white border-slate-200">
+                                <CardHeader>
+                                    <CardTitle>Quick Overview Table</CardTitle>
                                 </CardHeader>
                                 <CardContent>
                                     <div className="overflow-x-auto">
