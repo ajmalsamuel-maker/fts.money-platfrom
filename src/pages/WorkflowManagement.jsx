@@ -17,6 +17,7 @@ import { ArrowLeft, Plus, CheckCircle, GitBranch, Shield, BarChart3, FileText, S
 import { toast } from 'sonner';
 import WorkflowDashboard from '@/components/workflow/WorkflowDashboard';
 import WorkflowTemplateManager from '@/components/workflow/WorkflowTemplateManager';
+import WorkflowAuditTrailViewer from '@/components/workflow/WorkflowAuditTrailViewer';
 
 const isoStandards = [
     { 
@@ -192,6 +193,7 @@ export default function WorkflowManagement() {
                     <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                         <TabsList>
                             <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+                            <TabsTrigger value="audit">Audit Trail</TabsTrigger>
                             <TabsTrigger value="workflows">Workflows</TabsTrigger>
                             <TabsTrigger value="templates">Templates</TabsTrigger>
                             <TabsTrigger value="compliance">Compliance Overview</TabsTrigger>
@@ -200,6 +202,10 @@ export default function WorkflowManagement() {
 
                         <TabsContent value="dashboard">
                             <WorkflowDashboard workflows={workflows} />
+                        </TabsContent>
+
+                        <TabsContent value="audit">
+                            <WorkflowAuditTrailViewer />
                         </TabsContent>
 
                         <TabsContent value="templates">
