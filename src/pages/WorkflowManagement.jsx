@@ -15,6 +15,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ArrowLeft, Plus, CheckCircle, GitBranch, Shield, BarChart3, FileText, Settings, AlertCircle, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
+import WorkflowDashboard from '@/components/workflow/WorkflowDashboard';
+import WorkflowTemplateManager from '@/components/workflow/WorkflowTemplateManager';
 
 const isoStandards = [
     { 
@@ -189,10 +191,20 @@ export default function WorkflowManagement() {
                 <div className="p-6">
                     <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                         <TabsList>
+                            <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
                             <TabsTrigger value="workflows">Workflows</TabsTrigger>
+                            <TabsTrigger value="templates">Templates</TabsTrigger>
                             <TabsTrigger value="compliance">Compliance Overview</TabsTrigger>
                             <TabsTrigger value="standards">ISO Standards</TabsTrigger>
                         </TabsList>
+
+                        <TabsContent value="dashboard">
+                            <WorkflowDashboard workflows={workflows} />
+                        </TabsContent>
+
+                        <TabsContent value="templates">
+                            <WorkflowTemplateManager />
+                        </TabsContent>
 
                         <TabsContent value="workflows" className="space-y-6">
                             {/* Stats */}
