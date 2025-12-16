@@ -95,25 +95,40 @@ export default function MasterPricingManagement() {
         mutationFn: (data) => base44.entities.MasterPricing.create({
             ...data,
             item_id: `PRC-${Date.now()}`,
-            approved_by: platformUser?.email,
-            approval_date: new Date().toISOString().split('T')[0]
+            status: 'pending_approval',
+            created_by: platformUser?.email
         }),
         onSuccess: () => {
             queryClient.invalidateQueries(['master-pricing']);
             setShowDialog(false);
             setFormData({});
-            toast.success('Pricing item created');
+            toast.success('Pricing item submitted for approval');
         }
     });
 
     const updateMutation = useMutation({
-        mutationFn: ({ id, data }) => base44.entities.MasterPricing.update(id, data),
+        mutationFn: ({ id, data }) => base44.entities.MasterPricing.update(id, {
+            ...data,
+            status: 'pending_approval'
+        }),
         onSuccess: () => {
             queryClient.invalidateQueries(['master-pricing']);
             setShowDialog(false);
             setEditingItem(null);
             setFormData({});
-            toast.success('Pricing updated');
+            toast.success('Pricing changes submitted for approval');
+        }
+    });
+
+    const approveMutation = useMutation({
+        mutationFn: ({ id, approved }) => base44.entities.MasterPricing.update(id, {
+            status: approved ? 'active' : 'inactive',
+            approved_by: platformUser?.email,
+            approval_date: new Date().toISOString().split('T')[0]
+        }),
+        onSuccess: (data, variables) => {
+            queryClient.invalidateQueries(['master-pricing']);
+            toast.success(variables.approved ? 'Pricing approved and activated' : 'Pricing rejected');
         }
     });
 
@@ -179,6 +194,7 @@ export default function MasterPricingManagement() {
     const stats = {
         total: consolidatedPricing.length,
         active: consolidatedPricing.filter(i => i.status === 'active').length,
+        pendingApproval: pricingItems.filter(i => i.status === 'pending_approval').length,
         totalRevenue: pricingItems.reduce((sum, i) => sum + (i.total_revenue || 0), 0),
         totalCost: pricingItems.reduce((sum, i) => sum + (i.total_cost || 0), 0),
         margin: pricingItems.reduce((sum, i) => sum + ((i.total_revenue || 0) - (i.total_cost || 0)), 0),
@@ -189,6 +205,8 @@ export default function MasterPricingManagement() {
             fees: feeTemplates.length
         }
     };
+
+    const canApprove = platformUser?.platform_role === 'finance_manager' || platformUser?.platform_role === 'super_admin';
 
     const handleSubmit = () => {
         const margin = (formData.sell_rate_percentage || 0) - (formData.buy_rate_percentage || 0);
@@ -271,7 +289,7 @@ export default function MasterPricingManagement() {
 
                 <main className="p-6">
                     {/* Stats Cards */}
-                    <div className="grid grid-cols-6 gap-4 mb-6">
+                    <div className="grid grid-cols-7 gap-4 mb-6">
                         <Card>
                             <CardContent className="p-6">
                                 <div className="flex items-center justify-between">
@@ -291,6 +309,17 @@ export default function MasterPricingManagement() {
                                         <p className="text-3xl font-bold text-emerald-600 mt-1">{stats.active}</p>
                                     </div>
                                     <CheckCircle className="h-8 w-8 text-emerald-600" />
+                                </div>
+                            </CardContent>
+                        </Card>
+                        <Card>
+                            <CardContent className="p-6">
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <p className="text-sm text-slate-600">Pending</p>
+                                        <p className="text-3xl font-bold text-amber-600 mt-1">{stats.pendingApproval}</p>
+                                    </div>
+                                    <AlertCircle className="h-8 w-8 text-amber-600" />
                                 </div>
                             </CardContent>
                         </Card>
@@ -340,6 +369,23 @@ export default function MasterPricingManagement() {
                             </CardContent>
                         </Card>
                     </div>
+
+                    {/* Approval Alert */}
+                    {stats.pendingApproval > 0 && canApprove && (
+                        <Card className="mb-6 border-amber-300 bg-amber-50">
+                            <CardContent className="p-4">
+                                <div className="flex items-center gap-3">
+                                    <AlertCircle className="h-5 w-5 text-amber-600" />
+                                    <div>
+                                        <p className="font-semibold text-amber-900">
+                                            {stats.pendingApproval} pricing {stats.pendingApproval === 1 ? 'item' : 'items'} awaiting your approval
+                                        </p>
+                                        <p className="text-sm text-amber-700">Review and approve pricing changes below</p>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    )}
 
                     {/* Filters */}
                     <Card className="mb-6">
@@ -452,12 +498,34 @@ export default function MasterPricingManagement() {
                                                     <div className="flex justify-end gap-2">
                                                         {item.source === 'master_pricing' ? (
                                                             <>
-                                                                <Button size="sm" variant="outline" onClick={() => handleEdit(item)}>
-                                                                    <Edit className="h-3 w-3" />
-                                                                </Button>
-                                                                <Button size="sm" variant="outline" onClick={() => deleteMutation.mutate(item.id)} className="text-red-600">
-                                                                    <Trash2 className="h-3 w-3" />
-                                                                </Button>
+                                                                {item.status === 'pending_approval' && canApprove ? (
+                                                                    <>
+                                                                        <Button 
+                                                                            size="sm" 
+                                                                            className="bg-emerald-600 text-white hover:bg-emerald-700"
+                                                                            onClick={() => approveMutation.mutate({ id: item.id, approved: true })}
+                                                                        >
+                                                                            Approve
+                                                                        </Button>
+                                                                        <Button 
+                                                                            size="sm" 
+                                                                            variant="outline"
+                                                                            className="text-red-600 hover:bg-red-50"
+                                                                            onClick={() => approveMutation.mutate({ id: item.id, approved: false })}
+                                                                        >
+                                                                            Reject
+                                                                        </Button>
+                                                                    </>
+                                                                ) : (
+                                                                    <>
+                                                                        <Button size="sm" variant="outline" onClick={() => handleEdit(item)}>
+                                                                            <Edit className="h-3 w-3" />
+                                                                        </Button>
+                                                                        <Button size="sm" variant="outline" onClick={() => deleteMutation.mutate(item.id)} className="text-red-600">
+                                                                            <Trash2 className="h-3 w-3" />
+                                                                        </Button>
+                                                                    </>
+                                                                )}
                                                             </>
                                                         ) : (
                                                             <Button size="sm" variant="outline" onClick={() => {
