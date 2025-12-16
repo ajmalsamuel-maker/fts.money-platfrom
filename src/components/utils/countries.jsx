@@ -103,7 +103,7 @@ export const getCurrencyForCountry = (countryCode) => {
 
 // Get country name by code
 export const getCountryName = (code) => {
-    const country = countries.find(c => c.alpha2 === code || c.alpha3 === code);
+    const country = COUNTRIES.find(c => c.code === code);
     return country ? country.name : code;
 };
 
