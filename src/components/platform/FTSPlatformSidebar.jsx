@@ -38,6 +38,7 @@ const menuSections = [
         items: [
             { icon: Building2, label: 'Tenants', path: 'TenantManagement', description: 'Multi-tenancy', superAdminOnly: true },
             { icon: Building2, label: 'PSP Instances', path: 'PSPProvisioning', description: 'Manage PSPs' },
+            { icon: Sparkles, label: 'Quick PSP Setup', path: 'QuickPSPProvisioning', description: 'NetXHub templates' },
             { icon: Activity, label: 'Provisioning Queue', path: 'FTSProvisioningQueue', description: 'Deploy PSPs' },
             { icon: Users, label: 'Platform Users', path: 'PlatformUserManagement', description: 'Admin users' },
             { icon: Users, label: 'PSP Users', path: 'PSPUserManagement', description: 'PSP access' },
