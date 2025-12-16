@@ -21,7 +21,8 @@ import {
     Calculator,
     Percent,
     Target,
-    Gift
+    Gift,
+    AlertCircle
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -308,6 +309,17 @@ export default function MerchantPricingEngine() {
                 </header>
 
                 <main className="p-6">
+                    {/* Compliance Notice */}
+                    <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6">
+                        <div className="flex items-start gap-3">
+                            <AlertCircle className="h-5 w-5 text-amber-600 mt-0.5" />
+                            <div>
+                                <h3 className="font-semibold text-amber-900 mb-1">Read-Only Compliance Mode</h3>
+                                <p className="text-sm text-amber-800">For PCI-DSS and GDPR compliance, FTS.Money cannot modify PSP merchant pricing. PSPs maintain full sovereignty over their pricing rules. This dashboard is for monitoring and analytics only.</p>
+                            </div>
+                        </div>
+                    </div>
+
                     {/* Stats */}
                     <div className="grid grid-cols-4 gap-4 mb-6">
                         <Card>
@@ -366,27 +378,10 @@ export default function MerchantPricingEngine() {
                         {/* Pricing Rules */}
                         <TabsContent value="rules" className="space-y-4 mt-6">
                             <div className="flex justify-between items-center">
-                                <p className="text-sm text-slate-600">{pricingRules.length} pricing rules configured</p>
-                                <Button onClick={() => { 
-                                    setDialogType('rule'); 
-                                    setEditingItem(null);
-                                    setRuleForm({
-                                        psp_id: '',
-                                        rule_name: '',
-                                        description: '',
-                                        pricing_type: 'percentage',
-                                        applies_to: 'all_merchants',
-                                        base_percentage: 2.9,
-                                        base_fixed: 0.30,
-                                        tiers: [],
-                                        volume_discounts: [],
-                                        status: 'draft'
-                                    });
-                                    setShowDialog(true); 
-                                }}>
-                                    <Plus className="h-4 w-4 mr-2" />
-                                    New Pricing Rule
-                                </Button>
+                                <div>
+                                    <p className="text-sm text-slate-600">{pricingRules.length} pricing rules configured across all PSPs</p>
+                                    <p className="text-xs text-amber-600 mt-1">⚠️ Read-only view for compliance - PSPs manage their own pricing</p>
+                                </div>
                             </div>
 
                             <div className="space-y-3">
@@ -438,31 +433,6 @@ export default function MerchantPricingEngine() {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div className="flex gap-2">
-                                                        <Button 
-                                                            size="sm" 
-                                                            variant="outline"
-                                                            onClick={() => {
-                                                                setEditingItem(rule);
-                                                                setRuleForm(rule);
-                                                                setDialogType('rule');
-                                                                setShowDialog(true);
-                                                            }}
-                                                        >
-                                                            <Edit className="h-3 w-3" />
-                                                        </Button>
-                                                        <Button 
-                                                            size="sm" 
-                                                            variant="outline"
-                                                            className="text-red-600"
-                                                            onClick={() => {
-                                                                if (confirm('Delete this pricing rule?')) {
-                                                                    deleteRuleMutation.mutate(rule.id);
-                                                                }
-                                                            }}
-                                                        >
-                                                            <Trash2 className="h-3 w-3" />
-                                                        </Button>
                                                     </div>
                                                 </div>
                                             </CardContent>
@@ -473,11 +443,8 @@ export default function MerchantPricingEngine() {
                                 {pricingRules.length === 0 && (
                                     <div className="text-center py-12">
                                         <DollarSign className="h-16 w-16 text-slate-400 mx-auto mb-4" />
-                                        <p className="text-slate-600 mb-4">No pricing rules configured</p>
-                                        <Button onClick={() => { setDialogType('rule'); setShowDialog(true); }}>
-                                            <Plus className="h-4 w-4 mr-2" />
-                                            Create First Pricing Rule
-                                        </Button>
+                                        <p className="text-slate-600">No pricing rules configured yet</p>
+                                        <p className="text-xs text-slate-500 mt-2">PSPs create pricing rules from their own portals</p>
                                     </div>
                                 )}
                             </div>
@@ -486,26 +453,10 @@ export default function MerchantPricingEngine() {
                         {/* Promotional Campaigns */}
                         <TabsContent value="campaigns" className="space-y-4 mt-6">
                             <div className="flex justify-between items-center">
-                                <p className="text-sm text-slate-600">{campaigns.length} promotional campaigns</p>
-                                <Button onClick={() => { 
-                                    setDialogType('campaign'); 
-                                    setEditingItem(null);
-                                    setCampaignForm({
-                                        psp_id: '',
-                                        campaign_name: '',
-                                        description: '',
-                                        campaign_type: 'percentage_discount',
-                                        discount_percentage: 20,
-                                        applies_to: 'new_merchants',
-                                        start_date: '',
-                                        end_date: '',
-                                        status: 'scheduled'
-                                    });
-                                    setShowDialog(true); 
-                                }}>
-                                    <Plus className="h-4 w-4 mr-2" />
-                                    New Campaign
-                                </Button>
+                                <div>
+                                    <p className="text-sm text-slate-600">{campaigns.length} promotional campaigns across all PSPs</p>
+                                    <p className="text-xs text-amber-600 mt-1">⚠️ Read-only view for compliance - PSPs manage their own campaigns</p>
+                                </div>
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
@@ -546,22 +497,6 @@ export default function MerchantPricingEngine() {
                                                         <span className="text-slate-600">Uses:</span>
                                                         <span className="font-medium">{campaign.current_uses || 0} / {campaign.max_uses || '∞'}</span>
                                                     </div>
-                                                </div>
-                                                <div className="flex gap-2 mt-4">
-                                                    <Button 
-                                                        size="sm" 
-                                                        variant="outline"
-                                                        className="flex-1"
-                                                        onClick={() => {
-                                                            setEditingItem(campaign);
-                                                            setCampaignForm(campaign);
-                                                            setDialogType('campaign');
-                                                            setShowDialog(true);
-                                                        }}
-                                                    >
-                                                        <Edit className="h-3 w-3 mr-1" />
-                                                        Edit
-                                                    </Button>
                                                 </div>
                                             </CardContent>
                                         </Card>
