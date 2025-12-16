@@ -8,7 +8,6 @@ import { Eye, EyeOff, LogIn, Shield, KeyRound, ArrowRight } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import { toast } from 'sonner';
 import { base44 } from '@/api/base44Client';
-import { FTS_COLORS, FTS_GRADIENTS, FTS_LOGOS } from '@/components/community/FTSBrandColors';
 
 export default function PSPLogin() {
     const [step, setStep] = useState(1);
@@ -237,8 +236,7 @@ export default function PSPLogin() {
 
                                 <Button
                                     type="submit"
-                                    className="w-full text-white"
-                                    style={{ background: FTS_GRADIENTS.dark1 }}
+                                    className="w-full text-white bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700"
                                     disabled={isLoading}
                                 >
                                     {isLoading ? (
@@ -368,8 +366,7 @@ export default function PSPLogin() {
                                     </Button>
                                     <Button
                                         type="submit"
-                                        className="flex-1 text-white"
-                                        style={{ background: FTS_GRADIENTS.dark1 }}
+                                        className="flex-1 text-white bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700"
                                         disabled={isLoading}
                                     >
                                         {isLoading ? (
@@ -420,8 +417,7 @@ export default function PSPLogin() {
 
                                 <Button
                                     type="submit"
-                                    className="w-full text-white"
-                                    style={{ background: FTS_GRADIENTS.dark1 }}
+                                    className="w-full text-white bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700"
                                     disabled={isLoading || otpCode.length !== 6}
                                 >
                                     {isLoading ? (
