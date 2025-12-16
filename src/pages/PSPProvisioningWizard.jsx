@@ -962,7 +962,7 @@ export default function PSPProvisioningWizard() {
                             </div>
                         </CardContent>
                         <div className="flex justify-between p-6 border-t border-slate-200">
-                            <Button variant="outline" onClick={() => setStep(4)}>
+                            <Button variant="outline" onClick={() => setStep(6)}>
                                 <ArrowLeft className="h-4 w-4 mr-2" />
                                 Back
                             </Button>
