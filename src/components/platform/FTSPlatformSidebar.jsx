@@ -94,7 +94,7 @@ export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, i
             {/* Logo */}
             <div className="h-20 flex items-center justify-center border-b border-slate-200 px-3 py-2">
                 <img 
-                    src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6931510c4507988f66a42ca8/923f9f7bb_FTSMoney-secondary-logo-tagline-RGB.png"
+                    src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6931510c4507988f66a42ca8/865871aa1_FTSMoney-primary-logo-RGB.jpg"
                     alt="FTS.Money"
                     className="w-full h-auto max-h-16 object-contain"
                 />
