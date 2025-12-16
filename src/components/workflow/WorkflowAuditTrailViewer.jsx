@@ -20,6 +20,7 @@ import {
     ChevronUp
 } from 'lucide-react';
 import { format } from 'date-fns';
+import BPMNDiagramViewer from './BPMNDiagramViewer';
 
 export default function WorkflowAuditTrailViewer() {
     const [searchTerm, setSearchTerm] = useState('');
@@ -305,6 +306,11 @@ export default function WorkflowAuditTrailViewer() {
                                         {/* Expanded Details */}
                                         {isExpanded && (
                                             <div className="border-t border-slate-200 p-4 bg-slate-50">
+                                                {/* BPMN Diagram */}
+                                                <div className="mb-6">
+                                                    <BPMNDiagramViewer workflow={workflow} />
+                                                </div>
+
                                                 <div className="grid grid-cols-2 gap-6">
                                                     <div>
                                                         <h5 className="font-semibold text-slate-900 mb-3">Workflow Details</h5>

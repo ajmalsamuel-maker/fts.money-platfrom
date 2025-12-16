@@ -18,6 +18,7 @@ import { toast } from 'sonner';
 import WorkflowDashboard from '@/components/workflow/WorkflowDashboard';
 import WorkflowTemplateManager from '@/components/workflow/WorkflowTemplateManager';
 import WorkflowAuditTrailViewer from '@/components/workflow/WorkflowAuditTrailViewer';
+import BPMNDiagramViewer from '@/components/workflow/BPMNDiagramViewer';
 
 const isoStandards = [
     { 

@@ -27,6 +27,12 @@ import {
 
 const menuSections = [
     {
+        title: 'Dashboard',
+        items: [
+            { icon: Activity, label: 'Home', path: 'FTSMoneyPlatform', description: 'Quick Actions' }
+        ]
+    },
+    {
         title: 'Core Management',
         items: [
             { icon: Building2, label: 'Tenants', path: 'TenantManagement', description: 'Multi-tenancy', superAdminOnly: true },
