@@ -19,8 +19,14 @@ import {
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
+import { useWorkflowRBAC } from './useWorkflowRBAC';
+import { WORKFLOW_PERMISSIONS } from './WorkflowRBAC';
+import { WorkflowAuditLogger } from './WorkflowAuditLogger';
+import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
 
 export default function BPMNDiagramViewer({ workflow, executionStatus = null, compact = false }) {
+    const { platformUser } = usePlatformAuth();
+    const { can } = useWorkflowRBAC(platformUser);
     const [diagramUrl, setDiagramUrl] = useState(workflow?.bpmn_diagram_url || '');
     const [isEditMode, setIsEditMode] = useState(false);
     const [zoom, setZoom] = useState(1);
@@ -28,9 +34,12 @@ export default function BPMNDiagramViewer({ workflow, executionStatus = null, co
     const queryClient = useQueryClient();
 
     const updateMutation = useMutation({
-        mutationFn: (url) => base44.entities.WorkflowCompliance.update(workflow.id, {
-            bpmn_diagram_url: url
-        }),
+        mutationFn: async (url) => {
+            await WorkflowAuditLogger.logBPMNUpload(workflow, url, platformUser);
+            return base44.entities.WorkflowCompliance.update(workflow.id, {
+                bpmn_diagram_url: url
+            });
+        },
         onSuccess: () => {
             queryClient.invalidateQueries(['workflow-audit-trail']);
             queryClient.invalidateQueries(['workflows']);
@@ -142,7 +151,7 @@ export default function BPMNDiagramViewer({ workflow, executionStatus = null, co
                                 ISO 19510 Compliant
                             </Badge>
                         )}
-                        {!isEditMode && (
+                        {!isEditMode && can(WORKFLOW_PERMISSIONS.UPLOAD_BPMN) && (
                             <Button 
                                 variant="outline" 
                                 size="sm"

@@ -11,8 +11,14 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Badge } from "@/components/ui/badge";
 import { Plus, Copy, Trash2, Star, Edit } from 'lucide-react';
 import { toast } from 'sonner';
+import { useWorkflowRBAC } from './useWorkflowRBAC';
+import { WORKFLOW_PERMISSIONS } from './WorkflowRBAC';
+import { WorkflowAuditLogger } from './WorkflowAuditLogger';
+import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
 
 export default function WorkflowTemplateManager() {
+    const { platformUser } = usePlatformAuth();
+    const { can } = useWorkflowRBAC(platformUser);
     const queryClient = useQueryClient();
     const [showDialog, setShowDialog] = useState(false);
     const [editingTemplate, setEditingTemplate] = useState(null);
@@ -37,12 +43,16 @@ export default function WorkflowTemplateManager() {
     });
 
     const createMutation = useMutation({
-        mutationFn: (data) => base44.entities.WorkflowTemplate.create({
-            ...data,
-            template_id: `TPL-${Date.now()}`,
-            created_by: 'admin',
-            usage_count: 0
-        }),
+        mutationFn: async (data) => {
+            const template = await base44.entities.WorkflowTemplate.create({
+                ...data,
+                template_id: `TPL-${Date.now()}`,
+                created_by: platformUser?.email || 'admin',
+                usage_count: 0
+            });
+            await WorkflowAuditLogger.logTemplateCreate(template, platformUser);
+            return template;
+        },
         onSuccess: () => {
             queryClient.invalidateQueries(['workflow-templates']);
             setShowDialog(false);
@@ -52,7 +62,11 @@ export default function WorkflowTemplateManager() {
     });
 
     const updateMutation = useMutation({
-        mutationFn: ({ id, data }) => base44.entities.WorkflowTemplate.update(id, data),
+        mutationFn: async ({ id, data }) => {
+            const template = await base44.entities.WorkflowTemplate.update(id, data);
+            await WorkflowAuditLogger.logTemplateUpdate(template, platformUser);
+            return template;
+        },
         onSuccess: () => {
             queryClient.invalidateQueries(['workflow-templates']);
             toast.success('Template updated');
@@ -134,10 +148,12 @@ export default function WorkflowTemplateManager() {
                     <h3 className="text-lg font-semibold text-slate-900">Workflow Templates</h3>
                     <p className="text-sm text-slate-600">Reusable templates for consistent compliance</p>
                 </div>
-                <Button onClick={() => { resetForm(); setShowDialog(true); }} className="gap-2">
-                    <Plus className="h-4 w-4" />
-                    New Template
-                </Button>
+                {can(WORKFLOW_PERMISSIONS.CREATE_TEMPLATE) && (
+                    <Button onClick={() => { resetForm(); setShowDialog(true); }} className="gap-2">
+                        <Plus className="h-4 w-4" />
+                        New Template
+                    </Button>
+                )}
             </div>
 
             <div className="grid grid-cols-3 gap-4">
@@ -191,16 +207,22 @@ export default function WorkflowTemplateManager() {
                             </div>
 
                             <div className="flex gap-2">
-                                <Button size="sm" variant="outline" onClick={() => handleEdit(template)} className="flex-1">
-                                    <Edit className="h-3 w-3 mr-1" />
-                                    Edit
-                                </Button>
-                                <Button size="sm" variant="outline" onClick={() => handleDuplicate(template)}>
-                                    <Copy className="h-3 w-3" />
-                                </Button>
-                                <Button size="sm" variant="outline" onClick={() => deleteMutation.mutate(template.id)} className="text-red-600 hover:text-red-700">
-                                    <Trash2 className="h-3 w-3" />
-                                </Button>
+                                {can(WORKFLOW_PERMISSIONS.EDIT_TEMPLATE) && (
+                                    <Button size="sm" variant="outline" onClick={() => handleEdit(template)} className="flex-1">
+                                        <Edit className="h-3 w-3 mr-1" />
+                                        Edit
+                                    </Button>
+                                )}
+                                {can(WORKFLOW_PERMISSIONS.CREATE_TEMPLATE) && (
+                                    <Button size="sm" variant="outline" onClick={() => handleDuplicate(template)}>
+                                        <Copy className="h-3 w-3" />
+                                    </Button>
+                                )}
+                                {can(WORKFLOW_PERMISSIONS.DELETE_TEMPLATE) && (
+                                    <Button size="sm" variant="outline" onClick={() => deleteMutation.mutate(template.id)} className="text-red-600 hover:text-red-700">
+                                        <Trash2 className="h-3 w-3" />
+                                    </Button>
+                                )}
                             </div>
                         </CardContent>
                     </Card>

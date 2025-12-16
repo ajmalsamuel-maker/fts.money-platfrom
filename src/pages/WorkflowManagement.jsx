@@ -19,6 +19,9 @@ import WorkflowDashboard from '@/components/workflow/WorkflowDashboard';
 import WorkflowTemplateManager from '@/components/workflow/WorkflowTemplateManager';
 import WorkflowAuditTrailViewer from '@/components/workflow/WorkflowAuditTrailViewer';
 import BPMNDiagramViewer from '@/components/workflow/BPMNDiagramViewer';
+import { useWorkflowRBAC } from '@/components/workflow/useWorkflowRBAC';
+import { WORKFLOW_PERMISSIONS } from '@/components/workflow/WorkflowRBAC';
+import { WorkflowAuditLogger } from '@/components/workflow/WorkflowAuditLogger';
 
 const isoStandards = [
     { 
@@ -66,7 +69,8 @@ export default function WorkflowManagement() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const { platformUser, loading } = usePlatformAuth();
-    const [activeTab, setActiveTab] = useState('workflows');
+    const { can, roleLabel, workflowRole } = useWorkflowRBAC(platformUser);
+    const [activeTab, setActiveTab] = useState('dashboard');
     const [showCreateDialog, setShowCreateDialog] = useState(false);
     const [selectedWorkflow, setSelectedWorkflow] = useState(null);
     const [formData, setFormData] = useState({
@@ -86,7 +90,11 @@ export default function WorkflowManagement() {
     });
 
     const createMutation = useMutation({
-        mutationFn: (data) => base44.entities.WorkflowCompliance.create(data),
+        mutationFn: async (data) => {
+            const workflow = await base44.entities.WorkflowCompliance.create(data);
+            await WorkflowAuditLogger.logCreate(workflow, platformUser);
+            return workflow;
+        },
         onSuccess: () => {
             queryClient.invalidateQueries(['workflows']);
             setShowCreateDialog(false);
@@ -108,7 +116,11 @@ export default function WorkflowManagement() {
     });
 
     const updateMutation = useMutation({
-        mutationFn: ({ id, data }) => base44.entities.WorkflowCompliance.update(id, data),
+        mutationFn: async ({ id, data, workflow }) => {
+            const updated = await base44.entities.WorkflowCompliance.update(id, data);
+            await WorkflowAuditLogger.logUpdate(workflow, data, platformUser);
+            return updated;
+        },
         onSuccess: () => {
             queryClient.invalidateQueries(['workflows']);
             toast.success('Workflow updated successfully');
@@ -128,10 +140,19 @@ export default function WorkflowManagement() {
         });
     };
 
-    const handleToggleCompliance = (workflow, field) => {
+    const handleToggleCompliance = async (workflow, field) => {
+        if (!can(WORKFLOW_PERMISSIONS.MARK_COMPLIANT)) {
+            toast.error('You do not have permission to change compliance status');
+            return;
+        }
+        
+        const newValue = !workflow[field];
+        await WorkflowAuditLogger.logComplianceChange(workflow, field, newValue, platformUser);
+        
         updateMutation.mutate({
             id: workflow.id,
-            data: { [field]: !workflow[field] }
+            data: { [field]: newValue },
+            workflow
         });
     };
 
@@ -162,27 +183,37 @@ export default function WorkflowManagement() {
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
                     <div>
                         <h2 className="text-lg font-semibold text-slate-900">Workflow & Compliance Management</h2>
-                        <p className="text-xs text-slate-600">ISO/IEC standards compliance tracking</p>
+                        <div className="flex items-center gap-3">
+                            <p className="text-xs text-slate-600">ISO/IEC standards compliance tracking</p>
+                            <Badge variant="outline" className="text-xs">
+                                <Shield className="h-3 w-3 mr-1" />
+                                {roleLabel}
+                            </Badge>
+                        </div>
                     </div>
                     <div className="flex items-center gap-3">
-                        <Button 
-                            onClick={async () => {
-                                const response = await base44.functions.invoke('createDefaultWorkflows', {});
-                                if (response.data.success) {
-                                    toast.success(response.data.message);
-                                    queryClient.invalidateQueries(['workflows']);
-                                }
-                            }} 
-                            variant="outline" 
-                            className="gap-2"
-                        >
-                            <Sparkles className="h-4 w-4" />
-                            Initialize Default Workflows
-                        </Button>
-                        <Button onClick={() => setShowCreateDialog(true)} className="gap-2 bg-blue-600 hover:bg-blue-700">
-                            <Plus className="h-4 w-4" />
-                            New Workflow
-                        </Button>
+                        {can(WORKFLOW_PERMISSIONS.CREATE_WORKFLOW) && (
+                            <>
+                                <Button 
+                                    onClick={async () => {
+                                        const response = await base44.functions.invoke('createDefaultWorkflows', {});
+                                        if (response.data.success) {
+                                            toast.success(response.data.message);
+                                            queryClient.invalidateQueries(['workflows']);
+                                        }
+                                    }} 
+                                    variant="outline" 
+                                    className="gap-2"
+                                >
+                                    <Sparkles className="h-4 w-4" />
+                                    Initialize Default Workflows
+                                </Button>
+                                <Button onClick={() => setShowCreateDialog(true)} className="gap-2 bg-blue-600 hover:bg-blue-700">
+                                    <Plus className="h-4 w-4" />
+                                    New Workflow
+                                </Button>
+                            </>
+                        )}
                         <Button onClick={() => navigate(createPageUrl('FTSMoneyPlatform'))} variant="ghost">
                             <ArrowLeft className="h-4 w-4 mr-2" />
                             Back
@@ -193,12 +224,12 @@ export default function WorkflowManagement() {
                 <div className="p-6">
                     <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                         <TabsList>
-                            <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
-                            <TabsTrigger value="audit">Audit Trail</TabsTrigger>
-                            <TabsTrigger value="workflows">Workflows</TabsTrigger>
-                            <TabsTrigger value="templates">Templates</TabsTrigger>
-                            <TabsTrigger value="compliance">Compliance Overview</TabsTrigger>
-                            <TabsTrigger value="standards">ISO Standards</TabsTrigger>
+                            {can(WORKFLOW_PERMISSIONS.VIEW_WORKFLOWS) && <TabsTrigger value="dashboard">Dashboard</TabsTrigger>}
+                            {can(WORKFLOW_PERMISSIONS.VIEW_AUDIT_TRAIL) && <TabsTrigger value="audit">Audit Trail</TabsTrigger>}
+                            {can(WORKFLOW_PERMISSIONS.VIEW_WORKFLOWS) && <TabsTrigger value="workflows">Workflows</TabsTrigger>}
+                            {can(WORKFLOW_PERMISSIONS.VIEW_TEMPLATES) && <TabsTrigger value="templates">Templates</TabsTrigger>}
+                            {can(WORKFLOW_PERMISSIONS.VIEW_COMPLIANCE) && <TabsTrigger value="compliance">Compliance Overview</TabsTrigger>}
+                            {can(WORKFLOW_PERMISSIONS.VIEW_COMPLIANCE) && <TabsTrigger value="standards">ISO Standards</TabsTrigger>}
                         </TabsList>
 
                         <TabsContent value="dashboard">
