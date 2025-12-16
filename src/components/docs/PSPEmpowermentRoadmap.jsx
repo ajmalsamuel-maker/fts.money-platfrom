@@ -14,7 +14,10 @@ import {
     FileText,
     Layout,
     Key,
-    LineChart
+    LineChart,
+    Activity,
+    Zap,
+    Globe
 } from 'lucide-react';
 
 export default function PSPEmpowermentRoadmap() {
