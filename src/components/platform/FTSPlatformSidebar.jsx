@@ -21,7 +21,8 @@ import {
     BookOpen,
     Plus,
     LogOut,
-    Package
+    Package,
+    GitBranch
 } from 'lucide-react';
 
 const menuSections = [
@@ -74,6 +75,7 @@ const menuSections = [
         title: 'Compliance & Security',
         items: [
             { icon: Shield, label: 'Compliance', path: 'FTSCompliance', description: 'Policy templates' },
+            { icon: GitBranch, label: 'Workflow Management', path: 'WorkflowManagement', description: 'ISO standards compliance' },
             { icon: FileText, label: 'Audit Logs', path: 'PlatformAuditLogs', description: 'Activity tracking' },
             { icon: Activity, label: 'Enhanced Audit Logs', path: 'EnhancedAuditLogs', description: 'AI anomaly detection' },
             { icon: Database, label: 'Data Retention', path: 'DataRetentionManagement', description: 'Automated cleanup' }

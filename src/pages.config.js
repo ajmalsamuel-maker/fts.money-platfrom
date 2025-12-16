@@ -167,6 +167,7 @@ import CommunityProductCatalog from './pages/CommunityProductCatalog';
 import XeroIntegration from './pages/XeroIntegration';
 import EnhancedAuditLogs from './pages/EnhancedAuditLogs';
 import DataRetentionManagement from './pages/DataRetentionManagement';
+import WorkflowManagement from './pages/WorkflowManagement';
 import __Layout from './Layout.jsx';
 
 
@@ -340,6 +341,7 @@ export const PAGES = {
     "XeroIntegration": XeroIntegration,
     "EnhancedAuditLogs": EnhancedAuditLogs,
     "DataRetentionManagement": DataRetentionManagement,
+    "WorkflowManagement": WorkflowManagement,
 }
 
 export const pagesConfig = {
