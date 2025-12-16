@@ -29,6 +29,8 @@ import {
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { AuditLogger } from '@/components/platform/EnhancedAuditLogger';
+import { COUNTRIES } from '@/components/utils/countries';
+import { TIMEZONES } from '@/components/utils/iso4217';
 
 const tiers = [
     {
@@ -102,6 +104,18 @@ export default function PSPProvisioningWizard() {
     const [useTemplate, setUseTemplate] = useState(true);
     const [customTiers, setCustomTiers] = useState(tiers);
     
+    const generatePSPCode = (name, country, timezone) => {
+        if (!name || !country || !timezone) return '';
+        const str = `${name}-${country}-${timezone}`;
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) {
+            const char = str.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+            hash = hash & hash;
+        }
+        return Math.abs(hash).toString(36).toUpperCase().substring(0, 8);
+    };
+
     const [formData, setFormData] = useState({
         psp_code: '',
         psp_name: '',
@@ -407,21 +421,25 @@ export default function PSPProvisioningWizard() {
                             
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <Label>PSP Code *</Label>
-                                    <Input
-                                        value={formData.psp_code}
-                                        onChange={(e) => setFormData({...formData, psp_code: e.target.value.toUpperCase()})}
-                                        placeholder="ACME"
-                                    />
-                                    <p className="text-xs text-slate-500 mt-1">Unique identifier for routing and API access</p>
-                                </div>
-                                <div>
                                     <Label>PSP Name *</Label>
                                     <Input
                                         value={formData.psp_name}
-                                        onChange={(e) => setFormData({...formData, psp_name: e.target.value})}
+                                        onChange={(e) => {
+                                            const newName = e.target.value;
+                                            const newCode = generatePSPCode(newName, formData.country, formData.timezone);
+                                            setFormData({...formData, psp_name: newName, psp_code: newCode});
+                                        }}
                                         placeholder="Acme Payments"
                                     />
+                                </div>
+                                <div>
+                                    <Label>PSP Code (Auto-generated)</Label>
+                                    <Input
+                                        value={formData.psp_code}
+                                        disabled
+                                        className="bg-slate-100"
+                                    />
+                                    <p className="text-xs text-slate-500 mt-1">Auto-generated from name, country, and timezone</p>
                                 </div>
                                 <div className="col-span-2">
                                     <Label>Legal Entity Name</Label>
@@ -481,12 +499,25 @@ export default function PSPProvisioningWizard() {
                                     </Select>
                                 </div>
                                 <div>
-                                    <Label>Operating Country</Label>
-                                    <Input
-                                        value={formData.country}
-                                        onChange={(e) => setFormData({...formData, country: e.target.value})}
-                                        placeholder="US"
-                                    />
+                                    <Label>Operating Country *</Label>
+                                    <Select 
+                                        value={formData.country} 
+                                        onValueChange={(v) => {
+                                            const newCode = generatePSPCode(formData.psp_name, v, formData.timezone);
+                                            setFormData({...formData, country: v, psp_code: newCode});
+                                        }}
+                                    >
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select country" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {COUNTRIES.map(c => (
+                                                <SelectItem key={c.code} value={c.code}>
+                                                    {c.name} ({c.code})
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
                                 </div>
                                 <div>
                                     <Label>Default Currency</Label>
@@ -504,17 +535,23 @@ export default function PSPProvisioningWizard() {
                                     </Select>
                                 </div>
                                 <div>
-                                    <Label>Timezone</Label>
-                                    <Select value={formData.timezone} onValueChange={(v) => setFormData({...formData, timezone: v})}>
+                                    <Label>Timezone *</Label>
+                                    <Select 
+                                        value={formData.timezone} 
+                                        onValueChange={(v) => {
+                                            const newCode = generatePSPCode(formData.psp_name, formData.country, v);
+                                            setFormData({...formData, timezone: v, psp_code: newCode});
+                                        }}
+                                    >
                                         <SelectTrigger>
                                             <SelectValue />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="UTC">UTC</SelectItem>
-                                            <SelectItem value="America/New_York">EST (New York)</SelectItem>
-                                            <SelectItem value="Europe/London">GMT (London)</SelectItem>
-                                            <SelectItem value="Asia/Singapore">SGT (Singapore)</SelectItem>
-                                            <SelectItem value="Asia/Hong_Kong">HKT (Hong Kong)</SelectItem>
+                                            {TIMEZONES.map(tz => (
+                                                <SelectItem key={tz} value={tz}>
+                                                    {tz}
+                                                </SelectItem>
+                                            ))}
                                         </SelectContent>
                                     </Select>
                                 </div>
