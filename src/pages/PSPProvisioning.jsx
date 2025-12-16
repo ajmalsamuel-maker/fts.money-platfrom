@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
@@ -6,6 +6,7 @@ import { createPageUrl } from '@/utils';
 import { cn } from "@/lib/utils";
 import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
 import { usePlatformAuth, PLATFORM_ROLES, getRoleLabel } from '@/components/auth/usePlatformAuth';
+import WorkflowValidator from '@/components/workflow/WorkflowValidator';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -38,11 +39,21 @@ export default function PSPProvisioning() {
     const queryClient = useQueryClient();
     const { platformUser, loading } = usePlatformAuth();
     const [search, setSearch] = useState('');
+    const [workflowCompliance, setWorkflowCompliance] = useState(null);
 
     const { data: psps = [] } = useQuery({
         queryKey: ['provisioned-psps'],
         queryFn: () => base44.entities.ProvisionedPSP.list('-created_date')
     });
+
+    // Check workflow compliance on mount
+    useEffect(() => {
+        const checkCompliance = async () => {
+            const result = await WorkflowValidator.checkCompliance('psp_provisioning', ['iso_19510', 'iso_10746', 'iso_9001']);
+            setWorkflowCompliance(result);
+        };
+        checkCompliance();
+    }, []);
 
     const filteredPSPs = psps.filter(p => 
         p.psp_name?.toLowerCase().includes(search.toLowerCase()) ||
@@ -76,9 +87,17 @@ export default function PSPProvisioning() {
 
             <div className="flex-1 overflow-auto">
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
-                    <div>
-                        <h2 className="text-lg font-semibold text-slate-900">PSP Instances</h2>
-                        <p className="text-xs text-slate-600">Manage white-label PSP infrastructure</p>
+                    <div className="flex items-center gap-3">
+                        <div>
+                            <h2 className="text-lg font-semibold text-slate-900">PSP Instances</h2>
+                            <p className="text-xs text-slate-600">Manage white-label PSP infrastructure</p>
+                        </div>
+                        {workflowCompliance && (
+                            <Badge className={workflowCompliance.compliant ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}>
+                                <Shield className="h-3 w-3 mr-1" />
+                                {workflowCompliance.compliant ? 'ISO Compliant' : 'Compliance Issue'}
+                            </Badge>
+                        )}
                     </div>
                     <div className="flex items-center gap-3">
                         <div className="text-right mr-2">
