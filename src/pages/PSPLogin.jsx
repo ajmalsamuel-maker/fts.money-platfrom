@@ -88,6 +88,13 @@ export default function PSPLogin() {
                 const stored = localStorage.getItem('staff_session');
                 console.log('Stored staff_session:', stored);
                 
+                // Alert to confirm before redirect
+                alert('Session saved! PSP Code: ' + pspCode + '. Check console, then click OK to redirect.');
+                
+                // Check one more time before redirect
+                const finalCheck = localStorage.getItem('staff_session');
+                console.log('Final check before redirect:', finalCheck);
+                
                 window.location.href = '/Dashboard';
             } else {
                 setError(data.error || 'Login failed');
