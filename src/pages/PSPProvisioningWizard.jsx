@@ -30,7 +30,7 @@ import {
 import { cn } from "@/lib/utils";
 import { AuditLogger } from '@/components/platform/EnhancedAuditLogger';
 import { COUNTRIES } from '@/components/utils/countries';
-import { TIMEZONES } from '@/components/utils/iso4217';
+import { TIMEZONES } from '@/components/utils/timezones';
 
 const tiers = [
     {
