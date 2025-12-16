@@ -88,26 +88,12 @@ export const countryCurrencyMap = {
 
 // Get all countries with ISO codes
 export const getAllCountries = () => {
-    return countries.map(country => ({
-        code: country.alpha2,
-        code3: country.alpha3,
-        name: country.name,
-        numeric: country.numeric,
-        currency: countryCurrencyMap[country.alpha2] || 'USD'
-    }));
+    return COUNTRIES;
 };
 
 // Get country by code
 export const getCountryByCode = (code) => {
-    const country = countries.find(c => c.alpha2 === code || c.alpha3 === code);
-    if (!country) return null;
-    return {
-        code: country.alpha2,
-        code3: country.alpha3,
-        name: country.name,
-        numeric: country.numeric,
-        currency: countryCurrencyMap[country.alpha2] || 'USD'
-    };
+    return COUNTRIES.find(c => c.code === code);
 };
 
 // Get currency for country code
