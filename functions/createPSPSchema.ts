@@ -17,7 +17,7 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const { psp_code, template_psp_code } = await req.json();
+        const { psp_code, psp_name, template_psp_code } = await req.json();
 
         if (!psp_code) {
             return Response.json({ error: 'PSP code required' }, { status: 400 });
@@ -30,6 +30,17 @@ Deno.serve(async (req) => {
 
         // Create all necessary tables in the PSP schema
         await pool.query(`
+            -- PSP Settings Table
+            CREATE TABLE IF NOT EXISTS ${schemaName}.psp_settings (
+                id SERIAL PRIMARY KEY,
+                psp_code VARCHAR(50) UNIQUE NOT NULL,
+                psp_name VARCHAR(255),
+                branding JSONB,
+                settings JSONB,
+                created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+
             -- Merchants Table
             CREATE TABLE IF NOT EXISTS ${schemaName}.merchants (
                 id SERIAL PRIMARY KEY,
@@ -118,6 +129,18 @@ Deno.serve(async (req) => {
             CREATE INDEX IF NOT EXISTS idx_${schemaName}_transactions_date ON ${schemaName}.transactions(created_date DESC);
             CREATE INDEX IF NOT EXISTS idx_${schemaName}_audit_date ON ${schemaName}.audit_logs(created_date DESC);
         `);
+
+        // Insert PSP settings record
+        await pool.query(`
+            INSERT INTO ${schemaName}.psp_settings (psp_code, psp_name, branding, settings)
+            VALUES ($1, $2, $3, $4)
+            ON CONFLICT (psp_code) DO NOTHING
+        `, [
+            psp_code,
+            psp_name || psp_code,
+            JSON.stringify({ primary_color: '#3b82f6', secondary_color: '#8b5cf6' }),
+            JSON.stringify({})
+        ]);
 
         return Response.json({
             success: true,
