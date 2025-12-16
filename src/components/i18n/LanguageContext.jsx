@@ -110,6 +110,9 @@ const translations = {
 
         documentation: 'Documentation',
         supportCenter: 'Support Center',
+        
+        usageMetering: 'Usage Metering',
+        invoiceGenerator: 'Invoice Generator',
         },
     es: {
         // Common
