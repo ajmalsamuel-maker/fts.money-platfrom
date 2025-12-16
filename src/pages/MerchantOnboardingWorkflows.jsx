@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
-import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
+import { getStaffSession } from '@/components/auth/useStaffAuth';
+import Sidebar from '@/components/dashboard/Sidebar';
+import TopHeader from '@/components/dashboard/TopHeader';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,31 +14,45 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Workflow, Plus, Edit, Play, CheckCircle, AlertCircle, Clock, ArrowRight } from 'lucide-react';
+import { Workflow, Plus, Edit, Play, CheckCircle, AlertCircle, BookTemplate, Copy } from 'lucide-react';
 import { toast } from 'sonner';
 import WorkflowBuilder from '@/components/workflow/WorkflowBuilder';
 import WorkflowExecutionMonitor from '@/components/workflow/WorkflowExecutionMonitor';
 
 export default function MerchantOnboardingWorkflows() {
-    const { platformUser, loading } = usePlatformAuth();
+    const staffSession = getStaffSession();
+    const pspCode = staffSession?.psp_code;
     const queryClient = useQueryClient();
     const [activeTab, setActiveTab] = useState('workflows');
     const [showDialog, setShowDialog] = useState(false);
     const [editingWorkflow, setEditingWorkflow] = useState(null);
-    const [selectedPSP, setSelectedPSP] = useState('all');
+    const [showTemplateLibrary, setShowTemplateLibrary] = useState(false);
+    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
-    const { data: psps = [] } = useQuery({
-        queryKey: ['provisioned-psps'],
-        queryFn: () => base44.entities.ProvisionedPSP.list()
+    // Get current PSP
+    const { data: currentPSP } = useQuery({
+        queryKey: ['current-psp', pspCode],
+        queryFn: async () => {
+            const psps = await base44.entities.ProvisionedPSP.list();
+            return psps.find(p => p.psp_code === pspCode);
+        }
     });
 
+    // Fetch PSP-specific workflows only
     const { data: workflows = [] } = useQuery({
-        queryKey: ['merchant-workflows', selectedPSP],
+        queryKey: ['merchant-workflows', pspCode],
         queryFn: async () => {
-            if (selectedPSP === 'all') {
-                return await base44.entities.MerchantOnboardingWorkflowTemplate.list();
-            }
-            return await base44.entities.MerchantOnboardingWorkflowTemplate.filter({ psp_id: selectedPSP });
+            return await base44.entities.MerchantOnboardingWorkflowTemplate.filter({ psp_code: pspCode });
+        },
+        enabled: !!pspCode
+    });
+
+    // Fetch platform templates for cloning
+    const { data: platformTemplates = [] } = useQuery({
+        queryKey: ['platform-templates'],
+        queryFn: async () => {
+            const all = await base44.entities.MerchantOnboardingWorkflowTemplate.list();
+            return all.filter(w => !w.psp_id); // Platform templates only
         }
     });
 
@@ -55,11 +70,12 @@ export default function MerchantOnboardingWorkflows() {
 
     const createMutation = useMutation({
         mutationFn: (data) => {
-            const psp = psps.find(p => p.id === data.psp_id);
             return base44.entities.MerchantOnboardingWorkflowTemplate.create({
                 ...data,
-                workflow_id: `WF-${Date.now()}`,
-                psp_code: psp?.psp_code,
+                workflow_id: `WF-${pspCode}-${Date.now()}`,
+                psp_id: currentPSP?.id,
+                psp_code: pspCode,
+                is_template: false,
                 version: '1.0.0'
             });
         },
@@ -67,6 +83,28 @@ export default function MerchantOnboardingWorkflows() {
             queryClient.invalidateQueries(['merchant-workflows']);
             setShowDialog(false);
             toast.success('Workflow created');
+        }
+    });
+
+    const cloneTemplateMutation = useMutation({
+        mutationFn: (template) => {
+            const { id, created_date, updated_date, psp_id, psp_code: _, ...rest } = template;
+            return base44.entities.MerchantOnboardingWorkflowTemplate.create({
+                ...rest,
+                workflow_id: `WF-${pspCode}-${Date.now()}`,
+                psp_id: currentPSP?.id,
+                psp_code: pspCode,
+                workflow_name: `${template.workflow_name} (Cloned)`,
+                is_template: false,
+                cloned_from_template: template.workflow_id,
+                version: '1.0.0',
+                status: 'draft'
+            });
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries(['merchant-workflows']);
+            setShowTemplateLibrary(false);
+            toast.success('Template cloned successfully');
         }
     });
 
@@ -85,47 +123,37 @@ export default function MerchantOnboardingWorkflows() {
         setShowDialog(true);
     };
 
-    if (loading) return null;
-
-    const filteredWorkflows = selectedPSP === 'all' 
-        ? workflows 
-        : workflows.filter(w => w.psp_id === selectedPSP);
+    if (!staffSession) {
+        window.location.href = '/PSPLogin';
+        return null;
+    }
 
     return (
         <div className="flex h-screen bg-slate-50">
-            <FTSPlatformSidebar 
-                currentPage="MerchantOnboardingWorkflows" 
-                userRole={platformUser?.platform_role}
-                userEmail={platformUser?.email}
-                isSuperAdmin={platformUser?.platform_role === 'super_admin'}
-            />
+            <Sidebar collapsed={sidebarCollapsed} onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} currentPage="MerchantOnboardingWorkflows" />
 
             <div className="flex-1 overflow-auto">
-                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
-                    <div>
-                        <h2 className="text-lg font-semibold text-slate-900">Merchant Onboarding Workflows</h2>
-                        <p className="text-xs text-slate-600">Phase 1, Step 2: Configurable workflow builder for PSPs</p>
+                <TopHeader onMenuClick={() => setSidebarCollapsed(!sidebarCollapsed)} />
+                
+                <div className="p-6">
+                    <div className="mb-6">
+                        <h2 className="text-2xl font-bold text-slate-900">Merchant Onboarding Workflows</h2>
+                        <p className="text-sm text-slate-600">Create and manage custom workflows for merchant onboarding</p>
                     </div>
-                    <div className="flex items-center gap-3">
-                        <Select value={selectedPSP} onValueChange={setSelectedPSP}>
-                            <SelectTrigger className="w-48">
-                                <SelectValue placeholder="Filter by PSP" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="all">All PSPs</SelectItem>
-                                {psps.map(psp => (
-                                    <SelectItem key={psp.id} value={psp.id}>{psp.psp_name}</SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+
+                    {/* Action Buttons */}
+                    <div className="flex items-center gap-3 mb-6">
                         <Button onClick={() => { setEditingWorkflow(null); setShowDialog(true); }}>
                             <Plus className="h-4 w-4 mr-2" />
-                            Create Workflow
+                            Create Custom Workflow
+                        </Button>
+                        <Button variant="outline" onClick={() => setShowTemplateLibrary(true)}>
+                            <BookTemplate className="h-4 w-4 mr-2" />
+                            Clone from Template Library
                         </Button>
                     </div>
-                </header>
 
-                <main className="p-6">
+                    {/* Stats */}
                     <div className="grid grid-cols-4 gap-4 mb-6">
                         <Card>
                             <CardContent className="p-6">
@@ -187,15 +215,18 @@ export default function MerchantOnboardingWorkflows() {
 
                         <TabsContent value="workflows" className="space-y-4 mt-6">
                             <div className="grid grid-cols-2 gap-4">
-                                {filteredWorkflows.map(workflow => (
+                                {workflows.map(workflow => (
                                     <Card key={workflow.id}>
                                         <CardHeader>
                                             <div className="flex items-start justify-between">
                                                 <div>
                                                     <CardTitle className="text-base">{workflow.workflow_name}</CardTitle>
-                                                    <p className="text-xs text-slate-500 mt-1">
-                                                        {psps.find(p => p.id === workflow.psp_id)?.psp_name}
-                                                    </p>
+                                                    {workflow.cloned_from_template && (
+                                                        <p className="text-xs text-purple-600 mt-1 flex items-center gap-1">
+                                                            <BookTemplate className="h-3 w-3" />
+                                                            Cloned from template
+                                                        </p>
+                                                    )}
                                                 </div>
                                                 <Badge className={
                                                     workflow.status === 'active' ? 'bg-emerald-100 text-emerald-700' :
@@ -224,7 +255,7 @@ export default function MerchantOnboardingWorkflows() {
                                 ))}
                             </div>
 
-                            {filteredWorkflows.length === 0 && (
+                            {workflows.length === 0 && (
                                 <div className="text-center py-12">
                                     <Workflow className="h-16 w-16 text-slate-400 mx-auto mb-4" />
                                     <p className="text-slate-600 mb-4">No workflows created yet</p>
@@ -240,7 +271,7 @@ export default function MerchantOnboardingWorkflows() {
                             <WorkflowExecutionMonitor executions={executions} workflows={workflows} />
                         </TabsContent>
                     </Tabs>
-                </main>
+                </div>
             </div>
 
             <Dialog open={showDialog} onOpenChange={setShowDialog}>
@@ -253,7 +284,8 @@ export default function MerchantOnboardingWorkflows() {
                     </DialogHeader>
                     <WorkflowBuilder 
                         workflow={editingWorkflow}
-                        psps={psps}
+                        psps={currentPSP ? [currentPSP] : []}
+                        isTemplate={false}
                         onSave={(data) => {
                             if (editingWorkflow) {
                                 updateMutation.mutate({ id: editingWorkflow.id, data });
@@ -263,6 +295,55 @@ export default function MerchantOnboardingWorkflows() {
                         }}
                         onCancel={() => setShowDialog(false)}
                     />
+                </DialogContent>
+            </Dialog>
+
+            {/* Template Library Dialog */}
+            <Dialog open={showTemplateLibrary} onOpenChange={setShowTemplateLibrary}>
+                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                    <DialogHeader>
+                        <DialogTitle>Clone from Template Library</DialogTitle>
+                        <DialogDescription>
+                            Select a pre-built workflow template to clone and customize
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                        {platformTemplates.length === 0 && (
+                            <div className="text-center py-8 text-slate-500">
+                                <BookTemplate className="h-12 w-12 mx-auto mb-3 text-slate-400" />
+                                <p>No platform templates available</p>
+                            </div>
+                        )}
+                        {platformTemplates.map(template => (
+                            <Card key={template.id}>
+                                <CardHeader>
+                                    <div className="flex items-start justify-between">
+                                        <div>
+                                            <CardTitle className="text-base">{template.workflow_name}</CardTitle>
+                                            <p className="text-sm text-slate-600 mt-1">{template.description}</p>
+                                        </div>
+                                        <Badge variant="outline">v{template.version}</Badge>
+                                    </div>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2 text-xs">
+                                            <Badge variant="outline">{template.steps?.length || 0} steps</Badge>
+                                            <Badge variant="outline" className={
+                                                template.status === 'active' ? 'bg-emerald-100 text-emerald-700' : ''
+                                            }>
+                                                {template.status}
+                                            </Badge>
+                                        </div>
+                                        <Button size="sm" onClick={() => cloneTemplateMutation.mutate(template)}>
+                                            <Copy className="h-3 w-3 mr-1" />
+                                            Clone Template
+                                        </Button>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        ))}
+                    </div>
                 </DialogContent>
             </Dialog>
         </div>

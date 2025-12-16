@@ -181,6 +181,7 @@ import UsageMeteringSystem from './pages/UsageMeteringSystem';
 import MerchantInvoiceGenerator from './pages/MerchantInvoiceGenerator';
 import MerchantPortalBuilder from './pages/MerchantPortalBuilder';
 import QuickPSPProvisioning from './pages/QuickPSPProvisioning';
+import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import __Layout from './Layout.jsx';
 
 
@@ -368,6 +369,7 @@ export const PAGES = {
     "MerchantInvoiceGenerator": MerchantInvoiceGenerator,
     "MerchantPortalBuilder": MerchantPortalBuilder,
     "QuickPSPProvisioning": QuickPSPProvisioning,
+    "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
 }
 
 export const pagesConfig = {
