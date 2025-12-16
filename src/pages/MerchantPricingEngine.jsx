@@ -54,6 +54,16 @@ export default function MerchantPricingEngine() {
         queryFn: () => base44.entities.PSPProductTemplate.list()
     });
 
+    const { data: masterPricing = [] } = useQuery({
+        queryKey: ['master-pricing'],
+        queryFn: () => base44.entities.MasterPricing.list()
+    });
+
+    const { data: providerAgreements = [] } = useQuery({
+        queryKey: ['provider-agreements'],
+        queryFn: () => base44.entities.ProviderAgreement.list()
+    });
+
     // Forms
     const [ruleForm, setRuleForm] = useState({
         psp_id: '',
@@ -216,6 +226,62 @@ export default function MerchantPricingEngine() {
     };
 
     const simulation = calculatePricing();
+
+    // Get PSP's buy rates from Master Pricing
+    const getPSPBuyRates = (pspId) => {
+        if (!pspId) return [];
+        const psp = psps.find(p => p.id === pspId);
+        if (!psp) return [];
+
+        // Get PSP-specific agreements
+        const pspAgreements = providerAgreements.filter(a => 
+            a.provider_name === psp.psp_name || a.provider_name === psp.psp_code
+        );
+
+        // If PSP has custom agreements, use those rates
+        if (pspAgreements.length > 0) {
+            return pspAgreements.flatMap(agreement => 
+                agreement.rate_cards?.map(card => ({
+                    category: card.service_category,
+                    service_name: card.service_name,
+                    buy_percentage: card.negotiated_rate_percentage || 0,
+                    buy_fixed: card.negotiated_rate_fixed || 0,
+                    is_custom: true,
+                    currency: card.currency || 'USD'
+                })) || []
+            );
+        }
+
+        // Otherwise, return standard master pricing (filtered by active status)
+        return masterPricing
+            .filter(mp => mp.status === 'active')
+            .map(mp => ({
+                category: mp.category,
+                service_name: mp.item_name,
+                buy_percentage: mp.buy_rate_percentage || 0,
+                buy_fixed: mp.buy_rate_fixed || 0,
+                fts_cost_percentage: mp.sell_rate_percentage || 0, // What FTS charges PSP
+                fts_cost_fixed: mp.sell_rate_fixed || 0,
+                is_custom: false,
+                currency: mp.currency || 'USD',
+                provider: mp.provider_name || 'FTS.Money'
+            }));
+    };
+
+    // Calculate margin between buy rate and merchant rate
+    const calculateMargin = (buyRate, sellRate, transactionAmount = 100) => {
+        const buyCost = (transactionAmount * (buyRate.percentage / 100)) + buyRate.fixed;
+        const sellRevenue = (transactionAmount * (sellRate.percentage / 100)) + sellRate.fixed;
+        const margin = sellRevenue - buyCost;
+        const marginPercentage = (margin / sellRevenue) * 100;
+        
+        return {
+            buyCost: buyCost.toFixed(2),
+            sellRevenue: sellRevenue.toFixed(2),
+            margin: margin.toFixed(2),
+            marginPercentage: marginPercentage.toFixed(1)
+        };
+    };
 
     // Stats
     const activeRules = pricingRules.filter(r => r.status === 'active').length;
@@ -632,6 +698,91 @@ export default function MerchantPricingEngine() {
                                 rows={2}
                             />
                         </div>
+
+                        {/* Cost Base Reference */}
+                        {ruleForm.psp_id && (
+                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                                <div className="flex items-center gap-2 mb-3">
+                                    <DollarSign className="h-4 w-4 text-blue-600" />
+                                    <h4 className="font-semibold text-blue-900">Your Buy Rates (Cost Base)</h4>
+                                </div>
+                                <div className="space-y-2 max-h-40 overflow-y-auto">
+                                    {getPSPBuyRates(ruleForm.psp_id).slice(0, 5).map((rate, idx) => (
+                                        <div key={idx} className="flex items-center justify-between text-sm bg-white p-2 rounded">
+                                            <div className="flex-1">
+                                                <p className="font-medium text-slate-900">{rate.service_name}</p>
+                                                <p className="text-xs text-slate-600">{rate.category} • {rate.provider || 'FTS.Money'}</p>
+                                            </div>
+                                            <div className="text-right">
+                                                <p className="font-semibold text-blue-600">
+                                                    {rate.buy_percentage > 0 && `${rate.buy_percentage}%`}
+                                                    {rate.buy_percentage > 0 && rate.buy_fixed > 0 && ' + '}
+                                                    {rate.buy_fixed > 0 && `$${rate.buy_fixed}`}
+                                                </p>
+                                                {rate.is_custom && (
+                                                    <Badge className="bg-emerald-100 text-emerald-700 text-[10px] mt-1">Custom Rate</Badge>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))}
+                                    {getPSPBuyRates(ruleForm.psp_id).length > 5 && (
+                                        <p className="text-xs text-slate-600 text-center pt-1">
+                                            +{getPSPBuyRates(ruleForm.psp_id).length - 5} more rates available
+                                        </p>
+                                    )}
+                                    {getPSPBuyRates(ruleForm.psp_id).length === 0 && (
+                                        <p className="text-sm text-slate-600 text-center py-2">No buy rates configured for this PSP</p>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Margin Calculator */}
+                        {ruleForm.psp_id && ruleForm.pricing_type === 'percentage' && ruleForm.base_percentage > 0 && (
+                            <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4">
+                                <div className="flex items-center gap-2 mb-3">
+                                    <Percent className="h-4 w-4 text-emerald-600" />
+                                    <h4 className="font-semibold text-emerald-900">Margin Analysis</h4>
+                                </div>
+                                {(() => {
+                                    const buyRates = getPSPBuyRates(ruleForm.psp_id);
+                                    const avgBuyRate = buyRates.length > 0 
+                                        ? buyRates.reduce((sum, r) => sum + (r.buy_percentage || r.fts_cost_percentage || 0), 0) / buyRates.length
+                                        : 2.0;
+                                    const avgBuyFixed = buyRates.length > 0
+                                        ? buyRates.reduce((sum, r) => sum + (r.buy_fixed || r.fts_cost_fixed || 0), 0) / buyRates.length
+                                        : 0.20;
+                                    
+                                    const margin = calculateMargin(
+                                        { percentage: avgBuyRate, fixed: avgBuyFixed },
+                                        { percentage: ruleForm.base_percentage, fixed: ruleForm.base_fixed }
+                                    );
+
+                                    return (
+                                        <div className="grid grid-cols-2 gap-3 text-sm">
+                                            <div className="bg-white p-3 rounded">
+                                                <p className="text-slate-600 mb-1">Your Cost (Avg)</p>
+                                                <p className="font-bold text-slate-900">${margin.buyCost}</p>
+                                                <p className="text-xs text-slate-500">{avgBuyRate.toFixed(2)}% + ${avgBuyFixed}</p>
+                                            </div>
+                                            <div className="bg-white p-3 rounded">
+                                                <p className="text-slate-600 mb-1">Merchant Rate</p>
+                                                <p className="font-bold text-blue-600">${margin.sellRevenue}</p>
+                                                <p className="text-xs text-slate-500">{ruleForm.base_percentage}% + ${ruleForm.base_fixed}</p>
+                                            </div>
+                                            <div className="bg-white p-3 rounded">
+                                                <p className="text-slate-600 mb-1">Profit per $100</p>
+                                                <p className="font-bold text-emerald-600">${margin.margin}</p>
+                                            </div>
+                                            <div className="bg-white p-3 rounded">
+                                                <p className="text-slate-600 mb-1">Margin %</p>
+                                                <p className="font-bold text-emerald-600">{margin.marginPercentage}%</p>
+                                            </div>
+                                        </div>
+                                    );
+                                })()}
+                            </div>
+                        )}
 
                         <div className="grid grid-cols-2 gap-4">
                             <div>
