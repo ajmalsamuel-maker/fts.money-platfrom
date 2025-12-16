@@ -24,7 +24,8 @@ import {
     MapPin,
     Calendar,
     DollarSign,
-    Target
+    Target,
+    Edit
 } from 'lucide-react';
 import { toast } from 'sonner';
 
