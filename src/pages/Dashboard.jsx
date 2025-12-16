@@ -266,6 +266,7 @@ export default function Dashboard() {
                     <HelpPanel open={helpOpen} onOpenChange={setHelpOpen} />
                 </main>
             </div>
+        </div>
         </StaffAuthWrapper>
     );
 }
