@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FTS_COLORS, FTS_GRADIENTS, FTS_LOGOS } from '@/components/community/FTSBrandColors';
-import { Shield, Lock } from 'lucide-react';
+import { Shield, Lock, ArrowRight } from 'lucide-react';
 import { PLATFORM_ROLES, getRoleLabel } from '@/components/auth/usePlatformAuth';
 
 export default function PlatformAdminLogin() {
