@@ -239,6 +239,7 @@ export default function ResourceOrchestration() {
                         <TabsList>
                             <TabsTrigger value="pools">Resource Pools</TabsTrigger>
                             <TabsTrigger value="allocations">Allocations</TabsTrigger>
+                            <TabsTrigger value="connectors">Cloud Connectors</TabsTrigger>
                             <TabsTrigger value="capacity">Capacity Planning</TabsTrigger>
                             <TabsTrigger value="reservations">Reservations</TabsTrigger>
                         </TabsList>
@@ -316,6 +317,224 @@ export default function ResourceOrchestration() {
                                     </Card>
                                 ))}
                             </div>
+                        </TabsContent>
+
+                        {/* Cloud Connectors */}
+                        <TabsContent value="connectors" className="space-y-4 mt-6">
+                            <p className="text-sm text-slate-600 mb-4">Infrastructure provider integrations for multi-cloud resource provisioning</p>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                {/* AWS */}
+                                <Card>
+                                    <CardHeader>
+                                        <div className="flex items-center justify-between">
+                                            <CardTitle className="text-base">Amazon Web Services (AWS)</CardTitle>
+                                            <Badge variant="outline">Global</Badge>
+                                        </div>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="space-y-3">
+                                            <div className="text-sm">
+                                                <p className="text-slate-600 mb-2">Connector: <code className="bg-slate-100 px-2 py-1 rounded text-xs">infrastructure/awsConnector</code></p>
+                                                <p className="text-slate-600">Regions: us-east-1, us-west-2, eu-west-1, ap-southeast-1</p>
+                                            </div>
+                                            <div className="text-sm">
+                                                <p className="font-semibold text-slate-900 mb-1">Operations:</p>
+                                                <div className="space-y-1 text-slate-600">
+                                                    <div>• provision_compute (EC2)</div>
+                                                    <div>• provision_database (RDS)</div>
+                                                    <div>• scale_compute</div>
+                                                    <div>• terminate_resources</div>
+                                                    <div>• get_metrics (CloudWatch)</div>
+                                                </div>
+                                            </div>
+                                            <div className="text-sm">
+                                                <p className="font-semibold text-slate-900 mb-1">Required Secrets:</p>
+                                                <div className="space-y-1">
+                                                    <Badge variant="outline" className="text-xs">AWS_ACCESS_KEY_ID</Badge>
+                                                    <Badge variant="outline" className="text-xs">AWS_SECRET_ACCESS_KEY</Badge>
+                                                    <Badge variant="outline" className="text-xs">AWS_REGION</Badge>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+
+                                {/* Azure */}
+                                <Card>
+                                    <CardHeader>
+                                        <div className="flex items-center justify-between">
+                                            <CardTitle className="text-base">Microsoft Azure</CardTitle>
+                                            <Badge variant="outline">Global</Badge>
+                                        </div>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="space-y-3">
+                                            <div className="text-sm">
+                                                <p className="text-slate-600 mb-2">Connector: <code className="bg-slate-100 px-2 py-1 rounded text-xs">infrastructure/azureConnector</code></p>
+                                                <p className="text-slate-600">Regions: eastus, westus, westeurope, southeastasia</p>
+                                            </div>
+                                            <div className="text-sm">
+                                                <p className="font-semibold text-slate-900 mb-1">Operations:</p>
+                                                <div className="space-y-1 text-slate-600">
+                                                    <div>• provision_compute (VM)</div>
+                                                    <div>• provision_database (Azure SQL)</div>
+                                                    <div>• scale_compute</div>
+                                                    <div>• terminate_resources</div>
+                                                    <div>• get_metrics (Azure Monitor)</div>
+                                                </div>
+                                            </div>
+                                            <div className="text-sm">
+                                                <p className="font-semibold text-slate-900 mb-1">Required Secrets:</p>
+                                                <div className="space-y-1">
+                                                    <Badge variant="outline" className="text-xs">AZURE_SUBSCRIPTION_ID</Badge>
+                                                    <Badge variant="outline" className="text-xs">AZURE_CLIENT_ID</Badge>
+                                                    <Badge variant="outline" className="text-xs">AZURE_CLIENT_SECRET</Badge>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+
+                                {/* PTCL */}
+                                <Card>
+                                    <CardHeader>
+                                        <div className="flex items-center justify-between">
+                                            <CardTitle className="text-base">PTCL Cloud (Pakistan)</CardTitle>
+                                            <Badge variant="outline">Pakistan</Badge>
+                                        </div>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="space-y-3">
+                                            <div className="text-sm">
+                                                <p className="text-slate-600 mb-2">Connector: <code className="bg-slate-100 px-2 py-1 rounded text-xs">infrastructure/localProviderConnector</code></p>
+                                                <p className="text-slate-600">Datacenters: ISB-DC1 (Islamabad)</p>
+                                            </div>
+                                            <div className="text-sm">
+                                                <p className="font-semibold text-slate-900 mb-1">Operations:</p>
+                                                <div className="space-y-1 text-slate-600">
+                                                    <div>• provision_compute</div>
+                                                    <div>• get_metrics</div>
+                                                </div>
+                                            </div>
+                                            <div className="text-sm">
+                                                <p className="font-semibold text-slate-900 mb-1">Required Secrets:</p>
+                                                <Badge variant="outline" className="text-xs">PTCL_API_KEY</Badge>
+                                            </div>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+
+                                {/* Alipay Cloud */}
+                                <Card>
+                                    <CardHeader>
+                                        <div className="flex items-center justify-between">
+                                            <CardTitle className="text-base">Alipay Cloud (China)</CardTitle>
+                                            <Badge variant="outline">China</Badge>
+                                        </div>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="space-y-3">
+                                            <div className="text-sm">
+                                                <p className="text-slate-600 mb-2">Connector: <code className="bg-slate-100 px-2 py-1 rounded text-xs">infrastructure/localProviderConnector</code></p>
+                                                <p className="text-slate-600">Regions: cn-hangzhou, cn-beijing, cn-shanghai</p>
+                                            </div>
+                                            <div className="text-sm">
+                                                <p className="font-semibold text-slate-900 mb-1">Operations:</p>
+                                                <div className="space-y-1 text-slate-600">
+                                                    <div>• provision_compute (ECS)</div>
+                                                    <div>• provision_database (RDS)</div>
+                                                </div>
+                                            </div>
+                                            <div className="text-sm">
+                                                <p className="font-semibold text-slate-900 mb-1">Required Secrets:</p>
+                                                <div className="space-y-1">
+                                                    <Badge variant="outline" className="text-xs">ALIPAY_CLOUD_ACCESS_KEY</Badge>
+                                                    <Badge variant="outline" className="text-xs">ALIPAY_CLOUD_SECRET_KEY</Badge>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+
+                                {/* Tencent Cloud */}
+                                <Card>
+                                    <CardHeader>
+                                        <div className="flex items-center justify-between">
+                                            <CardTitle className="text-base">Tencent Cloud (腾讯云)</CardTitle>
+                                            <Badge variant="outline">China</Badge>
+                                        </div>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="space-y-3">
+                                            <div className="text-sm">
+                                                <p className="text-slate-600 mb-2">Connector: <code className="bg-slate-100 px-2 py-1 rounded text-xs">infrastructure/localProviderConnector</code></p>
+                                                <p className="text-slate-600">Regions: ap-guangzhou, ap-beijing, ap-shanghai</p>
+                                            </div>
+                                            <div className="text-sm">
+                                                <p className="font-semibold text-slate-900 mb-1">Operations:</p>
+                                                <div className="space-y-1 text-slate-600">
+                                                    <div>• provision_compute (CVM)</div>
+                                                </div>
+                                            </div>
+                                            <div className="text-sm">
+                                                <p className="font-semibold text-slate-900 mb-1">Required Secrets:</p>
+                                                <div className="space-y-1">
+                                                    <Badge variant="outline" className="text-xs">TENCENT_CLOUD_SECRET_ID</Badge>
+                                                    <Badge variant="outline" className="text-xs">TENCENT_CLOUD_SECRET_KEY</Badge>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+
+                                {/* Huawei Cloud */}
+                                <Card>
+                                    <CardHeader>
+                                        <div className="flex items-center justify-between">
+                                            <CardTitle className="text-base">Huawei Cloud (华为云)</CardTitle>
+                                            <Badge variant="outline">China</Badge>
+                                        </div>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="space-y-3">
+                                            <div className="text-sm">
+                                                <p className="text-slate-600 mb-2">Connector: <code className="bg-slate-100 px-2 py-1 rounded text-xs">infrastructure/localProviderConnector</code></p>
+                                                <p className="text-slate-600">Regions: cn-north-1, cn-east-2, cn-south-1</p>
+                                            </div>
+                                            <div className="text-sm">
+                                                <p className="font-semibold text-slate-900 mb-1">Operations:</p>
+                                                <div className="space-y-1 text-slate-600">
+                                                    <div>• provision_compute (ECS)</div>
+                                                </div>
+                                            </div>
+                                            <div className="text-sm">
+                                                <p className="font-semibold text-slate-900 mb-1">Required Secrets:</p>
+                                                <div className="space-y-1">
+                                                    <Badge variant="outline" className="text-xs">HUAWEI_CLOUD_ACCESS_KEY</Badge>
+                                                    <Badge variant="outline" className="text-xs">HUAWEI_CLOUD_SECRET_KEY</Badge>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </div>
+
+                            <Card className="bg-blue-50 border-blue-200">
+                                <CardContent className="p-4">
+                                    <div className="flex items-start gap-3">
+                                        <Server className="h-5 w-5 text-blue-600 mt-0.5" />
+                                        <div>
+                                            <p className="font-semibold text-blue-900 mb-1">Resource Provisioner Orchestrator</p>
+                                            <p className="text-sm text-blue-700 mb-2">Function: <code className="bg-blue-100 px-2 py-1 rounded text-xs">resourceProvisioner</code></p>
+                                            <p className="text-sm text-blue-700">
+                                                Automatically routes provisioning requests to the appropriate cloud provider based on region. 
+                                                Handles AWS (us-*, eu-*, ap-*), Azure (standard regions), and local providers (PTCL, Alipay, Tencent, Huawei).
+                                            </p>
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
                         </TabsContent>
 
                         {/* Allocations */}
