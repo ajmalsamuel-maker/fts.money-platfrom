@@ -57,8 +57,7 @@ const menuSections = [
         items: [
             { icon: Package, label: 'PSP Product Catalog', path: 'PSPProductCatalog', description: 'PSP product definitions' },
             { icon: Workflow, label: 'Onboarding Workflows', path: 'MerchantOnboardingWorkflows', description: 'Merchant workflow builder' },
-            { icon: DollarSign, label: 'Merchant Pricing Engine', path: 'MerchantPricingEngine', description: 'Dynamic pricing for merchants' },
-            { icon: Activity, label: 'Usage Metering System', path: 'UsageMeteringSystem', description: 'Track merchant consumption' }
+            { icon: DollarSign, label: 'Merchant Pricing Engine', path: 'MerchantPricingEngine', description: 'Dynamic pricing for merchants' }
         ]
     },
     {

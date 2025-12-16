@@ -152,6 +152,7 @@ const menuItems = [
                     { icon: DollarSign, label: 'midPricingConfig', path: 'MIDPricingConfiguration', permission: 'VIEW_BALANCES' },
                     { icon: Tag, label: 'feeTypeManagement', path: 'FeeTypeManagement', permission: 'VIEW_BALANCES' },
                     { icon: InvoiceIcon, label: 'invoices', path: 'Invoices', permission: 'VIEW_BALANCES' },
+                    { icon: Activity, label: 'usageMetering', path: 'UsageMeteringSystem', permission: 'VIEW_BALANCES' },
                 ]
             },
             {

@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
-import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
+import { useStaffAuth } from '@/components/auth/useStaffAuth';
+import Sidebar from '@/components/dashboard/Sidebar';
+import TopHeader from '@/components/dashboard/TopHeader';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,36 +28,68 @@ import { toast } from 'sonner';
 
 export default function UsageMeteringSystem() {
     const queryClient = useQueryClient();
-    const { platformUser, loading } = usePlatformAuth();
+    const { user, loading } = useStaffAuth();
+    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const [activeTab, setActiveTab] = useState('meters');
     const [showDialog, setShowDialog] = useState(false);
     const [dialogType, setDialogType] = useState('');
     const [editingItem, setEditingItem] = useState(null);
+    const [currentPspCode, setCurrentPspCode] = useState(null);
+    const [currentPspId, setCurrentPspId] = useState(null);
 
-    // Fetch data
+    // Get current PSP from session
+    useEffect(() => {
+        const sessionData = localStorage.getItem('staff_session');
+        if (sessionData) {
+            const session = JSON.parse(sessionData);
+            setCurrentPspCode(session.psp_code);
+        }
+    }, []);
+
+    // Fetch current PSP data
     const { data: psps = [] } = useQuery({
-        queryKey: ['provisioned-psps'],
-        queryFn: () => base44.entities.ProvisionedPSP.list()
+        queryKey: ['provisioned-psps', currentPspCode],
+        queryFn: async () => {
+            if (!currentPspCode) return [];
+            const result = await base44.entities.ProvisionedPSP.filter({ psp_code: currentPspCode });
+            if (result && result.length > 0) {
+                setCurrentPspId(result[0].id);
+            }
+            return result;
+        },
+        enabled: !!currentPspCode
     });
 
     const { data: meters = [] } = useQuery({
-        queryKey: ['usage-meters'],
-        queryFn: () => base44.entities.MerchantUsageMeter.list()
+        queryKey: ['usage-meters', currentPspCode],
+        queryFn: async () => {
+            if (!currentPspCode) return [];
+            return await base44.entities.MerchantUsageMeter.filter({ psp_code: currentPspCode });
+        },
+        enabled: !!currentPspCode
     });
 
     const { data: rules = [] } = useQuery({
-        queryKey: ['metering-rules'],
-        queryFn: () => base44.entities.MeteringRule.list()
+        queryKey: ['metering-rules', currentPspCode],
+        queryFn: async () => {
+            if (!currentPspCode) return [];
+            return await base44.entities.MeteringRule.filter({ psp_code: currentPspCode });
+        },
+        enabled: !!currentPspCode
     });
 
     const { data: events = [] } = useQuery({
-        queryKey: ['usage-events'],
-        queryFn: () => base44.entities.UsageEvent.list('-event_timestamp', 100)
+        queryKey: ['usage-events', currentPspCode],
+        queryFn: async () => {
+            if (!currentPspCode) return [];
+            const result = await base44.entities.UsageEvent.filter({ psp_code: currentPspCode });
+            return result.sort((a, b) => new Date(b.event_timestamp) - new Date(a.event_timestamp)).slice(0, 100);
+        },
+        enabled: !!currentPspCode
     });
 
     // Forms
     const [meterForm, setMeterForm] = useState({
-        psp_id: '',
         merchant_id: '',
         merchant_name: '',
         metric_type: 'transaction_count',
@@ -69,7 +102,6 @@ export default function UsageMeteringSystem() {
     });
 
     const [ruleForm, setRuleForm] = useState({
-        psp_id: '',
         rule_name: '',
         description: '',
         metric_type: 'transaction_count',
@@ -88,11 +120,11 @@ export default function UsageMeteringSystem() {
     // Mutations
     const createMeterMutation = useMutation({
         mutationFn: (data) => {
-            const psp = psps.find(p => p.id === data.psp_id);
             return base44.entities.MerchantUsageMeter.create({
                 ...data,
                 meter_id: `METER-${Date.now()}`,
-                psp_code: psp?.psp_code || 'UNKNOWN',
+                psp_id: currentPspId,
+                psp_code: currentPspCode,
                 current_count: 0,
                 current_volume: 0,
                 billing_period_start: new Date().toISOString(),
@@ -127,11 +159,11 @@ export default function UsageMeteringSystem() {
 
     const createRuleMutation = useMutation({
         mutationFn: (data) => {
-            const psp = psps.find(p => p.id === data.psp_id);
             return base44.entities.MeteringRule.create({
                 ...data,
                 rule_id: `RULE-${Date.now()}`,
-                psp_code: psp?.psp_code || 'UNKNOWN'
+                psp_id: currentPspId,
+                psp_code: currentPspCode
             });
         },
         onSuccess: () => {
@@ -154,7 +186,7 @@ export default function UsageMeteringSystem() {
 
     const simulateEventMutation = useMutation({
         mutationFn: () => base44.functions.invoke('simulateUsageEvents', {
-            psp_id: psps[0]?.id,
+            psp_id: currentPspId,
             count: 100
         }),
         onSuccess: () => {
@@ -177,27 +209,32 @@ export default function UsageMeteringSystem() {
     if (loading) return null;
 
     return (
-        <div className="flex h-screen bg-slate-50">
-            <FTSPlatformSidebar 
-                currentPage="UsageMeteringSystem" 
-                userRole={platformUser?.platform_role}
-                userEmail={platformUser?.email}
-                isSuperAdmin={platformUser?.platform_role === 'super_admin'}
+        <div className="min-h-screen bg-slate-50">
+            <Sidebar 
+                collapsed={sidebarCollapsed} 
+                onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
+                currentPage="UsageMeteringSystem"
             />
-
-            <div className="flex-1 overflow-auto">
-                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
-                    <div>
-                        <h2 className="text-lg font-semibold text-slate-900">Usage Metering System</h2>
-                        <p className="text-xs text-slate-600">Track merchant consumption for usage-based billing</p>
+            
+            <div className="lg:ml-20">
+                <TopHeader 
+                    onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
+                    collapsed={sidebarCollapsed}
+                />
+                
+                <div className="p-6">
+                    <div className="flex items-center justify-between mb-6">
+                        <div>
+                            <h2 className="text-lg font-semibold text-slate-900">Usage Metering System</h2>
+                            <p className="text-xs text-slate-600">Track merchant consumption for usage-based billing</p>
+                        </div>
+                        <Button onClick={() => simulateEventMutation.mutate()} variant="outline" disabled={!currentPspId}>
+                            <Activity className="h-4 w-4 mr-2" />
+                            Simulate Events
+                        </Button>
                     </div>
-                    <Button onClick={() => simulateEventMutation.mutate()} variant="outline">
-                        <Activity className="h-4 w-4 mr-2" />
-                        Simulate Events
-                    </Button>
-                </header>
 
-                <main className="p-6">
+
                     {/* Stats */}
                     <div className="grid grid-cols-4 gap-4 mb-6">
                         <Card>
@@ -262,7 +299,6 @@ export default function UsageMeteringSystem() {
                                     setDialogType('meter');
                                     setEditingItem(null);
                                     setMeterForm({
-                                        psp_id: '',
                                         merchant_id: '',
                                         merchant_name: '',
                                         metric_type: 'transaction_count',
@@ -282,7 +318,6 @@ export default function UsageMeteringSystem() {
 
                             <div className="space-y-3">
                                 {meters.map(meter => {
-                                    const psp = psps.find(p => p.id === meter.psp_id);
                                     const usage = meter.threshold_limit ? (meter.current_count / meter.threshold_limit) * 100 : 0;
                                     const nearLimit = usage >= meter.threshold_percentage;
                                     
@@ -296,7 +331,6 @@ export default function UsageMeteringSystem() {
                                                             <Badge className={meter.status === 'active' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-700'}>
                                                                 {meter.status}
                                                             </Badge>
-                                                            <Badge variant="outline">{psp?.psp_name || meter.psp_code}</Badge>
                                                             {nearLimit && <Badge className="bg-amber-100 text-amber-700"><Bell className="h-3 w-3 mr-1" />Near Limit</Badge>}
                                                         </div>
                                                         <div className="grid grid-cols-4 gap-4 text-sm mb-3">
@@ -376,7 +410,6 @@ export default function UsageMeteringSystem() {
                                     setDialogType('rule');
                                     setEditingItem(null);
                                     setRuleForm({
-                                        psp_id: '',
                                         rule_name: '',
                                         description: '',
                                         metric_type: 'transaction_count',
@@ -400,7 +433,6 @@ export default function UsageMeteringSystem() {
 
                             <div className="grid grid-cols-2 gap-4">
                                 {rules.map(rule => {
-                                    const psp = psps.find(p => p.id === rule.psp_id);
                                     return (
                                         <Card key={rule.id}>
                                             <CardHeader>
@@ -414,10 +446,6 @@ export default function UsageMeteringSystem() {
                                             <CardContent>
                                                 <p className="text-sm text-slate-600 mb-3">{rule.description}</p>
                                                 <div className="space-y-2 text-sm">
-                                                    <div className="flex justify-between">
-                                                        <span className="text-slate-600">PSP:</span>
-                                                        <span className="font-medium">{psp?.psp_name || rule.psp_code}</span>
-                                                    </div>
                                                     <div className="flex justify-between">
                                                         <span className="text-slate-600">Metric:</span>
                                                         <span className="font-medium capitalize">{rule.metric_type.replace('_', ' ')}</span>
@@ -513,7 +541,7 @@ export default function UsageMeteringSystem() {
                             </Card>
                         </TabsContent>
                     </Tabs>
-                </main>
+                </div>
             </div>
 
             {/* Meter Dialog */}
@@ -523,23 +551,6 @@ export default function UsageMeteringSystem() {
                         <DialogTitle>{editingItem ? 'Edit' : 'Create'} Usage Meter</DialogTitle>
                     </DialogHeader>
                     <div className="space-y-4">
-                        <div>
-                            <Label>PSP</Label>
-                            <Select 
-                                value={meterForm.psp_id}
-                                onValueChange={(v) => setMeterForm({...meterForm, psp_id: v})}
-                            >
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Select PSP" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {psps.map(psp => (
-                                        <SelectItem key={psp.id} value={psp.id}>{psp.psp_name}</SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-
                         <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <Label>Merchant ID</Label>
@@ -639,23 +650,6 @@ export default function UsageMeteringSystem() {
                         <DialogTitle>{editingItem ? 'Edit' : 'Create'} Metering Rule</DialogTitle>
                     </DialogHeader>
                     <div className="space-y-4">
-                        <div>
-                            <Label>PSP</Label>
-                            <Select 
-                                value={ruleForm.psp_id}
-                                onValueChange={(v) => setRuleForm({...ruleForm, psp_id: v})}
-                            >
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Select PSP" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {psps.map(psp => (
-                                        <SelectItem key={psp.id} value={psp.id}>{psp.psp_name}</SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-
                         <div>
                             <Label>Rule Name</Label>
                             <Input
