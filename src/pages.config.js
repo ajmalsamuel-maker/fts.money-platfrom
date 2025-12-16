@@ -174,6 +174,7 @@ import PSPEmpowermentRoadmap from './pages/PSPEmpowermentRoadmap';
 import ResourceOrchestration from './pages/ResourceOrchestration';
 import DatabaseSchemaValidation from './pages/DatabaseSchemaValidation';
 import PSPProductCatalog from './pages/PSPProductCatalog';
+import MerchantOnboardingWorkflows from './pages/MerchantOnboardingWorkflows';
 import __Layout from './Layout.jsx';
 
 
@@ -354,6 +355,7 @@ export const PAGES = {
     "ResourceOrchestration": ResourceOrchestration,
     "DatabaseSchemaValidation": DatabaseSchemaValidation,
     "PSPProductCatalog": PSPProductCatalog,
+    "MerchantOnboardingWorkflows": MerchantOnboardingWorkflows,
 }
 
 export const pagesConfig = {
