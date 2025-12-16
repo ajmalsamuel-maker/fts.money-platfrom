@@ -63,6 +63,11 @@ export default function ResourceOrchestration() {
         queryFn: () => base44.entities.ProvisionedPSP.list()
     });
 
+    const { data: connectors = [] } = useQuery({
+        queryKey: ['cloud-connectors'],
+        queryFn: () => base44.entities.CloudConnector.list()
+    });
+
     // Forms
     const [poolForm, setPoolForm] = useState({
         pool_name: '',
@@ -80,6 +85,12 @@ export default function ResourceOrchestration() {
         psp_name: '',
         pool_id: '',
         expected_launch_date: ''
+    });
+
+    const [connectorForm, setConnectorForm] = useState({
+        provider_name: '',
+        display_name: '',
+        status: 'inactive'
     });
 
     // Mutations
@@ -116,6 +127,37 @@ export default function ResourceOrchestration() {
             queryClient.invalidateQueries(['resource-reservations']);
             setShowDialog(false);
             toast.success('Resources reserved');
+        }
+    });
+
+    const createConnectorMutation = useMutation({
+        mutationFn: (data) => base44.entities.CloudConnector.create({
+            ...data,
+            connector_id: `CONN-${Date.now()}`
+        }),
+        onSuccess: () => {
+            queryClient.invalidateQueries(['cloud-connectors']);
+            setShowDialog(false);
+            toast.success('Connector created');
+        }
+    });
+
+    const updateConnectorMutation = useMutation({
+        mutationFn: ({ id, data }) => base44.entities.CloudConnector.update(id, data),
+        onSuccess: () => {
+            queryClient.invalidateQueries(['cloud-connectors']);
+            toast.success('Connector updated');
+        }
+    });
+
+    const seedConnectorsMutation = useMutation({
+        mutationFn: async () => {
+            const response = await base44.functions.invoke('seedCloudConnectors', {});
+            return response.data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries(['cloud-connectors']);
+            toast.success('Cloud connectors seeded');
         }
     });
 
@@ -321,9 +363,97 @@ export default function ResourceOrchestration() {
 
                         {/* Cloud Connectors */}
                         <TabsContent value="connectors" className="space-y-4 mt-6">
-                            <p className="text-sm text-slate-600 mb-4">Infrastructure provider integrations for multi-cloud resource provisioning</p>
+                            <div className="flex justify-between items-center mb-4">
+                                <p className="text-sm text-slate-600">{connectors.length} cloud provider connectors configured</p>
+                                <div className="flex gap-2">
+                                    <Button 
+                                        onClick={() => seedConnectorsMutation.mutate()}
+                                        disabled={seedConnectorsMutation.isPending || connectors.length > 0}
+                                        variant="outline"
+                                    >
+                                        <Database className="h-4 w-4 mr-2" />
+                                        Seed All Providers
+                                    </Button>
+                                    <Button onClick={() => { setDialogType('connector'); setShowDialog(true); }}>
+                                        <Plus className="h-4 w-4 mr-2" />
+                                        Add Connector
+                                    </Button>
+                                </div>
+                            </div>
 
                             <div className="grid grid-cols-2 gap-4">
+                                {connectors.map(connector => (
+                                    <Card key={connector.id}>
+                                        <CardHeader>
+                                            <div className="flex items-center justify-between">
+                                                <CardTitle className="text-base">{connector.display_name}</CardTitle>
+                                                <div className="flex items-center gap-2">
+                                                    <Badge className={
+                                                        connector.status === 'active' ? 'bg-emerald-100 text-emerald-700' :
+                                                        connector.status === 'testing' ? 'bg-amber-100 text-amber-700' :
+                                                        'bg-slate-100 text-slate-700'
+                                                    }>
+                                                        {connector.status}
+                                                    </Badge>
+                                                    <Badge variant="outline" className="capitalize">{connector.provider_type}</Badge>
+                                                </div>
+                                            </div>
+                                        </CardHeader>
+                                        <CardContent>
+                                            <div className="space-y-3">
+                                                <div className="text-sm">
+                                                    <p className="text-slate-600 mb-2">
+                                                        Function: <code className="bg-slate-100 px-2 py-1 rounded text-xs">{connector.connector_function}</code>
+                                                    </p>
+                                                    <p className="text-slate-600">Region: {connector.region}</p>
+                                                </div>
+                                                <div className="text-sm">
+                                                    <p className="font-semibold text-slate-900 mb-1">Operations:</p>
+                                                    <div className="space-y-1 text-slate-600">
+                                                        {connector.supported_operations?.map((op, idx) => (
+                                                            <div key={idx}>• {op}</div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                                <div className="text-sm">
+                                                    <p className="font-semibold text-slate-900 mb-1">Required Secrets:</p>
+                                                    <div className="flex flex-wrap gap-1">
+                                                        {connector.required_secrets?.map((secret, idx) => (
+                                                            <Badge key={idx} variant="outline" className="text-xs">{secret}</Badge>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                                <div className="flex justify-end gap-2 pt-2">
+                                                    <Button 
+                                                        size="sm" 
+                                                        variant="outline"
+                                                        onClick={() => updateConnectorMutation.mutate({ 
+                                                            id: connector.id, 
+                                                            data: { status: connector.status === 'active' ? 'inactive' : 'active' }
+                                                        })}
+                                                    >
+                                                        {connector.status === 'active' ? 'Disable' : 'Enable'}
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+                                ))}
+
+                                {connectors.length === 0 && (
+                                    <div className="col-span-2 text-center py-12">
+                                        <Server className="h-16 w-16 text-slate-400 mx-auto mb-4" />
+                                        <p className="text-slate-600 mb-4">No cloud connectors configured</p>
+                                        <Button onClick={() => seedConnectorsMutation.mutate()}>
+                                            <Database className="h-4 w-4 mr-2" />
+                                            Seed All Major Cloud Providers
+                                        </Button>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Legacy documentation cards - keeping for reference */}
+                            <div className="hidden grid-cols-2 gap-4">
                                 {/* AWS */}
                                 <Card>
                                     <CardHeader>
@@ -755,6 +885,57 @@ export default function ResourceOrchestration() {
             </div>
 
             {/* Dialogs */}
+            <Dialog open={showDialog && dialogType === 'connector'} onOpenChange={setShowDialog}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Add Cloud Connector</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                        <div>
+                            <Label>Provider</Label>
+                            <Select value={connectorForm.provider_name} onValueChange={(v) => setConnectorForm({...connectorForm, provider_name: v})}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select provider" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="aws">AWS</SelectItem>
+                                    <SelectItem value="azure">Azure</SelectItem>
+                                    <SelectItem value="gcp">Google Cloud</SelectItem>
+                                    <SelectItem value="alibaba_cloud">Alibaba Cloud</SelectItem>
+                                    <SelectItem value="digitalocean">DigitalOcean</SelectItem>
+                                    <SelectItem value="oracle_cloud">Oracle Cloud</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div>
+                            <Label>Display Name</Label>
+                            <Input
+                                value={connectorForm.display_name}
+                                onChange={(e) => setConnectorForm({...connectorForm, display_name: e.target.value})}
+                                placeholder="e.g., AWS Production"
+                            />
+                        </div>
+                        <div>
+                            <Label>Status</Label>
+                            <Select value={connectorForm.status} onValueChange={(v) => setConnectorForm({...connectorForm, status: v})}>
+                                <SelectTrigger>
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="active">Active</SelectItem>
+                                    <SelectItem value="inactive">Inactive</SelectItem>
+                                    <SelectItem value="testing">Testing</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="flex justify-end gap-3">
+                            <Button variant="outline" onClick={() => setShowDialog(false)}>Cancel</Button>
+                            <Button onClick={() => createConnectorMutation.mutate(connectorForm)}>Create</Button>
+                        </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
+
             <Dialog open={showDialog && dialogType === 'pool'} onOpenChange={setShowDialog}>
                 <DialogContent>
                     <DialogHeader>
