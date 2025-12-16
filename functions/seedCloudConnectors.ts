@@ -139,6 +139,19 @@ Deno.serve(async (req) => {
                 supported_operations: ['provision_compute', 'provision_database'],
                 status: 'active',
                 priority: 100
+            },
+            {
+                connector_id: 'NTC',
+                provider_name: 'ntc',
+                display_name: 'National Telecommunication Corporation (Nepal)',
+                provider_type: 'local',
+                region: 'Nepal',
+                supported_regions: ['KTM-DC1', 'PKR-DC1'],
+                connector_function: 'infrastructure/localProviderConnector',
+                required_secrets: ['NTC_API_KEY', 'NTC_API_SECRET'],
+                supported_operations: ['provision_compute', 'get_metrics'],
+                status: 'active',
+                priority: 110
             }
         ];
 

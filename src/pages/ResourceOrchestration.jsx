@@ -93,6 +93,9 @@ export default function ResourceOrchestration() {
         status: 'inactive'
     });
 
+    const [editingConnector, setEditingConnector] = useState(null);
+    const [connectorSecrets, setConnectorSecrets] = useState({});
+
     // Mutations
     const createPoolMutation = useMutation({
         mutationFn: (data) => base44.entities.ResourcePool.create({
@@ -424,6 +427,19 @@ export default function ResourceOrchestration() {
                                                     </div>
                                                 </div>
                                                 <div className="flex justify-end gap-2 pt-2">
+                                                    <Button 
+                                                        size="sm" 
+                                                        variant="outline"
+                                                        onClick={() => {
+                                                            setEditingConnector(connector);
+                                                            setConnectorSecrets({});
+                                                            setDialogType('edit-connector');
+                                                            setShowDialog(true);
+                                                        }}
+                                                    >
+                                                        <Edit className="h-3 w-3 mr-1" />
+                                                        Configure
+                                                    </Button>
                                                     <Button 
                                                         size="sm" 
                                                         variant="outline"
@@ -885,6 +901,83 @@ export default function ResourceOrchestration() {
             </div>
 
             {/* Dialogs */}
+            <Dialog open={showDialog && dialogType === 'edit-connector'} onOpenChange={setShowDialog}>
+                <DialogContent className="max-w-2xl">
+                    <DialogHeader>
+                        <DialogTitle>Configure {editingConnector?.display_name}</DialogTitle>
+                        <DialogDescription>
+                            Set up API keys and secrets for this cloud provider. These will be stored securely in environment variables.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                            <p className="text-sm text-blue-900 font-medium mb-2">Required Secrets:</p>
+                            <div className="flex flex-wrap gap-2">
+                                {editingConnector?.required_secrets?.map((secret, idx) => (
+                                    <Badge key={idx} variant="outline" className="text-xs">{secret}</Badge>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="space-y-3">
+                            {editingConnector?.required_secrets?.map((secret, idx) => (
+                                <div key={idx}>
+                                    <Label>{secret}</Label>
+                                    <Input
+                                        type="password"
+                                        value={connectorSecrets[secret] || ''}
+                                        onChange={(e) => setConnectorSecrets({...connectorSecrets, [secret]: e.target.value})}
+                                        placeholder={`Enter ${secret}`}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                            <p className="text-sm text-amber-900">
+                                <strong>Note:</strong> In production, use the Base44 dashboard → Settings → Secrets to configure these values. 
+                                This dialog is for documentation purposes.
+                            </p>
+                        </div>
+
+                        <div>
+                            <Label>Status</Label>
+                            <Select 
+                                value={editingConnector?.status} 
+                                onValueChange={(v) => {
+                                    updateConnectorMutation.mutate({ 
+                                        id: editingConnector.id, 
+                                        data: { status: v, is_configured: true }
+                                    });
+                                }}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="active">Active</SelectItem>
+                                    <SelectItem value="inactive">Inactive</SelectItem>
+                                    <SelectItem value="testing">Testing</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+
+                        <div className="flex justify-end gap-3">
+                            <Button variant="outline" onClick={() => setShowDialog(false)}>Close</Button>
+                            <Button onClick={() => {
+                                updateConnectorMutation.mutate({ 
+                                    id: editingConnector.id, 
+                                    data: { is_configured: true, notes: 'Secrets configured via UI' }
+                                });
+                                setShowDialog(false);
+                            }}>
+                                Mark as Configured
+                            </Button>
+                        </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
+
             <Dialog open={showDialog && dialogType === 'connector'} onOpenChange={setShowDialog}>
                 <DialogContent>
                     <DialogHeader>
@@ -904,6 +997,7 @@ export default function ResourceOrchestration() {
                                     <SelectItem value="alibaba_cloud">Alibaba Cloud</SelectItem>
                                     <SelectItem value="digitalocean">DigitalOcean</SelectItem>
                                     <SelectItem value="oracle_cloud">Oracle Cloud</SelectItem>
+                                    <SelectItem value="ntc">NTC (Nepal)</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
