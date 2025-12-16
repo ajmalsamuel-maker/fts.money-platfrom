@@ -79,6 +79,20 @@ export default function PSPInstanceConfig() {
     // Populate config when PSP data loads - map from provisioning fields
     React.useEffect(() => {
         if (psp) {
+            // Ensure arrays are properly parsed if they're stored as strings
+            const parseArray = (val) => {
+                if (!val) return [];
+                if (Array.isArray(val)) return val;
+                if (typeof val === 'string') {
+                    try {
+                        return JSON.parse(val);
+                    } catch {
+                        return [];
+                    }
+                }
+                return [];
+            };
+
             setConfig({
                 branding: {
                     company_name: psp.psp_name || '',
@@ -94,9 +108,9 @@ export default function PSPInstanceConfig() {
                     region: psp.country || '',
                     language: 'en'
                 },
-                enabled_payment_methods: psp.enabled_payment_methods || [],
-                enabled_payout_methods: psp.enabled_payout_methods || [],
-                enabled_services: psp.enabled_services || []
+                enabled_payment_methods: parseArray(psp.enabled_payment_methods),
+                enabled_payout_methods: parseArray(psp.enabled_payout_methods),
+                enabled_services: parseArray(psp.enabled_services)
             });
         }
     }, [psp]);
