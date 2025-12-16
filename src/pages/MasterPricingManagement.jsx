@@ -58,7 +58,7 @@ const categories = [
 export default function MasterPricingManagement() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
-    const { platformUser, loading } = usePlatformAuth([PLATFORM_PERMISSIONS.PRICING_VIEW]);
+    const { platformUser, loading } = usePlatformAuth();
     const [searchTerm, setSearchTerm] = useState('');
     const [categoryFilter, setCategoryFilter] = useState('all');
     const [statusFilter, setStatusFilter] = useState('all');
