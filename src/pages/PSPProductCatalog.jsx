@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
-import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
+import { useStaffAuth } from '@/components/auth/useStaffAuth';
+import Sidebar from '@/components/dashboard/Sidebar';
+import TopHeader from '@/components/dashboard/TopHeader';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,32 +13,52 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Package, Plus, Edit, Copy, Trash2, Archive, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { Package, Plus, Edit, Copy, Trash2, Archive, CheckCircle, AlertCircle, Loader2, Star, Library } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function PSPProductCatalog() {
-    const { platformUser, loading } = usePlatformAuth();
+    const { user, loading, requireAuth } = useStaffAuth();
     const queryClient = useQueryClient();
     const [activeTab, setActiveTab] = useState('products');
     const [showDialog, setShowDialog] = useState(false);
+    const [showTemplateDialog, setShowTemplateDialog] = useState(false);
     const [dialogType, setDialogType] = useState('');
     const [editingProduct, setEditingProduct] = useState(null);
-    const [selectedPSP, setSelectedPSP] = useState('all');
+    const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
+    
+    React.useEffect(() => {
+        requireAuth();
+    }, []);
 
-    // Fetch data
-    const { data: psps = [] } = useQuery({
-        queryKey: ['provisioned-psps'],
-        queryFn: () => base44.entities.ProvisionedPSP.list()
+    const pspCode = user?.psp_code;
+
+    // Fetch PSP-specific products
+    const { data: products = [] } = useQuery({
+        queryKey: ['psp-products', pspCode],
+        queryFn: async () => {
+            if (!pspCode) return [];
+            return await base44.entities.PSPProductTemplate.filter({ psp_code: pspCode });
+        },
+        enabled: !!pspCode
     });
 
-    const { data: products = [] } = useQuery({
-        queryKey: ['psp-products', selectedPSP],
+    // Fetch platform templates for cloning
+    const { data: platformTemplates = [] } = useQuery({
+        queryKey: ['platform-product-templates'],
         queryFn: async () => {
-            if (selectedPSP === 'all') {
-                return await base44.entities.PSPProductTemplate.list();
-            }
-            return await base44.entities.PSPProductTemplate.filter({ psp_id: selectedPSP });
+            const all = await base44.entities.PSPProductTemplate.list();
+            return all.filter(t => !t.psp_id || t.is_platform_template);
         }
+    });
+
+    const { data: pspData } = useQuery({
+        queryKey: ['current-psp', pspCode],
+        queryFn: async () => {
+            if (!pspCode) return null;
+            const psps = await base44.entities.ProvisionedPSP.filter({ psp_code: pspCode });
+            return psps[0];
+        },
+        enabled: !!pspCode
     });
 
     const { data: components = [] } = useQuery({
@@ -52,7 +73,6 @@ export default function PSPProductCatalog() {
 
     // Product form
     const [productForm, setProductForm] = useState({
-        psp_id: '',
         product_name: '',
         product_description: '',
         product_category: 'payment_processing',
@@ -69,11 +89,11 @@ export default function PSPProductCatalog() {
     // Mutations
     const createProductMutation = useMutation({
         mutationFn: async (data) => {
-            const psp = psps.find(p => p.id === data.psp_id);
             return await base44.entities.PSPProductTemplate.create({
                 ...data,
                 product_id: `PRD-${Date.now()}`,
-                psp_code: psp?.psp_code
+                psp_id: pspData?.id,
+                psp_code: pspCode
             });
         },
         onSuccess: () => {
@@ -81,6 +101,29 @@ export default function PSPProductCatalog() {
             setShowDialog(false);
             resetForm();
             toast.success('Product created successfully');
+        }
+    });
+
+    const cloneFromTemplateMutation = useMutation({
+        mutationFn: async (template) => {
+            return await base44.entities.PSPProductTemplate.create({
+                ...template,
+                id: undefined,
+                product_id: `PRD-${Date.now()}`,
+                psp_id: pspData?.id,
+                psp_code: pspCode,
+                is_platform_template: false,
+                cloned_from_template: template.id,
+                version: '1.0.0',
+                lifecycle_state: 'draft',
+                status: 'inactive',
+                total_subscribers: 0
+            });
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries(['psp-products']);
+            setShowTemplateDialog(false);
+            toast.success('Product cloned from template');
         }
     });
 
@@ -95,10 +138,11 @@ export default function PSPProductCatalog() {
         }
     });
 
-    const cloneProductMutation = useMutation({
+    const duplicateProductMutation = useMutation({
         mutationFn: async (product) => {
             return await base44.entities.PSPProductTemplate.create({
                 ...product,
+                id: undefined,
                 product_id: `PRD-${Date.now()}`,
                 product_name: `${product.product_name} (Copy)`,
                 version: '1.0.0',
@@ -109,7 +153,7 @@ export default function PSPProductCatalog() {
         },
         onSuccess: () => {
             queryClient.invalidateQueries(['psp-products']);
-            toast.success('Product cloned successfully');
+            toast.success('Product duplicated successfully');
         }
     });
 
@@ -123,7 +167,6 @@ export default function PSPProductCatalog() {
 
     const resetForm = () => {
         setProductForm({
-            psp_id: '',
             product_name: '',
             product_description: '',
             product_category: 'payment_processing',
@@ -141,7 +184,6 @@ export default function PSPProductCatalog() {
     const handleEdit = (product) => {
         setEditingProduct(product);
         setProductForm({
-            psp_id: product.psp_id,
             product_name: product.product_name,
             product_description: product.product_description || '',
             product_category: product.product_category,
@@ -185,44 +227,41 @@ export default function PSPProductCatalog() {
 
     if (loading) return null;
 
-    const filteredProducts = selectedPSP === 'all' 
-        ? products 
-        : products.filter(p => p.psp_id === selectedPSP);
-
-    const productsByCategory = filteredProducts.reduce((acc, product) => {
+    const productsByCategory = products.reduce((acc, product) => {
         const cat = product.product_category || 'other';
         if (!acc[cat]) acc[cat] = [];
         acc[cat].push(product);
         return acc;
     }, {});
 
+    const templatesByCategory = platformTemplates.reduce((acc, template) => {
+        const cat = template.product_category || 'other';
+        if (!acc[cat]) acc[cat] = [];
+        acc[cat].push(template);
+        return acc;
+    }, {});
+
     return (
         <div className="flex h-screen bg-slate-50">
-            <FTSPlatformSidebar 
-                currentPage="PSPProductCatalog" 
-                userRole={platformUser?.platform_role}
-                userEmail={platformUser?.email}
-                isSuperAdmin={platformUser?.platform_role === 'super_admin'}
-            />
+            <Sidebar collapsed={sidebarCollapsed} onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} currentPage="PSPProductCatalog" />
 
             <div className="flex-1 overflow-auto">
-                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
+                <TopHeader onMenuClick={() => setSidebarCollapsed(!sidebarCollapsed)} />
+                
+                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6">
                     <div>
-                        <h2 className="text-lg font-semibold text-slate-900">PSP Product Catalog</h2>
-                        <p className="text-xs text-slate-600">Phase 1, Step 1: Allow PSPs to define merchant-facing products</p>
+                        <h2 className="text-lg font-semibold text-slate-900">Product Catalog</h2>
+                        <p className="text-xs text-slate-600">Manage your merchant-facing products and services</p>
                     </div>
                     <div className="flex items-center gap-3">
-                        <Select value={selectedPSP} onValueChange={setSelectedPSP}>
-                            <SelectTrigger className="w-48">
-                                <SelectValue placeholder="Filter by PSP" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="all">All PSPs</SelectItem>
-                                {psps.map(psp => (
-                                    <SelectItem key={psp.id} value={psp.id}>{psp.psp_name}</SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+                        <Button 
+                            variant="outline"
+                            onClick={() => setShowTemplateDialog(true)}
+                            className="gap-2"
+                        >
+                            <Library className="h-4 w-4" />
+                            Clone from Template
+                        </Button>
                         <Button 
                             onClick={() => { 
                                 resetForm(); 
@@ -233,7 +272,7 @@ export default function PSPProductCatalog() {
                             className="bg-blue-600"
                         >
                             <Plus className="h-4 w-4 mr-2" />
-                            Create Product
+                            Create Custom Product
                         </Button>
                     </div>
                 </header>
@@ -309,9 +348,12 @@ export default function PSPProductCatalog() {
                                                     <div className="flex items-start justify-between">
                                                         <div className="flex-1">
                                                             <CardTitle className="text-base">{product.product_name}</CardTitle>
-                                                            <p className="text-xs text-slate-500 mt-1">
-                                                                {psps.find(p => p.id === product.psp_id)?.psp_name}
-                                                            </p>
+                                                            {product.cloned_from_template && (
+                                                                <p className="text-xs text-amber-600 mt-1 flex items-center gap-1">
+                                                                    <Star className="h-3 w-3" />
+                                                                    From template
+                                                                </p>
+                                                            )}
                                                         </div>
                                                         <Badge className={
                                                             product.lifecycle_state === 'active' ? 'bg-emerald-100 text-emerald-700' :
@@ -346,9 +388,9 @@ export default function PSPProductCatalog() {
                                                             <Edit className="h-3 w-3 mr-1" />
                                                             Edit
                                                         </Button>
-                                                        <Button size="sm" variant="outline" onClick={() => cloneProductMutation.mutate(product)}>
+                                                        <Button size="sm" variant="outline" onClick={() => duplicateProductMutation.mutate(product)}>
                                                             <Copy className="h-3 w-3 mr-1" />
-                                                            Clone
+                                                            Duplicate
                                                         </Button>
                                                         <Button 
                                                             size="sm" 
@@ -395,24 +437,6 @@ export default function PSPProductCatalog() {
                         </DialogDescription>
                     </DialogHeader>
                     <div className="space-y-4">
-                        <div>
-                            <Label>PSP</Label>
-                            <Select 
-                                value={productForm.psp_id} 
-                                onValueChange={(v) => setProductForm({...productForm, psp_id: v})}
-                                disabled={!!editingProduct}
-                            >
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Select PSP" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {psps.map(psp => (
-                                        <SelectItem key={psp.id} value={psp.id}>{psp.psp_name}</SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-
                         <div>
                             <Label>Product Name</Label>
                             <Input
@@ -545,6 +569,76 @@ export default function PSPProductCatalog() {
                                 {editingProduct ? 'Update' : 'Create'} Product
                             </Button>
                         </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
+
+            {/* Template Library Dialog */}
+            <Dialog open={showTemplateDialog} onOpenChange={setShowTemplateDialog}>
+                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                    <DialogHeader>
+                        <DialogTitle>Clone from Template Library</DialogTitle>
+                        <DialogDescription>
+                            Select a platform template to clone and customize for your PSP
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-6">
+                        {Object.entries(templatesByCategory).map(([category, templates]) => (
+                            <div key={category}>
+                                <h3 className="text-sm font-semibold text-slate-900 mb-3 capitalize">
+                                    {category.replace(/_/g, ' ')}
+                                </h3>
+                                <div className="grid grid-cols-2 gap-3">
+                                    {templates.map(template => (
+                                        <Card key={template.id} className="hover:shadow-md transition-shadow border-amber-200 bg-amber-50/30">
+                                            <CardHeader className="pb-3">
+                                                <div className="flex items-start gap-2">
+                                                    <Star className="h-4 w-4 text-amber-600 mt-0.5" />
+                                                    <div className="flex-1">
+                                                        <CardTitle className="text-sm">{template.product_name}</CardTitle>
+                                                        <p className="text-xs text-slate-600 mt-1 line-clamp-2">
+                                                            {template.product_description}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </CardHeader>
+                                            <CardContent className="pt-0">
+                                                <div className="flex items-center justify-between">
+                                                    <div className="flex gap-2">
+                                                        <Badge variant="outline" className="text-xs">
+                                                            ${template.base_price}/mo
+                                                        </Badge>
+                                                        <Badge variant="outline" className="text-xs">
+                                                            v{template.version}
+                                                        </Badge>
+                                                    </div>
+                                                    <Button 
+                                                        size="sm" 
+                                                        onClick={() => cloneFromTemplateMutation.mutate(template)}
+                                                        disabled={cloneFromTemplateMutation.isPending}
+                                                    >
+                                                        {cloneFromTemplateMutation.isPending ? (
+                                                            <Loader2 className="h-3 w-3 animate-spin" />
+                                                        ) : (
+                                                            <>
+                                                                <Copy className="h-3 w-3 mr-1" />
+                                                                Clone
+                                                            </>
+                                                        )}
+                                                    </Button>
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+                                    ))}
+                                </div>
+                            </div>
+                        ))}
+                        {platformTemplates.length === 0 && (
+                            <div className="text-center py-12">
+                                <Star className="h-12 w-12 text-slate-400 mx-auto mb-3" />
+                                <p className="text-slate-600">No platform templates available yet</p>
+                            </div>
+                        )}
                     </div>
                 </DialogContent>
             </Dialog>
