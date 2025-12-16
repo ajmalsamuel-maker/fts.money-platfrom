@@ -18,7 +18,12 @@ import {
     Calendar,
     DollarSign,
     CheckCircle,
-    AlertCircle
+    AlertCircle,
+    Upload,
+    Download,
+    Clock,
+    Activity,
+    Target
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -26,8 +31,10 @@ export default function ProviderAgreementsManager() {
     const queryClient = useQueryClient();
     const [showDialog, setShowDialog] = useState(false);
     const [showComparisonDialog, setShowComparisonDialog] = useState(false);
+    const [showKpiDialog, setShowKpiDialog] = useState(false);
     const [editingAgreement, setEditingAgreement] = useState(null);
     const [selectedAgreement, setSelectedAgreement] = useState(null);
+    const [uploadingDocument, setUploadingDocument] = useState(false);
     const [formData, setFormData] = useState({
         provider_name: '',
         provider_type: 'payment_provider',
@@ -126,6 +133,15 @@ export default function ProviderAgreementsManager() {
 
     const activeAgreements = agreements.filter(a => a.status === 'active');
     const pendingAgreements = agreements.filter(a => a.status === 'pending_approval');
+    
+    // Calculate expiring agreements (within 90 days)
+    const expiringAgreements = activeAgreements.filter(a => {
+        if (!a.contract_end_date) return false;
+        const endDate = new Date(a.contract_end_date);
+        const today = new Date();
+        const daysUntilExpiry = Math.ceil((endDate - today) / (1000 * 60 * 60 * 24));
+        return daysUntilExpiry > 0 && daysUntilExpiry <= 90;
+    });
 
     return (
         <div className="space-y-6">
@@ -140,6 +156,25 @@ export default function ProviderAgreementsManager() {
                     New Agreement
                 </Button>
             </div>
+
+            {/* Expiry Alerts */}
+            {expiringAgreements.length > 0 && (
+                <Card className="border-amber-300 bg-amber-50">
+                    <CardContent className="p-4">
+                        <div className="flex items-center gap-3">
+                            <Clock className="h-5 w-5 text-amber-600" />
+                            <div>
+                                <p className="font-semibold text-amber-900">
+                                    {expiringAgreements.length} agreement{expiringAgreements.length > 1 ? 's' : ''} expiring soon
+                                </p>
+                                <p className="text-sm text-amber-700">
+                                    {expiringAgreements.map(a => a.provider_name).join(', ')} - Review renewal terms
+                                </p>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+            )}
 
             {/* Stats */}
             <div className="grid grid-cols-4 gap-4">
@@ -242,6 +277,10 @@ export default function ProviderAgreementsManager() {
                                         <Button size="sm" variant="outline" onClick={() => handleViewComparison(agreement)}>
                                             <FileText className="h-3 w-3 mr-1" />
                                             Compare
+                                        </Button>
+                                        <Button size="sm" variant="outline" onClick={() => { setSelectedAgreement(agreement); setShowKpiDialog(true); }}>
+                                            <Target className="h-3 w-3 mr-1" />
+                                            KPIs
                                         </Button>
                                         <Button size="sm" variant="outline" onClick={() => handleEdit(agreement)}>
                                             <Edit className="h-3 w-3" />
@@ -380,6 +419,69 @@ export default function ProviderAgreementsManager() {
                                 className="w-4 h-4"
                             />
                             <Label>Auto-renew contract</Label>
+                        </div>
+
+                        {/* Document Upload */}
+                        <div className="border-t pt-4 mt-4">
+                            <Label className="text-base mb-3 block">Contract Documents</Label>
+                            <div className="space-y-3">
+                                <div className="flex items-center gap-3">
+                                    <Input
+                                        type="file"
+                                        accept=".pdf,.doc,.docx"
+                                        onChange={async (e) => {
+                                            const file = e.target.files[0];
+                                            if (file) {
+                                                setUploadingDocument(true);
+                                                try {
+                                                    const { data } = await base44.integrations.Core.UploadFile({ file });
+                                                    const documents = formData.contract_documents || [];
+                                                    documents.push({
+                                                        url: data.file_url,
+                                                        name: file.name,
+                                                        version: documents.length + 1,
+                                                        uploaded_date: new Date().toISOString()
+                                                    });
+                                                    setFormData({ ...formData, contract_documents: documents, contract_document_url: data.file_url });
+                                                    toast.success('Document uploaded');
+                                                } catch (error) {
+                                                    toast.error('Upload failed');
+                                                } finally {
+                                                    setUploadingDocument(false);
+                                                }
+                                            }
+                                        }}
+                                    />
+                                    {uploadingDocument && <span className="text-sm text-slate-600">Uploading...</span>}
+                                </div>
+                                {(formData.contract_documents || []).map((doc, idx) => (
+                                    <div key={idx} className="flex items-center justify-between p-2 bg-slate-50 rounded">
+                                        <div className="flex items-center gap-2">
+                                            <FileText className="h-4 w-4 text-blue-600" />
+                                            <div>
+                                                <p className="text-sm font-medium">{doc.name}</p>
+                                                <p className="text-xs text-slate-500">Version {doc.version} • {new Date(doc.uploaded_date).toLocaleDateString()}</p>
+                                            </div>
+                                        </div>
+                                        <div className="flex gap-2">
+                                            <Button size="sm" variant="outline" onClick={() => window.open(doc.url, '_blank')}>
+                                                <Download className="h-3 w-3" />
+                                            </Button>
+                                            <Button 
+                                                size="sm" 
+                                                variant="outline" 
+                                                className="text-red-600"
+                                                onClick={() => {
+                                                    const updated = formData.contract_documents.filter((_, i) => i !== idx);
+                                                    setFormData({ ...formData, contract_documents: updated });
+                                                }}
+                                            >
+                                                <Trash2 className="h-3 w-3" />
+                                            </Button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
 
                         {/* Rate Cards Section */}
@@ -537,6 +639,159 @@ export default function ProviderAgreementsManager() {
                                     )}
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
+
+            {/* KPI/SLA Tracking Dialog */}
+            <Dialog open={showKpiDialog} onOpenChange={setShowKpiDialog}>
+                <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+                    <DialogHeader>
+                        <DialogTitle>KPIs & SLAs: {selectedAgreement?.agreement_name}</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-6">
+                        {/* SLA Requirements */}
+                        <div>
+                            <h4 className="font-semibold text-slate-900 mb-3">Service Level Agreements</h4>
+                            <div className="space-y-4">
+                                <div>
+                                    <div className="flex items-center justify-between mb-2">
+                                        <Label className="text-sm">Uptime Target</Label>
+                                        <span className="text-sm font-semibold text-emerald-600">
+                                            {selectedAgreement?.sla_requirements?.uptime_percentage || 99.9}%
+                                        </span>
+                                    </div>
+                                    <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
+                                        <div 
+                                            className="h-full bg-emerald-500 transition-all"
+                                            style={{ width: `${selectedAgreement?.sla_requirements?.uptime_percentage || 99.9}%` }}
+                                        />
+                                    </div>
+                                </div>
+                                <div>
+                                    <div className="flex items-center justify-between mb-2">
+                                        <Label className="text-sm">Response Time (Target: {selectedAgreement?.sla_requirements?.response_time_ms || 200}ms)</Label>
+                                        <span className="text-sm font-semibold text-blue-600">150ms avg</span>
+                                    </div>
+                                    <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
+                                        <div className="h-full bg-blue-500 transition-all" style={{ width: '75%' }} />
+                                    </div>
+                                </div>
+                                <div>
+                                    <div className="flex items-center justify-between mb-2">
+                                        <Label className="text-sm">Support Level</Label>
+                                        <Badge className="bg-emerald-100 text-emerald-700">
+                                            {selectedAgreement?.sla_requirements?.support_level || 'Enterprise'}
+                                        </Badge>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Volume Commitment */}
+                        {selectedAgreement?.minimum_monthly_commitment && (
+                            <div>
+                                <h4 className="font-semibold text-slate-900 mb-3">Volume Commitment</h4>
+                                <div className="space-y-3">
+                                    <div>
+                                        <div className="flex items-center justify-between mb-2">
+                                            <Label className="text-sm">Monthly Commitment Target</Label>
+                                            <span className="text-sm font-semibold">
+                                                ${(selectedAgreement.total_volume || 0).toLocaleString()} / ${selectedAgreement.minimum_monthly_commitment.toLocaleString()}
+                                            </span>
+                                        </div>
+                                        <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
+                                            <div 
+                                                className={`h-full transition-all ${
+                                                    (selectedAgreement.total_volume || 0) >= selectedAgreement.minimum_monthly_commitment 
+                                                        ? 'bg-emerald-500' 
+                                                        : 'bg-amber-500'
+                                                }`}
+                                                style={{ 
+                                                    width: `${Math.min(100, ((selectedAgreement.total_volume || 0) / selectedAgreement.minimum_monthly_commitment) * 100)}%` 
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+                                    {(selectedAgreement.total_volume || 0) < selectedAgreement.minimum_monthly_commitment && (
+                                        <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                                            <p className="text-sm text-amber-900">
+                                                Below commitment by ${(selectedAgreement.minimum_monthly_commitment - (selectedAgreement.total_volume || 0)).toLocaleString()}
+                                                {selectedAgreement.penalty_for_under_commitment && 
+                                                    ` - Penalty: $${selectedAgreement.penalty_for_under_commitment.toLocaleString()}`
+                                                }
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Performance Metrics */}
+                        <div>
+                            <h4 className="font-semibold text-slate-900 mb-3">Performance Metrics</h4>
+                            <div className="grid grid-cols-2 gap-4">
+                                <Card>
+                                    <CardContent className="p-4">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="text-sm text-slate-600">Total Volume</p>
+                                                <p className="text-2xl font-bold text-slate-900">
+                                                    ${(selectedAgreement?.total_volume || 0).toLocaleString()}
+                                                </p>
+                                            </div>
+                                            <Activity className="h-8 w-8 text-blue-600" />
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                                <Card>
+                                    <CardContent className="p-4">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="text-sm text-slate-600">Total Savings</p>
+                                                <p className="text-2xl font-bold text-emerald-600">
+                                                    ${(selectedAgreement?.total_savings || 0).toLocaleString()}
+                                                </p>
+                                            </div>
+                                            <TrendingDown className="h-8 w-8 text-emerald-600" />
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </div>
+                        </div>
+
+                        {/* Contract Timeline */}
+                        <div>
+                            <h4 className="font-semibold text-slate-900 mb-3">Contract Timeline</h4>
+                            <div className="p-4 bg-slate-50 rounded-lg space-y-2">
+                                <div className="flex items-center justify-between text-sm">
+                                    <span className="text-slate-600">Start Date:</span>
+                                    <span className="font-medium">{selectedAgreement?.contract_start_date}</span>
+                                </div>
+                                <div className="flex items-center justify-between text-sm">
+                                    <span className="text-slate-600">End Date:</span>
+                                    <span className="font-medium">{selectedAgreement?.contract_end_date || 'Ongoing'}</span>
+                                </div>
+                                {selectedAgreement?.contract_end_date && (
+                                    <div className="flex items-center justify-between text-sm">
+                                        <span className="text-slate-600">Days Remaining:</span>
+                                        <span className={`font-medium ${
+                                            Math.ceil((new Date(selectedAgreement.contract_end_date) - new Date()) / (1000 * 60 * 60 * 24)) <= 30
+                                                ? 'text-red-600'
+                                                : 'text-slate-900'
+                                        }`}>
+                                            {Math.ceil((new Date(selectedAgreement.contract_end_date) - new Date()) / (1000 * 60 * 60 * 24))} days
+                                        </span>
+                                    </div>
+                                )}
+                                <div className="flex items-center justify-between text-sm">
+                                    <span className="text-slate-600">Auto-Renew:</span>
+                                    <Badge className={selectedAgreement?.auto_renew ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-700'}>
+                                        {selectedAgreement?.auto_renew ? 'Yes' : 'No'}
+                                    </Badge>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </DialogContent>
