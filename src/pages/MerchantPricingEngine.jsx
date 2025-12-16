@@ -433,7 +433,6 @@ export default function MerchantPricingEngine() {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    </div>
                                                 </div>
                                             </CardContent>
                                         </Card>
