@@ -81,10 +81,6 @@ export default function Dashboard() {
         }
     }, []);
 
-    if (!isReady) {
-        return null; // Don't show anything while redirecting
-    }
-
     // Fetch data from isolated PSP schema (PCI Level 1 & GDPR compliant)
     const { data: transactions = [] } = useQuery({
         queryKey: ['transactions', userPspCode],
@@ -114,6 +110,10 @@ export default function Dashboard() {
     // Separate crypto and fiat transactions
     const cryptoTransactions = transactions.filter(t => t.crypto_asset || t.payment_method === 'crypto_currency' || t.payment_method === 'bitcoin' || t.payment_method === 'bitcoin_cash');
     const cryptoVolume = cryptoTransactions.reduce((sum, t) => sum + (t.amount || 0), 0);
+
+    if (!isReady) {
+        return null; // Don't show anything while redirecting
+    }
 
     const stats = [
         {
