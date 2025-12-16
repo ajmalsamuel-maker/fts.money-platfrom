@@ -31,6 +31,7 @@ import { cn } from "@/lib/utils";
 import { AuditLogger } from '@/components/platform/EnhancedAuditLogger';
 import { COUNTRIES } from '@/components/utils/countries';
 import { TIMEZONES } from '@/components/utils/timezones';
+import { ISO4217_CURRENCIES, getCurrencySymbol } from '@/components/utils/iso4217';
 
 const tiers = [
     {
@@ -520,17 +521,17 @@ export default function PSPProvisioningWizard() {
                                     </Select>
                                 </div>
                                 <div>
-                                    <Label>Default Currency</Label>
+                                    <Label>Default Currency (ISO 4217)</Label>
                                     <Select value={formData.currency} onValueChange={(v) => setFormData({...formData, currency: v})}>
                                         <SelectTrigger>
                                             <SelectValue />
                                         </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="USD">USD</SelectItem>
-                                            <SelectItem value="EUR">EUR</SelectItem>
-                                            <SelectItem value="GBP">GBP</SelectItem>
-                                            <SelectItem value="SGD">SGD</SelectItem>
-                                            <SelectItem value="HKD">HKD</SelectItem>
+                                        <SelectContent className="max-h-[300px]">
+                                            {ISO4217_CURRENCIES.map(currency => (
+                                                <SelectItem key={currency.code} value={currency.code}>
+                                                    {getCurrencySymbol(currency.code)} {currency.code} - {currency.name}
+                                                </SelectItem>
+                                            ))}
                                         </SelectContent>
                                     </Select>
                                 </div>
