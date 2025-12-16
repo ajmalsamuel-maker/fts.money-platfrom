@@ -64,6 +64,7 @@ const menuSections = [
     {
         title: 'Infrastructure',
         items: [
+            { icon: Activity, label: 'Resource Orchestration', path: 'ResourceOrchestration', description: 'Capacity & auto-scaling' },
             { icon: Zap, label: 'API Gateway', path: 'APIGatewayConfiguration', description: 'Kong + Orchestration' },
             { icon: Globe, label: 'Domain & SSL', path: 'FTSDomainManagement', description: 'Domains & certificates' },
             { icon: Globe, label: 'Blockchain', path: 'FTSBlockchainIntegration', description: 'Crypto rails & ISO' },
