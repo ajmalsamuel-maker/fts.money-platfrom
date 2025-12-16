@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import WidgetLibrary, { AVAILABLE_WIDGETS } from '@/components/portal-builder/WidgetLibrary';
 import ThemeCustomizer from '@/components/portal-builder/ThemeCustomizer';
 import LayoutEditor from '@/components/portal-builder/LayoutEditor';
+import PortalTemplates from '@/components/portal-builder/PortalTemplates';
 import { 
     Palette, 
     Layout as LayoutIcon, 
@@ -24,7 +25,8 @@ import {
     Settings,
     Rocket,
     Copy,
-    Trash2
+    Trash2,
+    Sparkles
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
 
@@ -36,6 +38,7 @@ export default function MerchantPortalBuilder() {
     const [currentPspId, setCurrentPspId] = useState(null);
     const [activeTab, setActiveTab] = useState('theme');
     const [showWidgetDialog, setShowWidgetDialog] = useState(false);
+    const [showTemplateDialog, setShowTemplateDialog] = useState(false);
     const [selectedConfig, setSelectedConfig] = useState(null);
 
     const [portalConfig, setPortalConfig] = useState({
@@ -168,6 +171,12 @@ export default function MerchantPortalBuilder() {
         });
     };
 
+    const handleLoadTemplate = (template) => {
+        setPortalConfig(template.config);
+        setSelectedConfig(null);
+        setShowTemplateDialog(false);
+    };
+
     return (
         <div className="min-h-screen bg-slate-50">
             <Sidebar 
@@ -190,6 +199,13 @@ export default function MerchantPortalBuilder() {
                             <p className="text-sm text-slate-600">Design and customize your merchant portal</p>
                         </div>
                         <div className="flex gap-2">
+                            <Button 
+                                variant="outline"
+                                onClick={() => setShowTemplateDialog(true)}
+                            >
+                                <Sparkles className="h-4 w-4 mr-2" />
+                                Templates
+                            </Button>
                             <Button variant="outline">
                                 <Eye className="h-4 w-4 mr-2" />
                                 Preview
@@ -375,6 +391,16 @@ export default function MerchantPortalBuilder() {
                                 <DialogTitle>Add Widget</DialogTitle>
                             </DialogHeader>
                             <WidgetLibrary onSelectWidget={handleAddWidget} />
+                        </DialogContent>
+                    </Dialog>
+
+                    {/* Templates Dialog */}
+                    <Dialog open={showTemplateDialog} onOpenChange={setShowTemplateDialog}>
+                        <DialogContent className="max-w-3xl">
+                            <DialogHeader>
+                                <DialogTitle>Choose a Portal Template</DialogTitle>
+                            </DialogHeader>
+                            <PortalTemplates onSelectTemplate={handleLoadTemplate} />
                         </DialogContent>
                     </Dialog>
                 </div>

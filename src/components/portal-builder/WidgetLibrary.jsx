@@ -9,15 +9,19 @@ import {
     Calendar,
     FileText,
     AlertTriangle,
-    CheckCircle
+    CheckCircle,
+    Layers
 } from 'lucide-react';
+import { MERCHANT_WIDGETS } from './MerchantWidgets';
 
 export const AVAILABLE_WIDGETS = {
+    ...MERCHANT_WIDGETS,
     stats_card: {
         id: 'stats_card',
         name: 'Stats Card',
         description: 'Display key metrics',
         icon: TrendingUp,
+        category: 'Stats & Metrics',
         defaultConfig: {
             title: 'Total Revenue',
             metric: 'revenue',
@@ -35,6 +39,7 @@ export const AVAILABLE_WIDGETS = {
         name: 'Transaction Chart',
         description: 'Line chart of transactions',
         icon: BarChart3,
+        category: 'Charts',
         defaultConfig: {
             title: 'Transaction Volume',
             period: '7d',
@@ -54,6 +59,7 @@ export const AVAILABLE_WIDGETS = {
         name: 'Recent Transactions',
         description: 'List of recent transactions',
         icon: FileText,
+        category: 'Lists',
         defaultConfig: {
             title: 'Recent Transactions',
             limit: 10
@@ -77,6 +83,7 @@ export const AVAILABLE_WIDGETS = {
         name: 'Balance Overview',
         description: 'Current balance and pending',
         icon: DollarSign,
+        category: 'Stats & Metrics',
         defaultConfig: {
             title: 'Balance Overview',
             showPending: true
@@ -104,6 +111,7 @@ export const AVAILABLE_WIDGETS = {
         name: 'Alerts & Notifications',
         description: 'Important alerts',
         icon: AlertTriangle,
+        category: 'Lists',
         defaultConfig: {
             title: 'Alerts',
             types: ['warning', 'info']
@@ -125,6 +133,7 @@ export const AVAILABLE_WIDGETS = {
         name: 'Quick Actions',
         description: 'Action buttons',
         icon: Activity,
+        category: 'Stats & Metrics',
         defaultConfig: {
             title: 'Quick Actions',
             actions: ['new_payment', 'refund', 'invoice']
@@ -148,6 +157,7 @@ export const AVAILABLE_WIDGETS = {
         name: 'Customer Insights',
         description: 'Customer statistics',
         icon: Users,
+        category: 'Stats & Metrics',
         defaultConfig: {
             title: 'Customer Insights',
             metric: 'total'
@@ -171,24 +181,55 @@ export const AVAILABLE_WIDGETS = {
 };
 
 export default function WidgetLibrary({ onSelectWidget }) {
+    const [selectedCategory, setSelectedCategory] = React.useState('all');
+    
+    const categories = ['all', 'Full Pages', 'Stats & Metrics', 'Charts', 'Lists'];
+    
+    const filteredWidgets = selectedCategory === 'all' 
+        ? Object.values(AVAILABLE_WIDGETS)
+        : Object.values(AVAILABLE_WIDGETS).filter(w => w.category === selectedCategory);
+    
     return (
-        <div className="grid grid-cols-2 gap-3">
-            {Object.values(AVAILABLE_WIDGETS).map(widget => {
-                const Icon = widget.icon;
-                return (
+        <div>
+            <div className="flex gap-2 mb-4 flex-wrap">
+                {categories.map(cat => (
                     <button
-                        key={widget.id}
-                        onClick={() => onSelectWidget(widget)}
-                        className="p-4 border border-slate-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all text-left"
+                        key={cat}
+                        onClick={() => setSelectedCategory(cat)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                            selectedCategory === cat 
+                                ? 'bg-blue-500 text-white' 
+                                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                        }`}
                     >
-                        <div className="flex items-center gap-2 mb-2">
-                            <Icon className="h-5 w-5 text-slate-600" />
-                            <span className="font-medium text-sm">{widget.name}</span>
-                        </div>
-                        <p className="text-xs text-slate-600">{widget.description}</p>
+                        {cat}
                     </button>
-                );
-            })}
+                ))}
+            </div>
+            
+            <div className="grid grid-cols-2 gap-3 max-h-96 overflow-y-auto">
+                {filteredWidgets.map(widget => {
+                    const Icon = widget.icon;
+                    return (
+                        <button
+                            key={widget.id}
+                            onClick={() => onSelectWidget(widget)}
+                            className="p-4 border border-slate-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all text-left"
+                        >
+                            <div className="flex items-center gap-2 mb-2">
+                                <Icon className="h-5 w-5 text-slate-600" />
+                                <span className="font-medium text-sm">{widget.name}</span>
+                            </div>
+                            <p className="text-xs text-slate-600">{widget.description}</p>
+                            {widget.category && (
+                                <span className="inline-block mt-2 px-2 py-0.5 bg-slate-100 text-slate-600 rounded text-[10px]">
+                                    {widget.category}
+                                </span>
+                            )}
+                        </button>
+                    );
+                })}
+            </div>
         </div>
     );
 }
