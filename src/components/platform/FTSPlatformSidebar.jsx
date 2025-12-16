@@ -162,7 +162,7 @@ export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, i
                                             <Icon className="h-4 w-4 flex-shrink-0" />
                                             <div className="flex-1 min-w-0">
                                                 <div className="flex items-center gap-2">
-                                                    <span className="text-sm font-medium truncate">{item.label}</span>
+                                                    <span className="text-sm font-medium truncate" title={item.path}>{item.label}</span>
                                                 </div>
                                                 <p className="text-xs text-slate-500 truncate">{item.description}</p>
                                             </div>
