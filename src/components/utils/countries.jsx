@@ -1,6 +1,3 @@
-
-import countries from 'iso-3166-1-codes';
-
 // ISO 3166-1 Alpha-2 Country Codes - Simplified List
 export const COUNTRIES = [
     { code: 'US', name: 'United States' },
