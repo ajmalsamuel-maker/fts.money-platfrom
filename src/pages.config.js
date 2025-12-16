@@ -169,6 +169,7 @@ import EnhancedAuditLogs from './pages/EnhancedAuditLogs';
 import DataRetentionManagement from './pages/DataRetentionManagement';
 import WorkflowManagement from './pages/WorkflowManagement';
 import MasterPricingManagement from './pages/MasterPricingManagement';
+import OpenBankingConfiguration from './pages/OpenBankingConfiguration';
 import __Layout from './Layout.jsx';
 
 
@@ -344,6 +345,7 @@ export const PAGES = {
     "DataRetentionManagement": DataRetentionManagement,
     "WorkflowManagement": WorkflowManagement,
     "MasterPricingManagement": MasterPricingManagement,
+    "OpenBankingConfiguration": OpenBankingConfiguration,
 }
 
 export const pagesConfig = {
