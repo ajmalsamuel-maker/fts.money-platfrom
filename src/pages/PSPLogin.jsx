@@ -184,16 +184,14 @@ export default function PSPLogin() {
             <div className="w-full max-w-md relative z-10">
                 <div className="text-center mb-8">
                     <div className="inline-flex flex-col items-center gap-4 mb-4">
-                        <img 
-                            src={FTS_LOGOS.symbol} 
-                            alt="FTS.Money" 
-                            className="h-32 w-32 object-contain"
-                        />
+                        <div className="w-32 h-32 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
+                            <Shield className="h-16 w-16 text-white" />
+                        </div>
                         <div>
-                            <h1 className="text-3xl font-bold text-white" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                            <h1 className="text-3xl font-bold text-slate-900" style={{ fontFamily: 'Montserrat, sans-serif' }}>
                                 PSP Portal
                             </h1>
-                            <p className="text-lg mt-1" style={{ color: FTS_COLORS.aqua }}>
+                            <p className="text-lg mt-1 text-blue-600">
                                 Fluid global payments
                             </p>
                         </div>
