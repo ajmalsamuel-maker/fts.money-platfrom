@@ -176,6 +176,7 @@ import DatabaseSchemaValidation from './pages/DatabaseSchemaValidation';
 import PSPProductCatalog from './pages/PSPProductCatalog';
 import MerchantOnboardingWorkflows from './pages/MerchantOnboardingWorkflows';
 import MerchantPricingEngine from './pages/MerchantPricingEngine';
+import PSPMerchantPricing from './pages/PSPMerchantPricing';
 import __Layout from './Layout.jsx';
 
 
@@ -358,6 +359,7 @@ export const PAGES = {
     "PSPProductCatalog": PSPProductCatalog,
     "MerchantOnboardingWorkflows": MerchantOnboardingWorkflows,
     "MerchantPricingEngine": MerchantPricingEngine,
+    "PSPMerchantPricing": PSPMerchantPricing,
 }
 
 export const pagesConfig = {

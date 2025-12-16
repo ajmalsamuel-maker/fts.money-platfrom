@@ -147,6 +147,7 @@ const menuItems = [
                     { icon: ArrowUpDown, label: 'reconciliation', path: 'Reconciliation', permission: 'VIEW_BALANCES' },
                     { icon: FileText, label: 'reports', path: 'Reports', permission: 'VIEW_REPORTS' },
                     { icon: TrendingUp, label: 'buyRates', path: 'BuyRates', permission: 'VIEW_BALANCES' },
+                    { icon: DollarSign, label: 'merchantPricingEngine', path: 'PSPMerchantPricing', permission: 'VIEW_BALANCES' },
                     { icon: Percent, label: 'merchantPricing', path: 'MerchantPricing', permission: 'VIEW_BALANCES' },
                     { icon: DollarSign, label: 'midPricingConfig', path: 'MIDPricingConfiguration', permission: 'VIEW_BALANCES' },
                     { icon: Tag, label: 'feeTypeManagement', path: 'FeeTypeManagement', permission: 'VIEW_BALANCES' },
