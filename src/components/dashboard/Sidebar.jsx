@@ -101,6 +101,7 @@ const menuItems = [
                     { icon: CreditCard, label: 'merchantMIDs', path: 'MerchantMIDs', permission: 'VIEW_MERCHANTS' },
                     { icon: Building2, label: 'subMerchants', path: 'SubMerchants', permission: 'VIEW_MERCHANTS' },
                     { icon: CheckSquare, label: 'approvals', path: 'Approvals', permission: 'APPROVE_ONBOARDING' },
+                    { icon: Palette, label: 'portalBuilder', path: 'MerchantPortalBuilder', permission: 'VIEW_SETTINGS' },
                 ]
             },
             {

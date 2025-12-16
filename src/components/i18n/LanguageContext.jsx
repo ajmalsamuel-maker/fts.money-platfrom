@@ -113,6 +113,7 @@ const translations = {
         
         usageMetering: 'Usage Metering',
         invoiceGenerator: 'Invoice Generator',
+        portalBuilder: 'Portal Builder',
         },
     es: {
         // Common
