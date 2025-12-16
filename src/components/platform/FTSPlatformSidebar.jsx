@@ -52,6 +52,12 @@ const menuSections = [
         ]
     },
     {
+        title: 'PSP Empowerment',
+        items: [
+            { icon: Package, label: 'PSP Product Catalog', path: 'PSPProductCatalog', description: 'PSP product definitions' }
+        ]
+    },
+    {
         title: 'Marketplace & Services',
         items: [
             { icon: Package, label: 'Service Catalog', path: 'FTSServiceManager', description: 'NetXHub services' },
