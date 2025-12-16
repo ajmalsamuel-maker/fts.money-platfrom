@@ -1080,6 +1080,136 @@ export default function ResourceOrchestration() {
                     </div>
                 </DialogContent>
             </Dialog>
+
+            <Dialog open={showDialog && dialogType === 'allocation'} onOpenChange={setShowDialog}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Allocate Resources</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                        <div>
+                            <Label>PSP Instance</Label>
+                            <Select value={allocationForm.psp_id} onValueChange={(v) => {
+                                const psp = psps.find(p => p.id === v);
+                                setAllocationForm({...allocationForm, psp_id: v, psp_name: psp?.psp_name});
+                            }}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select PSP" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {psps.map(psp => (
+                                        <SelectItem key={psp.id} value={psp.id}>
+                                            {psp.psp_name} ({psp.psp_code})
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div>
+                            <Label>Resource Pool</Label>
+                            <Select value={allocationForm.pool_id} onValueChange={(v) => setAllocationForm({...allocationForm, pool_id: v})}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select pool" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {pools.map(pool => (
+                                        <SelectItem key={pool.id} value={pool.id}>
+                                            {pool.pool_name} ({pool.region})
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <Label>CPU Cores</Label>
+                                <Input
+                                    type="number"
+                                    value={allocationForm.allocated_resources?.cpu_cores || ''}
+                                    onChange={(e) => setAllocationForm({
+                                        ...allocationForm, 
+                                        allocated_resources: {...allocationForm.allocated_resources, cpu_cores: parseInt(e.target.value)}
+                                    })}
+                                    placeholder="4"
+                                />
+                            </div>
+                            <div>
+                                <Label>Memory (GB)</Label>
+                                <Input
+                                    type="number"
+                                    value={allocationForm.allocated_resources?.memory_gb || ''}
+                                    onChange={(e) => setAllocationForm({
+                                        ...allocationForm, 
+                                        allocated_resources: {...allocationForm.allocated_resources, memory_gb: parseInt(e.target.value)}
+                                    })}
+                                    placeholder="16"
+                                />
+                            </div>
+                            <div>
+                                <Label>Storage (GB)</Label>
+                                <Input
+                                    type="number"
+                                    value={allocationForm.allocated_resources?.storage_gb || ''}
+                                    onChange={(e) => setAllocationForm({
+                                        ...allocationForm, 
+                                        allocated_resources: {...allocationForm.allocated_resources, storage_gb: parseInt(e.target.value)}
+                                    })}
+                                    placeholder="100"
+                                />
+                            </div>
+                        </div>
+                        <div className="flex justify-end gap-3">
+                            <Button variant="outline" onClick={() => setShowDialog(false)}>Cancel</Button>
+                            <Button onClick={() => createAllocationMutation.mutate(allocationForm)}>Allocate</Button>
+                        </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
+
+            <Dialog open={showDialog && dialogType === 'reservation'} onOpenChange={setShowDialog}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Reserve Resources</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                        <div>
+                            <Label>PSP Name</Label>
+                            <Input
+                                value={reservationForm.psp_name}
+                                onChange={(e) => setReservationForm({...reservationForm, psp_name: e.target.value})}
+                                placeholder="Future PSP Name"
+                            />
+                        </div>
+                        <div>
+                            <Label>Resource Pool</Label>
+                            <Select value={reservationForm.pool_id} onValueChange={(v) => setReservationForm({...reservationForm, pool_id: v})}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select pool" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {pools.map(pool => (
+                                        <SelectItem key={pool.id} value={pool.id}>
+                                            {pool.pool_name} ({pool.region})
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div>
+                            <Label>Expected Launch Date</Label>
+                            <Input
+                                type="date"
+                                value={reservationForm.expected_launch_date}
+                                onChange={(e) => setReservationForm({...reservationForm, expected_launch_date: e.target.value})}
+                            />
+                        </div>
+                        <div className="flex justify-end gap-3">
+                            <Button variant="outline" onClick={() => setShowDialog(false)}>Cancel</Button>
+                            <Button onClick={() => createReservationMutation.mutate(reservationForm)}>Reserve</Button>
+                        </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }
