@@ -192,6 +192,10 @@ export default function Dashboard() {
                                  language === 'zh' ? '欢迎回来！这是今天的情况。' :
                                  "Welcome back! Here's what's happening today."}
                             </p>
+                            <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 bg-blue-50 border border-blue-200 rounded-lg">
+                                <span className="text-xs font-medium text-blue-900">PSP:</span>
+                                <span className="text-xs font-mono font-bold text-blue-700">{userPspCode}</span>
+                            </div>
                         </div>
                         <div className="flex items-center gap-2">
                             <Button variant="outline" className="gap-2 text-sm" onClick={() => setHelpOpen(true)}>

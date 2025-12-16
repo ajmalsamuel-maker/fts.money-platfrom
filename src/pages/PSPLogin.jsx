@@ -68,14 +68,26 @@ export default function PSPLogin() {
             });
 
             if (data.success) {
-                localStorage.setItem('staff_session', JSON.stringify({
+                // Clear any existing session first
+                localStorage.clear();
+                
+                // Set new session
+                const sessionData = {
                     email: data.session.email,
                     full_name: data.session.full_name,
                     role: data.session.role,
                     user_id: data.session.user_id,
                     psp_code: pspCode,
                     schema: data.session.schema
-                }));
+                };
+                
+                console.log('Setting staff_session:', sessionData);
+                localStorage.setItem('staff_session', JSON.stringify(sessionData));
+                
+                // Verify it was stored
+                const stored = localStorage.getItem('staff_session');
+                console.log('Stored staff_session:', stored);
+                
                 window.location.href = '/Dashboard';
             } else {
                 setError(data.error || 'Login failed');
