@@ -381,6 +381,99 @@ export default function ProviderAgreementsManager() {
                             />
                             <Label>Auto-renew contract</Label>
                         </div>
+
+                        {/* Rate Cards Section */}
+                        <div className="border-t pt-4 mt-4">
+                            <div className="flex items-center justify-between mb-3">
+                                <Label className="text-base">Negotiated Rate Cards</Label>
+                                <Button
+                                    type="button"
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => {
+                                        const newRateCards = [...(formData.rate_cards || []), {
+                                            service_name: '',
+                                            negotiated_rate_type: 'percentage',
+                                            negotiated_rate_percentage: 0,
+                                            negotiated_rate_fixed: 0
+                                        }];
+                                        setFormData({ ...formData, rate_cards: newRateCards });
+                                    }}
+                                >
+                                    <Plus className="h-3 w-3 mr-1" />
+                                    Add Rate Card
+                                </Button>
+                            </div>
+                            <div className="space-y-3 max-h-60 overflow-y-auto">
+                                {(formData.rate_cards || []).map((card, idx) => (
+                                    <div key={idx} className="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                        <div className="grid grid-cols-3 gap-3">
+                                            <div>
+                                                <Label className="text-xs">Service/Category</Label>
+                                                <Input
+                                                    size="sm"
+                                                    value={card.service_name}
+                                                    onChange={(e) => {
+                                                        const updated = [...formData.rate_cards];
+                                                        updated[idx].service_name = e.target.value;
+                                                        setFormData({ ...formData, rate_cards: updated });
+                                                    }}
+                                                    placeholder="e.g., Card Processing"
+                                                />
+                                            </div>
+                                            <div>
+                                                <Label className="text-xs">Negotiated Rate %</Label>
+                                                <Input
+                                                    size="sm"
+                                                    type="number"
+                                                    step="0.01"
+                                                    value={card.negotiated_rate_percentage}
+                                                    onChange={(e) => {
+                                                        const updated = [...formData.rate_cards];
+                                                        updated[idx].negotiated_rate_percentage = parseFloat(e.target.value);
+                                                        setFormData({ ...formData, rate_cards: updated });
+                                                    }}
+                                                />
+                                            </div>
+                                            <div>
+                                                <Label className="text-xs">Fixed Fee</Label>
+                                                <div className="flex gap-1">
+                                                    <Input
+                                                        size="sm"
+                                                        type="number"
+                                                        step="0.01"
+                                                        value={card.negotiated_rate_fixed}
+                                                        onChange={(e) => {
+                                                            const updated = [...formData.rate_cards];
+                                                            updated[idx].negotiated_rate_fixed = parseFloat(e.target.value);
+                                                            setFormData({ ...formData, rate_cards: updated });
+                                                        }}
+                                                    />
+                                                    <Button
+                                                        type="button"
+                                                        size="sm"
+                                                        variant="outline"
+                                                        onClick={() => {
+                                                            const updated = formData.rate_cards.filter((_, i) => i !== idx);
+                                                            setFormData({ ...formData, rate_cards: updated });
+                                                        }}
+                                                        className="text-red-600"
+                                                    >
+                                                        <Trash2 className="h-3 w-3" />
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                                {(!formData.rate_cards || formData.rate_cards.length === 0) && (
+                                    <p className="text-sm text-slate-500 text-center py-4">
+                                        No rate cards added. Click "Add Rate Card" to define negotiated pricing.
+                                    </p>
+                                )}
+                            </div>
+                        </div>
+
                         <div className="flex justify-end gap-3 pt-4">
                             <Button type="button" variant="outline" onClick={() => { setShowDialog(false); resetForm(); }}>
                                 Cancel

@@ -93,6 +93,11 @@ export default function MasterPricingManagement() {
         queryFn: () => base44.entities.FeeType.list()
     });
 
+    const { data: providerAgreements = [] } = useQuery({
+        queryKey: ['provider-agreements'],
+        queryFn: () => base44.entities.ProviderAgreement.list()
+    });
+
     const createMutation = useMutation({
         mutationFn: (data) => base44.entities.MasterPricing.create({
             ...data,
