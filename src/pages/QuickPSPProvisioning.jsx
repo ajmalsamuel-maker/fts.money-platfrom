@@ -125,7 +125,7 @@ export default function QuickPSPProvisioning() {
     };
 
     return (
-        <div className="flex h-screen bg-slate-50">
+        <div className="flex h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
             <FTSPlatformSidebar 
                 currentPage="QuickPSPProvisioning"
                 userEmail={user?.email}
@@ -134,22 +134,45 @@ export default function QuickPSPProvisioning() {
             
             <div className="flex-1 overflow-y-auto">
                 <div className="p-8">
-                    {/* Header */}
-                    <div className="mb-8">
-                        <h1 className="text-3xl font-bold text-slate-900 mb-2">Quick PSP Provisioning</h1>
-                        <p className="text-slate-600">Deploy a new PSP instance in minutes using NetXHub templates</p>
+                    {/* Header with NetXHub style */}
+                    <div className="mb-8 relative">
+                        <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-3xl opacity-5 blur-3xl" />
+                        <div className="relative bg-white/80 backdrop-blur-xl rounded-2xl border border-white/50 shadow-xl p-8">
+                            <div className="flex items-center gap-4 mb-3">
+                                <div className="p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl shadow-lg">
+                                    <Sparkles className="h-7 w-7 text-white" />
+                                </div>
+                                <div>
+                                    <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                                        Quick PSP Provisioning
+                                    </h1>
+                                    <p className="text-slate-600">Deploy a new PSP instance in minutes using NetXHub templates</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     {/* Progress Steps */}
-                    <div className="flex items-center gap-2 mb-8">
-                        {[1, 2, 3].map(s => (
-                            <React.Fragment key={s}>
-                                <div className={`flex items-center justify-center w-8 h-8 rounded-full ${
-                                    step >= s ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-600'
-                                }`}>
-                                    {s}
+                    <div className="flex items-center justify-center gap-2 mb-8">
+                        {[
+                            { num: 1, label: 'Choose Template' },
+                            { num: 2, label: 'Configure' },
+                            { num: 3, label: 'Deploy' }
+                        ].map((s, idx) => (
+                            <React.Fragment key={s.num}>
+                                <div className="flex flex-col items-center">
+                                    <div className={`flex items-center justify-center w-12 h-12 rounded-2xl font-semibold transition-all ${
+                                        step >= s.num 
+                                            ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-500/30' 
+                                            : 'bg-white border-2 border-slate-200 text-slate-400 shadow-sm'
+                                    }`}>
+                                        {step > s.num ? <CheckCircle className="h-6 w-6" /> : s.num}
+                                    </div>
+                                    <span className={`text-xs mt-2 font-medium ${step >= s.num ? 'text-blue-600' : 'text-slate-400'}`}>
+                                        {s.label}
+                                    </span>
                                 </div>
-                                {s < 3 && <div className={`h-0.5 w-12 ${step > s ? 'bg-blue-600' : 'bg-slate-200'}`} />}
+                                {idx < 2 && <div className={`h-1 w-20 rounded-full mt-[-24px] transition-all ${step > s.num ? 'bg-gradient-to-r from-blue-500 to-indigo-600' : 'bg-slate-200'}`} />}
                             </React.Fragment>
                         ))}
                     </div>
@@ -157,12 +180,15 @@ export default function QuickPSPProvisioning() {
                     {/* Step 1: Template Selection */}
                     {step === 1 && (
                         <div className="space-y-6">
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle>Basic Information</CardTitle>
+                            <Card className="bg-white/80 backdrop-blur-sm border-white/50 shadow-xl">
+                                <CardHeader className="bg-gradient-to-r from-slate-50 to-blue-50/50 border-b border-slate-100">
+                                    <CardTitle className="flex items-center gap-2 text-slate-900">
+                                        <Building2 className="h-5 w-5 text-blue-600" />
+                                        Basic Information
+                                    </CardTitle>
                                     <CardDescription>Enter PSP details to get started</CardDescription>
                                 </CardHeader>
-                                <CardContent className="space-y-4">
+                                <CardContent className="space-y-4 pt-6">
                                     <div>
                                         <Label>Instance Name</Label>
                                         <Input
@@ -184,20 +210,20 @@ export default function QuickPSPProvisioning() {
                             </Card>
 
                             <div>
-                                <h3 className="text-lg font-semibold mb-4">Choose a Template</h3>
+                                <h3 className="text-lg font-semibold mb-4 text-slate-900">Choose a Template</h3>
                                 <div className="grid grid-cols-2 gap-4">
                                     {Object.values(PSP_TEMPLATES).map(template => {
                                         const Icon = getTemplateIcon(template.icon);
                                         return (
                                             <Card 
                                                 key={template.id}
-                                                className="cursor-pointer hover:border-blue-500 transition-all"
+                                                className="cursor-pointer bg-white/80 backdrop-blur-sm border-white/50 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all group"
                                                 onClick={() => handleTemplateSelect(template)}
                                             >
                                                 <CardHeader>
                                                     <div className="flex items-center gap-3 mb-2">
-                                                        <div className="p-2 bg-blue-50 rounded-lg">
-                                                            <Icon className="h-6 w-6 text-blue-600" />
+                                                        <div className="p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl shadow-lg group-hover:shadow-blue-500/30 transition-all">
+                                                            <Icon className="h-6 w-6 text-white" />
                                                         </div>
                                                         <div>
                                                             <CardTitle className="text-base">{template.name}</CardTitle>
@@ -227,9 +253,9 @@ export default function QuickPSPProvisioning() {
 
                     {/* Step 2: Configuration */}
                     {step === 2 && (
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Configure PSP</CardTitle>
+                        <Card className="bg-white/80 backdrop-blur-sm border-white/50 shadow-xl">
+                            <CardHeader className="bg-gradient-to-r from-slate-50 to-blue-50/50 border-b border-slate-100">
+                                <CardTitle className="text-slate-900">Configure PSP</CardTitle>
                                 <CardDescription>Customize modules, features, and settings</CardDescription>
                             </CardHeader>
                             <CardContent>
@@ -290,9 +316,9 @@ export default function QuickPSPProvisioning() {
 
                     {/* Step 3: Review & Deploy */}
                     {step === 3 && (
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Review & Deploy</CardTitle>
+                        <Card className="bg-white/80 backdrop-blur-sm border-white/50 shadow-xl">
+                            <CardHeader className="bg-gradient-to-r from-slate-50 to-blue-50/50 border-b border-slate-100">
+                                <CardTitle className="text-slate-900">Review & Deploy</CardTitle>
                                 <CardDescription>Confirm your configuration and deploy</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-6">
@@ -351,18 +377,23 @@ export default function QuickPSPProvisioning() {
 
                     {/* Step 4: Success */}
                     {step === 4 && (
-                        <Card className="text-center">
+                        <Card className="text-center bg-white/80 backdrop-blur-sm border-white/50 shadow-xl">
                             <CardContent className="pt-12 pb-12">
-                                <div className="inline-block p-4 bg-emerald-100 rounded-full mb-6">
-                                    <CheckCircle className="h-12 w-12 text-emerald-600" />
+                                <div className="inline-block p-6 bg-gradient-to-br from-emerald-500 to-green-600 rounded-3xl shadow-xl shadow-emerald-500/30 mb-6">
+                                    <CheckCircle className="h-16 w-16 text-white" />
                                 </div>
-                                <h3 className="text-2xl font-bold mb-2">PSP Provisioned Successfully!</h3>
-                                <p className="text-slate-600 mb-6">Your new PSP instance is ready to use</p>
+                                <h3 className="text-3xl font-bold mb-2 bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">
+                                    PSP Provisioned Successfully!
+                                </h3>
+                                <p className="text-slate-600 mb-8">Your new PSP instance is ready to use</p>
                                 <div className="flex gap-3 justify-center">
-                                    <Button onClick={() => window.location.href = '/PSPProvisioning'}>
+                                    <Button 
+                                        onClick={() => window.location.href = '/PSPProvisioning'}
+                                        className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 shadow-lg"
+                                    >
                                         View All PSPs
                                     </Button>
-                                    <Button variant="outline" onClick={() => {
+                                    <Button variant="outline" className="border-slate-300 hover:bg-slate-50" onClick={() => {
                                         setStep(1);
                                         setPspConfig({
                                             instance_name: '',

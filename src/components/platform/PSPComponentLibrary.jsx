@@ -56,7 +56,11 @@ export function ModuleSelector({ selectedModules, onChange }) {
                 return (
                     <Card 
                         key={module.id}
-                        className={`cursor-pointer transition-all ${isSelected ? 'border-blue-500 bg-blue-50' : 'hover:border-slate-300'}`}
+                        className={`cursor-pointer transition-all shadow-sm hover:shadow-md ${
+                            isSelected 
+                                ? 'border-blue-500 bg-gradient-to-br from-blue-50 to-indigo-50 shadow-blue-500/20' 
+                                : 'bg-white hover:border-slate-300'
+                        }`}
                         onClick={() => toggleModule(module.id)}
                     >
                         <CardContent className="p-4">
@@ -98,9 +102,9 @@ export function FeatureToggles({ features, onChange }) {
     return (
         <div className="space-y-3">
             {featureList.map(feature => (
-                <div key={feature.id} className="flex items-center justify-between p-3 border rounded-lg">
+                <div key={feature.id} className="flex items-center justify-between p-3 border rounded-lg bg-white shadow-sm hover:shadow-md transition-all">
                     <div className="flex-1">
-                        <p className="font-medium text-sm">{feature.name}</p>
+                        <p className="font-medium text-sm text-slate-900">{feature.name}</p>
                         <p className="text-xs text-slate-600">{feature.description}</p>
                     </div>
                     <Checkbox
