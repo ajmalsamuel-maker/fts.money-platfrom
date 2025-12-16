@@ -147,9 +147,29 @@ export default function MasterPricingManagement() {
         }
     });
 
-    // Consolidate all pricing sources
+    // Get active provider agreements
+    const activeAgreements = providerAgreements.filter(a => a.status === 'active');
+
+    // Consolidate all pricing sources with provider agreement rates
     const consolidatedPricing = [
-        ...pricingItems.map(item => ({ ...item, source: 'master_pricing' })),
+        ...pricingItems.map(item => {
+            // Find matching provider agreement rate
+            const providerRate = activeAgreements
+                .filter(a => a.provider_name === item.provider_name)
+                .sort((a, b) => a.priority - b.priority)[0]
+                ?.rate_cards?.find(rc => rc.service_name === item.item_name);
+
+            return {
+                ...item,
+                source: 'master_pricing',
+                has_provider_rate: !!providerRate,
+                provider_rate_percentage: providerRate?.negotiated_rate_percentage,
+                provider_rate_fixed: providerRate?.negotiated_rate_fixed,
+                provider_agreement: providerRate ? activeAgreements.find(a => 
+                    a.rate_cards?.some(rc => rc.service_name === item.item_name)
+                )?.agreement_name : null
+            };
+        }),
         ...serviceCatalog.map(service => ({
             id: service.id,
             item_id: service.service_id,
@@ -487,9 +507,24 @@ export default function MasterPricingManagement() {
                                                     </Badge>
                                                 </td>
                                                 <td className="py-3 px-4 text-slate-600">{item.provider_name || '-'}</td>
-                                                <td className="py-3 px-4 text-right text-slate-900">
-                                                    {item.buy_rate_percentage ? `${item.buy_rate_percentage}%` : '-'}
-                                                    {item.buy_rate_fixed ? ` + $${item.buy_rate_fixed}` : ''}
+                                                <td className="py-3 px-4 text-right">
+                                                    <div className="space-y-1">
+                                                        <div className={item.has_provider_rate ? 'line-through text-slate-400 text-xs' : 'text-slate-900'}>
+                                                            {item.buy_rate_percentage ? `${item.buy_rate_percentage}%` : '-'}
+                                                            {item.buy_rate_fixed ? ` + $${item.buy_rate_fixed}` : ''}
+                                                        </div>
+                                                        {item.has_provider_rate && (
+                                                            <div>
+                                                                <div className="font-semibold text-emerald-600">
+                                                                    {item.provider_rate_percentage ? `${item.provider_rate_percentage}%` : '-'}
+                                                                    {item.provider_rate_fixed ? ` + $${item.provider_rate_fixed}` : ''}
+                                                                </div>
+                                                                <Badge className="bg-emerald-100 text-emerald-700 text-xs">
+                                                                    {item.provider_agreement}
+                                                                </Badge>
+                                                            </div>
+                                                        )}
+                                                    </div>
                                                 </td>
                                                 <td className="py-3 px-4 text-right text-slate-900">
                                                     {item.sell_rate_percentage ? `${item.sell_rate_percentage}%` : '-'}
