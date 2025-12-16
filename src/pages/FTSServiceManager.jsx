@@ -11,10 +11,11 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { ArrowLeft, RefreshCw, CheckCircle, Package, DollarSign, Save, CreditCard, Shield, Activity, BarChart3, Code, Zap, Wallet, TrendingUp, Info, Loader2 } from 'lucide-react';
+import { ArrowLeft, RefreshCw, CheckCircle, Package, DollarSign, Save, CreditCard, Shield, Activity, BarChart3, Code, Zap, Wallet, TrendingUp, Info, Loader2, Plus, FileText, Heart } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { toast } from 'sonner';
 import { AuditLogger } from '@/components/platform/EnhancedAuditLogger';
+import ServiceEditor from '@/components/services/ServiceEditor';
 
 const categoryIcons = {
     payment_rail: CreditCard,
@@ -37,6 +38,8 @@ export default function FTSServiceManager() {
     const [serviceDetails, setServiceDetails] = useState(null);
     const [loadingDetails, setLoadingDetails] = useState(false);
     const [updatingCache, setUpdatingCache] = useState(false);
+    const [showServiceEditor, setShowServiceEditor] = useState(false);
+    const [editingService, setEditingService] = useState(null);
 
     const { data: services = [] } = useQuery({
         queryKey: ['service-catalog'],
@@ -153,6 +156,57 @@ export default function FTSServiceManager() {
         }
     };
 
+    const createServiceMutation = useMutation({
+        mutationFn: (data) => base44.entities.ServiceCatalog.create(data),
+        onSuccess: () => {
+            queryClient.invalidateQueries(['service-catalog']);
+            setShowServiceEditor(false);
+            setEditingService(null);
+            toast.success('Service created successfully');
+        }
+    });
+
+    const updateServiceMutation = useMutation({
+        mutationFn: ({ id, data }) => base44.entities.ServiceCatalog.update(id, data),
+        onSuccess: () => {
+            queryClient.invalidateQueries(['service-catalog']);
+            setShowServiceEditor(false);
+            setEditingService(null);
+            toast.success('Service updated successfully');
+        }
+    });
+
+    const handleServiceSave = (data) => {
+        if (editingService) {
+            updateServiceMutation.mutate({ id: editingService.id, data });
+        } else {
+            createServiceMutation.mutate(data);
+        }
+    };
+
+    const handleRunHealthChecks = async () => {
+        try {
+            const response = await base44.functions.invoke('serviceHealthCheck', { check_all: true });
+            toast.success(`Health check completed for ${response.data.checked} services`);
+            queryClient.invalidateQueries(['service-catalog']);
+        } catch (error) {
+            toast.error('Health check failed: ' + error.message);
+        }
+    };
+
+    const handleGenerateDocs = async (serviceId) => {
+        try {
+            const response = await base44.functions.invoke('generateServiceDocs', {
+                service_id: serviceId || null,
+                regenerate_all: !serviceId
+            });
+            toast.success(response.data.message || 'Documentation generated');
+            queryClient.invalidateQueries(['service-catalog']);
+        } catch (error) {
+            toast.error('Documentation generation failed: ' + error.message);
+        }
+    };
+
     const handleViewDetails = async (service) => {
         setSelectedService(service);
         setServiceDetails(null);
@@ -252,20 +306,36 @@ Make the response detailed, authoritative, and include the most recent informati
                     </div>
                     <div className="flex items-center gap-3">
                         <Button 
+                            onClick={() => handleRunHealthChecks()}
+                            variant="outline"
+                            className="gap-2"
+                        >
+                            <Heart className="h-4 w-4" />
+                            Run Health Checks
+                        </Button>
+                        <Button 
+                            onClick={() => handleGenerateDocs()}
+                            variant="outline"
+                            className="gap-2"
+                        >
+                            <FileText className="h-4 w-4" />
+                            Generate Docs
+                        </Button>
+                        <Button 
+                            onClick={() => { setEditingService(null); setShowServiceEditor(true); }}
+                            className="gap-2 bg-blue-600"
+                        >
+                            <Plus className="h-4 w-4" />
+                            New Service
+                        </Button>
+                        <Button 
                             onClick={() => seedMutation.mutate()}
                             disabled={seedMutation.isPending}
                             variant="outline"
                             className="gap-2"
                         >
                             <RefreshCw className={`h-4 w-4 ${seedMutation.isPending ? 'animate-spin' : ''}`} />
-                            {seedMutation.isPending ? 'Importing...' : 'Import from NetXHub'}
-                        </Button>
-                        <Button 
-                            onClick={() => navigate(createPageUrl('FTSMoneyPlatform'))}
-                            variant="ghost"
-                        >
-                            <ArrowLeft className="h-4 w-4 mr-2" />
-                            Back
+                            Import NetXHub
                         </Button>
                     </div>
                 </header>
@@ -275,12 +345,13 @@ Make the response detailed, authoritative, and include the most recent informati
                         <TabsList>
                             <TabsTrigger value="catalog">Service Catalog</TabsTrigger>
                             <TabsTrigger value="pricing">Pricing Matrix</TabsTrigger>
+                            <TabsTrigger value="health">Health & Monitoring</TabsTrigger>
                             <TabsTrigger value="cache">Cache Management</TabsTrigger>
                         </TabsList>
 
                         <TabsContent value="catalog" className="space-y-6">
                     {/* Stats */}
-                    <div className="grid grid-cols-4 gap-4 mb-6">
+                    <div className="grid grid-cols-5 gap-4 mb-6">
                         <Card className="bg-white border-slate-200">
                             <CardContent className="p-6">
                                 <div className="flex items-center justify-between">
@@ -314,8 +385,27 @@ Make the response detailed, authoritative, and include the most recent informati
                         <Card className="bg-white border-slate-200">
                             <CardContent className="p-6">
                                 <div>
-                                    <p className="text-sm text-slate-600">Provider</p>
-                                    <p className="text-xl font-bold text-slate-900 mt-1">FTS.Money</p>
+                                    <p className="text-sm text-slate-600">Bundles</p>
+                                    <p className="text-xl font-bold text-slate-900 mt-1">
+                                        {services.filter(s => s.is_bundle).length}
+                                    </p>
+                                </div>
+                            </CardContent>
+                        </Card>
+                        <Card className="bg-white border-slate-200">
+                            <CardContent className="p-6">
+                                <div>
+                                    <p className="text-sm text-slate-600">Health Status</p>
+                                    <div className="flex items-center gap-2 mt-1">
+                                        <div className={`w-3 h-3 rounded-full ${
+                                            services.filter(s => s.health_status === 'healthy').length > services.length * 0.9
+                                                ? 'bg-emerald-500'
+                                                : 'bg-amber-500'
+                                        }`} />
+                                        <p className="text-xl font-bold text-slate-900">
+                                            {services.filter(s => s.health_status === 'healthy').length}/{services.length}
+                                        </p>
+                                    </div>
                                 </div>
                             </CardContent>
                         </Card>
@@ -372,10 +462,49 @@ Make the response detailed, authoritative, and include the most recent informati
                                                className="p-4 border border-slate-200 rounded-lg hover:border-blue-300 transition-colors"
                                            >
                                                <div className="flex items-start justify-between mb-2">
-                                                   <p className="font-medium text-sm">{service.service_name}</p>
-                                                   <Badge className="bg-emerald-600 text-white text-xs">Active</Badge>
+                                                   <div className="flex items-center gap-2">
+                                                       <p className="font-medium text-sm">{service.service_name}</p>
+                                                       {service.is_bundle && (
+                                                           <Badge variant="outline" className="text-xs bg-purple-50 text-purple-700">
+                                                               Bundle
+                                                           </Badge>
+                                                       )}
+                                                   </div>
+                                                   <div className="flex items-center gap-2">
+                                                       <Badge className={
+                                                           service.lifecycle_state === 'GA' ? 'bg-emerald-600 text-white text-xs' :
+                                                           service.lifecycle_state === 'beta' ? 'bg-blue-600 text-white text-xs' :
+                                                           service.lifecycle_state === 'deprecated' ? 'bg-red-600 text-white text-xs' :
+                                                           'bg-slate-600 text-white text-xs'
+                                                       }>
+                                                           {service.lifecycle_state || 'GA'}
+                                                       </Badge>
+                                                       {service.health_check_enabled && (
+                                                           <div className={`w-2 h-2 rounded-full ${
+                                                               service.health_status === 'healthy' ? 'bg-emerald-500' :
+                                                               service.health_status === 'degraded' ? 'bg-amber-500' :
+                                                               service.health_status === 'down' ? 'bg-red-500' :
+                                                               'bg-slate-300'
+                                                           }`} title={service.health_status || 'unknown'} />
+                                                       )}
+                                                   </div>
                                                </div>
-                                               <p className="text-xs text-slate-600 mb-3">{service.description}</p>
+                                               <p className="text-xs text-slate-600 mb-2">{service.description}</p>
+                                               {service.version && (
+                                                   <p className="text-xs text-slate-500 mb-3">v{service.version}</p>
+                                               )}
+                                               {service.dependencies && service.dependencies.length > 0 && (
+                                                   <div className="mb-3">
+                                                       <p className="text-xs text-slate-500 mb-1">Requires:</p>
+                                                       <div className="flex flex-wrap gap-1">
+                                                           {service.dependencies.map((dep, i) => (
+                                                               <Badge key={i} variant="outline" className="text-xs">
+                                                                   {dep.service_name}
+                                                               </Badge>
+                                                           ))}
+                                                       </div>
+                                                   </div>
+                                               )}
                                                <div className="flex items-center justify-between gap-2">
                                                    <div className="flex gap-2 flex-wrap">
                                                        {service.pricing_model === 'per_transaction' && (
@@ -392,15 +521,17 @@ Make the response detailed, authoritative, and include the most recent informati
                                                            <Badge variant="outline" className="text-xs">Free</Badge>
                                                        )}
                                                    </div>
-                                                   <Button
-                                                       variant="ghost"
-                                                       size="sm"
-                                                       onClick={() => handleViewDetails(service)}
-                                                       className="h-7 px-2 text-xs"
-                                                   >
-                                                       <Info className="h-3 w-3 mr-1" />
-                                                       Details
-                                                   </Button>
+                                                   <div className="flex gap-1">
+                                                       <Button
+                                                           variant="ghost"
+                                                           size="sm"
+                                                           onClick={() => handleViewDetails(service)}
+                                                           className="h-7 px-2 text-xs"
+                                                       >
+                                                           <Info className="h-3 w-3 mr-1" />
+                                                           Details
+                                                       </Button>
+                                                   </div>
                                                </div>
                                            </div>
                                        ))}
@@ -517,6 +648,102 @@ Make the response detailed, authoritative, and include the most recent informati
                                             <p className="text-slate-600">No services available for pricing</p>
                                         </div>
                                     )}
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
+
+                        <TabsContent value="health">
+                            <Card className="bg-white border-slate-200">
+                                <CardHeader>
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <CardTitle>Service Health & Monitoring</CardTitle>
+                                            <p className="text-sm text-slate-600 mt-1">Automated health checks and uptime tracking</p>
+                                        </div>
+                                        <Button onClick={handleRunHealthChecks} className="gap-2 bg-emerald-600">
+                                            <Heart className="h-4 w-4" />
+                                            Run All Health Checks
+                                        </Button>
+                                    </div>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="overflow-x-auto">
+                                        <table className="w-full text-sm">
+                                            <thead>
+                                                <tr className="border-b border-slate-200">
+                                                    <th className="text-left py-3 px-4 font-semibold">Service</th>
+                                                    <th className="text-left py-3 px-4 font-semibold">Version</th>
+                                                    <th className="text-left py-3 px-4 font-semibold">Lifecycle</th>
+                                                    <th className="text-center py-3 px-4 font-semibold">Health Status</th>
+                                                    <th className="text-right py-3 px-4 font-semibold">Uptime (30d)</th>
+                                                    <th className="text-left py-3 px-4 font-semibold">Last Check</th>
+                                                    <th className="text-center py-3 px-4 font-semibold">Dependencies</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {services.map((service) => (
+                                                    <tr key={service.id} className="border-b border-slate-100 hover:bg-slate-50">
+                                                        <td className="py-3 px-4">
+                                                            <div>
+                                                                <p className="font-medium text-slate-900">{service.service_name}</p>
+                                                                {service.is_bundle && (
+                                                                    <Badge variant="outline" className="text-xs bg-purple-50 text-purple-700 mt-1">
+                                                                        {service.bundle_components?.length || 0} components
+                                                                    </Badge>
+                                                                )}
+                                                            </div>
+                                                        </td>
+                                                        <td className="py-3 px-4 text-slate-600 text-xs">
+                                                            {service.version || '1.0.0'}
+                                                        </td>
+                                                        <td className="py-3 px-4">
+                                                            <Badge className={
+                                                                service.lifecycle_state === 'GA' ? 'bg-emerald-100 text-emerald-700' :
+                                                                service.lifecycle_state === 'beta' ? 'bg-blue-100 text-blue-700' :
+                                                                service.lifecycle_state === 'deprecated' ? 'bg-red-100 text-red-700' :
+                                                                'bg-slate-100 text-slate-700'
+                                                            }>
+                                                                {service.lifecycle_state || 'GA'}
+                                                            </Badge>
+                                                        </td>
+                                                        <td className="py-3 px-4 text-center">
+                                                            {service.health_check_enabled ? (
+                                                                <Badge className={
+                                                                    service.health_status === 'healthy' ? 'bg-emerald-100 text-emerald-700' :
+                                                                    service.health_status === 'degraded' ? 'bg-amber-100 text-amber-700' :
+                                                                    service.health_status === 'down' ? 'bg-red-100 text-red-700' :
+                                                                    'bg-slate-100 text-slate-700'
+                                                                }>
+                                                                    {service.health_status || 'Unknown'}
+                                                                </Badge>
+                                                            ) : (
+                                                                <span className="text-xs text-slate-400">Disabled</span>
+                                                            )}
+                                                        </td>
+                                                        <td className="py-3 px-4 text-right">
+                                                            <span className="font-medium text-slate-900">
+                                                                {service.uptime_percentage ? `${service.uptime_percentage.toFixed(2)}%` : 'N/A'}
+                                                            </span>
+                                                        </td>
+                                                        <td className="py-3 px-4 text-slate-600 text-xs">
+                                                            {service.last_health_check 
+                                                                ? new Date(service.last_health_check).toLocaleString()
+                                                                : 'Never'}
+                                                        </td>
+                                                        <td className="py-3 px-4 text-center">
+                                                            {service.dependencies && service.dependencies.length > 0 ? (
+                                                                <Badge variant="outline" className="text-xs">
+                                                                    {service.dependencies.length} deps
+                                                                </Badge>
+                                                            ) : (
+                                                                <span className="text-xs text-slate-400">None</span>
+                                                            )}
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </CardContent>
                             </Card>
                         </TabsContent>
@@ -698,6 +925,19 @@ Make the response detailed, authoritative, and include the most recent informati
                             </div>
                         </DialogContent>
                     </Dialog>
+
+                    {/* Service Editor */}
+                    {showServiceEditor && (
+                        <ServiceEditor
+                            service={editingService}
+                            allServices={services}
+                            onSave={handleServiceSave}
+                            onClose={() => {
+                                setShowServiceEditor(false);
+                                setEditingService(null);
+                            }}
+                        />
+                    )}
                 </div>
             </div>
         </div>
