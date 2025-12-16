@@ -92,16 +92,12 @@ export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, i
     return (
         <aside className="w-64 bg-white border-r border-slate-200 flex flex-col h-screen">
             {/* Logo */}
-            <div className="h-16 flex items-center justify-center border-b border-slate-200 px-4">
-                <div className="flex items-center gap-2">
-                    <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center">
-                        <Sparkles className="h-5 w-5 text-white" />
-                    </div>
-                    <div>
-                        <h1 className="text-lg font-bold text-slate-900">FTS.Money</h1>
-                        <p className="text-[10px] text-slate-600">Control Panel</p>
-                    </div>
-                </div>
+            <div className="h-20 flex items-center justify-center border-b border-slate-200 px-3 py-2">
+                <img 
+                    src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6931510c4507988f66a42ca8/923f9f7bb_FTSMoney-secondary-logo-tagline-RGB.png"
+                    alt="FTS.Money"
+                    className="w-full h-auto max-h-16 object-contain"
+                />
             </div>
 
             {/* User Info */}
