@@ -178,6 +178,7 @@ import MerchantOnboardingWorkflows from './pages/MerchantOnboardingWorkflows';
 import MerchantPricingEngine from './pages/MerchantPricingEngine';
 import PSPMerchantPricing from './pages/PSPMerchantPricing';
 import UsageMeteringSystem from './pages/UsageMeteringSystem';
+import MerchantInvoiceGenerator from './pages/MerchantInvoiceGenerator';
 import __Layout from './Layout.jsx';
 
 
@@ -362,6 +363,7 @@ export const PAGES = {
     "MerchantPricingEngine": MerchantPricingEngine,
     "PSPMerchantPricing": PSPMerchantPricing,
     "UsageMeteringSystem": UsageMeteringSystem,
+    "MerchantInvoiceGenerator": MerchantInvoiceGenerator,
 }
 
 export const pagesConfig = {

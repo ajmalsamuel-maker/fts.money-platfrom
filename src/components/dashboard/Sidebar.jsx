@@ -153,6 +153,7 @@ const menuItems = [
                     { icon: Tag, label: 'feeTypeManagement', path: 'FeeTypeManagement', permission: 'VIEW_BALANCES' },
                     { icon: InvoiceIcon, label: 'invoices', path: 'Invoices', permission: 'VIEW_BALANCES' },
                     { icon: Activity, label: 'usageMetering', path: 'UsageMeteringSystem', permission: 'VIEW_BALANCES' },
+                    { icon: FileText, label: 'invoiceGenerator', path: 'MerchantInvoiceGenerator', permission: 'VIEW_BALANCES' },
                 ]
             },
             {
