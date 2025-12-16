@@ -173,6 +173,7 @@ import OpenBankingConfiguration from './pages/OpenBankingConfiguration';
 import PSPEmpowermentRoadmap from './pages/PSPEmpowermentRoadmap';
 import ResourceOrchestration from './pages/ResourceOrchestration';
 import DatabaseSchemaValidation from './pages/DatabaseSchemaValidation';
+import PSPProductCatalog from './pages/PSPProductCatalog';
 import __Layout from './Layout.jsx';
 
 
@@ -352,6 +353,7 @@ export const PAGES = {
     "PSPEmpowermentRoadmap": PSPEmpowermentRoadmap,
     "ResourceOrchestration": ResourceOrchestration,
     "DatabaseSchemaValidation": DatabaseSchemaValidation,
+    "PSPProductCatalog": PSPProductCatalog,
 }
 
 export const pagesConfig = {
