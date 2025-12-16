@@ -93,7 +93,7 @@ export default function PSPInstanceConfig() {
                 return [];
             };
 
-            setConfig({
+            const newConfig = {
                 branding: {
                     company_name: psp.psp_name || '',
                     logo_url: psp.branding?.logo_url || '',
@@ -111,12 +111,24 @@ export default function PSPInstanceConfig() {
                 enabled_payment_methods: parseArray(psp.enabled_payment_methods),
                 enabled_payout_methods: parseArray(psp.enabled_payout_methods),
                 enabled_services: parseArray(psp.enabled_services)
+            };
+            
+            console.log('Loading PSP config from database:', {
+                enabled_services: psp.enabled_services,
+                parsed_services: newConfig.enabled_services,
+                enabled_payment_methods: psp.enabled_payment_methods,
+                parsed_payment_methods: newConfig.enabled_payment_methods,
+                enabled_payout_methods: psp.enabled_payout_methods,
+                parsed_payout_methods: newConfig.enabled_payout_methods
             });
+            
+            setConfig(newConfig);
         }
     }, [psp]);
 
     const updateMutation = useMutation({
         mutationFn: async (data) => {
+            console.log('Saving config:', data);
             // Map config structure back to PSP entity fields
             const pspUpdateData = {
                 branding: data.branding,
@@ -128,11 +140,15 @@ export default function PSPInstanceConfig() {
                 enabled_payout_methods: data.enabled_payout_methods,
                 enabled_services: data.enabled_services
             };
-            return await base44.entities.ProvisionedPSP.update(pspId, pspUpdateData);
+            console.log('Saving to database:', pspUpdateData);
+            const result = await base44.entities.ProvisionedPSP.update(pspId, pspUpdateData);
+            console.log('Save result:', result);
+            return result;
         },
         onSuccess: async (updatedPSP) => {
-            queryClient.invalidateQueries(['psp-config']);
-            queryClient.invalidateQueries(['provisioned-psps']);
+            console.log('Update successful, refetching...');
+            await queryClient.invalidateQueries(['psp-config']);
+            await queryClient.invalidateQueries(['provisioned-psps']);
             
             // Log audit action
             const session = JSON.parse(localStorage.getItem('platform_admin_session') || '{}');
