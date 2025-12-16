@@ -40,6 +40,25 @@ export default function WorkflowBuilder({ workflow, psps, onSave, onCancel }) {
         }
     }, [workflow]);
 
+    const loadStandardTemplate = () => {
+        const standardSteps = [
+            { step_id: 'STEP-1', step_name: 'Contact Information', step_order: 1, step_type: 'form', required: true, component: 'ContactInfoStep', rollback_action: 'notify_admin' },
+            { step_id: 'STEP-2', step_name: 'Business Details', step_order: 2, step_type: 'form', required: true, component: 'BusinessDetailsStep', rollback_action: 'notify_admin' },
+            { step_id: 'STEP-3', step_name: 'Company Structure', step_order: 3, step_type: 'form', required: true, component: 'CompanyStructureStep', rollback_action: 'notify_admin' },
+            { step_id: 'STEP-4', step_name: 'KYB Verification', step_order: 4, step_type: 'verification', required: true, component: 'KYBVerificationStep', rollback_action: 'notify_admin' },
+            { step_id: 'STEP-5', step_name: 'LEI Verification', step_order: 5, step_type: 'verification', required: false, component: 'LEIVerificationStep', rollback_action: 'notify_admin' },
+            { step_id: 'STEP-6', step_name: 'AML Screening', step_order: 6, step_type: 'verification', required: true, component: 'AMLScreeningStep', rollback_action: 'notify_admin' },
+            { step_id: 'STEP-7', step_name: 'Document Upload', step_order: 7, step_type: 'form', required: true, component: 'DocumentUploadStep', rollback_action: 'notify_admin' },
+            { step_id: 'STEP-8', step_name: 'Bank Details', step_order: 8, step_type: 'form', required: true, component: 'BankDetailsStep', rollback_action: 'notify_admin' },
+            { step_id: 'STEP-9', step_name: 'Pricing Configuration', step_order: 9, step_type: 'form', required: true, component: 'PricingStep', rollback_action: 'notify_admin' },
+            { step_id: 'STEP-10', step_name: 'Review & Submit', step_order: 10, step_type: 'approval', required: true, component: 'ReviewSubmitStep', approval_role: 'finance_manager', rollback_action: 'notify_admin' }
+        ];
+        setFormData({
+            ...formData,
+            steps: standardSteps
+        });
+    };
+
     const addStep = () => {
         const newStep = {
             step_id: `STEP-${Date.now()}`,
@@ -141,10 +160,17 @@ export default function WorkflowBuilder({ workflow, psps, onSave, onCancel }) {
             <div>
                 <div className="flex items-center justify-between mb-3">
                     <Label className="text-base">Workflow Steps</Label>
-                    <Button size="sm" onClick={addStep}>
-                        <Plus className="h-3 w-3 mr-1" />
-                        Add Step
-                    </Button>
+                    <div className="flex gap-2">
+                        {formData.steps.length === 0 && (
+                            <Button size="sm" variant="outline" onClick={loadStandardTemplate}>
+                                Load Standard Template (10 steps)
+                            </Button>
+                        )}
+                        <Button size="sm" onClick={addStep}>
+                            <Plus className="h-3 w-3 mr-1" />
+                            Add Step
+                        </Button>
+                    </div>
                 </div>
 
                 <div className="space-y-3">
