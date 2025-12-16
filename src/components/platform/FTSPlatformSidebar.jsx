@@ -56,7 +56,7 @@ const menuSections = [
     {
         title: 'PSP Empowerment',
         items: [
-            { icon: Package, label: 'PSP Product Catalog', path: 'PSPProductCatalog', description: 'PSP product definitions' },
+            { icon: Package, label: 'Product Template Library', path: 'ProductTemplateLibrary', description: 'Platform product templates' },
             { icon: Workflow, label: 'Workflow Templates', path: 'WorkflowTemplateLibrary', description: 'Platform workflow templates' },
             { icon: DollarSign, label: 'Merchant Pricing Engine', path: 'MerchantPricingEngine', description: 'Dynamic pricing for merchants' }
         ]
