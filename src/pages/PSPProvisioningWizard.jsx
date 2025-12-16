@@ -125,6 +125,7 @@ export default function PSPProvisioningWizard() {
         subdomain: '',
         contact_email: '',
         contact_phone: '',
+        owner_email: '',
         license_type: 'full_license',
         country: '',
         currency: 'USD',
@@ -469,6 +470,16 @@ export default function PSPProvisioningWizard() {
                                         />
                                         <span className="text-slate-500 text-sm">.fts.money</span>
                                     </div>
+                                </div>
+                                <div>
+                                    <Label>Owner Email *</Label>
+                                    <Input
+                                        type="email"
+                                        value={formData.owner_email}
+                                        onChange={(e) => setFormData({...formData, owner_email: e.target.value})}
+                                        placeholder="owner@example.com"
+                                    />
+                                    <p className="text-xs text-slate-500 mt-1">Primary account owner</p>
                                 </div>
                                 <div>
                                     <Label>Contact Email *</Label>
