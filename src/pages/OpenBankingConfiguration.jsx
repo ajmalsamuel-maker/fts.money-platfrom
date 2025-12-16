@@ -368,16 +368,31 @@ export default function OpenBankingConfiguration() {
                                 />
                             </div>
                             <div>
-                                <Label>Secret Reference *</Label>
+                                <Label>Client Secret *</Label>
                                 <Input
-                                    value={formData.client_secret_reference || ''}
-                                    onChange={(e) => setFormData({ ...formData, client_secret_reference: e.target.value })}
-                                    placeholder="e.g., TRUELAYER_CLIENT_SECRET"
+                                    type="password"
+                                    value={formData.client_secret || ''}
+                                    onChange={(e) => setFormData({ ...formData, client_secret: e.target.value })}
+                                    placeholder="Your client secret"
                                     required
                                 />
-                                <p className="text-xs text-slate-500 mt-1">Environment variable name</p>
+                                <p className="text-xs text-slate-500 mt-1">Stored securely, encrypted</p>
                             </div>
                         </div>
+
+                        {['Brankas', 'Yapily', 'Salt Edge'].includes(formData.provider_name) && (
+                            <div>
+                                <Label>API Key *</Label>
+                                <Input
+                                    type="password"
+                                    value={formData.api_key || ''}
+                                    onChange={(e) => setFormData({ ...formData, api_key: e.target.value })}
+                                    placeholder="Your API key"
+                                    required
+                                />
+                                <p className="text-xs text-slate-500 mt-1">Stored securely, encrypted</p>
+                            </div>
+                        )}
 
                         <div>
                             <Label>API Base URL</Label>

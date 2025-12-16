@@ -6,7 +6,7 @@ Deno.serve(async (req) => {
         const { operation, payload, config } = await req.json();
 
         const clientId = config.client_id;
-        const clientSecret = Deno.env.get(config.client_secret_reference || 'TRUELAYER_CLIENT_SECRET');
+        const clientSecret = config.client_secret;
         const baseUrl = config.api_base_url || 'https://api.truelayer.com';
 
         if (!clientId || !clientSecret) {

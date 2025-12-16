@@ -5,7 +5,7 @@ Deno.serve(async (req) => {
         const base44 = createClientFromRequest(req);
         const { operation, payload, config } = await req.json();
 
-        const apiKey = Deno.env.get(config.api_key_reference || 'BRANKAS_API_KEY');
+        const apiKey = config.api_key;
         const baseUrl = config.api_base_url || 'https://api.brankas.com';
 
         if (!apiKey) {
