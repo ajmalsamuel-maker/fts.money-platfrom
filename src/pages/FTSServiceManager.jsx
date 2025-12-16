@@ -908,6 +908,27 @@ Make the response detailed, authoritative, and include the most recent informati
                             </DialogHeader>
 
                             <div className="space-y-4">
+                                {selectedService?.auto_generated_docs && (
+                                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                                        <div className="flex items-center justify-between mb-2">
+                                            <div className="flex items-center gap-2">
+                                                <FileText className="h-4 w-4 text-blue-600" />
+                                                <span className="font-semibold text-blue-900">Auto-Generated Documentation</span>
+                                            </div>
+                                            {selectedService.docs_last_generated && (
+                                                <span className="text-xs text-blue-700">
+                                                    Generated: {new Date(selectedService.docs_last_generated).toLocaleString()}
+                                                </span>
+                                            )}
+                                        </div>
+                                        <div className="prose prose-sm max-w-none mt-3">
+                                            <ReactMarkdown className="text-slate-700 leading-relaxed">
+                                                {selectedService.auto_generated_docs}
+                                            </ReactMarkdown>
+                                        </div>
+                                    </div>
+                                )}
+
                                 {loadingDetails ? (
                                     <div className="flex items-center justify-center py-12">
                                         <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
@@ -931,9 +952,15 @@ Make the response detailed, authoritative, and include the most recent informati
                                                 </div>
                                             </div>
                                         </div>
-                                        <ReactMarkdown className="text-slate-700 leading-relaxed">
-                                            {serviceDetails}
-                                        </ReactMarkdown>
+                                        <div className="border-t pt-4 mt-4">
+                                            <div className="flex items-center gap-2 mb-3">
+                                                <Info className="h-4 w-4 text-slate-600" />
+                                                <span className="font-semibold text-slate-900">AI-Enhanced Industry Insights</span>
+                                            </div>
+                                            <ReactMarkdown className="text-slate-700 leading-relaxed">
+                                                {serviceDetails}
+                                            </ReactMarkdown>
+                                        </div>
                                     </div>
                                 ) : null}
                             </div>
