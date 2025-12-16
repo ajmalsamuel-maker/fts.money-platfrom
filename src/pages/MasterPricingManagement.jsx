@@ -71,6 +71,26 @@ export default function MasterPricingManagement() {
         queryFn: () => base44.entities.MasterPricing.list()
     });
 
+    const { data: serviceCatalog = [] } = useQuery({
+        queryKey: ['service-catalog'],
+        queryFn: () => base44.entities.ServiceCatalog.list()
+    });
+
+    const { data: payoutRoutes = [] } = useQuery({
+        queryKey: ['payout-routes'],
+        queryFn: () => base44.entities.PayoutRoute.list()
+    });
+
+    const { data: paymentProviders = [] } = useQuery({
+        queryKey: ['payment-providers'],
+        queryFn: () => base44.entities.PaymentProvider.list()
+    });
+
+    const { data: feeTemplates = [] } = useQuery({
+        queryKey: ['fee-templates'],
+        queryFn: () => base44.entities.FeeType.list()
+    });
+
     const createMutation = useMutation({
         mutationFn: (data) => base44.entities.MasterPricing.create({
             ...data,
@@ -105,7 +125,49 @@ export default function MasterPricingManagement() {
         }
     });
 
-    const filteredItems = pricingItems.filter(item => {
+    // Consolidate all pricing sources
+    const consolidatedPricing = [
+        ...pricingItems.map(item => ({ ...item, source: 'master_pricing' })),
+        ...serviceCatalog.map(service => ({
+            id: service.id,
+            item_id: service.service_id,
+            item_name: service.service_name,
+            category: 'service',
+            provider_name: service.provider_name,
+            buy_rate_fixed: service.base_price,
+            buy_rate_percentage: service.variable_price,
+            sell_rate_fixed: service.base_price ? service.base_price * 1.2 : 0,
+            margin_percentage: 20,
+            status: service.status,
+            source: 'service_catalog',
+            original_data: service
+        })),
+        ...payoutRoutes.map(route => ({
+            id: route.id,
+            item_id: route.route_name,
+            item_name: route.route_name,
+            category: 'payout_route',
+            provider_name: route.provider,
+            buy_rate_percentage: route.cost_percentage,
+            buy_rate_fixed: route.cost_fixed,
+            status: route.status,
+            source: 'payout_route',
+            original_data: route
+        })),
+        ...feeTemplates.map(fee => ({
+            id: fee.id,
+            item_id: fee.fee_code,
+            item_name: fee.fee_name,
+            category: fee.category || 'platform_fee',
+            buy_rate_percentage: fee.percentage_amount,
+            buy_rate_fixed: fee.fixed_amount,
+            status: fee.status,
+            source: 'fee_template',
+            original_data: fee
+        }))
+    ];
+
+    const filteredItems = consolidatedPricing.filter(item => {
         const matchesSearch = !searchTerm || 
             item.item_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
             item.provider_name?.toLowerCase().includes(searchTerm.toLowerCase());
@@ -115,11 +177,17 @@ export default function MasterPricingManagement() {
     });
 
     const stats = {
-        total: pricingItems.length,
-        active: pricingItems.filter(i => i.status === 'active').length,
+        total: consolidatedPricing.length,
+        active: consolidatedPricing.filter(i => i.status === 'active').length,
         totalRevenue: pricingItems.reduce((sum, i) => sum + (i.total_revenue || 0), 0),
         totalCost: pricingItems.reduce((sum, i) => sum + (i.total_cost || 0), 0),
-        margin: pricingItems.reduce((sum, i) => sum + ((i.total_revenue || 0) - (i.total_cost || 0)), 0)
+        margin: pricingItems.reduce((sum, i) => sum + ((i.total_revenue || 0) - (i.total_cost || 0)), 0),
+        bySource: {
+            master: pricingItems.length,
+            services: serviceCatalog.length,
+            payouts: payoutRoutes.length,
+            fees: feeTemplates.length
+        }
     };
 
     const handleSubmit = () => {
@@ -189,7 +257,7 @@ export default function MasterPricingManagement() {
 
                 <main className="p-6">
                     {/* Stats Cards */}
-                    <div className="grid grid-cols-5 gap-4 mb-6">
+                    <div className="grid grid-cols-6 gap-4 mb-6">
                         <Card>
                             <CardContent className="p-6">
                                 <div className="flex items-center justify-between">
@@ -233,6 +301,27 @@ export default function MasterPricingManagement() {
                                 <div>
                                     <p className="text-sm text-slate-600">Gross Margin</p>
                                     <p className="text-2xl font-bold text-emerald-600 mt-1">${stats.margin.toLocaleString()}</p>
+                                </div>
+                            </CardContent>
+                        </Card>
+                        <Card>
+                            <CardContent className="p-6">
+                                <div>
+                                    <p className="text-sm text-slate-600 mb-2">Sources</p>
+                                    <div className="space-y-1">
+                                        <div className="flex justify-between text-xs">
+                                            <span className="text-slate-600">Services:</span>
+                                            <span className="font-medium">{stats.bySource.services}</span>
+                                        </div>
+                                        <div className="flex justify-between text-xs">
+                                            <span className="text-slate-600">Payouts:</span>
+                                            <span className="font-medium">{stats.bySource.payouts}</span>
+                                        </div>
+                                        <div className="flex justify-between text-xs">
+                                            <span className="text-slate-600">Fees:</span>
+                                            <span className="font-medium">{stats.bySource.fees}</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </CardContent>
                         </Card>
@@ -288,6 +377,7 @@ export default function MasterPricingManagement() {
                                     <thead>
                                         <tr className="border-b border-slate-200">
                                             <th className="text-left py-3 px-4 font-semibold">Item</th>
+                                            <th className="text-left py-3 px-4 font-semibold">Source</th>
                                             <th className="text-left py-3 px-4 font-semibold">Category</th>
                                             <th className="text-left py-3 px-4 font-semibold">Provider</th>
                                             <th className="text-right py-3 px-4 font-semibold">Buy Rate</th>
@@ -299,12 +389,22 @@ export default function MasterPricingManagement() {
                                     </thead>
                                     <tbody>
                                         {filteredItems.map((item) => (
-                                            <tr key={item.id} className="border-b border-slate-100 hover:bg-slate-50">
+                                            <tr key={`${item.source}-${item.id}`} className="border-b border-slate-100 hover:bg-slate-50">
                                                 <td className="py-3 px-4">
                                                     <div>
                                                         <p className="font-medium text-slate-900">{item.item_name}</p>
                                                         <p className="text-xs text-slate-500">{item.item_id}</p>
                                                     </div>
+                                                </td>
+                                                <td className="py-3 px-4">
+                                                    <Badge variant="outline" className={
+                                                        item.source === 'service_catalog' ? 'bg-blue-50 text-blue-700' :
+                                                        item.source === 'payout_route' ? 'bg-green-50 text-green-700' :
+                                                        item.source === 'fee_template' ? 'bg-purple-50 text-purple-700' :
+                                                        'bg-slate-50 text-slate-700'
+                                                    }>
+                                                        {item.source?.replace(/_/g, ' ')}
+                                                    </Badge>
                                                 </td>
                                                 <td className="py-3 px-4">
                                                     <Badge variant="outline" className="capitalize">
@@ -336,12 +436,34 @@ export default function MasterPricingManagement() {
                                                 </td>
                                                 <td className="py-3 px-4 text-right">
                                                     <div className="flex justify-end gap-2">
-                                                        <Button size="sm" variant="outline" onClick={() => handleEdit(item)}>
-                                                            <Edit className="h-3 w-3" />
-                                                        </Button>
-                                                        <Button size="sm" variant="outline" onClick={() => deleteMutation.mutate(item.id)} className="text-red-600">
-                                                            <Trash2 className="h-3 w-3" />
-                                                        </Button>
+                                                        {item.source === 'master_pricing' ? (
+                                                            <>
+                                                                <Button size="sm" variant="outline" onClick={() => handleEdit(item)}>
+                                                                    <Edit className="h-3 w-3" />
+                                                                </Button>
+                                                                <Button size="sm" variant="outline" onClick={() => deleteMutation.mutate(item.id)} className="text-red-600">
+                                                                    <Trash2 className="h-3 w-3" />
+                                                                </Button>
+                                                            </>
+                                                        ) : (
+                                                            <Button size="sm" variant="outline" onClick={() => {
+                                                                const newItem = {
+                                                                    category: item.category,
+                                                                    item_name: item.item_name,
+                                                                    provider_name: item.provider_name,
+                                                                    buy_rate_percentage: item.buy_rate_percentage,
+                                                                    buy_rate_fixed: item.buy_rate_fixed,
+                                                                    sell_rate_percentage: item.sell_rate_percentage,
+                                                                    sell_rate_fixed: item.sell_rate_fixed,
+                                                                    source_ref: item.source,
+                                                                    source_id: item.id
+                                                                };
+                                                                setFormData(newItem);
+                                                                setShowDialog(true);
+                                                            }}>
+                                                                Import to Master
+                                                            </Button>
+                                                        )}
                                                     </div>
                                                 </td>
                                             </tr>
