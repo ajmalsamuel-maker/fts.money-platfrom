@@ -28,6 +28,7 @@ import {
 import { logAuditAction } from '@/components/platform/AuditLogger';
 import { cn } from "@/lib/utils";
 import { PLATFORM_ROLES, getRoleLabel } from '@/components/auth/usePlatformAuth';
+import { ISO4217_CURRENCIES, getCurrencySymbol } from '@/components/utils/iso4217';
 
 export default function PSPInstanceConfig() {
     const navigate = useNavigate();
@@ -638,7 +639,7 @@ export default function PSPInstanceConfig() {
                             <CardContent className="space-y-6">
                                 <div className="grid grid-cols-2 gap-6">
                                     <div>
-                                        <Label>Default Currency</Label>
+                                        <Label>Default Currency (ISO 4217)</Label>
                                         <Select 
                                             value={config.region_settings?.default_currency || 'USD'}
                                             onValueChange={(v) => setConfig({...config, region_settings: {...config.region_settings, default_currency: v}})}
@@ -646,12 +647,12 @@ export default function PSPInstanceConfig() {
                                             <SelectTrigger>
                                                 <SelectValue />
                                             </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="USD">USD</SelectItem>
-                                                <SelectItem value="EUR">EUR</SelectItem>
-                                                <SelectItem value="GBP">GBP</SelectItem>
-                                                <SelectItem value="SGD">SGD</SelectItem>
-                                                <SelectItem value="HKD">HKD</SelectItem>
+                                            <SelectContent className="max-h-[300px]">
+                                                {ISO4217_CURRENCIES.map(currency => (
+                                                    <SelectItem key={currency.code} value={currency.code}>
+                                                        {getCurrencySymbol(currency.code)} {currency.code} - {currency.name}
+                                                    </SelectItem>
+                                                ))}
                                             </SelectContent>
                                         </Select>
                                     </div>
