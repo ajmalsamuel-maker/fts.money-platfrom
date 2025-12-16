@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
     CheckCircle2, 
@@ -17,11 +18,120 @@ import {
     LineChart,
     Activity,
     Zap,
-    Globe
+    Globe,
+    Download
 } from 'lucide-react';
 
 export default function PSPEmpowermentRoadmap() {
     const [selectedPhase, setSelectedPhase] = useState('phase1');
+
+    const downloadRoadmap = () => {
+        let content = `# PSP EMPOWERMENT IMPLEMENTATION ROADMAP
+## FTS.Money Platform Transformation Plan
+### Total Timeline: 23 weeks (5.5 months)
+
+---
+
+## EXECUTIVE SUMMARY
+
+This comprehensive roadmap addresses all 12 missing major functionalities required to transform FTS.Money from a PSP provisioning platform into a true Platform-as-a-Service that empowers PSPs to build, manage, and deliver their own products to merchants.
+
+**Key Objectives:**
+- Enable PSPs to define their own product catalogs and bundles
+- Provide dynamic pricing and billing tools for PSPs to charge merchants
+- Offer self-service portal framework for merchant-facing interfaces
+- Deliver advanced analytics for both FTS.Money and PSPs
+- Support marketplace discovery, contracts, and global commerce
+
+---
+
+`;
+
+        Object.entries(roadmap).forEach(([key, phase]) => {
+            content += `## ${phase.name.toUpperCase()}\n`;
+            content += `**Duration:** ${phase.duration}\n`;
+            content += `**Priority:** ${phase.priority}\n`;
+            content += `**Description:** ${phase.description}\n\n`;
+
+            phase.components.forEach((component, idx) => {
+                content += `### ${idx + 1}. ${component.name}\n\n`;
+                content += `**Description:** ${component.description}\n\n`;
+                content += `**Entities:** ${component.entities.join(', ')}\n\n`;
+                if (component.dependencies.length > 0) {
+                    content += `**Dependencies:** ${component.dependencies.join(', ')}\n\n`;
+                }
+
+                content += `**Implementation Steps:**\n\n`;
+                Object.entries(component.implementation).forEach(([stepKey, step]) => {
+                    content += `${stepKey.replace('step', '')}. ${step}\n`;
+                });
+                content += `\n`;
+
+                content += `**Test Plan:**\n\n`;
+                component.testPlan.forEach((test, testIdx) => {
+                    content += `${testIdx + 1}. ${test}\n`;
+                });
+                content += `\n---\n\n`;
+            });
+        });
+
+        content += `## COVERAGE OF 12 MISSING FUNCTIONALITIES\n\n`;
+        content += `**Phase 0:** ServiceCatalog Enhancement, MasterPricing Engine Upgrade, Resource Orchestration, API Gateway Platform Layer\n\n`;
+        content += `**Phase 1:** Product Builder & Catalog Management, Advanced Provisioning Engine\n\n`;
+        content += `**Phase 2:** Dynamic Pricing Engine, Subscription & Usage-Based Billing\n\n`;
+        content += `**Phase 3:** Self-Service Portal, Integration & API Marketplace (partial)\n\n`;
+        content += `**Phase 4:** Analytics & Product Intelligence (both FTS.Money and PSP levels)\n\n`;
+        content += `**Phase 5:** Marketplace & Discovery, Contract & SLA Management, Multi-Currency & Localization, Integration Connector Framework\n\n`;
+
+        content += `---\n\n## INTEGRATION & TESTING STRATEGY\n\n`;
+        content += `### Integration Testing Milestones\n\n`;
+        content += `1. **Phase 1 + 2 Integration:** Create product → Define pricing → Simulate usage → Generate invoice\n`;
+        content += `2. **Phase 1 + 3 Integration:** Create bundle → Build portal → Expose API → Merchant activation\n`;
+        content += `3. **Full Stack Integration:** PSP creates product → Merchant onboards → Uses API → Usage tracked → Invoice generated → Analytics visible\n\n`;
+
+        content += `### Performance & Scale Testing\n\n`;
+        content += `**Load Testing:**\n`;
+        content += `- 100 concurrent merchant onboardings\n`;
+        content += `- 10,000 usage events/second\n`;
+        content += `- 1,000 invoice generations simultaneously\n`;
+        content += `- 50 PSPs managing 10,000 merchants each\n\n`;
+
+        content += `**Security Testing:**\n`;
+        content += `- PSP isolation verification (data leakage prevention)\n`;
+        content += `- API key rotation and revocation\n`;
+        content += `- Encrypted secrets storage validation\n`;
+        content += `- RBAC permission boundary testing\n\n`;
+
+        content += `### User Acceptance Testing (UAT)\n\n`;
+        content += `Recruit 3 pilot PSPs for end-to-end testing:\n`;
+        content += `1. PSP configures 3 unique products using the catalog\n`;
+        content += `2. PSP designs custom merchant onboarding workflow (5+ steps)\n`;
+        content += `3. PSP builds branded merchant portal and deploys it\n`;
+        content += `4. Onboard 10 test merchants through the workflow\n`;
+        content += `5. Generate 1 month of usage and verify invoice accuracy\n\n`;
+
+        content += `---\n\n## TIMELINE SUMMARY\n\n`;
+        content += `- **Week 1-3:** Phase 0 Complete (Platform Foundation)\n`;
+        content += `- **Week 4-7:** Phase 1 Complete (Product & Workflow)\n`;
+        content += `- **Week 8-11:** Phase 2 Complete (Pricing & Billing)\n`;
+        content += `- **Week 12-16:** Phase 3 Complete (Portal & API)\n`;
+        content += `- **Week 17-19:** Phase 4 Complete (Analytics)\n`;
+        content += `- **Week 20-23:** Phase 5 Complete + UAT (Marketplace & Global)\n\n`;
+
+        content += `**CRITICAL:** Phase 0 must be completed first as it provides the foundational platform capabilities. Phases 1-5 can be deployed incrementally.\n\n`;
+
+        content += `---\n\nGenerated: ${new Date().toLocaleDateString()}\nFTS.Money Platform - PSP Empowerment Initiative`;
+
+        const blob = new Blob([content], { type: 'text/markdown' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `FTS-Money-PSP-Empowerment-Roadmap-${new Date().toISOString().split('T')[0]}.md`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        a.remove();
+    };
 
     const roadmap = {
         phase0: {
@@ -506,11 +616,22 @@ export default function PSPEmpowermentRoadmap() {
     return (
         <div className="space-y-6">
             <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6 rounded-lg">
-                <h2 className="text-2xl font-bold mb-2">PSP Empowerment Implementation Roadmap</h2>
-                <p className="text-blue-100">
-                    Comprehensive plan to transform FTS.Money into a true platform that empowers PSPs 
-                    to build, manage, and deliver their own products to merchants
-                </p>
+                <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                        <h2 className="text-2xl font-bold mb-2">PSP Empowerment Implementation Roadmap</h2>
+                        <p className="text-blue-100">
+                            Comprehensive plan to transform FTS.Money into a true platform that empowers PSPs 
+                            to build, manage, and deliver their own products to merchants
+                        </p>
+                    </div>
+                    <Button 
+                        onClick={downloadRoadmap}
+                        className="bg-white text-blue-600 hover:bg-blue-50 gap-2"
+                    >
+                        <Download className="h-4 w-4" />
+                        Download Roadmap
+                    </Button>
+                </div>
             </div>
 
             {/* Phase Overview */}
