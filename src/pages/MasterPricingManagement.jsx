@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PricingSyncManager from '@/components/pricing/PricingSyncManager';
+import ProviderAgreementsManager from '@/components/pricing/ProviderAgreementsManager';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
@@ -292,6 +293,7 @@ export default function MasterPricingManagement() {
                     <Tabs defaultValue="pricing" className="mb-6">
                         <TabsList>
                             <TabsTrigger value="pricing">Pricing Matrix</TabsTrigger>
+                            <TabsTrigger value="agreements">Provider Agreements</TabsTrigger>
                             <TabsTrigger value="sync">Sync & Reconciliation</TabsTrigger>
                         </TabsList>
                         
@@ -568,6 +570,10 @@ export default function MasterPricingManagement() {
                             </div>
                         </CardContent>
                         </Card>
+                        </TabsContent>
+
+                        <TabsContent value="agreements" className="mt-6">
+                            <ProviderAgreementsManager />
                         </TabsContent>
 
                         <TabsContent value="sync" className="mt-6">
