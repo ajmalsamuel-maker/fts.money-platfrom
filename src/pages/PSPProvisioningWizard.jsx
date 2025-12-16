@@ -628,21 +628,21 @@ export default function PSPProvisioningWizard() {
                                         <h3 className="font-semibold text-slate-900 mb-3 capitalize">{category.replace(/_/g, ' ')}</h3>
                                         <div className="space-y-2">
                                             {categoryServices.map((service) => {
-                                                const isEnabled = formData.enabled_services.includes(service.service_id);
-                                                return (
-                                                    <div
-                                                        key={service.service_id}
-                                                        className={cn(
-                                                            "flex items-center justify-between p-4 border-2 rounded-lg cursor-pointer transition-all",
-                                                            isEnabled ? "border-blue-500 bg-blue-50" : "border-slate-200 hover:border-blue-300"
-                                                        )}
-                                                        onClick={() => {
-                                                            const newServices = isEnabled
-                                                                ? formData.enabled_services.filter(s => s !== service.service_id)
-                                                                : [...formData.enabled_services, service.service_id];
-                                                            setFormData({...formData, enabled_services: newServices});
-                                                        }}
-                                                    >
+                                               const isEnabled = formData.enabled_services.includes(service.id);
+                                               return (
+                                                   <div
+                                                       key={service.id}
+                                                       className={cn(
+                                                           "flex items-center justify-between p-4 border-2 rounded-lg cursor-pointer transition-all",
+                                                           isEnabled ? "border-blue-500 bg-blue-50" : "border-slate-200 hover:border-blue-300"
+                                                       )}
+                                                       onClick={() => {
+                                                           const newServices = isEnabled
+                                                               ? formData.enabled_services.filter(s => s !== service.id)
+                                                               : [...formData.enabled_services, service.id];
+                                                           setFormData({...formData, enabled_services: newServices});
+                                                       }}
+                                                   >
                                                         <div className="flex items-center gap-3">
                                                             <div className={cn(
                                                                 "w-10 h-10 rounded flex items-center justify-center",

@@ -238,10 +238,10 @@ export default function PSPInstanceConfig() {
                                             </h3>
                                             <div className="space-y-2">
                                                 {categoryServices.map((service) => {
-                                                    const isEnabled = config.enabled_services?.includes(service.service_id);
+                                                    const isEnabled = config.enabled_services?.includes(service.id);
                                                     return (
                                                         <div
-                                                            key={service.service_id}
+                                                            key={service.id}
                                                             className={cn(
                                                                 "flex items-center justify-between p-4 border-2 rounded-lg transition-all",
                                                                 isEnabled ? "border-emerald-500 bg-emerald-50" : "border-slate-200"
@@ -270,11 +270,11 @@ export default function PSPInstanceConfig() {
                                                                     checked={isEnabled}
                                                                     onCheckedChange={(checked) => {
                                                                         const newServices = checked
-                                                                            ? [...(config.enabled_services || []), service.service_id]
-                                                                            : (config.enabled_services || []).filter(s => s !== service.service_id);
+                                                                            ? [...(config.enabled_services || []), service.id]
+                                                                            : (config.enabled_services || []).filter(s => s !== service.id);
                                                                         setConfig({...config, enabled_services: newServices});
                                                                     }}
-                                                                />
+                                                                    />
                                                             </div>
                                                         </div>
                                                     );
