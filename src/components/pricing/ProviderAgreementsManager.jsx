@@ -421,6 +421,100 @@ export default function ProviderAgreementsManager() {
                             <Label>Auto-renew contract</Label>
                         </div>
 
+                        {/* SLA Requirements */}
+                        <div className="border-t pt-4 mt-4">
+                            <Label className="text-base mb-3 block">Service Level Agreements (SLAs)</Label>
+                            <div className="grid grid-cols-3 gap-4">
+                                <div>
+                                    <Label className="text-xs">Uptime Target (%)</Label>
+                                    <Input
+                                        type="number"
+                                        step="0.1"
+                                        value={formData.sla_requirements?.uptime_percentage || 99.9}
+                                        onChange={(e) => setFormData({
+                                            ...formData,
+                                            sla_requirements: {
+                                                ...formData.sla_requirements,
+                                                uptime_percentage: parseFloat(e.target.value)
+                                            }
+                                        })}
+                                        placeholder="99.9"
+                                    />
+                                </div>
+                                <div>
+                                    <Label className="text-xs">Response Time (ms)</Label>
+                                    <Input
+                                        type="number"
+                                        value={formData.sla_requirements?.response_time_ms || 200}
+                                        onChange={(e) => setFormData({
+                                            ...formData,
+                                            sla_requirements: {
+                                                ...formData.sla_requirements,
+                                                response_time_ms: parseInt(e.target.value)
+                                            }
+                                        })}
+                                        placeholder="200"
+                                    />
+                                </div>
+                                <div>
+                                    <Label className="text-xs">Support Level</Label>
+                                    <Select 
+                                        value={formData.sla_requirements?.support_level || 'standard'}
+                                        onValueChange={(value) => setFormData({
+                                            ...formData,
+                                            sla_requirements: {
+                                                ...formData.sla_requirements,
+                                                support_level: value
+                                            }
+                                        })}
+                                    >
+                                        <SelectTrigger>
+                                            <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="standard">Standard</SelectItem>
+                                            <SelectItem value="premium">Premium</SelectItem>
+                                            <SelectItem value="enterprise">Enterprise</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Volume Commitment */}
+                        <div className="border-t pt-4 mt-4">
+                            <Label className="text-base mb-3 block">Volume Commitments</Label>
+                            <div className="grid grid-cols-3 gap-4">
+                                <div>
+                                    <Label className="text-xs">Minimum Monthly Commitment ($)</Label>
+                                    <Input
+                                        type="number"
+                                        value={formData.minimum_monthly_commitment || ''}
+                                        onChange={(e) => setFormData({ ...formData, minimum_monthly_commitment: parseFloat(e.target.value) })}
+                                        placeholder="50000"
+                                    />
+                                </div>
+                                <div>
+                                    <Label className="text-xs">Penalty for Under-Commitment ($)</Label>
+                                    <Input
+                                        type="number"
+                                        value={formData.penalty_for_under_commitment || ''}
+                                        onChange={(e) => setFormData({ ...formData, penalty_for_under_commitment: parseFloat(e.target.value) })}
+                                        placeholder="5000"
+                                    />
+                                </div>
+                                <div>
+                                    <Label className="text-xs">Notice Period (Days)</Label>
+                                    <Input
+                                        type="number"
+                                        value={formData.notice_period_days || ''}
+                                        onChange={(e) => setFormData({ ...formData, notice_period_days: parseInt(e.target.value) })}
+                                        placeholder="90"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
                         {/* Document Upload */}
                         <div className="border-t pt-4 mt-4">
                             <Label className="text-base mb-3 block">Contract Documents</Label>
