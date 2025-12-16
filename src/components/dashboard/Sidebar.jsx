@@ -47,6 +47,7 @@ import {
     Coins,
     TrendingUp,
     Tag,
+    Activity,
     FileText as InvoiceIcon
 } from 'lucide-react';
 
