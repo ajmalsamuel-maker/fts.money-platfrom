@@ -238,7 +238,8 @@ export default function PSPInstanceConfig() {
                                             </h3>
                                             <div className="space-y-2">
                                                 {categoryServices.map((service) => {
-                                                    const isEnabled = config.enabled_services?.includes(service.id);
+                                                    const serviceIdentifier = service.service_id || service.id;
+                                                    const isEnabled = config.enabled_services?.includes(serviceIdentifier);
                                                     return (
                                                         <div
                                                             key={service.id}
@@ -270,8 +271,8 @@ export default function PSPInstanceConfig() {
                                                                     checked={isEnabled}
                                                                     onCheckedChange={(checked) => {
                                                                         const newServices = checked
-                                                                            ? [...(config.enabled_services || []), service.id]
-                                                                            : (config.enabled_services || []).filter(s => s !== service.id);
+                                                                            ? [...(config.enabled_services || []), serviceIdentifier]
+                                                                            : (config.enabled_services || []).filter(s => s !== serviceIdentifier);
                                                                         setConfig({...config, enabled_services: newServices});
                                                                     }}
                                                                     />

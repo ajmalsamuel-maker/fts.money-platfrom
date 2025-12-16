@@ -628,7 +628,8 @@ export default function PSPProvisioningWizard() {
                                         <h3 className="font-semibold text-slate-900 mb-3 capitalize">{category.replace(/_/g, ' ')}</h3>
                                         <div className="space-y-2">
                                             {categoryServices.map((service) => {
-                                               const isEnabled = formData.enabled_services.includes(service.id);
+                                               const serviceIdentifier = service.service_id || service.id;
+                                               const isEnabled = formData.enabled_services.includes(serviceIdentifier);
                                                return (
                                                    <div
                                                        key={service.id}
@@ -638,8 +639,8 @@ export default function PSPProvisioningWizard() {
                                                        )}
                                                        onClick={() => {
                                                            const newServices = isEnabled
-                                                               ? formData.enabled_services.filter(s => s !== service.id)
-                                                               : [...formData.enabled_services, service.id];
+                                                               ? formData.enabled_services.filter(s => s !== serviceIdentifier)
+                                                               : [...formData.enabled_services, serviceIdentifier];
                                                            setFormData({...formData, enabled_services: newServices});
                                                        }}
                                                    >
