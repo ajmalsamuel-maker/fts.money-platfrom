@@ -12,6 +12,8 @@ Deno.serve(async (req) => {
     try {
         const { psp_code } = await req.json();
 
+        console.log('🔍 getPSPSettings called with psp_code:', psp_code);
+
         if (!psp_code) {
             return Response.json({
                 success: false,
@@ -21,6 +23,7 @@ Deno.serve(async (req) => {
 
         // CRITICAL: Set search path to PSP-isolated schema ONLY (PCI/GDPR compliance)
         const schemaName = `psp_${psp_code.toLowerCase()}`;
+        console.log('📂 Setting schema to:', schemaName);
         await client.query(`SET search_path TO ${schemaName}`);
 
         // Query from isolated schema
@@ -28,6 +31,9 @@ Deno.serve(async (req) => {
             'SELECT * FROM psp_settings WHERE UPPER(psp_code) = UPPER($1) LIMIT 1',
             [psp_code]
         );
+
+        console.log('📊 Query result rows:', result.rows.length);
+        console.log('📊 Settings found:', result.rows[0]);
 
         const settings = result.rows[0];
 
@@ -44,6 +50,7 @@ Deno.serve(async (req) => {
         });
 
     } catch (error) {
+        console.error('❌ Error in getPSPSettings:', error);
         return Response.json({
             success: false,
             error: error.message
