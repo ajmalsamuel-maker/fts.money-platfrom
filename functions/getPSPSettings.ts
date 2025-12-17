@@ -65,11 +65,10 @@ Deno.serve(async (req) => {
         // Create user
         if (action === 'createUser') {
             const result = await client.query(
-                `INSERT INTO app_users (user_id, email, full_name, role, department, password_hash, status, created_date)
-                VALUES ($1, $2, $3, $4, $5, $6, $7, CURRENT_TIMESTAMP)
+                `INSERT INTO app_users (email, full_name, role, department, password_hash, status, created_date)
+                VALUES ($1, $2, $3, $4, $5, $6, CURRENT_TIMESTAMP)
                 RETURNING *`,
                 [
-                    `USR-${Date.now()}`,
                     user_data.email,
                     user_data.full_name,
                     user_data.role,
@@ -95,7 +94,7 @@ Deno.serve(async (req) => {
             
             values.push(user_id);
             const result = await client.query(
-                `UPDATE app_users SET ${setClauses.join(', ')}, updated_date = CURRENT_TIMESTAMP WHERE user_id = $${paramCounter} RETURNING *`,
+                `UPDATE app_users SET ${setClauses.join(', ')}, updated_date = CURRENT_TIMESTAMP WHERE id = $${paramCounter} RETURNING *`,
                 values
             );
             return Response.json({ success: true, user: result.rows[0] });
@@ -104,7 +103,7 @@ Deno.serve(async (req) => {
         // Update password
         if (action === 'updatePassword') {
             await client.query(
-                'UPDATE app_users SET password_hash = $1, updated_date = CURRENT_TIMESTAMP WHERE user_id = $2',
+                'UPDATE app_users SET password_hash = $1, updated_date = CURRENT_TIMESTAMP WHERE id = $2',
                 [new_password, user_id]
             );
             return Response.json({ success: true });
