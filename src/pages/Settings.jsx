@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
+import StaffAuthWrapper from '@/components/auth/StaffAuthWrapper';
 import Sidebar from '@/components/dashboard/Sidebar';
 import TopHeader from '@/components/dashboard/TopHeader';
 import { cn } from "@/lib/utils";
@@ -42,15 +43,45 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 export default function Settings() {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const queryClient = useQueryClient();
+    const [userPspCode, setUserPspCode] = useState(null);
+
+    // Get PSP code from staff session
+    useEffect(() => {
+        const sessionData = localStorage.getItem('staff_session');
+        if (sessionData) {
+            const session = JSON.parse(sessionData);
+            console.log('⚙️ SETTINGS: PSP Code from session:', session?.psp_code);
+            setUserPspCode(session.psp_code);
+        } else {
+            window.location.href = '/PSPLogin';
+        }
+    }, []);
 
     const { data: users = [] } = useQuery({
-        queryKey: ['all-users'],
-        queryFn: () => base44.entities.AppUser.list('-created_date', 20),
+        queryKey: ['psp-users', userPspCode],
+        queryFn: async () => {
+            console.log('⚙️ SETTINGS: Fetching users for PSP:', userPspCode);
+            const { data } = await base44.functions.invoke('managePSPUsers', {
+                action: 'listUsers',
+                psp_code: userPspCode
+            });
+            console.log('⚙️ SETTINGS: Users response:', data);
+            return data.users || [];
+        },
+        enabled: !!userPspCode
     });
 
     const { data: pspSettings, isLoading } = useQuery({
-        queryKey: ['psp-settings'],
-        queryFn: () => base44.entities.PSPSettings.list(),
+        queryKey: ['psp-settings', userPspCode],
+        queryFn: async () => {
+            console.log('⚙️ SETTINGS: Fetching settings for PSP:', userPspCode);
+            const { data } = await base44.functions.invoke('getPSPSettings', {
+                psp_code: userPspCode
+            });
+            console.log('⚙️ SETTINGS: Settings response:', data);
+            return data.success ? [data.settings] : [];
+        },
+        enabled: !!userPspCode
     });
 
     const savedSettings = pspSettings?.[0];
@@ -160,9 +191,10 @@ export default function Settings() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50">
-            <Toaster position="top-right" />
-            <Sidebar collapsed={sidebarCollapsed} currentPage="Settings" />
+        <StaffAuthWrapper>
+            <div className="min-h-screen bg-slate-50">
+                <Toaster position="top-right" />
+                <Sidebar collapsed={sidebarCollapsed} currentPage="Settings" />
             <div className={cn("transition-all duration-300", "ml-64")}>
                 <TopHeader onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} collapsed={sidebarCollapsed} />
                 
@@ -771,5 +803,6 @@ export default function Settings() {
                 </main>
             </div>
         </div>
+        </StaffAuthWrapper>
     );
 }
