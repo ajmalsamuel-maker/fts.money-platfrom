@@ -58,7 +58,7 @@ Deno.serve(async (req) => {
         
         // List users
         if (action === 'listUsers') {
-            const result = await client.query('SELECT * FROM app_users ORDER BY created_date DESC');
+            const result = await client.query('SELECT * FROM app_users ORDER BY created_at DESC');
             return Response.json({ success: true, users: result.rows });
         }
         
