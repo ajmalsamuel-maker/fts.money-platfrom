@@ -9,6 +9,11 @@ export default function PSPLogin() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
+    // Clear any old sessions on mount
+    React.useEffect(() => {
+        localStorage.clear();
+    }, []);
+
     const handleStep1 = async (e) => {
         e.preventDefault();
         setLoading(true);
