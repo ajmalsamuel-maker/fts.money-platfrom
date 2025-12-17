@@ -172,10 +172,12 @@ export default function Settings() {
 
     const saveMutation = useMutation({
         mutationFn: async (data) => {
-            if (savedSettings?.id) {
-                return base44.entities.PSPSettings.update(savedSettings.id, data);
-            }
-            return base44.entities.PSPSettings.create(data);
+            const { data: response } = await base44.functions.invoke('getPSPSettings', {
+                action: 'update',
+                psp_code: userPspCode,
+                settings: data
+            });
+            return response;
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['psp-settings'] });
