@@ -33,18 +33,23 @@ Deno.serve(async (req) => {
             const branding = settings.branding || {};
             delete settings.branding;
             
+            const menu_config = settings.menu_config || [];
+            delete settings.menu_config;
+
             const updateResult = await client.query(
                 `UPDATE psp_settings 
                 SET psp_name = $1, 
                     branding = $2,
                     settings = $3,
+                    menu_config = $4,
                     updated_date = CURRENT_TIMESTAMP
-                WHERE UPPER(psp_code) = UPPER($4)
+                WHERE UPPER(psp_code) = UPPER($5)
                 RETURNING *`,
                 [
                     settings.company_name || psp_code,
                     JSON.stringify(branding),
                     JSON.stringify(settings),
+                    JSON.stringify(menu_config),
                     psp_code
                 ]
             );
@@ -129,7 +134,8 @@ Deno.serve(async (req) => {
         const mergedSettings = {
             ...settingsRow,
             ...(settingsRow.settings || {}),
-            branding: settingsRow.branding || {}
+            branding: settingsRow.branding || {},
+            menu_config: settingsRow.menu_config || []
         };
 
         console.log('📊 Merged settings:', mergedSettings);
