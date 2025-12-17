@@ -21,6 +21,7 @@ import ReviewSubmitStep from '@/components/onboarding/ReviewSubmitStep';
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { 
     ChevronLeft, 
