@@ -40,6 +40,7 @@ Deno.serve(async (req) => {
                     psp_name VARCHAR(255) NOT NULL,
                     branding JSONB,
                     settings JSONB,
+                    menu_config JSONB DEFAULT '[]'::jsonb,
                     created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 );
