@@ -30,7 +30,6 @@ Deno.serve(async (req) => {
         if (action === 'update') {
             console.log('📝 Updating PSP settings...', settings);
             
-            // Extract branding separately if it exists
             const branding = settings.branding || {};
             delete settings.branding;
             
@@ -50,20 +49,68 @@ Deno.serve(async (req) => {
                 ]
             );
 
-            console.log('✅ Settings updated, rows affected:', updateResult.rowCount);
-            
             if (updateResult.rowCount === 0) {
-                return Response.json({
-                    success: false,
-                    error: 'PSP settings not found or not updated'
-                }, { status: 404 });
+                return Response.json({ success: false, error: 'PSP settings not found' }, { status: 404 });
             }
             
-            return Response.json({
-                success: true,
-                message: 'Settings updated successfully',
-                settings: updateResult.rows[0]
+            return Response.json({ success: true, settings: updateResult.rows[0] });
+        }
+        
+        // List users
+        if (action === 'listUsers') {
+            const result = await client.query('SELECT * FROM app_users ORDER BY created_date DESC');
+            return Response.json({ success: true, users: result.rows });
+        }
+        
+        // Create user
+        if (action === 'createUser') {
+            const { user_data } = settings;
+            const result = await client.query(
+                `INSERT INTO app_users (user_id, email, full_name, role, department, password_hash, status, created_date)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, CURRENT_TIMESTAMP)
+                RETURNING *`,
+                [
+                    `USR-${Date.now()}`,
+                    user_data.email,
+                    user_data.full_name,
+                    user_data.role,
+                    user_data.department || '',
+                    user_data.password,
+                    'active'
+                ]
+            );
+            return Response.json({ success: true, user: result.rows[0] });
+        }
+        
+        // Update user
+        if (action === 'updateUser') {
+            const { user_id, updates } = settings;
+            const setClauses = [];
+            const values = [];
+            let paramCounter = 1;
+            
+            Object.entries(updates).forEach(([key, value]) => {
+                setClauses.push(`${key} = $${paramCounter}`);
+                values.push(value);
+                paramCounter++;
             });
+            
+            values.push(user_id);
+            const result = await client.query(
+                `UPDATE app_users SET ${setClauses.join(', ')}, updated_date = CURRENT_TIMESTAMP WHERE user_id = $${paramCounter} RETURNING *`,
+                values
+            );
+            return Response.json({ success: true, user: result.rows[0] });
+        }
+        
+        // Update password
+        if (action === 'updatePassword') {
+            const { user_id, new_password } = settings;
+            await client.query(
+                'UPDATE app_users SET password_hash = $1, updated_date = CURRENT_TIMESTAMP WHERE user_id = $2',
+                [new_password, user_id]
+            );
+            return Response.json({ success: true });
         }
 
         // Default: Get settings

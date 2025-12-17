@@ -98,44 +98,64 @@ export default function UserManagement() {
 
     const queryClient = useQueryClient();
     const { can, loading: permLoading, userRole, user: currentUser } = usePermissions();
+    
+    const [userPspCode, setUserPspCode] = useState(null);
+    
+    React.useEffect(() => {
+        const sessionData = localStorage.getItem('staff_session');
+        if (sessionData) {
+            const session = JSON.parse(sessionData);
+            setUserPspCode(session?.psp_code);
+        }
+    }, []);
 
     const { data: users = [], isLoading } = useQuery({
-        queryKey: ['all-users'],
+        queryKey: ['psp-users', userPspCode],
         queryFn: async () => {
-            const allUsers = await base44.entities.AppUser.list('-created_date');
-            const staffRoles = ['admin', 'finance', 'operations', 'compliance', 'technical', 'editor', 'viewer'];
-            return allUsers.filter(u => staffRoles.includes(u.role));
+            const { data } = await base44.functions.invoke('getPSPSettings', {
+                action: 'listUsers',
+                psp_code: userPspCode
+            });
+            return data.users || [];
         },
-        enabled: can('VIEW_USERS'),
+        enabled: can('VIEW_USERS') && !!userPspCode,
     });
 
     const updateUserMutation = useMutation({
-        mutationFn: ({ userId, data }) => base44.entities.AppUser.update(userId, data),
+        mutationFn: async ({ userId, data }) => {
+            const { data: response } = await base44.functions.invoke('getPSPSettings', {
+                action: 'updateUser',
+                psp_code: userPspCode,
+                user_id: userId,
+                updates: data
+            });
+            return response;
+        },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['all-users'] });
+            queryClient.invalidateQueries({ queryKey: ['psp-users', userPspCode] });
             setShowRoleDialog(false);
             setConfirmRoleChange(null);
+            toast.success('User updated successfully');
         },
     });
 
     const inviteUserMutation = useMutation({
         mutationFn: async (userData) => {
-            // Create a user record in AppUser entity
-            const user = await base44.entities.AppUser.create({
-                user_id: `USR-${Date.now()}`,
-                email: userData.email,
-                full_name: userData.full_name,
-                role: userData.app_role,
-                department: userData.department,
-                status: 'active',
-                password_hash: userData.password, // In production, hash this server-side
-                must_change_password: false
+            const { data } = await base44.functions.invoke('getPSPSettings', {
+                action: 'createUser',
+                psp_code: userPspCode,
+                user_data: {
+                    email: userData.email,
+                    full_name: userData.full_name,
+                    role: userData.app_role,
+                    department: userData.department,
+                    password: userData.password
+                }
             });
-            await AuditLogger.logUserCreated(user, currentUser);
-            return user;
+            return data;
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['all-users'] });
+            queryClient.invalidateQueries({ queryKey: ['psp-users', userPspCode] });
             setShowAddUserDialog(false);
             setNewUser({ email: '', full_name: '', app_role: 'viewer', department: '', password: '', confirmPassword: '' });
             toast.success('User created successfully');
@@ -787,9 +807,11 @@ export default function UserManagement() {
                                     return;
                                 }
                                 try {
-                                    await base44.entities.AppUser.update(selectedUser.id, {
-                                        password_hash: passwordData.password,
-                                        must_change_password: false
+                                    await base44.functions.invoke('getPSPSettings', {
+                                        action: 'updatePassword',
+                                        psp_code: userPspCode,
+                                        user_id: selectedUser.id,
+                                        new_password: passwordData.password
                                     });
                                     toast.success('Password updated successfully');
                                     setShowPasswordDialog(false);
@@ -871,22 +893,16 @@ export default function UserManagement() {
                         <Button 
                             onClick={async () => {
                                 try {
-                                    await base44.entities.AppUser.update(selectedUser.id, {
-                                        two_factor_enabled: tfaData.enabled,
-                                        two_factor_method: tfaData.method
+                                    await base44.functions.invoke('getPSPSettings', {
+                                        action: 'updateUser',
+                                        psp_code: userPspCode,
+                                        user_id: selectedUser.id,
+                                        updates: {
+                                            two_factor_enabled: tfaData.enabled,
+                                            two_factor_method: tfaData.method
+                                        }
                                     });
-                                    await AuditLogger.log({
-                                        eventType: 'user_updated',
-                                        category: 'security',
-                                        action: tfaData.enabled ? 'ENABLE_2FA' : 'DISABLE_2FA',
-                                        description: `2FA ${tfaData.enabled ? 'enabled' : 'disabled'} for user ${selectedUser.email}`,
-                                        targetEntity: 'AppUser',
-                                        targetId: selectedUser.id,
-                                        newValue: { two_factor_enabled: tfaData.enabled, two_factor_method: tfaData.method },
-                                        pciRelevant: true,
-                                        severity: 'warning'
-                                    });
-                                    queryClient.invalidateQueries({ queryKey: ['all-users'] });
+                                    queryClient.invalidateQueries({ queryKey: ['psp-users', userPspCode] });
                                     toast.success('2FA settings updated successfully');
                                     setShow2FADialog(false);
                                 } catch (error) {
@@ -973,23 +989,13 @@ export default function UserManagement() {
                         <Button 
                             onClick={async () => {
                                 try {
-                                    const oldStatus = selectedUser.status || 'pending';
-                                    await base44.entities.AppUser.update(selectedUser.id, {
-                                        status: selectedStatus
+                                    await base44.functions.invoke('getPSPSettings', {
+                                        action: 'updateUser',
+                                        psp_code: userPspCode,
+                                        user_id: selectedUser.id,
+                                        updates: { status: selectedStatus }
                                     });
-                                    await AuditLogger.log({
-                                        eventType: 'user_updated',
-                                        category: 'user_management',
-                                        action: 'CHANGE_STATUS',
-                                        description: `User ${selectedUser.email} status changed from ${oldStatus} to ${selectedStatus}`,
-                                        targetEntity: 'AppUser',
-                                        targetId: selectedUser.id,
-                                        oldValue: { status: oldStatus },
-                                        newValue: { status: selectedStatus },
-                                        pciRelevant: true,
-                                        severity: 'warning'
-                                    });
-                                    queryClient.invalidateQueries({ queryKey: ['all-users'] });
+                                    queryClient.invalidateQueries({ queryKey: ['psp-users', userPspCode] });
                                     toast.success('User status updated successfully');
                                     setShowStatusDialog(false);
                                 } catch (error) {
