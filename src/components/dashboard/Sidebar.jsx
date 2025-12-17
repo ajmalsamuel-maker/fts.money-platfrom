@@ -245,12 +245,16 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                 const staffSession = getStaffSession();
                 const pspCode = staffSession?.psp_code;
                 
+                console.log('🔍 SIDEBAR: Loading PSP settings for:', pspCode);
+                
                 if (!pspCode) {
                     window.location.href = '/PSPLogin';
                     return;
                 }
 
                 const result = await base44.functions.invoke('getPSPSettings', { psp_code: pspCode });
+                
+                console.log('⚙️ SIDEBAR: PSP Settings response:', result.data);
                 
                 if (result.data.success && result.data.settings) {
                     setPspSettings(result.data.settings);
