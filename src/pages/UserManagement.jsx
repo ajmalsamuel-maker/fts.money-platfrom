@@ -112,11 +112,12 @@ export default function UserManagement() {
     const { data: users = [], isLoading } = useQuery({
         queryKey: ['psp-users', userPspCode],
         queryFn: async () => {
-            const { data } = await base44.functions.invoke('getPSPSettings', {
+            const result = await base44.functions.invoke('getPSPSettings', {
                 action: 'listUsers',
                 psp_code: userPspCode
             });
-            return data.users || [];
+            console.log('User query result:', result.data);
+            return result.data?.users || [];
         },
         enabled: can('VIEW_USERS') && !!userPspCode,
     });
