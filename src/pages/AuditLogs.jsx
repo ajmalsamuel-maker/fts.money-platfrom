@@ -95,7 +95,7 @@ export default function AuditLogs() {
             
             return base44.entities.AuditLog.filter(filter, '-created_date', 500);
         },
-        enabled: can('VIEW_USERS'),
+        enabled: can('VIEW_USERS') || can('VIEW_DASHBOARD'), // Allow admin and other roles
     });
 
     const filteredLogs = logs.filter(log => {
@@ -153,7 +153,7 @@ export default function AuditLogs() {
         );
     }
 
-    if (!can('VIEW_USERS')) {
+    if (!can('VIEW_USERS') && !can('VIEW_DASHBOARD')) {
         return (
             <div className="min-h-screen bg-slate-50">
                 <Sidebar collapsed={sidebarCollapsed} currentPage="AuditLogs" />
