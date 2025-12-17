@@ -24,7 +24,7 @@ export const ROLE_CONFIG = {
         bgColor: 'bg-red-100',
         textColor: 'text-red-700',
         borderColor: 'border-red-300',
-        accessibleGroups: ['overview', 'transactions', 'merchants', 'gateways', 'orchestration', 'terminals', 'finance', 'riskCompliance', 'system', 'resources']
+        accessibleGroups: ['overview', 'transactions', 'customers', 'products', 'merchants', 'connections', 'orchestration', 'terminals', 'finance', 'riskCompliance', 'developers', 'system', 'resources']
     },
     finance: {
         label: 'Finance Manager',
@@ -32,7 +32,7 @@ export const ROLE_CONFIG = {
         bgColor: 'bg-emerald-100',
         textColor: 'text-emerald-700',
         borderColor: 'border-emerald-300',
-        accessibleGroups: ['overview', 'transactions', 'finance', 'resources']
+        accessibleGroups: ['overview', 'transactions', 'customers', 'products', 'finance', 'resources']
     },
     operations: {
         label: 'Operations Manager',
@@ -40,7 +40,7 @@ export const ROLE_CONFIG = {
         bgColor: 'bg-purple-100',
         textColor: 'text-purple-700',
         borderColor: 'border-purple-300',
-        accessibleGroups: ['overview', 'transactions', 'merchants', 'terminals', 'resources']
+        accessibleGroups: ['overview', 'transactions', 'customers', 'products', 'merchants', 'connections', 'terminals', 'resources']
     },
     compliance: {
         label: 'Compliance Officer',
@@ -48,7 +48,7 @@ export const ROLE_CONFIG = {
         bgColor: 'bg-amber-100',
         textColor: 'text-amber-700',
         borderColor: 'border-amber-300',
-        accessibleGroups: ['overview', 'transactions', 'riskCompliance', 'system', 'resources']
+        accessibleGroups: ['overview', 'transactions', 'customers', 'riskCompliance', 'system', 'resources']
     },
     technical: {
         label: 'Technical Manager',
@@ -56,7 +56,7 @@ export const ROLE_CONFIG = {
         bgColor: 'bg-cyan-100',
         textColor: 'text-cyan-700',
         borderColor: 'border-cyan-300',
-        accessibleGroups: ['overview', 'gateways', 'orchestration', 'system', 'resources']
+        accessibleGroups: ['overview', 'connections', 'orchestration', 'developers', 'system', 'resources']
     },
     editor: {
         label: 'Editor',
@@ -64,7 +64,7 @@ export const ROLE_CONFIG = {
         bgColor: 'bg-blue-100',
         textColor: 'text-blue-700',
         borderColor: 'border-blue-300',
-        accessibleGroups: ['overview', 'transactions', 'merchants', 'resources']
+        accessibleGroups: ['overview', 'transactions', 'customers', 'products', 'merchants', 'resources']
     },
     viewer: {
         label: 'Viewer',
