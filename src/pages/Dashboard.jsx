@@ -94,11 +94,13 @@ export default function Dashboard() {
     const { data: transactions = [] } = useQuery({
         queryKey: ['transactions', userPspCode],
         queryFn: async () => {
+            console.log('🔍 FETCHING TRANSACTIONS with PSP Code:', userPspCode);
             const response = await base44.functions.invoke('pspData', {
                 action: 'listTransactions',
                 psp_code: userPspCode,
                 limit: 10
             });
+            console.log('📊 Transactions response:', response.data);
             return response.data.data || [];
         },
         enabled: !!userPspCode
