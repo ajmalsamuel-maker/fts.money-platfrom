@@ -58,30 +58,22 @@ export default function Dashboard() {
     React.useEffect(() => {
         const sessionData = localStorage.getItem('staff_session');
         
-        console.log('Raw session data from localStorage:', sessionData);
-        
         if (!sessionData) {
-            console.log('No session data found, redirecting to login');
             window.location.href = '/PSPLogin';
             return;
         }
 
         try {
             const session = JSON.parse(sessionData);
-            console.log('Parsed dashboard session:', session);
-            console.log('PSP Code from session:', session?.psp_code);
             
             if (session?.psp_code) {
-                console.log('Setting userPspCode to:', session.psp_code);
                 setUserPspCode(session.psp_code);
                 setIsReady(true);
             } else {
-                console.error('No PSP code in session');
                 localStorage.clear();
                 window.location.href = '/PSPLogin';
             }
         } catch (err) {
-            console.error('Session parse error:', err);
             localStorage.clear();
             window.location.href = '/PSPLogin';
         }
@@ -199,9 +191,9 @@ export default function Dashboard() {
                                  language === 'zh' ? '欢迎回来！这是今天的情况。' :
                                  "Welcome back! Here's what's happening today."}
                             </p>
-                            <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 bg-blue-50 border border-blue-200 rounded-lg">
-                                <span className="text-xs font-medium text-blue-900">PSP:</span>
-                                <span className="text-xs font-mono font-bold text-blue-700">{userPspCode}</span>
+                            <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg shadow-md">
+                                <span className="text-xs font-semibold text-white">🔒 PSP Instance:</span>
+                                <span className="text-sm font-mono font-bold text-white tracking-wider">{userPspCode || 'LOADING...'}</span>
                             </div>
                         </div>
                         <div className="flex items-center gap-2">
