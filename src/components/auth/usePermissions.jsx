@@ -10,8 +10,21 @@ export function usePermissions() {
     useEffect(() => {
         const loadUser = async () => {
             try {
-                const currentUser = await base44.auth.me();
-                setUser(currentUser);
+                // Check for staff session first
+                const staffSession = localStorage.getItem('staff_session');
+                if (staffSession) {
+                    const session = JSON.parse(staffSession);
+                    setUser({
+                        email: session.email,
+                        full_name: session.full_name,
+                        app_role: session.role,
+                        id: session.user_id
+                    });
+                } else {
+                    // Fallback to Base44 auth
+                    const currentUser = await base44.auth.me();
+                    setUser(currentUser);
+                }
             } catch (err) {
                 setError(err);
             } finally {
@@ -21,7 +34,7 @@ export function usePermissions() {
         loadUser();
     }, []);
 
-    const userRole = user?.app_role || 'viewer';
+    const userRole = user?.app_role || user?.role || 'viewer';
     const roleConfig = ROLE_CONFIG[userRole] || ROLE_CONFIG.viewer;
 
     const checkPermission = (permission) => {
