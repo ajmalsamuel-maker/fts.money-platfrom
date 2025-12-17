@@ -65,7 +65,7 @@ Deno.serve(async (req) => {
         // Create user
         if (action === 'createUser') {
             const result = await client.query(
-                `INSERT INTO app_users (email, full_name, app_role, password_hash, status)
+                `INSERT INTO app_users (email, full_name, role, password_hash, status)
                 VALUES ($1, $2, $3, $4, $5)
                 RETURNING *`,
                 [
