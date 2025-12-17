@@ -64,6 +64,8 @@ export default function PSPLogin() {
         setLoading(true);
         setError('');
         
+        alert(`DEBUG: About to login with PSP Code: ${pspCode}`);
+        
         try {
             const { data } = await base44.functions.invoke('pspAuth', {
                 action: 'login',
@@ -73,39 +75,33 @@ export default function PSPLogin() {
             });
 
             if (data.success) {
-                // Clear any existing session first
-                localStorage.clear();
+                alert(`DEBUG: Login successful. PSP from state: ${pspCode}, PSP from response: ${data.session.schema}`);
                 
-                // Set new session
+                // FORCE clear everything
+                localStorage.clear();
+                sessionStorage.clear();
+                
+                // Set ONLY the new session with the PSP code from the form
                 const sessionData = {
                     email: data.session.email,
                     full_name: data.session.full_name,
                     role: data.session.role,
                     user_id: data.session.user_id,
-                    psp_code: pspCode,
+                    psp_code: pspCode.toUpperCase().trim(),  // Force uppercase and trim
                     schema: data.session.schema
                 };
                 
-                console.log('Setting staff_session:', sessionData);
                 localStorage.setItem('staff_session', JSON.stringify(sessionData));
                 
-                // Verify it was stored
-                const stored = localStorage.getItem('staff_session');
-                console.log('Stored staff_session:', stored);
+                alert(`DEBUG: Session saved with PSP: ${sessionData.psp_code}`);
                 
-                // Alert to confirm before redirect
-                alert('Session saved! PSP Code: ' + pspCode + '. Check console, then click OK to redirect.');
-                
-                // Check one more time before redirect
-                const finalCheck = localStorage.getItem('staff_session');
-                console.log('Final check before redirect:', finalCheck);
-                
-                window.location.href = '/Dashboard';
+                // Force a hard refresh to clear any cached state
+                window.location.replace('/Dashboard');
             } else {
                 setError(data.error || 'Login failed');
             }
         } catch (err) {
-            setError('Login error');
+            setError('Login error: ' + err.message);
         }
         setLoading(false);
     };
