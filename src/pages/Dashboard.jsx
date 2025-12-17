@@ -59,6 +59,9 @@ export default function Dashboard() {
     React.useEffect(() => {
         const sessionData = localStorage.getItem('staff_session');
         
+        console.log('=== DASHBOARD SESSION CHECK ===');
+        console.log('Raw session data:', sessionData);
+        
         if (!sessionData) {
             window.location.href = '/PSPLogin';
             return;
@@ -66,6 +69,8 @@ export default function Dashboard() {
 
         try {
             const session = JSON.parse(sessionData);
+            console.log('Parsed session:', session);
+            console.log('PSP Code from session:', session?.psp_code);
             
             if (session?.psp_code) {
                 // CRITICAL: Clear ALL React Query cache when switching PSPs
@@ -73,6 +78,8 @@ export default function Dashboard() {
                 
                 setUserPspCode(session.psp_code);
                 setIsReady(true);
+                
+                console.log('✅ Set userPspCode to:', session.psp_code);
             } else {
                 localStorage.clear();
                 window.location.href = '/PSPLogin';
