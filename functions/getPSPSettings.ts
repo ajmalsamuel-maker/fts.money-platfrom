@@ -28,26 +28,41 @@ Deno.serve(async (req) => {
 
         // Handle update action
         if (action === 'update') {
-            console.log('📝 Updating PSP settings...');
-            await client.query(
+            console.log('📝 Updating PSP settings...', settings);
+            
+            // Extract branding separately if it exists
+            const branding = settings.branding || {};
+            delete settings.branding;
+            
+            const updateResult = await client.query(
                 `UPDATE psp_settings 
                 SET psp_name = $1, 
                     branding = $2,
                     settings = $3,
                     updated_date = CURRENT_TIMESTAMP
-                WHERE UPPER(psp_code) = UPPER($4)`,
+                WHERE UPPER(psp_code) = UPPER($4)
+                RETURNING *`,
                 [
-                    settings.company_name || settings.psp_name,
-                    JSON.stringify(settings.branding || {}),
+                    settings.company_name || psp_code,
+                    JSON.stringify(branding),
                     JSON.stringify(settings),
                     psp_code
                 ]
             );
 
-            console.log('✅ Settings updated successfully');
+            console.log('✅ Settings updated, rows affected:', updateResult.rowCount);
+            
+            if (updateResult.rowCount === 0) {
+                return Response.json({
+                    success: false,
+                    error: 'PSP settings not found or not updated'
+                }, { status: 404 });
+            }
+            
             return Response.json({
                 success: true,
-                message: 'Settings updated successfully'
+                message: 'Settings updated successfully',
+                settings: updateResult.rows[0]
             });
         }
 
