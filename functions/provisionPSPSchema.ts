@@ -31,8 +31,19 @@ Deno.serve(async (req) => {
             // Create isolated schema for PSP (PCI DSS Requirement 12.3)
             await client.query(`CREATE SCHEMA IF NOT EXISTS ${schemaName}`);
 
-            // Create all necessary tables in the PSP schema
+            // Create all production tables in the PSP schema (PCI DSS + GDPR compliant)
             await client.query(`
+                -- PSP Settings Table
+                CREATE TABLE IF NOT EXISTS ${schemaName}.psp_settings (
+                    id SERIAL PRIMARY KEY,
+                    psp_code VARCHAR(50) UNIQUE NOT NULL,
+                    psp_name VARCHAR(255) NOT NULL,
+                    branding JSONB,
+                    settings JSONB,
+                    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                );
+
                 -- Merchants Table
                 CREATE TABLE IF NOT EXISTS ${schemaName}.merchants (
                     id SERIAL PRIMARY KEY,
@@ -43,26 +54,110 @@ Deno.serve(async (req) => {
                     phone VARCHAR(50),
                     status VARCHAR(50) DEFAULT 'pending',
                     onboarding_status VARCHAR(50) DEFAULT 'pending',
+                    mcc_code VARCHAR(10),
+                    country VARCHAR(100),
+                    currency VARCHAR(3) DEFAULT 'USD',
+                    processing_volume DECIMAL(15,2),
+                    risk_level VARCHAR(20) DEFAULT 'medium',
                     created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     created_by VARCHAR(255)
                 );
 
-                -- Transactions Table (PCI DSS Requirement 3.1 - Cardholder data storage)
+                -- Transactions Table (PCI DSS 3.1)
                 CREATE TABLE IF NOT EXISTS ${schemaName}.transactions (
                     id SERIAL PRIMARY KEY,
                     transaction_id VARCHAR(100) UNIQUE NOT NULL,
-                    merchant_id INTEGER,
+                    merchant_id INTEGER REFERENCES ${schemaName}.merchants(id),
                     amount DECIMAL(15, 2) NOT NULL,
                     currency VARCHAR(10) DEFAULT 'USD',
                     status VARCHAR(50) DEFAULT 'pending',
                     payment_method VARCHAR(100),
                     card_last4 VARCHAR(4),
                     card_brand VARCHAR(50),
+                    crypto_asset VARCHAR(50),
+                    customer_email VARCHAR(255),
+                    customer_name VARCHAR(255),
+                    ip_address VARCHAR(45),
+                    auth_code VARCHAR(20),
+                    risk_score INTEGER,
                     created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    created_by VARCHAR(255),
-                    CONSTRAINT fk_merchant FOREIGN KEY (merchant_id) REFERENCES ${schemaName}.merchants(id)
+                    created_by VARCHAR(255)
+                );
+
+                -- Settlements Table
+                CREATE TABLE IF NOT EXISTS ${schemaName}.settlements (
+                    id SERIAL PRIMARY KEY,
+                    settlement_id VARCHAR(50) UNIQUE,
+                    merchant_id INTEGER REFERENCES ${schemaName}.merchants(id),
+                    period_start DATE,
+                    period_end DATE,
+                    status VARCHAR(20) DEFAULT 'pending',
+                    gross_amount DECIMAL(15,2),
+                    fees DECIMAL(10,2),
+                    net_amount DECIMAL(15,2),
+                    currency VARCHAR(3) DEFAULT 'USD',
+                    transaction_count INTEGER,
+                    payout_date DATE,
+                    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                );
+
+                -- Chargebacks Table
+                CREATE TABLE IF NOT EXISTS ${schemaName}.chargebacks (
+                    id SERIAL PRIMARY KEY,
+                    chargeback_id VARCHAR(50) UNIQUE,
+                    transaction_id VARCHAR(255),
+                    merchant_id INTEGER REFERENCES ${schemaName}.merchants(id),
+                    card_network VARCHAR(20),
+                    reason_code VARCHAR(20),
+                    status VARCHAR(30) DEFAULT 'received',
+                    amount DECIMAL(15,2),
+                    currency VARCHAR(3) DEFAULT 'USD',
+                    chargeback_date DATE,
+                    response_due_date DATE,
+                    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                );
+
+                -- Refunds Table
+                CREATE TABLE IF NOT EXISTS ${schemaName}.refunds (
+                    id SERIAL PRIMARY KEY,
+                    refund_id VARCHAR(50) UNIQUE,
+                    transaction_id VARCHAR(255),
+                    merchant_id INTEGER REFERENCES ${schemaName}.merchants(id),
+                    amount DECIMAL(15,2),
+                    currency VARCHAR(3) DEFAULT 'USD',
+                    status VARCHAR(20) DEFAULT 'pending',
+                    reason TEXT,
+                    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                );
+
+                -- Payouts Table
+                CREATE TABLE IF NOT EXISTS ${schemaName}.payouts (
+                    id SERIAL PRIMARY KEY,
+                    payout_id VARCHAR(50) UNIQUE,
+                    merchant_id INTEGER REFERENCES ${schemaName}.merchants(id),
+                    amount DECIMAL(15,2),
+                    currency VARCHAR(3) DEFAULT 'USD',
+                    status VARCHAR(20) DEFAULT 'pending',
+                    bank_account_last4 VARCHAR(4),
+                    payment_method VARCHAR(50),
+                    scheduled_date DATE,
+                    executed_date TIMESTAMP,
+                    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                );
+
+                -- Terminals Table
+                CREATE TABLE IF NOT EXISTS ${schemaName}.terminals (
+                    id SERIAL PRIMARY KEY,
+                    terminal_id VARCHAR(50) UNIQUE,
+                    merchant_id INTEGER REFERENCES ${schemaName}.merchants(id),
+                    type VARCHAR(20),
+                    status VARCHAR(20) DEFAULT 'active',
+                    model VARCHAR(100),
+                    serial_number VARCHAR(100),
+                    location VARCHAR(255),
+                    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 );
 
                 -- App Users Table (PSP staff)
@@ -85,39 +180,87 @@ Deno.serve(async (req) => {
                     name VARCHAR(255) NOT NULL,
                     type VARCHAR(50),
                     status VARCHAR(50) DEFAULT 'active',
+                    supported_currencies TEXT[],
+                    base_fee_percentage DECIMAL(5,4),
+                    fixed_fee DECIMAL(10,2),
                     created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    created_by VARCHAR(255)
+                    updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 );
 
-                -- Audit Logs Table (PCI DSS Requirement 10.1 - Track and monitor all access)
+                -- Merchant MIDs Table
+                CREATE TABLE IF NOT EXISTS ${schemaName}.merchant_mids (
+                    id SERIAL PRIMARY KEY,
+                    merchant_id INTEGER REFERENCES ${schemaName}.merchants(id),
+                    mid VARCHAR(100) NOT NULL,
+                    provider_id INTEGER,
+                    provider_name VARCHAR(255),
+                    terminal_type VARCHAR(50),
+                    currency VARCHAR(3) DEFAULT 'USD',
+                    status VARCHAR(20) DEFAULT 'pending',
+                    activation_date DATE,
+                    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                );
+
+                -- Audit Logs Table (PCI DSS 10.1)
                 CREATE TABLE IF NOT EXISTS ${schemaName}.audit_logs (
                     id SERIAL PRIMARY KEY,
                     action VARCHAR(255) NOT NULL,
                     user_email VARCHAR(255),
+                    user_role VARCHAR(50),
                     ip_address VARCHAR(50),
+                    target_entity VARCHAR(100),
+                    target_id VARCHAR(255),
                     details JSONB,
                     created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 );
 
-                -- Sensitive Data Table (PCI DSS Requirement 3.2 - Do not store sensitive authentication data)
-                CREATE TABLE IF NOT EXISTS ${schemaName}.sensitive_data_log (
+                -- Webhooks Table
+                CREATE TABLE IF NOT EXISTS ${schemaName}.webhooks (
                     id SERIAL PRIMARY KEY,
-                    data_type VARCHAR(100) NOT NULL,
-                    action VARCHAR(50) NOT NULL,
-                    user_email VARCHAR(255),
+                    merchant_id INTEGER REFERENCES ${schemaName}.merchants(id),
+                    url VARCHAR(500),
+                    events TEXT[],
+                    status VARCHAR(20) DEFAULT 'active',
+                    secret VARCHAR(255),
                     created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 );
 
-                -- PSP Settings Table (Branding and Configuration)
-                CREATE TABLE IF NOT EXISTS ${schemaName}.psp_settings (
+                -- API Keys Table
+                CREATE TABLE IF NOT EXISTS ${schemaName}.api_keys (
                     id SERIAL PRIMARY KEY,
-                    psp_code VARCHAR(50) UNIQUE NOT NULL,
-                    psp_name VARCHAR(255) NOT NULL,
-                    branding JSONB,
-                    settings JSONB,
+                    merchant_id INTEGER REFERENCES ${schemaName}.merchants(id),
+                    key_hash VARCHAR(255),
+                    name VARCHAR(100),
+                    status VARCHAR(20) DEFAULT 'active',
+                    permissions TEXT[],
                     created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    last_used TIMESTAMP
+                );
+
+                -- Disputes Table
+                CREATE TABLE IF NOT EXISTS ${schemaName}.disputes (
+                    id SERIAL PRIMARY KEY,
+                    dispute_id VARCHAR(50) UNIQUE,
+                    transaction_id VARCHAR(255),
+                    merchant_id INTEGER REFERENCES ${schemaName}.merchants(id),
+                    status VARCHAR(30) DEFAULT 'open',
+                    reason TEXT,
+                    amount DECIMAL(15,2),
+                    currency VARCHAR(3) DEFAULT 'USD',
+                    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                );
+
+                -- Risk Alerts Table
+                CREATE TABLE IF NOT EXISTS ${schemaName}.risk_alerts (
+                    id SERIAL PRIMARY KEY,
+                    alert_id VARCHAR(50) UNIQUE,
+                    merchant_id INTEGER REFERENCES ${schemaName}.merchants(id),
+                    alert_type VARCHAR(50),
+                    severity VARCHAR(20) DEFAULT 'medium',
+                    status VARCHAR(20) DEFAULT 'open',
+                    description TEXT,
+                    affected_amount DECIMAL(15,2),
+                    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 );
             `);
 
@@ -157,15 +300,25 @@ Deno.serve(async (req) => {
                 `);
             }
 
-            // Create indexes for performance and security
+            // Create comprehensive indexes for performance and security
             await client.query(`
-                CREATE INDEX IF NOT EXISTS idx_${psp_code.toLowerCase()}_merchants_email ON ${schemaName}.merchants(email);
-                CREATE INDEX IF NOT EXISTS idx_${psp_code.toLowerCase()}_merchants_status ON ${schemaName}.merchants(status);
-                CREATE INDEX IF NOT EXISTS idx_${psp_code.toLowerCase()}_transactions_merchant ON ${schemaName}.transactions(merchant_id);
-                CREATE INDEX IF NOT EXISTS idx_${psp_code.toLowerCase()}_transactions_status ON ${schemaName}.transactions(status);
-                CREATE INDEX IF NOT EXISTS idx_${psp_code.toLowerCase()}_transactions_date ON ${schemaName}.transactions(created_date DESC);
-                CREATE INDEX IF NOT EXISTS idx_${psp_code.toLowerCase()}_audit_date ON ${schemaName}.audit_logs(created_date DESC);
-                CREATE INDEX IF NOT EXISTS idx_${psp_code.toLowerCase()}_audit_user ON ${schemaName}.audit_logs(user_email);
+                CREATE INDEX IF NOT EXISTS idx_merchants_email ON ${schemaName}.merchants(email);
+                CREATE INDEX IF NOT EXISTS idx_merchants_status ON ${schemaName}.merchants(status);
+                CREATE INDEX IF NOT EXISTS idx_merchants_code ON ${schemaName}.merchants(merchant_code);
+                CREATE INDEX IF NOT EXISTS idx_transactions_merchant ON ${schemaName}.transactions(merchant_id);
+                CREATE INDEX IF NOT EXISTS idx_transactions_status ON ${schemaName}.transactions(status);
+                CREATE INDEX IF NOT EXISTS idx_transactions_date ON ${schemaName}.transactions(created_date DESC);
+                CREATE INDEX IF NOT EXISTS idx_transactions_id ON ${schemaName}.transactions(transaction_id);
+                CREATE INDEX IF NOT EXISTS idx_settlements_merchant ON ${schemaName}.settlements(merchant_id);
+                CREATE INDEX IF NOT EXISTS idx_chargebacks_merchant ON ${schemaName}.chargebacks(merchant_id);
+                CREATE INDEX IF NOT EXISTS idx_chargebacks_status ON ${schemaName}.chargebacks(status);
+                CREATE INDEX IF NOT EXISTS idx_payouts_merchant ON ${schemaName}.payouts(merchant_id);
+                CREATE INDEX IF NOT EXISTS idx_terminals_merchant ON ${schemaName}.terminals(merchant_id);
+                CREATE INDEX IF NOT EXISTS idx_mids_merchant ON ${schemaName}.merchant_mids(merchant_id);
+                CREATE INDEX IF NOT EXISTS idx_audit_date ON ${schemaName}.audit_logs(created_date DESC);
+                CREATE INDEX IF NOT EXISTS idx_audit_user ON ${schemaName}.audit_logs(user_email);
+                CREATE INDEX IF NOT EXISTS idx_risk_alerts_merchant ON ${schemaName}.risk_alerts(merchant_id);
+                CREATE INDEX IF NOT EXISTS idx_risk_alerts_status ON ${schemaName}.risk_alerts(status);
             `);
 
             // Grant appropriate permissions (GDPR Article 32 - Security of processing)
