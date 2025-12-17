@@ -42,8 +42,19 @@ export default function DatabaseSetup() {
         setError(null);
         
         try {
+            // Get PSP code from session
+            const sessionData = localStorage.getItem('staff_session');
+            let pspCode = null;
+            if (sessionData) {
+                const session = JSON.parse(sessionData);
+                pspCode = session.psp_code;
+            }
+            
+            console.log('🔧 Initializing schema for PSP:', pspCode);
+            
             const response = await base44.functions.invoke(schema.function, {
-                action: 'initAllSchemas'
+                action: 'initAllSchemas',
+                psp_code: pspCode
             });
             
             if (response.data?.success) {
@@ -63,7 +74,18 @@ export default function DatabaseSetup() {
 
     const loadStats = async () => {
         try {
-            const response = await base44.functions.invoke('dbCore', { action: 'getStats' });
+            // Get PSP code from session
+            const sessionData = localStorage.getItem('staff_session');
+            let pspCode = null;
+            if (sessionData) {
+                const session = JSON.parse(sessionData);
+                pspCode = session.psp_code;
+            }
+            
+            const response = await base44.functions.invoke('dbCore', { 
+                action: 'getStats',
+                psp_code: pspCode 
+            });
             if (response.data?.success) {
                 setDbStats(response.data.data);
             }
@@ -83,8 +105,17 @@ export default function DatabaseSetup() {
         setError(null);
         
         try {
+            // Get PSP code from session
+            const sessionData = localStorage.getItem('staff_session');
+            let pspCode = null;
+            if (sessionData) {
+                const session = JSON.parse(sessionData);
+                pspCode = session.psp_code;
+            }
+            
             const response = await base44.functions.invoke('dbCore', {
-                action: 'testConnection'
+                action: 'testConnection',
+                psp_code: pspCode
             });
             
             if (response.data?.success) {

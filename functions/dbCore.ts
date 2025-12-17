@@ -9,27 +9,40 @@ const pool = new Pool({
 });
 
 Deno.serve(async (req) => {
+    const client = await pool.connect();
     try {
-        // Skip auth check if called from another backend function
-        const base44 = createClientFromRequest(req);
-        try {
-            const user = await base44.auth.me();
-            if (!user) {
-                // Allow if no auth (called from backend function)
-                console.log('No user auth - allowing backend function access');
+        // Get PSP code from staff session
+        const body = await req.json();
+        const { action, sql, params, data, psp_code } = body;
+
+        // Get PSP code from session
+        let userPspCode = psp_code;
+        if (!userPspCode) {
+            const base44 = createClientFromRequest(req);
+            try {
+                const user = await base44.auth.me();
+                // Try to get PSP code from user metadata or session
+                userPspCode = user?.psp_code;
+            } catch (e) {
+                console.log('Could not get PSP code from auth');
             }
-        } catch (e) {
-            // Allow if auth fails (called from backend function)
-            console.log('Auth check failed - allowing backend function access');
         }
 
-        const body = await req.json();
-        const { action, sql, params, data } = body;
+        console.log('🔧 dbCore called with PSP code:', userPspCode);
 
         switch (action) {
             case 'initAllSchemas': {
+                // CRITICAL: Set search path to PSP-isolated schema
+                if (userPspCode) {
+                    const schemaName = `psp_${userPspCode.toLowerCase()}`;
+                    console.log('📂 Setting schema to:', schemaName);
+                    await client.query(`SET search_path TO ${schemaName}`);
+                } else {
+                    console.warn('⚠️ No PSP code provided - using public schema');
+                }
+
                 // Initialize all database schemas for production
-                await pool.query(`
+                await client.query(`
                     -- Merchants table
                     CREATE TABLE IF NOT EXISTS merchants (
                         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -405,11 +418,17 @@ Deno.serve(async (req) => {
                     CREATE INDEX IF NOT EXISTS idx_merchant_users_email ON merchant_users(email);
                     CREATE INDEX IF NOT EXISTS idx_merchant_users_merchant ON merchant_users(merchant_id);
                 `);
-                return Response.json({ success: true, message: 'All schemas initialized for production' });
+                
+                const schemaName = userPspCode ? `psp_${userPspCode.toLowerCase()}` : 'public';
+                return Response.json({ 
+                    success: true, 
+                    message: `All schemas initialized in ${schemaName}`,
+                    schema: schemaName 
+                });
             }
 
             case 'testConnection': {
-                const result = await pool.query('SELECT NOW() as server_time, version() as pg_version');
+                const result = await client.query('SELECT NOW() as server_time, version() as pg_version');
                 return Response.json({ 
                     success: true, 
                     serverTime: result.rows[0].server_time,
@@ -418,7 +437,13 @@ Deno.serve(async (req) => {
             }
 
             case 'getStats': {
-                const stats = await pool.query(`
+                // Set schema if PSP code provided
+                if (userPspCode) {
+                    const schemaName = `psp_${userPspCode.toLowerCase()}`;
+                    await client.query(`SET search_path TO ${schemaName}`);
+                }
+                
+                const stats = await client.query(`
                     SELECT 
                         (SELECT COUNT(*) FROM merchants) as merchant_count,
                         (SELECT COUNT(*) FROM transactions) as transaction_count,
@@ -430,12 +455,20 @@ Deno.serve(async (req) => {
             }
 
             case 'query': {
-                const result = await pool.query(sql, params || []);
+                if (userPspCode) {
+                    const schemaName = `psp_${userPspCode.toLowerCase()}`;
+                    await client.query(`SET search_path TO ${schemaName}`);
+                }
+                const result = await client.query(sql, params || []);
                 return Response.json({ success: true, data: result });
             }
 
             case 'execute': {
-                await pool.query(sql, params || []);
+                if (userPspCode) {
+                    const schemaName = `psp_${userPspCode.toLowerCase()}`;
+                    await client.query(`SET search_path TO ${schemaName}`);
+                }
+                await client.query(sql, params || []);
                 return Response.json({ success: true });
             }
 
@@ -443,7 +476,9 @@ Deno.serve(async (req) => {
                 return Response.json({ error: 'Invalid action' }, { status: 400 });
         }
     } catch (error) {
-        console.error('Database error:', error);
+        console.error('❌ Database error:', error);
         return Response.json({ error: error.message }, { status: 500 });
+    } finally {
+        client.release();
     }
 });
