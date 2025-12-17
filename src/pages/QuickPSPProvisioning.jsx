@@ -12,11 +12,11 @@ import { Badge } from "@/components/ui/badge";
 import { PSP_TEMPLATES, applyTemplate } from '@/components/platform/PSPTemplates';
 import { 
     ModuleSelector, 
-    FeatureToggles, 
     BrandingConfig, 
     LimitsConfig, 
     PricingModelConfig 
 } from '@/components/platform/PSPComponentLibrary';
+import MenuConfigEditor from '@/components/platform/MenuConfigEditor';
 import { 
     Building2, 
     Zap, 
@@ -44,33 +44,68 @@ export default function QuickPSPProvisioning() {
         enabled_modules: [],
         features: {},
         limits: {},
-        pricing_model: {}
+        pricing_model: {},
+        menu_config: [],
+        admin_user: {
+            email: '',
+            full_name: '',
+            password: ''
+        }
     });
 
     const provisionMutation = useMutation({
         mutationFn: async (config) => {
-            // Create ProvisionedPSP entity
-            const psp = await base44.entities.ProvisionedPSP.create({
+            // Step 1: Provision database schema (ensures clean, empty database)
+            const schemaResult = await base44.functions.invoke('provisionPSPSchema', {
                 psp_code: config.psp_code,
-                instance_name: config.instance_name,
-                status: 'provisioning',
+                template_psp_code: selectedTemplate?.id === 'netxhub_full' ? 'NETXHUB' : null
+            });
+
+            if (!schemaResult.data.success) {
+                throw new Error('Schema provisioning failed');
+            }
+
+            // Step 2: Create first admin user
+            const userResult = await base44.functions.invoke('getPSPSettings', {
+                psp_code: config.psp_code,
+                action: 'createUser',
+                user_data: {
+                    email: config.admin_user.email,
+                    full_name: config.admin_user.full_name,
+                    role: 'admin',
+                    password: config.admin_user.password
+                }
+            });
+
+            if (!userResult.data.success) {
+                throw new Error('Failed to create admin user');
+            }
+
+            // Step 3: Create ProvisionedPSP entity
+            const psp = await base44.asServiceRole.entities.ProvisionedPSP.create({
+                psp_code: config.psp_code,
+                psp_name: config.instance_name,
+                status: 'active',
                 branding: config.branding,
                 enabled_modules: config.enabled_modules,
                 features: config.features
             });
 
-            // Create PSPSettings
-            await base44.entities.PSPSettings.create({
-                psp_id: psp.id,
+            // Step 4: Update PSP settings with menu configuration
+            await base44.functions.invoke('getPSPSettings', {
                 psp_code: config.psp_code,
-                psp_name: config.instance_name,
-                branding: config.branding,
-                limits: config.limits,
-                pricing_model: config.pricing_model
+                action: 'update',
+                settings: {
+                    company_name: config.instance_name,
+                    branding: config.branding,
+                    menu_config: config.menu_config,
+                    limits: config.limits,
+                    pricing_model: config.pricing_model
+                }
             });
 
-            // Create MerchantPortalConfig based on template
-            await base44.entities.MerchantPortalConfig.create({
+            // Step 5: Create MerchantPortalConfig
+            await base44.asServiceRole.entities.MerchantPortalConfig.create({
                 config_id: `PORTAL-${psp.id}`,
                 psp_id: psp.id,
                 psp_code: config.psp_code,
@@ -88,6 +123,7 @@ export default function QuickPSPProvisioning() {
                     header_style: 'full'
                 },
                 enabled_features: config.enabled_modules,
+                navigation_menu: config.menu_config,
                 status: 'active',
                 version: '1.0.0'
             });
@@ -259,14 +295,63 @@ export default function QuickPSPProvisioning() {
                                 <CardDescription>Customize modules, features, and settings</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <Tabs defaultValue="modules">
-                                    <TabsList className="grid grid-cols-5 w-full">
+                                <Tabs defaultValue="admin">
+                                    <TabsList className="grid grid-cols-6 w-full">
+                                        <TabsTrigger value="admin">Admin User</TabsTrigger>
                                         <TabsTrigger value="modules">Modules</TabsTrigger>
-                                        <TabsTrigger value="features">Features</TabsTrigger>
+                                        <TabsTrigger value="menus">Menus</TabsTrigger>
                                         <TabsTrigger value="branding">Branding</TabsTrigger>
                                         <TabsTrigger value="limits">Limits</TabsTrigger>
                                         <TabsTrigger value="pricing">Pricing</TabsTrigger>
                                     </TabsList>
+
+                                    <TabsContent value="admin" className="mt-6">
+                                        <div className="space-y-4">
+                                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                                                <p className="text-sm text-blue-800">
+                                                    <strong>First Admin User:</strong> This user will have full access to the PSP. They can create additional users later.
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <Label>Admin Email *</Label>
+                                                <Input
+                                                    type="email"
+                                                    value={pspConfig.admin_user.email}
+                                                    onChange={(e) => setPspConfig({
+                                                        ...pspConfig,
+                                                        admin_user: { ...pspConfig.admin_user, email: e.target.value }
+                                                    })}
+                                                    placeholder="admin@example.com"
+                                                    required
+                                                />
+                                            </div>
+                                            <div>
+                                                <Label>Full Name *</Label>
+                                                <Input
+                                                    value={pspConfig.admin_user.full_name}
+                                                    onChange={(e) => setPspConfig({
+                                                        ...pspConfig,
+                                                        admin_user: { ...pspConfig.admin_user, full_name: e.target.value }
+                                                    })}
+                                                    placeholder="John Doe"
+                                                    required
+                                                />
+                                            </div>
+                                            <div>
+                                                <Label>Password *</Label>
+                                                <Input
+                                                    type="password"
+                                                    value={pspConfig.admin_user.password}
+                                                    onChange={(e) => setPspConfig({
+                                                        ...pspConfig,
+                                                        admin_user: { ...pspConfig.admin_user, password: e.target.value }
+                                                    })}
+                                                    placeholder="Minimum 8 characters"
+                                                    required
+                                                />
+                                            </div>
+                                        </div>
+                                    </TabsContent>
 
                                     <TabsContent value="modules" className="mt-6">
                                         <ModuleSelector
@@ -275,10 +360,11 @@ export default function QuickPSPProvisioning() {
                                         />
                                     </TabsContent>
 
-                                    <TabsContent value="features" className="mt-6">
-                                        <FeatureToggles
-                                            features={pspConfig.features}
-                                            onChange={(features) => setPspConfig({...pspConfig, features})}
+                                    <TabsContent value="menus" className="mt-6">
+                                        <MenuConfigEditor
+                                            menuConfig={pspConfig.menu_config}
+                                            enabledModules={pspConfig.enabled_modules}
+                                            onChange={(menu_config) => setPspConfig({...pspConfig, menu_config})}
                                         />
                                     </TabsContent>
 
