@@ -10,7 +10,7 @@ const pool = new Pool({
 Deno.serve(async (req) => {
     const client = await pool.connect();
     try {
-        const { psp_code } = await req.json();
+        const { psp_code, action, settings } = await req.json();
 
         console.log('🔍 getPSPSettings called with psp_code:', psp_code);
 
@@ -26,27 +26,60 @@ Deno.serve(async (req) => {
         console.log('📂 Setting schema to:', schemaName);
         await client.query(`SET search_path TO ${schemaName}`);
 
-        // Query from isolated schema
+        // Handle update action
+        if (action === 'update') {
+            console.log('📝 Updating PSP settings...');
+            await client.query(
+                `UPDATE psp_settings 
+                SET psp_name = $1, 
+                    branding = $2,
+                    settings = $3,
+                    updated_date = CURRENT_TIMESTAMP
+                WHERE UPPER(psp_code) = UPPER($4)`,
+                [
+                    settings.company_name || settings.psp_name,
+                    JSON.stringify(settings.branding || {}),
+                    JSON.stringify(settings),
+                    psp_code
+                ]
+            );
+
+            console.log('✅ Settings updated successfully');
+            return Response.json({
+                success: true,
+                message: 'Settings updated successfully'
+            });
+        }
+
+        // Default: Get settings
         const result = await client.query(
             'SELECT * FROM psp_settings WHERE UPPER(psp_code) = UPPER($1) LIMIT 1',
             [psp_code]
         );
 
         console.log('📊 Query result rows:', result.rows.length);
-        console.log('📊 Settings found:', result.rows[0]);
 
-        const settings = result.rows[0];
+        const settingsRow = result.rows[0];
 
-        if (!settings) {
+        if (!settingsRow) {
             return Response.json({
                 success: false,
                 error: 'PSP settings not found'
             }, { status: 404 });
         }
 
+        // Merge JSONB fields with row data
+        const mergedSettings = {
+            ...settingsRow,
+            ...(settingsRow.settings || {}),
+            branding: settingsRow.branding || {}
+        };
+
+        console.log('📊 Merged settings:', mergedSettings);
+
         return Response.json({
             success: true,
-            settings: settings
+            settings: mergedSettings
         });
 
     } catch (error) {
