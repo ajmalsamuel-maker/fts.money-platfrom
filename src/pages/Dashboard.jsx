@@ -47,6 +47,7 @@ import { createPageUrl } from '@/utils';
 
 export default function Dashboard() {
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const [helpOpen, setHelpOpen] = useState(false);
     const { t, language } = useTranslation();
@@ -67,6 +68,9 @@ export default function Dashboard() {
             const session = JSON.parse(sessionData);
             
             if (session?.psp_code) {
+                // CRITICAL: Clear ALL React Query cache when switching PSPs
+                queryClient.clear();
+                
                 setUserPspCode(session.psp_code);
                 setIsReady(true);
             } else {
@@ -77,7 +81,7 @@ export default function Dashboard() {
             localStorage.clear();
             window.location.href = '/PSPLogin';
         }
-    }, []);
+    }, [queryClient]);
 
     // Fetch data from isolated PSP schema (PCI Level 1 & GDPR compliant)
     const { data: transactions = [] } = useQuery({
