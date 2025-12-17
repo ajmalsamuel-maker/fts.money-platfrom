@@ -10,7 +10,7 @@ const pool = new Pool({
 Deno.serve(async (req) => {
     const client = await pool.connect();
     try {
-        const { psp_code, action, settings } = await req.json();
+        const { psp_code, action, settings, user_data, user_id, updates, new_password } = await req.json();
 
         console.log('🔍 getPSPSettings called with psp_code:', psp_code);
 
@@ -64,7 +64,6 @@ Deno.serve(async (req) => {
         
         // Create user
         if (action === 'createUser') {
-            const { user_data } = settings;
             const result = await client.query(
                 `INSERT INTO app_users (user_id, email, full_name, role, department, password_hash, status, created_date)
                 VALUES ($1, $2, $3, $4, $5, $6, $7, CURRENT_TIMESTAMP)
@@ -84,7 +83,6 @@ Deno.serve(async (req) => {
         
         // Update user
         if (action === 'updateUser') {
-            const { user_id, updates } = settings;
             const setClauses = [];
             const values = [];
             let paramCounter = 1;
@@ -105,7 +103,6 @@ Deno.serve(async (req) => {
         
         // Update password
         if (action === 'updatePassword') {
-            const { user_id, new_password } = settings;
             await client.query(
                 'UPDATE app_users SET password_hash = $1, updated_date = CURRENT_TIMESTAMP WHERE user_id = $2',
                 [new_password, user_id]
