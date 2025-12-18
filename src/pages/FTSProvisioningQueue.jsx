@@ -50,14 +50,6 @@ export default function FTSProvisioningQueue() {
         enabled: !!platformUser
     });
 
-    if (loading || loadingProvisioning || loadingActive || loadingApprovals) {
-        return (
-            <div className="flex h-screen items-center justify-center">
-                <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
-            </div>
-        );
-    }
-
     const executeStepMutation = useMutation({
         mutationFn: async ({ pspId, step }) => {
             // Simulate provisioning step execution
@@ -269,6 +261,14 @@ FTS.Money Platform Team
         // Mark as complete
         await completeProvisioningMutation.mutateAsync(pspId);
     };
+
+    if (loading || loadingProvisioning || loadingActive || loadingApprovals) {
+        return (
+            <div className="flex h-screen items-center justify-center">
+                <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+            </div>
+        );
+    }
 
     return (
         <div className="flex h-screen bg-slate-50">
