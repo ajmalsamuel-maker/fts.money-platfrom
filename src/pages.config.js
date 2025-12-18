@@ -185,6 +185,7 @@ import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import ProductTemplateLibrary from './pages/ProductTemplateLibrary';
 import ModuleCatalogTest from './pages/ModuleCatalogTest';
 import MerchantProvisioning from './pages/MerchantProvisioning';
+import PlatformPricingConfiguration from './pages/PlatformPricingConfiguration';
 import __Layout from './Layout.jsx';
 
 
@@ -376,6 +377,7 @@ export const PAGES = {
     "ProductTemplateLibrary": ProductTemplateLibrary,
     "ModuleCatalogTest": ModuleCatalogTest,
     "MerchantProvisioning": MerchantProvisioning,
+    "PlatformPricingConfiguration": PlatformPricingConfiguration,
 }
 
 export const pagesConfig = {

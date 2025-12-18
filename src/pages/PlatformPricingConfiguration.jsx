@@ -1,0 +1,297 @@
+import React, { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { base44 } from '@/api/base44Client';
+import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
+import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { 
+    DollarSign, 
+    Save, 
+    RefreshCw,
+    Zap,
+    TrendingUp,
+    Building2,
+    Building,
+    Check
+} from 'lucide-react';
+
+const TIER_ICONS = {
+    starter: Zap,
+    growth: TrendingUp,
+    professional: Building2,
+    enterprise: Building
+};
+
+const DEFAULT_TIERS = [
+    {
+        tier_name: 'starter',
+        display_name: 'Starter',
+        setup_fee: 0,
+        monthly_hosting_fee: 0,
+        transaction_fee_percentage: 3.5,
+        transaction_fee_fixed: 0.50,
+        max_merchants: 100,
+        max_transactions_per_month: 10000,
+        max_transaction_amount: 10000,
+        support_level: 'email',
+        sla_uptime: 99.5,
+        sort_order: 1
+    },
+    {
+        tier_name: 'growth',
+        display_name: 'Growth',
+        setup_fee: 999,
+        monthly_hosting_fee: 299,
+        transaction_fee_percentage: 2.9,
+        transaction_fee_fixed: 0.30,
+        max_merchants: 500,
+        max_transactions_per_month: 100000,
+        max_transaction_amount: 50000,
+        support_level: 'priority',
+        sla_uptime: 99.9,
+        sort_order: 2
+    },
+    {
+        tier_name: 'professional',
+        display_name: 'Professional',
+        setup_fee: 4999,
+        monthly_hosting_fee: 999,
+        transaction_fee_percentage: 2.5,
+        transaction_fee_fixed: 0.25,
+        max_merchants: 2500,
+        max_transactions_per_month: 500000,
+        max_transaction_amount: 250000,
+        support_level: 'priority',
+        sla_uptime: 99.95,
+        sort_order: 3
+    },
+    {
+        tier_name: 'enterprise',
+        display_name: 'Enterprise',
+        setup_fee: 15000,
+        monthly_hosting_fee: 5000,
+        transaction_fee_percentage: 0,
+        transaction_fee_fixed: 0,
+        max_merchants: null,
+        max_transactions_per_month: null,
+        max_transaction_amount: null,
+        support_level: 'dedicated',
+        sla_uptime: 99.99,
+        sort_order: 4
+    }
+];
+
+export default function PlatformPricingConfiguration() {
+    const { platformUser } = usePlatformAuth();
+    const queryClient = useQueryClient();
+    const [editingTier, setEditingTier] = useState(null);
+
+    const { data: tiers = [], isLoading } = useQuery({
+        queryKey: ['platform-pricing'],
+        queryFn: () => base44.entities.PlatformPricingConfig.list('sort_order')
+    });
+
+    const saveMutation = useMutation({
+        mutationFn: async (tier) => {
+            if (tier.id) {
+                return base44.entities.PlatformPricingConfig.update(tier.id, tier);
+            } else {
+                return base44.entities.PlatformPricingConfig.create(tier);
+            }
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['platform-pricing'] });
+            setEditingTier(null);
+        }
+    });
+
+    const resetDefaultsMutation = useMutation({
+        mutationFn: async () => {
+            // Delete all existing
+            for (const tier of tiers) {
+                await base44.entities.PlatformPricingConfig.delete(tier.id);
+            }
+            // Create defaults
+            for (const defaultTier of DEFAULT_TIERS) {
+                await base44.entities.PlatformPricingConfig.create(defaultTier);
+            }
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['platform-pricing'] });
+        }
+    });
+
+    const displayTiers = tiers.length > 0 ? tiers : DEFAULT_TIERS;
+
+    return (
+        <div className="flex h-screen bg-slate-50">
+            <FTSPlatformSidebar 
+                currentPage="PlatformPricingConfiguration"
+                userEmail={platformUser?.email}
+                userRole={platformUser?.platform_role}
+            />
+            
+            <div className="flex-1 overflow-y-auto">
+                <div className="p-8">
+                    {/* Header */}
+                    <div className="mb-8">
+                        <div className="flex items-center justify-between mb-4">
+                            <div>
+                                <h1 className="text-3xl font-bold text-slate-900 flex items-center gap-3">
+                                    <DollarSign className="h-8 w-8 text-blue-600" />
+                                    Platform Pricing Configuration
+                                </h1>
+                                <p className="text-slate-600 mt-1">
+                                    Configure setup fees and monthly hosting costs for each PSP tier
+                                </p>
+                            </div>
+                            <Button
+                                onClick={() => resetDefaultsMutation.mutate()}
+                                variant="outline"
+                                disabled={resetDefaultsMutation.isPending}
+                            >
+                                <RefreshCw className="h-4 w-4 mr-2" />
+                                Reset to Defaults
+                            </Button>
+                        </div>
+                    </div>
+
+                    {/* Pricing Cards */}
+                    <div className="grid grid-cols-4 gap-6">
+                        {displayTiers.map((tier) => {
+                            const Icon = TIER_ICONS[tier.tier_name] || Building;
+                            const isEditing = editingTier?.tier_name === tier.tier_name;
+                            const currentTier = isEditing ? editingTier : tier;
+
+                            return (
+                                <Card key={tier.tier_name} className="bg-white shadow-lg hover:shadow-xl transition-shadow">
+                                    <CardHeader className="bg-gradient-to-r from-slate-50 to-blue-50/50 border-b">
+                                        <div className="flex items-center gap-3 mb-2">
+                                            <div className="p-2 bg-blue-100 rounded-lg">
+                                                <Icon className="h-5 w-5 text-blue-600" />
+                                            </div>
+                                            <CardTitle className="text-lg">{tier.display_name}</CardTitle>
+                                        </div>
+                                    </CardHeader>
+                                    <CardContent className="space-y-4 pt-6">
+                                        <div>
+                                            <Label className="text-xs text-slate-600">Setup Fee (USD)</Label>
+                                            {isEditing ? (
+                                                <Input
+                                                    type="number"
+                                                    value={currentTier.setup_fee}
+                                                    onChange={(e) => setEditingTier({
+                                                        ...currentTier,
+                                                        setup_fee: parseFloat(e.target.value)
+                                                    })}
+                                                    className="mt-1"
+                                                />
+                                            ) : (
+                                                <p className="text-2xl font-bold text-slate-900">
+                                                    {tier.tier_name === 'enterprise' && tier.setup_fee >= 10000
+                                                        ? 'Custom'
+                                                        : `$${tier.setup_fee.toLocaleString()}`
+                                                    }
+                                                </p>
+                                            )}
+                                        </div>
+
+                                        <div>
+                                            <Label className="text-xs text-slate-600">Monthly Hosting (USD)</Label>
+                                            {isEditing ? (
+                                                <Input
+                                                    type="number"
+                                                    value={currentTier.monthly_hosting_fee}
+                                                    onChange={(e) => setEditingTier({
+                                                        ...currentTier,
+                                                        monthly_hosting_fee: parseFloat(e.target.value)
+                                                    })}
+                                                    className="mt-1"
+                                                />
+                                            ) : (
+                                                <p className="text-xl font-semibold text-blue-600">
+                                                    {tier.tier_name === 'enterprise' && tier.monthly_hosting_fee >= 5000
+                                                        ? 'From $5K'
+                                                        : `$${tier.monthly_hosting_fee.toLocaleString()}/mo`
+                                                    }
+                                                </p>
+                                            )}
+                                        </div>
+
+                                        <div className="pt-4 border-t space-y-2">
+                                            <div className="flex items-center text-xs">
+                                                <Check className="h-3 w-3 text-emerald-600 mr-2" />
+                                                <span className="text-slate-600">
+                                                    {tier.max_merchants ? `${tier.max_merchants} merchants` : 'Unlimited merchants'}
+                                                </span>
+                                            </div>
+                                            <div className="flex items-center text-xs">
+                                                <Check className="h-3 w-3 text-emerald-600 mr-2" />
+                                                <span className="text-slate-600">
+                                                    {tier.transaction_fee_percentage}% + ${tier.transaction_fee_fixed}
+                                                </span>
+                                            </div>
+                                            <div className="flex items-center text-xs">
+                                                <Check className="h-3 w-3 text-emerald-600 mr-2" />
+                                                <span className="text-slate-600">{tier.sla_uptime}% uptime</span>
+                                            </div>
+                                            <div className="flex items-center text-xs">
+                                                <Check className="h-3 w-3 text-emerald-600 mr-2" />
+                                                <span className="text-slate-600 capitalize">{tier.support_level} support</span>
+                                            </div>
+                                        </div>
+
+                                        <div className="pt-4">
+                                            {isEditing ? (
+                                                <div className="flex gap-2">
+                                                    <Button
+                                                        onClick={() => saveMutation.mutate(currentTier)}
+                                                        disabled={saveMutation.isPending}
+                                                        className="flex-1"
+                                                    >
+                                                        <Save className="h-4 w-4 mr-2" />
+                                                        Save
+                                                    </Button>
+                                                    <Button
+                                                        variant="outline"
+                                                        onClick={() => setEditingTier(null)}
+                                                    >
+                                                        Cancel
+                                                    </Button>
+                                                </div>
+                                            ) : (
+                                                <Button
+                                                    variant="outline"
+                                                    onClick={() => setEditingTier(tier)}
+                                                    className="w-full"
+                                                >
+                                                    Edit Pricing
+                                                </Button>
+                                            )}
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            );
+                        })}
+                    </div>
+
+                    {/* Info Box */}
+                    <Card className="mt-8 bg-blue-50 border-blue-200">
+                        <CardContent className="pt-6">
+                            <h3 className="font-semibold text-blue-900 mb-2">About Platform Pricing</h3>
+                            <p className="text-sm text-blue-800 leading-relaxed">
+                                These pricing tiers are displayed during PSP provisioning and stored in each PSP's configuration. 
+                                Setup fees are one-time charges, while monthly hosting fees are recurring. Transaction fees are 
+                                applied per payment processed. Enterprise tier pricing is typically customized per client.
+                            </p>
+                        </CardContent>
+                    </Card>
+                </div>
+            </div>
+        </div>
+    );
+}

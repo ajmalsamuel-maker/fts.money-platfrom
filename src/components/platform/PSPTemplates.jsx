@@ -1,83 +1,90 @@
-// Reusable PSP Configuration Templates based on NetXHub architecture
+// Reusable PSP Configuration Templates - 4 Commercial Tiers
+// Based on market research: White-label PSP pricing (2025)
 
 export const PSP_TEMPLATES = {
-    netxhub_standard: {
-        id: 'netxhub_standard',
-        name: 'NetXHub Standard',
-        description: 'Complete payment platform with all features (recommended)',
-        icon: 'Building2',
+    starter: {
+        id: 'starter',
+        name: 'Starter',
+        description: 'Perfect for solo developers and MVPs',
+        icon: 'Zap',
+        badge: 'Free to start',
+        pricing: {
+            setup_fee: 0,
+            monthly_hosting_fee: 0,
+            overage_fee_per_merchant: 5,
+            note: 'Pay as you grow - $5/merchant after 100'
+        },
         config: {
             instance_name: '',
             psp_code: '',
+            subscription_tier: 'free',
             branding: {
                 company_name: '',
-                primary_color: '#3b82f6',
-                secondary_color: '#06b6d4',
+                primary_color: '#10b981',
+                secondary_color: '#3b82f6',
                 logo_url: ''
             },
             enabled_modules: [
-                'transactions',
-                'merchants',
-                'payouts',
-                'analytics',
-                'fraud_prevention',
-                'compliance',
-                'api_gateway',
-                'terminals',
-                'crypto',
-                'orchestration',
-                'webhooks',
-                'reconciliation',
-                'invoicing',
-                'subscriptions'
+                'core_dashboard',
+                'core_transactions',
+                'core_merchants',
+                'core_system'
             ],
             features: {
-                multi_currency: true,
-                crypto_payments: true,
-                instant_payouts: true,
-                smart_routing: true,
-                fraud_detection: true,
+                multi_currency: false,
+                crypto_payments: false,
+                instant_payouts: false,
+                smart_routing: false,
+                fraud_detection: false,
                 compliance_tools: true,
-                merchant_portal: true,
-                white_label: true,
+                merchant_portal: false,
+                white_label: false,
                 api_access: true,
-                webhooks: true,
+                webhooks: false,
                 reporting: true,
-                reconciliation: true
+                reconciliation: false
             },
             merchant_onboarding: {
-                auto_approve: false,
-                kyb_required: true,
-                aml_screening: true,
-                document_verification: true,
-                risk_assessment: true
+                auto_approve: true,
+                kyb_required: false,
+                aml_screening: false,
+                document_verification: false,
+                risk_assessment: false
             },
             pricing_model: {
-                type: 'hybrid',
-                transaction_fee_percentage: 2.9,
-                transaction_fee_fixed: 0.30,
+                type: 'percentage',
+                transaction_fee_percentage: 3.5,
+                transaction_fee_fixed: 0.50,
                 monthly_fee: 0,
                 setup_fee: 0
             },
             limits: {
-                max_merchants: 1000,
-                max_transactions_per_month: 100000,
-                max_transaction_amount: 100000,
-                max_api_calls_per_minute: 1000
+                max_merchants: 100,
+                max_transactions_per_month: 10000,
+                max_transaction_amount: 10000,
+                max_api_calls_per_minute: 100
             },
             integrations: {
-                payment_gateways: ['stripe', 'adyen', 'checkout'],
-                crypto_exchanges: ['coinbase', 'binance'],
+                payment_gateways: ['stripe'],
+                crypto_exchanges: [],
                 banks: [],
                 alternative_payment_methods: []
-            }
+            },
+            support_level: 'email',
+            sla_uptime: 99.5
         }
     },
-    enterprise: {
-        id: 'enterprise',
-        name: 'Enterprise Platform',
-        description: 'High-volume platform with advanced features',
-        icon: 'Building',
+    growth: {
+        id: 'growth',
+        name: 'Growth',
+        description: 'Scale your payment infrastructure',
+        icon: 'TrendingUp',
+        badge: 'Most Popular',
+        pricing: {
+            setup_fee: 999,
+            monthly_hosting_fee: 299,
+            note: 'Best value for growing businesses'
+        },
         config: {
             instance_name: '',
             psp_code: '',
@@ -107,146 +114,13 @@ export const PSP_TEMPLATES = {
             ],
             features: {
                 multi_currency: true,
-                crypto_payments: true,
-                instant_payouts: true,
-                smart_routing: true,
-                fraud_detection: true,
-                compliance_tools: true,
-                merchant_portal: true,
-                white_label: true,
-                api_access: true,
-                webhooks: true,
-                reporting: true,
-                reconciliation: true,
-                custom_workflows: true,
-                advanced_analytics: true
-            },
-            merchant_onboarding: {
-                auto_approve: false,
-                kyb_required: true,
-                aml_screening: true,
-                document_verification: true,
-                risk_assessment: true,
-                custom_workflows: true
-            },
-            pricing_model: {
-                type: 'custom',
-                transaction_fee_percentage: 0,
-                transaction_fee_fixed: 0,
-                monthly_fee: 0,
-                setup_fee: 0
-            },
-            limits: {
-                max_merchants: 10000,
-                max_transactions_per_month: 10000000,
-                max_transaction_amount: 1000000,
-                max_api_calls_per_minute: 10000
-            },
-            integrations: {
-                payment_gateways: ['stripe', 'adyen', 'checkout', 'braintree'],
-                crypto_exchanges: ['coinbase', 'binance', 'kraken'],
-                banks: [],
-                alternative_payment_methods: []
-            }
-        }
-    },
-    startup: {
-        id: 'startup',
-        name: 'Startup Edition',
-        description: 'Essential features for growing businesses',
-        icon: 'Zap',
-        config: {
-            instance_name: '',
-            psp_code: '',
-            branding: {
-                company_name: '',
-                primary_color: '#8b5cf6',
-                secondary_color: '#ec4899',
-                logo_url: ''
-            },
-            enabled_modules: [
-                'transactions',
-                'merchants',
-                'payouts',
-                'analytics',
-                'api_gateway',
-                'webhooks'
-            ],
-            features: {
-                multi_currency: true,
                 crypto_payments: false,
                 instant_payouts: false,
                 smart_routing: false,
                 fraud_detection: true,
                 compliance_tools: true,
-                merchant_portal: true,
+                merchant_portal: false,
                 white_label: false,
-                api_access: true,
-                webhooks: true,
-                reporting: true,
-                reconciliation: false
-            },
-            merchant_onboarding: {
-                auto_approve: true,
-                kyb_required: false,
-                aml_screening: false,
-                document_verification: false,
-                risk_assessment: true
-            },
-            pricing_model: {
-                type: 'percentage',
-                transaction_fee_percentage: 3.5,
-                transaction_fee_fixed: 0.50,
-                monthly_fee: 0,
-                setup_fee: 0
-            },
-            limits: {
-                max_merchants: 100,
-                max_transactions_per_month: 10000,
-                max_transaction_amount: 10000,
-                max_api_calls_per_minute: 100
-            },
-            integrations: {
-                payment_gateways: ['stripe'],
-                crypto_exchanges: [],
-                banks: [],
-                alternative_payment_methods: []
-            }
-        }
-    },
-    crypto_focused: {
-        id: 'crypto_focused',
-        name: 'Crypto-First Platform',
-        description: 'Optimized for cryptocurrency payments',
-        icon: 'Coins',
-        config: {
-            instance_name: '',
-            psp_code: '',
-            branding: {
-                company_name: '',
-                primary_color: '#f59e0b',
-                secondary_color: '#10b981',
-                logo_url: ''
-            },
-            enabled_modules: [
-                'transactions',
-                'merchants',
-                'payouts',
-                'analytics',
-                'crypto',
-                'api_gateway',
-                'webhooks',
-                'compliance'
-            ],
-            features: {
-                multi_currency: true,
-                crypto_payments: true,
-                instant_payouts: true,
-                smart_routing: false,
-                fraud_detection: true,
-                compliance_tools: true,
-                merchant_portal: true,
-                white_label: true,
                 api_access: true,
                 webhooks: true,
                 reporting: true,
@@ -260,24 +134,212 @@ export const PSP_TEMPLATES = {
                 risk_assessment: true
             },
             pricing_model: {
-                type: 'percentage',
-                transaction_fee_percentage: 1.5,
-                transaction_fee_fixed: 0,
-                monthly_fee: 0,
-                setup_fee: 0
+                type: 'hybrid',
+                transaction_fee_percentage: 2.9,
+                transaction_fee_fixed: 0.30,
+                monthly_fee: 299,
+                setup_fee: 999
             },
             limits: {
                 max_merchants: 500,
-                max_transactions_per_month: 50000,
-                max_transaction_amount: 500000,
+                max_transactions_per_month: 100000,
+                max_transaction_amount: 50000,
                 max_api_calls_per_minute: 500
             },
             integrations: {
-                payment_gateways: [],
-                crypto_exchanges: ['coinbase', 'binance', 'kraken', 'gemini'],
+                payment_gateways: ['stripe', 'adyen', 'checkout'],
+                crypto_exchanges: [],
                 banks: [],
-                alternative_payment_methods: []
-            }
+                alternative_payment_methods: ['paypal', 'apple_pay', 'google_pay']
+            },
+            support_level: 'priority',
+            sla_uptime: 99.9
+        }
+    },
+    professional: {
+        id: 'professional',
+        name: 'Professional',
+        description: 'Enterprise-grade features at mid-market pricing',
+        icon: 'Building2',
+        badge: 'Best Value',
+        pricing: {
+            setup_fee: 4999,
+            monthly_hosting_fee: 999,
+            note: 'Advanced features + Priority support'
+        },
+        config: {
+            instance_name: '',
+            psp_code: '',
+            subscription_tier: 'professional',
+            branding: {
+                company_name: '',
+                primary_color: '#8b5cf6',
+                secondary_color: '#ec4899',
+                logo_url: ''
+            },
+            enabled_modules: [
+                'core_dashboard',
+                'core_transactions',
+                'core_merchants',
+                'core_system',
+                'payment_gateways',
+                'alternative_payments',
+                'crypto_payments',
+                'smart_routing',
+                'mid_routing',
+                'fraud_prevention',
+                'compliance_suite',
+                'chargeback_management',
+                'payout_management',
+                'pricing_engine',
+                'merchant_portal',
+                'customer_management',
+                'products_subscriptions',
+                'virtual_terminal',
+                'physical_terminals',
+                'api_management',
+                'merchant_onboarding_workflow'
+            ],
+            features: {
+                multi_currency: true,
+                crypto_payments: true,
+                instant_payouts: true,
+                smart_routing: true,
+                fraud_detection: true,
+                compliance_tools: true,
+                merchant_portal: true,
+                white_label: true,
+                api_access: true,
+                webhooks: true,
+                reporting: true,
+                reconciliation: true,
+                advanced_analytics: true
+            },
+            merchant_onboarding: {
+                auto_approve: false,
+                kyb_required: true,
+                aml_screening: true,
+                document_verification: true,
+                risk_assessment: true
+            },
+            pricing_model: {
+                type: 'hybrid',
+                transaction_fee_percentage: 2.5,
+                transaction_fee_fixed: 0.25,
+                monthly_fee: 999,
+                setup_fee: 4999
+            },
+            limits: {
+                max_merchants: 2500,
+                max_transactions_per_month: 500000,
+                max_transaction_amount: 250000,
+                max_api_calls_per_minute: 2000
+            },
+            integrations: {
+                payment_gateways: ['stripe', 'adyen', 'checkout', 'braintree'],
+                crypto_exchanges: ['coinbase', 'binance'],
+                banks: ['acquiring_bank_integration'],
+                alternative_payment_methods: ['paypal', 'apple_pay', 'google_pay', 'klarna']
+            },
+            support_level: 'priority',
+            sla_uptime: 99.95
+        }
+    },
+    enterprise: {
+        id: 'enterprise',
+        name: 'Enterprise',
+        description: 'Unlimited scale with dedicated support',
+        icon: 'Building',
+        badge: 'Custom',
+        pricing: {
+            setup_fee: 'Custom',
+            monthly_hosting_fee: 'Starting at $5,000',
+            note: 'White-glove onboarding + Dedicated account manager'
+        },
+        config: {
+            instance_name: '',
+            psp_code: '',
+            subscription_tier: 'enterprise',
+            branding: {
+                company_name: '',
+                primary_color: '#1e40af',
+                secondary_color: '#0891b2',
+                logo_url: ''
+            },
+            enabled_modules: [
+                'core_dashboard',
+                'core_transactions',
+                'core_merchants',
+                'core_system',
+                'payment_gateways',
+                'alternative_payments',
+                'crypto_payments',
+                'smart_routing',
+                'mid_routing',
+                'fraud_prevention',
+                'compliance_suite',
+                'chargeback_management',
+                'payout_management',
+                'payout_orchestration',
+                'crypto_payouts',
+                'pricing_engine',
+                'usage_metering',
+                'merchant_portal',
+                'sub_merchants',
+                'customer_management',
+                'products_subscriptions',
+                'virtual_terminal',
+                'physical_terminals',
+                'api_management',
+                'advanced_features',
+                'merchant_onboarding_workflow'
+            ],
+            features: {
+                multi_currency: true,
+                crypto_payments: true,
+                instant_payouts: true,
+                smart_routing: true,
+                fraud_detection: true,
+                compliance_tools: true,
+                merchant_portal: true,
+                white_label: true,
+                api_access: true,
+                webhooks: true,
+                reporting: true,
+                reconciliation: true,
+                custom_workflows: true,
+                advanced_analytics: true,
+                dedicated_support: true
+            },
+            merchant_onboarding: {
+                auto_approve: false,
+                kyb_required: true,
+                aml_screening: true,
+                document_verification: true,
+                risk_assessment: true,
+                custom_workflows: true
+            },
+            pricing_model: {
+                type: 'custom',
+                transaction_fee_percentage: 0,
+                transaction_fee_fixed: 0,
+                monthly_fee: 5000,
+                setup_fee: 15000
+            },
+            limits: {
+                max_merchants: null,
+                max_transactions_per_month: null,
+                max_transaction_amount: null,
+                max_api_calls_per_minute: 10000
+            },
+            integrations: {
+                payment_gateways: ['stripe', 'adyen', 'checkout', 'braintree', 'worldpay'],
+                crypto_exchanges: ['coinbase', 'binance', 'kraken', 'gemini'],
+                banks: ['acquiring_bank_integration', 'multi_bank_connections'],
+                alternative_payment_methods: ['paypal', 'apple_pay', 'google_pay', 'klarna', 'afterpay', 'alipay', 'wechat_pay']
+            },
+            support_level: 'dedicated',
+            sla_uptime: 99.99
         }
     }
 };
