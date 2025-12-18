@@ -23,7 +23,8 @@ import {
     LogOut,
     Package,
     GitBranch,
-    Workflow
+    Workflow,
+    Code
 } from 'lucide-react';
 
 const menuSections = [
@@ -103,6 +104,7 @@ const menuSections = [
         title: 'System',
         items: [
             { icon: Settings, label: 'Platform Settings', path: 'FTSSettings', description: 'Configuration' },
+            { icon: Code, label: 'Module Catalog Test', path: 'ModuleCatalogTest', description: 'Test dependencies & menus' },
             { icon: BookOpen, label: 'Architecture Docs', path: 'FTSArchitectureDoc', description: 'System blueprint' },
             { icon: BookOpen, label: 'Implementation Roadmap', path: 'PSPEmpowermentRoadmap', description: 'Feature development plan' }
         ]
