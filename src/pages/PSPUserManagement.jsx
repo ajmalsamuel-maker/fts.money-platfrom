@@ -19,7 +19,7 @@ export default function PSPUserManagement() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const { platformUser, loading } = usePlatformAuth();
-    const [selectedPSP, setSelectedPSP] = useState('');
+    const [selectedPSP, setSelectedPSP] = useState('all');
     const [dialogOpen, setDialogOpen] = useState(false);
     const [editingUser, setEditingUser] = useState(null);
     const [formData, setFormData] = useState({
@@ -45,7 +45,7 @@ export default function PSPUserManagement() {
         queryFn: async () => {
             const result = await base44.functions.invoke('managePSPUsers', { 
                 action: 'list',
-                psp_code: selectedPSP || undefined
+                psp_code: selectedPSP === 'all' ? undefined : selectedPSP
             });
             return result.data.users || [];
         }
@@ -199,7 +199,7 @@ export default function PSPUserManagement() {
                                 <SelectValue placeholder="All PSPs" />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value={null}>All PSPs</SelectItem>
+                                <SelectItem value="all">All PSPs</SelectItem>
                                 {psps.map(psp => (
                                     <SelectItem key={psp.psp_code} value={psp.psp_code}>
                                         {psp.psp_name} ({psp.psp_code})
