@@ -26,26 +26,37 @@ const provisioningSteps = [
 
 export default function FTSProvisioningQueue() {
     const queryClient = useQueryClient();
-    const { platformUser } = usePlatformAuth();
+    const { platformUser, loading } = usePlatformAuth();
     const [selectedPSP, setSelectedPSP] = useState(null);
     const [reviewComments, setReviewComments] = useState('');
 
-    const { data: provisioningPSPs = [] } = useQuery({
+    const { data: provisioningPSPs = [], isLoading: loadingProvisioning } = useQuery({
         queryKey: ['provisioning-psps'],
         queryFn: () => base44.entities.ProvisionedPSP.filter({ status: 'provisioning' }, '-created_date'),
-        refetchInterval: 5000
+        refetchInterval: 5000,
+        enabled: !!platformUser
     });
 
-    const { data: activePSPs = [] } = useQuery({
+    const { data: activePSPs = [], isLoading: loadingActive } = useQuery({
         queryKey: ['active-psps'],
-        queryFn: () => base44.entities.ProvisionedPSP.filter({ status: 'active' }, '-created_date', 10)
+        queryFn: () => base44.entities.ProvisionedPSP.filter({ status: 'active' }, '-created_date', 10),
+        enabled: !!platformUser
     });
 
-    const { data: approvalRequests = [] } = useQuery({
+    const { data: approvalRequests = [], isLoading: loadingApprovals } = useQuery({
         queryKey: ['approval-requests'],
         queryFn: () => base44.entities.ApprovalRequest.filter({ status: 'pending' }, '-created_date'),
-        refetchInterval: 5000
+        refetchInterval: 5000,
+        enabled: !!platformUser
     });
+
+    if (loading || loadingProvisioning || loadingActive || loadingApprovals) {
+        return (
+            <div className="flex h-screen items-center justify-center">
+                <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+            </div>
+        );
+    }
 
     const executeStepMutation = useMutation({
         mutationFn: async ({ pspId, step }) => {
@@ -265,6 +276,7 @@ FTS.Money Platform Team
                 currentPage="FTSProvisioningQueue"
                 userEmail={platformUser?.email}
                 userRole={platformUser?.platform_role}
+                isSuperAdmin={platformUser?.platform_role === 'super_admin'}
             />
 
             <div className="flex-1 overflow-auto">
