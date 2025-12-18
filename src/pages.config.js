@@ -184,6 +184,7 @@ import QuickPSPProvisioning from './pages/QuickPSPProvisioning';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import ProductTemplateLibrary from './pages/ProductTemplateLibrary';
 import ModuleCatalogTest from './pages/ModuleCatalogTest';
+import MerchantProvisioning from './pages/MerchantProvisioning';
 import __Layout from './Layout.jsx';
 
 
@@ -374,6 +375,7 @@ export const PAGES = {
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "ProductTemplateLibrary": ProductTemplateLibrary,
     "ModuleCatalogTest": ModuleCatalogTest,
+    "MerchantProvisioning": MerchantProvisioning,
 }
 
 export const pagesConfig = {

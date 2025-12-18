@@ -11,12 +11,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { PSP_TEMPLATES, applyTemplate } from '@/components/platform/PSPTemplates';
 import { 
-    ModuleSelector, 
     BrandingConfig, 
     LimitsConfig, 
     PricingModelConfig 
 } from '@/components/platform/PSPComponentLibrary';
-import MenuConfigEditor from '@/components/platform/MenuConfigEditor';
+import ModuleSelector from '@/components/platform/ModuleSelector';
+import ModuleDependencyEngine from '@/components/platform/ModuleDependencyEngine';
+import SmartMenuGenerator from '@/components/platform/SmartMenuGenerator';
 import { 
     Building2, 
     Zap, 
@@ -41,7 +42,8 @@ export default function QuickPSPProvisioning() {
             secondary_color: '#06b6d4',
             logo_url: ''
         },
-        enabled_modules: [],
+        subscription_tier: 'professional',
+        enabled_modules: ['core_dashboard', 'core_transactions', 'core_merchants', 'core_system'],
         features: {},
         limits: {},
         pricing_model: {},
@@ -148,7 +150,14 @@ export default function QuickPSPProvisioning() {
     };
 
     const handleProvision = () => {
-        provisionMutation.mutate(pspConfig);
+        // Auto-generate menu from selected modules
+        const menuGen = new SmartMenuGenerator(pspConfig.enabled_modules, 'admin');
+        const generatedMenus = menuGen.generateMenus();
+        
+        provisionMutation.mutate({
+            ...pspConfig,
+            menu_config: generatedMenus
+        });
     };
 
     const getTemplateIcon = (iconName) => {
@@ -354,18 +363,52 @@ export default function QuickPSPProvisioning() {
                                     </TabsContent>
 
                                     <TabsContent value="modules" className="mt-6">
+                                        <div className="space-y-4 mb-4">
+                                            <div>
+                                                <Label>Subscription Tier</Label>
+                                                <div className="flex gap-2 mt-2">
+                                                    {['free', 'starter', 'professional', 'enterprise'].map(tier => (
+                                                        <Button
+                                                            key={tier}
+                                                            variant={pspConfig.subscription_tier === tier ? 'default' : 'outline'}
+                                                            onClick={() => setPspConfig({...pspConfig, subscription_tier: tier})}
+                                                        >
+                                                            {tier.charAt(0).toUpperCase() + tier.slice(1)}
+                                                        </Button>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
                                         <ModuleSelector
                                             selectedModules={pspConfig.enabled_modules}
+                                            subscriptionTier={pspConfig.subscription_tier}
                                             onChange={(modules) => setPspConfig({...pspConfig, enabled_modules: modules})}
                                         />
                                     </TabsContent>
 
                                     <TabsContent value="menus" className="mt-6">
-                                        <MenuConfigEditor
-                                            menuConfig={pspConfig.menu_config}
-                                            enabledModules={pspConfig.enabled_modules}
-                                            onChange={(menu_config) => setPspConfig({...pspConfig, menu_config})}
-                                        />
+                                        <div className="space-y-4">
+                                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                                                <p className="text-sm text-blue-800">
+                                                    <strong>Auto-Generated Menus:</strong> PSP menus will be automatically generated based on your selected modules during deployment. No manual configuration needed.
+                                                </p>
+                                            </div>
+                                            <div className="border rounded-lg p-4 bg-slate-50">
+                                                <h4 className="font-semibold mb-2">Preview</h4>
+                                                <p className="text-sm text-slate-600 mb-3">Selected modules will generate the following menu structure:</p>
+                                                <div className="space-y-1 text-sm">
+                                                    {pspConfig.enabled_modules.slice(0, 5).map(mod => (
+                                                        <div key={mod} className="flex items-center gap-2">
+                                                            <Badge variant="outline">{mod}</Badge>
+                                                            <span className="text-slate-500">→ Menu items</span>
+                                                        </div>
+                                                    ))}
+                                                    {pspConfig.enabled_modules.length > 5 && (
+                                                        <p className="text-slate-500 italic">+ {pspConfig.enabled_modules.length - 5} more...</p>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
                                     </TabsContent>
 
                                     <TabsContent value="branding" className="mt-6">

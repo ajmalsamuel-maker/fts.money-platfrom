@@ -15,6 +15,7 @@ import WidgetLibrary, { AVAILABLE_WIDGETS } from '@/components/portal-builder/Wi
 import ThemeCustomizer from '@/components/portal-builder/ThemeCustomizer';
 import LayoutEditor from '@/components/portal-builder/LayoutEditor';
 import PortalTemplates from '@/components/portal-builder/PortalTemplates';
+import ModuleSelector from '@/components/platform/ModuleSelector';
 import { 
     Palette, 
     Layout as LayoutIcon, 
@@ -63,13 +64,8 @@ export default function MerchantPortalBuilder() {
             support_email: '',
             support_phone: ''
         },
-        enabled_features: [
-            'transactions',
-            'analytics',
-            'payouts',
-            'customers',
-            'invoices'
-        ]
+        enabled_modules: [],
+        merchant_tier: 'growth'
     });
 
     useEffect(() => {
@@ -275,7 +271,10 @@ export default function MerchantPortalBuilder() {
                                 </CardHeader>
                                 <CardContent>
                                     <Tabs value={activeTab} onValueChange={setActiveTab}>
-                                        <TabsList className="grid grid-cols-3">
+                                        <TabsList className="grid grid-cols-4">
+                                            <TabsTrigger value="modules">
+                                                <Settings className="h-4 w-4" />
+                                            </TabsTrigger>
                                             <TabsTrigger value="theme">
                                                 <Palette className="h-4 w-4" />
                                             </TabsTrigger>
@@ -286,6 +285,36 @@ export default function MerchantPortalBuilder() {
                                                 <Grid className="h-4 w-4" />
                                             </TabsTrigger>
                                         </TabsList>
+
+                                        <TabsContent value="modules" className="mt-4">
+                                            <div className="space-y-4">
+                                                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                                                    <p className="text-sm text-blue-800">
+                                                        <strong>Module-Driven Portal:</strong> Select which features this merchant portal should include. Menus will auto-generate.
+                                                    </p>
+                                                </div>
+                                                <div>
+                                                    <Label>Merchant Tier</Label>
+                                                    <div className="flex gap-2 mt-2">
+                                                        {['startup', 'growth', 'enterprise', 'vip'].map(tier => (
+                                                            <Button
+                                                                key={tier}
+                                                                variant={portalConfig.merchant_tier === tier ? 'default' : 'outline'}
+                                                                onClick={() => setPortalConfig({...portalConfig, merchant_tier: tier})}
+                                                                size="sm"
+                                                            >
+                                                                {tier.charAt(0).toUpperCase() + tier.slice(1)}
+                                                            </Button>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                                <ModuleSelector
+                                                    selectedModules={portalConfig.enabled_modules}
+                                                    subscriptionTier={portalConfig.merchant_tier}
+                                                    onChange={(modules) => setPortalConfig({...portalConfig, enabled_modules: modules})}
+                                                />
+                                            </div>
+                                        </TabsContent>
 
                                         <TabsContent value="theme" className="mt-4">
                                             <ThemeCustomizer
