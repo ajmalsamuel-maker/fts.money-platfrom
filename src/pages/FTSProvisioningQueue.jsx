@@ -104,13 +104,20 @@ export default function FTSProvisioningQueue() {
             const initialPassword = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15).toUpperCase();
 
             // Create initial admin user
-            await base44.functions.invoke('createPSPUser', {
-                psp_code: psp.psp_code,
-                email: psp.owner_email,
-                full_name: psp.psp_name + ' Admin',
-                role: 'psp_admin',
-                password: initialPassword
-            });
+            try {
+                await base44.functions.invoke('managePSPUsers', {
+                    action: 'create',
+                    psp_code: psp.psp_code,
+                    email: psp.owner_email,
+                    full_name: psp.psp_name + ' Admin',
+                    role: 'admin',
+                    password: initialPassword,
+                    status: 'active'
+                });
+            } catch (err) {
+                console.error('Error creating admin user:', err);
+                // Continue anyway if user creation fails
+            }
 
             // Send welcome email with credentials
             await base44.integrations.Core.SendEmail({
