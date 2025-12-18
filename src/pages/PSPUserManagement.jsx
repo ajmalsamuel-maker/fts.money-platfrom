@@ -78,6 +78,10 @@ export default function PSPUserManagement() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        if (!formData.psp_code) {
+            alert('Please select a PSP');
+            return;
+        }
         if (editingUser) {
             updateMutation.mutate({ ...formData, user_id: editingUser.id });
         } else {
@@ -250,8 +254,8 @@ export default function PSPUserManagement() {
                                 />
                             </div>
                             <div>
-                                <Label>PSP Code</Label>
-                                <Select value={formData.psp_code} onValueChange={(value) => setFormData({...formData, psp_code: value})}>
+                                <Label>PSP Code *</Label>
+                                <Select value={formData.psp_code} onValueChange={(value) => setFormData({...formData, psp_code: value})} required>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select PSP" />
                                     </SelectTrigger>
@@ -296,7 +300,7 @@ export default function PSPUserManagement() {
                                     </SelectContent>
                                 </Select>
                             </div>
-                            <Button type="submit" className="w-full">
+                            <Button type="submit" className="w-full" disabled={!formData.psp_code || createMutation.isPending || updateMutation.isPending}>
                                 {editingUser ? 'Update User' : 'Create User'}
                             </Button>
                         </form>

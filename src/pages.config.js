@@ -1,383 +1,383 @@
-import Dashboard from './pages/Dashboard';
-import Transactions from './pages/Transactions';
-import Merchants from './pages/Merchants';
-import Terminals from './pages/Terminals';
-import Settlements from './pages/Settlements';
-import MerchantOnboarding from './pages/MerchantOnboarding';
-import Analytics from './pages/Analytics';
-import Disputes from './pages/Disputes';
-import FraudPrevention from './pages/FraudPrevention';
-import Compliance from './pages/Compliance';
-import PaymentOrchestration from './pages/PaymentOrchestration';
-import Chargebacks from './pages/Chargebacks';
-import MerchantSelfOnboarding from './pages/MerchantSelfOnboarding';
-import MerchantCredentials from './pages/MerchantCredentials';
-import AcquirerOnboarding from './pages/AcquirerOnboarding';
-import APMOnboarding from './pages/APMOnboarding';
-import AIDisputeResolution from './pages/AIDisputeResolution';
-import SmartOrchestration from './pages/SmartOrchestration';
-import UserManagement from './pages/UserManagement';
-import Approvals from './pages/Approvals';
-import Appearance from './pages/Appearance';
-import VirtualTerminals from './pages/VirtualTerminals';
-import MerchantUsers from './pages/MerchantUsers';
-import Balances from './pages/Balances';
-import Reports from './pages/Reports';
-import Payouts from './pages/Payouts';
-import PaymentProviders from './pages/PaymentProviders';
-import BuyRates from './pages/BuyRates';
-import MerchantPricing from './pages/MerchantPricing';
-import MerchantMIDs from './pages/MerchantMIDs';
-import Reconciliation from './pages/Reconciliation';
-import AutomatedPayouts from './pages/AutomatedPayouts';
-import AdvancedReports from './pages/AdvancedReports';
-import DatabaseSetup from './pages/DatabaseSetup';
-import MerchantMIDsDB from './pages/MerchantMIDsDB';
-import Settings from './pages/Settings';
-import AuditLogs from './pages/AuditLogs';
-import MerchantAnalytics from './pages/MerchantAnalytics';
-import MerchantPortal from './pages/MerchantPortal';
-import StaffLogin from './pages/StaffLogin';
-import AIMerchantInsights from './pages/AIMerchantInsights';
-import MerchantLogin from './pages/MerchantLogin';
-import MerchantDashboard from './pages/MerchantDashboard';
-import MerchantChangePassword from './pages/MerchantChangePassword';
-import PrivacyPolicy from './pages/PrivacyPolicy';
-import TermsOfService from './pages/TermsOfService';
-import Support from './pages/Support';
-import PublicSupport from './pages/PublicSupport';
-import FraudMonitoring from './pages/FraudMonitoring';
-import VirtualTerminal from './pages/VirtualTerminal';
 import AIAutomationPlatform from './pages/AIAutomationPlatform';
-import MerchantSelfServicePortal from './pages/MerchantSelfServicePortal';
-import BankMIDs from './pages/BankMIDs';
-import MIDRouting from './pages/MIDRouting';
+import AIDisputeResolution from './pages/AIDisputeResolution';
+import AIMerchantInsights from './pages/AIMerchantInsights';
 import APIDocumentation from './pages/APIDocumentation';
-import MerchantAPIDocumentation from './pages/MerchantAPIDocumentation';
-import MerchantInfo from './pages/MerchantInfo';
-import MerchantBankInfo from './pages/MerchantBankInfo';
-import MerchantTransactionList from './pages/MerchantTransactionList';
-import MerchantBatchReports from './pages/MerchantBatchReports';
-import MerchantDataTransactions from './pages/MerchantDataTransactions';
-import MerchantSettlementReports from './pages/MerchantSettlementReports';
-import MerchantChargebackReport from './pages/MerchantChargebackReport';
-import MerchantStatementReport from './pages/MerchantStatementReport';
-import MerchantMonitorTools from './pages/MerchantMonitorTools';
-import MerchantDisputeManagement from './pages/MerchantDisputeManagement';
-import MerchantOperators from './pages/MerchantOperators';
-import MerchantAppearance from './pages/MerchantAppearance';
-import MerchantHelpCenter from './pages/MerchantHelpCenter';
-import MerchantAPIDoc from './pages/MerchantAPIDoc';
-import MerchantCodeRecovery from './pages/MerchantCodeRecovery';
-import DatabaseMigration from './pages/DatabaseMigration';
-import MerchantVirtualTerminal from './pages/MerchantVirtualTerminal';
-import VirtualTerminalLogin from './pages/VirtualTerminalLogin';
-import MerchantVirtualTerminals from './pages/MerchantVirtualTerminals';
-import MerchantEmailTemplates from './pages/MerchantEmailTemplates';
-import BINTable from './pages/BINTable';
-import MerchantSettings from './pages/MerchantSettings';
-import ISOConfiguration from './pages/ISOConfiguration';
-import CryptoTransactions from './pages/CryptoTransactions';
-import FATFCompliance from './pages/FATFCompliance';
-import BlockchainConnectors from './pages/BlockchainConnectors';
-import ExchangeIntegrations from './pages/ExchangeIntegrations';
-import CryptoPayouts from './pages/CryptoPayouts';
-import MerchantCryptoDashboard from './pages/MerchantCryptoDashboard';
-import Documentation from './pages/Documentation';
-import SecurityManagement from './pages/SecurityManagement';
-import PaymentGateways from './pages/PaymentGateways';
 import APIGateway from './pages/APIGateway';
-import MerchantAPIKeys from './pages/MerchantAPIKeys';
-import PayoutOrchestration from './pages/PayoutOrchestration';
-import MerchantPayouts from './pages/MerchantPayouts';
-import MerchantPayoutPricing from './pages/MerchantPayoutPricing';
-import PSPLogin from './pages/PSPLogin';
-import PSPPasswordReset from './pages/PSPPasswordReset';
-import FeeTypeManagement from './pages/FeeTypeManagement';
-import MIDPricingConfiguration from './pages/MIDPricingConfiguration';
-import Invoices from './pages/Invoices';
-import PaymentLinks from './pages/PaymentLinks';
-import Customers from './pages/Customers';
-import Webhooks from './pages/Webhooks';
-import Refunds from './pages/Refunds';
-import RealTimeMonitor from './pages/RealTimeMonitor';
-import ThreeDSecure from './pages/ThreeDSecure';
-import MerchantPaymentLinks from './pages/MerchantPaymentLinks';
-import MerchantInvoices from './pages/MerchantInvoices';
-import MerchantSubscriptions from './pages/MerchantSubscriptions';
-import MerchantCustomers from './pages/MerchantCustomers';
-import MerchantSavedCards from './pages/MerchantSavedCards';
-import MerchantRefunds from './pages/MerchantRefunds';
-import MerchantWebhooks from './pages/MerchantWebhooks';
-import MarketAnalysis from './pages/MarketAnalysis';
-import NetworkTokenization from './pages/NetworkTokenization';
+import APIGatewayConfiguration from './pages/APIGatewayConfiguration';
+import APMOnboarding from './pages/APMOnboarding';
 import AccountUpdater from './pages/AccountUpdater';
-import SmartRetry from './pages/SmartRetry';
-import InstantPayments from './pages/InstantPayments';
-import SubMerchants from './pages/SubMerchants';
-import PCICompliance from './pages/PCICompliance';
+import AcquirerOnboarding from './pages/AcquirerOnboarding';
+import AdvancedReports from './pages/AdvancedReports';
+import Analytics from './pages/Analytics';
+import Appearance from './pages/Appearance';
+import Approvals from './pages/Approvals';
+import AuditLogs from './pages/AuditLogs';
+import AutomatedPayouts from './pages/AutomatedPayouts';
+import BINTable from './pages/BINTable';
+import Balances from './pages/Balances';
+import BankMIDs from './pages/BankMIDs';
+import BlockchainConnectors from './pages/BlockchainConnectors';
+import BuyRates from './pages/BuyRates';
+import Chargebacks from './pages/Chargebacks';
 import CheckoutComponents from './pages/CheckoutComponents';
+import CommunityAccountSettings from './pages/CommunityAccountSettings';
+import CommunityBilling from './pages/CommunityBilling';
+import CommunityMarketplace from './pages/CommunityMarketplace';
+import CommunityPSPProvisioning from './pages/CommunityPSPProvisioning';
+import CommunityPortalDashboard from './pages/CommunityPortalDashboard';
+import CommunityPortalLogin from './pages/CommunityPortalLogin';
+import CommunityProductCatalog from './pages/CommunityProductCatalog';
+import Compliance from './pages/Compliance';
+import ComplianceFramework from './pages/ComplianceFramework';
+import CryptoPayouts from './pages/CryptoPayouts';
+import CryptoTransactions from './pages/CryptoTransactions';
+import Customers from './pages/Customers';
+import Dashboard from './pages/Dashboard';
+import DataRetentionManagement from './pages/DataRetentionManagement';
+import DatabaseMigration from './pages/DatabaseMigration';
+import DatabaseSchemaValidation from './pages/DatabaseSchemaValidation';
+import DatabaseSetup from './pages/DatabaseSetup';
+import Disputes from './pages/Disputes';
+import Documentation from './pages/Documentation';
+import EnhancedAuditLogs from './pages/EnhancedAuditLogs';
+import ExchangeIntegrations from './pages/ExchangeIntegrations';
+import FATFCompliance from './pages/FATFCompliance';
+import FTSAnalytics from './pages/FTSAnalytics';
+import FTSArchitectureDoc from './pages/FTSArchitectureDoc';
+import FTSAuditLogs from './pages/FTSAuditLogs';
+import FTSBlockchainIntegration from './pages/FTSBlockchainIntegration';
+import FTSClients from './pages/FTSClients';
+import FTSCompliance from './pages/FTSCompliance';
+import FTSDomainManagement from './pages/FTSDomainManagement';
+import FTSFeeTemplates from './pages/FTSFeeTemplates';
+import FTSFinancialRegistries from './pages/FTSFinancialRegistries';
+import FTSMoneyPlatform from './pages/FTSMoneyPlatform';
+import FTSPayoutRoutes from './pages/FTSPayoutRoutes';
+import FTSProviderPool from './pages/FTSProviderPool';
+import FTSProvisioningQueue from './pages/FTSProvisioningQueue';
+import FTSReporting from './pages/FTSReporting';
+import FTSRevenue from './pages/FTSRevenue';
+import FTSServiceManager from './pages/FTSServiceManager';
+import FTSServiceProviders from './pages/FTSServiceProviders';
+import FTSServiceRegistry from './pages/FTSServiceRegistry';
+import FTSSettings from './pages/FTSSettings';
+import FeeTypeManagement from './pages/FeeTypeManagement';
+import FraudMonitoring from './pages/FraudMonitoring';
+import FraudPrevention from './pages/FraudPrevention';
+import ISOConfiguration from './pages/ISOConfiguration';
+import InstantPayments from './pages/InstantPayments';
+import Invoices from './pages/Invoices';
+import MIDPricingConfiguration from './pages/MIDPricingConfiguration';
+import MIDRouting from './pages/MIDRouting';
+import MarketAnalysis from './pages/MarketAnalysis';
+import MasterPricingManagement from './pages/MasterPricingManagement';
+import MerchantAPIDoc from './pages/MerchantAPIDoc';
+import MerchantAPIDocumentation from './pages/MerchantAPIDocumentation';
+import MerchantAPIKeys from './pages/MerchantAPIKeys';
+import MerchantAnalytics from './pages/MerchantAnalytics';
+import MerchantAppearance from './pages/MerchantAppearance';
+import MerchantBankInfo from './pages/MerchantBankInfo';
+import MerchantBatchReports from './pages/MerchantBatchReports';
+import MerchantChangePassword from './pages/MerchantChangePassword';
+import MerchantChargebackReport from './pages/MerchantChargebackReport';
+import MerchantCodeRecovery from './pages/MerchantCodeRecovery';
+import MerchantCredentials from './pages/MerchantCredentials';
+import MerchantCryptoDashboard from './pages/MerchantCryptoDashboard';
+import MerchantCustomers from './pages/MerchantCustomers';
+import MerchantDashboard from './pages/MerchantDashboard';
+import MerchantDataTransactions from './pages/MerchantDataTransactions';
+import MerchantDisputeManagement from './pages/MerchantDisputeManagement';
+import MerchantEmailTemplates from './pages/MerchantEmailTemplates';
+import MerchantHelpCenter from './pages/MerchantHelpCenter';
+import MerchantInfo from './pages/MerchantInfo';
+import MerchantInvoiceGenerator from './pages/MerchantInvoiceGenerator';
+import MerchantInvoices from './pages/MerchantInvoices';
+import MerchantLogin from './pages/MerchantLogin';
+import MerchantMIDs from './pages/MerchantMIDs';
+import MerchantMIDsDB from './pages/MerchantMIDsDB';
+import MerchantMonitorTools from './pages/MerchantMonitorTools';
+import MerchantOnboarding from './pages/MerchantOnboarding';
+import MerchantOnboardingWorkflows from './pages/MerchantOnboardingWorkflows';
+import MerchantOperators from './pages/MerchantOperators';
+import MerchantPaymentLinks from './pages/MerchantPaymentLinks';
+import MerchantPayoutPricing from './pages/MerchantPayoutPricing';
+import MerchantPayouts from './pages/MerchantPayouts';
+import MerchantPortal from './pages/MerchantPortal';
+import MerchantPortalBuilder from './pages/MerchantPortalBuilder';
+import MerchantPricing from './pages/MerchantPricing';
+import MerchantPricingEngine from './pages/MerchantPricingEngine';
+import MerchantProvisioning from './pages/MerchantProvisioning';
+import MerchantRefunds from './pages/MerchantRefunds';
+import MerchantSavedCards from './pages/MerchantSavedCards';
+import MerchantSelfOnboarding from './pages/MerchantSelfOnboarding';
+import MerchantSelfServicePortal from './pages/MerchantSelfServicePortal';
+import MerchantSettings from './pages/MerchantSettings';
+import MerchantSettlementReports from './pages/MerchantSettlementReports';
+import MerchantStatementReport from './pages/MerchantStatementReport';
+import MerchantSubscriptions from './pages/MerchantSubscriptions';
+import MerchantTransactionList from './pages/MerchantTransactionList';
+import MerchantUsers from './pages/MerchantUsers';
+import MerchantVirtualTerminal from './pages/MerchantVirtualTerminal';
+import MerchantVirtualTerminals from './pages/MerchantVirtualTerminals';
+import MerchantWebhooks from './pages/MerchantWebhooks';
+import Merchants from './pages/Merchants';
+import ModuleCatalogTest from './pages/ModuleCatalogTest';
+import MyPSPInstances from './pages/MyPSPInstances';
+import MyServiceRequests from './pages/MyServiceRequests';
+import MySubscriptions from './pages/MySubscriptions';
+import NetworkTokenization from './pages/NetworkTokenization';
+import OpenBankingConfiguration from './pages/OpenBankingConfiguration';
+import PCICompliance from './pages/PCICompliance';
+import PSPDetails from './pages/PSPDetails';
+import PSPEmpowermentRoadmap from './pages/PSPEmpowermentRoadmap';
+import PSPInstanceConfig from './pages/PSPInstanceConfig';
+import PSPInstanceManagement from './pages/PSPInstanceManagement';
+import PSPLogin from './pages/PSPLogin';
+import PSPMerchantPricing from './pages/PSPMerchantPricing';
+import PSPOwnershipMigration from './pages/PSPOwnershipMigration';
+import PSPPasswordReset from './pages/PSPPasswordReset';
+import PSPProductCatalog from './pages/PSPProductCatalog';
 import PSPProvisioning from './pages/PSPProvisioning';
 import PSPProvisioningWizard from './pages/PSPProvisioningWizard';
-import PSPDetails from './pages/PSPDetails';
-import FTSMoneyPlatform from './pages/FTSMoneyPlatform';
-import PSPInstanceConfig from './pages/PSPInstanceConfig';
-import FTSAnalytics from './pages/FTSAnalytics';
-import FTSRevenue from './pages/FTSRevenue';
-import FTSClients from './pages/FTSClients';
-import FTSSettings from './pages/FTSSettings';
-import PSPInstanceManagement from './pages/PSPInstanceManagement';
-import FTSProviderPool from './pages/FTSProviderPool';
-import FTSPayoutRoutes from './pages/FTSPayoutRoutes';
-import FTSFeeTemplates from './pages/FTSFeeTemplates';
-import FTSAuditLogs from './pages/FTSAuditLogs';
-import FTSCompliance from './pages/FTSCompliance';
-import FTSArchitectureDoc from './pages/FTSArchitectureDoc';
-import FTSServiceRegistry from './pages/FTSServiceRegistry';
-import FTSServiceProviders from './pages/FTSServiceProviders';
-import CommunityMarketplace from './pages/CommunityMarketplace';
-import CommunityPortalLogin from './pages/CommunityPortalLogin';
-import CommunityPortalDashboard from './pages/CommunityPortalDashboard';
-import CommunityPSPProvisioning from './pages/CommunityPSPProvisioning';
-import MyPSPInstances from './pages/MyPSPInstances';
-import ServiceProviderRegistration from './pages/ServiceProviderRegistration';
-import CommunityBilling from './pages/CommunityBilling';
-import MySubscriptions from './pages/MySubscriptions';
-import CommunityAccountSettings from './pages/CommunityAccountSettings';
 import PSPSetupWizard from './pages/PSPSetupWizard';
-import FTSProvisioningQueue from './pages/FTSProvisioningQueue';
-import MyServiceRequests from './pages/MyServiceRequests';
 import PSPUserManagement from './pages/PSPUserManagement';
-import PSPOwnershipMigration from './pages/PSPOwnershipMigration';
-import TestPSPOwnership from './pages/TestPSPOwnership';
+import PaymentGateways from './pages/PaymentGateways';
+import PaymentLinks from './pages/PaymentLinks';
+import PaymentOrchestration from './pages/PaymentOrchestration';
+import PaymentProviders from './pages/PaymentProviders';
+import PayoutOrchestration from './pages/PayoutOrchestration';
+import Payouts from './pages/Payouts';
 import PlatformAdminLogin from './pages/PlatformAdminLogin';
 import PlatformAdminRegister from './pages/PlatformAdminRegister';
-import PlatformUserManagement from './pages/PlatformUserManagement';
 import PlatformAuditLogs from './pages/PlatformAuditLogs';
+import PlatformPricingConfiguration from './pages/PlatformPricingConfiguration';
+import PlatformUserManagement from './pages/PlatformUserManagement';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import ProductTemplateLibrary from './pages/ProductTemplateLibrary';
+import PublicSupport from './pages/PublicSupport';
+import QuickPSPProvisioning from './pages/QuickPSPProvisioning';
+import RealTimeMonitor from './pages/RealTimeMonitor';
+import Reconciliation from './pages/Reconciliation';
+import Refunds from './pages/Refunds';
+import Reports from './pages/Reports';
+import ResourceOrchestration from './pages/ResourceOrchestration';
+import SecurityManagement from './pages/SecurityManagement';
+import ServiceProviderRegistration from './pages/ServiceProviderRegistration';
+import Settings from './pages/Settings';
+import Settlements from './pages/Settlements';
+import SmartOrchestration from './pages/SmartOrchestration';
+import SmartRetry from './pages/SmartRetry';
+import StaffLogin from './pages/StaffLogin';
+import SubMerchants from './pages/SubMerchants';
+import Support from './pages/Support';
 import TenantManagement from './pages/TenantManagement';
 import TenantUserManagement from './pages/TenantUserManagement';
-import ComplianceFramework from './pages/ComplianceFramework';
-import FTSServiceManager from './pages/FTSServiceManager';
-import FTSBlockchainIntegration from './pages/FTSBlockchainIntegration';
-import APIGatewayConfiguration from './pages/APIGatewayConfiguration';
-import FTSReporting from './pages/FTSReporting';
-import FTSDomainManagement from './pages/FTSDomainManagement';
-import FTSFinancialRegistries from './pages/FTSFinancialRegistries';
-import CommunityProductCatalog from './pages/CommunityProductCatalog';
-import XeroIntegration from './pages/XeroIntegration';
-import EnhancedAuditLogs from './pages/EnhancedAuditLogs';
-import DataRetentionManagement from './pages/DataRetentionManagement';
-import WorkflowManagement from './pages/WorkflowManagement';
-import MasterPricingManagement from './pages/MasterPricingManagement';
-import OpenBankingConfiguration from './pages/OpenBankingConfiguration';
-import PSPEmpowermentRoadmap from './pages/PSPEmpowermentRoadmap';
-import ResourceOrchestration from './pages/ResourceOrchestration';
-import DatabaseSchemaValidation from './pages/DatabaseSchemaValidation';
-import PSPProductCatalog from './pages/PSPProductCatalog';
-import MerchantOnboardingWorkflows from './pages/MerchantOnboardingWorkflows';
-import MerchantPricingEngine from './pages/MerchantPricingEngine';
-import PSPMerchantPricing from './pages/PSPMerchantPricing';
+import Terminals from './pages/Terminals';
+import TermsOfService from './pages/TermsOfService';
+import TestPSPOwnership from './pages/TestPSPOwnership';
+import ThreeDSecure from './pages/ThreeDSecure';
+import Transactions from './pages/Transactions';
 import UsageMeteringSystem from './pages/UsageMeteringSystem';
-import MerchantInvoiceGenerator from './pages/MerchantInvoiceGenerator';
-import MerchantPortalBuilder from './pages/MerchantPortalBuilder';
-import QuickPSPProvisioning from './pages/QuickPSPProvisioning';
+import UserManagement from './pages/UserManagement';
+import VirtualTerminal from './pages/VirtualTerminal';
+import VirtualTerminalLogin from './pages/VirtualTerminalLogin';
+import VirtualTerminals from './pages/VirtualTerminals';
+import Webhooks from './pages/Webhooks';
+import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
-import ProductTemplateLibrary from './pages/ProductTemplateLibrary';
-import ModuleCatalogTest from './pages/ModuleCatalogTest';
-import MerchantProvisioning from './pages/MerchantProvisioning';
-import PlatformPricingConfiguration from './pages/PlatformPricingConfiguration';
+import XeroIntegration from './pages/XeroIntegration';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
-    "Dashboard": Dashboard,
-    "Transactions": Transactions,
-    "Merchants": Merchants,
-    "Terminals": Terminals,
-    "Settlements": Settlements,
-    "MerchantOnboarding": MerchantOnboarding,
-    "Analytics": Analytics,
-    "Disputes": Disputes,
-    "FraudPrevention": FraudPrevention,
-    "Compliance": Compliance,
-    "PaymentOrchestration": PaymentOrchestration,
-    "Chargebacks": Chargebacks,
-    "MerchantSelfOnboarding": MerchantSelfOnboarding,
-    "MerchantCredentials": MerchantCredentials,
-    "AcquirerOnboarding": AcquirerOnboarding,
-    "APMOnboarding": APMOnboarding,
-    "AIDisputeResolution": AIDisputeResolution,
-    "SmartOrchestration": SmartOrchestration,
-    "UserManagement": UserManagement,
-    "Approvals": Approvals,
-    "Appearance": Appearance,
-    "VirtualTerminals": VirtualTerminals,
-    "MerchantUsers": MerchantUsers,
-    "Balances": Balances,
-    "Reports": Reports,
-    "Payouts": Payouts,
-    "PaymentProviders": PaymentProviders,
-    "BuyRates": BuyRates,
-    "MerchantPricing": MerchantPricing,
-    "MerchantMIDs": MerchantMIDs,
-    "Reconciliation": Reconciliation,
-    "AutomatedPayouts": AutomatedPayouts,
-    "AdvancedReports": AdvancedReports,
-    "DatabaseSetup": DatabaseSetup,
-    "MerchantMIDsDB": MerchantMIDsDB,
-    "Settings": Settings,
-    "AuditLogs": AuditLogs,
-    "MerchantAnalytics": MerchantAnalytics,
-    "MerchantPortal": MerchantPortal,
-    "StaffLogin": StaffLogin,
-    "AIMerchantInsights": AIMerchantInsights,
-    "MerchantLogin": MerchantLogin,
-    "MerchantDashboard": MerchantDashboard,
-    "MerchantChangePassword": MerchantChangePassword,
-    "PrivacyPolicy": PrivacyPolicy,
-    "TermsOfService": TermsOfService,
-    "Support": Support,
-    "PublicSupport": PublicSupport,
-    "FraudMonitoring": FraudMonitoring,
-    "VirtualTerminal": VirtualTerminal,
     "AIAutomationPlatform": AIAutomationPlatform,
-    "MerchantSelfServicePortal": MerchantSelfServicePortal,
-    "BankMIDs": BankMIDs,
-    "MIDRouting": MIDRouting,
+    "AIDisputeResolution": AIDisputeResolution,
+    "AIMerchantInsights": AIMerchantInsights,
     "APIDocumentation": APIDocumentation,
-    "MerchantAPIDocumentation": MerchantAPIDocumentation,
-    "MerchantInfo": MerchantInfo,
-    "MerchantBankInfo": MerchantBankInfo,
-    "MerchantTransactionList": MerchantTransactionList,
-    "MerchantBatchReports": MerchantBatchReports,
-    "MerchantDataTransactions": MerchantDataTransactions,
-    "MerchantSettlementReports": MerchantSettlementReports,
-    "MerchantChargebackReport": MerchantChargebackReport,
-    "MerchantStatementReport": MerchantStatementReport,
-    "MerchantMonitorTools": MerchantMonitorTools,
-    "MerchantDisputeManagement": MerchantDisputeManagement,
-    "MerchantOperators": MerchantOperators,
-    "MerchantAppearance": MerchantAppearance,
-    "MerchantHelpCenter": MerchantHelpCenter,
-    "MerchantAPIDoc": MerchantAPIDoc,
-    "MerchantCodeRecovery": MerchantCodeRecovery,
-    "DatabaseMigration": DatabaseMigration,
-    "MerchantVirtualTerminal": MerchantVirtualTerminal,
-    "VirtualTerminalLogin": VirtualTerminalLogin,
-    "MerchantVirtualTerminals": MerchantVirtualTerminals,
-    "MerchantEmailTemplates": MerchantEmailTemplates,
-    "BINTable": BINTable,
-    "MerchantSettings": MerchantSettings,
-    "ISOConfiguration": ISOConfiguration,
-    "CryptoTransactions": CryptoTransactions,
-    "FATFCompliance": FATFCompliance,
-    "BlockchainConnectors": BlockchainConnectors,
-    "ExchangeIntegrations": ExchangeIntegrations,
-    "CryptoPayouts": CryptoPayouts,
-    "MerchantCryptoDashboard": MerchantCryptoDashboard,
-    "Documentation": Documentation,
-    "SecurityManagement": SecurityManagement,
-    "PaymentGateways": PaymentGateways,
     "APIGateway": APIGateway,
-    "MerchantAPIKeys": MerchantAPIKeys,
-    "PayoutOrchestration": PayoutOrchestration,
-    "MerchantPayouts": MerchantPayouts,
-    "MerchantPayoutPricing": MerchantPayoutPricing,
-    "PSPLogin": PSPLogin,
-    "PSPPasswordReset": PSPPasswordReset,
-    "FeeTypeManagement": FeeTypeManagement,
-    "MIDPricingConfiguration": MIDPricingConfiguration,
-    "Invoices": Invoices,
-    "PaymentLinks": PaymentLinks,
-    "Customers": Customers,
-    "Webhooks": Webhooks,
-    "Refunds": Refunds,
-    "RealTimeMonitor": RealTimeMonitor,
-    "ThreeDSecure": ThreeDSecure,
-    "MerchantPaymentLinks": MerchantPaymentLinks,
-    "MerchantInvoices": MerchantInvoices,
-    "MerchantSubscriptions": MerchantSubscriptions,
-    "MerchantCustomers": MerchantCustomers,
-    "MerchantSavedCards": MerchantSavedCards,
-    "MerchantRefunds": MerchantRefunds,
-    "MerchantWebhooks": MerchantWebhooks,
-    "MarketAnalysis": MarketAnalysis,
-    "NetworkTokenization": NetworkTokenization,
+    "APIGatewayConfiguration": APIGatewayConfiguration,
+    "APMOnboarding": APMOnboarding,
     "AccountUpdater": AccountUpdater,
-    "SmartRetry": SmartRetry,
-    "InstantPayments": InstantPayments,
-    "SubMerchants": SubMerchants,
-    "PCICompliance": PCICompliance,
+    "AcquirerOnboarding": AcquirerOnboarding,
+    "AdvancedReports": AdvancedReports,
+    "Analytics": Analytics,
+    "Appearance": Appearance,
+    "Approvals": Approvals,
+    "AuditLogs": AuditLogs,
+    "AutomatedPayouts": AutomatedPayouts,
+    "BINTable": BINTable,
+    "Balances": Balances,
+    "BankMIDs": BankMIDs,
+    "BlockchainConnectors": BlockchainConnectors,
+    "BuyRates": BuyRates,
+    "Chargebacks": Chargebacks,
     "CheckoutComponents": CheckoutComponents,
+    "CommunityAccountSettings": CommunityAccountSettings,
+    "CommunityBilling": CommunityBilling,
+    "CommunityMarketplace": CommunityMarketplace,
+    "CommunityPSPProvisioning": CommunityPSPProvisioning,
+    "CommunityPortalDashboard": CommunityPortalDashboard,
+    "CommunityPortalLogin": CommunityPortalLogin,
+    "CommunityProductCatalog": CommunityProductCatalog,
+    "Compliance": Compliance,
+    "ComplianceFramework": ComplianceFramework,
+    "CryptoPayouts": CryptoPayouts,
+    "CryptoTransactions": CryptoTransactions,
+    "Customers": Customers,
+    "Dashboard": Dashboard,
+    "DataRetentionManagement": DataRetentionManagement,
+    "DatabaseMigration": DatabaseMigration,
+    "DatabaseSchemaValidation": DatabaseSchemaValidation,
+    "DatabaseSetup": DatabaseSetup,
+    "Disputes": Disputes,
+    "Documentation": Documentation,
+    "EnhancedAuditLogs": EnhancedAuditLogs,
+    "ExchangeIntegrations": ExchangeIntegrations,
+    "FATFCompliance": FATFCompliance,
+    "FTSAnalytics": FTSAnalytics,
+    "FTSArchitectureDoc": FTSArchitectureDoc,
+    "FTSAuditLogs": FTSAuditLogs,
+    "FTSBlockchainIntegration": FTSBlockchainIntegration,
+    "FTSClients": FTSClients,
+    "FTSCompliance": FTSCompliance,
+    "FTSDomainManagement": FTSDomainManagement,
+    "FTSFeeTemplates": FTSFeeTemplates,
+    "FTSFinancialRegistries": FTSFinancialRegistries,
+    "FTSMoneyPlatform": FTSMoneyPlatform,
+    "FTSPayoutRoutes": FTSPayoutRoutes,
+    "FTSProviderPool": FTSProviderPool,
+    "FTSProvisioningQueue": FTSProvisioningQueue,
+    "FTSReporting": FTSReporting,
+    "FTSRevenue": FTSRevenue,
+    "FTSServiceManager": FTSServiceManager,
+    "FTSServiceProviders": FTSServiceProviders,
+    "FTSServiceRegistry": FTSServiceRegistry,
+    "FTSSettings": FTSSettings,
+    "FeeTypeManagement": FeeTypeManagement,
+    "FraudMonitoring": FraudMonitoring,
+    "FraudPrevention": FraudPrevention,
+    "ISOConfiguration": ISOConfiguration,
+    "InstantPayments": InstantPayments,
+    "Invoices": Invoices,
+    "MIDPricingConfiguration": MIDPricingConfiguration,
+    "MIDRouting": MIDRouting,
+    "MarketAnalysis": MarketAnalysis,
+    "MasterPricingManagement": MasterPricingManagement,
+    "MerchantAPIDoc": MerchantAPIDoc,
+    "MerchantAPIDocumentation": MerchantAPIDocumentation,
+    "MerchantAPIKeys": MerchantAPIKeys,
+    "MerchantAnalytics": MerchantAnalytics,
+    "MerchantAppearance": MerchantAppearance,
+    "MerchantBankInfo": MerchantBankInfo,
+    "MerchantBatchReports": MerchantBatchReports,
+    "MerchantChangePassword": MerchantChangePassword,
+    "MerchantChargebackReport": MerchantChargebackReport,
+    "MerchantCodeRecovery": MerchantCodeRecovery,
+    "MerchantCredentials": MerchantCredentials,
+    "MerchantCryptoDashboard": MerchantCryptoDashboard,
+    "MerchantCustomers": MerchantCustomers,
+    "MerchantDashboard": MerchantDashboard,
+    "MerchantDataTransactions": MerchantDataTransactions,
+    "MerchantDisputeManagement": MerchantDisputeManagement,
+    "MerchantEmailTemplates": MerchantEmailTemplates,
+    "MerchantHelpCenter": MerchantHelpCenter,
+    "MerchantInfo": MerchantInfo,
+    "MerchantInvoiceGenerator": MerchantInvoiceGenerator,
+    "MerchantInvoices": MerchantInvoices,
+    "MerchantLogin": MerchantLogin,
+    "MerchantMIDs": MerchantMIDs,
+    "MerchantMIDsDB": MerchantMIDsDB,
+    "MerchantMonitorTools": MerchantMonitorTools,
+    "MerchantOnboarding": MerchantOnboarding,
+    "MerchantOnboardingWorkflows": MerchantOnboardingWorkflows,
+    "MerchantOperators": MerchantOperators,
+    "MerchantPaymentLinks": MerchantPaymentLinks,
+    "MerchantPayoutPricing": MerchantPayoutPricing,
+    "MerchantPayouts": MerchantPayouts,
+    "MerchantPortal": MerchantPortal,
+    "MerchantPortalBuilder": MerchantPortalBuilder,
+    "MerchantPricing": MerchantPricing,
+    "MerchantPricingEngine": MerchantPricingEngine,
+    "MerchantProvisioning": MerchantProvisioning,
+    "MerchantRefunds": MerchantRefunds,
+    "MerchantSavedCards": MerchantSavedCards,
+    "MerchantSelfOnboarding": MerchantSelfOnboarding,
+    "MerchantSelfServicePortal": MerchantSelfServicePortal,
+    "MerchantSettings": MerchantSettings,
+    "MerchantSettlementReports": MerchantSettlementReports,
+    "MerchantStatementReport": MerchantStatementReport,
+    "MerchantSubscriptions": MerchantSubscriptions,
+    "MerchantTransactionList": MerchantTransactionList,
+    "MerchantUsers": MerchantUsers,
+    "MerchantVirtualTerminal": MerchantVirtualTerminal,
+    "MerchantVirtualTerminals": MerchantVirtualTerminals,
+    "MerchantWebhooks": MerchantWebhooks,
+    "Merchants": Merchants,
+    "ModuleCatalogTest": ModuleCatalogTest,
+    "MyPSPInstances": MyPSPInstances,
+    "MyServiceRequests": MyServiceRequests,
+    "MySubscriptions": MySubscriptions,
+    "NetworkTokenization": NetworkTokenization,
+    "OpenBankingConfiguration": OpenBankingConfiguration,
+    "PCICompliance": PCICompliance,
+    "PSPDetails": PSPDetails,
+    "PSPEmpowermentRoadmap": PSPEmpowermentRoadmap,
+    "PSPInstanceConfig": PSPInstanceConfig,
+    "PSPInstanceManagement": PSPInstanceManagement,
+    "PSPLogin": PSPLogin,
+    "PSPMerchantPricing": PSPMerchantPricing,
+    "PSPOwnershipMigration": PSPOwnershipMigration,
+    "PSPPasswordReset": PSPPasswordReset,
+    "PSPProductCatalog": PSPProductCatalog,
     "PSPProvisioning": PSPProvisioning,
     "PSPProvisioningWizard": PSPProvisioningWizard,
-    "PSPDetails": PSPDetails,
-    "FTSMoneyPlatform": FTSMoneyPlatform,
-    "PSPInstanceConfig": PSPInstanceConfig,
-    "FTSAnalytics": FTSAnalytics,
-    "FTSRevenue": FTSRevenue,
-    "FTSClients": FTSClients,
-    "FTSSettings": FTSSettings,
-    "PSPInstanceManagement": PSPInstanceManagement,
-    "FTSProviderPool": FTSProviderPool,
-    "FTSPayoutRoutes": FTSPayoutRoutes,
-    "FTSFeeTemplates": FTSFeeTemplates,
-    "FTSAuditLogs": FTSAuditLogs,
-    "FTSCompliance": FTSCompliance,
-    "FTSArchitectureDoc": FTSArchitectureDoc,
-    "FTSServiceRegistry": FTSServiceRegistry,
-    "FTSServiceProviders": FTSServiceProviders,
-    "CommunityMarketplace": CommunityMarketplace,
-    "CommunityPortalLogin": CommunityPortalLogin,
-    "CommunityPortalDashboard": CommunityPortalDashboard,
-    "CommunityPSPProvisioning": CommunityPSPProvisioning,
-    "MyPSPInstances": MyPSPInstances,
-    "ServiceProviderRegistration": ServiceProviderRegistration,
-    "CommunityBilling": CommunityBilling,
-    "MySubscriptions": MySubscriptions,
-    "CommunityAccountSettings": CommunityAccountSettings,
     "PSPSetupWizard": PSPSetupWizard,
-    "FTSProvisioningQueue": FTSProvisioningQueue,
-    "MyServiceRequests": MyServiceRequests,
     "PSPUserManagement": PSPUserManagement,
-    "PSPOwnershipMigration": PSPOwnershipMigration,
-    "TestPSPOwnership": TestPSPOwnership,
+    "PaymentGateways": PaymentGateways,
+    "PaymentLinks": PaymentLinks,
+    "PaymentOrchestration": PaymentOrchestration,
+    "PaymentProviders": PaymentProviders,
+    "PayoutOrchestration": PayoutOrchestration,
+    "Payouts": Payouts,
     "PlatformAdminLogin": PlatformAdminLogin,
     "PlatformAdminRegister": PlatformAdminRegister,
-    "PlatformUserManagement": PlatformUserManagement,
     "PlatformAuditLogs": PlatformAuditLogs,
+    "PlatformPricingConfiguration": PlatformPricingConfiguration,
+    "PlatformUserManagement": PlatformUserManagement,
+    "PrivacyPolicy": PrivacyPolicy,
+    "ProductTemplateLibrary": ProductTemplateLibrary,
+    "PublicSupport": PublicSupport,
+    "QuickPSPProvisioning": QuickPSPProvisioning,
+    "RealTimeMonitor": RealTimeMonitor,
+    "Reconciliation": Reconciliation,
+    "Refunds": Refunds,
+    "Reports": Reports,
+    "ResourceOrchestration": ResourceOrchestration,
+    "SecurityManagement": SecurityManagement,
+    "ServiceProviderRegistration": ServiceProviderRegistration,
+    "Settings": Settings,
+    "Settlements": Settlements,
+    "SmartOrchestration": SmartOrchestration,
+    "SmartRetry": SmartRetry,
+    "StaffLogin": StaffLogin,
+    "SubMerchants": SubMerchants,
+    "Support": Support,
     "TenantManagement": TenantManagement,
     "TenantUserManagement": TenantUserManagement,
-    "ComplianceFramework": ComplianceFramework,
-    "FTSServiceManager": FTSServiceManager,
-    "FTSBlockchainIntegration": FTSBlockchainIntegration,
-    "APIGatewayConfiguration": APIGatewayConfiguration,
-    "FTSReporting": FTSReporting,
-    "FTSDomainManagement": FTSDomainManagement,
-    "FTSFinancialRegistries": FTSFinancialRegistries,
-    "CommunityProductCatalog": CommunityProductCatalog,
-    "XeroIntegration": XeroIntegration,
-    "EnhancedAuditLogs": EnhancedAuditLogs,
-    "DataRetentionManagement": DataRetentionManagement,
-    "WorkflowManagement": WorkflowManagement,
-    "MasterPricingManagement": MasterPricingManagement,
-    "OpenBankingConfiguration": OpenBankingConfiguration,
-    "PSPEmpowermentRoadmap": PSPEmpowermentRoadmap,
-    "ResourceOrchestration": ResourceOrchestration,
-    "DatabaseSchemaValidation": DatabaseSchemaValidation,
-    "PSPProductCatalog": PSPProductCatalog,
-    "MerchantOnboardingWorkflows": MerchantOnboardingWorkflows,
-    "MerchantPricingEngine": MerchantPricingEngine,
-    "PSPMerchantPricing": PSPMerchantPricing,
+    "Terminals": Terminals,
+    "TermsOfService": TermsOfService,
+    "TestPSPOwnership": TestPSPOwnership,
+    "ThreeDSecure": ThreeDSecure,
+    "Transactions": Transactions,
     "UsageMeteringSystem": UsageMeteringSystem,
-    "MerchantInvoiceGenerator": MerchantInvoiceGenerator,
-    "MerchantPortalBuilder": MerchantPortalBuilder,
-    "QuickPSPProvisioning": QuickPSPProvisioning,
+    "UserManagement": UserManagement,
+    "VirtualTerminal": VirtualTerminal,
+    "VirtualTerminalLogin": VirtualTerminalLogin,
+    "VirtualTerminals": VirtualTerminals,
+    "Webhooks": Webhooks,
+    "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
-    "ProductTemplateLibrary": ProductTemplateLibrary,
-    "ModuleCatalogTest": ModuleCatalogTest,
-    "MerchantProvisioning": MerchantProvisioning,
-    "PlatformPricingConfiguration": PlatformPricingConfiguration,
+    "XeroIntegration": XeroIntegration,
 }
 
 export const pagesConfig = {
