@@ -173,8 +173,8 @@ export default function QuickPSPProvisioning() {
         <div className="flex h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
             <FTSPlatformSidebar 
                 currentPage="QuickPSPProvisioning"
-                userEmail={user?.email}
-                userRole={user?.role}
+                userEmail={platformUser?.email}
+                userRole={platformUser?.platform_role}
             />
             
             <div className="flex-1 overflow-y-auto">
