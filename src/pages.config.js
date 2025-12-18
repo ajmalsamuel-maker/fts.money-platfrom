@@ -183,6 +183,7 @@ import MerchantPortalBuilder from './pages/MerchantPortalBuilder';
 import QuickPSPProvisioning from './pages/QuickPSPProvisioning';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import ProductTemplateLibrary from './pages/ProductTemplateLibrary';
+import ModuleCatalogTest from './pages/ModuleCatalogTest';
 import __Layout from './Layout.jsx';
 
 
@@ -372,6 +373,7 @@ export const PAGES = {
     "QuickPSPProvisioning": QuickPSPProvisioning,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "ProductTemplateLibrary": ProductTemplateLibrary,
+    "ModuleCatalogTest": ModuleCatalogTest,
 }
 
 export const pagesConfig = {
