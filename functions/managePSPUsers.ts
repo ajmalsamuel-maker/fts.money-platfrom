@@ -78,8 +78,14 @@ Deno.serve(async (req) => {
 
         if (action === 'list') {
             if (!psp_code) {
-                // List all users from all PSP schemas
-                const pspResult = await pool.query('SELECT psp_code FROM psp_settings ORDER BY psp_code');
+                // List all users from all PSP schemas using ProvisionedPSP entity
+                const pspResult = await pool.query(`
+                    SELECT DISTINCT psp_code 
+                    FROM app_entities_data 
+                    WHERE entity_name = 'ProvisionedPSP' 
+                    AND data->>'psp_code' IS NOT NULL
+                    ORDER BY data->>'psp_code'
+                `);
                 const allUsers = [];
                 
                 for (const psp of pspResult.rows) {
