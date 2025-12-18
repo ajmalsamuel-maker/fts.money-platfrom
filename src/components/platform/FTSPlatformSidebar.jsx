@@ -86,6 +86,7 @@ const menuSections = [
     {
         title: 'Financial Management',
         items: [
+            { icon: DollarSign, label: 'Platform Pricing', path: 'PlatformPricingConfiguration', description: 'PSP tier pricing config' },
             { icon: DollarSign, label: 'Master Pricing', path: 'MasterPricingManagement', description: 'Comprehensive pricing & fee control' },
             { icon: DollarSign, label: 'Xero Integration', path: 'XeroIntegration', description: 'Accounting sync' }
         ]
