@@ -98,6 +98,19 @@ export default function PSPUserManagement() {
             alert('Please select a PSP');
             return;
         }
+        
+        // Check if email already exists for this PSP
+        if (!editingUser) {
+            const existingUser = users.find(u => 
+                u.email.toLowerCase() === formData.email.toLowerCase() && 
+                u.psp_code === formData.psp_code
+            );
+            if (existingUser) {
+                alert(`A user with email ${formData.email} already exists for PSP ${formData.psp_code}`);
+                return;
+            }
+        }
+        
         if (editingUser) {
             updateMutation.mutate({ ...formData, user_id: editingUser.id });
         } else {
