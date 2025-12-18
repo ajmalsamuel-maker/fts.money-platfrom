@@ -27,7 +27,7 @@ Deno.serve(async (req) => {
                 
                 // Create schema if it doesn't exist
                 await client.query(`CREATE SCHEMA IF NOT EXISTS ${schemaName}`);
-                
+
                 // Ensure app_users table exists in PSP schema with schema-qualified name
                 await client.query(`
                     CREATE TABLE IF NOT EXISTS ${schemaName}.app_users (
@@ -40,9 +40,21 @@ Deno.serve(async (req) => {
                         last_login TIMESTAMP,
                         created_at TIMESTAMP DEFAULT NOW(),
                         updated_at TIMESTAMP DEFAULT NOW(),
-                        CONSTRAINT ${schemaName}_app_users_email_key UNIQUE (email)
+                        UNIQUE (email)
                     )
                 `);
+
+                // Check if user already exists in this PSP schema
+                const existingUser = await client.query(`
+                    SELECT id FROM ${schemaName}.app_users WHERE email = $1
+                `, [email]);
+
+                if (existingUser.rows.length > 0) {
+                    return Response.json({
+                        success: false,
+                        error: `A user with email ${email} already exists in PSP ${psp_code}`
+                    }, { status: 400 });
+                }
 
                 // Hash the password
                 const password_hash = await bcrypt.hash(password || 'Welcome123!', 10);
