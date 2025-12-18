@@ -32,20 +32,41 @@ export default function FTSProvisioningQueue() {
 
     const { data: provisioningPSPs = [], isLoading: loadingProvisioning } = useQuery({
         queryKey: ['provisioning-psps'],
-        queryFn: () => base44.entities.ProvisionedPSP.filter({ status: 'provisioning' }, '-created_date'),
+        queryFn: async () => {
+            try {
+                return await base44.entities.ProvisionedPSP.filter({ status: 'provisioning' }, '-created_date');
+            } catch (error) {
+                console.error('Error fetching provisioning PSPs:', error);
+                return [];
+            }
+        },
         refetchInterval: 5000,
         enabled: !!platformUser
     });
 
     const { data: activePSPs = [], isLoading: loadingActive } = useQuery({
         queryKey: ['active-psps'],
-        queryFn: () => base44.entities.ProvisionedPSP.filter({ status: 'active' }, '-created_date', 10),
+        queryFn: async () => {
+            try {
+                return await base44.entities.ProvisionedPSP.filter({ status: 'active' }, '-created_date', 10);
+            } catch (error) {
+                console.error('Error fetching active PSPs:', error);
+                return [];
+            }
+        },
         enabled: !!platformUser
     });
 
     const { data: approvalRequests = [], isLoading: loadingApprovals } = useQuery({
         queryKey: ['approval-requests'],
-        queryFn: () => base44.entities.ApprovalRequest.filter({ status: 'pending' }, '-created_date'),
+        queryFn: async () => {
+            try {
+                return await base44.entities.ApprovalRequest.filter({ status: 'pending' }, '-created_date');
+            } catch (error) {
+                console.error('Error fetching approval requests:', error);
+                return [];
+            }
+        },
         refetchInterval: 5000,
         enabled: !!platformUser
     });
