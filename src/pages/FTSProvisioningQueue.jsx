@@ -73,6 +73,7 @@ export default function FTSProvisioningQueue() {
 
     const [stepErrors, setStepErrors] = useState({});
     const [stepValidating, setStepValidating] = useState({});
+    const [stepValidationResults, setStepValidationResults] = useState({});
 
     const validateStepMutation = useMutation({
         mutationFn: async ({ psp_code, step_id }) => {
@@ -350,6 +351,8 @@ FTS.Money Platform Team
     const handleValidateStep = async (pspId, stepId) => {
         const psp = provisioningPSPs.find(p => p.id === pspId);
         setStepValidating(prev => ({ ...prev, [`${pspId}-${stepId}`]: true }));
+        setStepValidationResults(prev => ({ ...prev, [`${pspId}-${stepId}`]: null }));
+        
         try {
             const result = await validateStepMutation.mutateAsync({
                 psp_code: psp.psp_code,
@@ -357,6 +360,8 @@ FTS.Money Platform Team
             });
             
             if (result.success) {
+                setStepValidationResults(prev => ({ ...prev, [`${pspId}-${stepId}`]: 'success' }));
+                
                 // Mark as completed
                 const completedSteps = (psp.provisioning_steps_completed || []);
                 if (!completedSteps.includes(stepId)) {
@@ -376,9 +381,11 @@ FTS.Money Platform Team
                 }
                 setStepErrors(prev => ({ ...prev, [`${pspId}-${stepId}`]: null }));
             } else {
+                setStepValidationResults(prev => ({ ...prev, [`${pspId}-${stepId}`]: 'failed' }));
                 setStepErrors(prev => ({ ...prev, [`${pspId}-${stepId}`]: result.error }));
             }
         } catch (err) {
+            setStepValidationResults(prev => ({ ...prev, [`${pspId}-${stepId}`]: 'failed' }));
             setStepErrors(prev => ({ ...prev, [`${pspId}-${stepId}`]: err.message }));
         } finally {
             setStepValidating(prev => ({ ...prev, [`${pspId}-${stepId}`]: false }));
@@ -630,9 +637,23 @@ FTS.Money Platform Team
                                                                                    variant="outline"
                                                                                    onClick={() => handleValidateStep(psp.id, step.id)}
                                                                                    disabled={isValidating || isExecuting}
+                                                                                   className={cn(
+                                                                                       stepValidationResults[`${psp.id}-${step.id}`] === 'success' && "border-emerald-500 text-emerald-700",
+                                                                                       stepValidationResults[`${psp.id}-${step.id}`] === 'failed' && "border-red-500 text-red-700"
+                                                                                   )}
                                                                                >
                                                                                    {isValidating ? (
                                                                                        <Loader2 className="h-4 w-4 animate-spin" />
+                                                                                   ) : stepValidationResults[`${psp.id}-${step.id}`] === 'success' ? (
+                                                                                       <>
+                                                                                           <CheckCircle2 className="h-4 w-4 mr-1" />
+                                                                                           Valid
+                                                                                       </>
+                                                                                   ) : stepValidationResults[`${psp.id}-${step.id}`] === 'failed' ? (
+                                                                                       <>
+                                                                                           <XCircle className="h-4 w-4 mr-1" />
+                                                                                           Failed
+                                                                                       </>
                                                                                    ) : (
                                                                                        'Check'
                                                                                    )}
