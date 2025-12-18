@@ -109,7 +109,14 @@ export default function FTSProvisioningQueue() {
                         database_instance: `${psp.psp_code.toLowerCase()}_prod_${Date.now()}`,
                         cdn_endpoint: `https://cdn.fts.money/${psp.psp_code.toLowerCase()}`
                     };
-                    await base44.entities.ProvisionedPSP.update(pspId, { technical_config: technicalConfig });
+                    console.log('Updating PSP with technical config:', { pspId, technicalConfig });
+                    try {
+                        await base44.entities.ProvisionedPSP.update(pspId, { technical_config: technicalConfig });
+                        console.log('Technical config updated successfully');
+                    } catch (updateError) {
+                        console.error('Failed to update technical config:', updateError);
+                        throw new Error(`Failed to save API keys: ${updateError.message}`);
+                    }
                     return { pspId, step, success: true };
                 }
                 
