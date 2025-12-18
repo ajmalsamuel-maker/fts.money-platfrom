@@ -284,7 +284,7 @@ export default function QuickPSPProvisioning() {
                                                         </div>
                                                         <div className="flex items-center justify-between text-xs">
                                                             <span className="text-slate-600">Max Merchants</span>
-                                                            <Badge variant="secondary">{template.config.limits.max_merchants.toLocaleString()}</Badge>
+                                                            <Badge variant="secondary">{(template.config.limits?.max_merchants || 0).toLocaleString()}</Badge>
                                                         </div>
                                                     </div>
                                                 </CardContent>
@@ -474,7 +474,7 @@ export default function QuickPSPProvisioning() {
                                             </div>
                                             <div className="flex justify-between">
                                                 <span className="text-slate-600">Max Merchants:</span>
-                                                <span className="font-medium">{pspConfig.limits.max_merchants?.toLocaleString()}</span>
+                                                <span className="font-medium">{(pspConfig.limits?.max_merchants || 'Unlimited').toLocaleString ? (pspConfig.limits.max_merchants || 0).toLocaleString() : 'Unlimited'}</span>
                                             </div>
                                         </div>
                                     </div>
