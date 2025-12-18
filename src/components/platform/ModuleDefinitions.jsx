@@ -339,6 +339,39 @@ export const MODULE_DEFINITIONS = {
   },
 
   // MERCHANT FEATURES
+  'merchant_onboarding_workflow': {
+    module_id: 'merchant_onboarding_workflow',
+    module_name: 'Advanced Merchant Onboarding',
+    module_category: 'merchants',
+    description: '10-step merchant onboarding with KYB/KYC, AML screening, document verification, risk assessment, and approval workflow',
+    icon: 'Globe',
+    subscription_tier: 'professional',
+    pricing_model: { type: 'per_merchant', base_price: 15 },
+    menu_items: [
+      { group: 'merchants', label: 'merchantOnboarding', path: 'MerchantOnboarding', icon: 'Store', permission: 'VIEW_ONBOARDING' },
+      { group: 'merchants', label: 'selfServicePortal', path: 'MerchantSelfOnboarding', icon: 'Globe', permission: 'VIEW_ONBOARDING' },
+      { group: 'merchants', label: 'approvals', path: 'Approvals', icon: 'CheckSquare', permission: 'APPROVE_ONBOARDING' }
+    ],
+    dependencies: ['core_merchants', 'compliance_suite'],
+    features: [
+      'multi_step_onboarding',
+      'kyb_verification',
+      'kyc_verification', 
+      'aml_screening',
+      'lei_verification',
+      'document_upload',
+      'risk_assessment',
+      'approval_workflow',
+      'self_service_portal',
+      'automated_notifications',
+      'compliance_checks'
+    ],
+    compliance_requirements: ['PCI_DSS', 'GDPR', 'ISO_27001', 'FATF'],
+    data_isolation_required: true,
+    is_active: true,
+    is_beta: false
+  },
+
   'merchant_portal': {
     module_id: 'merchant_portal',
     module_name: 'Merchant Portal Builder',
