@@ -50,14 +50,66 @@ export default function FTSProvisioningQueue() {
         enabled: !!platformUser
     });
 
+    const [stepErrors, setStepErrors] = useState({});
+    const [stepValidating, setStepValidating] = useState({});
+
+    const validateStepMutation = useMutation({
+        mutationFn: async ({ psp_code, step_id }) => {
+            const result = await base44.functions.invoke('validateProvisioningStep', {
+                psp_code,
+                step_id
+            });
+            return result.data;
+        }
+    });
+
     const executeStepMutation = useMutation({
-        mutationFn: async ({ pspId, step }) => {
-            // Simulate provisioning step execution
-            await new Promise(resolve => setTimeout(resolve, 2000));
+        mutationFn: async ({ pspId, psp, step }) => {
+            // Execute based on step type
+            if (step === 'database') {
+                const result = await base44.functions.invoke('provisionPSPSchema', {
+                    psp_code: psp.psp_code
+                });
+                if (!result.data.success) throw new Error(result.data.error || 'Schema creation failed');
+                return { pspId, step, success: true };
+            }
+            
+            if (step === 'api_keys') {
+                const technicalConfig = {
+                    api_key: `fts_live_${Math.random().toString(36).substring(2, 15)}${Math.random().toString(36).substring(2, 15)}`,
+                    webhook_secret: `whsec_${Math.random().toString(36).substring(2, 15)}${Math.random().toString(36).substring(2, 15)}`,
+                    database_instance: `${psp.psp_code.toLowerCase()}_prod_${Date.now()}`,
+                    cdn_endpoint: `https://cdn.fts.money/${psp.psp_code.toLowerCase()}`
+                };
+                await base44.entities.ProvisionedPSP.update(pspId, { technical_config: technicalConfig });
+                return { pspId, step, success: true };
+            }
+            
+            if (step === 'security') {
+                const initialPassword = 'Welcome123!';
+                try {
+                    await base44.functions.invoke('managePSPUsers', {
+                        action: 'create',
+                        psp_code: psp.psp_code,
+                        email: psp.owner_email,
+                        full_name: psp.psp_name + ' Admin',
+                        role: 'admin',
+                        password: initialPassword,
+                        status: 'active'
+                    });
+                } catch (err) {
+                    if (!err.message.includes('already exists')) {
+                        throw err;
+                    }
+                }
+                return { pspId, step, success: true };
+            }
+            
+            // Other steps
+            await new Promise(resolve => setTimeout(resolve, 1000));
             return { pspId, step, success: true };
         },
         onSuccess: ({ pspId, step }) => {
-            // Update progress
             const psp = provisioningPSPs.find(p => p.id === pspId);
             const completedSteps = (psp.provisioning_steps_completed || []);
             if (!completedSteps.includes(step)) {
@@ -75,6 +127,10 @@ export default function FTSProvisioningQueue() {
                     }
                 });
             }
+            setStepErrors(prev => ({ ...prev, [`${pspId}-${step}`]: null }));
+        },
+        onError: (error, { pspId, step }) => {
+            setStepErrors(prev => ({ ...prev, [`${pspId}-${step}`]: error.message }));
         }
     });
 
@@ -251,7 +307,46 @@ FTS.Money Platform Team
     });
 
     const handleExecuteStep = async (pspId, stepId) => {
-        await executeStepMutation.mutateAsync({ pspId, step: stepId });
+        const psp = provisioningPSPs.find(p => p.id === pspId);
+        await executeStepMutation.mutateAsync({ pspId, psp, step: stepId });
+    };
+
+    const handleValidateStep = async (pspId, stepId) => {
+        const psp = provisioningPSPs.find(p => p.id === pspId);
+        setStepValidating(prev => ({ ...prev, [`${pspId}-${stepId}`]: true }));
+        try {
+            const result = await validateStepMutation.mutateAsync({
+                psp_code: psp.psp_code,
+                step_id: stepId
+            });
+            
+            if (result.success) {
+                // Mark as completed
+                const completedSteps = (psp.provisioning_steps_completed || []);
+                if (!completedSteps.includes(stepId)) {
+                    completedSteps.push(stepId);
+                    const progress = completedSteps.reduce((sum, sid) => {
+                        const stepConfig = provisioningSteps.find(s => s.id === sid);
+                        return sum + (stepConfig?.weight || 0);
+                    }, 0);
+
+                    await updatePSPMutation.mutateAsync({
+                        pspId,
+                        data: {
+                            provisioning_steps_completed: completedSteps,
+                            provisioning_progress: progress
+                        }
+                    });
+                }
+                setStepErrors(prev => ({ ...prev, [`${pspId}-${stepId}`]: null }));
+            } else {
+                setStepErrors(prev => ({ ...prev, [`${pspId}-${stepId}`]: result.error }));
+            }
+        } catch (err) {
+            setStepErrors(prev => ({ ...prev, [`${pspId}-${stepId}`]: err.message }));
+        } finally {
+            setStepValidating(prev => ({ ...prev, [`${pspId}-${stepId}`]: false }));
+        }
     };
 
     const handleAutoProvision = async (pspId) => {
@@ -451,54 +546,87 @@ FTS.Money Platform Team
 
                                                 <div className="grid gap-3">
                                                     {provisioningSteps.map((step) => {
-                                                        const Icon = step.icon;
-                                                        const isCompleted = completedSteps.includes(step.id);
-                                                        const isExecuting = executeStepMutation.isPending;
+                                                       const Icon = step.icon;
+                                                       const isCompleted = completedSteps.includes(step.id);
+                                                       const isExecuting = executeStepMutation.isPending;
+                                                       const isValidating = stepValidating[`${psp.id}-${step.id}`];
+                                                       const error = stepErrors[`${psp.id}-${step.id}`];
 
-                                                        return (
-                                                            <div
-                                                                key={step.id}
-                                                                className={cn(
-                                                                    "flex items-center justify-between p-3 rounded-lg border transition-all",
-                                                                    isCompleted 
-                                                                        ? "bg-emerald-50 border-emerald-200" 
-                                                                        : "bg-white border-slate-200"
-                                                                )}
-                                                            >
-                                                                <div className="flex items-center gap-3">
-                                                                    <div className={cn(
-                                                                        "w-10 h-10 rounded-lg flex items-center justify-center",
-                                                                        isCompleted 
-                                                                            ? "bg-emerald-100 text-emerald-600" 
-                                                                            : "bg-slate-100 text-slate-400"
-                                                                    )}>
-                                                                        {isCompleted ? (
-                                                                            <CheckCircle2 className="h-5 w-5" />
-                                                                        ) : (
-                                                                            <Icon className="h-5 w-5" />
-                                                                        )}
-                                                                    </div>
-                                                                    <div>
-                                                                        <p className="font-semibold text-sm">{step.name}</p>
-                                                                        <p className="text-xs text-slate-500">{step.weight}% of total</p>
-                                                                    </div>
-                                                                </div>
-                                                                {!isCompleted && (
-                                                                    <Button
-                                                                        size="sm"
-                                                                        variant="outline"
-                                                                        onClick={() => handleExecuteStep(psp.id, step.id)}
-                                                                        disabled={isExecuting}
-                                                                    >
-                                                                        {isExecuting ? (
-                                                                            <Loader2 className="h-4 w-4 animate-spin" />
-                                                                        ) : (
-                                                                            'Execute'
-                                                                        )}
-                                                                    </Button>
-                                                                )}
-                                                            </div>
-                                                        );
+                                                       return (
+                                                           <div key={step.id} className="space-y-2">
+                                                               <div
+                                                                   className={cn(
+                                                                       "flex items-center justify-between p-3 rounded-lg border transition-all",
+                                                                       isCompleted 
+                                                                           ? "bg-emerald-50 border-emerald-200" 
+                                                                           : error
+                                                                           ? "bg-red-50 border-red-200"
+                                                                           : "bg-white border-slate-200"
+                                                                   )}
+                                                               >
+                                                                   <div className="flex items-center gap-3">
+                                                                       <div className={cn(
+                                                                           "w-10 h-10 rounded-lg flex items-center justify-center",
+                                                                           isCompleted 
+                                                                               ? "bg-emerald-100 text-emerald-600" 
+                                                                               : error
+                                                                               ? "bg-red-100 text-red-600"
+                                                                               : "bg-slate-100 text-slate-400"
+                                                                       )}>
+                                                                           {isCompleted ? (
+                                                                               <CheckCircle2 className="h-5 w-5" />
+                                                                           ) : error ? (
+                                                                               <AlertCircle className="h-5 w-5" />
+                                                                           ) : (
+                                                                               <Icon className="h-5 w-5" />
+                                                                           )}
+                                                                       </div>
+                                                                       <div>
+                                                                           <p className="font-semibold text-sm">{step.name}</p>
+                                                                           <p className="text-xs text-slate-500">{step.weight}% of total</p>
+                                                                       </div>
+                                                                   </div>
+                                                                   <div className="flex gap-2">
+                                                                       {!isCompleted && (
+                                                                           <>
+                                                                               <Button
+                                                                                   size="sm"
+                                                                                   variant="outline"
+                                                                                   onClick={() => handleValidateStep(psp.id, step.id)}
+                                                                                   disabled={isValidating || isExecuting}
+                                                                               >
+                                                                                   {isValidating ? (
+                                                                                       <Loader2 className="h-4 w-4 animate-spin" />
+                                                                                   ) : (
+                                                                                       'Check'
+                                                                                   )}
+                                                                               </Button>
+                                                                               <Button
+                                                                                   size="sm"
+                                                                                   onClick={() => handleExecuteStep(psp.id, step.id)}
+                                                                                   disabled={isExecuting || isValidating}
+                                                                                   className="bg-blue-600 hover:bg-blue-700 text-white"
+                                                                               >
+                                                                                   {isExecuting ? (
+                                                                                       <Loader2 className="h-4 w-4 animate-spin" />
+                                                                                   ) : (
+                                                                                       'Execute'
+                                                                                   )}
+                                                                               </Button>
+                                                                           </>
+                                                                       )}
+                                                                   </div>
+                                                               </div>
+                                                               {error && (
+                                                                   <Alert className="bg-red-50 border-red-200">
+                                                                       <AlertCircle className="h-4 w-4 text-red-600" />
+                                                                       <AlertDescription className="text-red-900 text-xs">
+                                                                           {error}
+                                                                       </AlertDescription>
+                                                                   </Alert>
+                                                               )}
+                                                           </div>
+                                                       );
                                                     })}
                                                 </div>
 
