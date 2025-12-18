@@ -23,7 +23,8 @@ import {
     Rocket,
     Wallet,
     CheckCircle2,
-    Loader2
+    Loader2,
+    CheckCircle
 } from 'lucide-react';
 
 import { COUNTRIES } from '@/components/utils/countries';
