@@ -103,10 +103,26 @@ export default function PSPProvisioningWizard() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const { platformUser } = usePlatformAuth();
-    const [step, setStep] = useState(1);
-    const [selectedTier, setSelectedTier] = useState('professional');
-    const [useTemplate, setUseTemplate] = useState(true);
-    const [customTiers, setCustomTiers] = useState(tiers);
+    
+    // Load saved state from localStorage
+    const loadSavedState = () => {
+        const saved = localStorage.getItem('psp_wizard_state');
+        if (saved) {
+            try {
+                return JSON.parse(saved);
+            } catch {
+                return null;
+            }
+        }
+        return null;
+    };
+    
+    const savedState = loadSavedState();
+    
+    const [step, setStep] = useState(savedState?.step || 1);
+    const [selectedTier, setSelectedTier] = useState(savedState?.selectedTier || 'professional');
+    const [useTemplate, setUseTemplate] = useState(savedState?.useTemplate ?? true);
+    const [customTiers, setCustomTiers] = useState(savedState?.customTiers || tiers);
     
     const generatePSPCode = (name, country, timezone) => {
         if (!name || !country || !timezone) return '';
@@ -120,7 +136,7 @@ export default function PSPProvisioningWizard() {
         return Math.abs(hash).toString(36).toUpperCase().substring(0, 8);
     };
 
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState(savedState?.formData || {
         psp_code: '',
         psp_name: '',
         legal_entity_name: '',
@@ -161,6 +177,18 @@ export default function PSPProvisioningWizard() {
             settlement_notification: ''
         }
     });
+    
+    // Save state to localStorage whenever it changes
+    React.useEffect(() => {
+        const stateToSave = {
+            step,
+            selectedTier,
+            useTemplate,
+            customTiers,
+            formData
+        };
+        localStorage.setItem('psp_wizard_state', JSON.stringify(stateToSave));
+    }, [step, selectedTier, useTemplate, customTiers, formData]);
 
     const { data: templates = [] } = useQuery({
         queryKey: ['psp-templates'],
@@ -198,6 +226,8 @@ export default function PSPProvisioningWizard() {
             setProvisioningComplete(true);
             queryClient.invalidateQueries(['provisioned-psps']);
             queryClient.invalidateQueries(['approval-requests']);
+            // Clear saved state on successful provisioning
+            localStorage.removeItem('psp_wizard_state');
         }
     });
 
@@ -266,14 +296,29 @@ export default function PSPProvisioningWizard() {
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
                 <div className="mb-8 bg-white rounded-lg p-6 border border-slate-200">
-                    <Button 
-                        variant="ghost" 
-                        onClick={() => navigate(createPageUrl('FTSMoneyPlatform'))}
-                        className="mb-4"
-                    >
-                        <ArrowLeft className="h-4 w-4 mr-2" />
-                        Back to Platform
-                    </Button>
+                    <div className="flex items-center justify-between mb-4">
+                        <Button 
+                            variant="ghost" 
+                            onClick={() => navigate(createPageUrl('FTSMoneyPlatform'))}
+                        >
+                            <ArrowLeft className="h-4 w-4 mr-2" />
+                            Back to Platform
+                        </Button>
+                        {savedState && (
+                            <Button 
+                                variant="outline" 
+                                size="sm"
+                                onClick={() => {
+                                    if (confirm('Clear saved progress? This cannot be undone.')) {
+                                        localStorage.removeItem('psp_wizard_state');
+                                        window.location.reload();
+                                    }
+                                }}
+                            >
+                                Clear Saved Progress
+                            </Button>
+                        )}
+                    </div>
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
                             <div className="w-14 h-14 rounded-lg bg-blue-600 flex items-center justify-center">
