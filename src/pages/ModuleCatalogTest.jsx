@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 
 export default function ModuleCatalogTest() {
-  const { user } = usePlatformAuth(['VIEW_PLATFORM']);
+  const { user } = usePlatformAuth();
   const [selectedModules, setSelectedModules] = useState([
     'core_dashboard',
     'core_transactions',
