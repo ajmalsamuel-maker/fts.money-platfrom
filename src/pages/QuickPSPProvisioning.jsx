@@ -87,6 +87,8 @@ export default function QuickPSPProvisioning() {
             const psp = await base44.asServiceRole.entities.ProvisionedPSP.create({
                 psp_code: config.psp_code,
                 psp_name: config.instance_name,
+                owner_email: config.admin_user?.email || platformUser?.email || 'admin@example.com',
+                contact_email: config.admin_user?.email || platformUser?.email || 'admin@example.com',
                 status: 'active',
                 branding: config.branding,
                 enabled_modules: config.enabled_modules,
