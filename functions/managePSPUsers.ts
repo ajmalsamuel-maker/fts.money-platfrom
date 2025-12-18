@@ -63,10 +63,14 @@ Deno.serve(async (req) => {
                 });
             } catch (err) {
                 console.error('Error creating user:', err);
+                let errorMessage = err.message;
+                if (err.code === '23505') {
+                    errorMessage = 'A user with this email already exists';
+                }
                 return Response.json({
                     success: false,
-                    error: err.message
-                }, { status: 500 });
+                    error: errorMessage
+                }, { status: 400 });
             } finally {
                 client.release();
             }

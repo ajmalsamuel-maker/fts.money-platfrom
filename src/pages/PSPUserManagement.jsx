@@ -51,9 +51,10 @@ export default function PSPUserManagement() {
 
     const createMutation = useMutation({
         mutationFn: async (data) => {
-            console.log('Creating user with data:', data);
             const result = await base44.functions.invoke('managePSPUsers', { action: 'create', ...data });
-            console.log('Create user result:', result);
+            if (!result.data?.success) {
+                throw new Error(result.data?.error || 'Failed to create user');
+            }
             return result;
         },
         onSuccess: (result) => {
@@ -61,13 +62,10 @@ export default function PSPUserManagement() {
             setDialogOpen(false);
             setEditingUser(null);
             setFormData({ email: '', full_name: '', role: 'user', psp_code: '', password: 'Welcome123!', status: 'active' });
-            if (result.data?.success) {
-                alert('User created successfully!');
-            }
+            alert('User created successfully!');
         },
         onError: (error) => {
-            console.error('Error creating user:', error);
-            alert(`Error creating user: ${error.response?.data?.error || error.message || 'Unknown error'}`);
+            alert(`Error: ${error.message || 'Unknown error'}`);
         }
     });
 
