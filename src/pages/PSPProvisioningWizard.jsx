@@ -181,7 +181,7 @@ export default function PSPProvisioningWizard() {
     });
     
     // Save state to localStorage whenever it changes
-    React.useEffect(() => {
+    useState(() => {
         const stateToSave = {
             step,
             selectedTier,
@@ -379,7 +379,7 @@ export default function PSPProvisioningWizard() {
                                     step > s ? "bg-blue-600" : "bg-slate-200"
                                 )} />
                             )}
-                        </React.Fragment>
+                        </div>
                     ))}
                 </div>
 
