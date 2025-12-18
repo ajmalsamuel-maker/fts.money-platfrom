@@ -25,7 +25,8 @@ import {
     Wallet,
     Award,
     Scale,
-    CheckCircle2
+    CheckCircle2,
+    Loader2
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { AuditLogger } from '@/components/platform/EnhancedAuditLogger';
