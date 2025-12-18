@@ -14,23 +14,7 @@ Deno.serve(async (req) => {
         if (action === 'verifyPSP') {
             const client = await pool.connect();
             try {
-                // Check if PSP exists in ProvisionedPSP entity using correct table name
-                const pspCheck = await client.query(`
-                    SELECT data->>'psp_code' as psp_code, data->>'psp_name' as psp_name
-                    FROM public.app_entity_data
-                    WHERE entity_name = 'ProvisionedPSP' 
-                    AND LOWER(data->>'psp_code') = LOWER($1)
-                    LIMIT 1
-                `, [psp_code]);
-                
-                if (pspCheck.rows.length === 0) {
-                    return Response.json({
-                        success: false,
-                        error: 'Invalid PSP code'
-                    });
-                }
-                
-                // Also check if schema exists
+                // Check if PSP schema exists directly
                 const schemaCheck = await client.query(`
                     SELECT schema_name 
                     FROM information_schema.schemata 
@@ -48,7 +32,7 @@ Deno.serve(async (req) => {
                     success: true,
                     psp: {
                         psp_code: psp_code.toUpperCase(),
-                        psp_name: pspCheck.rows[0].psp_name
+                        psp_name: psp_code.toUpperCase()
                     }
                 });
             } finally {
