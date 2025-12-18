@@ -176,6 +176,11 @@ export default function PSPProvisioningWizard() {
             merchant_onboarding: '',
             transaction_notification: '',
             settlement_notification: ''
+        },
+        admin_user: {
+            email: '',
+            full_name: '',
+            password: ''
         }
     });
     
@@ -952,6 +957,60 @@ export default function PSPProvisioningWizard() {
                             <CardDescription>Verify configuration before infrastructure provisioning</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-6">
+                            {/* Admin User Configuration */}
+                            <div className="p-5 bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-lg">
+                                <h3 className="font-semibold text-blue-900 mb-1 flex items-center gap-2">
+                                    <Shield className="h-5 w-5" />
+                                    First Admin User
+                                </h3>
+                                <p className="text-sm text-blue-700 mb-4">Define the primary administrator who will have full access to this PSP platform</p>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <Label className="text-blue-900">Admin Email *</Label>
+                                        <Input
+                                            type="email"
+                                            value={formData.admin_user.email}
+                                            onChange={(e) => setFormData({
+                                                ...formData, 
+                                                admin_user: {...formData.admin_user, email: e.target.value}
+                                            })}
+                                            placeholder="admin@example.com"
+                                            className="bg-white"
+                                            required
+                                        />
+                                    </div>
+                                    <div>
+                                        <Label className="text-blue-900">Full Name *</Label>
+                                        <Input
+                                            value={formData.admin_user.full_name}
+                                            onChange={(e) => setFormData({
+                                                ...formData, 
+                                                admin_user: {...formData.admin_user, full_name: e.target.value}
+                                            })}
+                                            placeholder="John Doe"
+                                            className="bg-white"
+                                            required
+                                        />
+                                    </div>
+                                    <div className="col-span-2">
+                                        <Label className="text-blue-900">Initial Password *</Label>
+                                        <Input
+                                            type="password"
+                                            value={formData.admin_user.password}
+                                            onChange={(e) => setFormData({
+                                                ...formData, 
+                                                admin_user: {...formData.admin_user, password: e.target.value}
+                                            })}
+                                            placeholder="••••••••"
+                                            className="bg-white"
+                                            required
+                                        />
+                                        <p className="text-xs text-blue-600 mt-1">Password must be at least 8 characters. User will be required to change on first login.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Configuration Summary */}
                             <div className="grid grid-cols-3 gap-4">
                                 <div>
                                     <p className="text-xs text-slate-500 mb-1">PSP Code</p>
@@ -1012,7 +1071,13 @@ export default function PSPProvisioningWizard() {
                             </Button>
                             <Button 
                                 onClick={handleProvision} 
-                                disabled={provisionMutation.isPending}
+                                disabled={
+                                    provisionMutation.isPending || 
+                                    !formData.admin_user.email || 
+                                    !formData.admin_user.full_name || 
+                                    !formData.admin_user.password ||
+                                    formData.admin_user.password.length < 8
+                                }
                                 className="bg-blue-600 hover:bg-blue-700"
                                 size="lg"
                             >
