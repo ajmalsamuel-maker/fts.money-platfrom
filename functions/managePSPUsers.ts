@@ -133,10 +133,9 @@ Deno.serve(async (req) => {
             const client = await pool.connect();
             try {
                 const schemaName = `psp_${psp_code.toLowerCase()}`;
-                await client.query(`SET search_path TO ${schemaName}`);
                 
                 const result = await client.query(`
-                    UPDATE app_users 
+                    UPDATE ${schemaName}.app_users 
                     SET full_name = COALESCE($1, full_name),
                         role = COALESCE($2, role),
                         status = COALESCE($3, status),
