@@ -190,6 +190,7 @@ export default function QuickPSPProvisioning() {
                 currentPage="QuickPSPProvisioning"
                 userEmail={platformUser?.email || ''}
                 userRole={platformUser?.platform_role || 'viewer'}
+                isSuperAdmin={platformUser?.platform_role === 'super_admin'}
             />
             
             <div className="flex-1 overflow-y-auto">
