@@ -65,7 +65,7 @@ Deno.serve(async (req) => {
                 console.error('Error creating user:', err);
                 let errorMessage = err.message;
                 if (err.code === '23505') {
-                    errorMessage = 'A user with this email already exists';
+                    errorMessage = `A user with this email already exists in PSP ${psp_code}`;
                 }
                 return Response.json({
                     success: false,
