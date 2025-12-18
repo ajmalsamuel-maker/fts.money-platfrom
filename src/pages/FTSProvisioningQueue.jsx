@@ -76,59 +76,69 @@ export default function FTSProvisioningQueue() {
 
     const validateStepMutation = useMutation({
         mutationFn: async ({ psp_code, step_id }) => {
-            const result = await base44.functions.invoke('validateProvisioningStep', {
-                psp_code,
-                step_id
-            });
-            return result.data;
+            try {
+                const result = await base44.functions.invoke('validateProvisioningStep', {
+                    psp_code,
+                    step_id
+                });
+                return result.data;
+            } catch (error) {
+                console.error('Validate step error:', error);
+                throw new Error(error.response?.data?.message || error.message || 'Validation failed');
+            }
         }
     });
 
     const executeStepMutation = useMutation({
         mutationFn: async ({ pspId, psp, step }) => {
-            // Execute based on step type
-            if (step === 'database') {
-                const result = await base44.functions.invoke('provisionPSPSchema', {
-                    psp_code: psp.psp_code
-                });
-                if (!result.data.success) throw new Error(result.data.error || 'Schema creation failed');
-                return { pspId, step, success: true };
-            }
-            
-            if (step === 'api_keys') {
-                const technicalConfig = {
-                    api_key: `fts_live_${Math.random().toString(36).substring(2, 15)}${Math.random().toString(36).substring(2, 15)}`,
-                    webhook_secret: `whsec_${Math.random().toString(36).substring(2, 15)}${Math.random().toString(36).substring(2, 15)}`,
-                    database_instance: `${psp.psp_code.toLowerCase()}_prod_${Date.now()}`,
-                    cdn_endpoint: `https://cdn.fts.money/${psp.psp_code.toLowerCase()}`
-                };
-                await base44.entities.ProvisionedPSP.update(pspId, { technical_config: technicalConfig });
-                return { pspId, step, success: true };
-            }
-            
-            if (step === 'security') {
-                const initialPassword = 'Welcome123!';
-                try {
-                    await base44.functions.invoke('managePSPUsers', {
-                        action: 'create',
-                        psp_code: psp.psp_code,
-                        email: psp.owner_email,
-                        full_name: psp.psp_name + ' Admin',
-                        role: 'admin',
-                        password: initialPassword,
-                        status: 'active'
+            try {
+                // Execute based on step type
+                if (step === 'database') {
+                    const result = await base44.functions.invoke('provisionPSPSchema', {
+                        psp_code: psp.psp_code
                     });
-                } catch (err) {
-                    if (!err.message.includes('already exists')) {
-                        throw err;
-                    }
+                    if (!result.data.success) throw new Error(result.data.error || 'Schema creation failed');
+                    return { pspId, step, success: true };
                 }
+                
+                if (step === 'api_keys') {
+                    const technicalConfig = {
+                        api_key: `fts_live_${Math.random().toString(36).substring(2, 15)}${Math.random().toString(36).substring(2, 15)}`,
+                        webhook_secret: `whsec_${Math.random().toString(36).substring(2, 15)}${Math.random().toString(36).substring(2, 15)}`,
+                        database_instance: `${psp.psp_code.toLowerCase()}_prod_${Date.now()}`,
+                        cdn_endpoint: `https://cdn.fts.money/${psp.psp_code.toLowerCase()}`
+                    };
+                    await base44.entities.ProvisionedPSP.update(pspId, { technical_config: technicalConfig });
+                    return { pspId, step, success: true };
+                }
+                
+                if (step === 'security') {
+                    const initialPassword = 'Welcome123!';
+                    try {
+                        await base44.functions.invoke('managePSPUsers', {
+                            action: 'create',
+                            psp_code: psp.psp_code,
+                            email: psp.owner_email,
+                            full_name: psp.psp_name + ' Admin',
+                            role: 'admin',
+                            password: initialPassword,
+                            status: 'active'
+                        });
+                    } catch (err) {
+                        if (!err.message?.includes('already exists')) {
+                            throw err;
+                        }
+                    }
+                    return { pspId, step, success: true };
+                }
+                
+                // Other steps
+                await new Promise(resolve => setTimeout(resolve, 1000));
                 return { pspId, step, success: true };
+            } catch (error) {
+                console.error('Execute step error:', error);
+                throw new Error(error.response?.data?.message || error.message || 'Step execution failed');
             }
-            
-            // Other steps
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            return { pspId, step, success: true };
         },
         onSuccess: ({ pspId, step }) => {
             const psp = provisioningPSPs.find(p => p.id === pspId);
@@ -157,7 +167,12 @@ export default function FTSProvisioningQueue() {
 
     const updatePSPMutation = useMutation({
         mutationFn: async ({ pspId, data }) => {
-            return await base44.entities.ProvisionedPSP.update(pspId, data);
+            try {
+                return await base44.entities.ProvisionedPSP.update(pspId, data);
+            } catch (error) {
+                console.error('Update PSP error:', error);
+                throw new Error(error.response?.data?.message || error.message || 'Update failed');
+            }
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['provisioning-psps'] });
