@@ -29,7 +29,7 @@ import {
 } from 'lucide-react';
 
 export default function QuickPSPProvisioning() {
-    const { platformUser } = usePlatformAuth();
+    const { platformUser, loading } = usePlatformAuth();
     const queryClient = useQueryClient();
     const [step, setStep] = useState(1);
     const [selectedTemplate, setSelectedTemplate] = useState(null);
@@ -171,12 +171,20 @@ export default function QuickPSPProvisioning() {
         return icons[iconName] || Building2;
     };
 
+    if (loading) {
+        return (
+            <div className="flex h-screen items-center justify-center">
+                <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+            </div>
+        );
+    }
+
     return (
         <div className="flex h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
             <FTSPlatformSidebar 
                 currentPage="QuickPSPProvisioning"
-                userEmail={platformUser?.email}
-                userRole={platformUser?.platform_role}
+                userEmail={platformUser?.email || ''}
+                userRole={platformUser?.platform_role || 'viewer'}
             />
             
             <div className="flex-1 overflow-y-auto">
