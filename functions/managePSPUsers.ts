@@ -27,11 +27,10 @@ Deno.serve(async (req) => {
                 
                 // Create schema if it doesn't exist
                 await client.query(`CREATE SCHEMA IF NOT EXISTS ${schemaName}`);
-                await client.query(`SET search_path TO ${schemaName}`);
                 
-                // Ensure app_users table exists in PSP schema
+                // Ensure app_users table exists in PSP schema with schema-qualified name
                 await client.query(`
-                    CREATE TABLE IF NOT EXISTS app_users (
+                    CREATE TABLE IF NOT EXISTS ${schemaName}.app_users (
                         id SERIAL PRIMARY KEY,
                         email VARCHAR(255) UNIQUE NOT NULL,
                         full_name VARCHAR(255),
@@ -47,9 +46,9 @@ Deno.serve(async (req) => {
                 // Hash the password
                 const password_hash = await bcrypt.hash(password || 'Welcome123!', 10);
 
-                // Insert user into PSP schema
+                // Insert user into PSP schema using fully qualified table name
                 const result = await client.query(`
-                    INSERT INTO app_users (email, full_name, role, password_hash, status)
+                    INSERT INTO ${schemaName}.app_users (email, full_name, role, password_hash, status)
                     VALUES ($1, $2, $3, $4, $5)
                     RETURNING id, email, full_name, role, status, created_at
                 `, [email, full_name, role || 'user', password_hash, status || 'active']);
