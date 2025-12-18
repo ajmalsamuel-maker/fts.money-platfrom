@@ -64,9 +64,9 @@ export default function FTSMoneyPlatform() {
         return <div className="flex items-center justify-center h-screen">Loading...</div>;
     }
 
-    const totalVolume = psps.reduce((sum, p) => sum + (p.monthly_volume || 0), 0);
-    const totalRevenue = psps.reduce((sum, p) => sum + (p.monthly_revenue || 0), 0);
-    const totalMerchants = psps.reduce((sum, p) => sum + (p.total_merchants || 0), 0);
+    const totalVolume = psps.reduce((sum, p) => sum + (Number(p.monthly_volume) || 0), 0);
+    const totalRevenue = psps.reduce((sum, p) => sum + (Number(p.monthly_revenue) || 0), 0);
+    const totalMerchants = psps.reduce((sum, p) => sum + (Number(p.total_merchants) || 0), 0);
     const activePSPs = psps.filter(p => p.status === 'active').length;
 
     return (
