@@ -152,6 +152,11 @@ export default function QuickPSPProvisioning() {
     };
 
     const handleProvision = () => {
+        if (!pspConfig.admin_user?.email) {
+            alert('Please provide admin user email');
+            return;
+        }
+        
         // Auto-generate menu from selected modules
         const menuGen = new SmartMenuGenerator(pspConfig.enabled_modules, 'admin');
         const generatedMenus = menuGen.generateMenus();
@@ -493,9 +498,9 @@ export default function QuickPSPProvisioning() {
                                 <div className="flex justify-between">
                                     <Button variant="outline" onClick={() => setStep(2)}>Back</Button>
                                     <Button 
-                                        onClick={handleProvision}
-                                        disabled={provisionMutation.isPending}
-                                        className="bg-emerald-600 hover:bg-emerald-700"
+                                       onClick={handleProvision}
+                                       disabled={provisionMutation.isPending || !pspConfig.admin_user?.email}
+                                       className="bg-emerald-600 hover:bg-emerald-700"
                                     >
                                         {provisionMutation.isPending ? (
                                             <>
