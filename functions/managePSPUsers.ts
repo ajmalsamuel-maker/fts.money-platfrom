@@ -32,14 +32,15 @@ Deno.serve(async (req) => {
                 await client.query(`
                     CREATE TABLE IF NOT EXISTS ${schemaName}.app_users (
                         id SERIAL PRIMARY KEY,
-                        email VARCHAR(255) UNIQUE NOT NULL,
+                        email VARCHAR(255) NOT NULL,
                         full_name VARCHAR(255),
                         role VARCHAR(50) DEFAULT 'user',
                         password_hash TEXT,
                         status VARCHAR(50) DEFAULT 'active',
                         last_login TIMESTAMP,
                         created_at TIMESTAMP DEFAULT NOW(),
-                        updated_at TIMESTAMP DEFAULT NOW()
+                        updated_at TIMESTAMP DEFAULT NOW(),
+                        CONSTRAINT ${schemaName}_app_users_email_key UNIQUE (email)
                     )
                 `);
 
