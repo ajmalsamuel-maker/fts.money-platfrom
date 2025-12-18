@@ -261,7 +261,11 @@ FTS.Money Platform Team
 
     return (
         <div className="flex h-screen bg-slate-50">
-            <FTSPlatformSidebar currentPage="FTSProvisioningQueue" />
+            <FTSPlatformSidebar 
+                currentPage="FTSProvisioningQueue"
+                userEmail={platformUser?.email}
+                userRole={platformUser?.platform_role}
+            />
 
             <div className="flex-1 overflow-auto">
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
