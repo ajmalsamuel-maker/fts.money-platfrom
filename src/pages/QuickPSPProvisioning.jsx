@@ -29,7 +29,7 @@ import {
 } from 'lucide-react';
 
 export default function QuickPSPProvisioning() {
-    const { user } = usePlatformAuth(['PROVISION_PSP']);
+    const { platformUser } = usePlatformAuth();
     const queryClient = useQueryClient();
     const [step, setStep] = useState(1);
     const [selectedTemplate, setSelectedTemplate] = useState(null);
