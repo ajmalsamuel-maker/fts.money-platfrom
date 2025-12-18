@@ -12,7 +12,8 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { Users, Plus, Edit, Trash2, Mail, Shield, ArrowLeft } from 'lucide-react';
+import { Users, Plus, Edit, Trash2, Mail, Shield, ArrowLeft, Lock, KeyRound } from 'lucide-react';
+import { Switch } from "@/components/ui/switch";
 
 export default function PSPUserManagement() {
     const navigate = useNavigate();
@@ -27,7 +28,8 @@ export default function PSPUserManagement() {
         role: 'user',
         psp_code: '',
         password: 'Welcome123!',
-        status: 'active'
+        status: 'active',
+        two_factor_enabled: false
     });
 
     const { data: psps = [] } = useQuery({
@@ -67,7 +69,7 @@ export default function PSPUserManagement() {
             queryClient.invalidateQueries(['psp-users']);
             setDialogOpen(false);
             setEditingUser(null);
-            setFormData({ email: '', full_name: '', role: 'user', psp_code: '', password: 'Welcome123!', status: 'active' });
+            setFormData({ email: '', full_name: '', role: 'user', psp_code: '', password: 'Welcome123!', status: 'active', two_factor_enabled: false });
             alert('User created successfully!');
         },
         onError: (error) => {
@@ -76,12 +78,22 @@ export default function PSPUserManagement() {
     });
 
     const updateMutation = useMutation({
-        mutationFn: (data) => base44.functions.invoke('managePSPUsers', { action: 'update', ...data }),
+        mutationFn: async (data) => {
+            const result = await base44.functions.invoke('managePSPUsers', { action: 'update', ...data });
+            if (!result.data?.success) {
+                throw new Error(result.data?.error || 'Failed to update user');
+            }
+            return result;
+        },
         onSuccess: () => {
             queryClient.invalidateQueries(['psp-users']);
             setDialogOpen(false);
             setEditingUser(null);
-            setFormData({ email: '', full_name: '', role: 'user', psp_code: '', password: 'Welcome123!', status: 'active' });
+            setFormData({ email: '', full_name: '', role: 'user', psp_code: '', password: 'Welcome123!', status: 'active', two_factor_enabled: false });
+            alert('User updated successfully!');
+        },
+        onError: (error) => {
+            alert(`Error: ${error.message}`);
         }
     });
 
@@ -126,7 +138,8 @@ export default function PSPUserManagement() {
             role: user.role,
             psp_code: user.psp_code || '',
             password: '',
-            status: user.status
+            status: user.status,
+            two_factor_enabled: user.two_factor_enabled || false
         });
         setDialogOpen(true);
     };
@@ -219,14 +232,20 @@ export default function PSPUserManagement() {
                                                 <p className="text-sm text-slate-600">{user.email}</p>
                                             </div>
                                             <div className="flex items-center gap-2">
-                                                <Badge variant="outline">{user.psp_code}</Badge>
-                                                <Badge className={user.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}>
-                                                    <Shield className="h-3 w-3 mr-1" />
-                                                    {user.role}
-                                                </Badge>
-                                                <Badge variant={user.status === 'active' ? 'default' : 'secondary'}>
-                                                    {user.status}
-                                                </Badge>
+                                               <Badge variant="outline">{user.psp_code}</Badge>
+                                               <Badge className={user.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}>
+                                                   <Shield className="h-3 w-3 mr-1" />
+                                                   {user.role}
+                                               </Badge>
+                                               <Badge variant={user.status === 'active' ? 'default' : 'secondary'}>
+                                                   {user.status}
+                                               </Badge>
+                                               {user.two_factor_enabled && (
+                                                   <Badge className="bg-green-100 text-green-700">
+                                                       <KeyRound className="h-3 w-3 mr-1" />
+                                                       2FA
+                                                   </Badge>
+                                               )}
                                             </div>
                                         </div>
                                         <div className="flex gap-2">
@@ -256,7 +275,7 @@ export default function PSPUserManagement() {
                     setDialogOpen(open);
                     if (!open) {
                         setEditingUser(null);
-                        setFormData({ email: '', full_name: '', role: 'user', psp_code: '', password: 'Welcome123!', status: 'active' });
+                        setFormData({ email: '', full_name: '', role: 'user', psp_code: '', password: 'Welcome123!', status: 'active', two_factor_enabled: false });
                     }
                 }}>
                     <DialogContent>
@@ -310,13 +329,30 @@ export default function PSPUserManagement() {
                                     </SelectContent>
                                 </Select>
                             </div>
-                            <div>
-                                <Label>Default Password</Label>
-                                <Input
-                                    value={formData.password}
-                                    onChange={(e) => setFormData({...formData, password: e.target.value})}
-                                />
-                            </div>
+                            {editingUser && (
+                                <div>
+                                    <Label className="flex items-center gap-2">
+                                        <Lock className="h-4 w-4" />
+                                        New Password (leave blank to keep current)
+                                    </Label>
+                                    <Input
+                                        type="password"
+                                        value={formData.password}
+                                        onChange={(e) => setFormData({...formData, password: e.target.value})}
+                                        placeholder="Enter new password or leave blank"
+                                    />
+                                </div>
+                            )}
+                            {!editingUser && (
+                                <div>
+                                    <Label>Default Password</Label>
+                                    <Input
+                                        type="password"
+                                        value={formData.password}
+                                        onChange={(e) => setFormData({...formData, password: e.target.value})}
+                                    />
+                                </div>
+                            )}
                             <div>
                                 <Label>Status</Label>
                                 <Select value={formData.status} onValueChange={(value) => setFormData({...formData, status: value})}>
@@ -328,6 +364,19 @@ export default function PSPUserManagement() {
                                         <SelectItem value="inactive">Inactive</SelectItem>
                                     </SelectContent>
                                 </Select>
+                            </div>
+                            <div className="flex items-center justify-between p-4 border rounded-lg">
+                                <div className="flex items-center gap-3">
+                                    <KeyRound className="h-5 w-5 text-slate-600" />
+                                    <div>
+                                        <Label className="text-sm font-medium">Two-Factor Authentication</Label>
+                                        <p className="text-xs text-slate-500">Require 2FA for this user</p>
+                                    </div>
+                                </div>
+                                <Switch
+                                    checked={formData.two_factor_enabled}
+                                    onCheckedChange={(checked) => setFormData({...formData, two_factor_enabled: checked})}
+                                />
                             </div>
                             <Button type="submit" className="w-full" disabled={!formData.psp_code || createMutation.isPending || updateMutation.isPending}>
                                 {editingUser ? 'Update User' : 'Create User'}

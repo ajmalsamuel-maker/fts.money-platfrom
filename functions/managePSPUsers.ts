@@ -10,7 +10,7 @@ const pool = new Pool({
 
 Deno.serve(async (req) => {
     try {
-        const { action, email, full_name, role, psp_code, password, user_id, status } = await req.json();
+        const { action, email, full_name, role, psp_code, password, user_id, status, two_factor_enabled } = await req.json();
 
         if (action === 'create') {
             if (!psp_code) {
@@ -37,6 +37,7 @@ Deno.serve(async (req) => {
                         role VARCHAR(50) DEFAULT 'user',
                         password_hash TEXT,
                         status VARCHAR(50) DEFAULT 'active',
+                        two_factor_enabled BOOLEAN DEFAULT FALSE,
                         last_login TIMESTAMP,
                         created_at TIMESTAMP DEFAULT NOW(),
                         updated_at TIMESTAMP DEFAULT NOW()
@@ -66,10 +67,10 @@ Deno.serve(async (req) => {
 
                 // Insert user into PSP schema using fully qualified table name
                 const result = await client.query(`
-                    INSERT INTO ${schemaName}.app_users (email, full_name, role, password_hash, status)
-                    VALUES ($1, $2, $3, $4, $5)
-                    RETURNING id, email, full_name, role, status, created_at
-                `, [email, full_name, role || 'user', password_hash, status || 'active']);
+                    INSERT INTO ${schemaName}.app_users (email, full_name, role, password_hash, status, two_factor_enabled)
+                    VALUES ($1, $2, $3, $4, $5, $6)
+                    RETURNING id, email, full_name, role, status, two_factor_enabled, created_at
+                `, [email, full_name, role || 'user', password_hash, status || 'active', two_factor_enabled || false]);
 
                 return Response.json({
                     success: true,
@@ -109,8 +110,8 @@ Deno.serve(async (req) => {
                     const client = await pool.connect();
                     try {
                         const schemaName = `psp_${psp.psp_code.toLowerCase()}`;
-                        
-                        const result = await client.query(`SELECT id, email, full_name, role, status, last_login, created_at FROM ${schemaName}.app_users ORDER BY id DESC`);
+
+                        const result = await client.query(`SELECT id, email, full_name, role, status, two_factor_enabled, last_login, created_at FROM ${schemaName}.app_users ORDER BY id DESC`);
                         allUsers.push(...result.rows.map(u => ({ ...u, psp_code: psp.psp_code })));
                     } catch (err) {
                         // Schema might not exist yet
@@ -128,8 +129,8 @@ Deno.serve(async (req) => {
                 const client = await pool.connect();
                 try {
                     const schemaName = `psp_${psp_code.toLowerCase()}`;
-                    
-                    const result = await client.query(`SELECT id, email, full_name, role, status, last_login, created_at FROM ${schemaName}.app_users ORDER BY id DESC`);
+
+                    const result = await client.query(`SELECT id, email, full_name, role, status, two_factor_enabled, last_login, created_at FROM ${schemaName}.app_users ORDER BY id DESC`);
                     
                     return Response.json({
                         success: true,
@@ -155,18 +156,45 @@ Deno.serve(async (req) => {
             }
 
             const client = await pool.connect();
-            try {
-                const schemaName = `psp_${psp_code.toLowerCase()}`;
-                
-                const result = await client.query(`
-                    UPDATE ${schemaName}.app_users 
-                    SET full_name = COALESCE($1, full_name),
-                        role = COALESCE($2, role),
-                        status = COALESCE($3, status),
-                        updated_at = NOW()
-                    WHERE id = $4
-                    RETURNING id, email, full_name, role, status, created_at
-                `, [full_name, role, status, user_id]);
+                try {
+                    const schemaName = `psp_${psp_code.toLowerCase()}`;
+
+                    // Build dynamic update query
+                    const updates = [];
+                    const values = [];
+                    let paramCount = 1;
+
+                    if (full_name !== undefined) {
+                        updates.push(`full_name = $${paramCount++}`);
+                        values.push(full_name);
+                    }
+                    if (role !== undefined) {
+                        updates.push(`role = $${paramCount++}`);
+                        values.push(role);
+                    }
+                    if (status !== undefined) {
+                        updates.push(`status = $${paramCount++}`);
+                        values.push(status);
+                    }
+                    if (two_factor_enabled !== undefined) {
+                        updates.push(`two_factor_enabled = $${paramCount++}`);
+                        values.push(two_factor_enabled);
+                    }
+                    if (password) {
+                        const password_hash = await bcrypt.hash(password, 10);
+                        updates.push(`password_hash = $${paramCount++}`);
+                        values.push(password_hash);
+                    }
+
+                    updates.push(`updated_at = NOW()`);
+                    values.push(user_id);
+
+                    const result = await client.query(`
+                        UPDATE ${schemaName}.app_users 
+                        SET ${updates.join(', ')}
+                        WHERE id = $${paramCount}
+                        RETURNING id, email, full_name, role, status, two_factor_enabled, created_at
+                    `, values);
 
                 return Response.json({
                     success: true,
