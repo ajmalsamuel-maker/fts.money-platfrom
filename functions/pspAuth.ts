@@ -14,10 +14,10 @@ Deno.serve(async (req) => {
         if (action === 'verifyPSP') {
             const client = await pool.connect();
             try {
-                // Check if PSP exists in ProvisionedPSP entity
+                // Check if PSP exists in ProvisionedPSP entity using correct table name
                 const pspCheck = await client.query(`
                     SELECT data->>'psp_code' as psp_code, data->>'psp_name' as psp_name
-                    FROM app_entities_data
+                    FROM public.app_entity_data
                     WHERE entity_name = 'ProvisionedPSP' 
                     AND LOWER(data->>'psp_code') = LOWER($1)
                     LIMIT 1
