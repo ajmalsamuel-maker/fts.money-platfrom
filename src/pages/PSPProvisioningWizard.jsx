@@ -338,7 +338,7 @@ export default function PSPProvisioningWizard() {
                 {/* Progress Steps */}
                 <div className="flex items-center justify-between mb-8 bg-white rounded-lg p-6 border border-slate-200">
                     {[1, 2, 3, 4, 5, 6, 7].map((s) => (
-                        <div key={`step-${s}`} className="contents">
+                        <React.Fragment key={`step-${s}`}>
                             <div className="flex items-center gap-3">
                                 <div className={cn(
                                     "flex items-center justify-center w-10 h-10 rounded-full font-semibold border-2",
@@ -367,19 +367,13 @@ export default function PSPProvisioningWizard() {
                                     </p>
                                 </div>
                             </div>
-                            {s < 5 && (
-                                <div className={cn(
-                                    "flex-1 h-0.5 mx-4",
-                                    step > s ? "bg-blue-600" : "bg-slate-200"
-                                )} />
-                            )}
                             {s < 7 && (
                                 <div className={cn(
                                     "flex-1 h-0.5 mx-4",
                                     step > s ? "bg-blue-600" : "bg-slate-200"
                                 )} />
                             )}
-                        </div>
+                        </React.Fragment>
                     ))}
                 </div>
 
