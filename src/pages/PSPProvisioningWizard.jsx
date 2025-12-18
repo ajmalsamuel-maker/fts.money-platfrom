@@ -19,8 +19,6 @@ import {
     Building2,
     Zap,
     Shield,
-    DollarSign,
-    Globe,
     Rocket,
     Wallet,
     CheckCircle2,
