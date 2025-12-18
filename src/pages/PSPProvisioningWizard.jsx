@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 
+import { cn } from "@/lib/utils";
 import { 
     ArrowRight, 
     ArrowLeft, 
@@ -24,7 +25,6 @@ import {
     CheckCircle2,
     Loader2
 } from 'lucide-react';
-import { cn } from "@/lib/utils";
 
 import { COUNTRIES } from '@/components/utils/countries';
 import { TIMEZONES } from '@/components/utils/timezones';
