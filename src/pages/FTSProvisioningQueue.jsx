@@ -236,8 +236,8 @@ FTS.Money Platform Team
             // Update approval request
             await base44.entities.ApprovalRequest.update(requestId, {
                 status: 'approved',
-                reviewed_by: platformUser?.email,
-                reviewed_by_name: platformUser?.email,
+                reviewed_by: platformUser?.email || 'system',
+                reviewed_by_name: platformUser?.email || 'system',
                 review_date: new Date().toISOString(),
                 review_comments: reviewComments
             });
@@ -257,13 +257,13 @@ FTS.Money Platform Team
             // Log to audit trail
             await base44.entities.PSPAuditTrail.create({
                 psp_id: request.entity_id,
-                psp_code: request.entity_data.psp_code,
+                psp_code: request.entity_data?.psp_code || 'unknown',
                 action: `${request.request_type}_approved`,
                 field_changed: 'approval_status',
                 old_value: 'pending',
                 new_value: 'approved',
-                user_email: platformUser?.email,
-                user_role: platformUser?.platform_role,
+                user_email: platformUser?.email || 'system',
+                user_role: platformUser?.platform_role || 'admin',
                 ip_address: 'system',
                 metadata: { request_id: requestId, comments: reviewComments }
             });
@@ -280,8 +280,8 @@ FTS.Money Platform Team
         mutationFn: async ({ requestId, request }) => {
             await base44.entities.ApprovalRequest.update(requestId, {
                 status: 'rejected',
-                reviewed_by: platformUser?.email,
-                reviewed_by_name: platformUser?.email,
+                reviewed_by: platformUser?.email || 'system',
+                reviewed_by_name: platformUser?.email || 'system',
                 review_date: new Date().toISOString(),
                 review_comments: reviewComments
             });
@@ -289,13 +289,13 @@ FTS.Money Platform Team
             // Log to audit trail
             await base44.entities.PSPAuditTrail.create({
                 psp_id: request.entity_id,
-                psp_code: request.entity_data.psp_code,
+                psp_code: request.entity_data?.psp_code || 'unknown',
                 action: `${request.request_type}_rejected`,
                 field_changed: 'approval_status',
                 old_value: 'pending',
                 new_value: 'rejected',
-                user_email: platformUser?.email,
-                user_role: platformUser?.platform_role,
+                user_email: platformUser?.email || 'system',
+                user_role: platformUser?.platform_role || 'admin',
                 ip_address: 'system',
                 metadata: { request_id: requestId, comments: reviewComments }
             });
