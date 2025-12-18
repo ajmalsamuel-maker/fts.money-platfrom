@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
@@ -181,7 +181,7 @@ export default function PSPProvisioningWizard() {
     });
     
     // Save state to localStorage whenever it changes
-    useState(() => {
+    useEffect(() => {
         const stateToSave = {
             step,
             selectedTier,
