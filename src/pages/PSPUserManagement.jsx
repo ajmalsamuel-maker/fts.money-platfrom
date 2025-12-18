@@ -50,7 +50,12 @@ export default function PSPUserManagement() {
     });
 
     const createMutation = useMutation({
-        mutationFn: (data) => base44.functions.invoke('managePSPUsers', { action: 'create', ...data }),
+        mutationFn: async (data) => {
+            console.log('Creating user with data:', data);
+            const result = await base44.functions.invoke('managePSPUsers', { action: 'create', ...data });
+            console.log('Create user result:', result);
+            return result;
+        },
         onSuccess: (result) => {
             queryClient.invalidateQueries(['psp-users']);
             setDialogOpen(false);
@@ -61,7 +66,8 @@ export default function PSPUserManagement() {
             }
         },
         onError: (error) => {
-            alert(`Error creating user: ${error.message || 'Unknown error'}`);
+            console.error('Error creating user:', error);
+            alert(`Error creating user: ${error.response?.data?.error || error.message || 'Unknown error'}`);
         }
     });
 
