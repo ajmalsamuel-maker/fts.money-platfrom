@@ -24,6 +24,9 @@ Deno.serve(async (req) => {
             try {
                 // CRITICAL: Set schema to PSP-isolated schema (PCI/GDPR compliance)
                 const schemaName = `psp_${psp_code.toLowerCase()}`;
+                
+                // Create schema if it doesn't exist
+                await client.query(`CREATE SCHEMA IF NOT EXISTS ${schemaName}`);
                 await client.query(`SET search_path TO ${schemaName}`);
                 
                 // Ensure app_users table exists in PSP schema
@@ -58,6 +61,12 @@ Deno.serve(async (req) => {
                         psp_code: psp_code
                     }
                 });
+            } catch (err) {
+                console.error('Error creating user:', err);
+                return Response.json({
+                    success: false,
+                    error: err.message
+                }, { status: 500 });
             } finally {
                 client.release();
             }
