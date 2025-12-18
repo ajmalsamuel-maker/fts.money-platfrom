@@ -28,10 +28,9 @@ Deno.serve(async (req) => {
                 // Create schema if it doesn't exist
                 await client.query(`CREATE SCHEMA IF NOT EXISTS ${schemaName}`);
 
-                // Ensure app_users table exists in PSP schema (drop and recreate to fix constraints)
-                await client.query(`DROP TABLE IF EXISTS ${schemaName}.app_users CASCADE`);
+                // Ensure app_users table exists in PSP schema
                 await client.query(`
-                    CREATE TABLE ${schemaName}.app_users (
+                    CREATE TABLE IF NOT EXISTS ${schemaName}.app_users (
                         id SERIAL PRIMARY KEY,
                         email VARCHAR(255) NOT NULL,
                         full_name VARCHAR(255),
@@ -40,9 +39,14 @@ Deno.serve(async (req) => {
                         status VARCHAR(50) DEFAULT 'active',
                         last_login TIMESTAMP,
                         created_at TIMESTAMP DEFAULT NOW(),
-                        updated_at TIMESTAMP DEFAULT NOW(),
-                        CONSTRAINT ${schemaName}_email_unique UNIQUE (email)
+                        updated_at TIMESTAMP DEFAULT NOW()
                     )
+                `);
+
+                // Create unique index on email within this schema (if not exists)
+                await client.query(`
+                    CREATE UNIQUE INDEX IF NOT EXISTS ${schemaName}_app_users_email_idx 
+                    ON ${schemaName}.app_users (email)
                 `);
 
                 // Check if user already exists in this PSP schema
