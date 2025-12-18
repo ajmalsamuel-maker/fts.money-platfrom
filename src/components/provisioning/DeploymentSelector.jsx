@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { Cloud, MapPin, DollarSign, Server, ShieldCheck, CheckCircle2 } from 'lucide-react';
 
-export default function DeploymentSelector({ connectors, formData, setFormData }) {
+function DeploymentSelector({ connectors, formData, setFormData }) {
     const [enableDR, setEnableDR] = useState(false);
 
     const updateDeployment = (field, value) => {
@@ -283,3 +283,5 @@ export default function DeploymentSelector({ connectors, formData, setFormData }
         </div>
     );
 }
+
+export default DeploymentSelector;
