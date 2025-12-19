@@ -124,13 +124,12 @@ export default function FTSProvisioningQueue() {
                 return { pspId, step, success: true };
             }
 
-            // Other steps
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            // Other steps (domain, initialization)
             return { pspId, step, success: true };
         },
-        onSuccess: ({ pspId, step }) => {
+        onSuccess: async ({ pspId, step }) => {
             const psp = provisioningPSPs.find(p => p.id === pspId);
-            const completedSteps = (psp.provisioning_steps_completed || []);
+            const completedSteps = [...(psp.provisioning_steps_completed || [])];
             if (!completedSteps.includes(step)) {
                 completedSteps.push(step);
                 const progress = completedSteps.reduce((sum, stepId) => {
@@ -138,18 +137,20 @@ export default function FTSProvisioningQueue() {
                     return sum + (stepConfig?.weight || 0);
                 }, 0);
 
-                updatePSPMutation.mutate({
-                    pspId,
-                    data: {
+                try {
+                    await base44.entities.ProvisionedPSP.update(pspId, {
                         provisioning_steps_completed: completedSteps,
                         provisioning_progress: progress
-                    }
-                });
+                    });
+                    queryClient.invalidateQueries({ queryKey: ['provisioning-psps'] });
+                } catch (err) {
+                    console.error('Failed to update PSP progress:', err);
+                }
             }
             setStepErrors(prev => ({ ...prev, [`${pspId}-${step}`]: null }));
         },
         onError: (error, { pspId, step }) => {
-            setStepErrors(prev => ({ ...prev, [`${pspId}-${step}`]: error.message }));
+            setStepErrors(prev => ({ ...prev, [`${pspId}-${step}`]: error.response?.data?.error || error.message }));
         }
     });
 
