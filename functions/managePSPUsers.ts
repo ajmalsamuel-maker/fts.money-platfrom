@@ -28,7 +28,8 @@ Deno.serve(async (req) => {
                 // Create schema if it doesn't exist
                 await client.query(`CREATE SCHEMA IF NOT EXISTS ${schemaName}`);
 
-                // Create app_users table in PSP schema if it doesn't exist
+                // Create app_users table in PSP schema WITHOUT any unique constraints
+                // Multi-tenant: same email can exist across different PSPs
                 await client.query(`
                     CREATE TABLE IF NOT EXISTS ${schemaName}.app_users (
                         id SERIAL PRIMARY KEY,
@@ -44,20 +45,32 @@ Deno.serve(async (req) => {
                     )
                 `);
 
-                // Drop ANY existing email constraints FIRST (handles both old and schema-specific names)
+                // Drop ANY existing unique constraints/indexes on email (multi-tenant fix)
                 await client.query(`
                     DO $$ 
                     DECLARE
                         constraint_name TEXT;
+                        index_name TEXT;
                     BEGIN
+                        -- Drop all unique constraints on email
                         FOR constraint_name IN 
                             SELECT conname 
                             FROM pg_constraint 
                             WHERE conrelid = '${schemaName}.app_users'::regclass 
                             AND contype = 'u'
-                            AND conname LIKE '%email%'
                         LOOP
-                            EXECUTE format('ALTER TABLE ${schemaName}.app_users DROP CONSTRAINT %I', constraint_name);
+                            EXECUTE format('ALTER TABLE ${schemaName}.app_users DROP CONSTRAINT IF EXISTS %I', constraint_name);
+                        END LOOP;
+                        
+                        -- Drop all unique indexes on email
+                        FOR index_name IN
+                            SELECT indexname
+                            FROM pg_indexes
+                            WHERE schemaname = '${schemaName}' 
+                            AND tablename = 'app_users'
+                            AND indexdef LIKE '%UNIQUE%'
+                        LOOP
+                            EXECUTE format('DROP INDEX IF EXISTS ${schemaName}.%I', index_name);
                         END LOOP;
                     EXCEPTION
                         WHEN undefined_table THEN NULL;
@@ -65,55 +78,40 @@ Deno.serve(async (req) => {
                     END $$;
                 `);
 
-                // Drop unique index too if it exists
-                await client.query(`
-                    DROP INDEX IF EXISTS ${schemaName}.${schemaName}_app_users_email_idx
-                `);
+                // Check if user already exists IN THIS PSP SCHEMA (programmatic check, no DB constraint)
+                const existingUser = await client.query(`
+                    SELECT id, email, full_name, role, status, two_factor_enabled, created_at 
+                    FROM ${schemaName}.app_users WHERE email = $1
+                `, [email]);
 
-                // Check if table exists and has data
-                const tableCheck = await client.query(`
-                    SELECT EXISTS (
-                        SELECT FROM information_schema.tables 
-                        WHERE table_schema = $1 AND table_name = 'app_users'
-                    )
-                `, [schemaName]);
-
-                if (tableCheck.rows[0].exists) {
-                    // Check if user already exists
-                    const existingUser = await client.query(`
-                        SELECT id, email, full_name, role, status, two_factor_enabled, created_at 
-                        FROM ${schemaName}.app_users WHERE email = $1
-                    `, [email]);
-
-                    if (existingUser.rows.length > 0) {
-                        // If user exists but doesn't have the requested role, update it
-                        if (existingUser.rows[0].role !== role) {
-                            await client.query(`
-                                UPDATE ${schemaName}.app_users 
-                                SET role = $1, updated_at = NOW()
-                                WHERE email = $2
-                            `, [role, email]);
-
-                            return Response.json({
-                                success: true,
-                                user: {
-                                    ...existingUser.rows[0],
-                                    role: role,
-                                    psp_code: psp_code
-                                },
-                                message: `User already exists - updated role to ${role}`
-                            });
-                        }
+                if (existingUser.rows.length > 0) {
+                    // User exists in THIS PSP - update role if needed
+                    if (existingUser.rows[0].role !== role) {
+                        await client.query(`
+                            UPDATE ${schemaName}.app_users 
+                            SET role = $1, updated_at = NOW()
+                            WHERE email = $2
+                        `, [role, email]);
 
                         return Response.json({
                             success: true,
                             user: {
                                 ...existingUser.rows[0],
+                                role: role,
                                 psp_code: psp_code
                             },
-                            message: 'User already exists in this PSP'
+                            message: `User already exists in this PSP - updated role to ${role}`
                         });
                     }
+
+                    return Response.json({
+                        success: true,
+                        user: {
+                            ...existingUser.rows[0],
+                            psp_code: psp_code
+                        },
+                        message: 'User already exists in this PSP'
+                    });
                 }
 
                 // Hash the password
