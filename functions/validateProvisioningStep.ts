@@ -71,25 +71,34 @@ Deno.serve(async (req) => {
             
             if (step_id === 'security') {
                 // Check if admin user exists in PSP schema
-                const userCheck = await client.query(`
-                    SELECT email 
-                    FROM ${schemaName}.app_users 
-                    WHERE role = 'admin'
-                    LIMIT 1
-                `);
-                
-                if (userCheck.rows.length === 0) {
+                try {
+                    const userCheck = await client.query(`
+                        SELECT email 
+                        FROM ${schemaName}.app_users 
+                        WHERE role = 'admin'
+                        LIMIT 1
+                    `);
+                    
+                    if (userCheck.rows.length === 0) {
+                        return Response.json({
+                            success: false,
+                            error: 'No admin user created yet',
+                            action: 'Click Execute to create admin user'
+                        });
+                    }
+                    
+                    return Response.json({
+                        success: true,
+                        message: 'Security configured successfully'
+                    });
+                } catch (err) {
+                    // Schema or table doesn't exist yet
                     return Response.json({
                         success: false,
-                        error: 'No admin user created',
-                        action: 'Create admin user for PSP'
+                        error: 'Admin user not yet created',
+                        action: 'Click Execute to create admin user'
                     });
                 }
-                
-                return Response.json({
-                    success: true,
-                    message: 'Security configured successfully'
-                });
             }
             
             if (step_id === 'initialization') {
