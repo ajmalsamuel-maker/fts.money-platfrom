@@ -333,7 +333,15 @@ FTS.Money Platform Team
 
     const handleExecuteStep = async (pspId, stepId) => {
         const psp = provisioningPSPs.find(p => p.id === pspId);
-        await executeStepMutation.mutateAsync({ pspId, psp, step: stepId });
+        try {
+            await executeStepMutation.mutateAsync({ pspId, psp, step: stepId });
+        } catch (error) {
+            console.error('Execute step failed:', error);
+            setStepErrors(prev => ({ 
+                ...prev, 
+                [`${pspId}-${stepId}`]: error.response?.data?.error || error.message || 'Step execution failed'
+            }));
+        }
     };
 
     const handleValidateStep = async (pspId, stepId) => {
