@@ -370,13 +370,13 @@ FTS.Money Platform Team
         }
     };
 
-    const handleMissingInfoSubmit = async (updatedData) => {
+    const handleMissingInfoSubmit = async (updatedData, skipUpdate = false) => {
         try {
-            // Update the PSP with corrected data
-            await base44.entities.ProvisionedPSP.update(missingInfoDialog.psp.id, updatedData);
-
-            // Refresh data
-            await queryClient.invalidateQueries({ queryKey: ['provisioning-psps'] });
+            if (!skipUpdate) {
+                // Update the PSP with corrected data
+                await base44.entities.ProvisionedPSP.update(missingInfoDialog.psp.id, updatedData);
+                await queryClient.invalidateQueries({ queryKey: ['provisioning-psps'] });
+            }
 
             // Close dialog
             setMissingInfoDialog({ open: false, psp: null, step: null, error: null });

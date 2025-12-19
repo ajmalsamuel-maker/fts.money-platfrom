@@ -14,6 +14,7 @@ import { AlertCircle } from 'lucide-react';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export default function MissingInfoDialog({ open, onClose, onSubmit, psp, error, step }) {
+    // Allow parent to trigger resubmit
     const [formData, setFormData] = useState({
         owner_email: psp?.owner_email || '',
         psp_name: psp?.psp_name || '',
@@ -101,8 +102,8 @@ export default function MissingInfoDialog({ open, onClose, onSubmit, psp, error,
                     {isDuplicateError && (
                         <Button 
                             onClick={() => {
-                                // Submit with existing data - backend will return existing user
-                                onSubmit(formData);
+                                // Skip update, just retry the step - backend will use existing user
+                                onSubmit(formData, true);
                             }}
                             className="bg-green-600 hover:bg-green-700"
                         >
