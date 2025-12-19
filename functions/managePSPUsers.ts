@@ -28,12 +28,9 @@ Deno.serve(async (req) => {
                 // Create schema if it doesn't exist
                 await client.query(`CREATE SCHEMA IF NOT EXISTS ${schemaName}`);
 
-                // Drop and recreate table to ensure clean constraints
-                await client.query(`DROP TABLE IF EXISTS ${schemaName}.app_users CASCADE`);
-
-                // Create app_users table in PSP schema
+                // Create app_users table in PSP schema if it doesn't exist
                 await client.query(`
-                    CREATE TABLE ${schemaName}.app_users (
+                    CREATE TABLE IF NOT EXISTS ${schemaName}.app_users (
                         id SERIAL PRIMARY KEY,
                         email VARCHAR(255) NOT NULL,
                         full_name VARCHAR(255),
@@ -47,22 +44,27 @@ Deno.serve(async (req) => {
                     )
                 `);
 
-                // Create unique index on email within this schema
+                // Create unique index on email within this schema if it doesn't exist
                 await client.query(`
-                    CREATE UNIQUE INDEX ${schemaName}_app_users_email_idx 
+                    CREATE UNIQUE INDEX IF NOT EXISTS ${schemaName}_app_users_email_idx 
                     ON ${schemaName}.app_users (email)
                 `);
 
                 // Check if user already exists in this PSP schema
                 const existingUser = await client.query(`
-                    SELECT id FROM ${schemaName}.app_users WHERE email = $1
+                    SELECT id, email, full_name, role, status, two_factor_enabled, created_at 
+                    FROM ${schemaName}.app_users WHERE email = $1
                 `, [email]);
 
                 if (existingUser.rows.length > 0) {
                     return Response.json({
-                        success: false,
-                        error: `A user with email ${email} already exists in PSP ${psp_code}`
-                    }, { status: 400 });
+                        success: true,
+                        user: {
+                            ...existingUser.rows[0],
+                            psp_code: psp_code
+                        },
+                        message: 'User already exists in this PSP'
+                    });
                 }
 
                 // Hash the password
