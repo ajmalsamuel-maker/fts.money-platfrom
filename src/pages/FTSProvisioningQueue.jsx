@@ -77,16 +77,11 @@ export default function FTSProvisioningQueue() {
 
     const validateStepMutation = useMutation({
         mutationFn: async ({ psp_code, step_id }) => {
-            try {
-                const result = await base44.functions.invoke('validateProvisioningStep', {
-                    psp_code,
-                    step_id
-                });
-                return result.data;
-            } catch (error) {
-                console.error('Validate step error:', error);
-                throw new Error(error.response?.data?.message || error.message || 'Validation failed');
-            }
+            const result = await base44.functions.invoke('validateProvisioningStep', {
+                psp_code,
+                step_id
+            });
+            return result.data;
         }
     });
 
