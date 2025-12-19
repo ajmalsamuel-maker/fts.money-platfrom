@@ -44,6 +44,32 @@ Deno.serve(async (req) => {
                     )
                 `);
 
+                // Drop ANY existing email constraints FIRST (handles both old and schema-specific names)
+                await client.query(`
+                    DO $$ 
+                    DECLARE
+                        constraint_name TEXT;
+                    BEGIN
+                        FOR constraint_name IN 
+                            SELECT conname 
+                            FROM pg_constraint 
+                            WHERE conrelid = '${schemaName}.app_users'::regclass 
+                            AND contype = 'u'
+                            AND conname LIKE '%email%'
+                        LOOP
+                            EXECUTE format('ALTER TABLE ${schemaName}.app_users DROP CONSTRAINT %I', constraint_name);
+                        END LOOP;
+                    EXCEPTION
+                        WHEN undefined_table THEN NULL;
+                        WHEN others THEN NULL;
+                    END $$;
+                `);
+
+                // Drop unique index too if it exists
+                await client.query(`
+                    DROP INDEX IF EXISTS ${schemaName}.${schemaName}_app_users_email_idx
+                `);
+
                 // Check if table exists and has data
                 const tableCheck = await client.query(`
                     SELECT EXISTS (
@@ -89,33 +115,6 @@ Deno.serve(async (req) => {
                         });
                     }
                 }
-
-                // Drop ANY existing email constraints (handles both old and schema-specific names)
-                await client.query(`
-                    DO $$ 
-                    DECLARE
-                        constraint_name TEXT;
-                    BEGIN
-                        FOR constraint_name IN 
-                            SELECT conname 
-                            FROM pg_constraint 
-                            WHERE conrelid = '${schemaName}.app_users'::regclass 
-                            AND contype = 'u'
-                            AND conname LIKE '%email%'
-                        LOOP
-                            EXECUTE format('ALTER TABLE ${schemaName}.app_users DROP CONSTRAINT %I', constraint_name);
-                        END LOOP;
-                    EXCEPTION
-                        WHEN undefined_table THEN NULL;
-                        WHEN others THEN NULL;
-                    END $$;
-                `);
-
-                // Create unique index on email (safer than constraint)
-                await client.query(`
-                    CREATE UNIQUE INDEX IF NOT EXISTS ${schemaName}_app_users_email_idx 
-                    ON ${schemaName}.app_users (email)
-                `);
 
                 // Hash the password
                 const password_hash = await bcrypt.hash(password || 'Welcome123!', 10);
