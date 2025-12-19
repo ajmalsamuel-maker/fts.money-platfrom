@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
 import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
+import MissingInfoDialog from '@/components/provisioning/MissingInfoDialog';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -74,6 +75,7 @@ export default function FTSProvisioningQueue() {
     const [stepErrors, setStepErrors] = useState({});
     const [stepValidating, setStepValidating] = useState({});
     const [stepValidationResults, setStepValidationResults] = useState({});
+    const [missingInfoDialog, setMissingInfoDialog] = useState({ open: false, psp: null, step: null, error: null });
 
     const validateStepMutation = useMutation({
         mutationFn: async ({ psp_code, step_id }) => {
@@ -338,13 +340,50 @@ FTS.Money Platform Team
 
     const handleExecuteStep = async (pspId, stepId) => {
         const psp = provisioningPSPs.find(p => p.id === pspId);
+
+        // Check for missing required fields
+        if (stepId === 'security' && !psp.owner_email) {
+            setMissingInfoDialog({ open: true, psp, step: stepId, error: 'Owner email is required for admin user creation' });
+            return;
+        }
+
         try {
             await executeStepMutation.mutateAsync({ pspId, psp, step: stepId });
         } catch (error) {
             console.error('Execute step failed:', error);
-            setStepErrors(prev => ({ 
-                ...prev, 
-                [`${pspId}-${stepId}`]: error.response?.data?.error || error.message || 'Step execution failed'
+            const errorMsg = error.response?.data?.error || error.message || 'Step execution failed';
+
+            // If it's a missing data error, show dialog
+            if (errorMsg.includes('required') || errorMsg.includes('missing') || errorMsg.includes('not found')) {
+                setMissingInfoDialog({ open: true, psp, step: stepId, error: errorMsg });
+            } else {
+                setStepErrors(prev => ({ 
+                    ...prev, 
+                    [`${pspId}-${stepId}`]: errorMsg
+                }));
+            }
+        }
+    };
+
+    const handleMissingInfoSubmit = async (updatedData) => {
+        try {
+            // Update the PSP with corrected data
+            await base44.entities.ProvisionedPSP.update(missingInfoDialog.psp.id, updatedData);
+
+            // Refresh data
+            await queryClient.invalidateQueries({ queryKey: ['provisioning-psps'] });
+
+            // Close dialog
+            setMissingInfoDialog({ open: false, psp: null, step: null, error: null });
+
+            // Retry the step after a short delay
+            setTimeout(() => {
+                handleExecuteStep(missingInfoDialog.psp.id, missingInfoDialog.step);
+            }, 500);
+        } catch (error) {
+            setMissingInfoDialog(prev => ({
+                ...prev,
+                error: error.message || 'Failed to update PSP information'
             }));
         }
     };
@@ -745,6 +784,16 @@ FTS.Money Platform Team
                     </Tabs>
                 </div>
             </div>
-        </div>
-    );
-}
+            </div>
+
+            <MissingInfoDialog
+            open={missingInfoDialog.open}
+            onClose={() => setMissingInfoDialog({ open: false, psp: null, step: null, error: null })}
+            onSubmit={handleMissingInfoSubmit}
+            psp={missingInfoDialog.psp}
+            step={missingInfoDialog.step}
+            error={missingInfoDialog.error}
+            />
+            </div>
+            );
+            }
