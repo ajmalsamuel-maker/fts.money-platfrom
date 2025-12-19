@@ -71,7 +71,7 @@ Deno.serve(async (req) => {
             }
             
             if (step_id === 'security') {
-                // Check if admin user exists - search all PSP schemas in database
+                // Check if admin user exists
                 try {
                     // Find actual schema that matches this PSP code
                     const schemaSearch = await client.query(`
@@ -79,7 +79,7 @@ Deno.serve(async (req) => {
                         FROM information_schema.schemata 
                         WHERE schema_name = $1
                     `, [schemaName]);
-                    
+
                     if (schemaSearch.rows.length === 0) {
                         return Response.json({
                             success: false,
@@ -87,25 +87,46 @@ Deno.serve(async (req) => {
                             action: 'Click Execute to create admin user'
                         });
                     }
-                    
+
                     const actualSchema = schemaSearch.rows[0].schema_name;
-                    
-                    // Check for admin user
+
+                    // Check if app_users table exists
+                    const tableCheck = await client.query(`
+                        SELECT EXISTS (
+                            SELECT FROM information_schema.tables 
+                            WHERE table_schema = $1 AND table_name = 'app_users'
+                        )
+                    `, [actualSchema]);
+
+                    if (!tableCheck.rows[0].exists) {
+                        return Response.json({
+                            success: false,
+                            error: 'app_users table not found',
+                            action: 'Click Execute to create admin user'
+                        });
+                    }
+
+                    // Check for ANY user with admin role
                     const userCheck = await client.query(`
-                        SELECT email, role 
+                        SELECT email, role, status
                         FROM ${actualSchema}.app_users 
                         WHERE role = 'admin'
                         LIMIT 1
                     `);
-                    
+
                     if (userCheck.rows.length === 0) {
+                        // Also check if there are ANY users at all
+                        const anyUserCheck = await client.query(`
+                            SELECT COUNT(*) as count FROM ${actualSchema}.app_users
+                        `);
+
                         return Response.json({
                             success: false,
-                            error: 'No admin user found',
+                            error: `No admin user found (total users: ${anyUserCheck.rows[0].count})`,
                             action: 'Click Execute to create admin user'
                         });
                     }
-                    
+
                     return Response.json({
                         success: true,
                         message: `Security configured - Admin: ${userCheck.rows[0].email}`
@@ -113,7 +134,7 @@ Deno.serve(async (req) => {
                 } catch (err) {
                     return Response.json({
                         success: false,
-                        error: `Error: ${err.message}`,
+                        error: `Validation error: ${err.message}`,
                         action: 'Click Execute to create admin user'
                     });
                 }
