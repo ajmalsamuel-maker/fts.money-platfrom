@@ -71,30 +71,12 @@ Deno.serve(async (req) => {
             }
             
             if (step_id === 'security') {
-                // Check if admin user exists - query all PSP schemas since managePSPUsers creates its own
+                // Check if admin user exists in PSP schema
                 try {
-                    // Query information_schema to find the actual schema
-                    const schemaCheck = await client.query(`
-                        SELECT schema_name 
-                        FROM information_schema.schemata 
-                        WHERE schema_name LIKE 'psp_%'
-                        AND schema_name ILIKE $1
-                    `, [`%${psp_code.toLowerCase()}%`]);
-                    
-                    if (schemaCheck.rows.length === 0) {
-                        return Response.json({
-                            success: false,
-                            error: 'PSP schema not found',
-                            action: 'Click Execute to create admin user'
-                        });
-                    }
-                    
-                    const actualSchema = schemaCheck.rows[0].schema_name;
-                    
-                    // Check for admin user in the actual schema
+                    // Check for admin user using exact schema name (same as managePSPUsers)
                     const userCheck = await client.query(`
                         SELECT email, role 
-                        FROM ${actualSchema}.app_users 
+                        FROM ${schemaName}.app_users 
                         WHERE role = 'admin'
                         LIMIT 1
                     `);
@@ -109,7 +91,7 @@ Deno.serve(async (req) => {
                     
                     return Response.json({
                         success: true,
-                        message: `Security configured - Admin: ${userCheck.rows[0].email} (schema: ${actualSchema})`
+                        message: `Security configured - Admin: ${userCheck.rows[0].email}`
                     });
                 } catch (err) {
                     return Response.json({
