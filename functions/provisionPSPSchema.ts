@@ -161,10 +161,10 @@ Deno.serve(async (req) => {
                     created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 );
 
-                -- App Users Table (PSP staff)
+                -- App Users Table (PSP staff) - NO UNIQUE CONSTRAINT (multi-tenant)
                 CREATE TABLE IF NOT EXISTS ${schemaName}.app_users (
                     id SERIAL PRIMARY KEY,
-                    email VARCHAR(255) UNIQUE NOT NULL,
+                    email VARCHAR(255) NOT NULL,
                     full_name VARCHAR(255),
                     role VARCHAR(50) DEFAULT 'user',
                     status VARCHAR(50) DEFAULT 'active',
@@ -301,6 +301,17 @@ Deno.serve(async (req) => {
                 `);
             }
 
+            // Drop any existing email constraints from app_users (multi-tenant fix)
+            await client.query(`
+                DO $$ 
+                BEGIN
+                    ALTER TABLE ${schemaName}.app_users DROP CONSTRAINT IF EXISTS app_users_email_key;
+                EXCEPTION
+                    WHEN undefined_table THEN NULL;
+                    WHEN undefined_object THEN NULL;
+                END $$;
+            `);
+
             // Create comprehensive indexes for performance and security
             await client.query(`
                 CREATE INDEX IF NOT EXISTS idx_merchants_email ON ${schemaName}.merchants(email);
@@ -316,6 +327,7 @@ Deno.serve(async (req) => {
                 CREATE INDEX IF NOT EXISTS idx_payouts_merchant ON ${schemaName}.payouts(merchant_id);
                 CREATE INDEX IF NOT EXISTS idx_terminals_merchant ON ${schemaName}.terminals(merchant_id);
                 CREATE INDEX IF NOT EXISTS idx_mids_merchant ON ${schemaName}.merchant_mids(merchant_id);
+                CREATE INDEX IF NOT EXISTS idx_app_users_email ON ${schemaName}.app_users(email);
                 CREATE INDEX IF NOT EXISTS idx_audit_date ON ${schemaName}.audit_logs(created_date DESC);
                 CREATE INDEX IF NOT EXISTS idx_audit_user ON ${schemaName}.audit_logs(user_email);
                 CREATE INDEX IF NOT EXISTS idx_risk_alerts_merchant ON ${schemaName}.risk_alerts(merchant_id);
