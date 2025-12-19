@@ -353,8 +353,13 @@ FTS.Money Platform Team
             console.error('Execute step failed:', error);
             const errorMsg = error.response?.data?.error || error.message || 'Step execution failed';
 
-            // If it's a missing data error, show dialog
-            if (errorMsg.includes('required') || errorMsg.includes('missing') || errorMsg.includes('not found')) {
+            // If it's a missing data error or duplicate user error, show dialog
+            if (errorMsg.includes('required') || 
+                errorMsg.includes('missing') || 
+                errorMsg.includes('not found') ||
+                errorMsg.includes('duplicate') ||
+                errorMsg.includes('constraint') ||
+                errorMsg.includes('already exists')) {
                 setMissingInfoDialog({ open: true, psp, step: stepId, error: errorMsg });
             } else {
                 setStepErrors(prev => ({ 

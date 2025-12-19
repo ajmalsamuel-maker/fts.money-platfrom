@@ -20,6 +20,8 @@ export default function MissingInfoDialog({ open, onClose, onSubmit, psp, error,
         contact_email: psp?.contact_email || '',
         ...psp
     });
+    
+    const isDuplicateError = error?.includes('duplicate') || error?.includes('already exists');
 
     const handleSubmit = () => {
         onSubmit(formData);
@@ -52,10 +54,13 @@ export default function MissingInfoDialog({ open, onClose, onSubmit, psp, error,
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
                         <AlertCircle className="h-5 w-5 text-amber-600" />
-                        Missing Information
+                        {isDuplicateError ? 'User Already Exists' : 'Missing Information'}
                     </DialogTitle>
                     <DialogDescription>
-                        Please provide the required information to complete this provisioning step.
+                        {isDuplicateError 
+                            ? 'This email is already registered. You can continue anyway (the existing user will be used) or change the email address.'
+                            : 'Please provide the required information to complete this provisioning step.'
+                        }
                     </DialogDescription>
                 </DialogHeader>
 
@@ -93,11 +98,22 @@ export default function MissingInfoDialog({ open, onClose, onSubmit, psp, error,
                     <Button variant="outline" onClick={onClose}>
                         Cancel
                     </Button>
+                    {isDuplicateError && (
+                        <Button 
+                            onClick={() => {
+                                // Just close and mark as success since user exists
+                                onClose();
+                            }}
+                            className="bg-green-600 hover:bg-green-700"
+                        >
+                            Continue Anyway
+                        </Button>
+                    )}
                     <Button 
                         onClick={handleSubmit}
                         className="bg-blue-600 hover:bg-blue-700"
                     >
-                        Continue
+                        {isDuplicateError ? 'Update & Retry' : 'Continue'}
                     </Button>
                 </DialogFooter>
             </DialogContent>
