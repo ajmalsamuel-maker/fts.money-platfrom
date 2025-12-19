@@ -70,10 +70,17 @@ Deno.serve(async (req) => {
                 // Hash the password
                 const password_hash = await bcrypt.hash(password || 'Welcome123!', 10);
 
-                // Insert user into PSP schema using fully qualified table name
+                // Insert user into PSP schema - use ON CONFLICT to handle duplicates
                 const result = await client.query(`
                     INSERT INTO ${schemaName}.app_users (email, full_name, role, password_hash, status, two_factor_enabled)
                     VALUES ($1, $2, $3, $4, $5, $6)
+                    ON CONFLICT (email) 
+                    DO UPDATE SET 
+                        full_name = EXCLUDED.full_name,
+                        role = EXCLUDED.role,
+                        status = EXCLUDED.status,
+                        two_factor_enabled = EXCLUDED.two_factor_enabled,
+                        updated_at = NOW()
                     RETURNING id, email, full_name, role, status, two_factor_enabled, created_at
                 `, [email, full_name, role || 'user', password_hash, status || 'active', two_factor_enabled || false]);
 
