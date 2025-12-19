@@ -121,7 +121,7 @@ export default function FTSProvisioningQueue() {
                         status: 'active'
                     });
 
-                    if (!result.data?.success && !result.data?.message?.includes('already exists')) {
+                    if (!result.data?.success) {
                         throw new Error(result.data?.error || 'Failed to create admin user');
                     }
                     return { pspId, step, success: true };

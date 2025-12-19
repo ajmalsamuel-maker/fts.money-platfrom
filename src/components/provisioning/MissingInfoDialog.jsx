@@ -101,12 +101,12 @@ export default function MissingInfoDialog({ open, onClose, onSubmit, psp, error,
                     {isDuplicateError && (
                         <Button 
                             onClick={() => {
-                                // Just close and mark as success since user exists
-                                onClose();
+                                // Submit with existing data - backend will return existing user
+                                onSubmit(formData);
                             }}
                             className="bg-green-600 hover:bg-green-700"
                         >
-                            Continue Anyway
+                            Continue with Existing User
                         </Button>
                     )}
                     <Button 
