@@ -65,23 +65,25 @@ Deno.serve(async (req) => {
                 if (pspCheck.rows.length === 0) {
                     return Response.json({
                         success: false,
-                        error: 'PSP record not found',
+                        error: 'PSP record not found in database',
                         action: 'Ensure PSP exists in database'
                     });
                 }
                 
                 const config = pspCheck.rows[0]?.config;
-                if (!config?.api_key || !config?.webhook_secret) {
+                console.log('API Keys check - technical_config:', config);
+                
+                if (!config || !config.api_key || !config.webhook_secret) {
                     return Response.json({
                         success: false,
-                        error: 'API keys not generated',
+                        error: 'API keys not yet generated. Click Execute to generate.',
                         action: 'Generate API keys and webhook secrets'
                     });
                 }
                 
                 return Response.json({
                     success: true,
-                    message: 'API keys generated successfully'
+                    message: `API keys exist: ${config.api_key.substring(0, 20)}...`
                 });
             }
             
