@@ -87,45 +87,50 @@ export default function FTSProvisioningQueue() {
 
     const executeStepMutation = useMutation({
         mutationFn: async ({ pspId, psp, step }) => {
-            // Execute based on step type
-            if (step === 'database') {
-                const result = await base44.functions.invoke('provisionPSPSchema', {
-                    psp_code: psp.psp_code
-                });
-                if (!result.data.success) throw new Error(result.data.error || 'Schema creation failed');
-                return { pspId, step, success: true };
-            }
-
-            if (step === 'api_keys') {
-                const technicalConfig = {
-                    api_key: `fts_live_${Math.random().toString(36).substring(2, 15)}${Math.random().toString(36).substring(2, 15)}`,
-                    webhook_secret: `whsec_${Math.random().toString(36).substring(2, 15)}${Math.random().toString(36).substring(2, 15)}`,
-                    database_instance: `${psp.psp_code.toLowerCase()}_prod_${Date.now()}`,
-                    cdn_endpoint: `https://cdn.fts.money/${psp.psp_code.toLowerCase()}`
-                };
-                await base44.entities.ProvisionedPSP.update(pspId, { technical_config: technicalConfig });
-                return { pspId, step, success: true };
-            }
-
-            if (step === 'security') {
-                const result = await base44.functions.invoke('managePSPUsers', {
-                    action: 'create',
-                    psp_code: psp.psp_code,
-                    email: psp.owner_email,
-                    full_name: psp.psp_name + ' Admin',
-                    role: 'admin',
-                    password: 'Welcome123!',
-                    status: 'active'
-                });
-
-                if (!result.data.success && !result.data.message?.includes('already exists')) {
-                    throw new Error(result.data.error || 'Failed to create admin user');
+            try {
+                // Execute based on step type
+                if (step === 'database') {
+                    const result = await base44.functions.invoke('provisionPSPSchema', {
+                        psp_code: psp.psp_code
+                    });
+                    if (!result.data?.success) throw new Error(result.data?.error || 'Schema creation failed');
+                    return { pspId, step, success: true };
                 }
-                return { pspId, step, success: true };
-            }
 
-            // Other steps (domain, initialization)
-            return { pspId, step, success: true };
+                if (step === 'api_keys') {
+                    const technicalConfig = {
+                        api_key: `fts_live_${Math.random().toString(36).substring(2, 15)}${Math.random().toString(36).substring(2, 15)}`,
+                        webhook_secret: `whsec_${Math.random().toString(36).substring(2, 15)}${Math.random().toString(36).substring(2, 15)}`,
+                        database_instance: `${psp.psp_code.toLowerCase()}_prod_${Date.now()}`,
+                        cdn_endpoint: `https://cdn.fts.money/${psp.psp_code.toLowerCase()}`
+                    };
+                    await base44.entities.ProvisionedPSP.update(pspId, { technical_config: technicalConfig });
+                    return { pspId, step, success: true };
+                }
+
+                if (step === 'security') {
+                    const result = await base44.functions.invoke('managePSPUsers', {
+                        action: 'create',
+                        psp_code: psp.psp_code,
+                        email: psp.owner_email,
+                        full_name: psp.psp_name + ' Admin',
+                        role: 'admin',
+                        password: 'Welcome123!',
+                        status: 'active'
+                    });
+
+                    if (!result.data?.success && !result.data?.message?.includes('already exists')) {
+                        throw new Error(result.data?.error || 'Failed to create admin user');
+                    }
+                    return { pspId, step, success: true };
+                }
+
+                // Other steps (domain, initialization)
+                return { pspId, step, success: true };
+            } catch (error) {
+                console.error('Step execution error:', error);
+                throw new Error(error.response?.data?.error || error.message || 'Step execution failed');
+            }
         },
         onSuccess: async ({ pspId, step }) => {
             const psp = provisioningPSPs.find(p => p.id === pspId);
