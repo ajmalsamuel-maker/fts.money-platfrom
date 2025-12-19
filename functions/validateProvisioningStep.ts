@@ -13,7 +13,8 @@ Deno.serve(async (req) => {
         
         const client = await pool.connect();
         try {
-            const schemaName = `psp_${psp_code.toLowerCase()}`;
+            // Use exact same schema naming as managePSPUsers
+            const schemaName = `psp_${psp_code.toLowerCase().replace(/[^a-z0-9]/g, '')}`;
             
             // Validate different steps
             if (step_id === 'database') {
