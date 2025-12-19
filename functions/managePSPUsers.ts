@@ -44,49 +44,56 @@ Deno.serve(async (req) => {
                     )
                 `);
 
-                // Drop old unique constraint if it exists (from previous schema)
+                // Check if table exists and has data
+                const tableCheck = await client.query(`
+                    SELECT EXISTS (
+                        SELECT FROM information_schema.tables 
+                        WHERE table_schema = $1 AND table_name = 'app_users'
+                    )
+                `, [schemaName]);
+
+                if (tableCheck.rows[0].exists) {
+                    // Check if user already exists
+                    const existingUser = await client.query(`
+                        SELECT id, email, full_name, role, status, two_factor_enabled, created_at 
+                        FROM ${schemaName}.app_users WHERE email = $1
+                    `, [email]);
+
+                    if (existingUser.rows.length > 0) {
+                        return Response.json({
+                            success: true,
+                            user: {
+                                ...existingUser.rows[0],
+                                psp_code: psp_code
+                            },
+                            message: 'User already exists in this PSP'
+                        });
+                    }
+                }
+
+                // Drop old unique constraint if it exists
                 await client.query(`
-                    ALTER TABLE ${schemaName}.app_users 
-                    DROP CONSTRAINT IF EXISTS app_users_email_key
+                    DO $$ 
+                    BEGIN
+                        ALTER TABLE ${schemaName}.app_users DROP CONSTRAINT IF EXISTS app_users_email_key;
+                    EXCEPTION
+                        WHEN undefined_table THEN NULL;
+                    END $$;
                 `);
 
-                // Create unique index on email within this schema if it doesn't exist
+                // Create unique index on email
                 await client.query(`
                     CREATE UNIQUE INDEX IF NOT EXISTS ${schemaName}_app_users_email_idx 
                     ON ${schemaName}.app_users (email)
                 `);
 
-                // Check if user already exists in this PSP schema
-                const existingUser = await client.query(`
-                    SELECT id, email, full_name, role, status, two_factor_enabled, created_at 
-                    FROM ${schemaName}.app_users WHERE email = $1
-                `, [email]);
-
-                if (existingUser.rows.length > 0) {
-                    return Response.json({
-                        success: true,
-                        user: {
-                            ...existingUser.rows[0],
-                            psp_code: psp_code
-                        },
-                        message: 'User already exists in this PSP'
-                    });
-                }
-
                 // Hash the password
                 const password_hash = await bcrypt.hash(password || 'Welcome123!', 10);
 
-                // Insert user into PSP schema - use ON CONFLICT to handle duplicates
+                // Insert user - since we checked above, this should be safe
                 const result = await client.query(`
                     INSERT INTO ${schemaName}.app_users (email, full_name, role, password_hash, status, two_factor_enabled)
                     VALUES ($1, $2, $3, $4, $5, $6)
-                    ON CONFLICT (email) 
-                    DO UPDATE SET 
-                        full_name = EXCLUDED.full_name,
-                        role = EXCLUDED.role,
-                        status = EXCLUDED.status,
-                        two_factor_enabled = EXCLUDED.two_factor_enabled,
-                        updated_at = NOW()
                     RETURNING id, email, full_name, role, status, two_factor_enabled, created_at
                 `, [email, full_name, role || 'user', password_hash, status || 'active', two_factor_enabled || false]);
 
