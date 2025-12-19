@@ -60,6 +60,25 @@ Deno.serve(async (req) => {
                     `, [email]);
 
                     if (existingUser.rows.length > 0) {
+                        // If user exists but doesn't have the requested role, update it
+                        if (existingUser.rows[0].role !== role) {
+                            await client.query(`
+                                UPDATE ${schemaName}.app_users 
+                                SET role = $1, updated_at = NOW()
+                                WHERE email = $2
+                            `, [role, email]);
+
+                            return Response.json({
+                                success: true,
+                                user: {
+                                    ...existingUser.rows[0],
+                                    role: role,
+                                    psp_code: psp_code
+                                },
+                                message: `User already exists - updated role to ${role}`
+                            });
+                        }
+
                         return Response.json({
                             success: true,
                             user: {
