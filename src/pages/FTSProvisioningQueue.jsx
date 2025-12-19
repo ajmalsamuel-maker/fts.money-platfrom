@@ -784,15 +784,14 @@ FTS.Money Platform Team
                     </Tabs>
                 </div>
             </div>
-            </div>
 
             <MissingInfoDialog
-            open={missingInfoDialog.open}
-            onClose={() => setMissingInfoDialog({ open: false, psp: null, step: null, error: null })}
-            onSubmit={handleMissingInfoSubmit}
-            psp={missingInfoDialog.psp}
-            step={missingInfoDialog.step}
-            error={missingInfoDialog.error}
+                open={missingInfoDialog.open}
+                onClose={() => setMissingInfoDialog({ open: false, psp: null, step: null, error: null })}
+                onSubmit={handleMissingInfoSubmit}
+                psp={missingInfoDialog.psp}
+                step={missingInfoDialog.step}
+                error={missingInfoDialog.error}
             />
             </div>
             );
