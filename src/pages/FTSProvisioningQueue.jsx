@@ -359,16 +359,18 @@ FTS.Money Platform Team
         const psp = provisioningPSPs.find(p => p.id === pspId);
         setStepValidating(prev => ({ ...prev, [`${pspId}-${stepId}`]: true }));
         setStepValidationResults(prev => ({ ...prev, [`${pspId}-${stepId}`]: null }));
-        
+
         try {
-            const result = await validateStepMutation.mutateAsync({
+            const response = await base44.functions.invoke('validateProvisioningStep', {
                 psp_code: psp.psp_code,
                 step_id: stepId
             });
-            
+
+            const result = response.data;
+
             if (result.success) {
                 setStepValidationResults(prev => ({ ...prev, [`${pspId}-${stepId}`]: 'success' }));
-                
+
                 // Mark as completed
                 const completedSteps = (psp.provisioning_steps_completed || []);
                 if (!completedSteps.includes(stepId)) {
@@ -393,7 +395,7 @@ FTS.Money Platform Team
             }
         } catch (err) {
             setStepValidationResults(prev => ({ ...prev, [`${pspId}-${stepId}`]: 'failed' }));
-            setStepErrors(prev => ({ ...prev, [`${pspId}-${stepId}`]: err.message }));
+            setStepErrors(prev => ({ ...prev, [`${pspId}-${stepId}`]: err.response?.data?.error || err.message }));
         } finally {
             setStepValidating(prev => ({ ...prev, [`${pspId}-${stepId}`]: false }));
         }
