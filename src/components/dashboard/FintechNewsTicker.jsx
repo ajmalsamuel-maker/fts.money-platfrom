@@ -128,7 +128,7 @@ export default function FintechNewsTicker() {
                 </div>
             </div>
 
-            <style jsx>{`
+            <style>{`
                 @keyframes ticker {
                     0% {
                         transform: translateX(0);
