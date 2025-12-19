@@ -44,6 +44,12 @@ Deno.serve(async (req) => {
                     )
                 `);
 
+                // Drop old unique constraint if it exists (from previous schema)
+                await client.query(`
+                    ALTER TABLE ${schemaName}.app_users 
+                    DROP CONSTRAINT IF EXISTS app_users_email_key
+                `);
+
                 // Create unique index on email within this schema if it doesn't exist
                 await client.query(`
                     CREATE UNIQUE INDEX IF NOT EXISTS ${schemaName}_app_users_email_idx 
