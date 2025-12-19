@@ -353,7 +353,7 @@ FTS.Money Platform Team
                 setStepValidationResults(prev => ({ ...prev, [`${pspId}-${stepId}`]: 'success' }));
 
                 // Mark as completed
-                const completedSteps = (psp.provisioning_steps_completed || []);
+                const completedSteps = [...(psp.provisioning_steps_completed || [])];
                 if (!completedSteps.includes(stepId)) {
                     completedSteps.push(stepId);
                     const progress = completedSteps.reduce((sum, sid) => {
@@ -361,13 +361,11 @@ FTS.Money Platform Team
                         return sum + (stepConfig?.weight || 0);
                     }, 0);
 
-                    await updatePSPMutation.mutateAsync({
-                        pspId,
-                        data: {
-                            provisioning_steps_completed: completedSteps,
-                            provisioning_progress: progress
-                        }
+                    await base44.entities.ProvisionedPSP.update(pspId, {
+                        provisioning_steps_completed: completedSteps,
+                        provisioning_progress: progress
                     });
+                    queryClient.invalidateQueries({ queryKey: ['provisioning-psps'] });
                 }
                 setStepErrors(prev => ({ ...prev, [`${pspId}-${stepId}`]: null }));
             } else {
