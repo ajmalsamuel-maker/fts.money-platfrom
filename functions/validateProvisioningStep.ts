@@ -71,12 +71,29 @@ Deno.serve(async (req) => {
             }
             
             if (step_id === 'security') {
-                // Check if admin user exists in PSP schema
+                // Check if admin user exists - search all PSP schemas in database
                 try {
-                    // Check for admin user using exact schema name (same as managePSPUsers)
+                    // Find actual schema that matches this PSP code
+                    const schemaSearch = await client.query(`
+                        SELECT schema_name 
+                        FROM information_schema.schemata 
+                        WHERE schema_name = $1
+                    `, [schemaName]);
+                    
+                    if (schemaSearch.rows.length === 0) {
+                        return Response.json({
+                            success: false,
+                            error: 'PSP schema not created yet',
+                            action: 'Click Execute to create admin user'
+                        });
+                    }
+                    
+                    const actualSchema = schemaSearch.rows[0].schema_name;
+                    
+                    // Check for admin user
                     const userCheck = await client.query(`
                         SELECT email, role 
-                        FROM ${schemaName}.app_users 
+                        FROM ${actualSchema}.app_users 
                         WHERE role = 'admin'
                         LIMIT 1
                     `);
@@ -96,7 +113,7 @@ Deno.serve(async (req) => {
                 } catch (err) {
                     return Response.json({
                         success: false,
-                        error: `Validation error: ${err.message}`,
+                        error: `Error: ${err.message}`,
                         action: 'Click Execute to create admin user'
                     });
                 }
