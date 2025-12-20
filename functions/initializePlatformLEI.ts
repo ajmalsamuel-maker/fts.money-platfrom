@@ -55,12 +55,19 @@ Deno.serve(async (req) => {
             // Generate platform keypair (in production, use HSM)
             const publicKey = await generatePublicKey();
 
+            // Calculate 6-month grace periods for vLEI, OOR, and ECR
+            const sixMonthsFromNow = new Date();
+            sixMonthsFromNow.setMonth(sixMonthsFromNow.getMonth() + 6);
+
             // Create platform LEI record
             const platformLEI = await base44.asServiceRole.entities.PlatformLEI.create({
                 lei,
                 legal_name,
                 lei_status: leiStatus,
                 vlei_status: 'not_issued',
+                vlei_grace_period_end: sixMonthsFromNow.toISOString().split('T')[0],
+                oor_grace_period_end: sixMonthsFromNow.toISOString().split('T')[0],
+                ecr_grace_period_end: sixMonthsFromNow.toISOString().split('T')[0],
                 public_key: publicKey,
                 issuer_lei: 'GLEIF_ROOT',
                 issued_date: new Date().toISOString(),

@@ -242,10 +242,19 @@ export default function FTSSettings() {
                                             </div>
                                         </div>
 
+                                        <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                                            <p className="text-sm text-blue-900 font-medium mb-2">📅 Grace Periods Active</p>
+                                            <div className="space-y-1 text-xs text-blue-800">
+                                                <p><strong>vLEI:</strong> Due by {platformLEI.vlei_grace_period_end}</p>
+                                                <p><strong>OOR:</strong> Due by {platformLEI.oor_grace_period_end}</p>
+                                                <p><strong>ECR:</strong> Due by {platformLEI.ecr_grace_period_end}</p>
+                                            </div>
+                                        </div>
+
                                         {platformLEI.vlei_status !== 'active' && (
                                             <div>
                                                 <p className="text-sm text-slate-600 mb-3">
-                                                    Issue a vLEI credential to enable cryptographic signing of all platform transactions
+                                                    Issue a vLEI credential to enable cryptographic signing of all platform transactions (optional within 6-month grace period)
                                                 </p>
                                                 <Button
                                                     onClick={() => issueVLEIMutation.mutate()}
