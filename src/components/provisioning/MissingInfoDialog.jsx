@@ -22,7 +22,9 @@ export default function MissingInfoDialog({ open, onClose, onSubmit, psp, error,
         ...psp
     });
     
-    const isDuplicateError = error?.includes('duplicate') || error?.includes('already exists');
+    const isDuplicateError = error?.includes('duplicate') || 
+                             error?.includes('already exists') || 
+                             error?.includes('unique constraint');
 
     const handleSubmit = () => {
         onSubmit(formData);

@@ -28,8 +28,7 @@ Deno.serve(async (req) => {
                 // Create schema if it doesn't exist
                 await client.query(`CREATE SCHEMA IF NOT EXISTS ${schemaName}`);
 
-                // Create app_users table in PSP schema WITHOUT any unique constraints
-                // Multi-tenant: same email can exist across different PSPs
+                // Create app_users table WITHOUT unique constraints (multi-tenant compliance)
                 await client.query(`
                     CREATE TABLE IF NOT EXISTS ${schemaName}.app_users (
                         id SERIAL PRIMARY KEY,
@@ -45,37 +44,43 @@ Deno.serve(async (req) => {
                     )
                 `);
 
-                // Drop ANY existing unique constraints/indexes on email (multi-tenant fix)
+                // CRITICAL: Drop ALL unique constraints/indexes (multi-tenant isolation)
                 await client.query(`
                     DO $$ 
                     DECLARE
-                        constraint_name TEXT;
-                        index_name TEXT;
+                        constraint_rec RECORD;
+                        index_rec RECORD;
                     BEGIN
-                        -- Drop all unique constraints on email
-                        FOR constraint_name IN 
+                        -- Drop all unique constraints
+                        FOR constraint_rec IN 
                             SELECT conname 
                             FROM pg_constraint 
                             WHERE conrelid = '${schemaName}.app_users'::regclass 
                             AND contype = 'u'
                         LOOP
-                            EXECUTE format('ALTER TABLE ${schemaName}.app_users DROP CONSTRAINT IF EXISTS %I', constraint_name);
+                            EXECUTE format('ALTER TABLE ${schemaName}.app_users DROP CONSTRAINT IF EXISTS %I CASCADE', constraint_rec.conname);
                         END LOOP;
                         
-                        -- Drop all unique indexes on email
-                        FOR index_name IN
+                        -- Drop all unique indexes
+                        FOR index_rec IN
                             SELECT indexname
                             FROM pg_indexes
                             WHERE schemaname = '${schemaName}' 
                             AND tablename = 'app_users'
-                            AND indexdef LIKE '%UNIQUE%'
+                            AND indexdef ILIKE '%UNIQUE%'
                         LOOP
-                            EXECUTE format('DROP INDEX IF EXISTS ${schemaName}.%I', index_name);
+                            EXECUTE format('DROP INDEX IF EXISTS ${schemaName}.%I CASCADE', index_rec.indexname);
                         END LOOP;
                     EXCEPTION
                         WHEN undefined_table THEN NULL;
-                        WHEN others THEN NULL;
+                        WHEN undefined_object THEN NULL;
                     END $$;
+                `);
+
+                // Create non-unique index for query performance
+                await client.query(`
+                    CREATE INDEX IF NOT EXISTS idx_app_users_email_nonunique 
+                    ON ${schemaName}.app_users(email)
                 `);
 
                 // Check if user already exists IN THIS PSP SCHEMA (programmatic check, no DB constraint)
