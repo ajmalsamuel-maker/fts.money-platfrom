@@ -30,14 +30,19 @@ export default function XeroIntegration() {
     const [dateFrom, setDateFrom] = useState(format(subDays(new Date(), 30), 'yyyy-MM-dd'));
     const [dateTo, setDateTo] = useState(format(new Date(), 'yyyy-MM-dd'));
 
-    const { data: xeroStatus, isLoading: statusLoading } = useQuery({
+    const { data: xeroStatus, isLoading: statusLoading, error: statusError } = useQuery({
         queryKey: ['xero-status'],
         queryFn: async () => {
-            const response = await base44.functions.invoke('xeroIntegration', {
-                action: 'get_status',
-                psp_id: 'current' // Should be dynamic based on logged-in PSP
-            });
-            return response.data;
+            try {
+                const response = await base44.functions.invoke('xeroIntegration', {
+                    action: 'get_status',
+                    psp_id: 'current'
+                });
+                return response.data;
+            } catch (error) {
+                console.error('Xero status error:', error);
+                return { connected: false };
+            }
         }
     });
 
@@ -49,12 +54,17 @@ export default function XeroIntegration() {
     const { data: metrics, isLoading: metricsLoading, refetch: refetchMetrics } = useQuery({
         queryKey: ['xero-metrics', dateFrom, dateTo],
         queryFn: async () => {
-            const response = await base44.functions.invoke('xeroMetrics', {
-                psp_id: 'current',
-                date_from: dateFrom,
-                date_to: dateTo
-            });
-            return response.data;
+            try {
+                const response = await base44.functions.invoke('xeroMetrics', {
+                    psp_id: 'current',
+                    date_from: dateFrom,
+                    date_to: dateTo
+                });
+                return response.data;
+            } catch (error) {
+                console.error('Xero metrics error:', error);
+                return { success: false };
+            }
         },
         enabled: !!xeroStatus?.connected
     });
@@ -105,7 +115,38 @@ export default function XeroIntegration() {
     });
 
     if (statusLoading) {
-        return <div className="flex items-center justify-center h-screen">Loading...</div>;
+        return (
+            <div className="flex h-screen bg-slate-50">
+                <Sidebar currentPage="XeroIntegration" />
+                <div className="flex-1 flex items-center justify-center">
+                    <div className="text-center">
+                        <RefreshCw className="h-8 w-8 text-blue-600 animate-spin mx-auto mb-3" />
+                        <p className="text-slate-600">Loading Xero integration...</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    if (statusError) {
+        return (
+            <div className="flex h-screen bg-slate-50">
+                <Sidebar currentPage="XeroIntegration" />
+                <div className="flex-1 flex flex-col overflow-hidden">
+                    <TopHeader />
+                    <div className="flex-1 flex items-center justify-center p-6">
+                        <Card className="max-w-md">
+                            <CardContent className="p-8 text-center">
+                                <AlertCircle className="h-12 w-12 text-red-600 mx-auto mb-4" />
+                                <h2 className="text-xl font-bold text-slate-900 mb-2">Integration Error</h2>
+                                <p className="text-slate-600 mb-4">Unable to load Xero integration. Please check your configuration or try again later.</p>
+                                <Button onClick={() => window.location.reload()}>Retry</Button>
+                            </CardContent>
+                        </Card>
+                    </div>
+                </div>
+            </div>
+        );
     }
 
     return (
