@@ -68,6 +68,7 @@ const menuSections = [
             { icon: Wallet, label: 'Payout Routes', path: 'FTSPayoutRoutes', description: 'Payout methods' },
             { icon: Package, label: 'Available Services', path: 'FTSServiceManager', description: 'Service catalog' },
             { icon: Users, label: 'Service Providers', path: 'FTSServiceProviders', description: '3rd party vendors' },
+            { icon: Building2, label: 'PSP Wholesale', path: 'PSPWholesaleMarketplace', description: 'PSP-to-PSP marketplace', priority: true },
             { icon: Package, label: 'Product Templates', path: 'ProductTemplateLibrary', description: 'Template library' },
             { icon: Workflow, label: 'Workflow Templates', path: 'WorkflowTemplateLibrary', description: 'Workflow library' },
             { icon: Package, label: 'Community Products', path: 'CommunityProductCatalog', description: 'Community catalog' }

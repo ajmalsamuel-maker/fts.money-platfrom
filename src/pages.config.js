@@ -189,6 +189,7 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
+import PSPWholesaleMarketplace from './pages/PSPWholesaleMarketplace';
 import __Layout from './Layout.jsx';
 
 
@@ -384,6 +385,7 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
+    "PSPWholesaleMarketplace": PSPWholesaleMarketplace,
 }
 
 export const pagesConfig = {
