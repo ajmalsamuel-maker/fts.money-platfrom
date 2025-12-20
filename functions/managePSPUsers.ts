@@ -28,8 +28,13 @@ Deno.serve(async (req) => {
             try {
                 const schemaName = `psp_${psp_code.toLowerCase()}`;
 
+                console.log('[DEBUG] Starting user creation for PSP:', psp_code, 'schema:', schemaName);
+                console.log('[DEBUG] Email:', email, 'Role:', role);
+
                 // Hash password
+                console.log('[DEBUG] Hashing password...');
                 const password_hash = await bcrypt.hash(password || 'Welcome123!', 10);
+                console.log('[DEBUG] Password hashed successfully');
 
                 // Check if psp_staff_users table exists first
                 const tableCheck = await client.query(`
