@@ -107,8 +107,11 @@ Deno.serve(async (req) => {
                     });
                 }
 
-                // Simple password comparison (in production, use proper bcrypt)
-                if (password !== user.password_hash && password !== 'Welcome123!') {
+                // Password verification using bcrypt
+                const bcrypt = await import('npm:bcrypt@5.1.1');
+                const isValid = await bcrypt.compare(password, user.password_hash);
+                
+                if (!isValid) {
                     return Response.json({
                         success: false,
                         error: 'Invalid credentials'
