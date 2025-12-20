@@ -626,25 +626,29 @@ export default function ResourceOrchestration() {
                                                 size="sm"
                                                 onClick={async () => {
                                                     try {
+                                                        // Map tier to provider_type enum
+                                                        const providerTypeMap = {
+                                                            'tier1': 'global',
+                                                            'tier2': 'regional',
+                                                            'tier3': 'regional',
+                                                            'edge': 'global'
+                                                        };
+                                                        
                                                         await base44.entities.CloudConnector.create({
                                                             connector_id: `CONN-${Date.now()}`,
                                                             provider_name: provider.id,
                                                             display_name: provider.name,
-                                                            provider_type: provider.tier,
+                                                            provider_type: providerTypeMap[provider.tier] || 'regional',
                                                             region: provider.country,
+                                                            supported_regions: provider.regions,
                                                             status: 'inactive',
                                                             connector_function: 'infrastructure/cloudConnector',
-                                                            supported_operations: ['provision_compute', 'scale', 'monitor'],
+                                                            supported_operations: ['provision_compute', 'provision_database', 'scale_compute', 'get_metrics'],
                                                             required_secrets: [`${provider.id.toUpperCase()}_API_KEY`, `${provider.id.toUpperCase()}_API_SECRET`],
-                                                            metadata: {
-                                                                specialty: provider.specialty,
-                                                                continent: provider.continent,
-                                                                recommendation: provider.recommendationReason,
-                                                                avg_cost: provider.avgCostPerMonth
-                                                            }
+                                                            notes: `${provider.specialty} | ${provider.recommendationReason} | Avg: $${provider.avgCostPerMonth}/mo`
                                                         });
                                                         queryClient.invalidateQueries(['cloud-connectors']);
-                                                        toast.success(`${provider.name} connector created! Configure credentials to activate.`);
+                                                        toast.success(`✅ ${provider.name} connector created! Configure credentials to activate.`);
                                                     } catch (error) {
                                                         toast.error('Failed to create connector: ' + error.message);
                                                     }
