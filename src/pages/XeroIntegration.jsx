@@ -284,7 +284,7 @@ export default function XeroIntegration() {
                                         <RefreshCw className="h-8 w-8 text-blue-600 animate-spin mx-auto mb-3" />
                                         <p className="text-slate-600">Loading metrics from Xero...</p>
                                     </div>
-                                ) : metrics?.success ? (
+                                ) : (metrics?.success && metrics?.metrics) ? (
                                     <>
                                         {/* Key Metrics */}
                                         <div className="grid grid-cols-4 gap-4 mb-6">
@@ -446,7 +446,7 @@ export default function XeroIntegration() {
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            {metrics.recent_invoices.map((inv) => (
+                                                           {(metrics?.recent_invoices || []).map((inv) => (
                                                                 <tr key={inv.id} className="border-b hover:bg-slate-50">
                                                                     <td className="py-3 px-4 font-mono text-xs">{inv.number}</td>
                                                                     <td className="py-3 px-4">{inv.contact}</td>
