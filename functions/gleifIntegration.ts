@@ -11,7 +11,8 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const { action, lei, entity_type, entity_id } = await req.json();
+        const body = await req.json();
+        const { action, lei, entity_type, entity_id, credential_chain } = body;
 
         // Verify LEI with GLEIF API
         if (action === 'verify_lei') {
