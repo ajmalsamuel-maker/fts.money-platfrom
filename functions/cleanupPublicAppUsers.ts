@@ -14,26 +14,34 @@ Deno.serve(async (req) => {
         const client = await pool.connect();
         try {
             if (action === 'delete') {
-                // Delete specific user from public.app_users
-                await client.query(`
-                    DELETE FROM public.app_users WHERE email = $1
-                `, [email]);
-                
+                // This function is deprecated - psp_staff_users are in PSP-isolated schemas
                 return Response.json({
-                    success: true,
-                    message: `Deleted ${email} from public.app_users`
+                    success: false,
+                    message: 'This function is deprecated. PSP staff users are now in isolated schemas (psp_staff_users table).'
                 });
             }
             
             if (action === 'list') {
-                // List all users in public.app_users
-                const result = await client.query(`
-                    SELECT id, email, full_name, psp_code FROM public.app_users ORDER BY id
+                // List all PSP staff users across all schemas
+                const pspSchemas = await client.query(`
+                    SELECT schema_name FROM information_schema.schemata WHERE schema_name LIKE 'psp_%'
                 `);
+                
+                const allUsers = [];
+                for (const schema of pspSchemas.rows) {
+                    try {
+                        const result = await client.query(`
+                            SELECT id, email, full_name, role FROM ${schema.schema_name}.psp_staff_users ORDER BY id
+                        `);
+                        allUsers.push(...result.rows.map(u => ({ ...u, schema: schema.schema_name })));
+                    } catch (err) {
+                        // Schema might not have psp_staff_users table yet
+                    }
+                }
                 
                 return Response.json({
                     success: true,
-                    users: result.rows
+                    users: allUsers
                 });
             }
             

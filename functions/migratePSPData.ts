@@ -37,30 +37,9 @@ Deno.serve(async (req) => {
                 transactions_migrated: 0
             };
 
-            // Migrate app_users
-            const users = await client.query(`
-                SELECT * FROM public.app_users 
-                WHERE UPPER(COALESCE(psp_code, '')) = UPPER($1)
-            `, [psp_code]);
-
-            for (const user of users.rows) {
-                await client.query(`
-                    INSERT INTO ${schemaName}.app_users 
-                    (email, full_name, role, status, password_hash, created_date, updated_date, created_by)
-                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-                    ON CONFLICT (email) DO NOTHING
-                `, [
-                    user.email,
-                    user.full_name,
-                    user.role,
-                    user.status,
-                    user.password_hash,
-                    user.created_date,
-                    user.updated_date,
-                    user.created_by
-                ]);
-                results.users_migrated++;
-            }
+            // Note: PSP staff users are now managed via managePSPUsers function
+            // No migration needed - they are created directly in isolated schemas
+            results.users_migrated = 0;
 
             // Migrate merchants
             const merchants = await client.query(`

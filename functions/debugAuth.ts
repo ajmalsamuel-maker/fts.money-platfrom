@@ -11,11 +11,26 @@ Deno.serve(async (req) => {
     try {
         const { email } = await req.json();
 
-        // Check app_users with password info
-        const appUserResult = await pool.query(
-            'SELECT id, email, full_name, role, status, password_hash, length(password_hash) as pwd_length FROM app_users WHERE email = $1',
-            [email]
-        );
+        // Check psp_staff_users with password info (searches across all PSP schemas)
+        const pspSchemas = await pool.query(`
+            SELECT schema_name FROM information_schema.schemata WHERE schema_name LIKE 'psp_%'
+        `);
+        
+        const pspStaffUsers = [];
+        for (const schema of pspSchemas.rows) {
+            try {
+                const result = await pool.query(
+                    `SELECT id, email, full_name, role, status, password_hash, length(password_hash) as pwd_length 
+                     FROM ${schema.schema_name}.psp_staff_users WHERE email = $1`,
+                    [email]
+                );
+                if (result.rows.length > 0) {
+                    pspStaffUsers.push({ ...result.rows[0], schema: schema.schema_name });
+                }
+            } catch (err) {
+                // Schema might not have psp_staff_users table yet
+            }
+        }
 
         // Check merchant_users with password info
         const merchantUserResult = await pool.query(
@@ -26,7 +41,7 @@ Deno.serve(async (req) => {
         return Response.json({
             success: true,
             email,
-            app_user: appUserResult.rows[0] || null,
+            psp_staff_users: pspStaffUsers,
             merchant_users: merchantUserResult.rows || []
         });
 

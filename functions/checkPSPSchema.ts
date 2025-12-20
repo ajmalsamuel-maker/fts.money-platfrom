@@ -47,9 +47,9 @@ Deno.serve(async (req) => {
             // Set search path and try to query data
             await client.query(`SET search_path TO ${schemaName}, public`);
 
-            // Check if app_users table has data
+            // Check if psp_staff_users table has data
             const usersCount = await client.query(`
-                SELECT COUNT(*) as count FROM app_users
+                SELECT COUNT(*) as count FROM psp_staff_users
             `);
 
             const merchantsCount = await client.query(`
@@ -63,7 +63,7 @@ Deno.serve(async (req) => {
             // Get sample user (without password)
             const sampleUser = await client.query(`
                 SELECT id, email, full_name, role, status, created_date
-                FROM app_users
+                FROM psp_staff_users
                 LIMIT 1
             `);
 

@@ -13,20 +13,7 @@ Deno.serve(async (req) => {
         
         const client = await pool.connect();
         try {
-            // Check if email exists in public.app_users
-            const publicCheck = await client.query(`
-                SELECT * FROM pg_tables WHERE tablename = 'app_users' AND schemaname = 'public'
-            `);
-            
-            let publicUsers = null;
-            if (publicCheck.rows.length > 0) {
-                const usersResult = await client.query(`
-                    SELECT * FROM public.app_users WHERE email = $1
-                `, [email]);
-                publicUsers = usersResult.rows;
-            }
-            
-            // Check PSP schemas
+            // Check PSP schemas for psp_staff_users
             const pspSchemas = await client.query(`
                 SELECT schema_name FROM information_schema.schemata 
                 WHERE schema_name LIKE 'psp_%'
@@ -36,7 +23,7 @@ Deno.serve(async (req) => {
             for (const schema of pspSchemas.rows) {
                 try {
                     const result = await client.query(`
-                        SELECT * FROM ${schema.schema_name}.app_users WHERE email = $1
+                        SELECT * FROM ${schema.schema_name}.psp_staff_users WHERE email = $1
                     `, [email]);
                     if (result.rows.length > 0) {
                         pspUsers.push({
@@ -45,11 +32,11 @@ Deno.serve(async (req) => {
                         });
                     }
                 } catch (err) {
-                    // Schema might not have app_users table
+                    // Schema might not have psp_staff_users table
                 }
             }
             
-            // Get all constraints on app_users tables
+            // Get all constraints on psp_staff_users tables
             const constraints = await client.query(`
                 SELECT 
                     tc.table_schema,
@@ -57,15 +44,13 @@ Deno.serve(async (req) => {
                     tc.constraint_name,
                     tc.constraint_type
                 FROM information_schema.table_constraints tc
-                WHERE tc.table_name = 'app_users'
+                WHERE tc.table_name = 'psp_staff_users'
                 AND tc.constraint_type = 'UNIQUE'
             `);
             
             return Response.json({
                 success: true,
                 email: email,
-                publicTableExists: publicCheck.rows.length > 0,
-                publicUsers: publicUsers,
                 pspUsers: pspUsers,
                 constraints: constraints.rows
             });
