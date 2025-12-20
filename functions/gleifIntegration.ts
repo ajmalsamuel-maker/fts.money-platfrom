@@ -140,7 +140,6 @@ Deno.serve(async (req) => {
 
         // Verify credential chain
         if (action === 'verify_chain') {
-            const { credential_chain } = await req.json();
             
             // Verify each LEI in chain exists and is active
             const verifications = await Promise.all(
