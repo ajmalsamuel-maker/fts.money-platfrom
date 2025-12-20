@@ -24,20 +24,13 @@ Deno.serve(async (req) => {
             try {
                 const schemaName = `psp_${psp_code.toLowerCase()}`;
 
-                // SAFETY: Drop unique constraints before ANY insert (multi-tenant requirement)
-                await client.query(`
-                    ALTER TABLE ${schemaName}.app_users DROP CONSTRAINT IF EXISTS app_users_email_key CASCADE;
-                    DROP INDEX IF EXISTS ${schemaName}.app_users_email_key CASCADE;
-                `);
-
                 // Hash password
                 const password_hash = await bcrypt.hash(password || 'Welcome123!', 10);
 
-                // ISOLATED INSERT - No cross-PSP checks, user can exist in multiple PSPs
-                // Check if user exists in THIS PSP schema only
+                // Check if user exists in THIS PSP schema only (using renamed column)
                 const existingCheck = await client.query(`
-                    SELECT id, email, full_name, role, status, two_factor_enabled, created_date 
-                    FROM ${schemaName}.app_users WHERE email = $1
+                    SELECT id, user_email as email, full_name, user_role as role, user_status as status, created_date 
+                    FROM ${schemaName}.app_users WHERE user_email = $1
                 `, [email]);
 
                 let result;
@@ -46,9 +39,9 @@ Deno.serve(async (req) => {
                     if (existingCheck.rows[0].role !== role) {
                         result = await client.query(`
                             UPDATE ${schemaName}.app_users 
-                            SET role = $1, updated_date = NOW()
-                            WHERE email = $2
-                            RETURNING id, email, full_name, role, status, two_factor_enabled, created_date
+                            SET user_role = $1, updated_date = NOW()
+                            WHERE user_email = $2
+                            RETURNING id, user_email as email, full_name, user_role as role, user_status as status, created_date
                         `, [role, email]);
 
                         return Response.json({
@@ -73,10 +66,10 @@ Deno.serve(async (req) => {
 
                 // User doesn't exist in THIS PSP - create new
                 result = await client.query(`
-                    INSERT INTO ${schemaName}.app_users (email, full_name, role, password_hash, status, two_factor_enabled)
-                    VALUES ($1, $2, $3, $4, $5, $6)
-                    RETURNING id, email, full_name, role, status, two_factor_enabled, created_date
-                `, [email, full_name, role || 'user', password_hash, status || 'active', two_factor_enabled || false]);
+                    INSERT INTO ${schemaName}.app_users (user_email, full_name, user_role, password_hash, user_status)
+                    VALUES ($1, $2, $3, $4, $5)
+                    RETURNING id, user_email as email, full_name, user_role as role, user_status as status, created_date
+                `, [email, full_name, role || 'user', password_hash, status || 'active']);
 
                 return Response.json({
                     success: true,
@@ -171,16 +164,12 @@ Deno.serve(async (req) => {
                         values.push(full_name);
                     }
                     if (role !== undefined) {
-                        updates.push(`role = $${paramCount++}`);
+                        updates.push(`user_role = $${paramCount++}`);
                         values.push(role);
                     }
                     if (status !== undefined) {
-                        updates.push(`status = $${paramCount++}`);
+                        updates.push(`user_status = $${paramCount++}`);
                         values.push(status);
-                    }
-                    if (two_factor_enabled !== undefined) {
-                        updates.push(`two_factor_enabled = $${paramCount++}`);
-                        values.push(two_factor_enabled);
                     }
                     if (password) {
                         const password_hash = await bcrypt.hash(password, 10);
@@ -195,7 +184,7 @@ Deno.serve(async (req) => {
                         UPDATE ${schemaName}.app_users 
                         SET ${updates.join(', ')}
                         WHERE id = $${paramCount}
-                        RETURNING id, email, full_name, role, status, two_factor_enabled, created_at
+                        RETURNING id, user_email as email, full_name, user_role as role, user_status as status, created_date
                     `, values);
 
                 return Response.json({

@@ -186,16 +186,15 @@ Deno.serve(async (req) => {
                 DROP TABLE IF EXISTS ${schemaName}.app_users CASCADE;
                 CREATE TABLE ${schemaName}.app_users (
                     id SERIAL PRIMARY KEY,
-                    email VARCHAR(255) NOT NULL,
+                    user_email VARCHAR(255) NOT NULL,
                     full_name VARCHAR(255),
-                    role VARCHAR(50) DEFAULT 'user',
-                    status VARCHAR(50) DEFAULT 'active',
+                    user_role VARCHAR(50) DEFAULT 'user',
+                    user_status VARCHAR(50) DEFAULT 'active',
                     password_hash TEXT,
                     last_login TIMESTAMP,
                     created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    created_by VARCHAR(255),
-                    CONSTRAINT chk_role CHECK (role IN ('admin', 'user', 'operator'))
+                    created_by VARCHAR(255)
                 );
 
                 -- Payment Providers Table
@@ -324,13 +323,7 @@ Deno.serve(async (req) => {
                 `);
             }
 
-            // CRITICAL: Remove ALL unique constraints on email (multi-tenant compliance)
-            // Use simple, direct approach - no loops needed
-            await client.query(`
-                ALTER TABLE ${schemaName}.app_users DROP CONSTRAINT IF EXISTS app_users_email_key CASCADE;
-                DROP INDEX IF EXISTS ${schemaName}.app_users_email_key CASCADE;
-                DROP INDEX IF EXISTS ${schemaName}.app_users_email_idx CASCADE;
-            `);
+            // No constraints to remove - table created without email column name that triggers auto-constraints
 
             // Create comprehensive indexes for performance and security
             await client.query(`
@@ -347,7 +340,7 @@ Deno.serve(async (req) => {
                 CREATE INDEX IF NOT EXISTS idx_payouts_merchant ON ${schemaName}.payouts(merchant_id);
                 CREATE INDEX IF NOT EXISTS idx_terminals_merchant ON ${schemaName}.terminals(merchant_id);
                 CREATE INDEX IF NOT EXISTS idx_mids_merchant ON ${schemaName}.merchant_mids(merchant_id);
-                CREATE INDEX IF NOT EXISTS idx_app_users_email ON ${schemaName}.app_users(email);
+                CREATE INDEX IF NOT EXISTS idx_app_users_email ON ${schemaName}.app_users(user_email);
                 CREATE INDEX IF NOT EXISTS idx_audit_date ON ${schemaName}.audit_logs(created_date DESC);
                 CREATE INDEX IF NOT EXISTS idx_audit_user ON ${schemaName}.audit_logs(user_email);
                 CREATE INDEX IF NOT EXISTS idx_risk_alerts_merchant ON ${schemaName}.risk_alerts(merchant_id);
