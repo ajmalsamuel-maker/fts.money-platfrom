@@ -111,6 +111,15 @@ export default function FTSProvisioningQueue() {
                 }
 
                 if (step === 'security') {
+                    // First check if schema exists
+                    const schemaCheck = await base44.functions.invoke('checkPSPSchema', {
+                        psp_code: psp.psp_code
+                    });
+
+                    if (!schemaCheck.data?.schema_exists) {
+                        throw new Error('PSP schema not provisioned. Run Database step first.');
+                    }
+
                     const result = await base44.functions.invoke('managePSPUsers', {
                         action: 'create',
                         psp_code: psp.psp_code,
