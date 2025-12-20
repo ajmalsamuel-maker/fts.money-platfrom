@@ -24,6 +24,27 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'PSP code required' }, { status: 400 });
         }
 
+        // CRITICAL: Check platform LEI is mandatory before provisioning any PSP
+        const platformLEIs = await base44.asServiceRole.entities.PlatformLEI.list();
+        if (!platformLEIs || platformLEIs.length === 0) {
+            return Response.json({
+                success: false,
+                error: 'PLATFORM_LEI_REQUIRED',
+                message: 'FTS.Money platform LEI must be configured before provisioning PSPs. This is mandatory with no grace period.',
+                action_required: 'Configure platform LEI in FTS Settings'
+            }, { status: 403 });
+        }
+
+        const platformLEI = platformLEIs[0];
+        if (platformLEI.lei_status !== 'active') {
+            return Response.json({
+                success: false,
+                error: 'PLATFORM_LEI_INACTIVE',
+                message: 'Platform LEI must be active and verified before provisioning PSPs',
+                current_status: platformLEI.lei_status
+            }, { status: 403 });
+        }
+
         const schemaName = `psp_${psp_code.toLowerCase()}`;
         const client = await pool.connect();
 
