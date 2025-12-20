@@ -24,60 +24,8 @@ Deno.serve(async (req) => {
             try {
                 const schemaName = `psp_${psp_code.toLowerCase()}`;
 
-                await client.query(`CREATE SCHEMA IF NOT EXISTS ${schemaName}`);
-
-                // Check if table exists
-                const tableExists = await client.query(`
-                    SELECT EXISTS (
-                        SELECT FROM information_schema.tables 
-                        WHERE table_schema = $1 AND table_name = 'app_users'
-                    )
-                `, [schemaName]);
-
-                if (!tableExists.rows[0].exists) {
-                    // Create table WITHOUT any unique constraints
-                    await client.query(`
-                        CREATE TABLE ${schemaName}.app_users (
-                            id SERIAL PRIMARY KEY,
-                            email VARCHAR(255) NOT NULL,
-                            full_name VARCHAR(255),
-                            role VARCHAR(50) DEFAULT 'user',
-                            password_hash TEXT,
-                            status VARCHAR(50) DEFAULT 'active',
-                            two_factor_enabled BOOLEAN DEFAULT FALSE,
-                            last_login TIMESTAMP,
-                            created_at TIMESTAMP DEFAULT NOW(),
-                            updated_at TIMESTAMP DEFAULT NOW()
-                        )
-                    `);
-                }
-
-                // CRITICAL: Remove ALL email constraints/indexes every time
-                await client.query(`
-                    DO $$ 
-                    DECLARE
-                        r RECORD;
-                    BEGIN
-                        -- Drop unique constraints
-                        FOR r IN 
-                            SELECT conname FROM pg_constraint 
-                            WHERE conrelid = '${schemaName}.app_users'::regclass AND contype = 'u'
-                        LOOP
-                            EXECUTE format('ALTER TABLE ${schemaName}.app_users DROP CONSTRAINT IF EXISTS %I CASCADE', r.conname);
-                        END LOOP;
-
-                        -- Drop unique indexes
-                        FOR r IN
-                            SELECT indexname FROM pg_indexes
-                            WHERE schemaname = '${schemaName}' 
-                            AND tablename = 'app_users'
-                            AND indexdef ILIKE '%UNIQUE%'
-                            AND indexname != 'app_users_pkey'
-                        LOOP
-                            EXECUTE format('DROP INDEX IF EXISTS ${schemaName}.%I CASCADE', r.indexname);
-                        END LOOP;
-                    END $$;
-                `);
+                // Schema should already exist from provisionPSPSchema
+                // Don't recreate table - just validate it exists
 
                 // Hash password
                 const password_hash = await bcrypt.hash(password || 'Welcome123!', 10);
