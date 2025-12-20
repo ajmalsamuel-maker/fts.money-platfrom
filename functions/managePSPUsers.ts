@@ -30,55 +30,50 @@ Deno.serve(async (req) => {
                 // Hash password
                 const password_hash = await bcrypt.hash(password || 'Welcome123!', 10);
 
-                // Try INSERT, catch constraint violation, then check if user exists
+                // ISOLATED INSERT - No cross-PSP checks, user can exist in multiple PSPs
+                // Check if user exists in THIS PSP schema only
+                const existingCheck = await client.query(`
+                    SELECT id, email, full_name, role, status, two_factor_enabled, created_date 
+                    FROM ${schemaName}.app_users WHERE email = $1
+                `, [email]);
+
                 let result;
-                try {
-                    result = await client.query(`
-                        INSERT INTO ${schemaName}.app_users (email, full_name, role, password_hash, status, two_factor_enabled)
-                        VALUES ($1, $2, $3, $4, $5, $6)
-                        RETURNING id, email, full_name, role, status, two_factor_enabled, created_at
-                    `, [email, full_name, role || 'user', password_hash, status || 'active', two_factor_enabled || false]);
-                } catch (insertError) {
-                    // If duplicate key error, user exists - fetch and return
-                    if (insertError.code === '23505') {
-                        const existingUser = await client.query(`
-                            SELECT id, email, full_name, role, status, two_factor_enabled, created_at 
-                            FROM ${schemaName}.app_users WHERE email = $1
-                        `, [email]);
+                if (existingCheck.rows.length > 0) {
+                    // User exists in THIS PSP - update role if different
+                    if (existingCheck.rows[0].role !== role) {
+                        result = await client.query(`
+                            UPDATE ${schemaName}.app_users 
+                            SET role = $1, updated_date = NOW()
+                            WHERE email = $2
+                            RETURNING id, email, full_name, role, status, two_factor_enabled, created_date
+                        `, [role, email]);
 
-                        if (existingUser.rows.length > 0) {
-                            // Update role if different
-                            if (existingUser.rows[0].role !== role) {
-                                await client.query(`
-                                    UPDATE ${schemaName}.app_users 
-                                    SET role = $1, updated_at = NOW()
-                                    WHERE email = $2
-                                `, [role, email]);
-
-                                return Response.json({
-                                    success: true,
-                                    user: {
-                                        ...existingUser.rows[0],
-                                        role: role,
-                                        psp_code: psp_code
-                                    },
-                                    message: `User already exists - updated role to ${role}`
-                                });
-                            }
-
-                            return Response.json({
-                                success: true,
-                                user: {
-                                    ...existingUser.rows[0],
-                                    psp_code: psp_code
-                                },
-                                message: 'User already exists in this PSP'
-                            });
-                        }
+                        return Response.json({
+                            success: true,
+                            user: {
+                                ...result.rows[0],
+                                psp_code: psp_code
+                            },
+                            message: `User already exists in PSP ${psp_code} - updated role to ${role}`
+                        });
                     }
-                    // Re-throw if not a duplicate key error or user not found
-                    throw insertError;
+
+                    return Response.json({
+                        success: true,
+                        user: {
+                            ...existingCheck.rows[0],
+                            psp_code: psp_code
+                        },
+                        message: `User already exists in PSP ${psp_code}`
+                    });
                 }
+
+                // User doesn't exist in THIS PSP - create new
+                result = await client.query(`
+                    INSERT INTO ${schemaName}.app_users (email, full_name, role, password_hash, status, two_factor_enabled)
+                    VALUES ($1, $2, $3, $4, $5, $6)
+                    RETURNING id, email, full_name, role, status, two_factor_enabled, created_date
+                `, [email, full_name, role || 'user', password_hash, status || 'active', two_factor_enabled || false]);
 
                 return Response.json({
                     success: true,
@@ -89,13 +84,9 @@ Deno.serve(async (req) => {
                 });
             } catch (err) {
                 console.error('Error creating user:', err);
-                let errorMessage = err.message;
-                if (err.code === '23505') {
-                    errorMessage = `A user with this email already exists in PSP ${psp_code}`;
-                }
                 return Response.json({
                     success: false,
-                    error: errorMessage
+                    error: `Failed to create user: ${err.message}`
                 }, { status: 400 });
             } finally {
                 client.release();
@@ -236,11 +227,23 @@ Deno.serve(async (req) => {
         }
 
         if (action === 'listPSPs') {
-            const result = await pool.query('SELECT psp_code, psp_name FROM psp_settings ORDER BY psp_name');
-            return Response.json({
-                success: true,
-                psps: result.rows
-            });
+            // Use Base44 entities instead of global table - TRUE multi-tenant isolation
+            const client = await pool.connect();
+            try {
+                const result = await client.query(`
+                    SELECT DISTINCT data->>'psp_code' as psp_code, data->>'psp_name' as psp_name
+                    FROM app_entities_data 
+                    WHERE entity_name = 'ProvisionedPSP' 
+                    AND data->>'psp_code' IS NOT NULL
+                    ORDER BY data->>'psp_name'
+                `);
+                return Response.json({
+                    success: true,
+                    psps: result.rows
+                });
+            } finally {
+                client.release();
+            }
         }
 
         return Response.json({

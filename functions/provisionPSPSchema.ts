@@ -161,7 +161,8 @@ Deno.serve(async (req) => {
                     created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 );
 
-                -- App Users Table (PSP staff) - EXPLICITLY NO UNIQUE CONSTRAINT (multi-tenant support)
+                -- App Users Table (PSP staff) - COMPLETELY ISOLATED PER PSP
+                -- NO UNIQUE CONSTRAINTS - Users can exist in multiple PSP schemas
                 DROP TABLE IF EXISTS ${schemaName}.app_users CASCADE;
                 CREATE TABLE ${schemaName}.app_users (
                     id SERIAL PRIMARY KEY,
@@ -173,7 +174,8 @@ Deno.serve(async (req) => {
                     last_login TIMESTAMP,
                     created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    created_by VARCHAR(255)
+                    created_by VARCHAR(255),
+                    CONSTRAINT chk_role CHECK (role IN ('admin', 'user', 'operator'))
                 );
 
                 -- Payment Providers Table
