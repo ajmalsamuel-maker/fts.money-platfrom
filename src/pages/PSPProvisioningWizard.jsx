@@ -147,6 +147,9 @@ export default function PSPProvisioningWizard() {
         country: '',
         currency: 'USD',
         timezone: 'UTC',
+        lei: '',
+        vlei: '',
+        lei_waived: false,
         branding: {
             primary_color: '#3b82f6',
             secondary_color: '#8b5cf6',
@@ -236,6 +239,12 @@ export default function PSPProvisioningWizard() {
 
     const handleProvision = async () => {
         const tier = customTiers.find(t => t.id === selectedTier);
+        
+        // Calculate LEI grace period if waived
+        const gracePeriodEnd = formData.lei_waived 
+            ? new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+            : null;
+        
         const data = {
             ...formData,
             tier: selectedTier,
@@ -243,6 +252,8 @@ export default function PSPProvisioningWizard() {
             revenue_share_percentage: tier.revenue_share,
             status: 'active',
             provisioning_progress: 100,
+            lei_status: formData.lei ? 'active' : (formData.lei_waived ? 'pending' : 'not_required'),
+            lei_grace_period_end: gracePeriodEnd,
             core_features: {
                 payment_processing: true,
                 merchant_portal: true,
@@ -626,15 +637,106 @@ export default function PSPProvisioningWizard() {
                                     </Select>
                                 </div>
                                 <div>
-                                    <Label>Logo URL</Label>
-                                    <Input
-                                        value={formData.branding.logo_url}
-                                        onChange={(e) => setFormData({...formData, branding: {...formData.branding, logo_url: e.target.value}})}
-                                        placeholder="https://example.com/logo.png"
-                                    />
+                                   <Label>Logo URL</Label>
+                                   <Input
+                                       value={formData.branding.logo_url}
+                                       onChange={(e) => setFormData({...formData, branding: {...formData.branding, logo_url: e.target.value}})}
+                                       placeholder="https://example.com/logo.png"
+                                   />
                                 </div>
-                            </div>
-                        </CardContent>
+                                </div>
+
+                                {/* LEI/vLEI Section */}
+                                <div className="p-4 bg-amber-50 border-2 border-amber-200 rounded-lg space-y-4">
+                                <div className="flex items-start gap-3">
+                                   <Shield className="h-5 w-5 text-amber-600 mt-0.5" />
+                                   <div className="flex-1">
+                                       <h3 className="font-semibold text-amber-900 mb-1">Legal Entity Identifier (LEI)</h3>
+                                       <p className="text-sm text-amber-800 mb-3">
+                                           LEI is required for regulatory compliance and cross-border payment processing. 
+                                           If you don't have one yet, you can obtain it from an authorized registry.
+                                       </p>
+                                   </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4">
+                                   <div>
+                                       <Label>Legal Entity Identifier (LEI)</Label>
+                                       <Input
+                                           value={formData.lei || ''}
+                                           onChange={(e) => setFormData({...formData, lei: e.target.value.toUpperCase()})}
+                                           placeholder="20-character alphanumeric code"
+                                           maxLength={20}
+                                       />
+                                       <p className="text-xs text-slate-500 mt-1">20-character ISO 17442 code</p>
+                                   </div>
+                                   <div>
+                                       <Label>Verifiable LEI (vLEI) - Optional</Label>
+                                       <Input
+                                           value={formData.vlei || ''}
+                                           onChange={(e) => setFormData({...formData, vlei: e.target.value})}
+                                           placeholder="Digital credential"
+                                       />
+                                       <p className="text-xs text-slate-500 mt-1">Blockchain-based verification</p>
+                                   </div>
+                                </div>
+
+                                {!formData.lei && (
+                                   <div className="space-y-3 pt-2 border-t border-amber-200">
+                                       <p className="text-sm font-medium text-amber-900">Don't have an LEI? Get one from these authorized registries:</p>
+                                       <div className="grid grid-cols-2 gap-2 text-sm">
+                                           <a href="https://www.gleif.org/en/lei/search" target="_blank" rel="noopener noreferrer" 
+                                              className="text-blue-600 hover:text-blue-800 underline">
+                                               • GLEIF (Global Registry)
+                                           </a>
+                                           <a href="https://www.leiroc.org" target="_blank" rel="noopener noreferrer"
+                                              className="text-blue-600 hover:text-blue-800 underline">
+                                               • LEI ROC (Regulatory Oversight)
+                                           </a>
+                                           <a href="https://www.bloomberg.com/lei" target="_blank" rel="noopener noreferrer"
+                                              className="text-blue-600 hover:text-blue-800 underline">
+                                               • Bloomberg LEI Services
+                                           </a>
+                                           <a href="https://www.lseg.com/en/data-analytics/financial-data/reference-data/lei" target="_blank" rel="noopener noreferrer"
+                                              className="text-blue-600 hover:text-blue-800 underline">
+                                               • LSEG (London Stock Exchange)
+                                           </a>
+                                           <a href="https://www.dnb.com/marketing/lei.html" target="_blank" rel="noopener noreferrer"
+                                              className="text-blue-600 hover:text-blue-800 underline">
+                                               • Dun & Bradstreet
+                                           </a>
+                                           <a href="https://www.wm-leiservices.com" target="_blank" rel="noopener noreferrer"
+                                              className="text-blue-600 hover:text-blue-800 underline">
+                                               • WM Datenservice (Germany)
+                                           </a>
+                                       </div>
+
+                                       <div className="flex items-center gap-2 p-3 bg-amber-100 rounded-lg border border-amber-300">
+                                           <input
+                                               type="checkbox"
+                                               id="lei-waive"
+                                               checked={formData.lei_waived || false}
+                                               onChange={(e) => setFormData({...formData, lei_waived: e.target.checked})}
+                                               className="h-4 w-4"
+                                           />
+                                           <label htmlFor="lei-waive" className="text-sm font-medium text-amber-900 cursor-pointer">
+                                               I don't have an LEI yet - proceed with 3-month grace period
+                                           </label>
+                                       </div>
+
+                                       {formData.lei_waived && (
+                                           <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                                               <p className="text-sm font-semibold text-red-900 mb-1">⚠️ Grace Period Notice</p>
+                                               <p className="text-xs text-red-800">
+                                                   Your PSP will be provisioned, but you must obtain an LEI within <strong>3 months</strong>. 
+                                                   Failure to do so may result in PSP suspension until LEI is provided.
+                                               </p>
+                                           </div>
+                                       )}
+                                   </div>
+                                )}
+                                </div>
+                                </CardContent>
                         <div className="flex justify-between p-6 border-t border-slate-200">
                             <Button variant="outline" onClick={() => setStep(1)}>
                                 <ArrowLeft className="h-4 w-4 mr-2" />
