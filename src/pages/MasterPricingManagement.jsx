@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { usePlatformAuth, PLATFORM_PERMISSIONS } from '@/components/auth/usePlatformAuth';
+import { usePlatformAuth, PLATFORM_PERMISSIONS, PLATFORM_ROLES } from '@/components/auth/usePlatformAuth';
 import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -234,7 +234,9 @@ export default function MasterPricingManagement() {
         }
     };
 
-    const canApprove = platformUser?.platform_role === 'finance_manager' || platformUser?.platform_role === 'super_admin';
+    const canApprove = platformUser?.platform_role === PLATFORM_ROLES.FINANCE_MANAGER || 
+                       platformUser?.platform_role === PLATFORM_ROLES.SUPER_ADMIN ||
+                       platformUser?.platform_role === PLATFORM_ROLES.ADMIN;
 
     const handleSubmit = () => {
         const margin = (formData.sell_rate_percentage || 0) - (formData.buy_rate_percentage || 0);
