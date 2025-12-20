@@ -325,34 +325,11 @@ Deno.serve(async (req) => {
             }
 
             // CRITICAL: Remove ALL unique constraints on email (multi-tenant compliance)
+            // Use simple, direct approach - no loops needed
             await client.query(`
-                DO $$ 
-                DECLARE
-                    r RECORD;
-                BEGIN
-                    -- Drop all unique constraints on app_users
-                    FOR r IN 
-                        SELECT conname FROM pg_constraint 
-                        WHERE conrelid = '${schemaName}.app_users'::regclass 
-                        AND contype = 'u'
-                    LOOP
-                        EXECUTE format('ALTER TABLE ${schemaName}.app_users DROP CONSTRAINT IF EXISTS %I CASCADE', r.conname);
-                    END LOOP;
-                    
-                    -- Drop all unique indexes on email
-                    FOR r IN
-                        SELECT indexname FROM pg_indexes
-                        WHERE schemaname = '${schemaName}' 
-                        AND tablename = 'app_users'
-                        AND indexdef ILIKE '%UNIQUE%'
-                        AND indexname != 'app_users_pkey'
-                    LOOP
-                        EXECUTE format('DROP INDEX IF EXISTS ${schemaName}.%I CASCADE', r.indexname);
-                    END LOOP;
-                EXCEPTION
-                    WHEN undefined_table THEN NULL;
-                    WHEN undefined_object THEN NULL;
-                END $$;
+                ALTER TABLE ${schemaName}.app_users DROP CONSTRAINT IF EXISTS app_users_email_key CASCADE;
+                DROP INDEX IF EXISTS ${schemaName}.app_users_email_key CASCADE;
+                DROP INDEX IF EXISTS ${schemaName}.app_users_email_idx CASCADE;
             `);
 
             // Create comprehensive indexes for performance and security

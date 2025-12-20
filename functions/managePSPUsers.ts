@@ -24,20 +24,10 @@ Deno.serve(async (req) => {
             try {
                 const schemaName = `psp_${psp_code.toLowerCase()}`;
 
-                // SAFETY: Ensure no unique constraints exist on email (multi-tenant requirement)
+                // SAFETY: Drop unique constraints before ANY insert (multi-tenant requirement)
                 await client.query(`
-                    DO $$ 
-                    BEGIN
-                        -- Drop any lingering unique constraints
-                        EXECUTE (
-                            SELECT 'ALTER TABLE ${schemaName}.app_users DROP CONSTRAINT IF EXISTS ' || conname || ' CASCADE'
-                            FROM pg_constraint 
-                            WHERE conrelid = '${schemaName}.app_users'::regclass 
-                            AND contype = 'u'
-                            AND conname LIKE '%email%'
-                        );
-                    EXCEPTION WHEN OTHERS THEN NULL;
-                    END $$;
+                    ALTER TABLE ${schemaName}.app_users DROP CONSTRAINT IF EXISTS app_users_email_key CASCADE;
+                    DROP INDEX IF EXISTS ${schemaName}.app_users_email_key CASCADE;
                 `);
 
                 // Hash password
