@@ -215,7 +215,7 @@ Deno.serve(async (req) => {
             try {
                 const schemaName = `psp_${psp_code.toLowerCase()}`;
                 
-                await client.query(`DELETE FROM ${schemaName}.app_users WHERE id = $1`, [user_id]);
+                await client.query(`DELETE FROM ${schemaName}.psp_staff_users WHERE id = $1`, [user_id]);
                 return Response.json({ success: true });
             } finally {
                 client.release();
