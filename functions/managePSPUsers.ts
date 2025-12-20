@@ -24,8 +24,21 @@ Deno.serve(async (req) => {
             try {
                 const schemaName = `psp_${psp_code.toLowerCase()}`;
 
-                // Schema should already exist from provisionPSPSchema
-                // Don't recreate table - just validate it exists
+                // SAFETY: Ensure no unique constraints exist on email (multi-tenant requirement)
+                await client.query(`
+                    DO $$ 
+                    BEGIN
+                        -- Drop any lingering unique constraints
+                        EXECUTE (
+                            SELECT 'ALTER TABLE ${schemaName}.app_users DROP CONSTRAINT IF EXISTS ' || conname || ' CASCADE'
+                            FROM pg_constraint 
+                            WHERE conrelid = '${schemaName}.app_users'::regclass 
+                            AND contype = 'u'
+                            AND conname LIKE '%email%'
+                        );
+                    EXCEPTION WHEN OTHERS THEN NULL;
+                    END $$;
+                `);
 
                 // Hash password
                 const password_hash = await bcrypt.hash(password || 'Welcome123!', 10);
