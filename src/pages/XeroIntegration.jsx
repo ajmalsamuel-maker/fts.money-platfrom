@@ -30,20 +30,25 @@ export default function XeroIntegration() {
     const [dateFrom, setDateFrom] = useState(format(subDays(new Date(), 30), 'yyyy-MM-dd'));
     const [dateTo, setDateTo] = useState(format(new Date(), 'yyyy-MM-dd'));
 
+    // Get PSP session for proper context
+    const staffSession = JSON.parse(localStorage.getItem('staff_session') || '{}');
+    const pspCode = staffSession.psp_code;
+
     const { data: xeroStatus, isLoading: statusLoading, error: statusError } = useQuery({
-        queryKey: ['xero-status'],
+        queryKey: ['xero-status', pspCode],
         queryFn: async () => {
             try {
                 const response = await base44.functions.invoke('xeroIntegration', {
                     action: 'get_status',
-                    psp_id: 'current'
+                    psp_code: pspCode
                 });
                 return response.data;
             } catch (error) {
                 console.error('Xero status error:', error);
                 return { connected: false };
             }
-        }
+        },
+        enabled: !!pspCode
     });
 
     const { data: transactions = [] } = useQuery({
@@ -52,11 +57,11 @@ export default function XeroIntegration() {
     });
 
     const { data: metrics, isLoading: metricsLoading, refetch: refetchMetrics } = useQuery({
-        queryKey: ['xero-metrics', dateFrom, dateTo],
+        queryKey: ['xero-metrics', pspCode, dateFrom, dateTo],
         queryFn: async () => {
             try {
                 const response = await base44.functions.invoke('xeroMetrics', {
-                    psp_id: 'current',
+                    psp_code: pspCode,
                     date_from: dateFrom,
                     date_to: dateTo
                 });
@@ -66,14 +71,14 @@ export default function XeroIntegration() {
                 return { success: false };
             }
         },
-        enabled: !!xeroStatus?.connected
+        enabled: !!xeroStatus?.connected && !!pspCode
     });
 
     const connectMutation = useMutation({
         mutationFn: async () => {
             const response = await base44.functions.invoke('xeroIntegration', {
                 action: 'get_auth_url',
-                psp_id: 'current'
+                psp_code: pspCode
             });
             window.location.href = response.data.auth_url;
         },
@@ -86,7 +91,7 @@ export default function XeroIntegration() {
         mutationFn: async () => {
             const response = await base44.functions.invoke('xeroIntegration', {
                 action: 'disconnect',
-                psp_id: 'current'
+                psp_code: pspCode
             });
             return response.data;
         },
@@ -100,7 +105,7 @@ export default function XeroIntegration() {
         mutationFn: async (transaction_ids) => {
             const response = await base44.functions.invoke('xeroIntegration', {
                 action: 'sync_transactions',
-                psp_id: 'current',
+                psp_code: pspCode,
                 transaction_ids
             });
             return response.data;
