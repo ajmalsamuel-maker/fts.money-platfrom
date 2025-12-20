@@ -161,8 +161,9 @@ Deno.serve(async (req) => {
                     created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 );
 
-                -- App Users Table (PSP staff) - NO UNIQUE CONSTRAINT (multi-tenant)
-                CREATE TABLE IF NOT EXISTS ${schemaName}.app_users (
+                -- App Users Table (PSP staff) - EXPLICITLY NO UNIQUE CONSTRAINT (multi-tenant support)
+                DROP TABLE IF EXISTS ${schemaName}.app_users CASCADE;
+                CREATE TABLE ${schemaName}.app_users (
                     id SERIAL PRIMARY KEY,
                     email VARCHAR(255) NOT NULL,
                     full_name VARCHAR(255),
