@@ -24,7 +24,8 @@ import {
     Package,
     GitBranch,
     Workflow,
-    Code
+    Code,
+    TestTube2
 } from 'lucide-react';
 
 const menuSections = [
@@ -94,6 +95,7 @@ const menuSections = [
     {
         title: 'Compliance & Security',
         items: [
+            { icon: TestTube2, label: 'Compliance Testing', path: 'FTSComplianceTesting', description: 'Multi-tenant validation & security audit' },
             { icon: Shield, label: 'LEI/vLEI Compliance', path: 'LEIComplianceDashboard', description: 'GLEIF credential tracking' },
             { icon: Shield, label: 'Compliance', path: 'FTSCompliance', description: 'Policy templates' },
             { icon: GitBranch, label: 'Workflow Management', path: 'WorkflowManagement', description: 'ISO standards compliance' },
