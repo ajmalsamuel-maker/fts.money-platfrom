@@ -26,23 +26,34 @@ Deno.serve(async (req) => {
 
                 await client.query(`CREATE SCHEMA IF NOT EXISTS ${schemaName}`);
 
-                await client.query(`
-                    CREATE TABLE IF NOT EXISTS ${schemaName}.app_users (
-                        id SERIAL PRIMARY KEY,
-                        email VARCHAR(255) NOT NULL,
-                        full_name VARCHAR(255),
-                        role VARCHAR(50) DEFAULT 'user',
-                        password_hash TEXT,
-                        status VARCHAR(50) DEFAULT 'active',
-                        two_factor_enabled BOOLEAN DEFAULT FALSE,
-                        last_login TIMESTAMP,
-                        created_at TIMESTAMP DEFAULT NOW(),
-                        updated_at TIMESTAMP DEFAULT NOW()
+                // Check if table exists
+                const tableExists = await client.query(`
+                    SELECT EXISTS (
+                        SELECT FROM information_schema.tables 
+                        WHERE table_schema = $1 AND table_name = 'app_users'
                     )
-                `);
+                `, [schemaName]);
 
-                // CRITICAL: Aggressively remove ALL email constraints/indexes
-                const cleanupResult = await client.query(`
+                if (!tableExists.rows[0].exists) {
+                    // Create table WITHOUT any unique constraints
+                    await client.query(`
+                        CREATE TABLE ${schemaName}.app_users (
+                            id SERIAL PRIMARY KEY,
+                            email VARCHAR(255) NOT NULL,
+                            full_name VARCHAR(255),
+                            role VARCHAR(50) DEFAULT 'user',
+                            password_hash TEXT,
+                            status VARCHAR(50) DEFAULT 'active',
+                            two_factor_enabled BOOLEAN DEFAULT FALSE,
+                            last_login TIMESTAMP,
+                            created_at TIMESTAMP DEFAULT NOW(),
+                            updated_at TIMESTAMP DEFAULT NOW()
+                        )
+                    `);
+                }
+
+                // CRITICAL: Remove ALL email constraints/indexes every time
+                await client.query(`
                     DO $$ 
                     DECLARE
                         r RECORD;
@@ -53,7 +64,6 @@ Deno.serve(async (req) => {
                             WHERE conrelid = '${schemaName}.app_users'::regclass AND contype = 'u'
                         LOOP
                             EXECUTE format('ALTER TABLE ${schemaName}.app_users DROP CONSTRAINT IF EXISTS %I CASCADE', r.conname);
-                            RAISE NOTICE 'Dropped constraint: %', r.conname;
                         END LOOP;
 
                         -- Drop unique indexes
@@ -65,7 +75,6 @@ Deno.serve(async (req) => {
                             AND indexname != 'app_users_pkey'
                         LOOP
                             EXECUTE format('DROP INDEX IF EXISTS ${schemaName}.%I CASCADE', r.indexname);
-                            RAISE NOTICE 'Dropped index: %', r.indexname;
                         END LOOP;
                     END $$;
                 `);
