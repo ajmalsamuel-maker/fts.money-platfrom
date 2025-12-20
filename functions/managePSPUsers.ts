@@ -267,9 +267,12 @@ Deno.serve(async (req) => {
         }, { status: 400 });
 
     } catch (error) {
+        console.error('managePSPUsers error:', error);
+        console.error('Error stack:', error.stack);
         return Response.json({
             success: false,
-            error: error.message
+            error: error.message,
+            stack: error.stack
         }, { status: 500 });
     }
 });
