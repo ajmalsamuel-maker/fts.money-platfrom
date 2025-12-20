@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
+import ComplianceFooter from '@/components/community/ComplianceFooter';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -746,6 +747,8 @@ export default function PSPInstanceConfig() {
                     </TabsContent>
                 </Tabs>
             </div>
+            
+            <ComplianceFooter />
         </div>
     );
 }

@@ -4,6 +4,7 @@ import { createPageUrl } from '@/utils';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import CommunityPortalSidebar from '@/components/community/CommunityPortalSidebar';
+import ComplianceFooter from '@/components/community/ComplianceFooter';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -179,6 +180,8 @@ export default function MyPSPInstances() {
                         </div>
                     )}
                 </div>
+                
+                <ComplianceFooter />
             </div>
         </div>
     );
