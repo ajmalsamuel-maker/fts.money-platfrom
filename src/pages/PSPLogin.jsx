@@ -122,7 +122,7 @@ export default function PSPLogin() {
                             value={pspCode}
                             onChange={(e) => setPspCode(e.target.value.toUpperCase())}
                             style={{ width: '100%', padding: '0.5rem', border: '1px solid #cbd5e1', borderRadius: '4px', marginBottom: '1rem' }}
-                            placeholder="NETXHUB"
+                            placeholder="YOUR PSP CODE"
                             required
                         />
                         <button type="submit" disabled={loading} style={{ width: '100%', padding: '0.75rem', background: '#2563eb', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
