@@ -44,40 +44,60 @@ Deno.serve(async (req) => {
                     )
                 `);
 
-                // CRITICAL: Drop ALL unique constraints/indexes (multi-tenant isolation)
-                await client.query(`
-                    DO $$ 
-                    DECLARE
-                        constraint_rec RECORD;
-                        index_rec RECORD;
-                    BEGIN
-                        -- Drop all unique constraints
-                        FOR constraint_rec IN 
-                            SELECT conname 
-                            FROM pg_constraint 
-                            WHERE conrelid = '${schemaName}.app_users'::regclass 
-                            AND contype = 'u'
-                        LOOP
-                            EXECUTE format('ALTER TABLE ${schemaName}.app_users DROP CONSTRAINT IF EXISTS %I CASCADE', constraint_rec.conname);
-                        END LOOP;
-                        
-                        -- Drop all unique indexes
-                        FOR index_rec IN
-                            SELECT indexname
-                            FROM pg_indexes
-                            WHERE schemaname = '${schemaName}' 
-                            AND tablename = 'app_users'
-                            AND indexdef ILIKE '%UNIQUE%'
-                        LOOP
-                            EXECUTE format('DROP INDEX IF EXISTS ${schemaName}.%I CASCADE', index_rec.indexname);
-                        END LOOP;
-                    EXCEPTION
-                        WHEN undefined_table THEN NULL;
-                        WHEN undefined_object THEN NULL;
-                    END $$;
-                `);
+                // AGGRESSIVE cleanup - drop constraints by name directly
+                const constraintsToDrop = [
+                    'app_users_email_key',
+                    `${schemaName}_app_users_email_key`,
+                    'app_users_email_unique'
+                ];
 
-                // Create non-unique index for query performance
+                for (const constraintName of constraintsToDrop) {
+                    try {
+                        await client.query(`
+                            ALTER TABLE ${schemaName}.app_users 
+                            DROP CONSTRAINT IF EXISTS ${constraintName} CASCADE
+                        `);
+                    } catch (e) {
+                        // Constraint doesn't exist, that's fine
+                    }
+                }
+
+                // Drop any remaining unique constraints
+                try {
+                    await client.query(`
+                        DO $$ 
+                        DECLARE
+                            constraint_rec RECORD;
+                            index_rec RECORD;
+                        BEGIN
+                            FOR constraint_rec IN 
+                                SELECT conname 
+                                FROM pg_constraint 
+                                WHERE conrelid = '${schemaName}.app_users'::regclass 
+                                AND contype = 'u'
+                            LOOP
+                                EXECUTE format('ALTER TABLE ${schemaName}.app_users DROP CONSTRAINT IF EXISTS %I CASCADE', constraint_rec.conname);
+                            END LOOP;
+                            
+                            FOR index_rec IN
+                                SELECT indexname
+                                FROM pg_indexes
+                                WHERE schemaname = '${schemaName}' 
+                                AND tablename = 'app_users'
+                                AND indexdef ILIKE '%UNIQUE%'
+                                AND indexname != 'app_users_pkey'
+                            LOOP
+                                EXECUTE format('DROP INDEX IF EXISTS ${schemaName}.%I CASCADE', index_rec.indexname);
+                            END LOOP;
+                        EXCEPTION
+                            WHEN OTHERS THEN NULL;
+                        END $$;
+                    `);
+                } catch (e) {
+                    console.log('Constraint cleanup:', e.message);
+                }
+
+                // Create non-unique index for performance
                 await client.query(`
                     CREATE INDEX IF NOT EXISTS idx_app_users_email_nonunique 
                     ON ${schemaName}.app_users(email)
