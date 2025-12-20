@@ -27,9 +27,10 @@ Deno.serve(async (req) => {
 
             const data = await response.json();
             const leiData = data.data.attributes;
+            const entity = leiData.entity;
 
             // Check if LEI is active
-            const isActive = leiData.entity.status === 'ACTIVE';
+            const isActive = entity.status === 'ACTIVE';
             const expiryDate = new Date(leiData.registration.nextRenewalDate);
             const daysUntilExpiry = Math.floor((expiryDate - new Date()) / (1000 * 60 * 60 * 24));
 
@@ -37,7 +38,7 @@ Deno.serve(async (req) => {
             const credential = await base44.asServiceRole.entities.LEICredential.create({
                 entity_type,
                 entity_id,
-                entity_name: leiData.entity.legalName.name,
+                entity_name: entity.legalName?.name || 'Unknown',
                 lei,
                 lei_status: isActive ? 'active' : 'lapsed',
                 verification_method: 'gleif_api',
@@ -45,12 +46,13 @@ Deno.serve(async (req) => {
                 expiry_date: leiData.registration.nextRenewalDate,
                 last_verified: new Date().toISOString(),
                 gleif_data: {
-                    legal_name: leiData.entity.legalName.name,
-                    legal_address: leiData.entity.legalAddress,
-                    registration_authority: leiData.entity.registeredAs,
-                    jurisdiction: leiData.entity.jurisdiction,
-                    category: leiData.entity.category,
-                    status: leiData.entity.status
+                    legal_name: entity.legalName?.name || 'Unknown',
+                    legal_address: entity.legalAddress,
+                    registration_authority: typeof entity.registeredAs === 'string' ? entity.registeredAs : (entity.registeredAs?.id || 'N/A'),
+                    registration_number: typeof entity.registeredAt === 'string' ? entity.registeredAt : (entity.registeredAt?.id || 'N/A'),
+                    jurisdiction: entity.jurisdiction || 'N/A',
+                    category: entity.category || 'N/A',
+                    status: entity.status || 'ACTIVE'
                 },
                 compliance_status: {
                     lei_compliant: isActive && daysUntilExpiry > 30,
