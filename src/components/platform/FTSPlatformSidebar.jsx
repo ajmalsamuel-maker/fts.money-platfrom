@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import React from 'react';
 import { 
     Building2, 
     BarChart3, 
@@ -32,84 +33,81 @@ const menuSections = [
     {
         title: 'Dashboard',
         items: [
-            { icon: Activity, label: 'Home', path: 'FTSMoneyPlatform', description: 'Quick Actions' }
+            { icon: Activity, label: 'Home', path: 'FTSMoneyPlatform', description: 'Quick actions', priority: true }
         ]
     },
     {
-        title: 'Core Management',
+        title: 'PSP Operations',
         items: [
-            { icon: Building2, label: 'Tenants', path: 'TenantManagement', description: 'Multi-tenancy', superAdminOnly: true },
-            { icon: Building2, label: 'PSP Instances', path: 'PSPProvisioning', description: 'Manage PSPs' },
-            { icon: Activity, label: 'Provisioning Queue', path: 'FTSProvisioningQueue', description: 'Deploy PSPs' },
-            { icon: Users, label: 'Platform Users', path: 'PlatformUserManagement', description: 'Admin users' },
-            { icon: Users, label: 'PSP Users', path: 'PSPUserManagement', description: 'PSP access' },
-            { icon: Users, label: 'Clients', path: 'FTSClients', description: 'Client accounts' },
-            { icon: Settings, label: 'Platform Settings', path: 'FTSSettings', description: 'Configuration' }
+            { icon: Building2, label: 'PSP Instances', path: 'PSPProvisioning', description: 'Manage all PSPs', priority: true },
+            { icon: Activity, label: 'Provisioning Queue', path: 'FTSProvisioningQueue', description: 'Deploy & monitor' },
+            { icon: Users, label: 'Client Accounts', path: 'FTSClients', description: 'Client management' }
         ]
     },
     {
-        title: 'Analytics & Reporting',
+        title: 'Users & Access',
         items: [
-            { icon: BarChart3, label: 'Analytics', path: 'FTSAnalytics', description: 'Cross-PSP metrics' },
-            { icon: FileText, label: 'Reports', path: 'FTSReporting', description: 'Advanced reporting' },
-            { icon: DollarSign, label: 'Revenue', path: 'FTSRevenue', description: 'Billing & revenue' }
-        ]
-    },
-    {
-        title: 'PSP Empowerment',
-        items: [
-            { icon: Package, label: 'Product Template Library', path: 'ProductTemplateLibrary', description: 'Platform product templates' },
-            { icon: Workflow, label: 'Workflow Templates', path: 'WorkflowTemplateLibrary', description: 'Platform workflow templates' },
-            { icon: DollarSign, label: 'Merchant Pricing Engine', path: 'MerchantPricingEngine', description: 'Dynamic pricing for merchants' }
-        ]
-    },
-    {
-        title: 'Marketplace & Services',
-        items: [
-            { icon: Package, label: 'Service Catalog', path: 'FTSServiceManager', description: 'NetXHub services' },
-            { icon: Users, label: 'Service Providers', path: 'FTSServiceProviders', description: '3rd party providers' },
-            { icon: Package, label: 'Product Catalog', path: 'CommunityProductCatalog', description: 'Community products' },
-            { icon: Database, label: 'Provider Pool', path: 'FTSProviderPool', description: 'Payment providers' },
-            { icon: Wallet, label: 'Payout Routes', path: 'FTSPayoutRoutes', description: 'Payout methods' }
-        ]
-    },
-    {
-        title: 'Infrastructure',
-        items: [
-            { icon: Activity, label: 'Resource Orchestration', path: 'ResourceOrchestration', description: 'Capacity & auto-scaling' },
-            { icon: Zap, label: 'API Gateway', path: 'APIGatewayConfiguration', description: 'Kong + Orchestration' },
-            { icon: Globe, label: 'Domain & SSL', path: 'FTSDomainManagement', description: 'Domains & certificates' },
-            { icon: Globe, label: 'Blockchain', path: 'FTSBlockchainIntegration', description: 'Crypto rails & ISO' },
-            { icon: CreditCard, label: 'Open Banking', path: 'OpenBankingConfiguration', description: 'TrueLayer, Tink, Brankas' },
-            { icon: Database, label: 'Financial Registries', path: 'FTSFinancialRegistries', description: 'BIN, IBAN, BIC/SWIFT' }
+            { icon: Users, label: 'Platform Team', path: 'PlatformUserManagement', description: 'FTS administrators' },
+            { icon: Users, label: 'PSP Administrators', path: 'PSPUserManagement', description: 'PSP owners & staff' },
+            { icon: Building2, label: 'Tenants', path: 'TenantManagement', description: 'Multi-tenancy control', superAdminOnly: true }
         ]
     },
     {
         title: 'Financial Management',
         items: [
-            { icon: DollarSign, label: 'Platform Pricing', path: 'PlatformPricingConfiguration', description: 'PSP tier pricing config' },
-            { icon: DollarSign, label: 'Master Pricing', path: 'MasterPricingManagement', description: 'Comprehensive pricing & fee control' },
-            { icon: DollarSign, label: 'Xero Integration', path: 'XeroIntegration', description: 'Accounting sync' }
+            { icon: DollarSign, label: 'Master Pricing', path: 'MasterPricingManagement', description: 'All pricing control', priority: true },
+            { icon: BarChart3, label: 'Revenue Dashboard', path: 'FTSRevenue', description: 'Analytics & billing' },
+            { icon: DollarSign, label: 'Platform Pricing', path: 'PlatformPricingConfiguration', description: 'PSP tier pricing' },
+            { icon: DollarSign, label: 'Merchant Pricing Engine', path: 'MerchantPricingEngine', description: 'Dynamic merchant pricing' },
+            { icon: Zap, label: 'Accounting Integration', path: 'XeroIntegration', description: 'Xero sync' }
+        ]
+    },
+    {
+        title: 'Marketplace',
+        items: [
+            { icon: Database, label: 'Payment Providers', path: 'FTSProviderPool', description: 'Provider pool' },
+            { icon: Wallet, label: 'Payout Routes', path: 'FTSPayoutRoutes', description: 'Payout methods' },
+            { icon: Package, label: 'Available Services', path: 'FTSServiceManager', description: 'Service catalog' },
+            { icon: Users, label: 'Service Providers', path: 'FTSServiceProviders', description: '3rd party vendors' },
+            { icon: Package, label: 'Product Templates', path: 'ProductTemplateLibrary', description: 'Template library' },
+            { icon: Workflow, label: 'Workflow Templates', path: 'WorkflowTemplateLibrary', description: 'Workflow library' },
+            { icon: Package, label: 'Community Products', path: 'CommunityProductCatalog', description: 'Community catalog' }
+        ]
+    },
+    {
+        title: 'Infrastructure',
+        items: [
+            { icon: Activity, label: 'Resource Management', path: 'ResourceOrchestration', description: 'Capacity & auto-scaling' },
+            { icon: Zap, label: 'API Gateway', path: 'APIGatewayConfiguration', description: 'Configuration & monitoring' },
+            { icon: Globe, label: 'Domain Management', path: 'FTSDomainManagement', description: 'SSL & DNS' },
+            { icon: Globe, label: 'Integrations Hub', path: 'FTSBlockchainIntegration', description: 'Blockchain, Open Banking, Registries' }
+        ]
+    },
+    {
+        title: 'Analytics & Reports',
+        items: [
+            { icon: BarChart3, label: 'Platform Analytics', path: 'FTSAnalytics', description: 'Cross-PSP insights' },
+            { icon: FileText, label: 'Custom Reports', path: 'FTSReporting', description: 'Report builder' }
         ]
     },
     {
         title: 'Compliance & Security',
         items: [
-            { icon: TestTube2, label: 'Compliance Testing', path: 'FTSComplianceTesting', description: 'Multi-tenant validation & security audit' },
-            { icon: Shield, label: 'LEI/vLEI Compliance', path: 'LEIComplianceDashboard', description: 'GLEIF credential tracking' },
-            { icon: Shield, label: 'Compliance', path: 'FTSCompliance', description: 'Policy templates' },
-            { icon: GitBranch, label: 'Workflow Management', path: 'WorkflowManagement', description: 'ISO standards compliance' },
-            { icon: FileText, label: 'Audit Logs', path: 'PlatformAuditLogs', description: 'Activity tracking' },
-            { icon: Activity, label: 'Enhanced Audit Logs', path: 'EnhancedAuditLogs', description: 'AI anomaly detection' },
-            { icon: Database, label: 'Data Retention', path: 'DataRetentionManagement', description: 'Automated cleanup' }
+            { icon: Shield, label: 'LEI/vLEI Management', path: 'LEIComplianceDashboard', description: 'Credential tracking', priority: true },
+            { icon: TestTube2, label: 'Testing & Validation', path: 'FTSComplianceTesting', description: 'Compliance tests' },
+            { icon: FileText, label: 'Audit Trail', path: 'EnhancedAuditLogs', description: 'All logs & AI detection' },
+            { icon: Shield, label: 'Policy Templates', path: 'FTSCompliance', description: 'Compliance policies' },
+            { icon: GitBranch, label: 'ISO Workflows', path: 'WorkflowManagement', description: 'ISO compliance processes' },
+            { icon: Database, label: 'Data Retention', path: 'DataRetentionManagement', description: 'GDPR & cleanup' }
         ]
     },
     {
-        title: 'System',
+        title: 'Settings',
+        collapsed: true,
         items: [
-            { icon: Code, label: 'Module Catalog Test', path: 'ModuleCatalogTest', description: 'Test dependencies & menus' },
-            { icon: BookOpen, label: 'Architecture Docs', path: 'FTSArchitectureDoc', description: 'System blueprint' },
-            { icon: BookOpen, label: 'Implementation Roadmap', path: 'PSPEmpowermentRoadmap', description: 'Feature development plan' }
+            { icon: Settings, label: 'Platform Configuration', path: 'FTSSettings', description: 'System settings' },
+            { icon: BookOpen, label: 'Documentation', path: 'FTSArchitectureDoc', description: 'Architecture & roadmap' },
+            { icon: Code, label: 'Advanced Tools', path: 'ModuleCatalogTest', description: 'Module testing' }
         ]
     }
 ];
@@ -144,39 +142,57 @@ export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, i
             {/* Menu */}
             <nav className="flex-1 overflow-y-auto p-3">
                 <div className="space-y-5">
-                    {menuSections.map((section) => (
-                        <div key={section.title}>
-                            <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider px-3 mb-2">
-                                {section.title}
-                            </h3>
-                            <div className="space-y-1">
-                                {section.items.filter(item => !item.superAdminOnly || isSuperAdmin).map((item) => {
-                                    const Icon = item.icon;
-                                    const isActive = currentPage === item.path;
-                                    return (
-                                        <Link
-                                            key={item.path}
-                                            to={createPageUrl(item.path)}
-                                            className={cn(
-                                                "flex items-center gap-3 px-3 py-2 rounded-lg transition-all group",
-                                                isActive
-                                                    ? "bg-blue-50 text-blue-700"
-                                                    : "text-slate-700 hover:bg-slate-50"
-                                            )}
+                    {menuSections.map((section) => {
+                        const [isCollapsed, setIsCollapsed] = React.useState(section.collapsed || false);
+
+                        return (
+                            <div key={section.title}>
+                                <div className="flex items-center justify-between px-3 mb-2">
+                                    <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                        {section.title}
+                                    </h3>
+                                    {section.collapsed !== undefined && (
+                                        <button
+                                            onClick={() => setIsCollapsed(!isCollapsed)}
+                                            className="text-slate-400 hover:text-slate-600"
                                         >
-                                            <Icon className="h-4 w-4 flex-shrink-0" />
-                                            <div className="flex-1 min-w-0">
-                                                <div className="flex items-center gap-2">
-                                                    <span className="text-sm font-medium truncate" title={item.path}>{item.label}</span>
-                                                </div>
-                                                <p className="text-xs text-slate-500 truncate">{item.description}</p>
-                                            </div>
-                                        </Link>
-                                    );
-                                })}
+                                            {isCollapsed ? '▶' : '▼'}
+                                        </button>
+                                    )}
+                                </div>
+                                {!isCollapsed && (
+                                    <div className="space-y-1">
+                                        {section.items.filter(item => !item.superAdminOnly || isSuperAdmin).map((item) => {
+                                            const Icon = item.icon;
+                                            const isActive = currentPage === item.path;
+                                            return (
+                                                <Link
+                                                    key={item.path}
+                                                    to={createPageUrl(item.path)}
+                                                    className={cn(
+                                                        "flex items-center gap-3 px-3 py-2 rounded-lg transition-all group",
+                                                        isActive
+                                                            ? "bg-blue-50 text-blue-700"
+                                                            : "text-slate-700 hover:bg-slate-50"
+                                                    )}
+                                                >
+                                                    <Icon className="h-4 w-4 flex-shrink-0" />
+                                                    <div className="flex-1 min-w-0">
+                                                        <div className="flex items-center gap-2">
+                                                            <span className="text-sm font-medium truncate">{item.label}</span>
+                                                            {item.priority && <span className="text-xs">⭐</span>}
+                                                            {item.superAdminOnly && <Badge className="text-[9px] px-1 py-0 bg-red-100 text-red-700 border-red-300">ADMIN</Badge>}
+                                                        </div>
+                                                        <p className="text-xs text-slate-500 truncate">{item.description}</p>
+                                                    </div>
+                                                </Link>
+                                            );
+                                        })}
+                                    </div>
+                                )}
                             </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
             </nav>
 
