@@ -33,17 +33,17 @@ Deno.serve(async (req) => {
                     });
                 }
                 
-                // Check if app_users table exists
+                // Check if psp_staff_users table exists
                 const tableCheck = await client.query(`
                     SELECT table_name 
                     FROM information_schema.tables 
-                    WHERE table_schema = $1 AND table_name = 'app_users'
+                    WHERE table_schema = $1 AND table_name = 'psp_staff_users'
                 `, [schemaName]);
                 
                 if (tableCheck.rows.length === 0) {
                     return Response.json({
                         success: false,
-                        error: 'app_users table not found in schema',
+                        error: 'psp_staff_users table not found in schema',
                         action: 'Schema exists but tables not created properly'
                     });
                 }
@@ -90,18 +90,18 @@ Deno.serve(async (req) => {
 
                     const actualSchema = schemaSearch.rows[0].schema_name;
 
-                    // Check if app_users table exists
+                    // Check if psp_staff_users table exists
                     const tableCheck = await client.query(`
                         SELECT EXISTS (
                             SELECT FROM information_schema.tables 
-                            WHERE table_schema = $1 AND table_name = 'app_users'
+                            WHERE table_schema = $1 AND table_name = 'psp_staff_users'
                         )
                     `, [actualSchema]);
 
                     if (!tableCheck.rows[0].exists) {
                         return Response.json({
                             success: false,
-                            error: 'app_users table not found',
+                            error: 'psp_staff_users table not found',
                             action: 'Click Execute to create admin user'
                         });
                     }
@@ -109,7 +109,7 @@ Deno.serve(async (req) => {
                     // Check for ANY user with admin role
                     const userCheck = await client.query(`
                         SELECT email, role, status
-                        FROM ${actualSchema}.app_users 
+                        FROM ${actualSchema}.psp_staff_users 
                         WHERE role = 'admin'
                         LIMIT 1
                     `);
@@ -117,7 +117,7 @@ Deno.serve(async (req) => {
                     if (userCheck.rows.length === 0) {
                         // Also check if there are ANY users at all
                         const anyUserCheck = await client.query(`
-                            SELECT COUNT(*) as count FROM ${actualSchema}.app_users
+                            SELECT COUNT(*) as count FROM ${actualSchema}.psp_staff_users
                         `);
 
                         return Response.json({
