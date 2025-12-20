@@ -42,7 +42,8 @@ const menuSections = [
             { icon: Activity, label: 'Provisioning Queue', path: 'FTSProvisioningQueue', description: 'Deploy PSPs' },
             { icon: Users, label: 'Platform Users', path: 'PlatformUserManagement', description: 'Admin users' },
             { icon: Users, label: 'PSP Users', path: 'PSPUserManagement', description: 'PSP access' },
-            { icon: Users, label: 'Clients', path: 'FTSClients', description: 'Client accounts' }
+            { icon: Users, label: 'Clients', path: 'FTSClients', description: 'Client accounts' },
+            { icon: Settings, label: 'Platform Settings', path: 'FTSSettings', description: 'Configuration' }
         ]
     },
     {
@@ -104,7 +105,6 @@ const menuSections = [
     {
         title: 'System',
         items: [
-            { icon: Settings, label: 'Platform Settings', path: 'FTSSettings', description: 'Configuration' },
             { icon: Code, label: 'Module Catalog Test', path: 'ModuleCatalogTest', description: 'Test dependencies & menus' },
             { icon: BookOpen, label: 'Architecture Docs', path: 'FTSArchitectureDoc', description: 'System blueprint' },
             { icon: BookOpen, label: 'Implementation Roadmap', path: 'PSPEmpowermentRoadmap', description: 'Feature development plan' }
