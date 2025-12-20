@@ -159,6 +159,14 @@ const menuItems = [
                 ]
             },
             {
+                group: 'wholesale',
+                icon: Building2,
+                items: [
+                    { icon: Building2, label: 'wholesaleBrowse', path: 'PSPWholesaleBrowse', permission: 'VIEW_DASHBOARD' },
+                    { icon: Store, label: 'myOfferings', path: 'MyWholesaleOfferings', permission: 'VIEW_DASHBOARD' },
+                ]
+            },
+            {
                 group: 'riskCompliance',
                 icon: Shield,
                 items: [
