@@ -13,6 +13,7 @@ const pool = new Pool({
 
 Deno.serve(async (req) => {
     try {
+        // FORCE CACHE CLEAR - v3
         const { action, email, full_name, role, psp_code, password, user_id, status, two_factor_enabled } = await req.json();
 
         if (action === 'create') {
