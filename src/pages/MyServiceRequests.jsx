@@ -4,6 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import CommunityPortalSidebar from '@/components/community/CommunityPortalSidebar';
+import ComplianceFooter from '@/components/community/ComplianceFooter';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -33,7 +34,7 @@ const statusConfig = {
 export default function MyServiceRequests() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
-    const session = JSON.parse(localStorage.getItem('communitySession') || '{}');
+    const session = JSON.parse(localStorage.getItem('community_portal_session') || '{}');
     
     const [dialogOpen, setDialogOpen] = useState(false);
     const [selectedService, setSelectedService] = useState(null);
@@ -51,7 +52,7 @@ export default function MyServiceRequests() {
     const { data: myPSPs = [], isLoading: loadingPSPs } = useQuery({
         queryKey: ['my-psps', session.email],
         queryFn: async () => {
-            const psps = await base44.entities.ProvisionedPSP.filter({ created_by: session.email });
+            const psps = await base44.entities.ProvisionedPSP.filter({ owner_email: session.email });
             console.log('My PSPs:', psps);
             return psps;
         }
@@ -319,6 +320,8 @@ export default function MyServiceRequests() {
                         </TabsContent>
                     </Tabs>
                 </div>
+                
+                <ComplianceFooter />
             </div>
 
             {/* Request Dialog */}
