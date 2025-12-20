@@ -28,7 +28,10 @@ import {
     Wallet,
     Trash2,
     Star,
-    Package
+    Package,
+    Cpu,
+    HardDrive,
+    Cloud
 } from 'lucide-react';
 
 const quickActions = [
@@ -59,6 +62,17 @@ export default function FTSMoneyPlatform() {
         queryKey: ['payout-routes'],
         queryFn: () => base44.entities.PayoutRoute.list()
     });
+
+    const { data: cloudConnectors = [] } = useQuery({
+        queryKey: ['cloud-connectors'],
+        queryFn: () => base44.entities.CloudConnector.list()
+    });
+
+    const { data: transactions = [] } = useQuery({
+        queryKey: ['recent-transactions'],
+        queryFn: () => base44.entities.Transaction.list('-created_date', 1000),
+        refetchInterval: 5000 // Refresh every 5 seconds for TPS
+    });
     
     if (loading) {
         return <div className="flex items-center justify-center h-screen">Loading...</div>;
@@ -68,6 +82,24 @@ export default function FTSMoneyPlatform() {
     const totalRevenue = psps.reduce((sum, p) => sum + (Number(p.monthly_revenue) || 0), 0);
     const totalMerchants = psps.reduce((sum, p) => sum + (Number(p.total_merchants) || 0), 0);
     const activePSPs = psps.filter(p => p.status === 'active').length;
+
+    // Calculate TPS from recent transactions (last 5 minutes)
+    const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+    const recentTxns = transactions.filter(t => new Date(t.created_date) > fiveMinutesAgo);
+    const tps = (recentTxns.length / 300).toFixed(2); // 300 seconds = 5 minutes
+
+    // Cloud resource aggregation
+    const cloudStats = cloudConnectors.reduce((acc, connector) => {
+        if (connector.status === 'active') {
+            acc.activeRegions.add(connector.region || 'Unknown');
+            acc.providers.add(connector.provider_name || 'Unknown');
+            acc.totalInstances += connector.active_instances || 0;
+            acc.totalCPU += connector.cpu_allocated || 0;
+            acc.totalMemory += connector.memory_allocated_gb || 0;
+            acc.totalStorage += connector.storage_allocated_gb || 0;
+        }
+        return acc;
+    }, { activeRegions: new Set(), providers: new Set(), totalInstances: 0, totalCPU: 0, totalMemory: 0, totalStorage: 0 });
 
     return (
         <div className="flex h-screen bg-slate-50">
@@ -122,6 +154,57 @@ export default function FTSMoneyPlatform() {
                                     </button>
                                 );
                             })}
+                        </div>
+                    </div>
+
+                    {/* Platform Performance Metrics */}
+                    <div className="mb-6">
+                        <h3 className="text-sm font-semibold text-slate-900 mb-3">Platform Performance & Resources</h3>
+                        <div className="grid grid-cols-4 gap-4">
+                            <Card className="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white">
+                                <CardContent className="p-6">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <Activity className="h-8 w-8 opacity-80" />
+                                        <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+                                    </div>
+                                    <p className="text-xs text-emerald-100 mb-1">Platform TPS</p>
+                                    <p className="text-3xl font-bold">{tps}</p>
+                                    <p className="text-xs text-emerald-100 mt-2">Transactions/sec (live)</p>
+                                </CardContent>
+                            </Card>
+
+                            <Card className="bg-gradient-to-br from-blue-500 to-blue-600 text-white">
+                                <CardContent className="p-6">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <Cloud className="h-8 w-8 opacity-80" />
+                                    </div>
+                                    <p className="text-xs text-blue-100 mb-1">Cloud Instances</p>
+                                    <p className="text-3xl font-bold">{cloudStats.totalInstances}</p>
+                                    <p className="text-xs text-blue-100 mt-2">{cloudStats.activeRegions.size} regions • {cloudStats.providers.size} providers</p>
+                                </CardContent>
+                            </Card>
+
+                            <Card className="bg-gradient-to-br from-purple-500 to-purple-600 text-white">
+                                <CardContent className="p-6">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <Cpu className="h-8 w-8 opacity-80" />
+                                    </div>
+                                    <p className="text-xs text-purple-100 mb-1">CPU Cores</p>
+                                    <p className="text-3xl font-bold">{cloudStats.totalCPU}</p>
+                                    <p className="text-xs text-purple-100 mt-2">{cloudStats.totalMemory} GB RAM</p>
+                                </CardContent>
+                            </Card>
+
+                            <Card className="bg-gradient-to-br from-amber-500 to-amber-600 text-white">
+                                <CardContent className="p-6">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <HardDrive className="h-8 w-8 opacity-80" />
+                                    </div>
+                                    <p className="text-xs text-amber-100 mb-1">Storage</p>
+                                    <p className="text-3xl font-bold">{(cloudStats.totalStorage / 1024).toFixed(1)}</p>
+                                    <p className="text-xs text-amber-100 mt-2">TB allocated</p>
+                                </CardContent>
+                            </Card>
                         </div>
                     </div>
 
