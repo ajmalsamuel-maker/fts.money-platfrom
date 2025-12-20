@@ -17,7 +17,6 @@ Deno.serve(async (req) => {
                 views: [],
                 constraints: [],
                 triggers: [],
-                functions: [],
                 indexes: []
             };
 
@@ -61,10 +60,6 @@ Deno.serve(async (req) => {
             `);
             results.triggers = triggers.rows;
 
-            // Check for functions/procedures referencing app_users (skip for now due to aggregate issue)
-            results.functions = [];
-            results.functions = functions.rows;
-
             // Check for indexes
             const indexes = await client.query(`
                 SELECT 
@@ -86,7 +81,6 @@ Deno.serve(async (req) => {
                     views_found: results.views.length,
                     constraints_found: results.constraints.length,
                     triggers_found: results.triggers.length,
-                    functions_found: results.functions.length,
                     indexes_found: results.indexes.length
                 }
             });
