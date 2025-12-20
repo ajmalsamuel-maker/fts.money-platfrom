@@ -73,23 +73,27 @@ Deno.serve(async (req) => {
         const signature = await signTransactionPayload(signaturePayload, pspCred);
 
         // Create signed audit log
-        await base44.functions.invoke('signedAuditLogger', {
-            actor_lei: pspCred.lei,
-            actor_email: 'system',
-            actor_name: pspCred.entity_name,
-            actor_role: 'psp',
-            action: 'transaction_signed',
-            action_category: 'transaction',
-            target_entity_type: 'Transaction',
-            target_entity_id: transaction_id,
-            target_lei: merchantCred?.lei,
-            metadata: {
-                amount,
-                currency,
-                credential_chain: credentialChain,
-                signature_algorithm: signature.algorithm
-            }
-        });
+        try {
+            await base44.asServiceRole.functions.invoke('signedAuditLogger', {
+                actor_lei: pspCred.lei,
+                actor_email: 'system',
+                actor_name: pspCred.entity_name,
+                actor_role: 'psp',
+                action: 'transaction_signed',
+                action_category: 'transaction',
+                target_entity_type: 'Transaction',
+                target_entity_id: transaction_id,
+                target_lei: merchantCred?.lei,
+                metadata: {
+                    amount,
+                    currency,
+                    credential_chain: credentialChain,
+                    signature_algorithm: signature.algorithm
+                }
+            });
+        } catch (auditError) {
+            console.warn('Audit logging failed:', auditError.message);
+        }
 
         return Response.json({
             success: true,

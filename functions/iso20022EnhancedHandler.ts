@@ -90,23 +90,29 @@ Deno.serve(async (req) => {
                 }
             };
 
-            // Log message generation
-            await base44.functions.invoke('signedAuditLogger', {
-                actor_lei: pspLEI,
-                actor_email: 'system',
-                actor_name: pspCreds?.[0]?.entity_name || 'Unknown PSP',
-                actor_role: 'psp',
-                action: 'iso20022_message_generated',
-                action_category: 'transaction',
-                target_entity_type: 'Transaction',
-                target_entity_id: transaction_id,
-                metadata: {
-                    message_type: 'pacs.008',
-                    includes_lei: true,
-                    psp_lei: pspLEI,
-                    merchant_lei: merchantLEI
+            // Log message generation (only if PSP has LEI)
+            if (pspLEI) {
+                try {
+                    await base44.asServiceRole.functions.invoke('signedAuditLogger', {
+                        actor_lei: pspLEI,
+                        actor_email: 'system',
+                        actor_name: pspCreds?.[0]?.entity_name || 'Unknown PSP',
+                        actor_role: 'psp',
+                        action: 'iso20022_message_generated',
+                        action_category: 'transaction',
+                        target_entity_type: 'Transaction',
+                        target_entity_id: transaction_id,
+                        metadata: {
+                            message_type: 'pacs.008',
+                            includes_lei: true,
+                            psp_lei: pspLEI,
+                            merchant_lei: merchantLEI
+                        }
+                    });
+                } catch (auditError) {
+                    console.warn('Audit logging failed:', auditError.message);
                 }
-            });
+            }
 
             return Response.json({
                 success: true,

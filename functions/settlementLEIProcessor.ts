@@ -132,25 +132,30 @@ Deno.serve(async (req) => {
                 }
             };
 
-            // Log settlement
-            await base44.functions.invoke('signedAuditLogger', {
-                actor_lei: pspLEI,
-                actor_email: 'system',
-                actor_name: pspCreds?.[0]?.entity_name || 'PSP',
-                actor_role: 'psp',
-                action: 'settlement_instruction_created',
-                action_category: 'financial',
-                target_entity_type: 'Settlement',
-                target_entity_id: settlement_id,
-                target_lei: merchantLEI,
-                metadata: {
-                    total_amount: totalAmount,
-                    currency: currency,
-                    transaction_count: transactions.length,
-                    lei_compliant: true,
-                    credential_chain: [pspLEI, merchantLEI].filter(Boolean)
+            // Log settlement (only if PSP has LEI)
+            if (pspLEI) {
+                try {
+                    await base44.asServiceRole.functions.invoke('signedAuditLogger', {
+                        actor_lei: pspLEI,
+                        actor_email: 'system',
+                        actor_name: pspCreds?.[0]?.entity_name || 'PSP',
+                        actor_role: 'psp',
+                        action: 'settlement_instruction_created',
+                        action_category: 'financial',
+                        target_entity_type: 'Settlement',
+                        target_entity_id: settlement_id,
+                        target_lei: merchantLEI,
+                        metadata: {
+                            total_amount: totalAmount,
+                            currency: currency,
+                            transaction_count: transactions.length,
+                            lei_compliant: true,
+                            credential_chain: [pspLEI, merchantLEI].filter(Boolean)
+                        }
+                    });
+                } catch (auditError) {
+                    console.warn('Audit logging failed:', auditError.message);
                 }
-            });
 
             return Response.json({
                 success: true,
