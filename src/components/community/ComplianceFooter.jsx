@@ -80,15 +80,15 @@ const colorSchemes = {
 
 export default function ComplianceFooter() {
     return (
-        <footer className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white py-8 px-6 mt-auto">
+        <footer className="bg-white border-t border-slate-200 py-8 px-6 mt-auto">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
                 <div className="text-center mb-6">
                     <div className="flex items-center justify-center gap-2 mb-2">
-                        <Award className="h-5 w-5 text-blue-400" />
-                        <h3 className="text-lg font-semibold">Enterprise-Grade Compliance</h3>
+                        <Award className="h-5 w-5 text-blue-600" />
+                        <h3 className="text-lg font-semibold text-slate-900">Enterprise-Grade Compliance</h3>
                     </div>
-                    <p className="text-slate-400 text-xs max-w-3xl mx-auto">
+                    <p className="text-slate-600 text-xs max-w-3xl mx-auto">
                         FTS.Money adheres to the world's most rigorous financial, security, and regulatory standards.
                     </p>
                 </div>
@@ -98,14 +98,14 @@ export default function ComplianceFooter() {
                     {complianceCategories.map((category) => {
                         const Icon = category.icon;
                         return (
-                            <div key={category.title} className="bg-slate-800/30 rounded-lg p-3 border border-slate-700/50">
+                            <div key={category.title} className="bg-slate-50 rounded-lg p-3 border border-slate-200">
                                 <div className="flex items-center gap-2 mb-2">
-                                    <Icon className="h-3 w-3 text-slate-400" />
-                                    <h4 className="text-xs font-semibold">{category.title}</h4>
+                                    <Icon className="h-3 w-3 text-slate-500" />
+                                    <h4 className="text-xs font-semibold text-slate-900">{category.title}</h4>
                                 </div>
                                 <div className="space-y-1">
                                     {category.standards.slice(0, 3).map((standard) => (
-                                        <div key={standard.name} className="text-[10px] text-slate-400">
+                                        <div key={standard.name} className="text-[10px] text-slate-600">
                                             {standard.name}
                                         </div>
                                     ))}
@@ -116,10 +116,10 @@ export default function ComplianceFooter() {
                 </div>
 
                 {/* ISO Standards Showcase */}
-                <div className="bg-gradient-to-r from-blue-900/20 via-purple-900/20 to-indigo-900/20 rounded-lg p-4 border border-slate-700/50 mb-4">
+                <div className="bg-gradient-to-r from-blue-50 via-cyan-50 to-blue-50 rounded-lg p-4 border border-blue-200 mb-4">
                     <div className="flex flex-wrap justify-center gap-2">
                         {['ISO 20022', 'ISO 8583', 'ISO 23257', 'ISO 24165', 'ISO 27001', 'ISO 27701', 'ISO 13616', 'ISO 9362', 'ISO 4217', 'ISO 9001'].map((iso) => (
-                            <Badge key={iso} className="bg-slate-800/50 text-slate-300 border-slate-700 px-2 py-0.5 text-[10px] font-mono">
+                            <Badge key={iso} className="bg-white text-blue-700 border-blue-300 px-2 py-0.5 text-[10px] font-mono">
                                 {iso}
                             </Badge>
                         ))}
@@ -129,25 +129,25 @@ export default function ComplianceFooter() {
                 {/* Bottom Stats */}
                 <div className="flex justify-center gap-6 text-center mb-4">
                     <div>
-                        <p className="text-lg font-bold text-blue-400">25+</p>
-                        <p className="text-slate-400 text-[10px]">Standards</p>
+                        <p className="text-lg font-bold text-blue-600">25+</p>
+                        <p className="text-slate-600 text-[10px]">Standards</p>
                     </div>
                     <div>
-                        <p className="text-lg font-bold text-emerald-400">10+</p>
-                        <p className="text-slate-400 text-[10px]">ISO Certs</p>
+                        <p className="text-lg font-bold text-blue-600">10+</p>
+                        <p className="text-slate-600 text-[10px]">ISO Certs</p>
                     </div>
                     <div>
-                        <p className="text-lg font-bold text-purple-400">100%</p>
-                        <p className="text-slate-400 text-[10px]">LEI Verified</p>
+                        <p className="text-lg font-bold text-blue-600">100%</p>
+                        <p className="text-slate-600 text-[10px]">LEI Verified</p>
                     </div>
                     <div>
-                        <p className="text-lg font-bold text-cyan-400">Global</p>
-                        <p className="text-slate-400 text-[10px]">Coverage</p>
+                        <p className="text-lg font-bold text-blue-600">Global</p>
+                        <p className="text-slate-600 text-[10px]">Coverage</p>
                     </div>
                 </div>
 
                 {/* Footer Bottom */}
-                <div className="pt-4 border-t border-slate-700 text-center text-slate-500 text-[10px]">
+                <div className="pt-4 border-t border-slate-200 text-center text-slate-500 text-[10px]">
                     <p>© {new Date().getFullYear()} FTS.Money Ltd. Licensed and regulated worldwide. Building compliant payment infrastructure.</p>
                 </div>
             </div>
