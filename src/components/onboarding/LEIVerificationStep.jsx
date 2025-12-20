@@ -37,7 +37,7 @@ const leiIssuers = [
 export default function LEIVerificationStep({ data, onChange, errors, businessData }) {
     const [searching, setSearching] = useState(false);
     const [leiResult, setLeiResult] = useState(data.lei_verification_result || null);
-    const [activeTab, setActiveTab] = useState(data.lei ? 'verify' : 'options');
+    const [activeTab, setActiveTab] = useState(data.use_tas ? 'tas' : data.lei ? 'verify' : 'options');
     const [issuingLei, setIssuingLei] = useState(false);
 
     const handleChange = (field, value) => {
@@ -149,24 +149,56 @@ export default function LEIVerificationStep({ data, onChange, errors, businessDa
             </Alert>
 
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-                <TabsList className="grid w-full grid-cols-3">
+                <TabsList className="grid w-full grid-cols-4">
                     <TabsTrigger value="options">Options</TabsTrigger>
+                    <TabsTrigger value="tas">TAS Platform</TabsTrigger>
                     <TabsTrigger value="verify">Verify Existing</TabsTrigger>
                     <TabsTrigger value="apply">Apply for LEI</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="options" className="mt-4">
-                    <div className="grid md:grid-cols-2 gap-4">
+                    <div className="grid md:grid-cols-3 gap-4">
                         <Card 
                             className={cn(
                                 "p-6 cursor-pointer border-2 transition-all hover:border-blue-300",
-                                data.lei_option === 'existing' && "border-blue-500 bg-blue-50"
+                                data.use_tas && "border-blue-500 bg-blue-50"
                             )}
-                            onClick={() => { handleChange('lei_option', 'existing'); setActiveTab('verify'); }}
+                            onClick={() => { 
+                                handleChange('use_tas', true); 
+                                handleChange('lei_option', null);
+                                handleChange('lei', '');
+                                handleChange('vlei', '');
+                                setActiveTab('tas'); 
+                            }}
                         >
                             <div className="flex items-start gap-4">
                                 <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
-                                    <Search className="h-6 w-6 text-blue-600" />
+                                    <CheckCircle className="h-6 w-6 text-blue-600" />
+                                </div>
+                                <div>
+                                    <h3 className="font-semibold">Use TAS Number</h3>
+                                    <p className="text-sm text-slate-500 mt-1">
+                                        Already onboarded on TAS platform
+                                    </p>
+                                </div>
+                            </div>
+                        </Card>
+
+                        <Card 
+                            className={cn(
+                                "p-6 cursor-pointer border-2 transition-all hover:border-emerald-300",
+                                !data.use_tas && data.lei_option === 'existing' && "border-emerald-500 bg-emerald-50"
+                            )}
+                            onClick={() => { 
+                                handleChange('use_tas', false);
+                                handleChange('tas_number', '');
+                                handleChange('lei_option', 'existing'); 
+                                setActiveTab('verify'); 
+                            }}
+                        >
+                            <div className="flex items-start gap-4">
+                                <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center">
+                                    <Search className="h-6 w-6 text-emerald-600" />
                                 </div>
                                 <div>
                                     <h3 className="font-semibold">I Have an LEI</h3>
@@ -179,14 +211,19 @@ export default function LEIVerificationStep({ data, onChange, errors, businessDa
 
                         <Card 
                             className={cn(
-                                "p-6 cursor-pointer border-2 transition-all hover:border-emerald-300",
-                                data.lei_option === 'apply' && "border-emerald-500 bg-emerald-50"
+                                "p-6 cursor-pointer border-2 transition-all hover:border-purple-300",
+                                !data.use_tas && data.lei_option === 'apply' && "border-purple-500 bg-purple-50"
                             )}
-                            onClick={() => { handleChange('lei_option', 'apply'); setActiveTab('apply'); }}
+                            onClick={() => { 
+                                handleChange('use_tas', false);
+                                handleChange('tas_number', '');
+                                handleChange('lei_option', 'apply'); 
+                                setActiveTab('apply'); 
+                            }}
                         >
                             <div className="flex items-start gap-4">
-                                <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center">
-                                    <Plus className="h-6 w-6 text-emerald-600" />
+                                <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center">
+                                    <Plus className="h-6 w-6 text-purple-600" />
                                 </div>
                                 <div>
                                     <h3 className="font-semibold">Apply for LEI</h3>
@@ -214,6 +251,102 @@ export default function LEIVerificationStep({ data, onChange, errors, businessDa
                         >
                             Skip for now →
                         </Button>
+                    </Card>
+                </TabsContent>
+
+                <TabsContent value="tas" className="mt-4">
+                    <Card className="p-6">
+                        <div className="mb-6">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
+                                    <Shield className="h-6 w-6 text-blue-600" />
+                                </div>
+                                <div>
+                                    <h3 className="font-medium text-slate-900">TAS Platform Integration</h3>
+                                    <p className="text-sm text-slate-500">Trust Anchor Service - Pre-verified Business Identity</p>
+                                </div>
+                            </div>
+
+                            <Alert className="bg-blue-50 border-blue-200">
+                                <Info className="h-4 w-4 text-blue-600" />
+                                <AlertDescription className="text-blue-700">
+                                    <strong>TAS Pre-Verification Benefits:</strong>
+                                    <ul className="list-disc list-inside mt-2 space-y-1 text-sm">
+                                        <li>Complete LEI/vLEI credentials already verified</li>
+                                        <li>KYB verification completed</li>
+                                        <li>AML screening pre-approved</li>
+                                        <li>Trusted data provenance chain established</li>
+                                        <li>Faster onboarding - skip compliance steps</li>
+                                    </ul>
+                                </AlertDescription>
+                            </Alert>
+                        </div>
+
+                        <div className="space-y-4">
+                            <div>
+                                <Label htmlFor="tas_number">TAS Number</Label>
+                                <Input
+                                    id="tas_number"
+                                    value={data.tas_number || ''}
+                                    onChange={(e) => handleChange('tas_number', e.target.value.toUpperCase())}
+                                    placeholder="TAS-XXXXXXXX"
+                                    className="font-mono"
+                                    maxLength={20}
+                                />
+                                <p className="text-xs text-slate-500 mt-1">
+                                    Your unique TAS identifier from the Trust Anchor Service
+                                </p>
+                            </div>
+
+                            {data.tas_number && data.tas_number.length >= 8 && (
+                                <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
+                                    <div className="flex items-center gap-2 mb-3">
+                                        <CheckCircle className="h-5 w-5 text-emerald-600" />
+                                        <span className="font-medium text-emerald-700">TAS Verification Available</span>
+                                    </div>
+                                    <p className="text-sm text-emerald-800 mb-4">
+                                        Once verified, we'll automatically import your:
+                                    </p>
+                                    <div className="grid grid-cols-2 gap-2 text-sm text-emerald-700">
+                                        <div className="flex items-center gap-2">
+                                            <Check className="h-4 w-4" />
+                                            LEI/vLEI Credentials
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <Check className="h-4 w-4" />
+                                            KYB Verification
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <Check className="h-4 w-4" />
+                                            AML Screening Results
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <Check className="h-4 w-4" />
+                                            Business Documents
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <Check className="h-4 w-4" />
+                                            Company Structure
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <Check className="h-4 w-4" />
+                                            Compliance Status
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            <Alert>
+                                <Info className="h-4 w-4" />
+                                <AlertDescription className="text-sm">
+                                    <strong>Don't have a TAS number?</strong> Visit{' '}
+                                    <a href="https://tas.fts.money" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                                        TAS Platform
+                                    </a>{' '}
+                                    to complete your business verification and receive your TAS identifier.
+                                </AlertDescription>
+                            </Alert>
+                        </div>
                     </Card>
                 </TabsContent>
 
