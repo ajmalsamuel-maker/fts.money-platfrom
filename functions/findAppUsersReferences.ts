@@ -43,12 +43,9 @@ Deno.serve(async (req) => {
                     tc.table_schema,
                     tc.table_name,
                     tc.constraint_name,
-                    tc.constraint_type,
-                    pg_get_constraintdef(pgc.oid) as constraint_definition
+                    tc.constraint_type
                 FROM information_schema.table_constraints tc
-                JOIN pg_catalog.pg_constraint pgc 
-                    ON tc.constraint_name = pgc.conname
-                WHERE pg_get_constraintdef(pgc.oid) LIKE '%app_users%'
+                WHERE tc.table_name LIKE '%app_users%'
             `);
             results.constraints = constraints.rows;
 
