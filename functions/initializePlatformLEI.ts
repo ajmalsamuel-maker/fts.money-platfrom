@@ -37,16 +37,18 @@ Deno.serve(async (req) => {
                 const response = await fetch(`${GLEIF_API_BASE}/lei-records/${lei}`);
                 if (response.ok) {
                     const data = await response.json();
+                    const entity = data.data.attributes.entity;
+                    
                     gleifData = {
-                        legal_name: data.data.attributes.entity.legalName.name,
-                        legal_address: data.data.attributes.entity.legalAddress,
-                        registration_authority: data.data.attributes.entity.registeredAs,
-                        registration_number: data.data.attributes.entity.registeredAt,
-                        jurisdiction: data.data.attributes.entity.jurisdiction,
-                        category: data.data.attributes.entity.category,
-                        status: data.data.attributes.entity.status
+                        legal_name: entity.legalName?.name || legal_name,
+                        legal_address: entity.legalAddress,
+                        registration_authority: typeof entity.registeredAs === 'string' ? entity.registeredAs : (entity.registeredAs?.id || 'N/A'),
+                        registration_number: typeof entity.registeredAt === 'string' ? entity.registeredAt : (entity.registeredAt?.id || 'N/A'),
+                        jurisdiction: entity.jurisdiction || 'N/A',
+                        category: entity.category || 'N/A',
+                        status: entity.status || 'ACTIVE'
                     };
-                    leiStatus = data.data.attributes.entity.status === 'ACTIVE' ? 'active' : 'pending_verification';
+                    leiStatus = entity.status === 'ACTIVE' ? 'active' : 'pending_verification';
                 }
             } catch (error) {
                 console.warn('GLEIF verification failed, proceeding with manual entry:', error.message);
