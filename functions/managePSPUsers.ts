@@ -3,8 +3,8 @@ import bcrypt from 'npm:bcrypt@5.1.1';
 
 const { Pool } = pg;
 
-// Updated to use psp_staff_users table (isolated from Base44 entity sync)
-// Force redeploy to clear cache
+// CRITICAL: Uses psp_staff_users table (completely isolated from Base44 entity system)
+// This prevents Base44 from auto-creating unique constraints that cause conflicts
 
 const pool = new Pool({
     connectionString: Deno.env.get("DATABASE_URL"),
