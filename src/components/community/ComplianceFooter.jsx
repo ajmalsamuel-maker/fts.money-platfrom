@@ -80,40 +80,33 @@ const colorSchemes = {
 
 export default function ComplianceFooter() {
     return (
-        <footer className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white py-16 px-6 mt-auto">
+        <footer className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white py-8 px-6 mt-auto">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
-                <div className="text-center mb-12">
-                    <div className="flex items-center justify-center gap-3 mb-4">
-                        <Award className="h-8 w-8 text-blue-400" />
-                        <h2 className="text-3xl font-bold">Enterprise-Grade Compliance</h2>
+                <div className="text-center mb-6">
+                    <div className="flex items-center justify-center gap-2 mb-2">
+                        <Award className="h-5 w-5 text-blue-400" />
+                        <h3 className="text-lg font-semibold">Enterprise-Grade Compliance</h3>
                     </div>
-                    <p className="text-slate-300 text-lg max-w-3xl mx-auto">
-                        FTS.Money adheres to the world's most rigorous financial, security, and regulatory standards, 
-                        ensuring your payments infrastructure is built on a foundation of trust and compliance.
+                    <p className="text-slate-400 text-xs max-w-3xl mx-auto">
+                        FTS.Money adheres to the world's most rigorous financial, security, and regulatory standards.
                     </p>
                 </div>
 
                 {/* Compliance Grid */}
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
                     {complianceCategories.map((category) => {
                         const Icon = category.icon;
                         return (
-                            <div key={category.title} className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700 hover:border-slate-600 transition-all">
-                                <div className="flex items-center gap-3 mb-4">
-                                    <div className={`w-12 h-12 rounded-lg ${colorSchemes[category.color]} flex items-center justify-center`}>
-                                        <Icon className="h-6 w-6" />
-                                    </div>
-                                    <h3 className="text-lg font-semibold">{category.title}</h3>
+                            <div key={category.title} className="bg-slate-800/30 rounded-lg p-3 border border-slate-700/50">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <Icon className="h-3 w-3 text-slate-400" />
+                                    <h4 className="text-xs font-semibold">{category.title}</h4>
                                 </div>
-                                <div className="space-y-2">
-                                    {category.standards.map((standard) => (
-                                        <div key={standard.name} className="flex items-start gap-2 text-sm">
-                                            <CheckCircle2 className="h-4 w-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-                                            <div>
-                                                <span className="font-medium text-white">{standard.name}</span>
-                                                <span className="text-slate-400 ml-1">· {standard.description}</span>
-                                            </div>
+                                <div className="space-y-1">
+                                    {category.standards.slice(0, 3).map((standard) => (
+                                        <div key={standard.name} className="text-[10px] text-slate-400">
+                                            {standard.name}
                                         </div>
                                     ))}
                                 </div>
@@ -123,11 +116,10 @@ export default function ComplianceFooter() {
                 </div>
 
                 {/* ISO Standards Showcase */}
-                <div className="bg-gradient-to-r from-blue-900/30 via-purple-900/30 to-indigo-900/30 rounded-xl p-8 border border-slate-700 mb-8">
-                    <h3 className="text-xl font-semibold mb-4 text-center">ISO Standards Excellence</h3>
-                    <div className="flex flex-wrap justify-center gap-4">
+                <div className="bg-gradient-to-r from-blue-900/20 via-purple-900/20 to-indigo-900/20 rounded-lg p-4 border border-slate-700/50 mb-4">
+                    <div className="flex flex-wrap justify-center gap-2">
                         {['ISO 20022', 'ISO 8583', 'ISO 23257', 'ISO 24165', 'ISO 27001', 'ISO 27701', 'ISO 13616', 'ISO 9362', 'ISO 4217', 'ISO 9001'].map((iso) => (
-                            <Badge key={iso} className="bg-slate-800 text-white border-slate-600 px-4 py-2 text-sm font-mono">
+                            <Badge key={iso} className="bg-slate-800/50 text-slate-300 border-slate-700 px-2 py-0.5 text-[10px] font-mono">
                                 {iso}
                             </Badge>
                         ))}
@@ -135,29 +127,28 @@ export default function ComplianceFooter() {
                 </div>
 
                 {/* Bottom Stats */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+                <div className="flex justify-center gap-6 text-center mb-4">
                     <div>
-                        <p className="text-3xl font-bold text-blue-400">25+</p>
-                        <p className="text-slate-400 text-sm mt-1">Compliance Standards</p>
+                        <p className="text-lg font-bold text-blue-400">25+</p>
+                        <p className="text-slate-400 text-[10px]">Standards</p>
                     </div>
                     <div>
-                        <p className="text-3xl font-bold text-emerald-400">10+</p>
-                        <p className="text-slate-400 text-sm mt-1">ISO Certifications</p>
+                        <p className="text-lg font-bold text-emerald-400">10+</p>
+                        <p className="text-slate-400 text-[10px]">ISO Certs</p>
                     </div>
                     <div>
-                        <p className="text-3xl font-bold text-purple-400">100%</p>
-                        <p className="text-slate-400 text-sm mt-1">GLEIF LEI Verified</p>
+                        <p className="text-lg font-bold text-purple-400">100%</p>
+                        <p className="text-slate-400 text-[10px]">LEI Verified</p>
                     </div>
                     <div>
-                        <p className="text-3xl font-bold text-cyan-400">Global</p>
-                        <p className="text-slate-400 text-sm mt-1">Regulatory Coverage</p>
+                        <p className="text-lg font-bold text-cyan-400">Global</p>
+                        <p className="text-slate-400 text-[10px]">Coverage</p>
                     </div>
                 </div>
 
                 {/* Footer Bottom */}
-                <div className="mt-12 pt-8 border-t border-slate-700 text-center text-slate-400 text-sm">
-                    <p>© {new Date().getFullYear()} FTS.Money Ltd. All rights reserved. Licensed and regulated worldwide.</p>
-                    <p className="mt-2">Building the future of compliant payment infrastructure.</p>
+                <div className="pt-4 border-t border-slate-700 text-center text-slate-500 text-[10px]">
+                    <p>© {new Date().getFullYear()} FTS.Money Ltd. Licensed and regulated worldwide. Building compliant payment infrastructure.</p>
                 </div>
             </div>
         </footer>
