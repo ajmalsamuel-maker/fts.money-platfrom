@@ -25,9 +25,16 @@ import {
     Calendar,
     DollarSign,
     Target,
-    Edit
+    Edit,
+    Search,
+    Filter,
+    CheckCircle2,
+    Globe,
+    Shield,
+    Star
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { CLOUD_PROVIDERS, FILTER_OPTIONS, getTierLabel, getTierColor } from '@/components/platform/GlobalCloudProviders';
 
 export default function ResourceOrchestration() {
     const navigate = useNavigate();
@@ -96,6 +103,14 @@ export default function ResourceOrchestration() {
 
     const [editingConnector, setEditingConnector] = useState(null);
     const [connectorSecrets, setConnectorSecrets] = useState({});
+
+    // Cloud provider filters
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filterContinent, setFilterContinent] = useState('All');
+    const [filterTier, setFilterTier] = useState('All');
+    const [filterSpecialty, setFilterSpecialty] = useState('All');
+    const [filterRecommendation, setFilterRecommendation] = useState('All');
+    const [showFTSRecommended, setShowFTSRecommended] = useState(false);
 
     // Mutations
     const createPoolMutation = useMutation({
@@ -201,6 +216,24 @@ export default function ResourceOrchestration() {
     const allocatedCapacity = pools.reduce((sum, p) => sum + (p.allocated_capacity?.cpu_cores || 0), 0);
     const utilization = totalCapacity > 0 ? (allocatedCapacity / totalCapacity) * 100 : 0;
     const highUtilizationPools = pools.filter(p => (p.utilization_percentage || 0) >= 80);
+
+    // Filter cloud providers
+    const filteredProviders = CLOUD_PROVIDERS.filter(provider => {
+        const matchesSearch = provider.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                            provider.specialty.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                            provider.country.toLowerCase().includes(searchTerm.toLowerCase());
+        
+        const matchesContinent = filterContinent === 'All' || provider.continent === filterContinent;
+        const matchesTier = filterTier === 'All' || provider.tier === filterTier;
+        const matchesSpecialty = filterSpecialty === 'All' || provider.specialty.includes(filterSpecialty);
+        const matchesRecommendation = filterRecommendation === 'All' || 
+                                     provider.recommendedFor.some(r => r.includes(filterRecommendation));
+        
+        const matchesFTSRecommended = !showFTSRecommended || provider.tier === 'tier1' || provider.tier === 'tier2';
+        
+        return matchesSearch && matchesContinent && matchesTier && matchesSpecialty && 
+               matchesRecommendation && matchesFTSRecommended;
+    });
 
     if (loading) return null;
 
@@ -367,26 +400,265 @@ export default function ResourceOrchestration() {
 
                         {/* Cloud Connectors */}
                         <TabsContent value="connectors" className="space-y-4 mt-6">
-                            <div className="flex justify-between items-center mb-4">
-                                <p className="text-sm text-slate-600">{connectors.length} cloud provider connectors configured</p>
-                                <div className="flex gap-2">
-                                    <Button 
-                                        onClick={() => seedConnectorsMutation.mutate()}
-                                        disabled={seedConnectorsMutation.isPending || connectors.length > 0}
-                                        variant="outline"
-                                    >
-                                        <Database className="h-4 w-4 mr-2" />
-                                        Seed All Providers
-                                    </Button>
-                                    <Button onClick={() => { setDialogType('connector'); setShowDialog(true); }}>
-                                        <Plus className="h-4 w-4 mr-2" />
-                                        Add Connector
-                                    </Button>
-                                </div>
+                            {/* Global Stats */}
+                            <div className="grid grid-cols-5 gap-4 mb-6">
+                                <Card className="bg-gradient-to-br from-blue-500 to-blue-600 text-white">
+                                    <CardContent className="p-4">
+                                        <Globe className="h-6 w-6 mb-2 opacity-80" />
+                                        <p className="text-xs opacity-80">Total Providers</p>
+                                        <p className="text-2xl font-bold">{CLOUD_PROVIDERS.length}</p>
+                                    </CardContent>
+                                </Card>
+                                <Card className="bg-gradient-to-br from-purple-500 to-purple-600 text-white">
+                                    <CardContent className="p-4">
+                                        <Star className="h-6 w-6 mb-2 opacity-80" />
+                                        <p className="text-xs opacity-80">Tier 1 Providers</p>
+                                        <p className="text-2xl font-bold">{CLOUD_PROVIDERS.filter(p => p.tier === 'tier1').length}</p>
+                                    </CardContent>
+                                </Card>
+                                <Card className="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white">
+                                    <CardContent className="p-4">
+                                        <Shield className="h-6 w-6 mb-2 opacity-80" />
+                                        <p className="text-xs opacity-80">PCI-DSS Certified</p>
+                                        <p className="text-2xl font-bold">{CLOUD_PROVIDERS.filter(p => p.pciDss).length}</p>
+                                    </CardContent>
+                                </Card>
+                                <Card className="bg-gradient-to-br from-amber-500 to-amber-600 text-white">
+                                    <CardContent className="p-4">
+                                        <CheckCircle2 className="h-6 w-6 mb-2 opacity-80" />
+                                        <p className="text-xs opacity-80">Financial Services</p>
+                                        <p className="text-2xl font-bold">{CLOUD_PROVIDERS.filter(p => p.financialServices).length}</p>
+                                    </CardContent>
+                                </Card>
+                                <Card className="bg-gradient-to-br from-cyan-500 to-cyan-600 text-white">
+                                    <CardContent className="p-4">
+                                        <MapPin className="h-6 w-6 mb-2 opacity-80" />
+                                        <p className="text-xs opacity-80">Continents</p>
+                                        <p className="text-2xl font-bold">7</p>
+                                    </CardContent>
+                                </Card>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4">
-                                {connectors.map(connector => (
+                            {/* Filters */}
+                            <Card className="bg-gradient-to-r from-blue-50 to-indigo-50">
+                                <CardContent className="p-4">
+                                    <div className="space-y-4">
+                                        <div className="flex items-center gap-2">
+                                            <Search className="h-5 w-5 text-slate-600" />
+                                            <Input
+                                                placeholder="Search providers by name, country, or specialty..."
+                                                value={searchTerm}
+                                                onChange={(e) => setSearchTerm(e.target.value)}
+                                                className="flex-1"
+                                            />
+                                            <Button
+                                                variant={showFTSRecommended ? "default" : "outline"}
+                                                onClick={() => setShowFTSRecommended(!showFTSRecommended)}
+                                                className="gap-2"
+                                            >
+                                                <Star className="h-4 w-4" />
+                                                FTS Recommended
+                                            </Button>
+                                        </div>
+                                        
+                                        <div className="grid grid-cols-4 gap-3">
+                                            <div>
+                                                <Label className="text-xs text-slate-600">Continent</Label>
+                                                <Select value={filterContinent} onValueChange={setFilterContinent}>
+                                                    <SelectTrigger><SelectValue /></SelectTrigger>
+                                                    <SelectContent>
+                                                        {FILTER_OPTIONS.continents.map(c => (
+                                                            <SelectItem key={c} value={c}>{c}</SelectItem>
+                                                        ))}
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
+                                            <div>
+                                                <Label className="text-xs text-slate-600">Tier</Label>
+                                                <Select value={filterTier} onValueChange={setFilterTier}>
+                                                    <SelectTrigger><SelectValue /></SelectTrigger>
+                                                    <SelectContent>
+                                                        {FILTER_OPTIONS.tiers.map(t => (
+                                                            <SelectItem key={t} value={t}>{t === 'All' ? 'All' : getTierLabel(t)}</SelectItem>
+                                                        ))}
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
+                                            <div>
+                                                <Label className="text-xs text-slate-600">Specialty</Label>
+                                                <Select value={filterSpecialty} onValueChange={setFilterSpecialty}>
+                                                    <SelectTrigger><SelectValue /></SelectTrigger>
+                                                    <SelectContent>
+                                                        {FILTER_OPTIONS.specialties.map(s => (
+                                                            <SelectItem key={s} value={s}>{s}</SelectItem>
+                                                        ))}
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
+                                            <div>
+                                                <Label className="text-xs text-slate-600">Use Case</Label>
+                                                <Select value={filterRecommendation} onValueChange={setFilterRecommendation}>
+                                                    <SelectTrigger><SelectValue /></SelectTrigger>
+                                                    <SelectContent>
+                                                        {FILTER_OPTIONS.recommendations.map(r => (
+                                                            <SelectItem key={r} value={r}>{r}</SelectItem>
+                                                        ))}
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex items-center justify-between text-sm">
+                                            <p className="text-slate-600">
+                                                Showing {filteredProviders.length} of {CLOUD_PROVIDERS.length} providers
+                                            </p>
+                                            <Button 
+                                                variant="ghost" 
+                                                size="sm"
+                                                onClick={() => {
+                                                    setSearchTerm('');
+                                                    setFilterContinent('All');
+                                                    setFilterTier('All');
+                                                    setFilterSpecialty('All');
+                                                    setFilterRecommendation('All');
+                                                    setShowFTSRecommended(false);
+                                                }}
+                                            >
+                                                Clear Filters
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+
+                            <div className="flex justify-between items-center">
+                                <p className="text-sm text-slate-600 font-medium">Global Cloud Providers Catalog</p>
+                                <Button onClick={() => { setDialogType('connector'); setShowDialog(true); }}>
+                                    <Plus className="h-4 w-4 mr-2" />
+                                    Add Connector
+                                </Button>
+                            </div>
+
+                            {/* Cloud Provider Cards */}
+                            <div className="grid grid-cols-3 gap-4">
+                                {filteredProviders.map(provider => (
+                                    <Card key={provider.id} className="hover:shadow-lg transition-all">
+                                        <CardHeader className="pb-3">
+                                            <div className="flex items-start justify-between">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="text-3xl">{provider.logo}</div>
+                                                    <div>
+                                                        <CardTitle className="text-sm">{provider.name}</CardTitle>
+                                                        <p className="text-xs text-slate-500">{provider.country}</p>
+                                                    </div>
+                                                </div>
+                                                <Badge className={getTierColor(provider.tier)} variant="outline">
+                                                    {provider.tier.toUpperCase()}
+                                                </Badge>
+                                            </div>
+                                        </CardHeader>
+                                        <CardContent className="space-y-3">
+                                            <div>
+                                                <Badge className="bg-indigo-100 text-indigo-700 text-xs mb-2">
+                                                    {provider.specialty}
+                                                </Badge>
+                                                <p className="text-xs text-slate-600 leading-relaxed">
+                                                    {provider.description}
+                                                </p>
+                                            </div>
+
+                                            <div className="flex items-center gap-2 flex-wrap">
+                                                {provider.pciDss && (
+                                                    <Badge variant="outline" className="text-xs bg-emerald-50 text-emerald-700 border-emerald-200">
+                                                        PCI-DSS
+                                                    </Badge>
+                                                )}
+                                                {provider.iso27001 && (
+                                                    <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
+                                                        ISO 27001
+                                                    </Badge>
+                                                )}
+                                                {provider.financialServices && (
+                                                    <Badge variant="outline" className="text-xs bg-purple-50 text-purple-700 border-purple-200">
+                                                        FinServices
+                                                    </Badge>
+                                                )}
+                                            </div>
+
+                                            <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+                                                <div className="flex items-start gap-2">
+                                                    <Star className="h-4 w-4 text-amber-600 mt-0.5 flex-shrink-0" />
+                                                    <div>
+                                                        <p className="text-xs font-semibold text-amber-900 mb-1">
+                                                            FTS.Money Recommendation
+                                                        </p>
+                                                        <p className="text-xs text-amber-800 leading-relaxed">
+                                                            {provider.recommendationReason}
+                                                        </p>
+                                                        <div className="flex flex-wrap gap-1 mt-2">
+                                                            {provider.recommendedFor.map((rec, idx) => (
+                                                                <Badge key={idx} className="text-xs bg-amber-100 text-amber-800">
+                                                                    {rec}
+                                                                </Badge>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="grid grid-cols-2 gap-2 text-xs">
+                                                <div>
+                                                    <p className="text-slate-500">Avg Cost/Mo</p>
+                                                    <p className="font-semibold text-slate-900">
+                                                        ${provider.avgCostPerMonth.toLocaleString()}
+                                                    </p>
+                                                </div>
+                                                <div>
+                                                    <p className="text-slate-500">Currencies</p>
+                                                    <p className="font-semibold text-slate-900">
+                                                        {provider.supportedCurrencies.slice(0, 2).join(', ')}
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <Button 
+                                                className="w-full" 
+                                                size="sm"
+                                                onClick={() => {
+                                                    toast.success(`Contact sales to deploy on ${provider.name}`);
+                                                }}
+                                            >
+                                                <Plus className="h-3 w-3 mr-1" />
+                                                Deploy Here
+                                            </Button>
+                                        </CardContent>
+                                    </Card>
+                                ))}
+                            </div>
+
+                            {filteredProviders.length === 0 && (
+                                <Card>
+                                    <CardContent className="p-12 text-center">
+                                        <Filter className="h-12 w-12 text-slate-400 mx-auto mb-3" />
+                                        <p className="text-slate-600 mb-2">No providers match your filters</p>
+                                        <Button variant="outline" onClick={() => {
+                                            setSearchTerm('');
+                                            setFilterContinent('All');
+                                            setFilterTier('All');
+                                            setFilterSpecialty('All');
+                                            setFilterRecommendation('All');
+                                        }}>
+                                            Clear All Filters
+                                        </Button>
+                                    </CardContent>
+                                </Card>
+                            )}
+
+                            {/* Existing connectors section - collapsed */}
+                            <div className="pt-6 border-t">
+                                <h3 className="text-sm font-semibold text-slate-900 mb-3">Configured Connectors</h3>
+                                <div className="grid grid-cols-2 gap-4">
+                                    {connectors.map(connector => (
                                     <Card key={connector.id}>
                                         <CardHeader>
                                             <div className="flex items-center justify-between">
@@ -457,16 +729,12 @@ export default function ResourceOrchestration() {
                                     </Card>
                                 ))}
 
-                                {connectors.length === 0 && (
-                                    <div className="col-span-2 text-center py-12">
-                                        <Server className="h-16 w-16 text-slate-400 mx-auto mb-4" />
-                                        <p className="text-slate-600 mb-4">No cloud connectors configured</p>
-                                        <Button onClick={() => seedConnectorsMutation.mutate()}>
-                                            <Database className="h-4 w-4 mr-2" />
-                                            Seed All Major Cloud Providers
-                                        </Button>
-                                    </div>
-                                )}
+                                    {connectors.length === 0 && (
+                                        <div className="col-span-2 text-center py-8">
+                                            <p className="text-sm text-slate-500">No connectors configured yet</p>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
 
                             {/* Legacy documentation cards - keeping for reference */}
