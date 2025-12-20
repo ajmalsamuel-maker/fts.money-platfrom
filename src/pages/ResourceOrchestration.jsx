@@ -624,7 +624,11 @@ export default function ResourceOrchestration() {
                                             <Button 
                                                 className="w-full" 
                                                 size="sm"
-                                                onClick={async () => {
+                                                onClick={async (e) => {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    console.log('Deploy button clicked for:', provider.name);
+                                                    
                                                     try {
                                                         // Map tier to provider_type enum
                                                         const providerTypeMap = {
@@ -634,7 +638,7 @@ export default function ResourceOrchestration() {
                                                             'edge': 'global'
                                                         };
                                                         
-                                                        await base44.entities.CloudConnector.create({
+                                                        const connectorData = {
                                                             connector_id: `CONN-${Date.now()}`,
                                                             provider_name: provider.id,
                                                             display_name: provider.name,
@@ -646,10 +650,16 @@ export default function ResourceOrchestration() {
                                                             supported_operations: ['provision_compute', 'provision_database', 'scale_compute', 'get_metrics'],
                                                             required_secrets: [`${provider.id.toUpperCase()}_API_KEY`, `${provider.id.toUpperCase()}_API_SECRET`],
                                                             notes: `${provider.specialty} | ${provider.recommendationReason} | Avg: $${provider.avgCostPerMonth}/mo`
-                                                        });
+                                                        };
+                                                        
+                                                        console.log('Creating connector with data:', connectorData);
+                                                        const result = await base44.entities.CloudConnector.create(connectorData);
+                                                        console.log('Connector created successfully:', result);
+                                                        
                                                         queryClient.invalidateQueries(['cloud-connectors']);
                                                         toast.success(`✅ ${provider.name} connector created! Configure credentials to activate.`);
                                                     } catch (error) {
+                                                        console.error('Failed to create connector:', error);
                                                         toast.error('Failed to create connector: ' + error.message);
                                                     }
                                                 }}
