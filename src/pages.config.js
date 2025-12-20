@@ -186,6 +186,7 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
+import LEIComplianceDashboard from './pages/LEIComplianceDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -378,6 +379,7 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
+    "LEIComplianceDashboard": LEIComplianceDashboard,
 }
 
 export const pagesConfig = {
