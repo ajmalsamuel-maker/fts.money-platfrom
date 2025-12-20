@@ -136,10 +136,6 @@ export default function FTSSettings() {
                             <Bell className="h-4 w-4" />
                             Notifications
                         </TabsTrigger>
-                        <TabsTrigger value="users" className="gap-2">
-                            <Users className="h-4 w-4" />
-                            User Management
-                        </TabsTrigger>
                     </TabsList>
 
                     <TabsContent value="general">
