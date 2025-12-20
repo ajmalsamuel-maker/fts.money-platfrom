@@ -25,8 +25,8 @@ export default function MyWholesaleOfferings() {
     });
 
     // Get current PSP session
-    const pspSession = JSON.parse(localStorage.getItem('psp_session') || '{}');
-    const pspCode = pspSession.psp_code;
+    const staffSession = JSON.parse(localStorage.getItem('staff_session') || '{}');
+    const pspCode = staffSession.psp_code;
 
     const { data: currentPSP } = useQuery({
         queryKey: ['current-psp', pspCode],
