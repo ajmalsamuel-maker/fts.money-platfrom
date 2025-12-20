@@ -93,6 +93,7 @@ const menuSections = [
     {
         title: 'Compliance & Security',
         items: [
+            { icon: Shield, label: 'LEI/vLEI Compliance', path: 'LEIComplianceDashboard', description: 'GLEIF credential tracking' },
             { icon: Shield, label: 'Compliance', path: 'FTSCompliance', description: 'Policy templates' },
             { icon: GitBranch, label: 'Workflow Management', path: 'WorkflowManagement', description: 'ISO standards compliance' },
             { icon: FileText, label: 'Audit Logs', path: 'PlatformAuditLogs', description: 'Activity tracking' },
