@@ -624,44 +624,42 @@ export default function ResourceOrchestration() {
                                             <Button 
                                                 className="w-full" 
                                                 size="sm"
-                                                onClick={async (e) => {
+                                                type="button"
+                                                onClick={(e) => {
                                                     e.preventDefault();
                                                     e.stopPropagation();
-                                                    console.log('Deploy button clicked for:', provider.name);
                                                     
-                                                    try {
-                                                        // Map tier to provider_type enum
-                                                        const providerTypeMap = {
-                                                            'tier1': 'global',
-                                                            'tier2': 'regional',
-                                                            'tier3': 'regional',
-                                                            'edge': 'global'
-                                                        };
-                                                        
-                                                        const connectorData = {
-                                                            connector_id: `CONN-${Date.now()}`,
-                                                            provider_name: provider.id,
-                                                            display_name: provider.name,
-                                                            provider_type: providerTypeMap[provider.tier] || 'regional',
-                                                            region: provider.country,
-                                                            supported_regions: provider.regions,
-                                                            status: 'inactive',
-                                                            connector_function: 'infrastructure/cloudConnector',
-                                                            supported_operations: ['provision_compute', 'provision_database', 'scale_compute', 'get_metrics'],
-                                                            required_secrets: [`${provider.id.toUpperCase()}_API_KEY`, `${provider.id.toUpperCase()}_API_SECRET`],
-                                                            notes: `${provider.specialty} | ${provider.recommendationReason} | Avg: $${provider.avgCostPerMonth}/mo`
-                                                        };
-                                                        
-                                                        console.log('Creating connector with data:', connectorData);
-                                                        const result = await base44.entities.CloudConnector.create(connectorData);
-                                                        console.log('Connector created successfully:', result);
-                                                        
-                                                        queryClient.invalidateQueries(['cloud-connectors']);
-                                                        toast.success(`✅ ${provider.name} connector created! Configure credentials to activate.`);
-                                                    } catch (error) {
-                                                        console.error('Failed to create connector:', error);
-                                                        toast.error('Failed to create connector: ' + error.message);
-                                                    }
+                                                    toast.loading(`Deploying ${provider.name}...`);
+                                                    
+                                                    const providerTypeMap = {
+                                                        'tier1': 'global',
+                                                        'tier2': 'regional',
+                                                        'tier3': 'regional',
+                                                        'edge': 'global'
+                                                    };
+                                                    
+                                                    const connectorData = {
+                                                        connector_id: `CONN-${Date.now()}`,
+                                                        provider_name: provider.id,
+                                                        display_name: provider.name,
+                                                        provider_type: providerTypeMap[provider.tier] || 'regional',
+                                                        region: provider.country,
+                                                        supported_regions: provider.regions,
+                                                        status: 'inactive',
+                                                        connector_function: 'infrastructure/cloudConnector',
+                                                        supported_operations: ['provision_compute', 'provision_database', 'scale_compute', 'get_metrics'],
+                                                        required_secrets: [`${provider.id.toUpperCase()}_API_KEY`, `${provider.id.toUpperCase()}_API_SECRET`],
+                                                        notes: `${provider.specialty} | ${provider.recommendationReason} | Avg: $${provider.avgCostPerMonth}/mo`
+                                                    };
+                                                    
+                                                    base44.entities.CloudConnector.create(connectorData)
+                                                        .then(() => {
+                                                            queryClient.invalidateQueries(['cloud-connectors']);
+                                                            toast.success(`✅ ${provider.name} connector created!`);
+                                                        })
+                                                        .catch((error) => {
+                                                            toast.error(`Failed: ${error.message}`);
+                                                        });
                                                 }}
                                             >
                                                 <Plus className="h-3 w-3 mr-1" />
