@@ -625,7 +625,9 @@ export default function ResourceOrchestration() {
                                                 className="w-full" 
                                                 size="sm"
                                                 onClick={async () => {
+                                                    console.log('🚀 Deploy clicked for:', provider.name);
                                                     try {
+                                                        console.log('Creating connector...');
                                                         const providerTypeMap = {
                                                             'tier1': 'global',
                                                             'tier2': 'regional',
@@ -647,11 +649,13 @@ export default function ResourceOrchestration() {
                                                             notes: `${provider.specialty} | ${provider.recommendationReason} | Avg: $${provider.avgCostPerMonth}/mo`
                                                         };
                                                         
-                                                        await base44.entities.CloudConnector.create(connectorData);
+                                                        console.log('Connector data:', connectorData);
+                                                        const result = await base44.entities.CloudConnector.create(connectorData);
+                                                        console.log('✅ Connector created:', result);
                                                         queryClient.invalidateQueries(['cloud-connectors']);
                                                         toast.success(`✅ ${provider.name} deployed!`);
                                                     } catch (error) {
-                                                        console.error('Deploy error:', error);
+                                                        console.error('❌ Deploy error:', error);
                                                         toast.error(`Failed: ${error.message || 'Unknown error'}`);
                                                     }
                                                 }}
