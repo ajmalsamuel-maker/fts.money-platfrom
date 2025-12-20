@@ -625,11 +625,8 @@ export default function ResourceOrchestration() {
                                                 className="w-full" 
                                                 size="sm"
                                                 type="button"
-                                                onClick={(e) => {
-                                                    e.preventDefault();
-                                                    e.stopPropagation();
-                                                    
-                                                    toast.loading(`Deploying ${provider.name}...`);
+                                                onClick={() => {
+                                                    alert(`Deploying ${provider.name} - Click OK to continue`);
                                                     
                                                     const providerTypeMap = {
                                                         'tier1': 'global',
