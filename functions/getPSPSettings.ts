@@ -63,14 +63,14 @@ Deno.serve(async (req) => {
         
         // List users
         if (action === 'listUsers') {
-            const result = await client.query('SELECT * FROM app_users ORDER BY created_at DESC');
+            const result = await client.query('SELECT * FROM psp_staff_users ORDER BY created_date DESC');
             return Response.json({ success: true, users: result.rows });
         }
         
         // Create user
         if (action === 'createUser') {
             const result = await client.query(
-                `INSERT INTO app_users (email, full_name, role, password_hash, status)
+                `INSERT INTO psp_staff_users (email, full_name, role, password_hash, status)
                 VALUES ($1, $2, $3, $4, $5)
                 RETURNING *`,
                 [
@@ -98,7 +98,7 @@ Deno.serve(async (req) => {
             
             values.push(user_id);
             const result = await client.query(
-                `UPDATE app_users SET ${setClauses.join(', ')}, updated_date = CURRENT_TIMESTAMP WHERE id = $${paramCounter} RETURNING *`,
+                `UPDATE psp_staff_users SET ${setClauses.join(', ')}, updated_date = CURRENT_TIMESTAMP WHERE id = $${paramCounter} RETURNING *`,
                 values
             );
             return Response.json({ success: true, user: result.rows[0] });
@@ -107,7 +107,7 @@ Deno.serve(async (req) => {
         // Update password
         if (action === 'updatePassword') {
             await client.query(
-                'UPDATE app_users SET password_hash = $1, updated_date = CURRENT_TIMESTAMP WHERE id = $2',
+                'UPDATE psp_staff_users SET password_hash = $1, updated_date = CURRENT_TIMESTAMP WHERE id = $2',
                 [new_password, user_id]
             );
             return Response.json({ success: true });

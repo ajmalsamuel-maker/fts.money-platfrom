@@ -22,33 +22,32 @@ Deno.serve(async (req) => {
         try {
             const schemaName = `psp_${psp_code.toLowerCase()}`;
             
-            // Drop old table if it has wrong structure
-            await client.query(`DROP TABLE IF EXISTS ${schemaName}.app_users CASCADE`);
-            
-            // Create clean app_users table
+            // Use bcrypt for password hashing
+            const bcrypt = await import('npm:bcrypt@5.1.1');
+            const password_hash = await bcrypt.hash(password || 'Welcome123!', 10);
+
+            // Check if table exists, create if not
             await client.query(`
-                CREATE TABLE ${schemaName}.app_users (
+                CREATE TABLE IF NOT EXISTS ${schemaName}.psp_staff_users (
                     id SERIAL PRIMARY KEY,
-                    email VARCHAR(255) UNIQUE NOT NULL,
+                    email VARCHAR(255) NOT NULL,
                     full_name VARCHAR(255),
                     role VARCHAR(50) DEFAULT 'user',
-                    password_hash TEXT,
                     status VARCHAR(50) DEFAULT 'active',
+                    password_hash TEXT,
                     last_login TIMESTAMP,
-                    created_at TIMESTAMP DEFAULT NOW(),
-                    updated_at TIMESTAMP DEFAULT NOW()
+                    two_factor_enabled BOOLEAN DEFAULT false,
+                    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    created_by VARCHAR(255)
                 )
             `);
 
-            // Simple hash for demo (use bcrypt in production)
-            const crypto = await import('node:crypto');
-            const password_hash = crypto.createHash('sha256').update(password || 'Welcome123!').digest('hex');
-
             // Insert user
             const result = await client.query(`
-                INSERT INTO ${schemaName}.app_users (email, full_name, role, password_hash, status)
+                INSERT INTO ${schemaName}.psp_staff_users (email, full_name, role, password_hash, status)
                 VALUES ($1, $2, $3, $4, $5)
-                RETURNING id, email, full_name, role, status, created_at
+                RETURNING id, email, full_name, role, status, created_date
             `, [email, full_name || 'User', role || 'admin', password_hash, 'active']);
 
             return Response.json({
