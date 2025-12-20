@@ -7,10 +7,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Save, Settings, Users, Shield, Bell, FileCheck } from 'lucide-react';
+import { ArrowLeft, Save, Settings, Users, Shield, Bell, FileCheck, Plus, Trash2, Edit2, Key } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 export default function FTSSettings() {
     const navigate = useNavigate();
@@ -27,6 +30,24 @@ export default function FTSSettings() {
         lei: '',
         legal_name: 'FTS.Money Ltd',
         organizational_roles: []
+    });
+
+    const [showUserDialog, setShowUserDialog] = useState(false);
+    const [editingUser, setEditingUser] = useState(null);
+    const [userForm, setUserForm] = useState({
+        email: '',
+        full_name: '',
+        platform_role: 'viewer'
+    });
+
+    const [securitySettings, setSecuritySettings] = useState({
+        mfa_required: true,
+        session_timeout_minutes: 30,
+        ip_whitelist_enabled: false,
+        ip_whitelist: '',
+        password_min_length: 12,
+        password_require_special: true,
+        audit_retention_days: 365
     });
 
     // Fetch platform LEI
@@ -79,6 +100,72 @@ export default function FTSSettings() {
             return;
         }
         initializeLEIMutation.mutate(leiForm);
+    };
+
+    // Fetch platform users
+    const { data: platformUsers } = useQuery({
+        queryKey: ['platformUsers'],
+        queryFn: async () => {
+            const response = await base44.functions.invoke('platformAuth', { 
+                action: 'list_users' 
+            });
+            return response.data?.users || [];
+        }
+    });
+
+    // Create/update user
+    const saveUserMutation = useMutation({
+        mutationFn: async (userData) => {
+            const response = await base44.functions.invoke('platformAuth', {
+                action: editingUser ? 'update_user' : 'create_user',
+                user_id: editingUser?.id,
+                ...userData
+            });
+            return response.data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['platformUsers'] });
+            setShowUserDialog(false);
+            setEditingUser(null);
+            setUserForm({ email: '', full_name: '', platform_role: 'viewer' });
+            toast.success(editingUser ? 'User updated' : 'User created');
+        },
+        onError: (error) => {
+            toast.error(error.message || 'Failed to save user');
+        }
+    });
+
+    // Delete user
+    const deleteUserMutation = useMutation({
+        mutationFn: async (userId) => {
+            const response = await base44.functions.invoke('platformAuth', {
+                action: 'delete_user',
+                user_id: userId
+            });
+            return response.data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['platformUsers'] });
+            toast.success('User deleted');
+        }
+    });
+
+    const handleSaveUser = () => {
+        if (!userForm.email || !userForm.platform_role) {
+            toast.error('Email and role are required');
+            return;
+        }
+        saveUserMutation.mutate(userForm);
+    };
+
+    const handleEditUser = (user) => {
+        setEditingUser(user);
+        setUserForm({
+            email: user.email,
+            full_name: user.full_name || '',
+            platform_role: user.platform_role
+        });
+        setShowUserDialog(true);
     };
 
     return (
@@ -337,12 +424,101 @@ export default function FTSSettings() {
                                 <CardTitle>Security Settings</CardTitle>
                                 <CardDescription>Configure platform security and access controls</CardDescription>
                             </CardHeader>
-                            <CardContent className="space-y-4">
-                                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                                    <p className="text-sm text-slate-700">
-                                        Role-based access control (RBAC) is enabled for Admin, Technology, and Delivery roles.
-                                    </p>
+                            <CardContent className="space-y-6">
+                                <div>
+                                    <h4 className="text-sm font-medium mb-3">Authentication & Access Control</h4>
+                                    <div className="space-y-4">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <Label>Require Multi-Factor Authentication (MFA)</Label>
+                                                <p className="text-xs text-slate-600">All platform admins must use MFA</p>
+                                            </div>
+                                            <Switch
+                                                checked={securitySettings.mfa_required}
+                                                onCheckedChange={(v) => setSecuritySettings({...securitySettings, mfa_required: v})}
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <Label>Session Timeout (minutes)</Label>
+                                            <Input
+                                                type="number"
+                                                value={securitySettings.session_timeout_minutes}
+                                                onChange={(e) => setSecuritySettings({...securitySettings, session_timeout_minutes: parseInt(e.target.value)})}
+                                                className="max-w-xs"
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <Label>Password Minimum Length</Label>
+                                            <Input
+                                                type="number"
+                                                value={securitySettings.password_min_length}
+                                                onChange={(e) => setSecuritySettings({...securitySettings, password_min_length: parseInt(e.target.value)})}
+                                                className="max-w-xs"
+                                            />
+                                        </div>
+
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <Label>Require Special Characters in Password</Label>
+                                                <p className="text-xs text-slate-600">Enforce strong password policy</p>
+                                            </div>
+                                            <Switch
+                                                checked={securitySettings.password_require_special}
+                                                onCheckedChange={(v) => setSecuritySettings({...securitySettings, password_require_special: v})}
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
+
+                                <div className="border-t pt-6">
+                                    <h4 className="text-sm font-medium mb-3">IP Whitelisting</h4>
+                                    <div className="space-y-4">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <Label>Enable IP Whitelisting</Label>
+                                                <p className="text-xs text-slate-600">Restrict access to specific IP addresses</p>
+                                            </div>
+                                            <Switch
+                                                checked={securitySettings.ip_whitelist_enabled}
+                                                onCheckedChange={(v) => setSecuritySettings({...securitySettings, ip_whitelist_enabled: v})}
+                                            />
+                                        </div>
+
+                                        {securitySettings.ip_whitelist_enabled && (
+                                            <div>
+                                                <Label>Allowed IP Addresses (comma-separated)</Label>
+                                                <Input
+                                                    placeholder="192.168.1.1, 10.0.0.1"
+                                                    value={securitySettings.ip_whitelist}
+                                                    onChange={(e) => setSecuritySettings({...securitySettings, ip_whitelist: e.target.value})}
+                                                />
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div className="border-t pt-6">
+                                    <h4 className="text-sm font-medium mb-3">Audit & Compliance</h4>
+                                    <div>
+                                        <Label>Audit Log Retention (days)</Label>
+                                        <Input
+                                            type="number"
+                                            value={securitySettings.audit_retention_days}
+                                            onChange={(e) => setSecuritySettings({...securitySettings, audit_retention_days: parseInt(e.target.value)})}
+                                            className="max-w-xs"
+                                        />
+                                        <p className="text-xs text-slate-600 mt-1">
+                                            Compliance requirement: Minimum 365 days
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <Button className="bg-blue-600 hover:bg-blue-700">
+                                    <Save className="h-4 w-4 mr-2" />
+                                    Save Security Settings
+                                </Button>
                             </CardContent>
                         </Card>
                     </TabsContent>
@@ -370,15 +546,148 @@ export default function FTSSettings() {
 
                     <TabsContent value="users">
                         <Card>
-                            <CardHeader>
-                                <CardTitle>User Management</CardTitle>
-                                <CardDescription>Manage platform users and their roles</CardDescription>
+                            <CardHeader className="flex flex-row items-center justify-between">
+                                <div>
+                                    <CardTitle>User Management</CardTitle>
+                                    <CardDescription>Manage platform administrators and their roles</CardDescription>
+                                </div>
+                                <Button 
+                                    onClick={() => {
+                                        setEditingUser(null);
+                                        setUserForm({ email: '', full_name: '', platform_role: 'viewer' });
+                                        setShowUserDialog(true);
+                                    }}
+                                    className="bg-blue-600 hover:bg-blue-700"
+                                >
+                                    <Plus className="h-4 w-4 mr-2" />
+                                    Add User
+                                </Button>
                             </CardHeader>
                             <CardContent>
-                                <p className="text-sm text-slate-600">User management interface coming soon...</p>
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead>Email</TableHead>
+                                            <TableHead>Name</TableHead>
+                                            <TableHead>Role</TableHead>
+                                            <TableHead>Created</TableHead>
+                                            <TableHead>Actions</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {platformUsers?.map((user) => (
+                                            <TableRow key={user.id}>
+                                                <TableCell className="font-medium">{user.email}</TableCell>
+                                                <TableCell>{user.full_name || '-'}</TableCell>
+                                                <TableCell>
+                                                    <span className="px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-800">
+                                                        {user.platform_role}
+                                                    </span>
+                                                </TableCell>
+                                                <TableCell className="text-sm text-slate-600">
+                                                    {user.created_date ? new Date(user.created_date).toLocaleDateString() : '-'}
+                                                </TableCell>
+                                                <TableCell>
+                                                    <div className="flex gap-2">
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="sm"
+                                                            onClick={() => handleEditUser(user)}
+                                                        >
+                                                            <Edit2 className="h-4 w-4" />
+                                                        </Button>
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="sm"
+                                                            onClick={() => {
+                                                                if (confirm('Delete this user?')) {
+                                                                    deleteUserMutation.mutate(user.id);
+                                                                }
+                                                            }}
+                                                        >
+                                                            <Trash2 className="h-4 w-4 text-red-600" />
+                                                        </Button>
+                                                    </div>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+
+                                {(!platformUsers || platformUsers.length === 0) && (
+                                    <div className="text-center py-8 text-slate-600">
+                                        <Users className="h-12 w-12 mx-auto mb-3 text-slate-400" />
+                                        <p>No platform users yet</p>
+                                        <p className="text-sm">Add your first administrator</p>
+                                    </div>
+                                )}
                             </CardContent>
                         </Card>
                     </TabsContent>
+
+                    <Dialog open={showUserDialog} onOpenChange={setShowUserDialog}>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>{editingUser ? 'Edit User' : 'Add New User'}</DialogTitle>
+                                <DialogDescription>
+                                    Configure platform administrator access and permissions
+                                </DialogDescription>
+                            </DialogHeader>
+                            <div className="space-y-4 py-4">
+                                <div>
+                                    <Label>Email</Label>
+                                    <Input
+                                        type="email"
+                                        value={userForm.email}
+                                        onChange={(e) => setUserForm({...userForm, email: e.target.value})}
+                                        disabled={!!editingUser}
+                                    />
+                                </div>
+                                <div>
+                                    <Label>Full Name</Label>
+                                    <Input
+                                        value={userForm.full_name}
+                                        onChange={(e) => setUserForm({...userForm, full_name: e.target.value})}
+                                    />
+                                </div>
+                                <div>
+                                    <Label>Platform Role</Label>
+                                    <Select
+                                        value={userForm.platform_role}
+                                        onValueChange={(value) => setUserForm({...userForm, platform_role: value})}
+                                    >
+                                        <SelectTrigger>
+                                            <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="super_admin">Super Admin</SelectItem>
+                                            <SelectItem value="platform_admin">Platform Admin</SelectItem>
+                                            <SelectItem value="operations">Operations</SelectItem>
+                                            <SelectItem value="finance">Finance</SelectItem>
+                                            <SelectItem value="finance_manager">Finance Manager</SelectItem>
+                                            <SelectItem value="support">Support</SelectItem>
+                                            <SelectItem value="viewer">Viewer</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                    <p className="text-xs text-slate-600 mt-1">
+                                        Defines access level and permissions
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="flex justify-end gap-3">
+                                <Button variant="outline" onClick={() => setShowUserDialog(false)}>
+                                    Cancel
+                                </Button>
+                                <Button 
+                                    onClick={handleSaveUser}
+                                    disabled={saveUserMutation.isPending}
+                                    className="bg-blue-600 hover:bg-blue-700"
+                                >
+                                    {saveUserMutation.isPending ? 'Saving...' : (editingUser ? 'Update User' : 'Create User')}
+                                </Button>
+                            </div>
+                        </DialogContent>
+                    </Dialog>
                 </Tabs>
             </div>
         </div>
