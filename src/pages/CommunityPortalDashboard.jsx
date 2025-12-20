@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import CommunityPortalSidebar from '@/components/community/CommunityPortalSidebar';
+import ComplianceFooter from '@/components/community/ComplianceFooter';
 import { FTS_COLORS, FTS_GRADIENTS } from '@/components/community/FTSBrandColors';
 import { 
     Building2, 
@@ -331,6 +332,8 @@ export default function CommunityPortalDashboard() {
                         </Card>
                     )}
                 </div>
+
+                <ComplianceFooter />
             </div>
         </div>
     );

@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Sparkles, Building2, Users, Globe, ArrowRight } from 'lucide-react';
 import { FTS_COLORS, FTS_GRADIENTS, FTS_LOGOS } from '@/components/community/FTSBrandColors';
+import ComplianceFooter from '@/components/community/ComplianceFooter';
 
 export default function CommunityPortalLogin() {
     const navigate = useNavigate();
@@ -143,10 +144,9 @@ export default function CommunityPortalLogin() {
                     </Card>
                 </div>
 
-                <p className="text-center text-slate-600 text-sm mt-6" style={{ fontFamily: 'Montserrat, sans-serif' }}>
-                    © 2025 FTS.Money - Fluid global payments
-                </p>
             </div>
+
+            <ComplianceFooter />
         </div>
     );
 }
