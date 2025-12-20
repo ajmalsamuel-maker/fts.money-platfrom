@@ -68,6 +68,7 @@ import ISOConfiguration from './pages/ISOConfiguration';
 import InstantPayments from './pages/InstantPayments';
 import Invoices from './pages/Invoices';
 import LEIComplianceDashboard from './pages/LEIComplianceDashboard';
+import LEIGLEIFTestReport from './pages/LEIGLEIFTestReport';
 import MIDPricingConfiguration from './pages/MIDPricingConfiguration';
 import MIDRouting from './pages/MIDRouting';
 import MarketAnalysis from './pages/MarketAnalysis';
@@ -107,8 +108,8 @@ import MerchantPortal from './pages/MerchantPortal';
 import MerchantPortalBuilder from './pages/MerchantPortalBuilder';
 import MerchantPricing from './pages/MerchantPricing';
 import MerchantPricingEngine from './pages/MerchantPricingEngine';
-import MerchantProvisioning from './pages/MerchantProvisioning';
 import MerchantRefunds from './pages/MerchantRefunds';
+import MerchantProvisioning from './pages/MerchantProvisioning';
 import MerchantSavedCards from './pages/MerchantSavedCards';
 import MerchantSelfOnboarding from './pages/MerchantSelfOnboarding';
 import MerchantSelfServicePortal from './pages/MerchantSelfServicePortal';
@@ -187,7 +188,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import LEIGLEIFTestReport from './pages/LEIGLEIFTestReport';
 import __Layout from './Layout.jsx';
 
 
@@ -262,6 +262,7 @@ export const PAGES = {
     "InstantPayments": InstantPayments,
     "Invoices": Invoices,
     "LEIComplianceDashboard": LEIComplianceDashboard,
+    "LEIGLEIFTestReport": LEIGLEIFTestReport,
     "MIDPricingConfiguration": MIDPricingConfiguration,
     "MIDRouting": MIDRouting,
     "MarketAnalysis": MarketAnalysis,
@@ -301,8 +302,8 @@ export const PAGES = {
     "MerchantPortalBuilder": MerchantPortalBuilder,
     "MerchantPricing": MerchantPricing,
     "MerchantPricingEngine": MerchantPricingEngine,
-    "MerchantProvisioning": MerchantProvisioning,
     "MerchantRefunds": MerchantRefunds,
+    "MerchantProvisioning": MerchantProvisioning,
     "MerchantSavedCards": MerchantSavedCards,
     "MerchantSelfOnboarding": MerchantSelfOnboarding,
     "MerchantSelfServicePortal": MerchantSelfServicePortal,
@@ -381,7 +382,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "LEIGLEIFTestReport": LEIGLEIFTestReport,
 }
 
 export const pagesConfig = {

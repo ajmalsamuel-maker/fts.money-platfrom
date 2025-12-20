@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import CommunityPortalSidebar from '@/components/community/CommunityPortalSidebar';
+import ComplianceFooter from '@/components/community/ComplianceFooter';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -342,6 +343,8 @@ export default function CommunityMarketplace() {
                         </TabsContent>
                     </Tabs>
                 </div>
+
+                <ComplianceFooter />
             </div>
 
             {/* Service Details Dialog */}
@@ -360,7 +363,7 @@ export default function CommunityMarketplace() {
                                     </div>
                                     <div>
                                         <DialogTitle className="text-xl">{selectedService.service_name}</DialogTitle>
-                                        <p className="text-sm text-slate-600">{selectedService.provider_name}</p>
+                                        <p className="text-sm text-slate-600">{selectedService.is_fts_owned ? 'FTS.Money' : selectedService.provider_name}</p>
                                     </div>
                                 </div>
                                 <Badge className={categoryConfig[selectedService.service_category]?.color}>
@@ -497,7 +500,7 @@ function ServiceGrid({ services, providers, isSubscribed, onViewDetails, onSubsc
                                     </div>
                                     <div>
                                         <CardTitle className="text-base leading-tight">{service.service_name}</CardTitle>
-                                        <p className="text-xs text-slate-500">{service.provider_name}</p>
+                                        <p className="text-xs text-slate-500">{service.is_fts_owned ? 'FTS.Money' : service.provider_name}</p>
                                     </div>
                                 </div>
                                 {service.is_fts_owned && (
