@@ -190,6 +190,8 @@ import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
 import PSPWholesaleMarketplace from './pages/PSPWholesaleMarketplace';
+import MyWholesaleOfferings from './pages/MyWholesaleOfferings';
+import PSPWholesaleBrowse from './pages/PSPWholesaleBrowse';
 import __Layout from './Layout.jsx';
 
 
@@ -386,6 +388,8 @@ export const PAGES = {
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
     "PSPWholesaleMarketplace": PSPWholesaleMarketplace,
+    "MyWholesaleOfferings": MyWholesaleOfferings,
+    "PSPWholesaleBrowse": PSPWholesaleBrowse,
 }
 
 export const pagesConfig = {
