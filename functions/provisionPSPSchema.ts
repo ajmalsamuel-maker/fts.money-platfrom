@@ -183,6 +183,8 @@ Deno.serve(async (req) => {
 
                 -- PSP Staff Users Table - COMPLETELY ISOLATED, NOT MANAGED BY BASE44
                 -- Separate table name prevents Base44 entity system from auto-syncing constraints
+                -- CRITICAL: Drop old app_users table if it exists from previous provisioning
+                DROP TABLE IF EXISTS ${schemaName}.app_users CASCADE;
                 DROP TABLE IF EXISTS ${schemaName}.psp_staff_users CASCADE;
                 CREATE TABLE ${schemaName}.psp_staff_users (
                     id SERIAL PRIMARY KEY,
