@@ -188,11 +188,14 @@ export default function FTSSettings() {
                             <CardContent className="space-y-6">
                                 {!platformLEI ? (
                                     <>
-                                        <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg">
-                                            <p className="text-sm text-amber-900 font-medium mb-2">⚠️ Platform LEI Not Initialized</p>
-                                            <p className="text-sm text-amber-800">
-                                                To enable full vLEI transaction signing and credential chain validation, 
-                                                FTS.Money must have its own LEI registered with GLEIF.
+                                        <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+                                            <p className="text-sm text-red-900 font-medium mb-2">🚨 PLATFORM LEI REQUIRED</p>
+                                            <p className="text-sm text-red-800">
+                                                <strong>MANDATORY:</strong> FTS.Money platform LEI must be configured before provisioning any PSPs.
+                                                This is a platform-level compliance requirement with no grace period.
+                                            </p>
+                                            <p className="text-xs text-red-700 mt-2">
+                                                Note: PSPs and merchants will have 6-month grace periods for vLEI, OOR, and ECR credentials.
                                             </p>
                                         </div>
 
