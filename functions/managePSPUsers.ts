@@ -22,13 +22,12 @@ Deno.serve(async (req) => {
 
             const client = await pool.connect();
             try {
-                // CRITICAL: Set schema to PSP-isolated schema (PCI/GDPR compliance)
                 const schemaName = `psp_${psp_code.toLowerCase()}`;
-                
+
                 // Create schema if it doesn't exist
                 await client.query(`CREATE SCHEMA IF NOT EXISTS ${schemaName}`);
 
-                // Create app_users table WITHOUT unique constraints (multi-tenant compliance)
+                // Create table WITHOUT unique constraint
                 await client.query(`
                     CREATE TABLE IF NOT EXISTS ${schemaName}.app_users (
                         id SERIAL PRIMARY KEY,
@@ -44,73 +43,32 @@ Deno.serve(async (req) => {
                     )
                 `);
 
-                // AGGRESSIVE cleanup - drop constraints by name directly
-                const constraintsToDrop = [
-                    'app_users_email_key',
-                    `${schemaName}_app_users_email_key`,
-                    'app_users_email_unique'
-                ];
+                // IMMEDIATELY drop constraints before ANY operations
+                await client.query(`ALTER TABLE ${schemaName}.app_users DROP CONSTRAINT IF EXISTS app_users_email_key CASCADE`);
+                await client.query(`ALTER TABLE ${schemaName}.app_users DROP CONSTRAINT IF EXISTS ${schemaName}_app_users_email_key CASCADE`);
 
-                for (const constraintName of constraintsToDrop) {
-                    try {
-                        await client.query(`
-                            ALTER TABLE ${schemaName}.app_users 
-                            DROP CONSTRAINT IF EXISTS ${constraintName} CASCADE
-                        `);
-                    } catch (e) {
-                        // Constraint doesn't exist, that's fine
-                    }
-                }
-
-                // Drop any remaining unique constraints
-                try {
-                    await client.query(`
-                        DO $$ 
-                        DECLARE
-                            constraint_rec RECORD;
-                            index_rec RECORD;
-                        BEGIN
-                            FOR constraint_rec IN 
-                                SELECT conname 
-                                FROM pg_constraint 
-                                WHERE conrelid = '${schemaName}.app_users'::regclass 
-                                AND contype = 'u'
-                            LOOP
-                                EXECUTE format('ALTER TABLE ${schemaName}.app_users DROP CONSTRAINT IF EXISTS %I CASCADE', constraint_rec.conname);
-                            END LOOP;
-                            
-                            FOR index_rec IN
-                                SELECT indexname
-                                FROM pg_indexes
-                                WHERE schemaname = '${schemaName}' 
-                                AND tablename = 'app_users'
-                                AND indexdef ILIKE '%UNIQUE%'
-                                AND indexname != 'app_users_pkey'
-                            LOOP
-                                EXECUTE format('DROP INDEX IF EXISTS ${schemaName}.%I CASCADE', index_rec.indexname);
-                            END LOOP;
-                        EXCEPTION
-                            WHEN OTHERS THEN NULL;
-                        END $$;
-                    `);
-                } catch (e) {
-                    console.log('Constraint cleanup:', e.message);
-                }
-
-                // Create non-unique index for performance
+                // Drop ALL unique constraints dynamically
                 await client.query(`
-                    CREATE INDEX IF NOT EXISTS idx_app_users_email_nonunique 
-                    ON ${schemaName}.app_users(email)
+                    DO $$ 
+                    DECLARE
+                        r RECORD;
+                    BEGIN
+                        FOR r IN 
+                            SELECT conname FROM pg_constraint 
+                            WHERE conrelid = '${schemaName}.app_users'::regclass AND contype = 'u'
+                        LOOP
+                            EXECUTE format('ALTER TABLE ${schemaName}.app_users DROP CONSTRAINT IF EXISTS %I CASCADE', r.conname);
+                        END LOOP;
+                    END $$;
                 `);
 
-                // Check if user already exists IN THIS PSP SCHEMA (programmatic check, no DB constraint)
+                // Check if user exists
                 const existingUser = await client.query(`
                     SELECT id, email, full_name, role, status, two_factor_enabled, created_at 
                     FROM ${schemaName}.app_users WHERE email = $1
                 `, [email]);
 
                 if (existingUser.rows.length > 0) {
-                    // User exists in THIS PSP - update role if needed
                     if (existingUser.rows[0].role !== role) {
                         await client.query(`
                             UPDATE ${schemaName}.app_users 
@@ -139,10 +97,10 @@ Deno.serve(async (req) => {
                     });
                 }
 
-                // Hash the password
+                // Hash password
                 const password_hash = await bcrypt.hash(password || 'Welcome123!', 10);
 
-                // Insert user - since we checked above, this should be safe
+                // Insert user
                 const result = await client.query(`
                     INSERT INTO ${schemaName}.app_users (email, full_name, role, password_hash, status, two_factor_enabled)
                     VALUES ($1, $2, $3, $4, $5, $6)
