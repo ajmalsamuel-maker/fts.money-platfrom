@@ -624,39 +624,36 @@ export default function ResourceOrchestration() {
                                             <Button 
                                                 className="w-full" 
                                                 size="sm"
-                                                type="button"
-                                                onClick={() => {
-                                                    alert(`Deploying ${provider.name} - Click OK to continue`);
-                                                    
-                                                    const providerTypeMap = {
-                                                        'tier1': 'global',
-                                                        'tier2': 'regional',
-                                                        'tier3': 'regional',
-                                                        'edge': 'global'
-                                                    };
-                                                    
-                                                    const connectorData = {
-                                                        connector_id: `CONN-${Date.now()}`,
-                                                        provider_name: provider.id,
-                                                        display_name: provider.name,
-                                                        provider_type: providerTypeMap[provider.tier] || 'regional',
-                                                        region: provider.country,
-                                                        supported_regions: provider.regions,
-                                                        status: 'inactive',
-                                                        connector_function: 'infrastructure/cloudConnector',
-                                                        supported_operations: ['provision_compute', 'provision_database', 'scale_compute', 'get_metrics'],
-                                                        required_secrets: [`${provider.id.toUpperCase()}_API_KEY`, `${provider.id.toUpperCase()}_API_SECRET`],
-                                                        notes: `${provider.specialty} | ${provider.recommendationReason} | Avg: $${provider.avgCostPerMonth}/mo`
-                                                    };
-                                                    
-                                                    base44.entities.CloudConnector.create(connectorData)
-                                                        .then(() => {
-                                                            queryClient.invalidateQueries(['cloud-connectors']);
-                                                            toast.success(`✅ ${provider.name} connector created!`);
-                                                        })
-                                                        .catch((error) => {
-                                                            toast.error(`Failed: ${error.message}`);
-                                                        });
+                                                onClick={async () => {
+                                                    try {
+                                                        const providerTypeMap = {
+                                                            'tier1': 'global',
+                                                            'tier2': 'regional',
+                                                            'tier3': 'regional',
+                                                            'edge': 'global'
+                                                        };
+                                                        
+                                                        const connectorData = {
+                                                            connector_id: `CONN-${Date.now()}`,
+                                                            provider_name: provider.id,
+                                                            display_name: provider.name,
+                                                            provider_type: providerTypeMap[provider.tier] || 'regional',
+                                                            region: provider.country,
+                                                            supported_regions: provider.regions,
+                                                            status: 'inactive',
+                                                            connector_function: 'infrastructure/cloudConnector',
+                                                            supported_operations: ['provision_compute', 'provision_database', 'scale_compute', 'get_metrics'],
+                                                            required_secrets: [`${provider.id.toUpperCase()}_API_KEY`, `${provider.id.toUpperCase()}_API_SECRET`],
+                                                            notes: `${provider.specialty} | ${provider.recommendationReason} | Avg: $${provider.avgCostPerMonth}/mo`
+                                                        };
+                                                        
+                                                        await base44.entities.CloudConnector.create(connectorData);
+                                                        queryClient.invalidateQueries(['cloud-connectors']);
+                                                        toast.success(`✅ ${provider.name} deployed!`);
+                                                    } catch (error) {
+                                                        console.error('Deploy error:', error);
+                                                        toast.error(`Failed: ${error.message || 'Unknown error'}`);
+                                                    }
                                                 }}
                                             >
                                                 <Plus className="h-3 w-3 mr-1" />
