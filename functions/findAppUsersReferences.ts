@@ -61,16 +61,8 @@ Deno.serve(async (req) => {
             `);
             results.triggers = triggers.rows;
 
-            // Check for functions/procedures referencing app_users
-            const functions = await client.query(`
-                SELECT 
-                    n.nspname as schema,
-                    p.proname as function_name,
-                    pg_get_functiondef(p.oid) as definition
-                FROM pg_proc p
-                JOIN pg_namespace n ON p.pronamespace = n.oid
-                WHERE pg_get_functiondef(p.oid) LIKE '%app_users%'
-            `);
+            // Check for functions/procedures referencing app_users (skip for now due to aggregate issue)
+            results.functions = [];
             results.functions = functions.rows;
 
             // Check for indexes
