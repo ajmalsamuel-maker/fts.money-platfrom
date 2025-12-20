@@ -204,7 +204,7 @@ export default function FTSMoneyPlatform() {
                         <h3 className="text-lg font-semibold text-slate-900 mb-4">Active PSP Instances</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             {psps.map((psp) => {
-                                const isTemplate = psp.psp_code === 'NETXHUB' || psp.is_template;
+                                const isTemplate = psp.is_template;
                                 
                                 return (
                                     <Card 
