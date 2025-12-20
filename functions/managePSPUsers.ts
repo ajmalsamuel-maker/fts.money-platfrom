@@ -24,10 +24,8 @@ Deno.serve(async (req) => {
             try {
                 const schemaName = `psp_${psp_code.toLowerCase()}`;
 
-                // Create schema if it doesn't exist
                 await client.query(`CREATE SCHEMA IF NOT EXISTS ${schemaName}`);
 
-                // Create table WITHOUT unique constraint
                 await client.query(`
                     CREATE TABLE IF NOT EXISTS ${schemaName}.app_users (
                         id SERIAL PRIMARY KEY,
@@ -43,21 +41,31 @@ Deno.serve(async (req) => {
                     )
                 `);
 
-                // IMMEDIATELY drop constraints before ANY operations
-                await client.query(`ALTER TABLE ${schemaName}.app_users DROP CONSTRAINT IF EXISTS app_users_email_key CASCADE`);
-                await client.query(`ALTER TABLE ${schemaName}.app_users DROP CONSTRAINT IF EXISTS ${schemaName}_app_users_email_key CASCADE`);
-
-                // Drop ALL unique constraints dynamically
-                await client.query(`
+                // CRITICAL: Aggressively remove ALL email constraints/indexes
+                const cleanupResult = await client.query(`
                     DO $$ 
                     DECLARE
                         r RECORD;
                     BEGIN
+                        -- Drop unique constraints
                         FOR r IN 
                             SELECT conname FROM pg_constraint 
                             WHERE conrelid = '${schemaName}.app_users'::regclass AND contype = 'u'
                         LOOP
                             EXECUTE format('ALTER TABLE ${schemaName}.app_users DROP CONSTRAINT IF EXISTS %I CASCADE', r.conname);
+                            RAISE NOTICE 'Dropped constraint: %', r.conname;
+                        END LOOP;
+
+                        -- Drop unique indexes
+                        FOR r IN
+                            SELECT indexname FROM pg_indexes
+                            WHERE schemaname = '${schemaName}' 
+                            AND tablename = 'app_users'
+                            AND indexdef ILIKE '%UNIQUE%'
+                            AND indexname != 'app_users_pkey'
+                        LOOP
+                            EXECUTE format('DROP INDEX IF EXISTS ${schemaName}.%I CASCADE', r.indexname);
+                            RAISE NOTICE 'Dropped index: %', r.indexname;
                         END LOOP;
                     END $$;
                 `);
