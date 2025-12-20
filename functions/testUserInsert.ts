@@ -18,7 +18,7 @@ Deno.serve(async (req) => {
             
             // Check existing users
             const existingCheck = await client.query(`
-                SELECT * FROM ${schemaName}.app_users WHERE email = $1
+                SELECT * FROM ${schemaName}.psp_staff_users WHERE email = $1
             `, [email]);
             
             if (existingCheck.rows.length > 0) {
@@ -33,7 +33,7 @@ Deno.serve(async (req) => {
             const password_hash = await bcrypt.hash('Welcome123!', 10);
             
             const result = await client.query(`
-                INSERT INTO ${schemaName}.app_users (email, full_name, role, password_hash, status)
+                INSERT INTO ${schemaName}.psp_staff_users (email, full_name, role, password_hash, status)
                 VALUES ($1, $2, $3, $4, $5)
                 RETURNING *
             `, [email, 'Test Admin', 'admin', password_hash, 'active']);

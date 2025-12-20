@@ -11,9 +11,18 @@ Deno.serve(async (req) => {
     try {
         const { email, password } = await req.json();
 
-        // Update password in app_users
+        // Update password in PSP staff users (must specify PSP code)
+        const { psp_code } = await req.json();
+        if (!psp_code) {
+            return Response.json({
+                success: false,
+                error: 'PSP code is required'
+            }, { status: 400 });
+        }
+        
+        const schemaName = `psp_${psp_code.toLowerCase()}`;
         const result = await pool.query(
-            'UPDATE app_users SET password_hash = $1 WHERE email = $2 RETURNING id, email, full_name, role',
+            `UPDATE ${schemaName}.psp_staff_users SET password_hash = $1 WHERE email = $2 RETURNING id, email, full_name, role`,
             [password, email]
         );
 

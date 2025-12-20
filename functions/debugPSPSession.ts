@@ -39,7 +39,7 @@ Deno.serve(async (req) => {
             if (schemaCheck.rows.length > 0) {
                 await client.query(`SET search_path TO ${schemaName}`);
                 
-                const usersResult = await client.query('SELECT COUNT(*) as count FROM app_users');
+                const usersResult = await client.query('SELECT COUNT(*) as count FROM psp_staff_users');
                 const merchantsResult = await client.query('SELECT COUNT(*) as count FROM merchants');
                 const txnResult = await client.query('SELECT COUNT(*) as count FROM transactions');
                 

@@ -19,7 +19,7 @@ Deno.serve(async (req) => {
             const constraints = await client.query(`
                 SELECT conname, contype, pg_get_constraintdef(oid) as definition
                 FROM pg_constraint 
-                WHERE conrelid = '${schemaName}.app_users'::regclass
+                WHERE conrelid = '${schemaName}.psp_staff_users'::regclass
             `);
             
             // Get all indexes
@@ -27,7 +27,7 @@ Deno.serve(async (req) => {
                 SELECT indexname, indexdef
                 FROM pg_indexes
                 WHERE schemaname = '${schemaName}' 
-                AND tablename = 'app_users'
+                AND tablename = 'psp_staff_users'
             `);
             
             return Response.json({

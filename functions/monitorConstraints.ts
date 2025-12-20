@@ -24,7 +24,7 @@ Deno.serve(async (req) => {
                     pg_get_expr(d.adbin, d.adrelid) as default_value
                 FROM pg_attribute a
                 LEFT JOIN pg_attrdef d ON (a.attrelid, a.attnum) = (d.adrelid, d.adnum)
-                WHERE a.attrelid = '${schemaName}.app_users'::regclass
+                WHERE a.attrelid = '${schemaName}.psp_staff_users'::regclass
                 AND a.attnum > 0
                 AND NOT a.attisdropped
                 ORDER BY a.attnum
@@ -37,7 +37,7 @@ Deno.serve(async (req) => {
                     contype,
                     pg_get_constraintdef(oid) as definition
                 FROM pg_constraint 
-                WHERE conrelid = '${schemaName}.app_users'::regclass
+                WHERE conrelid = '${schemaName}.psp_staff_users'::regclass
             `);
             
             // Get indexes
@@ -47,7 +47,7 @@ Deno.serve(async (req) => {
                     indexdef
                 FROM pg_indexes
                 WHERE schemaname = '${schemaName}' 
-                AND tablename = 'app_users'
+                AND tablename = 'psp_staff_users'
                 ORDER BY indexname
             `);
             

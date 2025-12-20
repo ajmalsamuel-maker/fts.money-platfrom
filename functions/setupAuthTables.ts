@@ -14,26 +14,8 @@ Deno.serve(async (req) => {
         const { action } = await req.json();
 
         if (action === 'setup') {
-            // Drop and recreate app_users table to ensure correct schema
-            await pool.query(`DROP TABLE IF EXISTS app_users CASCADE`);
-            await pool.query(`
-                CREATE TABLE app_users (
-                    id SERIAL PRIMARY KEY,
-                    email TEXT UNIQUE NOT NULL,
-                    full_name TEXT,
-                    role TEXT DEFAULT 'viewer',
-                    department TEXT,
-                    status TEXT DEFAULT 'active',
-                    password_hash TEXT,
-                    must_change_password BOOLEAN DEFAULT false,
-                    two_factor_enabled BOOLEAN DEFAULT false,
-                    two_factor_method TEXT DEFAULT 'email',
-                    last_login TIMESTAMP,
-                    last_login_ip TEXT,
-                    created_date TIMESTAMP DEFAULT NOW(),
-                    updated_date TIMESTAMP DEFAULT NOW()
-                )
-            `);
+            // Note: PSP staff users are now in isolated schemas (psp_staff_users)
+            // This function only sets up merchant_users, psp_settings, and theme_settings
 
             // Drop and recreate merchant_users table to ensure correct schema
             await pool.query(`DROP TABLE IF EXISTS merchant_users CASCADE`);
@@ -119,42 +101,12 @@ Deno.serve(async (req) => {
 
         if (action === 'migrate') {
             let migrated = {
-                app_users: 0,
                 merchant_users: 0,
                 psp_settings: 0,
                 theme_settings: 0
             };
 
-            // Migrate AppUser entities
-            const appUsers = await base44.asServiceRole.entities.AppUser.list();
-            for (const user of appUsers) {
-                await pool.query(`
-                    INSERT INTO app_users (email, full_name, role, department, status, password_hash, 
-                                          must_change_password, two_factor_enabled, two_factor_method, 
-                                          last_login, last_login_ip, created_date)
-                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
-                    ON CONFLICT (email) DO UPDATE SET
-                        full_name = EXCLUDED.full_name,
-                        role = EXCLUDED.role,
-                        department = EXCLUDED.department,
-                        status = EXCLUDED.status,
-                        updated_date = NOW()
-                `, [
-                    user.email,
-                    user.full_name,
-                    user.role || 'viewer',
-                    user.department,
-                    user.status || 'active',
-                    user.password_hash,
-                    user.must_change_password || false,
-                    user.two_factor_enabled || false,
-                    user.two_factor_method || 'email',
-                    user.last_login,
-                    user.last_login_ip,
-                    user.created_date || new Date().toISOString()
-                ]);
-                migrated.app_users++;
-            }
+            // Note: PSP staff users are now managed via managePSPUsers function in isolated schemas
 
             // Migrate MerchantUser entities
             const merchantUsers = await base44.asServiceRole.entities.MerchantUser.list();
