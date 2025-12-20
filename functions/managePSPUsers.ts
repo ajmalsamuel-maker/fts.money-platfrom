@@ -106,7 +106,7 @@ Deno.serve(async (req) => {
                     try {
                         const schemaName = `psp_${psp.psp_code.toLowerCase()}`;
 
-                        const result = await client.query(`SELECT id, email, full_name, role, status, two_factor_enabled, last_login, created_at FROM ${schemaName}.app_users ORDER BY id DESC`);
+                        const result = await client.query(`SELECT id, user_email as email, full_name, user_role as role, user_status as status, last_login, created_date FROM ${schemaName}.app_users ORDER BY id DESC`);
                         allUsers.push(...result.rows.map(u => ({ ...u, psp_code: psp.psp_code })));
                     } catch (err) {
                         // Schema might not exist yet
@@ -125,7 +125,7 @@ Deno.serve(async (req) => {
                 try {
                     const schemaName = `psp_${psp_code.toLowerCase()}`;
 
-                    const result = await client.query(`SELECT id, email, full_name, role, status, two_factor_enabled, last_login, created_at FROM ${schemaName}.app_users ORDER BY id DESC`);
+                    const result = await client.query(`SELECT id, user_email as email, full_name, user_role as role, user_status as status, last_login, created_date FROM ${schemaName}.app_users ORDER BY id DESC`);
                     
                     return Response.json({
                         success: true,
