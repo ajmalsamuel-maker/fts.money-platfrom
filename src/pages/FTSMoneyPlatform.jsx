@@ -159,7 +159,13 @@ export default function FTSMoneyPlatform() {
 
                     {/* Platform Performance Metrics */}
                     <div className="mb-6">
-                        <h3 className="text-sm font-semibold text-slate-900 mb-3">Platform Performance & Resources</h3>
+                        <div className="flex items-center justify-between mb-3">
+                            <h3 className="text-sm font-semibold text-slate-900">Platform Performance & Resources</h3>
+                            <Badge className="bg-amber-100 text-amber-700 border-amber-300">
+                                <Sparkles className="h-3 w-3 mr-1" />
+                                Simulation Mode
+                            </Badge>
+                        </div>
                         <div className="grid grid-cols-4 gap-4">
                             <Card className="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white">
                                 <CardContent className="p-4">
