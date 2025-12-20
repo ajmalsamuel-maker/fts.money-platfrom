@@ -4,13 +4,15 @@ import { createPageUrl } from '@/utils';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import CommunityPortalSidebar from '@/components/community/CommunityPortalSidebar';
+import ComplianceFooter from '@/components/community/ComplianceFooter';
+import LEIVerificationStep from '@/components/onboarding/LEIVerificationStep';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Users, CheckCircle2, Sparkles } from 'lucide-react';
+import { Users, CheckCircle2, Sparkles, Shield } from 'lucide-react';
 
 export default function ServiceProviderRegistration() {
     const navigate = useNavigate();
@@ -23,7 +25,9 @@ export default function ServiceProviderRegistration() {
         description: '',
         contact_email: '',
         support_email: '',
-        headquarters_country: ''
+        headquarters_country: '',
+        lei: '',
+        lei_verification_result: null
     });
 
     useEffect(() => {
@@ -150,7 +154,36 @@ export default function ServiceProviderRegistration() {
                                         required
                                     />
                                 </div>
+                            </form>
+                        </CardContent>
+                    </Card>
 
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <Shield className="h-5 w-5" />
+                                Legal Entity Identifier (LEI) or TAS Verification
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <LEIVerificationStep
+                                data={{
+                                    lei: formData.lei,
+                                    lei_verification_result: formData.lei_verification_result
+                                }}
+                                onChange={(leiData) => setFormData({ ...formData, ...leiData })}
+                                errors={{}}
+                                businessData={{
+                                    legal_name: formData.legal_name,
+                                    country: formData.headquarters_country
+                                }}
+                            />
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardContent className="pt-6">
+                            <form onSubmit={handleSubmit}>
                                 <div className="bg-slate-50 p-4 rounded-lg">
                                     <h4 className="font-semibold mb-2 flex items-center gap-2">
                                         <CheckCircle2 className="h-5 w-5 text-emerald-600" />
@@ -184,6 +217,8 @@ export default function ServiceProviderRegistration() {
                         </CardContent>
                     </Card>
                 </div>
+                
+                <ComplianceFooter />
             </div>
         </div>
     );
