@@ -162,47 +162,41 @@ export default function FTSMoneyPlatform() {
                         <h3 className="text-sm font-semibold text-slate-900 mb-3">Platform Performance & Resources</h3>
                         <div className="grid grid-cols-4 gap-4">
                             <Card className="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white">
-                                <CardContent className="p-6">
-                                    <div className="flex items-center justify-between mb-2">
-                                        <Activity className="h-8 w-8 opacity-80" />
-                                        <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+                                <CardContent className="p-4">
+                                    <div className="flex items-center justify-between mb-1">
+                                        <Activity className="h-6 w-6 opacity-80" />
+                                        <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
                                     </div>
                                     <p className="text-xs text-emerald-100 mb-1">Platform TPS</p>
-                                    <p className="text-3xl font-bold">{tps}</p>
-                                    <p className="text-xs text-emerald-100 mt-2">Transactions/sec (live)</p>
+                                    <p className="text-2xl font-bold">{tps}</p>
+                                    <p className="text-xs text-emerald-100 mt-1">Transactions/sec</p>
                                 </CardContent>
                             </Card>
 
                             <Card className="bg-gradient-to-br from-blue-500 to-blue-600 text-white">
-                                <CardContent className="p-6">
-                                    <div className="flex items-center justify-between mb-2">
-                                        <Cloud className="h-8 w-8 opacity-80" />
-                                    </div>
+                                <CardContent className="p-4">
+                                    <Cloud className="h-6 w-6 opacity-80 mb-1" />
                                     <p className="text-xs text-blue-100 mb-1">Cloud Instances</p>
-                                    <p className="text-3xl font-bold">{cloudStats.totalInstances}</p>
-                                    <p className="text-xs text-blue-100 mt-2">{cloudStats.activeRegions.size} regions • {cloudStats.providers.size} providers</p>
+                                    <p className="text-2xl font-bold">{cloudStats.totalInstances}</p>
+                                    <p className="text-xs text-blue-100 mt-1">{cloudStats.activeRegions.size} regions</p>
                                 </CardContent>
                             </Card>
 
                             <Card className="bg-gradient-to-br from-purple-500 to-purple-600 text-white">
-                                <CardContent className="p-6">
-                                    <div className="flex items-center justify-between mb-2">
-                                        <Cpu className="h-8 w-8 opacity-80" />
-                                    </div>
+                                <CardContent className="p-4">
+                                    <Cpu className="h-6 w-6 opacity-80 mb-1" />
                                     <p className="text-xs text-purple-100 mb-1">CPU Cores</p>
-                                    <p className="text-3xl font-bold">{cloudStats.totalCPU}</p>
-                                    <p className="text-xs text-purple-100 mt-2">{cloudStats.totalMemory} GB RAM</p>
+                                    <p className="text-2xl font-bold">{cloudStats.totalCPU}</p>
+                                    <p className="text-xs text-purple-100 mt-1">{cloudStats.totalMemory} GB RAM</p>
                                 </CardContent>
                             </Card>
 
                             <Card className="bg-gradient-to-br from-amber-500 to-amber-600 text-white">
-                                <CardContent className="p-6">
-                                    <div className="flex items-center justify-between mb-2">
-                                        <HardDrive className="h-8 w-8 opacity-80" />
-                                    </div>
+                                <CardContent className="p-4">
+                                    <HardDrive className="h-6 w-6 opacity-80 mb-1" />
                                     <p className="text-xs text-amber-100 mb-1">Storage</p>
-                                    <p className="text-3xl font-bold">{(cloudStats.totalStorage / 1024).toFixed(1)}</p>
-                                    <p className="text-xs text-amber-100 mt-2">TB allocated</p>
+                                    <p className="text-2xl font-bold">{(cloudStats.totalStorage / 1024).toFixed(1)}</p>
+                                    <p className="text-xs text-amber-100 mt-1">TB allocated</p>
                                 </CardContent>
                             </Card>
                         </div>
