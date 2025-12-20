@@ -49,7 +49,7 @@ Deno.serve(async (req) => {
                 
                 const result = await client.query(`
                     SELECT id, email, full_name, role, status
-                    FROM app_users 
+                    FROM psp_staff_users 
                     WHERE email = $1
                     LIMIT 1
                 `, [email]);
@@ -93,7 +93,7 @@ Deno.serve(async (req) => {
                 
                 const result = await client.query(`
                     SELECT id, email, full_name, role, status, password_hash
-                    FROM app_users 
+                    FROM psp_staff_users 
                     WHERE email = $1
                     LIMIT 1
                 `, [email]);
@@ -116,7 +116,7 @@ Deno.serve(async (req) => {
                 }
 
                 await client.query(`
-                    UPDATE app_users SET last_login = CURRENT_TIMESTAMP WHERE id = $1
+                    UPDATE psp_staff_users SET last_login = CURRENT_TIMESTAMP WHERE id = $1
                 `, [user.id]);
 
                 return Response.json({
