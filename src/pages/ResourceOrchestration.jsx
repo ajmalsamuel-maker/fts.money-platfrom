@@ -624,8 +624,30 @@ export default function ResourceOrchestration() {
                                             <Button 
                                                 className="w-full" 
                                                 size="sm"
-                                                onClick={() => {
-                                                    toast.success(`Contact sales to deploy on ${provider.name}`);
+                                                onClick={async () => {
+                                                    try {
+                                                        await base44.entities.CloudConnector.create({
+                                                            connector_id: `CONN-${Date.now()}`,
+                                                            provider_name: provider.id,
+                                                            display_name: provider.name,
+                                                            provider_type: provider.tier,
+                                                            region: provider.country,
+                                                            status: 'inactive',
+                                                            connector_function: 'infrastructure/cloudConnector',
+                                                            supported_operations: ['provision_compute', 'scale', 'monitor'],
+                                                            required_secrets: [`${provider.id.toUpperCase()}_API_KEY`, `${provider.id.toUpperCase()}_API_SECRET`],
+                                                            metadata: {
+                                                                specialty: provider.specialty,
+                                                                continent: provider.continent,
+                                                                recommendation: provider.recommendationReason,
+                                                                avg_cost: provider.avgCostPerMonth
+                                                            }
+                                                        });
+                                                        queryClient.invalidateQueries(['cloud-connectors']);
+                                                        toast.success(`${provider.name} connector created! Configure credentials to activate.`);
+                                                    } catch (error) {
+                                                        toast.error('Failed to create connector: ' + error.message);
+                                                    }
                                                 }}
                                             >
                                                 <Plus className="h-3 w-3 mr-1" />
