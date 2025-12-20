@@ -67,6 +67,7 @@ import FraudPrevention from './pages/FraudPrevention';
 import ISOConfiguration from './pages/ISOConfiguration';
 import InstantPayments from './pages/InstantPayments';
 import Invoices from './pages/Invoices';
+import LEIComplianceDashboard from './pages/LEIComplianceDashboard';
 import MIDPricingConfiguration from './pages/MIDPricingConfiguration';
 import MIDRouting from './pages/MIDRouting';
 import MarketAnalysis from './pages/MarketAnalysis';
@@ -186,7 +187,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import LEIComplianceDashboard from './pages/LEIComplianceDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -260,6 +260,7 @@ export const PAGES = {
     "ISOConfiguration": ISOConfiguration,
     "InstantPayments": InstantPayments,
     "Invoices": Invoices,
+    "LEIComplianceDashboard": LEIComplianceDashboard,
     "MIDPricingConfiguration": MIDPricingConfiguration,
     "MIDRouting": MIDRouting,
     "MarketAnalysis": MarketAnalysis,
@@ -379,7 +380,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "LEIComplianceDashboard": LEIComplianceDashboard,
 }
 
 export const pagesConfig = {

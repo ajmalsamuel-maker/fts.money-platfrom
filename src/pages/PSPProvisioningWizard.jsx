@@ -150,6 +150,8 @@ export default function PSPProvisioningWizard() {
         lei: '',
         vlei: '',
         lei_waived: false,
+        use_tas: false,
+        tas_number: '',
         branding: {
             primary_color: '#3b82f6',
             secondary_color: '#8b5cf6',
@@ -651,89 +653,165 @@ export default function PSPProvisioningWizard() {
                                 <div className="flex items-start gap-3">
                                    <Shield className="h-5 w-5 text-amber-600 mt-0.5" />
                                    <div className="flex-1">
-                                       <h3 className="font-semibold text-amber-900 mb-1">Legal Entity Identifier (LEI)</h3>
+                                       <h3 className="font-semibold text-amber-900 mb-1">Identity & Compliance Verification</h3>
                                        <p className="text-sm text-amber-800 mb-3">
-                                           LEI is required for regulatory compliance and cross-border payment processing. 
-                                           If you don't have one yet, you can obtain it from an authorized registry.
+                                           Choose your verification method: Use TAS (if already onboarded) or setup LEI/vLEI manually.
                                        </p>
                                    </div>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-4">
-                                   <div>
-                                       <Label>Legal Entity Identifier (LEI)</Label>
-                                       <Input
-                                           value={formData.lei || ''}
-                                           onChange={(e) => setFormData({...formData, lei: e.target.value.toUpperCase()})}
-                                           placeholder="20-character alphanumeric code"
-                                           maxLength={20}
-                                       />
-                                       <p className="text-xs text-slate-500 mt-1">20-character ISO 17442 code</p>
-                                   </div>
-                                   <div>
-                                       <Label>Verifiable LEI (vLEI) - Optional</Label>
-                                       <Input
-                                           value={formData.vlei || ''}
-                                           onChange={(e) => setFormData({...formData, vlei: e.target.value})}
-                                           placeholder="Digital credential"
-                                       />
-                                       <p className="text-xs text-slate-500 mt-1">Blockchain-based verification</p>
-                                   </div>
+                                {/* TAS vs Manual LEI Selection */}
+                                <div className="flex gap-3 mb-4">
+                                   <button
+                                       type="button"
+                                       className={cn(
+                                           "flex-1 p-4 rounded-lg border-2 transition-all",
+                                           formData.use_tas 
+                                               ? "border-blue-600 bg-blue-50" 
+                                               : "border-slate-300 bg-white hover:border-slate-400"
+                                       )}
+                                       onClick={() => setFormData({...formData, use_tas: true, lei: '', vlei: '', lei_waived: false})}
+                                   >
+                                       <div className="flex items-center gap-2 mb-2">
+                                           <CheckCircle className={cn("h-5 w-5", formData.use_tas ? "text-blue-600" : "text-slate-400")} />
+                                           <span className="font-semibold text-sm">Use TAS Number</span>
+                                       </div>
+                                       <p className="text-xs text-slate-600">Already onboarded on TAS platform</p>
+                                   </button>
+                                   
+                                   <button
+                                       type="button"
+                                       className={cn(
+                                           "flex-1 p-4 rounded-lg border-2 transition-all",
+                                           !formData.use_tas 
+                                               ? "border-blue-600 bg-blue-50" 
+                                               : "border-slate-300 bg-white hover:border-slate-400"
+                                       )}
+                                       onClick={() => setFormData({...formData, use_tas: false, tas_number: ''})}
+                                   >
+                                       <div className="flex items-center gap-2 mb-2">
+                                           <CheckCircle className={cn("h-5 w-5", !formData.use_tas ? "text-blue-600" : "text-slate-400")} />
+                                           <span className="font-semibold text-sm">Manual LEI/vLEI Setup</span>
+                                       </div>
+                                       <p className="text-xs text-slate-600">Configure LEI credentials manually</p>
+                                   </button>
                                 </div>
 
-                                {!formData.lei && (
-                                   <div className="space-y-3 pt-2 border-t border-amber-200">
-                                       <p className="text-sm font-medium text-amber-900">Don't have an LEI? Get one from these authorized registries:</p>
-                                       <div className="grid grid-cols-2 gap-2 text-sm">
-                                           <a href="https://www.gleif.org/en/lei/search" target="_blank" rel="noopener noreferrer" 
-                                              className="text-blue-600 hover:text-blue-800 underline">
-                                               • GLEIF (Global Registry)
-                                           </a>
-                                           <a href="https://www.leiroc.org" target="_blank" rel="noopener noreferrer"
-                                              className="text-blue-600 hover:text-blue-800 underline">
-                                               • LEI ROC (Regulatory Oversight)
-                                           </a>
-                                           <a href="https://www.bloomberg.com/lei" target="_blank" rel="noopener noreferrer"
-                                              className="text-blue-600 hover:text-blue-800 underline">
-                                               • Bloomberg LEI Services
-                                           </a>
-                                           <a href="https://www.lseg.com/en/data-analytics/financial-data/reference-data/lei" target="_blank" rel="noopener noreferrer"
-                                              className="text-blue-600 hover:text-blue-800 underline">
-                                               • LSEG (London Stock Exchange)
-                                           </a>
-                                           <a href="https://www.dnb.com/marketing/lei.html" target="_blank" rel="noopener noreferrer"
-                                              className="text-blue-600 hover:text-blue-800 underline">
-                                               • Dun & Bradstreet
-                                           </a>
-                                           <a href="https://www.wm-leiservices.com" target="_blank" rel="noopener noreferrer"
-                                              className="text-blue-600 hover:text-blue-800 underline">
-                                               • WM Datenservice (Germany)
-                                           </a>
+                                {/* TAS Number Input */}
+                                {formData.use_tas && (
+                                   <div className="space-y-3">
+                                       <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                                           <p className="text-sm font-medium text-blue-900 mb-1">✓ TAS Platform Integration</p>
+                                           <p className="text-xs text-blue-700">
+                                               Your business is already verified through TAS with complete LEI/vLEI credentials, 
+                                               KYB verification, and AML screening. We'll import your compliance data automatically.
+                                           </p>
                                        </div>
-
-                                       <div className="flex items-center gap-2 p-3 bg-amber-100 rounded-lg border border-amber-300">
-                                           <input
-                                               type="checkbox"
-                                               id="lei-waive"
-                                               checked={formData.lei_waived || false}
-                                               onChange={(e) => setFormData({...formData, lei_waived: e.target.checked})}
-                                               className="h-4 w-4"
+                                       
+                                       <div>
+                                           <Label>TAS Number *</Label>
+                                           <Input
+                                               value={formData.tas_number || ''}
+                                               onChange={(e) => setFormData({...formData, tas_number: e.target.value.toUpperCase()})}
+                                               placeholder="TAS-XXXXXXXX"
+                                               className="font-mono"
                                            />
-                                           <label htmlFor="lei-waive" className="text-sm font-medium text-amber-900 cursor-pointer">
-                                               I don't have an LEI yet - proceed with 3-month grace period
-                                           </label>
+                                           <p className="text-xs text-slate-500 mt-1">Your unique TAS identifier from the Trust Anchor Service</p>
                                        </div>
 
-                                       {formData.lei_waived && (
-                                           <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-                                               <p className="text-sm font-semibold text-red-900 mb-1">⚠️ Grace Period Notice</p>
-                                               <p className="text-xs text-red-800">
-                                                   Your PSP will be provisioned, but you must obtain an LEI within <strong>3 months</strong>. 
-                                                   Failure to do so may result in PSP suspension until LEI is provided.
-                                               </p>
+                                       <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
+                                           <p className="text-sm font-medium text-emerald-900 mb-2">🚀 Benefits of TAS Integration:</p>
+                                           <ul className="space-y-1 text-xs text-emerald-800">
+                                               <li>• Pre-verified LEI/vLEI credentials</li>
+                                               <li>• Completed KYB and AML screening</li>
+                                               <li>• Trusted data provenance chain</li>
+                                               <li>• Faster provisioning (skip compliance checks)</li>
+                                               <li>• Automatic credential updates</li>
+                                           </ul>
+                                       </div>
+                                   </div>
+                                )}
+
+                                {/* Manual LEI/vLEI Setup */}
+                                {!formData.use_tas && (
+                                   <>
+                                       <div className="grid grid-cols-2 gap-4">
+                                           <div>
+                                               <Label>Legal Entity Identifier (LEI)</Label>
+                                               <Input
+                                                   value={formData.lei || ''}
+                                                   onChange={(e) => setFormData({...formData, lei: e.target.value.toUpperCase()})}
+                                                   placeholder="20-character alphanumeric code"
+                                                   maxLength={20}
+                                               />
+                                               <p className="text-xs text-slate-500 mt-1">20-character ISO 17442 code</p>
+                                           </div>
+                                           <div>
+                                               <Label>Verifiable LEI (vLEI) - Optional</Label>
+                                               <Input
+                                                   value={formData.vlei || ''}
+                                                   onChange={(e) => setFormData({...formData, vlei: e.target.value})}
+                                                   placeholder="Digital credential"
+                                               />
+                                               <p className="text-xs text-slate-500 mt-1">Blockchain-based verification</p>
+                                           </div>
+                                       </div>
+
+                                       {!formData.lei && (
+                                           <div className="space-y-3 pt-2 border-t border-amber-200">
+                                               <p className="text-sm font-medium text-amber-900">Don't have an LEI? Get one from these authorized registries:</p>
+                                               <div className="grid grid-cols-2 gap-2 text-sm">
+                                                   <a href="https://www.gleif.org/en/lei/search" target="_blank" rel="noopener noreferrer" 
+                                                      className="text-blue-600 hover:text-blue-800 underline">
+                                                       • GLEIF (Global Registry)
+                                                   </a>
+                                                   <a href="https://www.leiroc.org" target="_blank" rel="noopener noreferrer"
+                                                      className="text-blue-600 hover:text-blue-800 underline">
+                                                       • LEI ROC (Regulatory Oversight)
+                                                   </a>
+                                                   <a href="https://www.bloomberg.com/lei" target="_blank" rel="noopener noreferrer"
+                                                      className="text-blue-600 hover:text-blue-800 underline">
+                                                       • Bloomberg LEI Services
+                                                   </a>
+                                                   <a href="https://www.lseg.com/en/data-analytics/financial-data/reference-data/lei" target="_blank" rel="noopener noreferrer"
+                                                      className="text-blue-600 hover:text-blue-800 underline">
+                                                       • LSEG (London Stock Exchange)
+                                                   </a>
+                                                   <a href="https://www.dnb.com/marketing/lei.html" target="_blank" rel="noopener noreferrer"
+                                                      className="text-blue-600 hover:text-blue-800 underline">
+                                                       • Dun & Bradstreet
+                                                   </a>
+                                                   <a href="https://www.wm-leiservices.com" target="_blank" rel="noopener noreferrer"
+                                                      className="text-blue-600 hover:text-blue-800 underline">
+                                                       • WM Datenservice (Germany)
+                                                   </a>
+                                               </div>
+
+                                               <div className="flex items-center gap-2 p-3 bg-amber-100 rounded-lg border border-amber-300">
+                                                   <input
+                                                       type="checkbox"
+                                                       id="lei-waive"
+                                                       checked={formData.lei_waived || false}
+                                                       onChange={(e) => setFormData({...formData, lei_waived: e.target.checked})}
+                                                       className="h-4 w-4"
+                                                   />
+                                                   <label htmlFor="lei-waive" className="text-sm font-medium text-amber-900 cursor-pointer">
+                                                       I don't have an LEI yet - proceed with 3-month grace period
+                                                   </label>
+                                               </div>
+
+                                               {formData.lei_waived && (
+                                                   <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                                                       <p className="text-sm font-semibold text-red-900 mb-1">⚠️ Grace Period Notice</p>
+                                                       <p className="text-xs text-red-800">
+                                                           Your PSP will be provisioned, but you must obtain an LEI within <strong>3 months</strong>. 
+                                                           Failure to do so may result in PSP suspension until LEI is provided.
+                                                       </p>
+                                                   </div>
+                                               )}
                                            </div>
                                        )}
-                                   </div>
+                                   </>
                                 )}
                                 </div>
                                 </CardContent>
