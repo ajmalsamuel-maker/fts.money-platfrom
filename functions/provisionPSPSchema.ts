@@ -181,17 +181,18 @@ Deno.serve(async (req) => {
                     created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 );
 
-                -- App Users Table (PSP staff) - COMPLETELY ISOLATED PER PSP
-                -- NO UNIQUE CONSTRAINTS - Users can exist in multiple PSP schemas
-                DROP TABLE IF EXISTS ${schemaName}.app_users CASCADE;
-                CREATE TABLE ${schemaName}.app_users (
+                -- PSP Staff Users Table - COMPLETELY ISOLATED, NOT MANAGED BY BASE44
+                -- Separate table name prevents Base44 entity system from auto-syncing constraints
+                DROP TABLE IF EXISTS ${schemaName}.psp_staff_users CASCADE;
+                CREATE TABLE ${schemaName}.psp_staff_users (
                     id SERIAL PRIMARY KEY,
-                    user_email VARCHAR(255) NOT NULL,
+                    email VARCHAR(255) NOT NULL,
                     full_name VARCHAR(255),
-                    user_role VARCHAR(50) DEFAULT 'user',
-                    user_status VARCHAR(50) DEFAULT 'active',
+                    role VARCHAR(50) DEFAULT 'user',
+                    status VARCHAR(50) DEFAULT 'active',
                     password_hash TEXT,
                     last_login TIMESTAMP,
+                    two_factor_enabled BOOLEAN DEFAULT false,
                     created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     created_by VARCHAR(255)
@@ -323,7 +324,7 @@ Deno.serve(async (req) => {
                 `);
             }
 
-            // No constraints to remove - table created without email column name that triggers auto-constraints
+            // No post-creation cleanup needed - separate table name prevents Base44 auto-sync
 
             // Create comprehensive indexes for performance and security
             await client.query(`
@@ -340,7 +341,7 @@ Deno.serve(async (req) => {
                 CREATE INDEX IF NOT EXISTS idx_payouts_merchant ON ${schemaName}.payouts(merchant_id);
                 CREATE INDEX IF NOT EXISTS idx_terminals_merchant ON ${schemaName}.terminals(merchant_id);
                 CREATE INDEX IF NOT EXISTS idx_mids_merchant ON ${schemaName}.merchant_mids(merchant_id);
-                CREATE INDEX IF NOT EXISTS idx_app_users_email ON ${schemaName}.app_users(user_email);
+                CREATE INDEX IF NOT EXISTS idx_psp_staff_users_email ON ${schemaName}.psp_staff_users(email);
                 CREATE INDEX IF NOT EXISTS idx_audit_date ON ${schemaName}.audit_logs(created_date DESC);
                 CREATE INDEX IF NOT EXISTS idx_audit_user ON ${schemaName}.audit_logs(user_email);
                 CREATE INDEX IF NOT EXISTS idx_risk_alerts_merchant ON ${schemaName}.risk_alerts(merchant_id);

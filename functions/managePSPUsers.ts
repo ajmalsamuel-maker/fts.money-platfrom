@@ -27,10 +27,10 @@ Deno.serve(async (req) => {
                 // Hash password
                 const password_hash = await bcrypt.hash(password || 'Welcome123!', 10);
 
-                // Check if user exists in THIS PSP schema only (using renamed column)
+                // Check if user exists in THIS PSP schema only
                 const existingCheck = await client.query(`
-                    SELECT id, user_email as email, full_name, user_role as role, user_status as status, created_date 
-                    FROM ${schemaName}.app_users WHERE user_email = $1
+                    SELECT id, email, full_name, role, status, two_factor_enabled, created_date 
+                    FROM ${schemaName}.psp_staff_users WHERE email = $1
                 `, [email]);
 
                 let result;
@@ -38,10 +38,10 @@ Deno.serve(async (req) => {
                     // User exists in THIS PSP - update role if different
                     if (existingCheck.rows[0].role !== role) {
                         result = await client.query(`
-                            UPDATE ${schemaName}.app_users 
-                            SET user_role = $1, updated_date = NOW()
-                            WHERE user_email = $2
-                            RETURNING id, user_email as email, full_name, user_role as role, user_status as status, created_date
+                            UPDATE ${schemaName}.psp_staff_users 
+                            SET role = $1, updated_date = NOW()
+                            WHERE email = $2
+                            RETURNING id, email, full_name, role, status, two_factor_enabled, created_date
                         `, [role, email]);
 
                         return Response.json({
@@ -66,10 +66,10 @@ Deno.serve(async (req) => {
 
                 // User doesn't exist in THIS PSP - create new
                 result = await client.query(`
-                    INSERT INTO ${schemaName}.app_users (user_email, full_name, user_role, password_hash, user_status)
-                    VALUES ($1, $2, $3, $4, $5)
-                    RETURNING id, user_email as email, full_name, user_role as role, user_status as status, created_date
-                `, [email, full_name, role || 'user', password_hash, status || 'active']);
+                    INSERT INTO ${schemaName}.psp_staff_users (email, full_name, role, password_hash, status, two_factor_enabled)
+                    VALUES ($1, $2, $3, $4, $5, $6)
+                    RETURNING id, email, full_name, role, status, two_factor_enabled, created_date
+                `, [email, full_name, role || 'user', password_hash, status || 'active', two_factor_enabled || false]);
 
                 return Response.json({
                     success: true,
@@ -106,7 +106,7 @@ Deno.serve(async (req) => {
                     try {
                         const schemaName = `psp_${psp.psp_code.toLowerCase()}`;
 
-                        const result = await client.query(`SELECT id, user_email as email, full_name, user_role as role, user_status as status, last_login, created_date FROM ${schemaName}.app_users ORDER BY id DESC`);
+                        const result = await client.query(`SELECT id, email, full_name, role, status, two_factor_enabled, last_login, created_date FROM ${schemaName}.psp_staff_users ORDER BY id DESC`);
                         allUsers.push(...result.rows.map(u => ({ ...u, psp_code: psp.psp_code })));
                     } catch (err) {
                         // Schema might not exist yet
@@ -125,7 +125,7 @@ Deno.serve(async (req) => {
                 try {
                     const schemaName = `psp_${psp_code.toLowerCase()}`;
 
-                    const result = await client.query(`SELECT id, user_email as email, full_name, user_role as role, user_status as status, last_login, created_date FROM ${schemaName}.app_users ORDER BY id DESC`);
+                    const result = await client.query(`SELECT id, email, full_name, role, status, two_factor_enabled, last_login, created_date FROM ${schemaName}.psp_staff_users ORDER BY id DESC`);
                     
                     return Response.json({
                         success: true,
@@ -164,12 +164,16 @@ Deno.serve(async (req) => {
                         values.push(full_name);
                     }
                     if (role !== undefined) {
-                        updates.push(`user_role = $${paramCount++}`);
+                        updates.push(`role = $${paramCount++}`);
                         values.push(role);
                     }
                     if (status !== undefined) {
-                        updates.push(`user_status = $${paramCount++}`);
+                        updates.push(`status = $${paramCount++}`);
                         values.push(status);
+                    }
+                    if (two_factor_enabled !== undefined) {
+                        updates.push(`two_factor_enabled = $${paramCount++}`);
+                        values.push(two_factor_enabled);
                     }
                     if (password) {
                         const password_hash = await bcrypt.hash(password, 10);
@@ -181,10 +185,10 @@ Deno.serve(async (req) => {
                     values.push(user_id);
 
                     const result = await client.query(`
-                        UPDATE ${schemaName}.app_users 
+                        UPDATE ${schemaName}.psp_staff_users 
                         SET ${updates.join(', ')}
                         WHERE id = $${paramCount}
-                        RETURNING id, user_email as email, full_name, user_role as role, user_status as status, created_date
+                        RETURNING id, email, full_name, role, status, two_factor_enabled, created_date
                     `, values);
 
                 return Response.json({
