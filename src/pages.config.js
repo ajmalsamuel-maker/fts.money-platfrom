@@ -128,6 +128,7 @@ import ModuleCatalogTest from './pages/ModuleCatalogTest';
 import MyPSPInstances from './pages/MyPSPInstances';
 import MyServiceRequests from './pages/MyServiceRequests';
 import MySubscriptions from './pages/MySubscriptions';
+import MyWholesaleOfferings from './pages/MyWholesaleOfferings';
 import NetworkTokenization from './pages/NetworkTokenization';
 import OpenBankingConfiguration from './pages/OpenBankingConfiguration';
 import PCICompliance from './pages/PCICompliance';
@@ -144,6 +145,8 @@ import PSPProvisioning from './pages/PSPProvisioning';
 import PSPProvisioningWizard from './pages/PSPProvisioningWizard';
 import PSPSetupWizard from './pages/PSPSetupWizard';
 import PSPUserManagement from './pages/PSPUserManagement';
+import PSPWholesaleBrowse from './pages/PSPWholesaleBrowse';
+import PSPWholesaleMarketplace from './pages/PSPWholesaleMarketplace';
 import PaymentGateways from './pages/PaymentGateways';
 import PaymentLinks from './pages/PaymentLinks';
 import PaymentOrchestration from './pages/PaymentOrchestration';
@@ -189,9 +192,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import PSPWholesaleMarketplace from './pages/PSPWholesaleMarketplace';
-import MyWholesaleOfferings from './pages/MyWholesaleOfferings';
-import PSPWholesaleBrowse from './pages/PSPWholesaleBrowse';
 import __Layout from './Layout.jsx';
 
 
@@ -326,6 +326,7 @@ export const PAGES = {
     "MyPSPInstances": MyPSPInstances,
     "MyServiceRequests": MyServiceRequests,
     "MySubscriptions": MySubscriptions,
+    "MyWholesaleOfferings": MyWholesaleOfferings,
     "NetworkTokenization": NetworkTokenization,
     "OpenBankingConfiguration": OpenBankingConfiguration,
     "PCICompliance": PCICompliance,
@@ -342,6 +343,8 @@ export const PAGES = {
     "PSPProvisioningWizard": PSPProvisioningWizard,
     "PSPSetupWizard": PSPSetupWizard,
     "PSPUserManagement": PSPUserManagement,
+    "PSPWholesaleBrowse": PSPWholesaleBrowse,
+    "PSPWholesaleMarketplace": PSPWholesaleMarketplace,
     "PaymentGateways": PaymentGateways,
     "PaymentLinks": PaymentLinks,
     "PaymentOrchestration": PaymentOrchestration,
@@ -387,9 +390,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "PSPWholesaleMarketplace": PSPWholesaleMarketplace,
-    "MyWholesaleOfferings": MyWholesaleOfferings,
-    "PSPWholesaleBrowse": PSPWholesaleBrowse,
 }
 
 export const pagesConfig = {

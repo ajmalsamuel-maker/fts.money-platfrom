@@ -653,7 +653,9 @@ export default function ResourceOrchestration() {
                                                         const result = await base44.entities.CloudConnector.create(connectorData);
                                                         console.log('✅ Connector created:', result);
                                                         queryClient.invalidateQueries(['cloud-connectors']);
-                                                        toast.success(`✅ ${provider.name} deployed!`);
+                                                        toast.success(`✅ ${provider.name} deployed! Scroll down to "Configured Connectors" to set up API keys and activate.`, {
+                                                            duration: 6000
+                                                        });
                                                     } catch (error) {
                                                         console.error('❌ Deploy error:', error);
                                                         toast.error(`Failed: ${error.message || 'Unknown error'}`);
@@ -686,86 +688,110 @@ export default function ResourceOrchestration() {
                                 </Card>
                             )}
 
-                            {/* Existing connectors section - collapsed */}
-                            <div className="pt-6 border-t">
-                                <h3 className="text-sm font-semibold text-slate-900 mb-3">Configured Connectors</h3>
-                                <div className="grid grid-cols-2 gap-4">
+                            {/* Configured Connectors Section */}
+                            <div className="pt-8 mt-8 border-t-2 border-slate-300">
+                                <div className="flex items-center justify-between mb-4">
+                                    <div>
+                                        <h3 className="text-lg font-bold text-slate-900">Configured Connectors</h3>
+                                        <p className="text-sm text-slate-600">Manage API keys, secrets, and activation status</p>
+                                    </div>
+                                    <Badge className="bg-blue-100 text-blue-700 text-sm">
+                                        {connectors.length} Active
+                                    </Badge>
+                                </div>
+                                
+                                {connectors.length === 0 && (
+                                    <Card className="bg-slate-50">
+                                        <CardContent className="p-8 text-center">
+                                            <Server className="h-12 w-12 text-slate-400 mx-auto mb-3" />
+                                            <p className="text-slate-600 font-medium mb-1">No connectors configured yet</p>
+                                            <p className="text-sm text-slate-500">Deploy a provider above to get started</p>
+                                        </CardContent>
+                                    </Card>
+                                )}
+                                
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                                     {connectors.map(connector => (
-                                    <Card key={connector.id}>
-                                        <CardHeader>
-                                            <div className="flex items-center justify-between">
-                                                <CardTitle className="text-base">{connector.display_name}</CardTitle>
-                                                <div className="flex items-center gap-2">
-                                                    <Badge className={
-                                                        connector.status === 'active' ? 'bg-emerald-100 text-emerald-700' :
-                                                        connector.status === 'testing' ? 'bg-amber-100 text-amber-700' :
-                                                        'bg-slate-100 text-slate-700'
-                                                    }>
-                                                        {connector.status}
-                                                    </Badge>
-                                                    <Badge variant="outline" className="capitalize">{connector.provider_type}</Badge>
+                                    <Card key={connector.id} className="border-2 hover:border-blue-300 transition-all">
+                                        <CardHeader className="pb-3">
+                                            <div className="flex items-start justify-between">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm">
+                                                        {connector.display_name?.substring(0, 2).toUpperCase()}
+                                                    </div>
+                                                    <div>
+                                                        <CardTitle className="text-base mb-1">{connector.display_name}</CardTitle>
+                                                        <div className="flex items-center gap-2">
+                                                            <Badge className={
+                                                                connector.status === 'active' ? 'bg-emerald-100 text-emerald-700 border-emerald-300' :
+                                                                connector.status === 'testing' ? 'bg-amber-100 text-amber-700 border-amber-300' :
+                                                                'bg-slate-100 text-slate-700 border-slate-300'
+                                                            } variant="outline">
+                                                                {connector.status}
+                                                            </Badge>
+                                                            <Badge variant="outline" className="capitalize text-xs">
+                                                                {connector.provider_type}
+                                                            </Badge>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </CardHeader>
-                                        <CardContent>
-                                            <div className="space-y-3">
-                                                <div className="text-sm">
-                                                    <p className="text-slate-600 mb-2">
-                                                        Function: <code className="bg-slate-100 px-2 py-1 rounded text-xs">{connector.connector_function}</code>
-                                                    </p>
-                                                    <p className="text-slate-600">Region: {connector.region}</p>
+                                        <CardContent className="space-y-4">
+                                            <div className="bg-slate-50 rounded-lg p-3">
+                                                <p className="text-xs text-slate-600 mb-1">Provider ID</p>
+                                                <code className="text-xs font-mono text-slate-900">{connector.provider_name}</code>
+                                                <p className="text-xs text-slate-600 mt-2 mb-1">Region</p>
+                                                <p className="text-xs text-slate-900">{connector.region}</p>
+                                            </div>
+                                            
+                                            {connector.notes && (
+                                                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                                                    <p className="text-xs text-blue-900">{connector.notes}</p>
                                                 </div>
-                                                <div className="text-sm">
-                                                    <p className="font-semibold text-slate-900 mb-1">Operations:</p>
-                                                    <div className="space-y-1 text-slate-600">
-                                                        {connector.supported_operations?.map((op, idx) => (
-                                                            <div key={idx}>• {op}</div>
-                                                        ))}
-                                                    </div>
+                                            )}
+                                            
+                                            <div>
+                                                <p className="text-xs font-semibold text-slate-900 mb-2">Required Secrets:</p>
+                                                <div className="flex flex-wrap gap-1">
+                                                    {connector.required_secrets?.map((secret, idx) => (
+                                                        <Badge key={idx} variant="outline" className="text-xs bg-amber-50 text-amber-800 border-amber-200">
+                                                            <Shield className="h-3 w-3 mr-1" />
+                                                            {secret}
+                                                        </Badge>
+                                                    ))}
                                                 </div>
-                                                <div className="text-sm">
-                                                    <p className="font-semibold text-slate-900 mb-1">Required Secrets:</p>
-                                                    <div className="flex flex-wrap gap-1">
-                                                        {connector.required_secrets?.map((secret, idx) => (
-                                                            <Badge key={idx} variant="outline" className="text-xs">{secret}</Badge>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                                <div className="flex justify-end gap-2 pt-2">
-                                                    <Button 
-                                                        size="sm" 
-                                                        variant="outline"
-                                                        onClick={() => {
-                                                            setEditingConnector(connector);
-                                                            setConnectorSecrets({});
-                                                            setDialogType('edit-connector');
-                                                            setShowDialog(true);
-                                                        }}
-                                                    >
-                                                        <Edit className="h-3 w-3 mr-1" />
-                                                        Configure
-                                                    </Button>
-                                                    <Button 
-                                                        size="sm" 
-                                                        variant="outline"
-                                                        onClick={() => updateConnectorMutation.mutate({ 
-                                                            id: connector.id, 
-                                                            data: { status: connector.status === 'active' ? 'inactive' : 'active' }
-                                                        })}
-                                                    >
-                                                        {connector.status === 'active' ? 'Disable' : 'Enable'}
-                                                    </Button>
-                                                </div>
+                                            </div>
+                                            
+                                            <div className="flex gap-2 pt-2">
+                                                <Button 
+                                                    size="sm" 
+                                                    className="flex-1"
+                                                    onClick={() => {
+                                                        setEditingConnector(connector);
+                                                        setConnectorSecrets({});
+                                                        setDialogType('edit-connector');
+                                                        setShowDialog(true);
+                                                    }}
+                                                >
+                                                    <Edit className="h-3 w-3 mr-1" />
+                                                    Configure
+                                                </Button>
+                                                <Button 
+                                                    size="sm" 
+                                                    variant={connector.status === 'active' ? 'destructive' : 'default'}
+                                                    className="flex-1"
+                                                    onClick={() => updateConnectorMutation.mutate({ 
+                                                        id: connector.id, 
+                                                        data: { status: connector.status === 'active' ? 'inactive' : 'active' }
+                                                    })}
+                                                >
+                                                    {connector.status === 'active' ? 'Disable' : 'Activate'}
+                                                </Button>
                                             </div>
                                         </CardContent>
                                     </Card>
                                 ))}
-
-                                    {connectors.length === 0 && (
-                                        <div className="col-span-2 text-center py-8">
-                                            <p className="text-sm text-slate-500">No connectors configured yet</p>
-                                        </div>
-                                    )}
                                 </div>
                             </div>
 
