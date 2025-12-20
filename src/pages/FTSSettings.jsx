@@ -51,18 +51,32 @@ export default function FTSSettings() {
     // Initialize platform LEI
     const initializeLEIMutation = useMutation({
         mutationFn: async (data) => {
-            const response = await base44.functions.invoke('initializePlatformLEI', {
-                action: 'initialize',
-                ...data
-            });
-            return response.data;
+            try {
+                const response = await base44.functions.invoke('initializePlatformLEI', {
+                    action: 'initialize',
+                    ...data
+                });
+                
+                if (response.data.error) {
+                    throw new Error(response.data.error);
+                }
+                
+                return response.data;
+            } catch (error) {
+                console.error('LEI initialization error:', error);
+                throw error;
+            }
         },
-        onSuccess: () => {
+        onSuccess: (data) => {
+            toast.dismiss();
             queryClient.invalidateQueries({ queryKey: ['platformLEI'] });
-            toast.success('Platform LEI initialized successfully');
+            toast.success('Platform LEI initialized and verified with GLEIF successfully!');
         },
         onError: (error) => {
-            toast.error(error.message || 'Failed to initialize LEI');
+            toast.dismiss();
+            const errorMessage = error?.response?.data?.error || error?.message || 'Failed to initialize LEI - please check the LEI number and try again';
+            toast.error(errorMessage, { duration: 5000 });
+            console.error('Full error:', error);
         }
     });
 
@@ -83,11 +97,13 @@ export default function FTSSettings() {
         }
     });
 
-    const handleInitializeLEI = () => {
+    const handleInitializeLEI = async () => {
         if (!leiForm.lei || leiForm.lei.length !== 20) {
             toast.error('LEI must be exactly 20 characters');
             return;
         }
+        
+        toast.loading('Verifying LEI with GLEIF...');
         initializeLEIMutation.mutate(leiForm);
     };
 
