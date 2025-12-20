@@ -31,6 +31,21 @@ Deno.serve(async (req) => {
                 // Hash password
                 const password_hash = await bcrypt.hash(password || 'Welcome123!', 10);
 
+                // Check if psp_staff_users table exists first
+                const tableCheck = await client.query(`
+                    SELECT EXISTS (
+                        SELECT FROM information_schema.tables 
+                        WHERE table_schema = $1 AND table_name = 'psp_staff_users'
+                    )
+                `, [schemaName]);
+
+                if (!tableCheck.rows[0].exists) {
+                    return Response.json({
+                        success: false,
+                        error: `PSP schema ${schemaName} not provisioned yet. Run provisionPSPSchema first.`
+                    }, { status: 400 });
+                }
+
                 // Check if user exists in THIS PSP schema only
                 const existingCheck = await client.query(`
                     SELECT id, email, full_name, role, status, two_factor_enabled, created_date 
