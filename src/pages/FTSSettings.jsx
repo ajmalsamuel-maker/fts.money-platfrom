@@ -7,13 +7,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Save, Settings, Users, Shield, Bell, FileCheck, Plus, Trash2, Edit2, Key } from 'lucide-react';
+import { ArrowLeft, Save, Settings, Shield, Bell, FileCheck } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 export default function FTSSettings() {
     const navigate = useNavigate();
@@ -30,14 +27,6 @@ export default function FTSSettings() {
         lei: '',
         legal_name: 'FTS.Money Ltd',
         organizational_roles: []
-    });
-
-    const [showUserDialog, setShowUserDialog] = useState(false);
-    const [editingUser, setEditingUser] = useState(null);
-    const [userForm, setUserForm] = useState({
-        email: '',
-        full_name: '',
-        platform_role: 'viewer'
     });
 
     const [securitySettings, setSecuritySettings] = useState({
@@ -102,71 +91,6 @@ export default function FTSSettings() {
         initializeLEIMutation.mutate(leiForm);
     };
 
-    // Fetch platform users
-    const { data: platformUsers } = useQuery({
-        queryKey: ['platformUsers'],
-        queryFn: async () => {
-            const response = await base44.functions.invoke('platformAuth', { 
-                action: 'list_users' 
-            });
-            return response.data?.users || [];
-        }
-    });
-
-    // Create/update user
-    const saveUserMutation = useMutation({
-        mutationFn: async (userData) => {
-            const response = await base44.functions.invoke('platformAuth', {
-                action: editingUser ? 'update_user' : 'create_user',
-                user_id: editingUser?.id,
-                ...userData
-            });
-            return response.data;
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['platformUsers'] });
-            setShowUserDialog(false);
-            setEditingUser(null);
-            setUserForm({ email: '', full_name: '', platform_role: 'viewer' });
-            toast.success(editingUser ? 'User updated' : 'User created');
-        },
-        onError: (error) => {
-            toast.error(error.message || 'Failed to save user');
-        }
-    });
-
-    // Delete user
-    const deleteUserMutation = useMutation({
-        mutationFn: async (userId) => {
-            const response = await base44.functions.invoke('platformAuth', {
-                action: 'delete_user',
-                user_id: userId
-            });
-            return response.data;
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['platformUsers'] });
-            toast.success('User deleted');
-        }
-    });
-
-    const handleSaveUser = () => {
-        if (!userForm.email || !userForm.platform_role) {
-            toast.error('Email and role are required');
-            return;
-        }
-        saveUserMutation.mutate(userForm);
-    };
-
-    const handleEditUser = (user) => {
-        setEditingUser(user);
-        setUserForm({
-            email: user.email,
-            full_name: user.full_name || '',
-            platform_role: user.platform_role
-        });
-        setShowUserDialog(true);
-    };
 
     return (
         <div className="min-h-screen bg-slate-50">
@@ -544,150 +468,7 @@ export default function FTSSettings() {
                         </Card>
                     </TabsContent>
 
-                    <TabsContent value="users">
-                        <Card>
-                            <CardHeader className="flex flex-row items-center justify-between">
-                                <div>
-                                    <CardTitle>User Management</CardTitle>
-                                    <CardDescription>Manage platform administrators and their roles</CardDescription>
-                                </div>
-                                <Button 
-                                    onClick={() => {
-                                        setEditingUser(null);
-                                        setUserForm({ email: '', full_name: '', platform_role: 'viewer' });
-                                        setShowUserDialog(true);
-                                    }}
-                                    className="bg-blue-600 hover:bg-blue-700"
-                                >
-                                    <Plus className="h-4 w-4 mr-2" />
-                                    Add User
-                                </Button>
-                            </CardHeader>
-                            <CardContent>
-                                <Table>
-                                    <TableHeader>
-                                        <TableRow>
-                                            <TableHead>Email</TableHead>
-                                            <TableHead>Name</TableHead>
-                                            <TableHead>Role</TableHead>
-                                            <TableHead>Created</TableHead>
-                                            <TableHead>Actions</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {platformUsers?.map((user) => (
-                                            <TableRow key={user.id}>
-                                                <TableCell className="font-medium">{user.email}</TableCell>
-                                                <TableCell>{user.full_name || '-'}</TableCell>
-                                                <TableCell>
-                                                    <span className="px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-800">
-                                                        {user.platform_role}
-                                                    </span>
-                                                </TableCell>
-                                                <TableCell className="text-sm text-slate-600">
-                                                    {user.created_date ? new Date(user.created_date).toLocaleDateString() : '-'}
-                                                </TableCell>
-                                                <TableCell>
-                                                    <div className="flex gap-2">
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="sm"
-                                                            onClick={() => handleEditUser(user)}
-                                                        >
-                                                            <Edit2 className="h-4 w-4" />
-                                                        </Button>
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="sm"
-                                                            onClick={() => {
-                                                                if (confirm('Delete this user?')) {
-                                                                    deleteUserMutation.mutate(user.id);
-                                                                }
-                                                            }}
-                                                        >
-                                                            <Trash2 className="h-4 w-4 text-red-600" />
-                                                        </Button>
-                                                    </div>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
 
-                                {(!platformUsers || platformUsers.length === 0) && (
-                                    <div className="text-center py-8 text-slate-600">
-                                        <Users className="h-12 w-12 mx-auto mb-3 text-slate-400" />
-                                        <p>No platform users yet</p>
-                                        <p className="text-sm">Add your first administrator</p>
-                                    </div>
-                                )}
-                            </CardContent>
-                        </Card>
-                    </TabsContent>
-
-                    <Dialog open={showUserDialog} onOpenChange={setShowUserDialog}>
-                        <DialogContent>
-                            <DialogHeader>
-                                <DialogTitle>{editingUser ? 'Edit User' : 'Add New User'}</DialogTitle>
-                                <DialogDescription>
-                                    Configure platform administrator access and permissions
-                                </DialogDescription>
-                            </DialogHeader>
-                            <div className="space-y-4 py-4">
-                                <div>
-                                    <Label>Email</Label>
-                                    <Input
-                                        type="email"
-                                        value={userForm.email}
-                                        onChange={(e) => setUserForm({...userForm, email: e.target.value})}
-                                        disabled={!!editingUser}
-                                    />
-                                </div>
-                                <div>
-                                    <Label>Full Name</Label>
-                                    <Input
-                                        value={userForm.full_name}
-                                        onChange={(e) => setUserForm({...userForm, full_name: e.target.value})}
-                                    />
-                                </div>
-                                <div>
-                                    <Label>Platform Role</Label>
-                                    <Select
-                                        value={userForm.platform_role}
-                                        onValueChange={(value) => setUserForm({...userForm, platform_role: value})}
-                                    >
-                                        <SelectTrigger>
-                                            <SelectValue />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="super_admin">Super Admin</SelectItem>
-                                            <SelectItem value="platform_admin">Platform Admin</SelectItem>
-                                            <SelectItem value="operations">Operations</SelectItem>
-                                            <SelectItem value="finance">Finance</SelectItem>
-                                            <SelectItem value="finance_manager">Finance Manager</SelectItem>
-                                            <SelectItem value="support">Support</SelectItem>
-                                            <SelectItem value="viewer">Viewer</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                    <p className="text-xs text-slate-600 mt-1">
-                                        Defines access level and permissions
-                                    </p>
-                                </div>
-                            </div>
-                            <div className="flex justify-end gap-3">
-                                <Button variant="outline" onClick={() => setShowUserDialog(false)}>
-                                    Cancel
-                                </Button>
-                                <Button 
-                                    onClick={handleSaveUser}
-                                    disabled={saveUserMutation.isPending}
-                                    className="bg-blue-600 hover:bg-blue-700"
-                                >
-                                    {saveUserMutation.isPending ? 'Saving...' : (editingUser ? 'Update User' : 'Create User')}
-                                </Button>
-                            </div>
-                        </DialogContent>
-                    </Dialog>
                 </Tabs>
             </div>
         </div>
