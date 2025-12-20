@@ -79,50 +79,58 @@ Deno.serve(async (req) => {
                     END $$;
                 `);
 
-                // Check if user exists
-                const existingUser = await client.query(`
-                    SELECT id, email, full_name, role, status, two_factor_enabled, created_at 
-                    FROM ${schemaName}.app_users WHERE email = $1
-                `, [email]);
-
-                if (existingUser.rows.length > 0) {
-                    if (existingUser.rows[0].role !== role) {
-                        await client.query(`
-                            UPDATE ${schemaName}.app_users 
-                            SET role = $1, updated_at = NOW()
-                            WHERE email = $2
-                        `, [role, email]);
-
-                        return Response.json({
-                            success: true,
-                            user: {
-                                ...existingUser.rows[0],
-                                role: role,
-                                psp_code: psp_code
-                            },
-                            message: `User already exists in this PSP - updated role to ${role}`
-                        });
-                    }
-
-                    return Response.json({
-                        success: true,
-                        user: {
-                            ...existingUser.rows[0],
-                            psp_code: psp_code
-                        },
-                        message: 'User already exists in this PSP'
-                    });
-                }
-
                 // Hash password
                 const password_hash = await bcrypt.hash(password || 'Welcome123!', 10);
 
-                // Insert user
-                const result = await client.query(`
-                    INSERT INTO ${schemaName}.app_users (email, full_name, role, password_hash, status, two_factor_enabled)
-                    VALUES ($1, $2, $3, $4, $5, $6)
-                    RETURNING id, email, full_name, role, status, two_factor_enabled, created_at
-                `, [email, full_name, role || 'user', password_hash, status || 'active', two_factor_enabled || false]);
+                // Try INSERT, catch constraint violation, then check if user exists
+                let result;
+                try {
+                    result = await client.query(`
+                        INSERT INTO ${schemaName}.app_users (email, full_name, role, password_hash, status, two_factor_enabled)
+                        VALUES ($1, $2, $3, $4, $5, $6)
+                        RETURNING id, email, full_name, role, status, two_factor_enabled, created_at
+                    `, [email, full_name, role || 'user', password_hash, status || 'active', two_factor_enabled || false]);
+                } catch (insertError) {
+                    // If duplicate key error, user exists - fetch and return
+                    if (insertError.code === '23505') {
+                        const existingUser = await client.query(`
+                            SELECT id, email, full_name, role, status, two_factor_enabled, created_at 
+                            FROM ${schemaName}.app_users WHERE email = $1
+                        `, [email]);
+
+                        if (existingUser.rows.length > 0) {
+                            // Update role if different
+                            if (existingUser.rows[0].role !== role) {
+                                await client.query(`
+                                    UPDATE ${schemaName}.app_users 
+                                    SET role = $1, updated_at = NOW()
+                                    WHERE email = $2
+                                `, [role, email]);
+
+                                return Response.json({
+                                    success: true,
+                                    user: {
+                                        ...existingUser.rows[0],
+                                        role: role,
+                                        psp_code: psp_code
+                                    },
+                                    message: `User already exists - updated role to ${role}`
+                                });
+                            }
+
+                            return Response.json({
+                                success: true,
+                                user: {
+                                    ...existingUser.rows[0],
+                                    psp_code: psp_code
+                                },
+                                message: 'User already exists in this PSP'
+                            });
+                        }
+                    }
+                    // Re-throw if not a duplicate key error or user not found
+                    throw insertError;
+                }
 
                 return Response.json({
                     success: true,
