@@ -72,6 +72,11 @@ export default function FTSServiceProviders() {
         queryFn: () => base44.entities.ServiceCatalog.list()
     });
 
+    const { data: subscriptions = [] } = useQuery({
+        queryKey: ['psp-service-subscriptions'],
+        queryFn: () => base44.entities.PSPServiceSubscription.list()
+    });
+
     const createProviderMutation = useMutation({
         mutationFn: (data) => base44.entities.ServiceProvider.create(data),
         onSuccess: () => {
@@ -384,6 +389,9 @@ export default function FTSServiceProviders() {
                             const status = statusConfig[provider.status] || statusConfig.pending;
                             const StatusIcon = status.icon;
                             const providerServices = services.filter(s => s.provider_id === provider.id);
+                            const providerServiceIds = providerServices.map(s => s.id);
+                            const uniquePSPs = new Set(subscriptions.filter(sub => providerServiceIds.includes(sub.service_id)).map(sub => sub.psp_code));
+                            const pspCount = uniquePSPs.size;
                             
                             return (
                                 <Card key={provider.id} className="hover:shadow-md transition-all">
@@ -420,6 +428,10 @@ export default function FTSServiceProviders() {
                                             <div className="flex justify-between pt-2 border-t">
                                                 <span className="text-slate-500">Services:</span>
                                                 <span className="font-semibold">{providerServices.length}</span>
+                                            </div>
+                                            <div className="flex justify-between">
+                                                <span className="text-slate-500">Used by PSPs:</span>
+                                                <Badge variant="secondary">{pspCount} PSPs</Badge>
                                             </div>
                                             <div className="flex justify-between">
                                                 <span className="text-slate-500">FTS Commission:</span>

@@ -48,6 +48,7 @@ import FTSAuditLogs from './pages/FTSAuditLogs';
 import FTSBlockchainIntegration from './pages/FTSBlockchainIntegration';
 import FTSClients from './pages/FTSClients';
 import FTSCompliance from './pages/FTSCompliance';
+import FTSComplianceTesting from './pages/FTSComplianceTesting';
 import FTSDomainManagement from './pages/FTSDomainManagement';
 import FTSFeeTemplates from './pages/FTSFeeTemplates';
 import FTSFinancialRegistries from './pages/FTSFinancialRegistries';
@@ -107,8 +108,8 @@ import MerchantPayouts from './pages/MerchantPayouts';
 import MerchantPortal from './pages/MerchantPortal';
 import MerchantPortalBuilder from './pages/MerchantPortalBuilder';
 import MerchantPricing from './pages/MerchantPricing';
-import MerchantPricingEngine from './pages/MerchantPricingEngine';
 import MerchantRefunds from './pages/MerchantRefunds';
+import MerchantPricingEngine from './pages/MerchantPricingEngine';
 import MerchantProvisioning from './pages/MerchantProvisioning';
 import MerchantSavedCards from './pages/MerchantSavedCards';
 import MerchantSelfOnboarding from './pages/MerchantSelfOnboarding';
@@ -188,7 +189,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import FTSComplianceTesting from './pages/FTSComplianceTesting';
 import __Layout from './Layout.jsx';
 
 
@@ -243,6 +243,7 @@ export const PAGES = {
     "FTSBlockchainIntegration": FTSBlockchainIntegration,
     "FTSClients": FTSClients,
     "FTSCompliance": FTSCompliance,
+    "FTSComplianceTesting": FTSComplianceTesting,
     "FTSDomainManagement": FTSDomainManagement,
     "FTSFeeTemplates": FTSFeeTemplates,
     "FTSFinancialRegistries": FTSFinancialRegistries,
@@ -302,8 +303,8 @@ export const PAGES = {
     "MerchantPortal": MerchantPortal,
     "MerchantPortalBuilder": MerchantPortalBuilder,
     "MerchantPricing": MerchantPricing,
-    "MerchantPricingEngine": MerchantPricingEngine,
     "MerchantRefunds": MerchantRefunds,
+    "MerchantPricingEngine": MerchantPricingEngine,
     "MerchantProvisioning": MerchantProvisioning,
     "MerchantSavedCards": MerchantSavedCards,
     "MerchantSelfOnboarding": MerchantSelfOnboarding,
@@ -383,7 +384,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "FTSComplianceTesting": FTSComplianceTesting,
 }
 
 export const pagesConfig = {
