@@ -323,7 +323,8 @@ Deno.serve(async (req) => {
                 `);
             }
 
-            // No post-creation cleanup needed - separate table name prevents Base44 auto-sync
+            // Explicitly prevent Base44 entity system from creating app_users
+            await client.query(`DROP TABLE IF EXISTS ${schemaName}.app_users CASCADE`);
 
             // Create comprehensive indexes for performance and security
             await client.query(`
