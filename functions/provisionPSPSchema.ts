@@ -306,7 +306,7 @@ Deno.serve(async (req) => {
                 DO $$ 
                 BEGIN
                     DROP TABLE IF EXISTS app_users CASCADE;
-                    EXECUTE 'DROP TABLE IF EXISTS ${schemaName}.app_users CASCADE;
+                    EXECUTE 'DROP TABLE IF EXISTS ${schemaName}.app_users CASCADE';
                 END $$;
             `);
             console.log('[PROVISION] app_users dropped after table creation');
