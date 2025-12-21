@@ -29,7 +29,6 @@ import {
 import { COUNTRIES } from '@/components/utils/countries';
 import { TIMEZONES } from '@/components/utils/timezones';
 import { ISO4217_CURRENCIES, getCurrencySymbol } from '@/components/utils/iso4217';
-import DeploymentSelectorComponent from '@/components/provisioning/DeploymentSelectorComponent';
 import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
 
 const tiers = [
@@ -1100,11 +1099,37 @@ export default function PSPProvisioningWizard() {
                             <CardDescription>Select cloud infrastructure for primary and disaster recovery environments</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-6">
-                            <DeploymentSelectorComponent
-                                connectors={connectors.filter(c => c.status === 'active')}
-                                formData={formData}
-                                setFormData={setFormData}
-                            />
+                            <div className="space-y-4">
+                                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                                    <p className="text-sm font-medium text-blue-900">Cloud Infrastructure</p>
+                                    <p className="text-xs text-blue-700">Select cloud provider for hosting</p>
+                                </div>
+                                
+                                <div>
+                                    <Label>Primary Cloud Provider</Label>
+                                    <Select
+                                        value={formData.deployment_config?.primary_cloud || ''}
+                                        onValueChange={(v) => setFormData({
+                                            ...formData,
+                                            deployment_config: {
+                                                ...formData.deployment_config,
+                                                primary_cloud: v
+                                            }
+                                        })}
+                                    >
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Choose cloud provider" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {connectors.filter(c => c.status === 'active').map((connector) => (
+                                                <SelectItem key={connector.id} value={connector.id}>
+                                                    {connector.display_name} - {connector.region}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            </div>
                         </CardContent>
                         <div className="flex justify-between p-6 border-t border-slate-200">
                             <Button variant="outline" onClick={() => setStep(5)}>
