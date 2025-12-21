@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { Cloud, MapPin, DollarSign, Server, ShieldCheck, CheckCircle2 } from 'lucide-react';
 
 export default function DeploymentSelectorComponent({ connectors, formData, setFormData }) {
-    const [enableDR, setEnableDR] = useState(false);
+    const [enableDR, setEnableDR] = useState(formData.deployment_config?.dr_enabled || false);
 
     const updateDeployment = (field, value) => {
         setFormData({
@@ -106,7 +106,7 @@ export default function DeploymentSelectorComponent({ connectors, formData, setF
                     <div>
                         <Label>Select Cloud Provider</Label>
                         <Select
-                            value={formData.deployment_config?.primary_cloud}
+                            value={formData.deployment_config?.primary_cloud || ''}
                             onValueChange={(v) => updateDeployment('primary_cloud', v)}
                         >
                             <SelectTrigger>
@@ -197,7 +197,7 @@ export default function DeploymentSelectorComponent({ connectors, formData, setF
                             <div>
                                 <Label>Select DR Cloud Provider</Label>
                                 <Select
-                                    value={formData.deployment_config?.dr_cloud}
+                                    value={formData.deployment_config?.dr_cloud || ''}
                                     onValueChange={(v) => updateDeployment('dr_cloud', v)}
                                 >
                                     <SelectTrigger>
