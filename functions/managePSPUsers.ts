@@ -35,28 +35,8 @@ Deno.serve(async (req) => {
                 console.log('[DEBUG] Starting user creation for PSP:', psp_code, 'schema:', schemaName);
                 console.log('[DEBUG] Email:', email, 'Role:', role);
 
-                // CRITICAL: Proactively block any app_users references
-                console.log('[DEBUG] Blocking app_users references...');
-                await client.query(`
-                    DO $$ 
-                    BEGIN
-                        -- Drop app_users in all forms
-                        DROP TABLE IF EXISTS app_users CASCADE;
-                        EXECUTE 'DROP TABLE IF EXISTS "${schemaName}".app_users CASCADE';
-
-                        -- Remove all constraints
-                        DECLARE r RECORD;
-                        FOR r IN (
-                            SELECT tc.constraint_name, tc.table_name
-                            FROM information_schema.table_constraints tc
-                            WHERE tc.table_schema = '${schemaName}'
-                            AND tc.constraint_name LIKE '%app_users%'
-                        ) LOOP
-                            EXECUTE 'ALTER TABLE "${schemaName}".' || r.table_name || ' DROP CONSTRAINT IF EXISTS ' || r.constraint_name || ' CASCADE';
-                        END LOOP;
-                    END $$;
-                `);
-                console.log('[DEBUG] app_users blocked successfully');
+                // Skip app_users cleanup - not needed for user creation
+                console.log('[DEBUG] Skipping app_users cleanup');
 
                 // Verify psp_staff_users table exists
                 const tableCheck = await client.query(`
