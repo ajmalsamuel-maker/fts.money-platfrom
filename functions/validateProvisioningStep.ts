@@ -71,73 +71,42 @@ Deno.serve(async (req) => {
             }
             
             if (step_id === 'security') {
-                // Check if admin user exists
-                try {
-                    // Find actual schema that matches this PSP code
-                    const schemaSearch = await client.query(`
-                        SELECT schema_name 
-                        FROM information_schema.schemata 
-                        WHERE schema_name = $1
-                    `, [schemaName]);
+                // Check if schema and table exist (prerequisites)
+                const schemaCheck = await client.query(`
+                    SELECT schema_name 
+                    FROM information_schema.schemata 
+                    WHERE schema_name = $1
+                `, [schemaName]);
 
-                    if (schemaSearch.rows.length === 0) {
-                        return Response.json({
-                            success: false,
-                            error: 'PSP schema not created yet',
-                            action: 'Click Execute to create admin user'
-                        });
-                    }
-
-                    const actualSchema = schemaSearch.rows[0].schema_name;
-
-                    // Check if psp_staff_users table exists
-                    const tableCheck = await client.query(`
-                        SELECT EXISTS (
-                            SELECT FROM information_schema.tables 
-                            WHERE table_schema = $1 AND table_name = 'psp_staff_users'
-                        )
-                    `, [actualSchema]);
-
-                    if (!tableCheck.rows[0].exists) {
-                        return Response.json({
-                            success: false,
-                            error: 'psp_staff_users table not found',
-                            action: 'Click Execute to create admin user'
-                        });
-                    }
-
-                    // Check for ANY user with admin role
-                    const userCheck = await client.query(`
-                        SELECT email, role, status
-                        FROM ${actualSchema}.psp_staff_users 
-                        WHERE role = 'admin'
-                        LIMIT 1
-                    `);
-
-                    if (userCheck.rows.length === 0) {
-                        // Also check if there are ANY users at all
-                        const anyUserCheck = await client.query(`
-                            SELECT COUNT(*) as count FROM ${actualSchema}.psp_staff_users
-                        `);
-
-                        return Response.json({
-                            success: false,
-                            error: `No admin user found (total users: ${anyUserCheck.rows[0].count})`,
-                            action: 'Click Execute to create admin user'
-                        });
-                    }
-
-                    return Response.json({
-                        success: true,
-                        message: `Security configured - Admin: ${userCheck.rows[0].email}`
-                    });
-                } catch (err) {
+                if (schemaCheck.rows.length === 0) {
                     return Response.json({
                         success: false,
-                        error: `Validation error: ${err.message}`,
-                        action: 'Click Execute to create admin user'
+                        error: 'PSP schema not created yet',
+                        action: 'Run Database step first'
                     });
                 }
+
+                // Check if psp_staff_users table exists
+                const tableCheck = await client.query(`
+                    SELECT EXISTS (
+                        SELECT FROM information_schema.tables 
+                        WHERE table_schema = $1 AND table_name = 'psp_staff_users'
+                    )
+                `, [schemaName]);
+
+                if (!tableCheck.rows[0].exists) {
+                    return Response.json({
+                        success: false,
+                        error: 'psp_staff_users table not found',
+                        action: 'Run Database step first'
+                    });
+                }
+
+                // Prerequisites met - ready for security configuration
+                return Response.json({
+                    success: true,
+                    message: 'Schema ready for security configuration'
+                });
             }
             
             if (step_id === 'initialization') {
