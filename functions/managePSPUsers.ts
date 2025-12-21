@@ -30,17 +30,10 @@ Deno.serve(async (req) => {
             try {
                 const schemaName = `psp_${psp_code.toLowerCase().replace(/-/g, '_')}`;
 
-                // CRITICAL: Set search_path to ONLY the PSP schema (not public, not app schemas)
-                await client.query(`SET search_path TO "${schemaName}"`);
-                console.log('[DEBUG] Set search_path to:', schemaName);
-
                 console.log('[DEBUG] Starting user creation for PSP:', psp_code, 'schema:', schemaName);
                 console.log('[DEBUG] Email:', email, 'Role:', role);
 
-                // Skip app_users cleanup - not needed for user creation
-                console.log('[DEBUG] Skipping app_users cleanup');
-
-                // Verify psp_staff_users table exists
+                // Verify psp_staff_users table exists (using information_schema, no search_path needed)
                 const tableCheck = await client.query(`
                     SELECT EXISTS (
                         SELECT FROM information_schema.tables 
