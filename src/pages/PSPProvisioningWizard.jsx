@@ -3,6 +3,12 @@ import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
+import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
+import { COUNTRIES } from '@/components/utils/countries';
+import { TIMEZONES } from '@/components/utils/timezones';
+import { ISO4217_CURRENCIES, getCurrencySymbol } from '@/components/utils/iso4217';
+import { cn } from "@/lib/utils";
+
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,8 +16,6 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
-
-import { cn } from "@/lib/utils";
 import { 
     ArrowRight, 
     ArrowLeft, 
@@ -25,11 +29,6 @@ import {
     CheckCircle2,
     Loader2
 } from 'lucide-react';
-
-import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
-import { COUNTRIES } from '@/components/utils/countries';
-import { TIMEZONES } from '@/components/utils/timezones';
-import { ISO4217_CURRENCIES, getCurrencySymbol } from '@/components/utils/iso4217';
 
 const tiers = [
     {
