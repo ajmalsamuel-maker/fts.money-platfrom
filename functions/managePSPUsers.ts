@@ -29,7 +29,7 @@ Deno.serve(async (req) => {
                 const schemaName = `psp_${psp_code.toLowerCase()}`;
 
                 // CRITICAL: Set search_path to ONLY the PSP schema (not public, not app schemas)
-                await client.query(`SET search_path TO ${schemaName}`);
+                await client.query(`SET search_path TO "${schemaName}"`);
                 console.log('[DEBUG] Set search_path to:', schemaName);
 
                 console.log('[DEBUG] Starting user creation for PSP:', psp_code, 'schema:', schemaName);
@@ -42,7 +42,7 @@ Deno.serve(async (req) => {
                     BEGIN
                         -- Drop app_users in all forms
                         DROP TABLE IF EXISTS app_users CASCADE;
-                        DROP TABLE IF EXISTS ${schemaName}.app_users CASCADE;
+                        EXECUTE 'DROP TABLE IF EXISTS "${schemaName}".app_users CASCADE';
 
                         -- Remove all constraints
                         DECLARE r RECORD;
@@ -52,7 +52,7 @@ Deno.serve(async (req) => {
                             WHERE tc.table_schema = '${schemaName}'
                             AND tc.constraint_name LIKE '%app_users%'
                         ) LOOP
-                            EXECUTE 'ALTER TABLE ${schemaName}.' || r.table_name || ' DROP CONSTRAINT IF EXISTS ' || r.constraint_name || ' CASCADE';
+                            EXECUTE 'ALTER TABLE "${schemaName}".' || r.table_name || ' DROP CONSTRAINT IF EXISTS ' || r.constraint_name || ' CASCADE';
                         END LOOP;
                     END $$;
                 `);
@@ -163,7 +163,7 @@ Deno.serve(async (req) => {
                     try {
                         const schemaName = `psp_${psp.psp_code.toLowerCase()}`;
 
-                        const result = await client.query(`SELECT id, email, full_name, role, status, two_factor_enabled, last_login, created_date FROM ${schemaName}.psp_staff_users ORDER BY id DESC`);
+                        const result = await client.query(`SELECT id, email, full_name, role, status, two_factor_enabled, last_login, created_date FROM "${schemaName}".psp_staff_users ORDER BY id DESC`);
                         allUsers.push(...result.rows.map(u => ({ ...u, psp_code: psp.psp_code })));
                     } catch (err) {
                         // Schema might not exist yet
@@ -211,7 +211,7 @@ Deno.serve(async (req) => {
             const client = await pool.connect();
                 try {
                     const schemaName = `psp_${psp_code.toLowerCase()}`;
-                    await client.query(`SET search_path TO ${schemaName}`);
+                    await client.query(`SET search_path TO "${schemaName}"`);
 
                     // Build dynamic update query
                     const updates = [];
@@ -273,7 +273,7 @@ Deno.serve(async (req) => {
             const client = await pool.connect();
             try {
                 const schemaName = `psp_${psp_code.toLowerCase()}`;
-                await client.query(`SET search_path TO ${schemaName}`);
+                await client.query(`SET search_path TO "${schemaName}"`);
 
                 await client.query(`DELETE FROM psp_staff_users WHERE id = $1`, [user_id]);
                 return Response.json({ success: true });
