@@ -44,7 +44,7 @@ Deno.serve(async (req) => {
             }, { status: 403 });
         }
 
-        const schemaName = `psp_${psp_code.toLowerCase()}`;
+        const schemaName = `psp_${psp_code.toLowerCase().replace(/-/g, '_')}`;
         const client = await pool.connect();
 
         try {
@@ -335,7 +335,7 @@ Deno.serve(async (req) => {
 
             // If template_psp_code provided, copy configuration data (not customer data)
             if (template_psp_code) {
-                const templateSchema = `psp_${template_psp_code.toLowerCase()}`;
+                const templateSchema = `psp_${template_psp_code.toLowerCase().replace(/-/g, '_')}`;
                 
                 // Copy payment providers configuration only
                 await client.query(`
