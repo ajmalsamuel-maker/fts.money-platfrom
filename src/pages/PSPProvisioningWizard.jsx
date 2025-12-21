@@ -31,6 +31,8 @@ import { TIMEZONES } from '@/components/utils/timezones';
 import { ISO4217_CURRENCIES, getCurrencySymbol } from '@/components/utils/iso4217';
 import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
 
+// Force rebuild - all imports verified
+
 const tiers = [
     {
         id: 'starter',
