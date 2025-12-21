@@ -10,11 +10,28 @@ import { ISO4217_CURRENCIES } from '@/components/utils/iso4217';
 import { ArrowLeft, Check, Rocket, Zap, Shield, Sparkles, CheckCircle2, Loader2, Building2, Mail, Phone, Globe, DollarSign, AlertCircle, Info } from 'lucide-react';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
-const tiers = [
-    { id: 'starter', name: 'Starter', price: '$2,000/mo', revenue_share: 30, icon: Rocket, limits: { max_payment_providers: 1, max_merchants: 100 } },
-    { id: 'professional', name: 'Professional', price: '$5,000/mo', revenue_share: 25, icon: Zap, limits: { max_payment_providers: 3, max_merchants: 1000 } },
-    { id: 'enterprise', name: 'Enterprise', price: '$10,000/mo', revenue_share: 20, icon: Shield, limits: { max_payment_providers: 10, max_merchants: null } },
-    { id: 'custom', name: 'Custom', price: 'Contact Us', revenue_share: 15, icon: Sparkles, limits: { max_payment_providers: null, max_merchants: null } }
+const defaultTiers = [
+    { id: 'starter', name: 'Starter', price: 2000, revenue_share: 30, icon: Rocket, limits: { max_payment_providers: 1, max_merchants: 100 } },
+    { id: 'professional', name: 'Professional', price: 5000, revenue_share: 25, icon: Zap, limits: { max_payment_providers: 3, max_merchants: 1000 } },
+    { id: 'enterprise', name: 'Enterprise', price: 10000, revenue_share: 20, icon: Shield, limits: { max_payment_providers: 10, max_merchants: null } },
+    { id: 'custom', name: 'Custom', price: 0, revenue_share: 15, icon: Sparkles, limits: { max_payment_providers: null, max_merchants: null } }
+];
+
+const paymentMethodOptions = [
+    { category: 'Cards', methods: ['visa', 'mastercard', 'amex', 'discover', 'jcb', 'diners_club', 'unionpay'] },
+    { category: 'Digital Wallets', methods: ['alipay', 'wechat', 'apple_pay', 'google_pay', 'paypal', 'samsung_pay'] },
+    { category: 'Bank Transfers', methods: ['ach', 'sepa', 'wire_transfer', 'faster_payments', 'bacs'] },
+    { category: 'Crypto', methods: ['bitcoin', 'ethereum', 'usdt', 'usdc', 'litecoin', 'bitcoin_cash'] },
+    { category: 'Local Methods', methods: ['ideal', 'sofort', 'giropay', 'bancontact', 'eps', 'p24', 'multibanco'] },
+    { category: 'Buy Now Pay Later', methods: ['klarna', 'afterpay', 'affirm', 'zip', 'sezzle'] }
+];
+
+const payoutMethodOptions = [
+    { category: 'Bank Transfers', methods: ['ach', 'sepa', 'wire', 'faster_payments', 'bacs', 'swift'] },
+    { category: 'Cards', methods: ['visa_debit', 'mastercard_debit', 'prepaid_card'] },
+    { category: 'Digital Wallets', methods: ['paypal', 'venmo', 'cash_app', 'revolut', 'wise'] },
+    { category: 'Crypto', methods: ['bitcoin', 'ethereum', 'usdt', 'usdc'] },
+    { category: 'Instant Payments', methods: ['push_to_card', 'real_time_payments', 'zelle'] }
 ];
 
 export default function PSPProvisioningWizard() {
@@ -25,6 +42,8 @@ export default function PSPProvisioningWizard() {
     const [selectedTier, setSelectedTier] = useState('professional');
     const [provisioning, setProvisioning] = useState(false);
     const [provisioningComplete, setProvisioningComplete] = useState(false);
+    const [customTiers, setCustomTiers] = useState(defaultTiers);
+    const [editingTier, setEditingTier] = useState(null);
     const [formData, setFormData] = useState({
         psp_code: '',
         psp_name: '',
@@ -105,7 +124,7 @@ export default function PSPProvisioningWizard() {
 
     const handleProvision = async () => {
         setProvisioning(true);
-        const tier = tiers.find(t => t.id === selectedTier);
+        const tier = customTiers.find(t => t.id === selectedTier);
         
         const sixMonthsFromNow = new Date();
         sixMonthsFromNow.setMonth(sixMonthsFromNow.getMonth() + 6);
@@ -174,22 +193,117 @@ export default function PSPProvisioningWizard() {
                         <div className="space-y-6">
                             {step === 1 && (
                                 <div>
-                                    <h2 className="text-xl font-semibold mb-4">Select Service Tier</h2>
-                                    <div className="grid grid-cols-4 gap-4">
-                                        {tiers.map((tier) => {
+                                    <div className="flex items-center justify-between mb-4">
+                                        <h2 className="text-xl font-semibold">Select Service Tier</h2>
+                                        <button
+                                            onClick={() => setEditingTier(editingTier ? null : 'all')}
+                                            className="text-sm text-blue-600 hover:text-blue-700"
+                                        >
+                                            {editingTier ? 'Done Editing' : 'Edit Pricing'}
+                                        </button>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        {customTiers.map((tier) => {
                                             const Icon = tier.icon;
                                             return (
                                                 <div
                                                     key={tier.id}
-                                                    onClick={() => setSelectedTier(tier.id)}
-                                                    className={`cursor-pointer border-2 rounded-lg p-4 transition-all ${
-                                                        selectedTier === tier.id ? 'border-blue-600 bg-blue-50' : 'border-slate-200 hover:border-slate-300'
+                                                    className={`border-2 rounded-lg p-4 transition-all ${
+                                                        selectedTier === tier.id ? 'border-blue-600 bg-blue-50' : 'border-slate-200'
                                                     }`}
                                                 >
-                                                    <Icon className="h-8 w-8 text-blue-600 mb-2" />
-                                                    <h3 className="font-semibold text-slate-900">{tier.name}</h3>
-                                                    <p className="text-sm text-slate-600 mb-2">{tier.price}</p>
-                                                    <p className="text-xs text-slate-500">Revenue Share: {tier.revenue_share}%</p>
+                                                    <div className="flex items-start justify-between mb-3">
+                                                        <div className="flex items-center gap-2">
+                                                            <Icon className="h-8 w-8 text-blue-600" />
+                                                            <h3 className="font-semibold text-slate-900">{tier.name}</h3>
+                                                        </div>
+                                                        <button
+                                                            onClick={() => setSelectedTier(tier.id)}
+                                                            className={`px-3 py-1 rounded text-sm font-medium ${
+                                                                selectedTier === tier.id 
+                                                                    ? 'bg-blue-600 text-white' 
+                                                                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                                                            }`}
+                                                        >
+                                                            {selectedTier === tier.id ? 'Selected' : 'Select'}
+                                                        </button>
+                                                    </div>
+                                                    
+                                                    {editingTier ? (
+                                                        <div className="space-y-2">
+                                                            <div>
+                                                                <label className="text-xs text-slate-600">Monthly Price ($)</label>
+                                                                <input
+                                                                    type="number"
+                                                                    value={tier.price}
+                                                                    onChange={(e) => {
+                                                                        const updated = customTiers.map(t => 
+                                                                            t.id === tier.id ? {...t, price: parseFloat(e.target.value)} : t
+                                                                        );
+                                                                        setCustomTiers(updated);
+                                                                    }}
+                                                                    className="w-full px-2 py-1 border border-slate-300 rounded text-sm"
+                                                                />
+                                                            </div>
+                                                            <div>
+                                                                <label className="text-xs text-slate-600">Revenue Share (%)</label>
+                                                                <input
+                                                                    type="number"
+                                                                    value={tier.revenue_share}
+                                                                    onChange={(e) => {
+                                                                        const updated = customTiers.map(t => 
+                                                                            t.id === tier.id ? {...t, revenue_share: parseFloat(e.target.value)} : t
+                                                                        );
+                                                                        setCustomTiers(updated);
+                                                                    }}
+                                                                    className="w-full px-2 py-1 border border-slate-300 rounded text-sm"
+                                                                />
+                                                            </div>
+                                                            <div>
+                                                                <label className="text-xs text-slate-600">Max Providers</label>
+                                                                <input
+                                                                    type="number"
+                                                                    value={tier.limits.max_payment_providers || ''}
+                                                                    onChange={(e) => {
+                                                                        const updated = customTiers.map(t => 
+                                                                            t.id === tier.id ? {...t, limits: {...t.limits, max_payment_providers: e.target.value ? parseInt(e.target.value) : null}} : t
+                                                                        );
+                                                                        setCustomTiers(updated);
+                                                                    }}
+                                                                    placeholder="Unlimited"
+                                                                    className="w-full px-2 py-1 border border-slate-300 rounded text-sm"
+                                                                />
+                                                            </div>
+                                                            <div>
+                                                                <label className="text-xs text-slate-600">Max Merchants</label>
+                                                                <input
+                                                                    type="number"
+                                                                    value={tier.limits.max_merchants || ''}
+                                                                    onChange={(e) => {
+                                                                        const updated = customTiers.map(t => 
+                                                                            t.id === tier.id ? {...t, limits: {...t.limits, max_merchants: e.target.value ? parseInt(e.target.value) : null}} : t
+                                                                        );
+                                                                        setCustomTiers(updated);
+                                                                    }}
+                                                                    placeholder="Unlimited"
+                                                                    className="w-full px-2 py-1 border border-slate-300 rounded text-sm"
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="space-y-1 text-sm">
+                                                            <p className="text-lg font-bold text-slate-900">
+                                                                {tier.price === 0 ? 'Custom' : `$${tier.price.toLocaleString()}/mo`}
+                                                            </p>
+                                                            <p className="text-slate-600">Revenue Share: {tier.revenue_share}%</p>
+                                                            <p className="text-xs text-slate-500">
+                                                                Providers: {tier.limits.max_payment_providers || 'Unlimited'}
+                                                            </p>
+                                                            <p className="text-xs text-slate-500">
+                                                                Merchants: {tier.limits.max_merchants || 'Unlimited'}
+                                                            </p>
+                                                        </div>
+                                                    )}
                                                 </div>
                                             );
                                         })}
@@ -352,28 +466,95 @@ export default function PSPProvisioningWizard() {
 
                             {step === 3 && (
                                 <div>
-                                    <h2 className="text-xl font-semibold mb-4">Select Services</h2>
-                                    <div className="space-y-2 max-h-96 overflow-y-auto">
-                                        {services.map((service) => (
-                                            <label key={service.id} className="flex items-center gap-3 p-3 border border-slate-200 rounded-lg hover:bg-slate-50 cursor-pointer">
-                                                <input
-                                                    type="checkbox"
-                                                    checked={formData.enabled_services.includes(service.id)}
-                                                    onChange={(e) => {
-                                                        if (e.target.checked) {
-                                                            setFormData({...formData, enabled_services: [...formData.enabled_services, service.id]});
-                                                        } else {
-                                                            setFormData({...formData, enabled_services: formData.enabled_services.filter(id => id !== service.id)});
-                                                        }
-                                                    }}
-                                                    className="w-4 h-4"
-                                                />
-                                                <div>
-                                                    <p className="font-medium text-slate-900">{service.service_name}</p>
-                                                    <p className="text-xs text-slate-600">{service.description}</p>
-                                                </div>
-                                            </label>
-                                        ))}
+                                    <h2 className="text-xl font-semibold mb-4">Select Services & Payout Methods</h2>
+                                    
+                                    <div className="space-y-6">
+                                        <div>
+                                            <h3 className="font-medium text-slate-900 mb-3">Platform Services</h3>
+                                            <div className="space-y-2 max-h-64 overflow-y-auto">
+                                                {services.length > 0 ? services.map((service) => (
+                                                    <label key={service.id} className="flex items-start gap-3 p-3 border border-slate-200 rounded-lg hover:bg-slate-50 cursor-pointer">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={formData.enabled_services.includes(service.id)}
+                                                            onChange={(e) => {
+                                                                if (e.target.checked) {
+                                                                    setFormData({...formData, enabled_services: [...formData.enabled_services, service.id]});
+                                                                } else {
+                                                                    setFormData({...formData, enabled_services: formData.enabled_services.filter(id => id !== service.id)});
+                                                                }
+                                                            }}
+                                                            className="w-4 h-4 mt-1"
+                                                        />
+                                                        <div>
+                                                            <p className="font-medium text-slate-900">{service.service_name}</p>
+                                                            <p className="text-xs text-slate-600">{service.description}</p>
+                                                        </div>
+                                                    </label>
+                                                )) : (
+                                                    <p className="text-sm text-slate-500 py-4 text-center">No services configured yet</p>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        <div className="border-t border-slate-200 pt-6">
+                                            <h3 className="font-medium text-slate-900 mb-3">Payout Methods</h3>
+                                            <div className="space-y-3">
+                                                {payoutMethodOptions.map((category) => (
+                                                    <div key={category.category}>
+                                                        <h4 className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
+                                                            <span className="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded text-xs">{category.category}</span>
+                                                        </h4>
+                                                        <div className="grid grid-cols-4 gap-2">
+                                                            {category.methods.map((method) => (
+                                                                <label key={method} className="flex items-center gap-2 p-2 border border-slate-200 rounded hover:bg-slate-50 cursor-pointer">
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        checked={formData.enabled_payout_methods.includes(method)}
+                                                                        onChange={(e) => {
+                                                                            if (e.target.checked) {
+                                                                                setFormData({...formData, enabled_payout_methods: [...formData.enabled_payout_methods, method]});
+                                                                            } else {
+                                                                                setFormData({...formData, enabled_payout_methods: formData.enabled_payout_methods.filter(m => m !== method)});
+                                                                            }
+                                                                        }}
+                                                                        className="w-3 h-3"
+                                                                    />
+                                                                    <span className="text-xs capitalize">{method.replace('_', ' ')}</span>
+                                                                </label>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                                
+                                                {payoutRoutes.length > 0 && (
+                                                    <div>
+                                                        <h4 className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
+                                                            <span className="bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded text-xs">Configured Routes</span>
+                                                        </h4>
+                                                        <div className="grid grid-cols-4 gap-2">
+                                                            {payoutRoutes.map((route) => (
+                                                                <label key={route.id} className="flex items-center gap-2 p-2 border border-slate-200 rounded hover:bg-slate-50 cursor-pointer">
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        checked={formData.enabled_payout_methods.includes(route.id)}
+                                                                        onChange={(e) => {
+                                                                            if (e.target.checked) {
+                                                                                setFormData({...formData, enabled_payout_methods: [...formData.enabled_payout_methods, route.id]});
+                                                                            } else {
+                                                                                setFormData({...formData, enabled_payout_methods: formData.enabled_payout_methods.filter(id => id !== route.id)});
+                                                                            }
+                                                                        }}
+                                                                        className="w-3 h-3"
+                                                                    />
+                                                                    <span className="text-xs">{route.route_name}</span>
+                                                                </label>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             )}
@@ -489,25 +670,61 @@ export default function PSPProvisioningWizard() {
 
                             {step === 5 && (
                                 <div>
-                                    <h2 className="text-xl font-semibold mb-4">Payment Providers</h2>
-                                    <div className="space-y-2 max-h-96 overflow-y-auto">
-                                        {paymentProviders.map((provider) => (
-                                            <label key={provider.id} className="flex items-center gap-3 p-3 border border-slate-200 rounded-lg hover:bg-slate-50 cursor-pointer">
-                                                <input
-                                                    type="checkbox"
-                                                    checked={formData.enabled_payment_methods.includes(provider.id)}
-                                                    onChange={(e) => {
-                                                        if (e.target.checked) {
-                                                            setFormData({...formData, enabled_payment_methods: [...formData.enabled_payment_methods, provider.id]});
-                                                        } else {
-                                                            setFormData({...formData, enabled_payment_methods: formData.enabled_payment_methods.filter(id => id !== provider.id)});
-                                                        }
-                                                    }}
-                                                    className="w-4 h-4"
-                                                />
-                                                <p className="font-medium text-slate-900">{provider.provider_name}</p>
-                                            </label>
+                                    <h2 className="text-xl font-semibold mb-4">Payment Methods</h2>
+                                    <div className="space-y-4 max-h-[500px] overflow-y-auto">
+                                        {paymentMethodOptions.map((category) => (
+                                            <div key={category.category}>
+                                                <h3 className="font-medium text-slate-900 mb-2 flex items-center gap-2">
+                                                    <span className="text-sm bg-blue-100 text-blue-700 px-2 py-1 rounded">{category.category}</span>
+                                                </h3>
+                                                <div className="grid grid-cols-3 gap-2">
+                                                    {category.methods.map((method) => (
+                                                        <label key={method} className="flex items-center gap-2 p-2 border border-slate-200 rounded-lg hover:bg-slate-50 cursor-pointer">
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={formData.enabled_payment_methods.includes(method)}
+                                                                onChange={(e) => {
+                                                                    if (e.target.checked) {
+                                                                        setFormData({...formData, enabled_payment_methods: [...formData.enabled_payment_methods, method]});
+                                                                    } else {
+                                                                        setFormData({...formData, enabled_payment_methods: formData.enabled_payment_methods.filter(m => m !== method)});
+                                                                    }
+                                                                }}
+                                                                className="w-4 h-4"
+                                                            />
+                                                            <span className="text-sm capitalize">{method.replace('_', ' ')}</span>
+                                                        </label>
+                                                    ))}
+                                                </div>
+                                            </div>
                                         ))}
+                                        
+                                        {paymentProviders.length > 0 && (
+                                            <div>
+                                                <h3 className="font-medium text-slate-900 mb-2 flex items-center gap-2">
+                                                    <span className="text-sm bg-purple-100 text-purple-700 px-2 py-1 rounded">Payment Processors</span>
+                                                </h3>
+                                                <div className="grid grid-cols-3 gap-2">
+                                                    {paymentProviders.map((provider) => (
+                                                        <label key={provider.id} className="flex items-center gap-2 p-2 border border-slate-200 rounded-lg hover:bg-slate-50 cursor-pointer">
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={formData.enabled_payment_methods.includes(provider.id)}
+                                                                onChange={(e) => {
+                                                                    if (e.target.checked) {
+                                                                        setFormData({...formData, enabled_payment_methods: [...formData.enabled_payment_methods, provider.id]});
+                                                                    } else {
+                                                                        setFormData({...formData, enabled_payment_methods: formData.enabled_payment_methods.filter(id => id !== provider.id)});
+                                                                    }
+                                                                }}
+                                                                className="w-4 h-4"
+                                                            />
+                                                            <span className="text-sm">{provider.provider_name}</span>
+                                                        </label>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             )}
@@ -599,11 +816,11 @@ export default function PSPProvisioningWizard() {
                                             <div className="grid grid-cols-2 gap-4">
                                                 <div>
                                                     <p className="text-xs text-slate-500 mb-1">Service Tier</p>
-                                                    <p className="font-semibold text-slate-900">{tiers.find(t => t.id === selectedTier)?.name}</p>
+                                                    <p className="font-semibold text-slate-900">{customTiers.find(t => t.id === selectedTier)?.name}</p>
                                                 </div>
                                                 <div>
                                                     <p className="text-xs text-slate-500 mb-1">Revenue Share</p>
-                                                    <p className="font-semibold text-slate-900">{tiers.find(t => t.id === selectedTier)?.revenue_share}%</p>
+                                                    <p className="font-semibold text-slate-900">{customTiers.find(t => t.id === selectedTier)?.revenue_share}%</p>
                                                 </div>
                                                 <div>
                                                     <p className="text-xs text-slate-500 mb-1">PSP Code</p>
