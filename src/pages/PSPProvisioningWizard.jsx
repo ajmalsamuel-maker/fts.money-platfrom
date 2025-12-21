@@ -23,8 +23,7 @@ import {
     Rocket,
     Wallet,
     CheckCircle2,
-    Loader2,
-    CheckCircle
+    Loader2
 } from 'lucide-react';
 
 import { COUNTRIES } from '@/components/utils/countries';
@@ -673,7 +672,7 @@ export default function PSPProvisioningWizard() {
                                        onClick={() => setFormData({...formData, use_tas: true, lei: '', vlei: '', lei_waived: false})}
                                    >
                                        <div className="flex items-center gap-2 mb-2">
-                                           <CheckCircle className={cn("h-5 w-5", formData.use_tas ? "text-blue-600" : "text-slate-400")} />
+                                           <CheckCircle2 className={cn("h-5 w-5", formData.use_tas ? "text-blue-600" : "text-slate-400")} />
                                            <span className="font-semibold text-sm">Use TAS Number</span>
                                        </div>
                                        <p className="text-xs text-slate-600">Already onboarded on TAS platform</p>
@@ -690,7 +689,7 @@ export default function PSPProvisioningWizard() {
                                        onClick={() => setFormData({...formData, use_tas: false, tas_number: ''})}
                                    >
                                        <div className="flex items-center gap-2 mb-2">
-                                           <CheckCircle className={cn("h-5 w-5", !formData.use_tas ? "text-blue-600" : "text-slate-400")} />
+                                           <CheckCircle2 className={cn("h-5 w-5", !formData.use_tas ? "text-blue-600" : "text-slate-400")} />
                                            <span className="font-semibold text-sm">Manual LEI/vLEI Setup</span>
                                        </div>
                                        <p className="text-xs text-slate-600">Configure LEI credentials manually</p>
