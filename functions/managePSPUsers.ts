@@ -51,8 +51,12 @@ Deno.serve(async (req) => {
                 console.log('[DEBUG] psp_staff_users table verified');
 
                 // Hash password
-                console.log('[DEBUG] Hashing password...');
-                const password_hash = await bcrypt.hash(password || 'Welcome123!', 10);
+                console.log('[DEBUG] About to hash password...');
+                console.log('[DEBUG] Password value:', password ? 'provided' : 'using default');
+                let password_hash;
+                try {
+                    password_hash = await bcrypt.hash(password || 'Welcome123!', 10);
+                    console.log('[DEBUG] Password hashed successfully');
                 console.log('[DEBUG] Password hashed successfully');
 
                 // Check if user exists in THIS PSP schema only
