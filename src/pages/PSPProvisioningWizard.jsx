@@ -57,14 +57,33 @@ export default function PSPProvisioningWizard() {
         domain: '',
         subdomain: '',
         license_type: 'full_license',
+        tas_number: '',
+        tas_verified: false,
         branding: { primary_color: '#3b82f6', secondary_color: '#8b5cf6', logo_url: '', favicon_url: '' },
-        transaction_fees: { card_percentage: 2.9, fixed_fee: 0.30, international_percentage: 3.9, crypto_percentage: 1.5 },
+        transaction_fees: {
+            card_domestic_percentage: 2.9,
+            card_domestic_fixed: 0.30,
+            card_international_percentage: 3.9,
+            card_international_fixed: 0.50,
+            crypto_percentage: 1.5,
+            crypto_fixed: 0.00,
+            ach_percentage: 0.8,
+            ach_fixed: 0.25,
+            wire_percentage: 0.5,
+            wire_fixed: 15.00,
+            wallet_percentage: 2.5,
+            wallet_fixed: 0.30
+        },
         enabled_services: [],
         enabled_payment_methods: [],
         enabled_payout_methods: [],
         deployment_config: { primary_cloud: null, dr_cloud: null, dr_enabled: false },
         lei: '',
+        vlei: '',
         lei_waived: false,
+        admin_email: '',
+        admin_full_name: '',
+        admin_password: '',
         advanced_features: {
             smart_routing: false,
             ai_fraud_detection: false,
@@ -73,6 +92,13 @@ export default function PSPProvisioningWizard() {
             smart_retry: false,
             crypto_payments: false,
             instant_settlements: false
+        },
+        compliance_features: {
+            pci_dss: true,
+            kyb_verification: true,
+            aml_screening: true,
+            fatf_compliance: true,
+            lei_verification: true
         }
     });
 
@@ -165,14 +191,23 @@ export default function PSPProvisioningWizard() {
                 </div>
 
                 <div className="bg-white rounded-lg p-6 border border-slate-200">
-                    <div className="flex items-center gap-4 mb-6">
-                        {[1, 2, 3, 4, 5, 6, 7].map((s) => (
-                            <div key={s} className="flex items-center gap-2">
+                    <div className="flex items-center justify-between mb-6">
+                        {[
+                            { num: 1, label: 'Tier' },
+                            { num: 2, label: 'Business' },
+                            { num: 3, label: 'Payments' },
+                            { num: 4, label: 'Fees' },
+                            { num: 5, label: 'Services' },
+                            { num: 6, label: 'Features' },
+                            { num: 7, label: 'Admin' }
+                        ].map((s) => (
+                            <div key={s.num} className="flex flex-col items-center gap-1">
                                 <div className={`flex items-center justify-center w-10 h-10 rounded-full font-semibold border-2 ${
-                                    step >= s ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-slate-400 border-slate-300'
+                                    step >= s.num ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-slate-400 border-slate-300'
                                 }`}>
-                                    {step > s ? <Check className="h-5 w-5" /> : s}
+                                    {step > s.num ? <Check className="h-5 w-5" /> : s.num}
                                 </div>
+                                <span className="text-xs text-slate-600">{s.label}</span>
                             </div>
                         ))}
                     </div>
@@ -461,51 +496,163 @@ export default function PSPProvisioningWizard() {
                                             <p className="text-xs text-slate-500 mt-1">{formData.subdomain || 'yourname'}.fts.money</p>
                                         </div>
                                     </div>
+
+                                    <div className="border-t border-slate-200 pt-6 mt-6">
+                                        <h3 className="font-medium text-slate-900 mb-3 flex items-center gap-2">
+                                            <Shield className="h-5 w-5 text-blue-600" />
+                                            TAS Integration & LEI/vLEI Compliance
+                                        </h3>
+                                        <Alert className="mb-4 bg-blue-50 border-blue-200">
+                                            <Info className="h-4 w-4 text-blue-600" />
+                                            <AlertDescription className="text-sm text-blue-900">
+                                                <strong>TAS (Third-party Attestation Service)</strong> allows pre-vetted businesses with existing LEI/vLEI and completed KYB/KYC/AML to fast-track provisioning.
+                                            </AlertDescription>
+                                        </Alert>
+
+                                        <div className="space-y-4">
+                                            <div>
+                                                <label className="block text-sm font-medium mb-1">TAS Number (Optional)</label>
+                                                <input
+                                                    type="text"
+                                                    value={formData.tas_number}
+                                                    onChange={(e) => setFormData({...formData, tas_number: e.target.value})}
+                                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                                                    placeholder="TAS-XXXXXXXX-XXXX"
+                                                />
+                                                <p className="text-xs text-slate-500 mt-1">If you have a TAS certificate from an authorized provider</p>
+                                            </div>
+
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div>
+                                                    <label className="block text-sm font-medium mb-1">LEI (20-character)</label>
+                                                    <input
+                                                        type="text"
+                                                        value={formData.lei}
+                                                        onChange={(e) => setFormData({...formData, lei: e.target.value.toUpperCase(), lei_waived: false})}
+                                                        className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                                                        placeholder="213800ABCDEFGHIJ1234"
+                                                        maxLength={20}
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-medium mb-1">vLEI Credential (Optional)</label>
+                                                    <input
+                                                        type="text"
+                                                        value={formData.vlei}
+                                                        onChange={(e) => setFormData({...formData, vlei: e.target.value})}
+                                                        className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                                                        placeholder="W3C Verifiable Credential"
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <label className="flex items-start gap-3 p-4 border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-50">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={formData.lei_waived}
+                                                    onChange={(e) => setFormData({...formData, lei_waived: e.target.checked, lei: e.target.checked ? '' : formData.lei})}
+                                                    className="mt-1"
+                                                />
+                                                <div>
+                                                    <p className="font-medium text-slate-900">Request 6-month grace period for LEI/vLEI</p>
+                                                    <p className="text-sm text-slate-600 mt-1">
+                                                        I don't have LEI/vLEI yet. Grant 6 months to obtain credentials (LEI, vLEI, OOR, ECR).
+                                                    </p>
+                                                </div>
+                                            </label>
+
+                                            {formData.lei_waived && (
+                                                <Alert className="bg-amber-50 border-amber-200">
+                                                    <AlertCircle className="h-4 w-4 text-amber-600" />
+                                                    <AlertDescription className="text-sm text-amber-900">
+                                                        Grace period activated. Deadline: {new Date(new Date().setMonth(new Date().getMonth() + 6)).toLocaleDateString()}
+                                                    </AlertDescription>
+                                                </Alert>
+                                            )}
+                                        </div>
+                                    </div>
                                 </div>
                             )}
 
                             {step === 3 && (
                                 <div>
-                                    <h2 className="text-xl font-semibold mb-4">Select Services & Payout Methods</h2>
+                                    <h2 className="text-xl font-semibold mb-4">Payment Methods & Payout Configuration</h2>
                                     
                                     <div className="space-y-6">
                                         <div>
-                                            <h3 className="font-medium text-slate-900 mb-3">Platform Services</h3>
-                                            <div className="space-y-2 max-h-64 overflow-y-auto">
-                                                {services.length > 0 ? services.map((service) => (
-                                                    <label key={service.id} className="flex items-start gap-3 p-3 border border-slate-200 rounded-lg hover:bg-slate-50 cursor-pointer">
-                                                        <input
-                                                            type="checkbox"
-                                                            checked={formData.enabled_services.includes(service.id)}
-                                                            onChange={(e) => {
-                                                                if (e.target.checked) {
-                                                                    setFormData({...formData, enabled_services: [...formData.enabled_services, service.id]});
-                                                                } else {
-                                                                    setFormData({...formData, enabled_services: formData.enabled_services.filter(id => id !== service.id)});
-                                                                }
-                                                            }}
-                                                            className="w-4 h-4 mt-1"
-                                                        />
-                                                        <div>
-                                                            <p className="font-medium text-slate-900">{service.service_name}</p>
-                                                            <p className="text-xs text-slate-600">{service.description}</p>
+                                            <h3 className="font-medium text-slate-900 mb-3 flex items-center gap-2">
+                                                <DollarSign className="h-5 w-5 text-blue-600" />
+                                                Payment Methods
+                                            </h3>
+                                            <div className="space-y-4 max-h-[400px] overflow-y-auto">
+                                                {paymentMethodOptions.map((category) => (
+                                                    <div key={category.category}>
+                                                        <h4 className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
+                                                            <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded">{category.category}</span>
+                                                        </h4>
+                                                        <div className="grid grid-cols-4 gap-2">
+                                                            {category.methods.map((method) => (
+                                                                <label key={method} className="flex items-center gap-2 p-2 border border-slate-200 rounded-lg hover:bg-slate-50 cursor-pointer">
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        checked={formData.enabled_payment_methods.includes(method)}
+                                                                        onChange={(e) => {
+                                                                            if (e.target.checked) {
+                                                                                setFormData({...formData, enabled_payment_methods: [...formData.enabled_payment_methods, method]});
+                                                                            } else {
+                                                                                setFormData({...formData, enabled_payment_methods: formData.enabled_payment_methods.filter(m => m !== method)});
+                                                                            }
+                                                                        }}
+                                                                        className="w-4 h-4"
+                                                                    />
+                                                                    <span className="text-sm capitalize">{method.replace(/_/g, ' ')}</span>
+                                                                </label>
+                                                            ))}
                                                         </div>
-                                                    </label>
-                                                )) : (
-                                                    <p className="text-sm text-slate-500 py-4 text-center">No services configured yet</p>
+                                                    </div>
+                                                ))}
+                                                
+                                                {paymentProviders.length > 0 && (
+                                                    <div>
+                                                        <h4 className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
+                                                            <span className="bg-purple-100 text-purple-700 px-2 py-1 rounded">Payment Processors</span>
+                                                        </h4>
+                                                        <div className="grid grid-cols-3 gap-2">
+                                                            {paymentProviders.map((provider) => (
+                                                                <label key={provider.id} className="flex items-center gap-2 p-2 border border-slate-200 rounded-lg hover:bg-slate-50 cursor-pointer">
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        checked={formData.enabled_payment_methods.includes(provider.id)}
+                                                                        onChange={(e) => {
+                                                                            if (e.target.checked) {
+                                                                                setFormData({...formData, enabled_payment_methods: [...formData.enabled_payment_methods, provider.id]});
+                                                                            } else {
+                                                                                setFormData({...formData, enabled_payment_methods: formData.enabled_payment_methods.filter(id => id !== provider.id)});
+                                                                            }
+                                                                        }}
+                                                                        className="w-4 h-4"
+                                                                    />
+                                                                    <span className="text-sm">{provider.provider_name}</span>
+                                                                </label>
+                                                            ))}
+                                                        </div>
+                                                    </div>
                                                 )}
                                             </div>
                                         </div>
 
                                         <div className="border-t border-slate-200 pt-6">
-                                            <h3 className="font-medium text-slate-900 mb-3">Payout Methods</h3>
+                                            <h3 className="font-medium text-slate-900 mb-3 flex items-center gap-2">
+                                                <ArrowLeft className="h-5 w-5 text-emerald-600 rotate-180" />
+                                                Payout Methods
+                                            </h3>
                                             <div className="space-y-3">
                                                 {payoutMethodOptions.map((category) => (
                                                     <div key={category.category}>
                                                         <h4 className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
-                                                            <span className="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded text-xs">{category.category}</span>
+                                                            <span className="bg-emerald-100 text-emerald-700 px-2 py-1 rounded">{category.category}</span>
                                                         </h4>
-                                                        <div className="grid grid-cols-4 gap-2">
+                                                        <div className="grid grid-cols-5 gap-2">
                                                             {category.methods.map((method) => (
                                                                 <label key={method} className="flex items-center gap-2 p-2 border border-slate-200 rounded hover:bg-slate-50 cursor-pointer">
                                                                     <input
@@ -520,7 +667,7 @@ export default function PSPProvisioningWizard() {
                                                                         }}
                                                                         className="w-3 h-3"
                                                                     />
-                                                                    <span className="text-xs capitalize">{method.replace('_', ' ')}</span>
+                                                                    <span className="text-xs capitalize">{method.replace(/_/g, ' ')}</span>
                                                                 </label>
                                                             ))}
                                                         </div>
@@ -530,7 +677,7 @@ export default function PSPProvisioningWizard() {
                                                 {payoutRoutes.length > 0 && (
                                                     <div>
                                                         <h4 className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
-                                                            <span className="bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded text-xs">Configured Routes</span>
+                                                            <span className="bg-indigo-100 text-indigo-700 px-2 py-1 rounded">Configured Payout Routes</span>
                                                         </h4>
                                                         <div className="grid grid-cols-4 gap-2">
                                                             {payoutRoutes.map((route) => (
@@ -563,105 +710,158 @@ export default function PSPProvisioningWizard() {
                                 <div>
                                     <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
                                         <DollarSign className="h-5 w-5 text-blue-600" />
-                                        Fee Structure & LEI Compliance
+                                        Transaction Fee Structure
                                     </h2>
+                                    
+                                    <Alert className="mb-4 bg-slate-50 border-slate-200">
+                                        <Info className="h-4 w-4 text-slate-600" />
+                                        <AlertDescription className="text-sm text-slate-700">
+                                            Configure detailed fee structure for different payment types. Percentage fees + fixed fees apply per transaction.
+                                        </AlertDescription>
+                                    </Alert>
                                     
                                     <div className="space-y-6">
                                         <div>
-                                            <h3 className="font-medium text-slate-900 mb-3">Transaction Fees</h3>
+                                            <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
+                                                <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-sm">Card Payments</span>
+                                            </h3>
                                             <div className="grid grid-cols-2 gap-4">
                                                 <div>
-                                                    <label className="block text-sm font-medium mb-1">Card Transaction %</label>
-                                                    <input
-                                                        type="number"
-                                                        step="0.1"
-                                                        value={formData.transaction_fees.card_percentage}
-                                                        onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, card_percentage: parseFloat(e.target.value)}})}
-                                                        className="w-full px-3 py-2 border border-slate-300 rounded-lg"
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <label className="block text-sm font-medium mb-1">Fixed Fee ($)</label>
+                                                    <label className="block text-sm font-medium mb-1">Domestic Card %</label>
                                                     <input
                                                         type="number"
                                                         step="0.01"
-                                                        value={formData.transaction_fees.fixed_fee}
-                                                        onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, fixed_fee: parseFloat(e.target.value)}})}
+                                                        value={formData.transaction_fees.card_domestic_percentage}
+                                                        onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, card_domestic_percentage: parseFloat(e.target.value)}})}
                                                         className="w-full px-3 py-2 border border-slate-300 rounded-lg"
                                                     />
                                                 </div>
                                                 <div>
-                                                    <label className="block text-sm font-medium mb-1">International %</label>
+                                                    <label className="block text-sm font-medium mb-1">Domestic Card Fixed ($)</label>
                                                     <input
                                                         type="number"
-                                                        step="0.1"
-                                                        value={formData.transaction_fees.international_percentage}
-                                                        onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, international_percentage: parseFloat(e.target.value)}})}
+                                                        step="0.01"
+                                                        value={formData.transaction_fees.card_domestic_fixed}
+                                                        onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, card_domestic_fixed: parseFloat(e.target.value)}})}
                                                         className="w-full px-3 py-2 border border-slate-300 rounded-lg"
                                                     />
                                                 </div>
                                                 <div>
-                                                    <label className="block text-sm font-medium mb-1">Crypto %</label>
+                                                    <label className="block text-sm font-medium mb-1">International Card %</label>
                                                     <input
                                                         type="number"
-                                                        step="0.1"
-                                                        value={formData.transaction_fees.crypto_percentage}
-                                                        onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, crypto_percentage: parseFloat(e.target.value)}})}
+                                                        step="0.01"
+                                                        value={formData.transaction_fees.card_international_percentage}
+                                                        onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, card_international_percentage: parseFloat(e.target.value)}})}
+                                                        className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-medium mb-1">International Card Fixed ($)</label>
+                                                    <input
+                                                        type="number"
+                                                        step="0.01"
+                                                        value={formData.transaction_fees.card_international_fixed}
+                                                        onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, card_international_fixed: parseFloat(e.target.value)}})}
                                                         className="w-full px-3 py-2 border border-slate-300 rounded-lg"
                                                     />
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div className="border-t border-slate-200 pt-6">
-                                            <h3 className="font-medium text-slate-900 mb-3">LEI/vLEI Compliance</h3>
-                                            <Alert className="mb-4 bg-blue-50 border-blue-200">
-                                                <Info className="h-4 w-4 text-blue-600" />
-                                                <AlertDescription className="text-sm text-blue-900">
-                                                    <strong>Legal Entity Identifier (LEI)</strong> is required for payment institutions under FATF and regulatory standards. 
-                                                    You can obtain it later during a 6-month grace period.
-                                                </AlertDescription>
-                                            </Alert>
-                                            
-                                            <div className="space-y-4">
+                                        <div>
+                                            <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
+                                                <span className="bg-emerald-100 text-emerald-700 px-2 py-1 rounded text-sm">Bank Transfers</span>
+                                            </h3>
+                                            <div className="grid grid-cols-2 gap-4">
                                                 <div>
-                                                    <label className="block text-sm font-medium mb-1">LEI (20-character code)</label>
+                                                    <label className="block text-sm font-medium mb-1">ACH/SEPA %</label>
                                                     <input
-                                                        type="text"
-                                                        value={formData.lei}
-                                                        onChange={(e) => setFormData({...formData, lei: e.target.value.toUpperCase(), lei_waived: false})}
+                                                        type="number"
+                                                        step="0.01"
+                                                        value={formData.transaction_fees.ach_percentage}
+                                                        onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, ach_percentage: parseFloat(e.target.value)}})}
                                                         className="w-full px-3 py-2 border border-slate-300 rounded-lg"
-                                                        placeholder="213800ABCDEFGHIJ1234"
-                                                        maxLength={20}
                                                     />
-                                                    <p className="text-xs text-slate-500 mt-1">If available, enter your GLEIF-issued LEI</p>
                                                 </div>
-
-                                                <label className="flex items-start gap-3 p-4 border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-50">
+                                                <div>
+                                                    <label className="block text-sm font-medium mb-1">ACH/SEPA Fixed ($)</label>
                                                     <input
-                                                        type="checkbox"
-                                                        checked={formData.lei_waived}
-                                                        onChange={(e) => setFormData({...formData, lei_waived: e.target.checked, lei: e.target.checked ? '' : formData.lei})}
-                                                        className="mt-1"
+                                                        type="number"
+                                                        step="0.01"
+                                                        value={formData.transaction_fees.ach_fixed}
+                                                        onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, ach_fixed: parseFloat(e.target.value)}})}
+                                                        className="w-full px-3 py-2 border border-slate-300 rounded-lg"
                                                     />
-                                                    <div>
-                                                        <p className="font-medium text-slate-900">Request 6-month grace period</p>
-                                                        <p className="text-sm text-slate-600 mt-1">
-                                                            I don't have an LEI yet. Grant me 6 months to obtain LEI and vLEI credentials. 
-                                                            Platform will assist with GLEIF registration during this period.
-                                                        </p>
-                                                    </div>
-                                                </label>
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-medium mb-1">Wire Transfer %</label>
+                                                    <input
+                                                        type="number"
+                                                        step="0.01"
+                                                        value={formData.transaction_fees.wire_percentage}
+                                                        onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, wire_percentage: parseFloat(e.target.value)}})}
+                                                        className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-medium mb-1">Wire Transfer Fixed ($)</label>
+                                                    <input
+                                                        type="number"
+                                                        step="0.01"
+                                                        value={formData.transaction_fees.wire_fixed}
+                                                        onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, wire_fixed: parseFloat(e.target.value)}})}
+                                                        className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
 
-                                                {formData.lei_waived && (
-                                                    <Alert className="bg-amber-50 border-amber-200">
-                                                        <AlertCircle className="h-4 w-4 text-amber-600" />
-                                                        <AlertDescription className="text-sm text-amber-900">
-                                                            <strong>Grace Period Activated:</strong> You must obtain LEI within 6 months from provisioning. 
-                                                            vLEI, OOR, and ECR credentials will also be required within this timeframe.
-                                                        </AlertDescription>
-                                                    </Alert>
-                                                )}
+                                        <div>
+                                            <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
+                                                <span className="bg-purple-100 text-purple-700 px-2 py-1 rounded text-sm">Digital Wallets & Crypto</span>
+                                            </h3>
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div>
+                                                    <label className="block text-sm font-medium mb-1">Digital Wallet %</label>
+                                                    <input
+                                                        type="number"
+                                                        step="0.01"
+                                                        value={formData.transaction_fees.wallet_percentage}
+                                                        onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, wallet_percentage: parseFloat(e.target.value)}})}
+                                                        className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-medium mb-1">Digital Wallet Fixed ($)</label>
+                                                    <input
+                                                        type="number"
+                                                        step="0.01"
+                                                        value={formData.transaction_fees.wallet_fixed}
+                                                        onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, wallet_fixed: parseFloat(e.target.value)}})}
+                                                        className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-medium mb-1">Cryptocurrency %</label>
+                                                    <input
+                                                        type="number"
+                                                        step="0.01"
+                                                        value={formData.transaction_fees.crypto_percentage}
+                                                        onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, crypto_percentage: parseFloat(e.target.value)}})}
+                                                        className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-medium mb-1">Cryptocurrency Fixed ($)</label>
+                                                    <input
+                                                        type="number"
+                                                        step="0.01"
+                                                        value={formData.transaction_fees.crypto_fixed}
+                                                        onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, crypto_fixed: parseFloat(e.target.value)}})}
+                                                        className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -670,61 +870,62 @@ export default function PSPProvisioningWizard() {
 
                             {step === 5 && (
                                 <div>
-                                    <h2 className="text-xl font-semibold mb-4">Payment Methods</h2>
-                                    <div className="space-y-4 max-h-[500px] overflow-y-auto">
-                                        {paymentMethodOptions.map((category) => (
-                                            <div key={category.category}>
-                                                <h3 className="font-medium text-slate-900 mb-2 flex items-center gap-2">
-                                                    <span className="text-sm bg-blue-100 text-blue-700 px-2 py-1 rounded">{category.category}</span>
-                                                </h3>
-                                                <div className="grid grid-cols-3 gap-2">
-                                                    {category.methods.map((method) => (
-                                                        <label key={method} className="flex items-center gap-2 p-2 border border-slate-200 rounded-lg hover:bg-slate-50 cursor-pointer">
-                                                            <input
-                                                                type="checkbox"
-                                                                checked={formData.enabled_payment_methods.includes(method)}
-                                                                onChange={(e) => {
-                                                                    if (e.target.checked) {
-                                                                        setFormData({...formData, enabled_payment_methods: [...formData.enabled_payment_methods, method]});
-                                                                    } else {
-                                                                        setFormData({...formData, enabled_payment_methods: formData.enabled_payment_methods.filter(m => m !== method)});
-                                                                    }
-                                                                }}
-                                                                className="w-4 h-4"
-                                                            />
-                                                            <span className="text-sm capitalize">{method.replace('_', ' ')}</span>
-                                                        </label>
-                                                    ))}
-                                                </div>
+                                    <h2 className="text-xl font-semibold mb-4">Platform Services & Compliance</h2>
+                                    
+                                    <div className="space-y-6">
+                                        <div>
+                                            <h3 className="font-medium text-slate-900 mb-3">Platform Services</h3>
+                                            <div className="space-y-2 max-h-64 overflow-y-auto">
+                                                {services.length > 0 ? services.map((service) => (
+                                                    <label key={service.id} className="flex items-start gap-3 p-3 border border-slate-200 rounded-lg hover:bg-slate-50 cursor-pointer">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={formData.enabled_services.includes(service.id)}
+                                                            onChange={(e) => {
+                                                                if (e.target.checked) {
+                                                                    setFormData({...formData, enabled_services: [...formData.enabled_services, service.id]});
+                                                                } else {
+                                                                    setFormData({...formData, enabled_services: formData.enabled_services.filter(id => id !== service.id)});
+                                                                }
+                                                            }}
+                                                            className="w-4 h-4 mt-1"
+                                                        />
+                                                        <div>
+                                                            <p className="font-medium text-slate-900">{service.service_name}</p>
+                                                            <p className="text-xs text-slate-600">{service.description}</p>
+                                                        </div>
+                                                    </label>
+                                                )) : (
+                                                    <p className="text-sm text-slate-500 py-4 text-center">No services configured yet</p>
+                                                )}
                                             </div>
-                                        ))}
-                                        
-                                        {paymentProviders.length > 0 && (
-                                            <div>
-                                                <h3 className="font-medium text-slate-900 mb-2 flex items-center gap-2">
-                                                    <span className="text-sm bg-purple-100 text-purple-700 px-2 py-1 rounded">Payment Processors</span>
-                                                </h3>
-                                                <div className="grid grid-cols-3 gap-2">
-                                                    {paymentProviders.map((provider) => (
-                                                        <label key={provider.id} className="flex items-center gap-2 p-2 border border-slate-200 rounded-lg hover:bg-slate-50 cursor-pointer">
-                                                            <input
-                                                                type="checkbox"
-                                                                checked={formData.enabled_payment_methods.includes(provider.id)}
-                                                                onChange={(e) => {
-                                                                    if (e.target.checked) {
-                                                                        setFormData({...formData, enabled_payment_methods: [...formData.enabled_payment_methods, provider.id]});
-                                                                    } else {
-                                                                        setFormData({...formData, enabled_payment_methods: formData.enabled_payment_methods.filter(id => id !== provider.id)});
-                                                                    }
-                                                                }}
-                                                                className="w-4 h-4"
-                                                            />
-                                                            <span className="text-sm">{provider.provider_name}</span>
-                                                        </label>
-                                                    ))}
-                                                </div>
+                                        </div>
+
+                                        <div className="border-t border-slate-200 pt-6">
+                                            <h3 className="font-medium text-slate-900 mb-3 flex items-center gap-2">
+                                                <Shield className="h-5 w-5 text-blue-600" />
+                                                Compliance Features
+                                            </h3>
+                                            <div className="space-y-2">
+                                                {Object.entries({
+                                                    pci_dss: 'PCI DSS Compliance',
+                                                    kyb_verification: 'KYB Verification',
+                                                    aml_screening: 'AML Screening',
+                                                    fatf_compliance: 'FATF Compliance',
+                                                    lei_verification: 'LEI Verification'
+                                                }).map(([key, label]) => (
+                                                    <label key={key} className="flex items-center gap-3 p-3 border border-slate-200 rounded-lg hover:bg-slate-50 cursor-pointer">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={formData.compliance_features[key]}
+                                                            onChange={(e) => setFormData({...formData, compliance_features: {...formData.compliance_features, [key]: e.target.checked}})}
+                                                            className="w-4 h-4"
+                                                        />
+                                                        <span className="font-medium text-slate-900">{label}</span>
+                                                    </label>
+                                                ))}
                                             </div>
-                                        )}
+                                        </div>
                                     </div>
                                 </div>
                             )}
@@ -809,7 +1010,55 @@ export default function PSPProvisioningWizard() {
 
                             {step === 7 && (
                                 <div>
-                                    <h2 className="text-xl font-semibold mb-4">Review & Deploy</h2>
+                                    <h2 className="text-xl font-semibold mb-4">Admin Account Setup & Review</h2>
+                                    
+                                    <div className="space-y-6">
+                                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                                            <h3 className="font-medium text-blue-900 mb-3 flex items-center gap-2">
+                                                <Shield className="h-5 w-5" />
+                                                Create Admin Account
+                                            </h3>
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div>
+                                                    <label className="block text-sm font-medium mb-1 text-blue-900">Admin Email *</label>
+                                                    <input
+                                                        type="email"
+                                                        value={formData.admin_email}
+                                                        onChange={(e) => setFormData({...formData, admin_email: e.target.value})}
+                                                        className="w-full px-3 py-2 border border-blue-300 rounded-lg"
+                                                        placeholder="admin@yourpsp.com"
+                                                        required
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-medium mb-1 text-blue-900">Full Name *</label>
+                                                    <input
+                                                        type="text"
+                                                        value={formData.admin_full_name}
+                                                        onChange={(e) => setFormData({...formData, admin_full_name: e.target.value})}
+                                                        className="w-full px-3 py-2 border border-blue-300 rounded-lg"
+                                                        placeholder="John Doe"
+                                                        required
+                                                    />
+                                                </div>
+                                                <div className="col-span-2">
+                                                    <label className="block text-sm font-medium mb-1 text-blue-900">Initial Password *</label>
+                                                    <input
+                                                        type="password"
+                                                        value={formData.admin_password}
+                                                        onChange={(e) => setFormData({...formData, admin_password: e.target.value})}
+                                                        className="w-full px-3 py-2 border border-blue-300 rounded-lg"
+                                                        placeholder="Strong password (min 8 characters)"
+                                                        required
+                                                        minLength={8}
+                                                    />
+                                                    <p className="text-xs text-blue-700 mt-1">Admin will be prompted to change password on first login</p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="border-t border-slate-200 pt-6">
+                                            <h3 className="font-medium text-slate-900 mb-3">Configuration Review</h3>
                                     
                                     <div className="space-y-4">
                                         <div className="bg-slate-50 rounded-lg p-4 space-y-3">
@@ -884,23 +1133,26 @@ export default function PSPProvisioningWizard() {
                                         </div>
                                     </div>
 
-                                    <button
-                                        onClick={handleProvision}
-                                        disabled={provisioning || !formData.psp_code || !formData.psp_name || !formData.owner_email}
-                                        className="w-full mt-6 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-slate-300 disabled:cursor-not-allowed flex items-center justify-center gap-2 font-semibold"
-                                    >
-                                        {provisioning ? (
-                                            <>
-                                                <Loader2 className="h-5 w-5 animate-spin" />
-                                                Submitting for Approval...
-                                            </>
-                                        ) : (
-                                            <>
-                                                <Rocket className="h-5 w-5" />
-                                                Submit PSP for Approval
-                                            </>
-                                        )}
-                                    </button>
+                                        </div>
+
+                                        <button
+                                            onClick={handleProvision}
+                                            disabled={provisioning || !formData.psp_code || !formData.psp_name || !formData.owner_email || !formData.admin_email || !formData.admin_password}
+                                            className="w-full mt-6 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-slate-300 disabled:cursor-not-allowed flex items-center justify-center gap-2 font-semibold"
+                                        >
+                                            {provisioning ? (
+                                                <>
+                                                    <Loader2 className="h-5 w-5 animate-spin" />
+                                                    Submitting for Approval...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Rocket className="h-5 w-5" />
+                                                    Submit PSP for Approval
+                                                </>
+                                            )}
+                                        </button>
+                                    </div>
                                 </div>
                             )}
 
