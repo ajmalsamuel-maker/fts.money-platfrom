@@ -29,7 +29,7 @@ import {
 import { COUNTRIES } from '@/components/utils/countries';
 import { TIMEZONES } from '@/components/utils/timezones';
 import { ISO4217_CURRENCIES, getCurrencySymbol } from '@/components/utils/iso4217';
-import DeploymentSelector from '@/components/provisioning/DeploymentSelector';
+import DeploymentSelectorComponent from '@/components/provisioning/DeploymentSelectorComponent';
 import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
 
 const tiers = [
@@ -1100,7 +1100,7 @@ export default function PSPProvisioningWizard() {
                             <CardDescription>Select cloud infrastructure for primary and disaster recovery environments</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-6">
-                            <DeploymentSelector
+                            <DeploymentSelectorComponent
                                 connectors={connectors.filter(c => c.status === 'active')}
                                 formData={formData}
                                 setFormData={setFormData}
