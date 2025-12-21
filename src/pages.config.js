@@ -142,7 +142,6 @@ import PSPOwnershipMigration from './pages/PSPOwnershipMigration';
 import PSPPasswordReset from './pages/PSPPasswordReset';
 import PSPProductCatalog from './pages/PSPProductCatalog';
 import PSPProvisioning from './pages/PSPProvisioning';
-import PSPProvisioningWizard from './pages/PSPProvisioningWizard';
 import PSPSetupWizard from './pages/PSPSetupWizard';
 import PSPUserManagement from './pages/PSPUserManagement';
 import PSPWholesaleBrowse from './pages/PSPWholesaleBrowse';
@@ -192,6 +191,7 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
+import PSPProvisioningWizard from './pages/PSPProvisioningWizard';
 import __Layout from './Layout.jsx';
 
 
@@ -340,7 +340,6 @@ export const PAGES = {
     "PSPPasswordReset": PSPPasswordReset,
     "PSPProductCatalog": PSPProductCatalog,
     "PSPProvisioning": PSPProvisioning,
-    "PSPProvisioningWizard": PSPProvisioningWizard,
     "PSPSetupWizard": PSPSetupWizard,
     "PSPUserManagement": PSPUserManagement,
     "PSPWholesaleBrowse": PSPWholesaleBrowse,
@@ -390,6 +389,7 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
+    "PSPProvisioningWizard": PSPProvisioningWizard,
 }
 
 export const pagesConfig = {
