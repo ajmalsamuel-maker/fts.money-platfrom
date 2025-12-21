@@ -59,11 +59,8 @@ Deno.serve(async (req) => {
             await client.query(`
                 DO $$ 
                 BEGIN
-                    -- Drop in current schema
                     DROP TABLE IF EXISTS app_users CASCADE;
-                    -- Drop with schema prefix
                     EXECUTE 'DROP TABLE IF EXISTS ${schemaName}.app_users CASCADE';
-                    -- Drop in public schema
                     DROP TABLE IF EXISTS public.app_users CASCADE;
                 END $$;
             `);
@@ -305,12 +302,11 @@ Deno.serve(async (req) => {
                 );
             `);
 
-            // CRITICAL STEP 3: Drop app_users again after table creation
             await client.query(`
                 DO $$ 
                 BEGIN
                     DROP TABLE IF EXISTS app_users CASCADE;
-                    EXECUTE 'DROP TABLE IF EXISTS ${schemaName}.app_users CASCADE';
+                    EXECUTE 'DROP TABLE IF EXISTS ${schemaName}.app_users CASCADE;
                 END $$;
             `);
             console.log('[PROVISION] app_users dropped after table creation');
@@ -380,24 +376,21 @@ Deno.serve(async (req) => {
                 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA ${schemaName} TO current_user;
             `);
 
-            // CRITICAL STEP 4: Final nuclear cleanup - ensure app_users is gone
             console.log('[PROVISION] Final cleanup - ensuring app_users is permanently gone...');
             await client.query(`
                 DO $$ 
                 DECLARE
                     r RECORD;
                 BEGIN
-                    -- Drop all constraints first
                     FOR r IN (
                         SELECT tc.constraint_name, tc.table_name
                         FROM information_schema.table_constraints tc
                         WHERE tc.table_schema = '${schemaName}'
-                        AND (tc.constraint_name LIKE '%app_users%' OR r.table_name = 'app_users')
+                        AND (tc.constraint_name LIKE '%app_users%' OR tc.table_name = 'app_users')
                     ) LOOP
                         EXECUTE 'ALTER TABLE ${schemaName}.' || r.table_name || ' DROP CONSTRAINT IF EXISTS ' || r.constraint_name || ' CASCADE';
                     END LOOP;
                     
-                    -- Drop app_users in every possible form
                     DROP TABLE IF EXISTS app_users CASCADE;
                     EXECUTE 'DROP TABLE IF EXISTS ${schemaName}.app_users CASCADE';
                     DROP TABLE IF EXISTS public.app_users CASCADE;
