@@ -57,7 +57,10 @@ Deno.serve(async (req) => {
                 try {
                     password_hash = await bcrypt.hash(password || 'Welcome123!', 10);
                     console.log('[DEBUG] Password hashed successfully');
-                console.log('[DEBUG] Password hashed successfully');
+                } catch (hashErr) {
+                    console.error('[ERROR] Hashing failed:', hashErr);
+                    throw hashErr;
+                }
 
                 // Check if user exists in THIS PSP schema only
                 const existingCheck = await client.query(`
