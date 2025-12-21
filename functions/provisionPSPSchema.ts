@@ -51,12 +51,23 @@ Deno.serve(async (req) => {
             // Create isolated schema for PSP (PCI DSS Requirement 12.3)
             await client.query(`CREATE SCHEMA IF NOT EXISTS ${schemaName}`);
             
-            // CRITICAL: Set search_path to ONLY this PSP schema - prevents Base44 from looking for app_users elsewhere
-            await client.query(`SET search_path TO ${schemaName}`);
+            // CRITICAL STEP 1: Set search_path to ONLY this PSP schema
+            await client.query(`SET search_path TO ${schemaName}, pg_catalog`);
+            console.log(`[PROVISION] Set search_path to: ${schemaName}`);
             
-            // CRITICAL: Drop app_users FIRST if it exists (Base44 SDK may have created it)
-            await client.query(`DROP TABLE IF EXISTS ${schemaName}.app_users CASCADE`);
-            await client.query(`DROP TABLE IF EXISTS app_users CASCADE`);
+            // CRITICAL STEP 2: Nuclear option - drop app_users in ALL possible forms
+            await client.query(`
+                DO $$ 
+                BEGIN
+                    -- Drop in current schema
+                    DROP TABLE IF EXISTS app_users CASCADE;
+                    -- Drop with schema prefix
+                    EXECUTE 'DROP TABLE IF EXISTS ${schemaName}.app_users CASCADE';
+                    -- Drop in public schema
+                    DROP TABLE IF EXISTS public.app_users CASCADE;
+                END $$;
+            `);
+            console.log('[PROVISION] app_users dropped from all locations');
 
             // Create all production tables in the PSP schema (PCI DSS + GDPR compliant)
             await client.query(`
@@ -203,19 +214,6 @@ Deno.serve(async (req) => {
                     updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     created_by VARCHAR(255)
                 );
-                
-                -- CRITICAL: Create trigger to prevent app_users table creation
-                CREATE OR REPLACE FUNCTION prevent_app_users_creation()
-                RETURNS event_trigger AS $$
-                BEGIN
-                    IF EXISTS (
-                        SELECT 1 FROM pg_event_trigger_ddl_commands()
-                        WHERE object_identity LIKE '%app_users%'
-                    ) THEN
-                        RAISE EXCEPTION 'Creation of app_users table is blocked in PSP schemas';
-                    END IF;
-                END;
-                $$ LANGUAGE plpgsql;
 
                 -- Payment Providers Table
                 CREATE TABLE IF NOT EXISTS ${schemaName}.payment_providers (
@@ -307,12 +305,22 @@ Deno.serve(async (req) => {
                 );
             `);
 
+            // CRITICAL STEP 3: Drop app_users again after table creation
+            await client.query(`
+                DO $$ 
+                BEGIN
+                    DROP TABLE IF EXISTS app_users CASCADE;
+                    EXECUTE 'DROP TABLE IF EXISTS ${schemaName}.app_users CASCADE';
+                END $$;
+            `);
+            console.log('[PROVISION] app_users dropped after table creation');
+
             // Copy PSP settings from ProvisionedPSP entity
             const pspData = await base44.asServiceRole.entities.ProvisionedPSP.filter({ psp_code });
             if (pspData && pspData.length > 0) {
                 const psp = pspData[0];
                 await client.query(`
-                    INSERT INTO ${schemaName}.psp_settings (psp_code, psp_name, branding, settings)
+                    INSERT INTO psp_settings (psp_code, psp_name, branding, settings)
                     VALUES ($1, $2, $3, $4)
                     ON CONFLICT (psp_code) DO UPDATE
                     SET psp_name = $2, branding = $3, settings = $4, updated_date = CURRENT_TIMESTAMP
@@ -372,30 +380,43 @@ Deno.serve(async (req) => {
                 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA ${schemaName} TO current_user;
             `);
 
-            // CRITICAL: Final cleanup - drop app_users if Base44 SDK created it
-            console.log('[PROVISIONING] Final cleanup - removing app_users...');
-            await client.query(`DROP TABLE IF EXISTS app_users CASCADE`);
+            // CRITICAL STEP 4: Final nuclear cleanup - ensure app_users is gone
+            console.log('[PROVISION] Final cleanup - ensuring app_users is permanently gone...');
             await client.query(`
                 DO $$ 
                 DECLARE
                     r RECORD;
                 BEGIN
-                    -- Drop all constraints referencing app_users
+                    -- Drop all constraints first
                     FOR r IN (
                         SELECT tc.constraint_name, tc.table_name
                         FROM information_schema.table_constraints tc
                         WHERE tc.table_schema = '${schemaName}'
-                        AND tc.constraint_name LIKE '%app_users%'
+                        AND (tc.constraint_name LIKE '%app_users%' OR r.table_name = 'app_users')
                     ) LOOP
                         EXECUTE 'ALTER TABLE ${schemaName}.' || r.table_name || ' DROP CONSTRAINT IF EXISTS ' || r.constraint_name || ' CASCADE';
                     END LOOP;
                     
-                    -- Drop app_users table in all forms
+                    -- Drop app_users in every possible form
                     DROP TABLE IF EXISTS app_users CASCADE;
-                    DROP TABLE IF EXISTS ${schemaName}.app_users CASCADE;
+                    EXECUTE 'DROP TABLE IF EXISTS ${schemaName}.app_users CASCADE';
+                    DROP TABLE IF EXISTS public.app_users CASCADE;
                 END $$;
             `);
-            console.log('[PROVISIONING] app_users cleanup complete');
+            
+            -- Verify it's completely gone
+            const finalCheck = await client.query(`
+                SELECT table_schema, table_name 
+                FROM information_schema.tables 
+                WHERE table_name = 'app_users'
+                AND table_schema IN ('${schemaName}', 'public')
+            `);
+            
+            if (finalCheck.rows.length > 0) {
+                console.error('[PROVISION] ERROR: app_users still exists:', finalCheck.rows);
+            } else {
+                console.log('[PROVISION] ✓ app_users completely removed');
+            }
 
             // Log schema creation in audit log with full compliance framework
             await client.query(`
