@@ -89,11 +89,15 @@ Deno.serve(async (req) => {
                 }
 
                 // User doesn't exist in THIS PSP - create new
+                console.log('[DEBUG] Creating new user with hashed password');
+                console.log('[DEBUG] Password hash length:', password_hash.length);
                 result = await client.query(`
                     INSERT INTO ${schemaName}.psp_staff_users (email, full_name, role, password_hash, status, two_factor_enabled)
                     VALUES ($1, $2, $3, $4, $5, $6)
-                    RETURNING id, email, full_name, role, status, two_factor_enabled, created_date
+                    RETURNING id, email, full_name, role, status, two_factor_enabled, created_date, password_hash
                 `, [email, full_name, role || 'user', password_hash, status || 'active', two_factor_enabled || false]);
+                console.log('[DEBUG] User created successfully');
+                console.log('[DEBUG] Returned password_hash:', result.rows[0].password_hash);
 
                 return Response.json({
                     success: true,
