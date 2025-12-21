@@ -31,9 +31,27 @@ Deno.serve(async (req) => {
                 console.log('[DEBUG] Starting user creation for PSP:', psp_code, 'schema:', schemaName);
                 console.log('[DEBUG] Email:', email, 'Role:', role);
 
-                // CRITICAL: Drop app_users if it exists to prevent constraint conflicts
+                // CRITICAL: Check for and drop ANY references to app_users
+                console.log('[DEBUG] Checking for app_users references...');
+
+                // Drop all constraints that might reference app_users
+                const constraintsCheck = await client.query(`
+                    SELECT tc.constraint_name, tc.table_name
+                    FROM information_schema.table_constraints tc
+                    JOIN information_schema.constraint_column_usage ccu 
+                        ON tc.constraint_name = ccu.constraint_name
+                    WHERE tc.table_schema = $1 
+                    AND ccu.table_name = 'app_users'
+                `, [schemaName]);
+
+                for (const row of constraintsCheck.rows) {
+                    console.log('[DEBUG] Dropping constraint:', row.constraint_name, 'from', row.table_name);
+                    await client.query(`ALTER TABLE ${schemaName}.${row.table_name} DROP CONSTRAINT IF EXISTS ${row.constraint_name} CASCADE`);
+                }
+
+                // Drop app_users table
                 await client.query(`DROP TABLE IF EXISTS ${schemaName}.app_users CASCADE`);
-                console.log('[DEBUG] Dropped app_users table if it existed');
+                console.log('[DEBUG] Dropped app_users table and constraints');
 
                 // Verify psp_staff_users table exists
                 const tableCheck = await client.query(`
@@ -56,21 +74,6 @@ Deno.serve(async (req) => {
                 console.log('[DEBUG] Hashing password...');
                 const password_hash = await bcrypt.hash(password || 'Welcome123!', 10);
                 console.log('[DEBUG] Password hashed successfully');
-
-                // Check if psp_staff_users table exists first
-                const tableCheck = await client.query(`
-                    SELECT EXISTS (
-                        SELECT FROM information_schema.tables 
-                        WHERE table_schema = $1 AND table_name = 'psp_staff_users'
-                    )
-                `, [schemaName]);
-
-                if (!tableCheck.rows[0].exists) {
-                    return Response.json({
-                        success: false,
-                        error: `PSP schema ${schemaName} not provisioned yet. Run provisionPSPSchema first.`
-                    }, { status: 400 });
-                }
 
                 // Check if user exists in THIS PSP schema only
                 const existingCheck = await client.query(`
