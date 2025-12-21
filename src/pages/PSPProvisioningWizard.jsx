@@ -339,44 +339,44 @@ export default function PSPProvisioningWizard() {
                 </div>
 
                 <div className="flex items-center justify-between mb-8 bg-white rounded-lg p-6 border border-slate-200">
-                    {[1, 2, 3, 4, 5, 6, 7].map((s) => (
-                        <React.Fragment key={`step-${s}`}>
-                            <div className="flex items-center gap-3">
-                                <div className={cn(
-                                    "flex items-center justify-center w-10 h-10 rounded-full font-semibold border-2",
-                                    step >= s ? "bg-blue-600 text-white border-blue-600" : "bg-white text-slate-400 border-slate-300"
-                                )}>
-                                    {step > s ? <Check className="h-5 w-5" /> : s}
+                    {[1, 2, 3, 4, 5, 6, 7].map((s) => {
+                        const stepNames = {
+                            1: { title: 'Service Tier', subtitle: 'Select tier & limits' },
+                            2: { title: 'Instance Config', subtitle: 'Network & identity' },
+                            3: { title: 'Services', subtitle: 'Feature selection' },
+                            4: { title: 'Fee Structure', subtitle: 'Pricing config' },
+                            5: { title: 'Providers', subtitle: 'Provider mapping' },
+                            6: { title: 'Cloud Deployment', subtitle: 'Cloud infrastructure' },
+                            7: { title: 'Deploy', subtitle: 'Review & launch' }
+                        };
+                        
+                        return (
+                            <div key={s} className="flex items-center flex-1">
+                                <div className="flex items-center gap-3">
+                                    <div className={cn(
+                                        "flex items-center justify-center w-10 h-10 rounded-full font-semibold border-2",
+                                        step >= s ? "bg-blue-600 text-white border-blue-600" : "bg-white text-slate-400 border-slate-300"
+                                    )}>
+                                        {step > s ? <Check className="h-5 w-5" /> : s}
+                                    </div>
+                                    <div>
+                                        <p className={cn("text-sm font-medium", step >= s ? "text-slate-900" : "text-slate-500")}>
+                                            {stepNames[s].title}
+                                        </p>
+                                        <p className="text-xs text-slate-500">
+                                            {stepNames[s].subtitle}
+                                        </p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <p className={cn("text-sm font-medium", step >= s ? "text-slate-900" : "text-slate-500")}>
-                                        {s === 1 && 'Service Tier'}
-                                        {s === 2 && 'Instance Config'}
-                                        {s === 3 && 'Services'}
-                                        {s === 4 && 'Fee Structure'}
-                                        {s === 5 && 'Providers'}
-                                        {s === 6 && 'Cloud Deployment'}
-                                        {s === 7 && 'Deploy'}
-                                    </p>
-                                    <p className="text-xs text-slate-500">
-                                        {s === 1 && 'Select tier & limits'}
-                                        {s === 2 && 'Network & identity'}
-                                        {s === 3 && 'Feature selection'}
-                                        {s === 4 && 'Pricing config'}
-                                        {s === 5 && 'Provider mapping'}
-                                        {s === 6 && 'Cloud infrastructure'}
-                                        {s === 7 && 'Review & launch'}
-                                    </p>
-                                </div>
+                                {s < 7 && (
+                                    <div className={cn(
+                                        "flex-1 h-0.5 mx-4",
+                                        step > s ? "bg-blue-600" : "bg-slate-200"
+                                    )} />
+                                )}
                             </div>
-                            {s < 7 && (
-                                <div className={cn(
-                                    "flex-1 h-0.5 mx-4",
-                                    step > s ? "bg-blue-600" : "bg-slate-200"
-                                )} />
-                            )}
-                        </React.Fragment>
-                    ))}
+                        );
+                    })}
                 </div>
 
                 {step === 1 && (
