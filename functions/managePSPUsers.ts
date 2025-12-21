@@ -1,7 +1,21 @@
 import pg from 'npm:pg@8.11.3';
-import bcrypt from 'npm:bcrypt@5.1.1';
 
 const { Pool } = pg;
+
+// CRITICAL: bcrypt npm package has dependency that causes "app_users" errors
+// Use Deno's native crypto API instead for password hashing
+async function hashPassword(password) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function verifyPassword(password, hash) {
+    const newHash = await hashPassword(password);
+    return newHash === hash;
+}
 
 // CRITICAL: Uses psp_staff_users table (completely isolated from Base44 entity system)
 // This prevents Base44 from auto-creating unique constraints that cause conflicts
@@ -52,15 +66,8 @@ Deno.serve(async (req) => {
 
                 // Hash password
                 console.log('[DEBUG] About to hash password...');
-                console.log('[DEBUG] Password value:', password ? 'provided' : 'using default');
-                let password_hash;
-                try {
-                    password_hash = await bcrypt.hash(password || 'Welcome123!', 10);
-                    console.log('[DEBUG] Password hashed successfully');
-                } catch (hashErr) {
-                    console.error('[ERROR] Hashing failed:', hashErr);
-                    throw hashErr;
-                }
+                const password_hash = await hashPassword(password || 'Welcome123!');
+                console.log('[DEBUG] Password hashed successfully');
 
                 // Check if user exists in THIS PSP schema only
                 const existingCheck = await client.query(`
@@ -217,7 +224,7 @@ Deno.serve(async (req) => {
                         values.push(two_factor_enabled);
                     }
                     if (password) {
-                        const password_hash = await bcrypt.hash(password, 10);
+                        const password_hash = await hashPassword(password);
                         updates.push(`password_hash = $${paramCount++}`);
                         values.push(password_hash);
                     }
