@@ -323,22 +323,6 @@ Deno.serve(async (req) => {
                 `);
             }
 
-            // CRITICAL: Drop app_users at the END after all tables are created
-            // Base44 may auto-create it during table creation, so we drop it LAST
-            await client.query(`DROP TABLE IF EXISTS ${schemaName}.app_users CASCADE`);
-
-            // Verify it's gone
-            const verifyDrop = await client.query(`
-                SELECT EXISTS (
-                    SELECT FROM information_schema.tables 
-                    WHERE table_schema = $1 AND table_name = 'app_users'
-                )
-            `, [schemaName]);
-
-            if (verifyDrop.rows[0].exists) {
-                console.error('WARNING: app_users table still exists after DROP CASCADE');
-            }
-
             // Create comprehensive indexes for performance and security
             await client.query(`
                 CREATE INDEX IF NOT EXISTS idx_merchants_email ON ${schemaName}.merchants(email);
@@ -367,6 +351,42 @@ Deno.serve(async (req) => {
                 GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA ${schemaName} TO current_user;
                 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA ${schemaName} TO current_user;
             `);
+
+            // CRITICAL: Drop app_users at the VERY END after everything else
+            // Base44 SDK may auto-create it during queries, so we drop it as the final step
+            console.log('[PROVISIONING] Dropping app_users table...');
+            await client.query(`DROP TABLE IF EXISTS ${schemaName}.app_users CASCADE`);
+            
+            // Drop any lingering constraints
+            await client.query(`
+                DO $$ 
+                DECLARE
+                    r RECORD;
+                BEGIN
+                    FOR r IN (
+                        SELECT constraint_name, table_name
+                        FROM information_schema.table_constraints
+                        WHERE table_schema = '${schemaName}'
+                        AND constraint_name LIKE '%app_users%'
+                    ) LOOP
+                        EXECUTE 'ALTER TABLE ${schemaName}.' || r.table_name || ' DROP CONSTRAINT IF EXISTS ' || r.constraint_name || ' CASCADE';
+                    END LOOP;
+                END $$;
+            `);
+            
+            // Final verification
+            const verifyDrop = await client.query(`
+                SELECT EXISTS (
+                    SELECT FROM information_schema.tables 
+                    WHERE table_schema = $1 AND table_name = 'app_users'
+                )
+            `, [schemaName]);
+
+            if (verifyDrop.rows[0].exists) {
+                console.error('WARNING: app_users table still exists after DROP CASCADE');
+            } else {
+                console.log('[PROVISIONING] app_users successfully removed');
+            }
 
             // Log schema creation in audit log with full compliance framework
             await client.query(`
