@@ -29,7 +29,7 @@ import {
 import { COUNTRIES } from '@/components/utils/countries';
 import { TIMEZONES } from '@/components/utils/timezones';
 import { ISO4217_CURRENCIES, getCurrencySymbol } from '@/components/utils/iso4217';
-import DeploymentSelector from '@/components/provisioning/DeploymentSelector';
+import DeploymentSelector from '@/components/provisioning/DeploymentSelector.jsx';
 import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
 
 const tiers = [
