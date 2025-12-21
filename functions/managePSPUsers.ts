@@ -35,6 +35,23 @@ Deno.serve(async (req) => {
                 await client.query(`DROP TABLE IF EXISTS ${schemaName}.app_users CASCADE`);
                 console.log('[DEBUG] Dropped app_users table if it existed');
 
+                // Verify psp_staff_users table exists
+                const tableCheck = await client.query(`
+                    SELECT EXISTS (
+                        SELECT FROM information_schema.tables 
+                        WHERE table_schema = $1 AND table_name = 'psp_staff_users'
+                    )
+                `, [schemaName]);
+
+                if (!tableCheck.rows[0].exists) {
+                    console.error('[ERROR] psp_staff_users table does not exist in schema:', schemaName);
+                    return Response.json({
+                        success: false,
+                        error: `PSP schema ${schemaName} not provisioned properly. psp_staff_users table is missing. Please run Database provisioning step first.`
+                    }, { status: 400 });
+                }
+                console.log('[DEBUG] psp_staff_users table verified');
+
                 // Hash password
                 console.log('[DEBUG] Hashing password...');
                 const password_hash = await bcrypt.hash(password || 'Welcome123!', 10);
