@@ -50,6 +50,13 @@ Deno.serve(async (req) => {
         try {
             // Create isolated schema for PSP (PCI DSS Requirement 12.3)
             await client.query(`CREATE SCHEMA IF NOT EXISTS ${schemaName}`);
+            
+            // CRITICAL: Set search_path to ONLY this PSP schema - prevents Base44 from looking for app_users elsewhere
+            await client.query(`SET search_path TO ${schemaName}`);
+            
+            // CRITICAL: Drop app_users FIRST if it exists (Base44 SDK may have created it)
+            await client.query(`DROP TABLE IF EXISTS ${schemaName}.app_users CASCADE`);
+            await client.query(`DROP TABLE IF EXISTS app_users CASCADE`);
 
             // Create all production tables in the PSP schema (PCI DSS + GDPR compliant)
             await client.query(`
@@ -183,7 +190,7 @@ Deno.serve(async (req) => {
 
                 -- PSP Staff Users Table - COMPLETELY ISOLATED, NOT MANAGED BY BASE44
                 -- Separate table name prevents Base44 entity system from auto-syncing constraints
-                CREATE TABLE IF NOT EXISTS ${schemaName}.psp_staff_users (
+                CREATE TABLE IF NOT EXISTS psp_staff_users (
                     id SERIAL PRIMARY KEY,
                     email VARCHAR(255) NOT NULL,
                     full_name VARCHAR(255),
@@ -196,6 +203,19 @@ Deno.serve(async (req) => {
                     updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     created_by VARCHAR(255)
                 );
+                
+                -- CRITICAL: Create trigger to prevent app_users table creation
+                CREATE OR REPLACE FUNCTION prevent_app_users_creation()
+                RETURNS event_trigger AS $$
+                BEGIN
+                    IF EXISTS (
+                        SELECT 1 FROM pg_event_trigger_ddl_commands()
+                        WHERE object_identity LIKE '%app_users%'
+                    ) THEN
+                        RAISE EXCEPTION 'Creation of app_users table is blocked in PSP schemas';
+                    END IF;
+                END;
+                $$ LANGUAGE plpgsql;
 
                 -- Payment Providers Table
                 CREATE TABLE IF NOT EXISTS ${schemaName}.payment_providers (
@@ -352,41 +372,30 @@ Deno.serve(async (req) => {
                 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA ${schemaName} TO current_user;
             `);
 
-            // CRITICAL: Drop app_users at the VERY END after everything else
-            // Base44 SDK may auto-create it during queries, so we drop it as the final step
-            console.log('[PROVISIONING] Dropping app_users table...');
-            await client.query(`DROP TABLE IF EXISTS ${schemaName}.app_users CASCADE`);
-            
-            // Drop any lingering constraints
+            // CRITICAL: Final cleanup - drop app_users if Base44 SDK created it
+            console.log('[PROVISIONING] Final cleanup - removing app_users...');
+            await client.query(`DROP TABLE IF EXISTS app_users CASCADE`);
             await client.query(`
                 DO $$ 
                 DECLARE
                     r RECORD;
                 BEGIN
+                    -- Drop all constraints referencing app_users
                     FOR r IN (
-                        SELECT constraint_name, table_name
-                        FROM information_schema.table_constraints
-                        WHERE table_schema = '${schemaName}'
-                        AND constraint_name LIKE '%app_users%'
+                        SELECT tc.constraint_name, tc.table_name
+                        FROM information_schema.table_constraints tc
+                        WHERE tc.table_schema = '${schemaName}'
+                        AND tc.constraint_name LIKE '%app_users%'
                     ) LOOP
                         EXECUTE 'ALTER TABLE ${schemaName}.' || r.table_name || ' DROP CONSTRAINT IF EXISTS ' || r.constraint_name || ' CASCADE';
                     END LOOP;
+                    
+                    -- Drop app_users table in all forms
+                    DROP TABLE IF EXISTS app_users CASCADE;
+                    DROP TABLE IF EXISTS ${schemaName}.app_users CASCADE;
                 END $$;
             `);
-            
-            // Final verification
-            const verifyDrop = await client.query(`
-                SELECT EXISTS (
-                    SELECT FROM information_schema.tables 
-                    WHERE table_schema = $1 AND table_name = 'app_users'
-                )
-            `, [schemaName]);
-
-            if (verifyDrop.rows[0].exists) {
-                console.error('WARNING: app_users table still exists after DROP CASCADE');
-            } else {
-                console.log('[PROVISIONING] app_users successfully removed');
-            }
+            console.log('[PROVISIONING] app_users cleanup complete');
 
             // Log schema creation in audit log with full compliance framework
             await client.query(`
