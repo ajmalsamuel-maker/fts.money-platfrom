@@ -4,6 +4,7 @@ import { base44 } from '@/api/base44Client';
 import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
 import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
 import MissingInfoDialog from '@/components/provisioning/MissingInfoDialog';
+import AdminUserDialog from '@/components/provisioning/AdminUserDialog';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -76,6 +77,7 @@ export default function FTSProvisioningQueue() {
     const [stepValidating, setStepValidating] = useState({});
     const [stepValidationResults, setStepValidationResults] = useState({});
     const [missingInfoDialog, setMissingInfoDialog] = useState({ open: false, psp: null, step: null, error: null });
+    const [adminUserDialog, setAdminUserDialog] = useState({ open: false, psp: null, error: null });
 
     const validateStepMutation = useMutation({
         mutationFn: async ({ psp_code, step_id }) => {
@@ -111,29 +113,8 @@ export default function FTSProvisioningQueue() {
                 }
 
                 if (step === 'security') {
-                    // First check if schema exists
-                    const schemaCheck = await base44.functions.invoke('checkPSPSchema', {
-                        psp_code: psp.psp_code
-                    });
-
-                    if (!schemaCheck.data?.schema_exists) {
-                        throw new Error('PSP schema not provisioned. Run Database step first.');
-                    }
-
-                    const result = await base44.functions.invoke('managePSPUsers', {
-                        action: 'create',
-                        psp_code: psp.psp_code,
-                        email: psp.owner_email,
-                        full_name: psp.psp_name + ' Admin',
-                        role: 'admin',
-                        password: 'Welcome123!',
-                        status: 'active'
-                    });
-
-                    if (!result.data?.success) {
-                        throw new Error(result.data?.error || 'Failed to create admin user');
-                    }
-                    return { pspId, step, success: true };
+                    // Security step requires admin user dialog - should not auto-execute
+                    throw new Error('ADMIN_USER_REQUIRED');
                 }
 
                 // Other steps (domain, initialization)
@@ -350,9 +331,9 @@ FTS.Money Platform Team
     const handleExecuteStep = async (pspId, stepId) => {
         const psp = provisioningPSPs.find(p => p.id === pspId);
 
-        // Check for missing required fields
-        if (stepId === 'security' && !psp.owner_email) {
-            setMissingInfoDialog({ open: true, psp, step: stepId, error: 'Owner email is required for admin user creation' });
+        // Security step requires admin user dialog
+        if (stepId === 'security') {
+            setAdminUserDialog({ open: true, psp, error: null });
             return;
         }
 
@@ -376,6 +357,59 @@ FTS.Money Platform Team
                     [`${pspId}-${stepId}`]: errorMsg
                 }));
             }
+        }
+    };
+
+    const handleAdminUserSubmit = async (userData) => {
+        const psp = adminUserDialog.psp;
+        
+        try {
+            // Check schema exists first
+            const schemaCheck = await base44.functions.invoke('checkPSPSchema', {
+                psp_code: psp.psp_code
+            });
+
+            if (!schemaCheck.data?.schema_exists) {
+                setAdminUserDialog(prev => ({ ...prev, error: 'PSP schema not provisioned. Run Database step first.' }));
+                return;
+            }
+
+            // Create admin user
+            const result = await base44.functions.invoke('managePSPUsers', {
+                action: 'create',
+                psp_code: psp.psp_code,
+                ...userData
+            });
+
+            if (!result.data?.success) {
+                setAdminUserDialog(prev => ({ ...prev, error: result.data?.error || 'Failed to create admin user' }));
+                return;
+            }
+
+            // Mark security step as completed
+            const completedSteps = [...(psp.provisioning_steps_completed || [])];
+            if (!completedSteps.includes('security')) {
+                completedSteps.push('security');
+                const progress = completedSteps.reduce((sum, stepId) => {
+                    const stepConfig = provisioningSteps.find(s => s.id === stepId);
+                    return sum + (stepConfig?.weight || 0);
+                }, 0);
+
+                await base44.entities.ProvisionedPSP.update(psp.id, {
+                    provisioning_steps_completed: completedSteps,
+                    provisioning_progress: progress
+                });
+                queryClient.invalidateQueries({ queryKey: ['provisioning-psps'] });
+            }
+
+            // Close dialog
+            setAdminUserDialog({ open: false, psp: null, error: null });
+            setStepErrors(prev => ({ ...prev, [`${psp.id}-security`]: null }));
+        } catch (error) {
+            setAdminUserDialog(prev => ({ 
+                ...prev, 
+                error: error.response?.data?.error || error.message || 'Failed to create admin user'
+            }));
         }
     };
 
@@ -806,6 +840,14 @@ FTS.Money Platform Team
                 psp={missingInfoDialog.psp}
                 step={missingInfoDialog.step}
                 error={missingInfoDialog.error}
+            />
+
+            <AdminUserDialog
+                open={adminUserDialog.open}
+                onClose={() => setAdminUserDialog({ open: false, psp: null, error: null })}
+                onSubmit={handleAdminUserSubmit}
+                psp={adminUserDialog.psp}
+                error={adminUserDialog.error}
             />
             </div>
             );
