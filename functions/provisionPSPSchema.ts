@@ -404,7 +404,7 @@ Deno.serve(async (req) => {
                 END $$;
             `);
             
-            -- Verify it's completely gone
+            // Verify it's completely gone
             const finalCheck = await client.query(`
                 SELECT table_schema, table_name 
                 FROM information_schema.tables 
