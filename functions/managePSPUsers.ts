@@ -143,7 +143,7 @@ Deno.serve(async (req) => {
                 for (const psp of pspResult.rows) {
                     const client = await pool.connect();
                     try {
-                        const schemaName = `psp_${psp.psp_code.toLowerCase()}`;
+                        const schemaName = `psp_${psp.psp_code.toLowerCase().replace(/-/g, '_')}`;
 
                         const result = await client.query(`SELECT id, email, full_name, role, status, two_factor_enabled, last_login, created_date FROM "${schemaName}".psp_staff_users ORDER BY id DESC`);
                         allUsers.push(...result.rows.map(u => ({ ...u, psp_code: psp.psp_code })));
@@ -162,7 +162,7 @@ Deno.serve(async (req) => {
                 // List users for specific PSP
                 const client = await pool.connect();
                 try {
-                    const schemaName = `psp_${psp_code.toLowerCase()}`;
+                    const schemaName = `psp_${psp_code.toLowerCase().replace(/-/g, '_')}`;
                     await client.query(`SET search_path TO "${schemaName}"`);
 
                     const result = await client.query(`SELECT id, email, full_name, role, status, two_factor_enabled, last_login, created_date FROM "${schemaName}".psp_staff_users ORDER BY id DESC`);
@@ -192,7 +192,7 @@ Deno.serve(async (req) => {
 
             const client = await pool.connect();
                 try {
-                    const schemaName = `psp_${psp_code.toLowerCase()}`;
+                    const schemaName = `psp_${psp_code.toLowerCase().replace(/-/g, '_')}`;
                     await client.query(`SET search_path TO "${schemaName}"`);
 
                     // Build dynamic update query
