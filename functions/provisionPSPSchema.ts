@@ -323,8 +323,21 @@ Deno.serve(async (req) => {
                 `);
             }
 
-            // Explicitly prevent Base44 entity system from creating app_users
+            // CRITICAL: Drop app_users at the END after all tables are created
+            // Base44 may auto-create it during table creation, so we drop it LAST
             await client.query(`DROP TABLE IF EXISTS ${schemaName}.app_users CASCADE`);
+
+            // Verify it's gone
+            const verifyDrop = await client.query(`
+                SELECT EXISTS (
+                    SELECT FROM information_schema.tables 
+                    WHERE table_schema = $1 AND table_name = 'app_users'
+                )
+            `, [schemaName]);
+
+            if (verifyDrop.rows[0].exists) {
+                console.error('WARNING: app_users table still exists after DROP CASCADE');
+            }
 
             // Create comprehensive indexes for performance and security
             await client.query(`
