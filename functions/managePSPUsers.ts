@@ -28,7 +28,7 @@ Deno.serve(async (req) => {
 
             const client = await pool.connect();
             try {
-                const schemaName = `psp_${psp_code.toLowerCase()}`;
+                const schemaName = `psp_${psp_code.toLowerCase().replace(/-/g, '_')}`;
 
                 // CRITICAL: Set search_path to ONLY the PSP schema (not public, not app schemas)
                 await client.query(`SET search_path TO "${schemaName}"`);
@@ -254,7 +254,7 @@ Deno.serve(async (req) => {
 
             const client = await pool.connect();
             try {
-                const schemaName = `psp_${psp_code.toLowerCase()}`;
+                const schemaName = `psp_${psp_code.toLowerCase().replace(/-/g, '_')}`;
                 await client.query(`SET search_path TO "${schemaName}"`);
 
                 await client.query(`DELETE FROM "${schemaName}".psp_staff_users WHERE id = $1`, [user_id]);
