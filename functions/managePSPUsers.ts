@@ -13,8 +13,10 @@ const pool = new Pool({
 
 Deno.serve(async (req) => {
     try {
+        console.log('[START] managePSPUsers function invoked');
         // FORCE CACHE CLEAR - v3
         const { action, email, full_name, role, psp_code, password, user_id, status, two_factor_enabled } = await req.json();
+        console.log('[ACTION]', action, 'PSP:', psp_code);
 
         if (action === 'create') {
             if (!psp_code) {
