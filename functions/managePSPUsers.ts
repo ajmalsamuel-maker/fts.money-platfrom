@@ -63,7 +63,7 @@ Deno.serve(async (req) => {
                 // Check if user exists in THIS PSP schema only
                 const existingCheck = await client.query(`
                     SELECT id, email, full_name, role, status, two_factor_enabled, created_date 
-                    FROM psp_staff_users WHERE email = $1
+                    FROM "${schemaName}".psp_staff_users WHERE email = $1
                 `, [email]);
 
                 let result;
@@ -71,7 +71,7 @@ Deno.serve(async (req) => {
                     // User exists in THIS PSP - update role if different
                     if (existingCheck.rows[0].role !== role) {
                         result = await client.query(`
-                            UPDATE psp_staff_users 
+                            UPDATE "${schemaName}".psp_staff_users 
                             SET role = $1, updated_date = NOW()
                             WHERE email = $2
                             RETURNING id, email, full_name, role, status, two_factor_enabled, created_date
@@ -101,7 +101,7 @@ Deno.serve(async (req) => {
                 console.log('[DEBUG] Creating new user with hashed password');
                 console.log('[DEBUG] Password hash length:', password_hash.length);
                 result = await client.query(`
-                    INSERT INTO psp_staff_users (email, full_name, role, password_hash, status, two_factor_enabled)
+                    INSERT INTO "${schemaName}".psp_staff_users (email, full_name, role, password_hash, status, two_factor_enabled)
                     VALUES ($1, $2, $3, $4, $5, $6)
                     RETURNING id, email, full_name, role, status, two_factor_enabled, created_date, password_hash
                 `, [email, full_name, role || 'user', password_hash, status || 'active', two_factor_enabled || false]);
@@ -163,7 +163,7 @@ Deno.serve(async (req) => {
                     const schemaName = `psp_${psp_code.toLowerCase()}`;
                     await client.query(`SET search_path TO "${schemaName}"`);
 
-                    const result = await client.query(`SELECT id, email, full_name, role, status, two_factor_enabled, last_login, created_date FROM psp_staff_users ORDER BY id DESC`);
+                    const result = await client.query(`SELECT id, email, full_name, role, status, two_factor_enabled, last_login, created_date FROM "${schemaName}".psp_staff_users ORDER BY id DESC`);
                     
                     return Response.json({
                         success: true,
@@ -224,7 +224,7 @@ Deno.serve(async (req) => {
                     values.push(user_id);
 
                     const result = await client.query(`
-                        UPDATE psp_staff_users 
+                        UPDATE "${schemaName}".psp_staff_users 
                         SET ${updates.join(', ')}
                         WHERE id = $${paramCount}
                         RETURNING id, email, full_name, role, status, two_factor_enabled, created_date
@@ -255,7 +255,7 @@ Deno.serve(async (req) => {
                 const schemaName = `psp_${psp_code.toLowerCase()}`;
                 await client.query(`SET search_path TO "${schemaName}"`);
 
-                await client.query(`DELETE FROM psp_staff_users WHERE id = $1`, [user_id]);
+                await client.query(`DELETE FROM "${schemaName}".psp_staff_users WHERE id = $1`, [user_id]);
                 return Response.json({ success: true });
             } finally {
                 client.release();
