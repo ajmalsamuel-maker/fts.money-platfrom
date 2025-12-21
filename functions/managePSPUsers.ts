@@ -181,7 +181,7 @@ Deno.serve(async (req) => {
                 const client = await pool.connect();
                 try {
                     const schemaName = `psp_${psp_code.toLowerCase()}`;
-                    await client.query(`SET search_path TO ${schemaName}`);
+                    await client.query(`SET search_path TO "${schemaName}"`);
 
                     const result = await client.query(`SELECT id, email, full_name, role, status, two_factor_enabled, last_login, created_date FROM psp_staff_users ORDER BY id DESC`);
                     
