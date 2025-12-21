@@ -95,7 +95,7 @@ const tiers = [
     }
 ];
 
-export default function PSPProvisioningWizard() {
+function PSPProvisioningWizard() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const { platformUser } = usePlatformAuth();
@@ -1381,3 +1381,5 @@ export default function PSPProvisioningWizard() {
         </div>
     );
 }
+
+export default PSPProvisioningWizard;
