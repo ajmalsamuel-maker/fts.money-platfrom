@@ -31,6 +31,10 @@ Deno.serve(async (req) => {
                 console.log('[DEBUG] Starting user creation for PSP:', psp_code, 'schema:', schemaName);
                 console.log('[DEBUG] Email:', email, 'Role:', role);
 
+                // CRITICAL: Drop app_users if it exists to prevent constraint conflicts
+                await client.query(`DROP TABLE IF EXISTS ${schemaName}.app_users CASCADE`);
+                console.log('[DEBUG] Dropped app_users table if it existed');
+
                 // Hash password
                 console.log('[DEBUG] Hashing password...');
                 const password_hash = await bcrypt.hash(password || 'Welcome123!', 10);
