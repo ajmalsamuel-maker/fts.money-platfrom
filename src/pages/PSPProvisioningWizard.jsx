@@ -44,6 +44,7 @@ export default function PSPProvisioningWizard() {
     const [provisioningComplete, setProvisioningComplete] = useState(false);
     const [customTiers, setCustomTiers] = useState(defaultTiers);
     const [editingTier, setEditingTier] = useState(null);
+    const [savedProgress, setSavedProgress] = useState(null);
     const [formData, setFormData] = useState({
         psp_code: '',
         psp_name: '',
@@ -84,14 +85,16 @@ export default function PSPProvisioningWizard() {
         admin_email: '',
         admin_full_name: '',
         admin_password: '',
-        advanced_features: {
+        orchestration_features: {
             smart_routing: false,
             ai_fraud_detection: false,
             network_tokenization: false,
             account_updater: false,
             smart_retry: false,
             crypto_payments: false,
-            instant_settlements: false
+            instant_settlements: false,
+            cascade_logic: false,
+            load_balancing: false
         },
         compliance_features: {
             pci_dss: true,
@@ -147,6 +150,17 @@ export default function PSPProvisioningWizard() {
             queryClient.invalidateQueries(['approval-requests']);
         }
     });
+
+    const handleSaveProgress = () => {
+        localStorage.setItem('psp_provisioning_draft', JSON.stringify({
+            step,
+            formData,
+            selectedTier,
+            customTiers,
+            savedAt: new Date().toISOString()
+        }));
+        setSavedProgress(new Date().toLocaleTimeString());
+    };
 
     const handleProvision = async () => {
         setProvisioning(true);
@@ -674,32 +688,7 @@ export default function PSPProvisioningWizard() {
                                                     </div>
                                                 ))}
                                                 
-                                                {payoutRoutes.length > 0 && (
-                                                    <div>
-                                                        <h4 className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
-                                                            <span className="bg-indigo-100 text-indigo-700 px-2 py-1 rounded">Configured Payout Routes</span>
-                                                        </h4>
-                                                        <div className="grid grid-cols-4 gap-2">
-                                                            {payoutRoutes.map((route) => (
-                                                                <label key={route.id} className="flex items-center gap-2 p-2 border border-slate-200 rounded hover:bg-slate-50 cursor-pointer">
-                                                                    <input
-                                                                        type="checkbox"
-                                                                        checked={formData.enabled_payout_methods.includes(route.id)}
-                                                                        onChange={(e) => {
-                                                                            if (e.target.checked) {
-                                                                                setFormData({...formData, enabled_payout_methods: [...formData.enabled_payout_methods, route.id]});
-                                                                            } else {
-                                                                                setFormData({...formData, enabled_payout_methods: formData.enabled_payout_methods.filter(id => id !== route.id)});
-                                                                            }
-                                                                        }}
-                                                                        className="w-3 h-3"
-                                                                    />
-                                                                    <span className="text-xs">{route.route_name}</span>
-                                                                </label>
-                                                            ))}
-                                                        </div>
-                                                    </div>
-                                                )}
+
                                             </div>
                                         </div>
                                     </div>
@@ -870,88 +859,91 @@ export default function PSPProvisioningWizard() {
 
                             {step === 5 && (
                                 <div>
-                                    <h2 className="text-xl font-semibold mb-4">Platform Services & Compliance</h2>
+                                    <h2 className="text-xl font-semibold mb-4">Platform Services</h2>
                                     
-                                    <div className="space-y-6">
-                                        <div>
-                                            <h3 className="font-medium text-slate-900 mb-3">Platform Services</h3>
-                                            <div className="space-y-2 max-h-64 overflow-y-auto">
-                                                {services.length > 0 ? services.map((service) => (
-                                                    <label key={service.id} className="flex items-start gap-3 p-3 border border-slate-200 rounded-lg hover:bg-slate-50 cursor-pointer">
-                                                        <input
-                                                            type="checkbox"
-                                                            checked={formData.enabled_services.includes(service.id)}
-                                                            onChange={(e) => {
-                                                                if (e.target.checked) {
-                                                                    setFormData({...formData, enabled_services: [...formData.enabled_services, service.id]});
-                                                                } else {
-                                                                    setFormData({...formData, enabled_services: formData.enabled_services.filter(id => id !== service.id)});
-                                                                }
-                                                            }}
-                                                            className="w-4 h-4 mt-1"
-                                                        />
-                                                        <div>
-                                                            <p className="font-medium text-slate-900">{service.service_name}</p>
-                                                            <p className="text-xs text-slate-600">{service.description}</p>
-                                                        </div>
-                                                    </label>
-                                                )) : (
-                                                    <p className="text-sm text-slate-500 py-4 text-center">No services configured yet</p>
-                                                )}
-                                            </div>
-                                        </div>
-
-                                        <div className="border-t border-slate-200 pt-6">
+                                    <div className="space-y-2 max-h-[500px] overflow-y-auto">
+                                        {services.length > 0 && services.map((service) => (
+                                            <label key={service.id} className="flex items-start gap-3 p-3 border border-slate-200 rounded-lg hover:bg-slate-50 cursor-pointer">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={formData.enabled_services.includes(service.id)}
+                                                    onChange={(e) => {
+                                                        if (e.target.checked) {
+                                                            setFormData({...formData, enabled_services: [...formData.enabled_services, service.id]});
+                                                        } else {
+                                                            setFormData({...formData, enabled_services: formData.enabled_services.filter(id => id !== service.id)});
+                                                        }
+                                                    }}
+                                                    className="w-4 h-4 mt-1"
+                                                />
+                                                <div>
+                                                    <p className="font-medium text-slate-900">{service.service_name}</p>
+                                                    <p className="text-xs text-slate-600">{service.description}</p>
+                                                </div>
+                                            </label>
+                                        ))}
+                                        
+                                        <div className="border-t border-slate-200 pt-4 mt-4">
                                             <h3 className="font-medium text-slate-900 mb-3 flex items-center gap-2">
                                                 <Shield className="h-5 w-5 text-blue-600" />
-                                                Compliance Features
+                                                Compliance Services
                                             </h3>
-                                            <div className="space-y-2">
-                                                {Object.entries({
-                                                    pci_dss: 'PCI DSS Compliance',
-                                                    kyb_verification: 'KYB Verification',
-                                                    aml_screening: 'AML Screening',
-                                                    fatf_compliance: 'FATF Compliance',
-                                                    lei_verification: 'LEI Verification'
-                                                }).map(([key, label]) => (
-                                                    <label key={key} className="flex items-center gap-3 p-3 border border-slate-200 rounded-lg hover:bg-slate-50 cursor-pointer">
-                                                        <input
-                                                            type="checkbox"
-                                                            checked={formData.compliance_features[key]}
-                                                            onChange={(e) => setFormData({...formData, compliance_features: {...formData.compliance_features, [key]: e.target.checked}})}
-                                                            className="w-4 h-4"
-                                                        />
-                                                        <span className="font-medium text-slate-900">{label}</span>
-                                                    </label>
-                                                ))}
-                                            </div>
+                                            {Object.entries({
+                                                pci_dss: 'PCI DSS Compliance',
+                                                kyb_verification: 'KYB Verification',
+                                                aml_screening: 'AML Screening',
+                                                fatf_compliance: 'FATF Compliance',
+                                                lei_verification: 'LEI Verification'
+                                            }).map(([key, label]) => (
+                                                <label key={key} className="flex items-start gap-3 p-3 border border-slate-200 rounded-lg hover:bg-slate-50 cursor-pointer mb-2">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={formData.compliance_features[key]}
+                                                        onChange={(e) => setFormData({...formData, compliance_features: {...formData.compliance_features, [key]: e.target.checked}})}
+                                                        className="w-4 h-4 mt-1"
+                                                    />
+                                                    <div>
+                                                        <p className="font-medium text-slate-900">{label}</p>
+                                                        <p className="text-xs text-slate-600">Required for regulatory compliance</p>
+                                                    </div>
+                                                </label>
+                                            ))}
                                         </div>
+                                        
+                                        {services.length === 0 && (
+                                            <p className="text-sm text-slate-500 py-8 text-center">No platform services configured yet</p>
+                                        )}
                                     </div>
                                 </div>
                             )}
 
                             {step === 6 && (
                                 <div>
-                                    <h2 className="text-xl font-semibold mb-4">Advanced Features & Cloud Deployment</h2>
+                                    <h2 className="text-xl font-semibold mb-4">Orchestration Features & Cloud Deployment</h2>
                                     
                                     <div className="space-y-6">
                                         <div>
-                                            <h3 className="font-medium text-slate-900 mb-3">Advanced Features</h3>
+                                            <h3 className="font-medium text-slate-900 mb-3 flex items-center gap-2">
+                                                <Zap className="h-5 w-5 text-blue-600" />
+                                                Payment Orchestration Features
+                                            </h3>
                                             <div className="grid grid-cols-2 gap-3">
                                                 {Object.entries({
                                                     smart_routing: 'Smart Payment Routing',
+                                                    cascade_logic: 'Cascade Logic',
+                                                    load_balancing: 'Load Balancing',
+                                                    smart_retry: 'Smart Retry Logic',
                                                     ai_fraud_detection: 'AI Fraud Detection',
                                                     network_tokenization: 'Network Tokenization',
                                                     account_updater: 'Account Updater',
-                                                    smart_retry: 'Smart Retry Logic',
                                                     crypto_payments: 'Crypto Payments',
                                                     instant_settlements: 'Instant Settlements'
                                                 }).map(([key, label]) => (
                                                     <label key={key} className="flex items-center gap-2 p-3 border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-50">
                                                         <input
                                                             type="checkbox"
-                                                            checked={formData.advanced_features[key]}
-                                                            onChange={(e) => setFormData({...formData, advanced_features: {...formData.advanced_features, [key]: e.target.checked}})}
+                                                            checked={formData.orchestration_features[key]}
+                                                            onChange={(e) => setFormData({...formData, orchestration_features: {...formData.orchestration_features, [key]: e.target.checked}})}
                                                         />
                                                         <span className="text-sm">{label}</span>
                                                     </label>
@@ -1103,7 +1095,7 @@ export default function PSPProvisioningWizard() {
                                                 </div>
                                                 <div className="flex items-center gap-2">
                                                     <CheckCircle2 className="h-4 w-4 text-green-600" />
-                                                    <span>{Object.values(formData.advanced_features).filter(Boolean).length} Advanced Features</span>
+                                                    <span>{Object.values(formData.orchestration_features).filter(Boolean).length} Orchestration Features</span>
                                                 </div>
                                                 <div className="flex items-center gap-2">
                                                     <CheckCircle2 className="h-4 w-4 text-green-600" />
@@ -1156,19 +1148,30 @@ export default function PSPProvisioningWizard() {
                                 </div>
                             )}
 
-                            <div className="flex justify-between pt-6 border-t border-slate-200">
-                                {step > 1 && (
+                            <div className="flex justify-between items-center pt-6 border-t border-slate-200">
+                                <div className="flex items-center gap-3">
+                                    {step > 1 && (
+                                        <button
+                                            onClick={() => setStep(step - 1)}
+                                            className="px-4 py-2 border border-slate-300 rounded-lg hover:bg-slate-50"
+                                        >
+                                            Back
+                                        </button>
+                                    )}
                                     <button
-                                        onClick={() => setStep(step - 1)}
-                                        className="px-4 py-2 border border-slate-300 rounded-lg hover:bg-slate-50"
+                                        onClick={handleSaveProgress}
+                                        className="px-4 py-2 border border-blue-300 text-blue-600 rounded-lg hover:bg-blue-50"
                                     >
-                                        Back
+                                        Save Progress
                                     </button>
-                                )}
+                                    {savedProgress && (
+                                        <span className="text-xs text-green-600">Saved at {savedProgress}</span>
+                                    )}
+                                </div>
                                 {step < 7 && (
                                     <button
                                         onClick={() => setStep(step + 1)}
-                                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 ml-auto"
+                                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                                     >
                                         Continue
                                     </button>
