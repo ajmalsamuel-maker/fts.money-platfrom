@@ -49,10 +49,10 @@ Deno.serve(async (req) => {
 
         try {
             // Create isolated schema for PSP (PCI DSS Requirement 12.3)
-            await client.query(`CREATE SCHEMA IF NOT EXISTS ${schemaName}`);
+            await client.query(`CREATE SCHEMA IF NOT EXISTS "${schemaName}"`);
             
             // CRITICAL STEP 1: Set search_path to ONLY this PSP schema
-            await client.query(`SET search_path TO ${schemaName}, pg_catalog`);
+            await client.query(`SET search_path TO "${schemaName}", pg_catalog`);
             console.log(`[PROVISION] Set search_path to: ${schemaName}`);
             
             // CRITICAL STEP 2: Nuclear option - drop app_users in ALL possible forms
@@ -60,7 +60,7 @@ Deno.serve(async (req) => {
                 DO $$ 
                 BEGIN
                     DROP TABLE IF EXISTS app_users CASCADE;
-                    EXECUTE 'DROP TABLE IF EXISTS ${schemaName}.app_users CASCADE';
+                    EXECUTE 'DROP TABLE IF EXISTS "${schemaName}".app_users CASCADE';
                     DROP TABLE IF EXISTS public.app_users CASCADE;
                 END $$;
             `);
@@ -69,7 +69,7 @@ Deno.serve(async (req) => {
             // Create all production tables in the PSP schema (PCI DSS + GDPR compliant)
             await client.query(`
                 -- PSP Settings Table
-                CREATE TABLE IF NOT EXISTS ${schemaName}.psp_settings (
+                CREATE TABLE IF NOT EXISTS "${schemaName}".psp_settings (
                     id SERIAL PRIMARY KEY,
                     psp_code VARCHAR(50) UNIQUE NOT NULL,
                     psp_name VARCHAR(255) NOT NULL,
@@ -81,7 +81,7 @@ Deno.serve(async (req) => {
                 );
 
                 -- Merchants Table
-                CREATE TABLE IF NOT EXISTS ${schemaName}.merchants (
+                CREATE TABLE IF NOT EXISTS "${schemaName}".merchants (
                     id SERIAL PRIMARY KEY,
                     merchant_code VARCHAR(50) UNIQUE NOT NULL,
                     business_name VARCHAR(255) NOT NULL,
@@ -101,10 +101,10 @@ Deno.serve(async (req) => {
                 );
 
                 -- Transactions Table (PCI DSS 3.1)
-                CREATE TABLE IF NOT EXISTS ${schemaName}.transactions (
+                CREATE TABLE IF NOT EXISTS "${schemaName}".transactions (
                     id SERIAL PRIMARY KEY,
                     transaction_id VARCHAR(100) UNIQUE NOT NULL,
-                    merchant_id INTEGER REFERENCES ${schemaName}.merchants(id),
+                    merchant_id INTEGER REFERENCES "${schemaName}".merchants(id),
                     amount DECIMAL(15, 2) NOT NULL,
                     currency VARCHAR(10) DEFAULT 'USD',
                     status VARCHAR(50) DEFAULT 'pending',
@@ -123,10 +123,10 @@ Deno.serve(async (req) => {
                 );
 
                 -- Settlements Table
-                CREATE TABLE IF NOT EXISTS ${schemaName}.settlements (
+                CREATE TABLE IF NOT EXISTS "${schemaName}".settlements (
                     id SERIAL PRIMARY KEY,
                     settlement_id VARCHAR(50) UNIQUE,
-                    merchant_id INTEGER REFERENCES ${schemaName}.merchants(id),
+                    merchant_id INTEGER REFERENCES "${schemaName}".merchants(id),
                     period_start DATE,
                     period_end DATE,
                     status VARCHAR(20) DEFAULT 'pending',
@@ -140,11 +140,11 @@ Deno.serve(async (req) => {
                 );
 
                 -- Chargebacks Table
-                CREATE TABLE IF NOT EXISTS ${schemaName}.chargebacks (
+                CREATE TABLE IF NOT EXISTS "${schemaName}".chargebacks (
                     id SERIAL PRIMARY KEY,
                     chargeback_id VARCHAR(50) UNIQUE,
                     transaction_id VARCHAR(255),
-                    merchant_id INTEGER REFERENCES ${schemaName}.merchants(id),
+                    merchant_id INTEGER REFERENCES "${schemaName}".merchants(id),
                     card_network VARCHAR(20),
                     reason_code VARCHAR(20),
                     status VARCHAR(30) DEFAULT 'received',
@@ -156,11 +156,11 @@ Deno.serve(async (req) => {
                 );
 
                 -- Refunds Table
-                CREATE TABLE IF NOT EXISTS ${schemaName}.refunds (
+                CREATE TABLE IF NOT EXISTS "${schemaName}".refunds (
                     id SERIAL PRIMARY KEY,
                     refund_id VARCHAR(50) UNIQUE,
                     transaction_id VARCHAR(255),
-                    merchant_id INTEGER REFERENCES ${schemaName}.merchants(id),
+                    merchant_id INTEGER REFERENCES "${schemaName}".merchants(id),
                     amount DECIMAL(15,2),
                     currency VARCHAR(3) DEFAULT 'USD',
                     status VARCHAR(20) DEFAULT 'pending',
@@ -169,10 +169,10 @@ Deno.serve(async (req) => {
                 );
 
                 -- Payouts Table
-                CREATE TABLE IF NOT EXISTS ${schemaName}.payouts (
+                CREATE TABLE IF NOT EXISTS "${schemaName}".payouts (
                     id SERIAL PRIMARY KEY,
                     payout_id VARCHAR(50) UNIQUE,
-                    merchant_id INTEGER REFERENCES ${schemaName}.merchants(id),
+                    merchant_id INTEGER REFERENCES "${schemaName}".merchants(id),
                     amount DECIMAL(15,2),
                     currency VARCHAR(3) DEFAULT 'USD',
                     status VARCHAR(20) DEFAULT 'pending',
@@ -184,10 +184,10 @@ Deno.serve(async (req) => {
                 );
 
                 -- Terminals Table
-                CREATE TABLE IF NOT EXISTS ${schemaName}.terminals (
+                CREATE TABLE IF NOT EXISTS "${schemaName}".terminals (
                     id SERIAL PRIMARY KEY,
                     terminal_id VARCHAR(50) UNIQUE,
-                    merchant_id INTEGER REFERENCES ${schemaName}.merchants(id),
+                    merchant_id INTEGER REFERENCES "${schemaName}".merchants(id),
                     type VARCHAR(20),
                     status VARCHAR(20) DEFAULT 'active',
                     model VARCHAR(100),
@@ -213,7 +213,7 @@ Deno.serve(async (req) => {
                 );
 
                 -- Payment Providers Table
-                CREATE TABLE IF NOT EXISTS ${schemaName}.payment_providers (
+                CREATE TABLE IF NOT EXISTS "${schemaName}".payment_providers (
                     id SERIAL PRIMARY KEY,
                     name VARCHAR(255) NOT NULL,
                     type VARCHAR(50),
@@ -226,9 +226,9 @@ Deno.serve(async (req) => {
                 );
 
                 -- Merchant MIDs Table
-                CREATE TABLE IF NOT EXISTS ${schemaName}.merchant_mids (
+                CREATE TABLE IF NOT EXISTS "${schemaName}".merchant_mids (
                     id SERIAL PRIMARY KEY,
-                    merchant_id INTEGER REFERENCES ${schemaName}.merchants(id),
+                    merchant_id INTEGER REFERENCES "${schemaName}".merchants(id),
                     mid VARCHAR(100) NOT NULL,
                     provider_id INTEGER,
                     provider_name VARCHAR(255),
@@ -240,7 +240,7 @@ Deno.serve(async (req) => {
                 );
 
                 -- Audit Logs Table (PCI DSS 10.1)
-                CREATE TABLE IF NOT EXISTS ${schemaName}.audit_logs (
+                CREATE TABLE IF NOT EXISTS "${schemaName}".audit_logs (
                     id SERIAL PRIMARY KEY,
                     action VARCHAR(255) NOT NULL,
                     user_email VARCHAR(255),
@@ -253,9 +253,9 @@ Deno.serve(async (req) => {
                 );
 
                 -- Webhooks Table
-                CREATE TABLE IF NOT EXISTS ${schemaName}.webhooks (
+                CREATE TABLE IF NOT EXISTS "${schemaName}".webhooks (
                     id SERIAL PRIMARY KEY,
-                    merchant_id INTEGER REFERENCES ${schemaName}.merchants(id),
+                    merchant_id INTEGER REFERENCES "${schemaName}".merchants(id),
                     url VARCHAR(500),
                     events TEXT[],
                     status VARCHAR(20) DEFAULT 'active',
@@ -264,9 +264,9 @@ Deno.serve(async (req) => {
                 );
 
                 -- API Keys Table
-                CREATE TABLE IF NOT EXISTS ${schemaName}.api_keys (
+                CREATE TABLE IF NOT EXISTS "${schemaName}".api_keys (
                     id SERIAL PRIMARY KEY,
-                    merchant_id INTEGER REFERENCES ${schemaName}.merchants(id),
+                    merchant_id INTEGER REFERENCES "${schemaName}".merchants(id),
                     key_hash VARCHAR(255),
                     name VARCHAR(100),
                     status VARCHAR(20) DEFAULT 'active',
@@ -276,11 +276,11 @@ Deno.serve(async (req) => {
                 );
 
                 -- Disputes Table
-                CREATE TABLE IF NOT EXISTS ${schemaName}.disputes (
+                CREATE TABLE IF NOT EXISTS "${schemaName}".disputes (
                     id SERIAL PRIMARY KEY,
                     dispute_id VARCHAR(50) UNIQUE,
                     transaction_id VARCHAR(255),
-                    merchant_id INTEGER REFERENCES ${schemaName}.merchants(id),
+                    merchant_id INTEGER REFERENCES "${schemaName}".merchants(id),
                     status VARCHAR(30) DEFAULT 'open',
                     reason TEXT,
                     amount DECIMAL(15,2),
@@ -289,10 +289,10 @@ Deno.serve(async (req) => {
                 );
 
                 -- Risk Alerts Table
-                CREATE TABLE IF NOT EXISTS ${schemaName}.risk_alerts (
+                CREATE TABLE IF NOT EXISTS "${schemaName}".risk_alerts (
                     id SERIAL PRIMARY KEY,
                     alert_id VARCHAR(50) UNIQUE,
-                    merchant_id INTEGER REFERENCES ${schemaName}.merchants(id),
+                    merchant_id INTEGER REFERENCES "${schemaName}".merchants(id),
                     alert_type VARCHAR(50),
                     severity VARCHAR(20) DEFAULT 'medium',
                     status VARCHAR(20) DEFAULT 'open',
@@ -306,7 +306,7 @@ Deno.serve(async (req) => {
                 DO $$ 
                 BEGIN
                     DROP TABLE IF EXISTS app_users CASCADE;
-                    EXECUTE 'DROP TABLE IF EXISTS ${schemaName}.app_users CASCADE';
+                    EXECUTE 'DROP TABLE IF EXISTS "${schemaName}".app_users CASCADE';
                 END $$;
             `);
             console.log('[PROVISION] app_users dropped after table creation');
@@ -339,9 +339,9 @@ Deno.serve(async (req) => {
                 
                 // Copy payment providers configuration only
                 await client.query(`
-                    INSERT INTO ${schemaName}.payment_providers (name, type, status, created_by)
+                    INSERT INTO "${schemaName}".payment_providers (name, type, status, created_by)
                     SELECT name, type, status, 'system_template'
-                    FROM ${templateSchema}.payment_providers
+                    FROM "${templateSchema}".payment_providers
                     WHERE status = 'active'
                     ON CONFLICT DO NOTHING
                 `);
@@ -349,31 +349,31 @@ Deno.serve(async (req) => {
 
             // Create comprehensive indexes for performance and security
             await client.query(`
-                CREATE INDEX IF NOT EXISTS idx_merchants_email ON ${schemaName}.merchants(email);
-                CREATE INDEX IF NOT EXISTS idx_merchants_status ON ${schemaName}.merchants(status);
-                CREATE INDEX IF NOT EXISTS idx_merchants_code ON ${schemaName}.merchants(merchant_code);
-                CREATE INDEX IF NOT EXISTS idx_transactions_merchant ON ${schemaName}.transactions(merchant_id);
-                CREATE INDEX IF NOT EXISTS idx_transactions_status ON ${schemaName}.transactions(status);
-                CREATE INDEX IF NOT EXISTS idx_transactions_date ON ${schemaName}.transactions(created_date DESC);
-                CREATE INDEX IF NOT EXISTS idx_transactions_id ON ${schemaName}.transactions(transaction_id);
-                CREATE INDEX IF NOT EXISTS idx_settlements_merchant ON ${schemaName}.settlements(merchant_id);
-                CREATE INDEX IF NOT EXISTS idx_chargebacks_merchant ON ${schemaName}.chargebacks(merchant_id);
-                CREATE INDEX IF NOT EXISTS idx_chargebacks_status ON ${schemaName}.chargebacks(status);
-                CREATE INDEX IF NOT EXISTS idx_payouts_merchant ON ${schemaName}.payouts(merchant_id);
-                CREATE INDEX IF NOT EXISTS idx_terminals_merchant ON ${schemaName}.terminals(merchant_id);
-                CREATE INDEX IF NOT EXISTS idx_mids_merchant ON ${schemaName}.merchant_mids(merchant_id);
-                CREATE INDEX IF NOT EXISTS idx_psp_staff_users_email ON ${schemaName}.psp_staff_users(email);
-                CREATE INDEX IF NOT EXISTS idx_audit_date ON ${schemaName}.audit_logs(created_date DESC);
-                CREATE INDEX IF NOT EXISTS idx_audit_user ON ${schemaName}.audit_logs(user_email);
-                CREATE INDEX IF NOT EXISTS idx_risk_alerts_merchant ON ${schemaName}.risk_alerts(merchant_id);
-                CREATE INDEX IF NOT EXISTS idx_risk_alerts_status ON ${schemaName}.risk_alerts(status);
+                CREATE INDEX IF NOT EXISTS idx_merchants_email ON "${schemaName}".merchants(email);
+                CREATE INDEX IF NOT EXISTS idx_merchants_status ON "${schemaName}".merchants(status);
+                CREATE INDEX IF NOT EXISTS idx_merchants_code ON "${schemaName}".merchants(merchant_code);
+                CREATE INDEX IF NOT EXISTS idx_transactions_merchant ON "${schemaName}".transactions(merchant_id);
+                CREATE INDEX IF NOT EXISTS idx_transactions_status ON "${schemaName}".transactions(status);
+                CREATE INDEX IF NOT EXISTS idx_transactions_date ON "${schemaName}".transactions(created_date DESC);
+                CREATE INDEX IF NOT EXISTS idx_transactions_id ON "${schemaName}".transactions(transaction_id);
+                CREATE INDEX IF NOT EXISTS idx_settlements_merchant ON "${schemaName}".settlements(merchant_id);
+                CREATE INDEX IF NOT EXISTS idx_chargebacks_merchant ON "${schemaName}".chargebacks(merchant_id);
+                CREATE INDEX IF NOT EXISTS idx_chargebacks_status ON "${schemaName}".chargebacks(status);
+                CREATE INDEX IF NOT EXISTS idx_payouts_merchant ON "${schemaName}".payouts(merchant_id);
+                CREATE INDEX IF NOT EXISTS idx_terminals_merchant ON "${schemaName}".terminals(merchant_id);
+                CREATE INDEX IF NOT EXISTS idx_mids_merchant ON "${schemaName}".merchant_mids(merchant_id);
+                CREATE INDEX IF NOT EXISTS idx_psp_staff_users_email ON "${schemaName}".psp_staff_users(email);
+                CREATE INDEX IF NOT EXISTS idx_audit_date ON "${schemaName}".audit_logs(created_date DESC);
+                CREATE INDEX IF NOT EXISTS idx_audit_user ON "${schemaName}".audit_logs(user_email);
+                CREATE INDEX IF NOT EXISTS idx_risk_alerts_merchant ON "${schemaName}".risk_alerts(merchant_id);
+                CREATE INDEX IF NOT EXISTS idx_risk_alerts_status ON "${schemaName}".risk_alerts(status);
             `);
 
             // Grant appropriate permissions (GDPR Article 32 - Security of processing)
             await client.query(`
-                GRANT USAGE ON SCHEMA ${schemaName} TO current_user;
-                GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA ${schemaName} TO current_user;
-                GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA ${schemaName} TO current_user;
+                GRANT USAGE ON SCHEMA "${schemaName}" TO current_user;
+                GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA "${schemaName}" TO current_user;
+                GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA "${schemaName}" TO current_user;
             `);
 
             console.log('[PROVISION] Final cleanup - ensuring app_users is permanently gone...');
@@ -388,11 +388,11 @@ Deno.serve(async (req) => {
                         WHERE tc.table_schema = '${schemaName}'
                         AND (tc.constraint_name LIKE '%app_users%' OR tc.table_name = 'app_users')
                     ) LOOP
-                        EXECUTE 'ALTER TABLE ${schemaName}.' || r.table_name || ' DROP CONSTRAINT IF EXISTS ' || r.constraint_name || ' CASCADE';
+                        EXECUTE 'ALTER TABLE "${schemaName}".' || r.table_name || ' DROP CONSTRAINT IF EXISTS ' || r.constraint_name || ' CASCADE';
                     END LOOP;
                     
                     DROP TABLE IF EXISTS app_users CASCADE;
-                    EXECUTE 'DROP TABLE IF EXISTS ${schemaName}.app_users CASCADE';
+                    EXECUTE 'DROP TABLE IF EXISTS "${schemaName}".app_users CASCADE';
                     DROP TABLE IF EXISTS public.app_users CASCADE;
                 END $$;
             `);
@@ -413,7 +413,7 @@ Deno.serve(async (req) => {
 
             // Log schema creation in audit log with full compliance framework
             await client.query(`
-                INSERT INTO ${schemaName}.audit_logs (action, user_email, details)
+                INSERT INTO "${schemaName}".audit_logs (action, user_email, details)
                 VALUES ($1, $2, $3)
             `, ['SCHEMA_CREATED', user.email, JSON.stringify({ 
                 psp_code, 
