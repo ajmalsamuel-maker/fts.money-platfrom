@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 
 export default function StaffAuthWrapper({ children }) {
     const navigate = useNavigate();
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     useEffect(() => {
         const sessionData = localStorage.getItem('staff_session');
@@ -15,15 +16,19 @@ export default function StaffAuthWrapper({ children }) {
 
         try {
             const session = JSON.parse(sessionData);
-            if (!session?.psp_code) {
-                localStorage.clear();
+            if (session?.psp_code) {
+                setIsAuthenticated(true);
+            } else {
                 navigate(createPageUrl('PSPLogin'));
             }
         } catch (err) {
-            localStorage.clear();
             navigate(createPageUrl('PSPLogin'));
         }
-    }, [navigate]);
+    }, []);
+
+    if (!isAuthenticated) {
+        return null;
+    }
 
     return <>{children}</>;
 }

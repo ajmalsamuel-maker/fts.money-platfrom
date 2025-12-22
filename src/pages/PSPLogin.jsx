@@ -76,8 +76,6 @@ export default function PSPLogin() {
         setLoading(true);
         setError('');
         
-        alert(`DEBUG: About to login with PSP Code: ${pspCode}`);
-        
         try {
             const { data } = await base44.functions.invoke('pspAuth', {
                 action: 'login',
@@ -87,28 +85,20 @@ export default function PSPLogin() {
             });
 
             if (data.success) {
-                alert(`DEBUG: Login successful. PSP from state: ${pspCode}, PSP from response: ${data.session.schema}`);
-                
-                // FORCE clear everything
-                localStorage.clear();
-                sessionStorage.clear();
-                
-                // Set ONLY the new session with the PSP code from the form
                 const sessionData = {
                     email: data.session.email,
                     full_name: data.session.full_name,
                     role: data.session.role,
                     user_id: data.session.user_id,
-                    psp_code: pspCode.toUpperCase().trim(),  // Force uppercase and trim
+                    psp_code: pspCode.toUpperCase().trim(),
                     schema: data.session.schema
                 };
                 
                 localStorage.setItem('staff_session', JSON.stringify(sessionData));
                 
-                alert(`DEBUG: Session saved with PSP: ${sessionData.psp_code}`);
-                
-                // Force a hard refresh to clear any cached state
-                window.location.replace('/Dashboard');
+                setTimeout(() => {
+                    window.location.href = '/Dashboard';
+                }, 100);
             } else {
                 setError(data.error || 'Login failed');
             }
