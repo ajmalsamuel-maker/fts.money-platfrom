@@ -10,11 +10,16 @@ export default function PSPLogin() {
     const [loading, setLoading] = useState(false);
 
     const [checkComplete, setCheckComplete] = React.useState(false);
-    const hasChecked = React.useRef(false);
     
     React.useEffect(() => {
-        if (hasChecked.current) return;
-        hasChecked.current = true;
+        // Check if we already redirected in this page load
+        const redirectFlag = sessionStorage.getItem('psp_redirect_attempted');
+        if (redirectFlag === 'true') {
+            console.log('🔐 PSPLogin: Redirect already attempted, showing login form');
+            sessionStorage.removeItem('psp_redirect_attempted');
+            setCheckComplete(true);
+            return;
+        }
         
         console.log('🔐 PSPLogin: Checking for existing session...');
         const existingSession = localStorage.getItem('staff_session');
@@ -25,21 +30,21 @@ export default function PSPLogin() {
                 const session = JSON.parse(existingSession);
                 console.log('🔐 PSPLogin: Session parsed:', session);
                 if (session?.psp_code) {
-                    console.log('🔐 PSPLogin: Valid session, redirecting to Dashboard...');
-                    setTimeout(() => {
-                        window.location.href = '/Dashboard';
-                    }, 100);
+                    console.log('🔐 PSPLogin: Valid session, setting redirect flag and navigating...');
+                    sessionStorage.setItem('psp_redirect_attempted', 'true');
+                    window.location.replace('/Dashboard');
                     return;
                 }
             } catch (err) {
                 console.error('🔐 PSPLogin: Session parse error:', err);
+                localStorage.removeItem('staff_session');
             }
         }
         setCheckComplete(true);
     }, []);
     
     if (!checkComplete) {
-        return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Loading...</div>;
+        return null;
     }
 
     const handleStep1 = async (e) => {

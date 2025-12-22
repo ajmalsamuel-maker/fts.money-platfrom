@@ -55,11 +55,9 @@ export default function Dashboard() {
     const [userPspCode, setUserPspCode] = useState(null);
     const [isReady, setIsReady] = useState(false);
 
-    const hasChecked = React.useRef(false);
-    
     React.useEffect(() => {
-        if (hasChecked.current) return;
-        hasChecked.current = true;
+        // Clear redirect flag if we're here (successful navigation)
+        sessionStorage.removeItem('psp_redirect_attempted');
         
         console.log('📊 Dashboard: Checking for session...');
         const sessionData = localStorage.getItem('staff_session');
@@ -67,9 +65,7 @@ export default function Dashboard() {
         
         if (!sessionData) {
             console.log('📊 Dashboard: No session, redirecting to PSPLogin...');
-            setTimeout(() => {
-                window.location.href = '/PSPLogin';
-            }, 100);
+            window.location.replace('/PSPLogin');
             return;
         }
         
@@ -83,15 +79,13 @@ export default function Dashboard() {
                 setIsReady(true);
             } else {
                 console.log('📊 Dashboard: No PSP code in session, redirecting...');
-                setTimeout(() => {
-                    window.location.href = '/PSPLogin';
-                }, 100);
+                localStorage.removeItem('staff_session');
+                window.location.replace('/PSPLogin');
             }
         } catch (err) {
             console.error('📊 Dashboard: Session parse error:', err);
-            setTimeout(() => {
-                window.location.href = '/PSPLogin';
-            }, 100);
+            localStorage.removeItem('staff_session');
+            window.location.replace('/PSPLogin');
         }
     }, []);
 
