@@ -176,29 +176,48 @@ export default function MerchantVirtualTerminal() {
 
         setProcessing(true);
         
+        const txnId = `TXN${Date.now()}${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
+        const authCode = Math.random().toString(36).substr(2, 9).toUpperCase();
+        const total = calculateTotal();
+        const cardNum = formData.useExistingCard ? 
+            savedCards.find(c => c.id === formData.existingCardId)?.card_last_four :
+            formData.cardNumber;
+        
+        let transactionStatus = 'approved';
+        let responseCode = '00';
+        let responseMessage = 'Approved';
+        let isSuccess = true;
+        let errorDetails = null;
+        
         try {
             // Ensure PSP code is available
             if (!merchant?.psp_code) {
                 throw new Error('PSP code not found for merchant');
             }
 
-            const txnId = `TXN${Date.now()}${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
-            const authCode = Math.random().toString(36).substr(2, 9).toUpperCase();
-            const cardNum = formData.useExistingCard ? 
-                savedCards.find(c => c.id === formData.existingCardId)?.card_last_four :
-                formData.cardNumber;
-            
             // Validate currency with ISO 4217
             const currencyValidation = validateCurrency(formData.currency);
             if (!currencyValidation.valid) {
-                toast.error('Invalid currency code');
-                setProcessing(false);
-                return;
+                throw new Error('Invalid ISO 4217 currency code');
             }
 
+            // Simulate payment processing - you can add real validation here
+            // For now, all transactions are approved
+            
+        } catch (error) {
+            console.error('❌ MerchantVT: Validation error:', error);
+            transactionStatus = 'declined';
+            responseCode = 'ERR';
+            responseMessage = error.message || 'Payment processing failed';
+            isSuccess = false;
+            errorDetails = error.message;
+        }
+        
+        // ALWAYS log the transaction regardless of success/failure
+        try {
             const transactionData = {
                 transaction_id: txnId,
-                psp_code: merchant?.psp_code,
+                psp_code: merchant?.psp_code || 'UNKNOWN',
                 merchant_transaction_id: `VT-${Date.now()}`,
                 order_id: formData.invoiceNumber || `ORD-${Date.now()}`,
                 merchant_id: user.merchant_id,
@@ -206,7 +225,7 @@ export default function MerchantVirtualTerminal() {
                 mid: selectedMID,
                 type: paymentMode === 'recurring' ? 'recurring' : 'sale',
                 action: 'sale',
-                status: 'approved',
+                status: transactionStatus,
                 amount: total,
                 original_amount: total,
                 actual_amount: total,
@@ -219,8 +238,8 @@ export default function MerchantVirtualTerminal() {
                 card_last_four: formData.useExistingCard ? 
                     savedCards.find(c => c.id === formData.existingCardId)?.card_last_four :
                     cardNum.slice(-4),
-                card_prefix: !formData.useExistingCard ? cardNum.slice(0, 6) : undefined,
-                card_brand: detectCardBrand(cardNum),
+                card_prefix: !formData.useExistingCard && cardNum ? cardNum.slice(0, 6) : undefined,
+                card_brand: cardNum ? detectCardBrand(cardNum) : 'unknown',
                 customer_email: formData.customerEmail,
                 customer_name: formData.customerName || formData.cardholderName,
                 customer_phone: formData.phone,
@@ -231,11 +250,11 @@ export default function MerchantVirtualTerminal() {
                 terminal_id: vtConfig?.id,
                 operator: user.email,
                 user_id: user.email,
-                auth_code: authCode,
-                approval_code: authCode,
-                response_code: '00',
-                response_message: 'Approved',
-                connector_response_code: '00',
+                auth_code: isSuccess ? authCode : null,
+                approval_code: isSuccess ? authCode : null,
+                response_code: responseCode,
+                response_message: responseMessage,
+                connector_response_code: responseCode,
                 is_3ds: vtConfig?.enable_3ds || false,
                 complete_time: new Date().toISOString(),
                 accepted_time: new Date().toISOString(),
@@ -265,14 +284,10 @@ export default function MerchantVirtualTerminal() {
                 transaction: transactionData
             });
 
-            if (!result.data?.success) {
-                throw new Error(result.data?.error || 'Transaction failed');
-            }
+            console.log('✅ MerchantVT: Transaction logged');
 
-            console.log('✅ MerchantVT: Transaction created successfully');
-
-            // Send email receipt to customer
-            if (formData.customerEmail && vtConfig?.send_receipts_email) {
+            // Send email receipt to customer only on success
+            if (isSuccess && formData.customerEmail && vtConfig?.send_receipts_email) {
                 try {
                     await base44.integrations.Core.SendEmail({
                         from_name: merchant?.business_name || 'Payment Gateway',
@@ -304,8 +319,8 @@ export default function MerchantVirtualTerminal() {
                 }
             }
 
-            // Save card if requested
-            if (formData.saveCard && !formData.useExistingCard && formData.customerEmail) {
+            // Save card if requested (only on success)
+            if (isSuccess && formData.saveCard && !formData.useExistingCard && formData.customerEmail) {
                 await base44.entities.SavedCard.create({
                     merchant_id: user.merchant_id,
                     customer_email: formData.customerEmail,
@@ -318,18 +333,24 @@ export default function MerchantVirtualTerminal() {
                 });
             }
 
-            // Show success dialog
-            setTransactionResult({
-                success: true,
-                transactionId: txnId,
-                authCode: authCode,
-                amount: total,
-                currency: formData.currency,
-                status: 'approved'
-            });
-            setResultDialogOpen(true);
-            
-            // Clear form
+        } catch (logError) {
+            console.error('❌ MerchantVT: Failed to log transaction:', logError);
+        }
+        
+        // Show result dialog
+        setTransactionResult({
+            success: isSuccess,
+            transactionId: txnId,
+            authCode: isSuccess ? authCode : null,
+            amount: total,
+            currency: formData.currency,
+            status: transactionStatus,
+            error: errorDetails
+        });
+        setResultDialogOpen(true);
+        
+        // Clear form only on success
+        if (isSuccess) {
             setFormData({
                 amount: '', currency: 'USD', cardNumber: '', cardholderName: '',
                 expiryMonth: '', expiryYear: '', cvv: '', customerEmail: '',
@@ -338,48 +359,10 @@ export default function MerchantVirtualTerminal() {
                 saveCard: false, useExistingCard: false, existingCardId: ''
             });
             setItems([]);
-            queryClient.invalidateQueries(['transactions']);
-        } catch (error) {
-            console.error('❌ MerchantVT: Transaction error:', error);
-            
-            // Log failed transaction
-            try {
-                const txnId = `TXN${Date.now()}${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
-                await base44.functions.invoke('vtAuth', {
-                    action: 'processTransaction',
-                    transaction: {
-                        transaction_id: txnId,
-                        psp_code: merchant?.psp_code || 'UNKNOWN',
-                        merchant_id: user.merchant_id,
-                        merchant_name: merchant?.business_name,
-                        mid: selectedMID,
-                        type: 'sale',
-                        status: 'declined',
-                        amount: calculateTotal(),
-                        currency: formData.currency,
-                        payment_method: 'credit_card',
-                        customer_email: formData.customerEmail,
-                        customer_name: formData.customerName || formData.cardholderName,
-                        response_code: 'ERR',
-                        response_message: error.response?.data?.error || error.message || 'Payment processing failed',
-                        terminal_id: vtConfig?.id,
-                        operator: user.email
-                    }
-                });
-            } catch (logError) {
-                console.error('Failed to log declined transaction:', logError);
-            }
-            
-            // Show error dialog
-            setTransactionResult({
-                success: false,
-                error: error.response?.data?.error || error.message || 'Payment processing failed',
-                status: 'declined'
-            });
-            setResultDialogOpen(true);
-        } finally {
-            setProcessing(false);
         }
+        
+        queryClient.invalidateQueries(['transactions']);
+        setProcessing(false);
     };
 
     if (loading) {

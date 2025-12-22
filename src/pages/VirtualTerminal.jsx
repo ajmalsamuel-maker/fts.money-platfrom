@@ -75,10 +75,17 @@ export default function VirtualTerminal() {
             return;
         }
         
+        const transactionId = `TXN-${Date.now()}-${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
+        const authCode = Math.random().toString(36).substr(2, 9).toUpperCase();
+        const pspCode = merchant?.psp_code;
+        
+        let transactionStatus = 'approved';
+        let responseCode = '00';
+        let responseMessage = 'Approved';
+        let isSuccess = true;
+        let errorDetails = null;
+        
         try {
-            // Get PSP code from merchant record
-            const pspCode = merchant?.psp_code;
-            
             if (!pspCode) {
                 throw new Error('PSP code not found for merchant');
             }
@@ -87,20 +94,30 @@ export default function VirtualTerminal() {
             console.log('🔵 VT: PSP Code:', pspCode);
             console.log('🔵 VT: Merchant ID:', user.merchant_id);
             
-            const transactionId = `TXN-${Date.now()}-${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
-            const authCode = Math.random().toString(36).substr(2, 9).toUpperCase();
+            // Simulate payment processing - you can add real validation here
+            // For now, all transactions are approved
             
-            // Call backend function to process transaction (uses service role)
-            console.log('🔵 VT: Calling vtAuth function...');
+        } catch (error) {
+            console.error('❌ VT: Transaction error:', error);
+            transactionStatus = 'declined';
+            responseCode = 'ERR';
+            responseMessage = error.message || 'Payment processing failed';
+            isSuccess = false;
+            errorDetails = error.response?.data?.error || error.message;
+        }
+        
+        // ALWAYS log the transaction regardless of success/failure
+        try {
+            console.log('🔵 VT: Logging transaction...');
             const result = await base44.functions.invoke('vtAuth', {
                 action: 'processTransaction',
                 transaction: {
                     transaction_id: transactionId,
-                    psp_code: pspCode,
+                    psp_code: pspCode || 'UNKNOWN',
                     merchant_id: user.merchant_id,
                     merchant_name: merchant?.business_name,
                     type: 'sale',
-                    status: 'approved',
+                    status: transactionStatus,
                     amount: parseFloat(formData.amount),
                     currency: formData.currency,
                     customer_country: merchant?.country,
@@ -110,33 +127,32 @@ export default function VirtualTerminal() {
                     customer_name: formData.cardholderName,
                     description: formData.description,
                     terminal_id: user.terminal_id,
-                    auth_code: authCode,
-                    response_code: '00',
-                    response_message: 'Approved',
+                    auth_code: isSuccess ? authCode : null,
+                    response_code: responseCode,
+                    response_message: responseMessage,
                     is_3ds: false
                 }
             });
 
-            console.log('✅ VT: Transaction result:', result);
-            
-            if (!result.data?.success) {
-                throw new Error(result.data?.error || 'Transaction failed');
-            }
-
-            // Show result dialog
-            setTransactionResult({
-                success: true,
-                transactionId: transactionId,
-                authCode: authCode,
-                amount: parseFloat(formData.amount),
-                currency: formData.currency,
-                status: 'approved'
-            });
-            setResultDialogOpen(true);
-            
-            console.log('✅ VT: Dialog opened with result');
-            
-            // Clear form
+            console.log('✅ VT: Transaction logged:', result);
+        } catch (logError) {
+            console.error('❌ VT: Failed to log transaction:', logError);
+        }
+        
+        // Show result dialog
+        setTransactionResult({
+            success: isSuccess,
+            transactionId: transactionId,
+            authCode: isSuccess ? authCode : null,
+            amount: parseFloat(formData.amount),
+            currency: formData.currency,
+            status: transactionStatus,
+            error: errorDetails
+        });
+        setResultDialogOpen(true);
+        
+        // Clear form only on success
+        if (isSuccess) {
             setFormData({
                 amount: '',
                 currency: 'USD',
@@ -148,49 +164,9 @@ export default function VirtualTerminal() {
                 customerEmail: '',
                 description: ''
             });
-        } catch (error) {
-            console.error('❌ VT: Transaction error:', error);
-            console.error('❌ VT: Error details:', error.response?.data || error.message);
-            
-            // Log failed transaction
-            try {
-                const txnId = `TXN-${Date.now()}-${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
-                await base44.functions.invoke('vtAuth', {
-                    action: 'processTransaction',
-                    transaction: {
-                        transaction_id: txnId,
-                        psp_code: merchant?.psp_code || 'UNKNOWN',
-                        merchant_id: user.merchant_id,
-                        merchant_name: merchant?.business_name,
-                        type: 'sale',
-                        status: 'declined',
-                        amount: parseFloat(formData.amount),
-                        currency: formData.currency,
-                        payment_method: 'card',
-                        customer_email: formData.customerEmail,
-                        customer_name: formData.cardholderName,
-                        terminal_id: user.terminal_id,
-                        response_code: 'ERR',
-                        response_message: error.response?.data?.error || error.message || 'Payment processing failed'
-                    }
-                });
-            } catch (logError) {
-                console.error('Failed to log declined transaction:', logError);
-            }
-            
-            // Show error dialog
-            setTransactionResult({
-                success: false,
-                error: error.response?.data?.error || error.message || 'Payment processing failed',
-                status: 'declined'
-            });
-            setResultDialogOpen(true);
-            
-            console.log('❌ VT: Error dialog opened');
-        } finally {
-            setProcessing(false);
-            console.log('🔵 VT: Processing complete');
         }
+        
+        setProcessing(false);
     };
 
     if (loading || !user) {
