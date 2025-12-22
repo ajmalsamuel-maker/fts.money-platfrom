@@ -10,25 +10,36 @@ export default function PSPLogin() {
     const [loading, setLoading] = useState(false);
 
     const [checkComplete, setCheckComplete] = React.useState(false);
+    const hasChecked = React.useRef(false);
     
     React.useEffect(() => {
+        if (hasChecked.current) return;
+        hasChecked.current = true;
+        
+        console.log('🔐 PSPLogin: Checking for existing session...');
         const existingSession = localStorage.getItem('staff_session');
+        console.log('🔐 PSPLogin: Session found:', !!existingSession);
+        
         if (existingSession) {
             try {
                 const session = JSON.parse(existingSession);
+                console.log('🔐 PSPLogin: Session parsed:', session);
                 if (session?.psp_code) {
-                    window.location.replace('/Dashboard');
+                    console.log('🔐 PSPLogin: Valid session, redirecting to Dashboard...');
+                    setTimeout(() => {
+                        window.location.href = '/Dashboard';
+                    }, 100);
                     return;
                 }
             } catch (err) {
-                // Invalid session, ignore
+                console.error('🔐 PSPLogin: Session parse error:', err);
             }
         }
         setCheckComplete(true);
     }, []);
     
     if (!checkComplete) {
-        return null;
+        return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Loading...</div>;
     }
 
     const handleStep1 = async (e) => {
