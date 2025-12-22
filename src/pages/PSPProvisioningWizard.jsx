@@ -721,98 +721,7 @@ export default function PSPProvisioningWizard() {
                                 </div>
                             )}
 
-                            {step === 5 && (
-                                <div>
-                                    <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                                        <DollarSign className="h-5 w-5 text-blue-600" />
-                                        Transaction Fee Structure
-                                    </h2>
-                                            <div className="space-y-4 max-h-[400px] overflow-y-auto">
-                                                {paymentMethodOptions.map((category) => (
-                                                    <div key={category.category}>
-                                                        <h4 className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
-                                                            <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded">{category.category}</span>
-                                                        </h4>
-                                                        <div className="grid grid-cols-4 gap-2">
-                                                            {category.methods.map((method) => (
-                                                                <label key={method} className="flex items-center gap-2 p-2 border border-slate-200 rounded-lg hover:bg-slate-50 cursor-pointer">
-                                                                    <input
-                                                                        type="checkbox"
-                                                                        checked={formData.enabled_payment_methods.includes(method)}
-                                                                        onChange={(e) => {
-                                                                            if (e.target.checked) {
-                                                                                setFormData({...formData, enabled_payment_methods: [...formData.enabled_payment_methods, method]});
-                                                                            } else {
-                                                                                setFormData({...formData, enabled_payment_methods: formData.enabled_payment_methods.filter(m => m !== method)});
-                                                                            }
-                                                                        }}
-                                                                        className="w-4 h-4"
-                                                                    />
-                                                                    <span className="text-sm capitalize">{method.replace(/_/g, ' ')}</span>
-                                                                </label>
-                                                            ))}
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                                
-                                                {paymentProviders.length > 0 && (
-                                                    <div>
-                                                        <h4 className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
-                                                            <span className="bg-purple-100 text-purple-700 px-2 py-1 rounded">Payment Processors</span>
-                                                        </h4>
-                                                        <div className="grid grid-cols-3 gap-2">
-                                                            {paymentProviders.map((provider) => (
-                                                                <label key={provider.id} className="flex items-center gap-2 p-2 border border-slate-200 rounded-lg hover:bg-slate-50 cursor-pointer">
-                                                                    <input
-                                                                        type="checkbox"
-                                                                        checked={formData.enabled_payment_methods.includes(provider.id)}
-                                                                        onChange={(e) => {
-                                                                            if (e.target.checked) {
-                                                                                setFormData({...formData, enabled_payment_methods: [...formData.enabled_payment_methods, provider.id]});
-                                                                            } else {
-                                                                                setFormData({...formData, enabled_payment_methods: formData.enabled_payment_methods.filter(id => id !== provider.id)});
-                                                                            }
-                                                                        }}
-                                                                        className="w-4 h-4"
-                                                                    />
-                                                                    <span className="text-sm">{provider.provider_name}</span>
-                                                                </label>
-                                                            ))}
-                                                        </div>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
 
-                                        {paymentProviders.length > 0 && (
-                                            <div>
-                                                <h4 className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
-                                                    <span className="bg-purple-100 text-purple-700 px-2 py-1 rounded">Payment Processors</span>
-                                                </h4>
-                                                <div className="grid grid-cols-3 gap-2">
-                                                    {paymentProviders.map((provider) => (
-                                                        <label key={provider.id} className="flex items-center gap-2 p-2 border border-slate-200 rounded-lg hover:bg-slate-50 cursor-pointer">
-                                                            <input
-                                                                type="checkbox"
-                                                                checked={formData.enabled_payment_methods.includes(provider.id)}
-                                                                onChange={(e) => {
-                                                                    if (e.target.checked) {
-                                                                        setFormData({...formData, enabled_payment_methods: [...formData.enabled_payment_methods, provider.id]});
-                                                                    } else {
-                                                                        setFormData({...formData, enabled_payment_methods: formData.enabled_payment_methods.filter(id => id !== provider.id)});
-                                                                    }
-                                                                }}
-                                                                className="w-4 h-4"
-                                                            />
-                                                            <span className="text-sm">{provider.provider_name}</span>
-                                                        </label>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            )}
 
                             {step === 7 && (
                                 <div>
@@ -1101,9 +1010,6 @@ export default function PSPProvisioningWizard() {
                                             </div>
                                         </div>
 
-                                        <div className="border-t border-slate-200 pt-6">
-                                    
-                                    <div className="space-y-6">
                                         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                                             <h3 className="font-medium text-blue-900 mb-3 flex items-center gap-2">
                                                 <Shield className="h-5 w-5" />
