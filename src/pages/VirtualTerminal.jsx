@@ -74,7 +74,11 @@ export default function VirtualTerminal() {
         }
         
         try {
+            // Get PSP code from merchant record
+            const pspCode = merchant?.psp_code;
+            
             await base44.entities.Transaction.create({
+                psp_code: pspCode,
                 merchant_id: user.merchant_id,
                 merchant_name: merchant?.business_name,
                 type: 'sale',
