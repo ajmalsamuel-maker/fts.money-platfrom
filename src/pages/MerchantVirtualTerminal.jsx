@@ -206,13 +206,23 @@ export default function MerchantVirtualTerminal() {
             savedCards.find(c => c.id === formData.existingCardId)?.card_last_four :
             formData.cardNumber;
         
-        // Get PSP code from merchant or session
-        const pspCode = merchant?.psp_code || user?.psp_code;
+        // Get PSP code from merchant or session or extract from merchant_code
+        let pspCode = merchant?.psp_code || user?.psp_code;
+        
+        // If still no PSP code, extract from merchant_code (format: PSP_MERCHANT)
+        if (!pspCode && user?.merchant_code) {
+            const parts = user.merchant_code.split('_');
+            if (parts.length > 1) {
+                pspCode = parts[0];
+                console.log('✅ MerchantVT: Extracted PSP code from merchant_code:', pspCode);
+            }
+        }
         
         console.log('🔍 MerchantVT: PSP code check:', {
             merchant_psp_code: merchant?.psp_code,
             user_psp_code: user?.psp_code,
-            final_psp_code: pspCode,
+            merchant_code: user?.merchant_code,
+            extracted_psp_code: pspCode,
             merchant_id: merchant?.merchant_id,
             user_merchant_id: user?.merchant_id
         });
