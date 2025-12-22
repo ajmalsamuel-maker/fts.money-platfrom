@@ -39,6 +39,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+import { getPaymentMethodLogo, getPaymentMethodDisplayName } from '@/components/utils/paymentLogos';
 
 export default function FTSPayoutRoutes() {
     const queryClient = useQueryClient();
@@ -209,7 +210,22 @@ export default function FTSPayoutRoutes() {
                                         ).length;
                                         return (
                                             <TableRow key={route.id}>
-                                                <TableCell className="font-medium">{route.route_name}</TableCell>
+                                                <TableCell>
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-16 h-10 rounded flex items-center justify-center bg-white border border-slate-200 p-1">
+                                                            {getPaymentMethodLogo(route.route_name) || getPaymentMethodLogo(route.channel_type) ? (
+                                                                <img 
+                                                                    src={getPaymentMethodLogo(route.route_name) || getPaymentMethodLogo(route.channel_type)} 
+                                                                    alt={route.route_name} 
+                                                                    className="max-w-full max-h-full object-contain" 
+                                                                />
+                                                            ) : (
+                                                                <Wallet className="h-5 w-5 text-slate-400" />
+                                                            )}
+                                                        </div>
+                                                        <span className="font-medium">{route.route_name}</span>
+                                                    </div>
+                                                </TableCell>
                                                 <TableCell>
                                                     <Badge variant="outline">{route.channel_type?.replace('_', ' ')}</Badge>
                                                 </TableCell>
@@ -286,7 +302,22 @@ export default function FTSPayoutRoutes() {
 
                                                 return (
                                                     <TableRow key={route.id}>
-                                                        <TableCell className="font-medium">{route.route_name}</TableCell>
+                                                        <TableCell>
+                                                            <div className="flex items-center gap-3">
+                                                                <div className="w-16 h-10 rounded flex items-center justify-center bg-white border border-slate-200 p-1">
+                                                                    {getPaymentMethodLogo(route.route_name) || getPaymentMethodLogo(route.channel_type) ? (
+                                                                        <img 
+                                                                            src={getPaymentMethodLogo(route.route_name) || getPaymentMethodLogo(route.channel_type)} 
+                                                                            alt={route.route_name} 
+                                                                            className="max-w-full max-h-full object-contain" 
+                                                                        />
+                                                                    ) : (
+                                                                        <Wallet className="h-5 w-5 text-slate-400" />
+                                                                    )}
+                                                                </div>
+                                                                <span className="font-medium">{route.route_name}</span>
+                                                            </div>
+                                                        </TableCell>
                                                         <TableCell>
                                                             <Badge variant="outline">{route.channel_type?.replace('_', ' ')}</Badge>
                                                         </TableCell>

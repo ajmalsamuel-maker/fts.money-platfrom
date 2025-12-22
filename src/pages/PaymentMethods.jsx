@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CreditCard, Search, Wallet } from 'lucide-react';
 import { cn } from "@/lib/utils";
+import { getPaymentMethodLogo, getPaymentMethodDisplayName } from '@/components/utils/paymentLogos';
 
 export default function PaymentMethods() {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -39,12 +40,7 @@ export default function PaymentMethods() {
         pm.card_last_four?.includes(searchQuery)
     );
 
-    const cardBrands = {
-        visa: '💳 Visa',
-        mastercard: '💳 Mastercard',
-        amex: '💳 Amex',
-        discover: '💳 Discover'
-    };
+
 
     if (!userPspCode) return null;
 
@@ -120,10 +116,20 @@ export default function PaymentMethods() {
                                                     </td>
                                                     <td className="py-3 px-4">
                                                         <div className="flex items-center gap-2">
-                                                            <CreditCard className="h-4 w-4 text-slate-400" />
+                                                            <div className="w-12 h-8 rounded flex items-center justify-center bg-white border border-slate-200 p-1">
+                                                                {getPaymentMethodLogo(method.card_brand) ? (
+                                                                    <img 
+                                                                        src={getPaymentMethodLogo(method.card_brand)} 
+                                                                        alt={method.card_brand} 
+                                                                        className="max-w-full max-h-full object-contain" 
+                                                                    />
+                                                                ) : (
+                                                                    <CreditCard className="h-4 w-4 text-slate-400" />
+                                                                )}
+                                                            </div>
                                                             <div>
                                                                 <p className="font-medium text-slate-900">
-                                                                    {cardBrands[method.card_brand] || '💳 Card'}
+                                                                    {getPaymentMethodDisplayName(method.card_brand)}
                                                                 </p>
                                                                 <p className="text-sm text-slate-500">
                                                                     •••• {method.card_last_four}

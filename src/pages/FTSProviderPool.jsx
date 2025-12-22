@@ -53,6 +53,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+import { getPaymentMethodLogo, getPaymentMethodDisplayName } from '@/components/utils/paymentLogos';
 
 const typeIcons = {
     card_scheme: { Icon: CreditCard, color: 'bg-blue-100 text-blue-700' },
@@ -251,8 +252,18 @@ export default function FTSProviderPool() {
                                             <TableRow key={provider.id}>
                                                 <TableCell>
                                                     <div className="flex items-center gap-3">
-                                                        <div className={cn("w-10 h-10 rounded-lg flex items-center justify-center", color)}>
-                                                            <Icon className="h-5 w-5" />
+                                                        <div className="w-16 h-10 rounded flex items-center justify-center bg-white border border-slate-200 p-1">
+                                                            {getPaymentMethodLogo(provider.name) ? (
+                                                                <img 
+                                                                    src={getPaymentMethodLogo(provider.name)} 
+                                                                    alt={provider.name} 
+                                                                    className="max-w-full max-h-full object-contain" 
+                                                                />
+                                                            ) : (
+                                                                <div className={cn("w-full h-full rounded flex items-center justify-center", color)}>
+                                                                    <Icon className="h-5 w-5" />
+                                                                </div>
+                                                            )}
                                                         </div>
                                                         <span className="font-medium">{provider.name}</span>
                                                     </div>
@@ -331,8 +342,18 @@ export default function FTSProviderPool() {
                                                     <TableRow key={provider.id}>
                                                         <TableCell>
                                                             <div className="flex items-center gap-3">
-                                                                <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center", color)}>
-                                                                    <Icon className="h-4 w-4" />
+                                                                <div className="w-16 h-10 rounded flex items-center justify-center bg-white border border-slate-200 p-1">
+                                                                    {getPaymentMethodLogo(provider.name) ? (
+                                                                        <img 
+                                                                            src={getPaymentMethodLogo(provider.name)} 
+                                                                            alt={provider.name} 
+                                                                            className="max-w-full max-h-full object-contain" 
+                                                                        />
+                                                                    ) : (
+                                                                        <div className={cn("w-full h-full rounded flex items-center justify-center", color)}>
+                                                                            <Icon className="h-4 w-4" />
+                                                                        </div>
+                                                                    )}
                                                                 </div>
                                                                 <span className="font-medium">{provider.name}</span>
                                                             </div>
