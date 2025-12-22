@@ -229,7 +229,7 @@ Deno.serve(async (req) => {
                         values.push(password_hash);
                     }
 
-                    updates.push(`updated_at = NOW()`);
+                    updates.push(`updated_date = NOW()`);
                     values.push(user_id);
 
                     const result = await client.query(`
