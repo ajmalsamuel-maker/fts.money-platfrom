@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import StaffAuthWrapper from '@/components/auth/StaffAuthWrapper';
 import Sidebar from '@/components/dashboard/Sidebar';
 import TopHeader from '@/components/dashboard/TopHeader';
 import StatsCards from '@/components/dashboard/StatsCards';
@@ -56,26 +55,27 @@ export default function Dashboard() {
     const [userPspCode, setUserPspCode] = useState(null);
     const [isReady, setIsReady] = useState(false);
 
-    const hasInitialized = React.useRef(false);
-    
     React.useEffect(() => {
-        if (hasInitialized.current) return;
-        hasInitialized.current = true;
-        
         const sessionData = localStorage.getItem('staff_session');
         
-        if (sessionData) {
-            try {
-                const session = JSON.parse(sessionData);
-                
-                if (session?.psp_code) {
-                    queryClient.clear();
-                    setUserPspCode(session.psp_code);
-                    setIsReady(true);
-                }
-            } catch (err) {
-                console.error('Session parse error:', err);
+        if (!sessionData) {
+            window.location.href = '/PSPLogin';
+            return;
+        }
+        
+        try {
+            const session = JSON.parse(sessionData);
+            
+            if (session?.psp_code) {
+                queryClient.clear();
+                setUserPspCode(session.psp_code);
+                setIsReady(true);
+            } else {
+                window.location.href = '/PSPLogin';
             }
+        } catch (err) {
+            console.error('Session parse error:', err);
+            window.location.href = '/PSPLogin';
         }
     }, [queryClient]);
 
@@ -166,8 +166,7 @@ export default function Dashboard() {
     ];
 
     return (
-        <StaffAuthWrapper>
-            <div className="min-h-screen bg-slate-50">
+        <div className="min-h-screen bg-slate-50">
                 <Sidebar 
                 collapsed={sidebarCollapsed} 
                 onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
@@ -263,6 +262,5 @@ export default function Dashboard() {
                 </main>
             </div>
         </div>
-        </StaffAuthWrapper>
     );
 }
