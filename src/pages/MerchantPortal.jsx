@@ -42,6 +42,7 @@ export default function MerchantPortal() {
     const [activeTab, setActiveTab] = useState('status');
     const [uploading, setUploading] = useState(false);
 
+    // Allow access without token for now (can be re-enabled later)
     const { data: merchant, isLoading, refetch } = useQuery({
         queryKey: ['merchant-portal', merchantId],
         queryFn: async () => {

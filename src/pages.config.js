@@ -31,6 +31,7 @@ import Compliance from './pages/Compliance';
 import ComplianceFramework from './pages/ComplianceFramework';
 import CryptoPayouts from './pages/CryptoPayouts';
 import CryptoTransactions from './pages/CryptoTransactions';
+import CustomerAnalytics from './pages/CustomerAnalytics';
 import Customers from './pages/Customers';
 import Dashboard from './pages/Dashboard';
 import DataRetentionManagement from './pages/DataRetentionManagement';
@@ -68,6 +69,7 @@ import FraudPrevention from './pages/FraudPrevention';
 import ISOConfiguration from './pages/ISOConfiguration';
 import InstantPayments from './pages/InstantPayments';
 import Invoices from './pages/Invoices';
+import Invoicing from './pages/Invoicing';
 import LEIComplianceDashboard from './pages/LEIComplianceDashboard';
 import LEIGLEIFTestReport from './pages/LEIGLEIFTestReport';
 import MIDPricingConfiguration from './pages/MIDPricingConfiguration';
@@ -86,6 +88,7 @@ import MerchantChargebackReport from './pages/MerchantChargebackReport';
 import MerchantCodeRecovery from './pages/MerchantCodeRecovery';
 import MerchantCredentials from './pages/MerchantCredentials';
 import MerchantCryptoDashboard from './pages/MerchantCryptoDashboard';
+import MerchantCustomerAnalytics from './pages/MerchantCustomerAnalytics';
 import MerchantCustomers from './pages/MerchantCustomers';
 import MerchantDashboard from './pages/MerchantDashboard';
 import MerchantDataTransactions from './pages/MerchantDataTransactions';
@@ -95,6 +98,7 @@ import MerchantHelpCenter from './pages/MerchantHelpCenter';
 import MerchantInfo from './pages/MerchantInfo';
 import MerchantInvoiceGenerator from './pages/MerchantInvoiceGenerator';
 import MerchantInvoices from './pages/MerchantInvoices';
+import MerchantInvoicing from './pages/MerchantInvoicing';
 import MerchantLogin from './pages/MerchantLogin';
 import MerchantMIDs from './pages/MerchantMIDs';
 import MerchantMIDsDB from './pages/MerchantMIDsDB';
@@ -108,9 +112,10 @@ import MerchantPayouts from './pages/MerchantPayouts';
 import MerchantPortal from './pages/MerchantPortal';
 import MerchantPortalBuilder from './pages/MerchantPortalBuilder';
 import MerchantPricing from './pages/MerchantPricing';
-import MerchantRefunds from './pages/MerchantRefunds';
 import MerchantPricingEngine from './pages/MerchantPricingEngine';
+import MerchantProducts from './pages/MerchantProducts';
 import MerchantProvisioning from './pages/MerchantProvisioning';
+import MerchantRefunds from './pages/MerchantRefunds';
 import MerchantSavedCards from './pages/MerchantSavedCards';
 import MerchantSelfOnboarding from './pages/MerchantSelfOnboarding';
 import MerchantSelfServicePortal from './pages/MerchantSelfServicePortal';
@@ -149,6 +154,7 @@ import PSPWholesaleBrowse from './pages/PSPWholesaleBrowse';
 import PSPWholesaleMarketplace from './pages/PSPWholesaleMarketplace';
 import PaymentGateways from './pages/PaymentGateways';
 import PaymentLinks from './pages/PaymentLinks';
+import PaymentMethods from './pages/PaymentMethods';
 import PaymentOrchestration from './pages/PaymentOrchestration';
 import PaymentProviders from './pages/PaymentProviders';
 import PayoutOrchestration from './pages/PayoutOrchestration';
@@ -160,6 +166,7 @@ import PlatformPricingConfiguration from './pages/PlatformPricingConfiguration';
 import PlatformUserManagement from './pages/PlatformUserManagement';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import ProductTemplateLibrary from './pages/ProductTemplateLibrary';
+import Products from './pages/Products';
 import PublicSupport from './pages/PublicSupport';
 import QuickPSPProvisioning from './pages/QuickPSPProvisioning';
 import RealTimeMonitor from './pages/RealTimeMonitor';
@@ -175,6 +182,7 @@ import SmartOrchestration from './pages/SmartOrchestration';
 import SmartRetry from './pages/SmartRetry';
 import StaffLogin from './pages/StaffLogin';
 import SubMerchants from './pages/SubMerchants';
+import Subscriptions from './pages/Subscriptions';
 import Support from './pages/Support';
 import TenantManagement from './pages/TenantManagement';
 import TenantUserManagement from './pages/TenantUserManagement';
@@ -192,14 +200,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import Subscriptions from './pages/Subscriptions';
-import PaymentMethods from './pages/PaymentMethods';
-import CustomerAnalytics from './pages/CustomerAnalytics';
-import Products from './pages/Products';
-import Invoicing from './pages/Invoicing';
-import MerchantProducts from './pages/MerchantProducts';
-import MerchantCustomerAnalytics from './pages/MerchantCustomerAnalytics';
-import MerchantInvoicing from './pages/MerchantInvoicing';
 import __Layout from './Layout.jsx';
 
 
@@ -237,6 +237,7 @@ export const PAGES = {
     "ComplianceFramework": ComplianceFramework,
     "CryptoPayouts": CryptoPayouts,
     "CryptoTransactions": CryptoTransactions,
+    "CustomerAnalytics": CustomerAnalytics,
     "Customers": Customers,
     "Dashboard": Dashboard,
     "DataRetentionManagement": DataRetentionManagement,
@@ -274,6 +275,7 @@ export const PAGES = {
     "ISOConfiguration": ISOConfiguration,
     "InstantPayments": InstantPayments,
     "Invoices": Invoices,
+    "Invoicing": Invoicing,
     "LEIComplianceDashboard": LEIComplianceDashboard,
     "LEIGLEIFTestReport": LEIGLEIFTestReport,
     "MIDPricingConfiguration": MIDPricingConfiguration,
@@ -292,6 +294,7 @@ export const PAGES = {
     "MerchantCodeRecovery": MerchantCodeRecovery,
     "MerchantCredentials": MerchantCredentials,
     "MerchantCryptoDashboard": MerchantCryptoDashboard,
+    "MerchantCustomerAnalytics": MerchantCustomerAnalytics,
     "MerchantCustomers": MerchantCustomers,
     "MerchantDashboard": MerchantDashboard,
     "MerchantDataTransactions": MerchantDataTransactions,
@@ -301,6 +304,7 @@ export const PAGES = {
     "MerchantInfo": MerchantInfo,
     "MerchantInvoiceGenerator": MerchantInvoiceGenerator,
     "MerchantInvoices": MerchantInvoices,
+    "MerchantInvoicing": MerchantInvoicing,
     "MerchantLogin": MerchantLogin,
     "MerchantMIDs": MerchantMIDs,
     "MerchantMIDsDB": MerchantMIDsDB,
@@ -314,9 +318,10 @@ export const PAGES = {
     "MerchantPortal": MerchantPortal,
     "MerchantPortalBuilder": MerchantPortalBuilder,
     "MerchantPricing": MerchantPricing,
-    "MerchantRefunds": MerchantRefunds,
     "MerchantPricingEngine": MerchantPricingEngine,
+    "MerchantProducts": MerchantProducts,
     "MerchantProvisioning": MerchantProvisioning,
+    "MerchantRefunds": MerchantRefunds,
     "MerchantSavedCards": MerchantSavedCards,
     "MerchantSelfOnboarding": MerchantSelfOnboarding,
     "MerchantSelfServicePortal": MerchantSelfServicePortal,
@@ -355,6 +360,7 @@ export const PAGES = {
     "PSPWholesaleMarketplace": PSPWholesaleMarketplace,
     "PaymentGateways": PaymentGateways,
     "PaymentLinks": PaymentLinks,
+    "PaymentMethods": PaymentMethods,
     "PaymentOrchestration": PaymentOrchestration,
     "PaymentProviders": PaymentProviders,
     "PayoutOrchestration": PayoutOrchestration,
@@ -366,6 +372,7 @@ export const PAGES = {
     "PlatformUserManagement": PlatformUserManagement,
     "PrivacyPolicy": PrivacyPolicy,
     "ProductTemplateLibrary": ProductTemplateLibrary,
+    "Products": Products,
     "PublicSupport": PublicSupport,
     "QuickPSPProvisioning": QuickPSPProvisioning,
     "RealTimeMonitor": RealTimeMonitor,
@@ -381,6 +388,7 @@ export const PAGES = {
     "SmartRetry": SmartRetry,
     "StaffLogin": StaffLogin,
     "SubMerchants": SubMerchants,
+    "Subscriptions": Subscriptions,
     "Support": Support,
     "TenantManagement": TenantManagement,
     "TenantUserManagement": TenantUserManagement,
@@ -398,14 +406,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "Subscriptions": Subscriptions,
-    "PaymentMethods": PaymentMethods,
-    "CustomerAnalytics": CustomerAnalytics,
-    "Products": Products,
-    "Invoicing": Invoicing,
-    "MerchantProducts": MerchantProducts,
-    "MerchantCustomerAnalytics": MerchantCustomerAnalytics,
-    "MerchantInvoicing": MerchantInvoicing,
 }
 
 export const pagesConfig = {
