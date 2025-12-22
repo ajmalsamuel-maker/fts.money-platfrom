@@ -7,8 +7,11 @@ import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
 import { COUNTRIES } from '@/components/utils/countries';
 import { TIMEZONES } from '@/components/utils/timezones';
 import { ISO4217_CURRENCIES } from '@/components/utils/iso4217';
-import { ArrowLeft, Check, Rocket, Zap, Shield, Sparkles, CheckCircle2, Loader2, Building2, Mail, Phone, Globe, DollarSign, AlertCircle, Info } from 'lucide-react';
+import { ArrowLeft, Check, Rocket, Zap, Shield, Sparkles, CheckCircle2, Loader2, Building2, Mail, Phone, Globe, DollarSign, AlertCircle, Info, CreditCard, Wallet, X } from 'lucide-react';
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { getPaymentMethodLogo, getPaymentMethodDisplayName } from '@/components/utils/paymentLogos';
+import { cn } from "@/lib/utils";
 
 const defaultTiers = [
     { id: 'starter', name: 'Starter', price: 2000, revenue_share: 30, icon: Rocket, limits: { max_payment_providers: 1, max_merchants: 100 } },
@@ -952,97 +955,100 @@ export default function PSPProvisioningWizard() {
                             )}
 
                             {step === 6 && (
-                                <div>
-                                    <h2 className="text-xl font-semibold mb-4">Payment Methods Configuration</h2>
+                                <div className="bg-white border border-slate-200 rounded-lg p-6">
+                                    <h2 className="text-xl font-semibold mb-2">Payment Methods</h2>
+                                    <p className="text-sm text-slate-600 mb-4">Enable payment methods for this PSP instance</p>
                                     
-                                    <div className="space-y-4 max-h-[500px] overflow-y-auto">
-                                        {paymentMethodOptions.map((category) => (
-                                            <div key={category.category}>
-                                                <h4 className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
-                                                    <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded">{category.category}</span>
-                                                </h4>
-                                                <div className="grid grid-cols-4 gap-2">
-                                                    {category.methods.map((method) => (
-                                                        <label key={method} className="flex items-center gap-2 p-2 border border-slate-200 rounded-lg hover:bg-slate-50 cursor-pointer">
-                                                            <input
-                                                                type="checkbox"
-                                                                checked={formData.enabled_payment_methods.includes(method)}
-                                                                onChange={(e) => {
-                                                                    if (e.target.checked) {
-                                                                        setFormData({...formData, enabled_payment_methods: [...formData.enabled_payment_methods, method]});
-                                                                    } else {
-                                                                        setFormData({...formData, enabled_payment_methods: formData.enabled_payment_methods.filter(m => m !== method)});
-                                                                    }
-                                                                }}
-                                                                className="w-4 h-4"
-                                                            />
-                                                            <span className="text-sm capitalize">{method.replace(/_/g, ' ')}</span>
-                                                        </label>
-                                                    ))}
+                                    <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2">
+                                        {['visa', 'mastercard', 'amex', 'discover', 'unionpay', 'diners_club', 'jcb', 'alipay', 'wechat', 'apple_pay', 'google_pay', 'paypal', 'ach', 'sepa', 'faster_payments', 'bitcoin', 'ethereum', 'usdt', 'usdc', 'bitcoin_cash', 'litecoin', 'ideal', 'sofort', 'giropay', 'bancontact', 'multibanco', 'p24', 'eps', 'sezzle', 'afterpay'].map((method) => {
+                                            const isEnabled = formData.enabled_payment_methods?.includes(method);
+                                            const displayName = getPaymentMethodDisplayName(method);
+                                            const logoUrl = getPaymentMethodLogo(method);
+                                            return (
+                                                <div 
+                                                    key={method} 
+                                                    className={cn(
+                                                        "flex items-center justify-between p-4 border-2 rounded-lg transition-all cursor-pointer",
+                                                        isEnabled 
+                                                            ? "border-blue-500 bg-blue-50" 
+                                                            : "border-slate-200 hover:border-blue-300"
+                                                    )}
+                                                    onClick={() => {
+                                                        const methods = isEnabled
+                                                            ? formData.enabled_payment_methods.filter(m => m !== method)
+                                                            : [...(formData.enabled_payment_methods || []), method];
+                                                        setFormData({...formData, enabled_payment_methods: methods});
+                                                    }}
+                                                >
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-16 h-10 rounded flex items-center justify-center bg-white border border-slate-200 p-1">
+                                                            {logoUrl ? (
+                                                                <img src={logoUrl} alt={displayName} className="max-w-full max-h-full object-contain" />
+                                                            ) : (
+                                                                <CreditCard className="h-5 w-5 text-slate-400" />
+                                                            )}
+                                                        </div>
+                                                        <p className="font-medium text-slate-900">{displayName}</p>
+                                                    </div>
+                                                    <div className="flex items-center gap-3">
+                                                        {isEnabled && <Badge className="bg-emerald-600">Enabled</Badge>}
+                                                        <div className={cn(
+                                                            "w-6 h-6 rounded border-2 flex items-center justify-center",
+                                                            isEnabled ? "bg-blue-600 border-blue-600" : "border-slate-300"
+                                                        )}>
+                                                            {isEnabled && <Check className="h-4 w-4 text-white" />}
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        ))}
-                                        
-                                        {paymentProviders.length > 0 && (
-                                            <div>
-                                                <h4 className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
-                                                    <span className="bg-purple-100 text-purple-700 px-2 py-1 rounded">Payment Processors</span>
-                                                </h4>
-                                                <div className="grid grid-cols-3 gap-2">
-                                                    {paymentProviders.map((provider) => (
-                                                        <label key={provider.id} className="flex items-center gap-2 p-2 border border-slate-200 rounded-lg hover:bg-slate-50 cursor-pointer">
-                                                            <input
-                                                                type="checkbox"
-                                                                checked={formData.enabled_payment_methods.includes(provider.id)}
-                                                                onChange={(e) => {
-                                                                    if (e.target.checked) {
-                                                                        setFormData({...formData, enabled_payment_methods: [...formData.enabled_payment_methods, provider.id]});
-                                                                    } else {
-                                                                        setFormData({...formData, enabled_payment_methods: formData.enabled_payment_methods.filter(id => id !== provider.id)});
-                                                                    }
-                                                                }}
-                                                                className="w-4 h-4"
-                                                            />
-                                                            <span className="text-sm">{provider.provider_name}</span>
-                                                        </label>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        )}
+                                            );
+                                        })}
                                     </div>
                                 </div>
                             )}
 
                             {step === 7 && (
-                                <div>
-                                    <h2 className="text-xl font-semibold mb-4">Payout Methods Configuration</h2>
-                                    <div className="space-y-3">
-                                        {payoutMethodOptions.map((category) => (
-                                            <div key={category.category}>
-                                                <h4 className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
-                                                    <span className="bg-emerald-100 text-emerald-700 px-2 py-1 rounded">{category.category}</span>
-                                                </h4>
-                                                <div className="grid grid-cols-5 gap-2">
-                                                    {category.methods.map((method) => (
-                                                        <label key={method} className="flex items-center gap-2 p-2 border border-slate-200 rounded hover:bg-slate-50 cursor-pointer">
-                                                            <input
-                                                                type="checkbox"
-                                                                checked={formData.enabled_payout_methods.includes(method)}
-                                                                onChange={(e) => {
-                                                                    if (e.target.checked) {
-                                                                        setFormData({...formData, enabled_payout_methods: [...formData.enabled_payout_methods, method]});
-                                                                    } else {
-                                                                        setFormData({...formData, enabled_payout_methods: formData.enabled_payout_methods.filter(m => m !== method)});
-                                                                    }
-                                                                }}
-                                                                className="w-3 h-3"
-                                                            />
-                                                            <span className="text-xs capitalize">{method.replace(/_/g, ' ')}</span>
-                                                        </label>
-                                                    ))}
+                                <div className="bg-white border border-slate-200 rounded-lg p-6">
+                                    <h2 className="text-xl font-semibold mb-2">Payout Route Configuration</h2>
+                                    <p className="text-sm text-slate-600 mb-4">Enable payout routes for merchant settlements</p>
+                                    
+                                    <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2">
+                                        {['sepa', 'wire', 'visa_debit', 'mastercard_debit', 'cash_app', 'venmo', 'paypal', 'ethereum', 'usdt', 'usdc', 'bitcoin', 'real_time_payments', 'push_to_card'].map((method) => {
+                                            const isEnabled = formData.enabled_payout_methods?.includes(method);
+                                            const displayName = getPaymentMethodDisplayName(method);
+                                            const logoUrl = getPaymentMethodLogo(method);
+                                            return (
+                                                <div 
+                                                    key={method} 
+                                                    className={cn(
+                                                        "flex items-center justify-between p-4 border-2 rounded-lg transition-all cursor-pointer",
+                                                        isEnabled ? "border-emerald-500 bg-emerald-50" : "border-slate-200 hover:border-emerald-300"
+                                                    )}
+                                                    onClick={() => {
+                                                        const methods = isEnabled
+                                                            ? formData.enabled_payout_methods.filter(m => m !== method)
+                                                            : [...(formData.enabled_payout_methods || []), method];
+                                                        setFormData({...formData, enabled_payout_methods: methods});
+                                                    }}
+                                                >
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-16 h-10 rounded flex items-center justify-center bg-white border border-slate-200 p-1">
+                                                            {logoUrl ? (
+                                                                <img src={logoUrl} alt={displayName} className="max-w-full max-h-full object-contain" />
+                                                            ) : (
+                                                                <Wallet className="h-5 w-5 text-slate-400" />
+                                                            )}
+                                                        </div>
+                                                        <p className="font-medium text-slate-900">{displayName}</p>
+                                                    </div>
+                                                    <div className={cn(
+                                                        "w-6 h-6 rounded border-2 flex items-center justify-center",
+                                                        isEnabled ? "bg-emerald-600 border-emerald-600" : "border-slate-300"
+                                                    )}>
+                                                        {isEnabled && <Check className="h-4 w-4 text-white" />}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        ))}
+                                            );
+                                        })}
                                     </div>
                                 </div>
                             )}
