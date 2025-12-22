@@ -8,6 +8,8 @@ import { getStaffSession, staffLogout } from '@/components/auth/useStaffAuth';
 import { Badge } from "@/components/ui/badge";
 import HelpPanel from './HelpPanel';
 import { useTranslation } from '@/components/i18n/LanguageContext';
+import { SmartMenuGenerator } from '@/components/platform/SmartMenuGenerator';
+import { MODULE_DEFINITIONS } from '@/components/platform/ModuleDefinitions';
 import { 
     LayoutDashboard, 
     ArrowLeftRight, 
@@ -203,6 +205,8 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
     const [pspSettings, setPspSettings] = useState(null);
     const [activeGroup, setActiveGroup] = useState(null);
     const [helpOpen, setHelpOpen] = useState(false);
+    const [menuItems, setMenuItems] = useState(defaultMenuItems);
+    const [pspRecord, setPspRecord] = useState(null);
     const { t } = useTranslation();
 
     useEffect(() => {
@@ -248,6 +252,38 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                 
                 if (result.data.success && result.data.settings) {
                     setPspSettings(result.data.settings);
+                    
+                    // Load full PSP record for enabled_features
+                    const pspRecords = await base44.entities.ProvisionedPSP.filter({ psp_code: pspCode });
+                    if (pspRecords && pspRecords.length > 0) {
+                        const psp = pspRecords[0];
+                        setPspRecord(psp);
+                        
+                        console.log('📦 SIDEBAR: PSP enabled_features:', psp.enabled_features);
+                        
+                        // Generate dynamic menu based on enabled features
+                        if (psp.enabled_features && psp.enabled_features.length > 0) {
+                            const generator = new SmartMenuGenerator(psp.enabled_features);
+                            const dynamicMenus = generator.generateMenus();
+                            
+                            // Convert to format expected by sidebar
+                            const formattedMenus = dynamicMenus.map(group => ({
+                                group: group.id,
+                                icon: iconMap[group.icon] || Settings,
+                                items: group.items.map(item => ({
+                                    icon: iconMap[item.icon] || FileText,
+                                    label: item.label,
+                                    path: item.path,
+                                    permission: item.permission
+                                }))
+                            }));
+                            
+                            console.log('🎯 SIDEBAR: Generated dynamic menu:', formattedMenus);
+                            setMenuItems(formattedMenus);
+                        } else {
+                            console.log('⚠️ SIDEBAR: No enabled_features, using default menu');
+                        }
+                    }
                 }
             } catch (err) {
                 console.error('Error loading PSP settings:', err);
