@@ -59,34 +59,18 @@ export default function Dashboard() {
     React.useEffect(() => {
         const sessionData = localStorage.getItem('staff_session');
         
-        console.log('=== DASHBOARD SESSION CHECK ===');
-        console.log('Raw session data:', sessionData);
-        
-        if (!sessionData) {
-            window.location.href = '/PSPLogin';
-            return;
-        }
-
-        try {
-            const session = JSON.parse(sessionData);
-            console.log('Parsed session:', session);
-            console.log('PSP Code from session:', session?.psp_code);
-            
-            if (session?.psp_code) {
-                // CRITICAL: Clear ALL React Query cache when switching PSPs
-                queryClient.clear();
+        if (sessionData) {
+            try {
+                const session = JSON.parse(sessionData);
                 
-                setUserPspCode(session.psp_code);
-                setIsReady(true);
-                
-                console.log('✅ Set userPspCode to:', session.psp_code);
-            } else {
-                localStorage.clear();
-                window.location.href = '/PSPLogin';
+                if (session?.psp_code) {
+                    queryClient.clear();
+                    setUserPspCode(session.psp_code);
+                    setIsReady(true);
+                }
+            } catch (err) {
+                console.error('Session parse error:', err);
             }
-        } catch (err) {
-            localStorage.clear();
-            window.location.href = '/PSPLogin';
         }
     }, [queryClient]);
 
