@@ -7,7 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CreditCard, Loader2, CheckCircle2, LogOut, Shield, Bitcoin } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { CreditCard, Loader2, CheckCircle2, LogOut, Shield, Bitcoin, XCircle, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { ISO4217_CURRENCIES } from '@/components/utils/iso4217';
 import { validateCurrency } from '@/components/utils/isoValidator';
@@ -18,7 +19,8 @@ import CryptoPaymentForm from '@/components/terminal/CryptoPaymentForm';
 export default function VirtualTerminal() {
     const { user, loading, logout } = useVTAuth();
     const [processing, setProcessing] = useState(false);
-    const [success, setSuccess] = useState(false);
+    const [resultDialogOpen, setResultDialogOpen] = useState(false);
+    const [transactionResult, setTransactionResult] = useState(null);
     const [paymentType, setPaymentType] = useState('card'); // 'card' or 'crypto'
     
     const [formData, setFormData] = useState({
@@ -78,55 +80,67 @@ export default function VirtualTerminal() {
             const pspCode = merchant?.psp_code;
             
             const transactionId = `TXN-${Date.now()}-${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
+            const authCode = Math.random().toString(36).substr(2, 9).toUpperCase();
             
-            await base44.entities.Transaction.create({
-                transaction_id: transactionId,
-                psp_code: pspCode,
-                merchant_id: user.merchant_id,
-                merchant_name: merchant?.business_name,
-                type: 'sale',
-                status: 'approved',
-                amount: parseFloat(formData.amount),
-                currency: formData.currency,
-                customer_country: merchant?.country,
-                payment_method: 'card',
-                card_last_four: formData.cardNumber.slice(-4),
-                customer_email: formData.customerEmail,
-                customer_name: formData.cardholderName,
-                description: formData.description,
-                terminal_id: user.terminal_id,
-                auth_code: Math.random().toString(36).substr(2, 9).toUpperCase(),
-                response_code: '00',
-                response_message: 'Approved',
-                is_3ds: false
+            // Call backend function to process transaction (uses service role)
+            const result = await base44.functions.invoke('vtAuth', {
+                action: 'processTransaction',
+                transaction: {
+                    transaction_id: transactionId,
+                    psp_code: pspCode,
+                    merchant_id: user.merchant_id,
+                    merchant_name: merchant?.business_name,
+                    type: 'sale',
+                    status: 'approved',
+                    amount: parseFloat(formData.amount),
+                    currency: formData.currency,
+                    customer_country: merchant?.country,
+                    payment_method: 'card',
+                    card_last_four: formData.cardNumber.slice(-4),
+                    customer_email: formData.customerEmail,
+                    customer_name: formData.cardholderName,
+                    description: formData.description,
+                    terminal_id: user.terminal_id,
+                    auth_code: authCode,
+                    response_code: '00',
+                    response_message: 'Approved',
+                    is_3ds: false
+                }
             });
 
-            setSuccess(true);
-            toast.success('✅ TRANSACTION APPROVED - Transaction ID: ' + transactionId, {
-                duration: 5000,
-                className: 'text-lg'
+            // Show result dialog
+            setTransactionResult({
+                success: true,
+                transactionId: transactionId,
+                authCode: authCode,
+                amount: parseFloat(formData.amount),
+                currency: formData.currency,
+                status: 'approved'
             });
+            setResultDialogOpen(true);
             
-            setTimeout(() => {
-                setFormData({
-                    amount: '',
-                    currency: 'USD',
-                    cardNumber: '',
-                    cardholderName: '',
-                    expiryMonth: '',
-                    expiryYear: '',
-                    cvv: '',
-                    customerEmail: '',
-                    description: ''
-                });
-                setSuccess(false);
-            }, 5000);
+            // Clear form
+            setFormData({
+                amount: '',
+                currency: 'USD',
+                cardNumber: '',
+                cardholderName: '',
+                expiryMonth: '',
+                expiryYear: '',
+                cvv: '',
+                customerEmail: '',
+                description: ''
+            });
         } catch (error) {
             console.error('Transaction error:', error);
-            toast.error('❌ TRANSACTION DECLINED - ' + (error.message || 'Payment processing failed'), {
-                duration: 5000,
-                className: 'text-lg'
+            
+            // Show error dialog
+            setTransactionResult({
+                success: false,
+                error: error.message || 'Payment processing failed',
+                status: 'declined'
             });
+            setResultDialogOpen(true);
         } finally {
             setProcessing(false);
         }
@@ -331,15 +345,92 @@ export default function VirtualTerminal() {
                                         ) : (
                                             'Process Payment'
                                         )}
-                                    </Button>
-                                </div>
-                                    </form>
-                                </CardContent>
-                            </Card>
-                        </TabsContent>
-                    </Tabs>
-                </div>
-            </main>
-        </div>
-    );
-}
+                                        </Button>
+                                        </div>
+                                        </form>
+                                        </CardContent>
+                                        </Card>
+                                        </TabsContent>
+                                        </Tabs>
+                                        </div>
+                                        </main>
+
+                                        {/* Transaction Result Dialog */}
+                                        <Dialog open={resultDialogOpen} onOpenChange={setResultDialogOpen}>
+                                        <DialogContent className="sm:max-w-md">
+                                        <DialogHeader>
+                                        <DialogTitle className="flex items-center gap-2">
+                                        {transactionResult?.success ? (
+                                        <>
+                                        <CheckCircle2 className="h-6 w-6 text-green-600" />
+                                        Transaction Approved
+                                        </>
+                                        ) : (
+                                        <>
+                                        <XCircle className="h-6 w-6 text-red-600" />
+                                        Transaction Declined
+                                        </>
+                                        )}
+                                        </DialogTitle>
+                                        </DialogHeader>
+
+                                        {transactionResult?.success ? (
+                                        <div className="space-y-4 py-4">
+                                        <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                                        <div className="flex items-center gap-2 mb-3">
+                                        <CheckCircle2 className="h-5 w-5 text-green-600" />
+                                        <span className="font-semibold text-green-900">Payment Successful</span>
+                                        </div>
+                                        <div className="space-y-2 text-sm">
+                                        <div className="flex justify-between">
+                                        <span className="text-slate-600">Transaction ID:</span>
+                                        <span className="font-mono font-medium">{transactionResult?.transactionId}</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                        <span className="text-slate-600">Auth Code:</span>
+                                        <span className="font-mono font-medium">{transactionResult?.authCode}</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                        <span className="text-slate-600">Amount:</span>
+                                        <span className="font-semibold text-lg">
+                                        {transactionResult?.currency} {transactionResult?.amount?.toFixed(2)}
+                                        </span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                        <span className="text-slate-600">Status:</span>
+                                        <span className="font-semibold text-green-600 uppercase">APPROVED</span>
+                                        </div>
+                                        </div>
+                                        </div>
+                                        <Button onClick={() => setResultDialogOpen(false)} className="w-full">
+                                        Close
+                                        </Button>
+                                        </div>
+                                        ) : (
+                                        <div className="space-y-4 py-4">
+                                        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                                        <div className="flex items-center gap-2 mb-3">
+                                        <AlertCircle className="h-5 w-5 text-red-600" />
+                                        <span className="font-semibold text-red-900">Payment Failed</span>
+                                        </div>
+                                        <div className="space-y-2 text-sm">
+                                        <div className="flex justify-between">
+                                        <span className="text-slate-600">Status:</span>
+                                        <span className="font-semibold text-red-600 uppercase">DECLINED</span>
+                                        </div>
+                                        <div className="text-slate-600 mt-2">
+                                        <span className="font-medium">Error:</span>
+                                        <p className="mt-1 text-red-600">{transactionResult?.error}</p>
+                                        </div>
+                                        </div>
+                                        </div>
+                                        <Button onClick={() => setResultDialogOpen(false)} variant="outline" className="w-full">
+                                        Close
+                                        </Button>
+                                        </div>
+                                        )}
+                                        </DialogContent>
+                                        </Dialog>
+                                        </div>
+                                        );
+                                        }
