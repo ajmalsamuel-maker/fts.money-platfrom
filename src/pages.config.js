@@ -200,6 +200,7 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
+import SystemArchitectureDocumentation from './pages/SystemArchitectureDocumentation';
 import __Layout from './Layout.jsx';
 
 
@@ -406,6 +407,7 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
+    "SystemArchitectureDocumentation": SystemArchitectureDocumentation,
 }
 
 export const pagesConfig = {
