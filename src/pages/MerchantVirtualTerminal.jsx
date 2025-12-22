@@ -87,15 +87,26 @@ export default function MerchantVirtualTerminal() {
     const { data: merchant, isLoading: merchantLoading } = useQuery({
         queryKey: ['merchant', user?.merchant_id],
         queryFn: async () => {
-            const merchants = await base44.entities.Merchant.filter({ merchant_id: user.merchant_id });
+            console.log('🔍 Fetching merchant for:', user.merchant_id);
+            const merchants = await base44.asServiceRole.entities.Merchant.filter({ merchant_id: user.merchant_id });
             const merchantData = merchants[0];
             
+            if (!merchantData) {
+                console.error('❌ No merchant found for ID:', user.merchant_id);
+                return null;
+            }
+            
             // If PSP code is not in merchant record, try to get it from session
-            if (merchantData && !merchantData.psp_code && user?.psp_code) {
+            if (!merchantData.psp_code && user?.psp_code) {
                 merchantData.psp_code = user.psp_code;
             }
             
-            console.log('🔍 Merchant data loaded:', merchantData);
+            console.log('✅ Merchant data loaded:', {
+                merchant_id: merchantData.merchant_id,
+                business_name: merchantData.business_name,
+                psp_code: merchantData.psp_code || 'MISSING'
+            });
+            
             return merchantData;
         },
         enabled: !!user?.merchant_id
