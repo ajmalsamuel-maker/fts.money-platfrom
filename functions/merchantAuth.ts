@@ -80,8 +80,8 @@ Deno.serve(async (req) => {
             // If merchant doesn't have psp_code, try to get it from MerchantUser or use merchant_code prefix
             let pspCode = merchant?.psp_code;
             if (!pspCode && user.merchant_code) {
-                // Extract PSP code from merchant_code (format: PSP_MERCHANT)
-                const parts = user.merchant_code.split('_');
+                // Extract PSP code from merchant_code (format: PSP_MERCHANT or PSP-MERCHANT)
+                const parts = user.merchant_code.split(/[-_]/);
                 if (parts.length > 1) {
                     pspCode = parts[0];
                     console.log('✅ merchantAuth: Extracted PSP code from merchant_code:', pspCode);

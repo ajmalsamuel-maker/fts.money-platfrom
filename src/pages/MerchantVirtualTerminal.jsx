@@ -220,9 +220,9 @@ export default function MerchantVirtualTerminal() {
         // Get PSP code with multiple fallbacks
         let pspCode = merchant?.psp_code || user?.psp_code;
         
-        // Extract from user merchant_code (format: PSP_MERCHANT)
+        // Extract from user merchant_code (format: PSP_MERCHANT or PSP-MERCHANT)
         if (!pspCode && user?.merchant_code) {
-            const parts = user.merchant_code.split('_');
+            const parts = user.merchant_code.split(/[-_]/);
             if (parts.length > 1) {
                 pspCode = parts[0];
             }
@@ -230,7 +230,7 @@ export default function MerchantVirtualTerminal() {
         
         // Extract from merchant's merchant_code
         if (!pspCode && merchant?.merchant_code) {
-            const parts = merchant.merchant_code.split('_');
+            const parts = merchant.merchant_code.split(/[-_]/);
             if (parts.length > 1) {
                 pspCode = parts[0];
             }
