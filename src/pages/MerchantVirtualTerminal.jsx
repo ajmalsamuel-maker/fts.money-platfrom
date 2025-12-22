@@ -178,7 +178,6 @@ export default function MerchantVirtualTerminal() {
         
         const txnId = `TXN${Date.now()}${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
         const authCode = Math.random().toString(36).substr(2, 9).toUpperCase();
-        const total = calculateTotal();
         const cardNum = formData.useExistingCard ? 
             savedCards.find(c => c.id === formData.existingCardId)?.card_last_four :
             formData.cardNumber;
