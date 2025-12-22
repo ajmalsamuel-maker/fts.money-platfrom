@@ -47,6 +47,7 @@ const menuSections = [
         title: 'Users & Access',
         items: [
             { icon: Users, label: 'Platform Team', path: 'PlatformUserManagement', description: 'FTS administrators' },
+            { icon: Users, label: 'Community Users', path: 'CommunityUserManagement', description: 'Portal users & PSP owners' },
             { icon: Users, label: 'PSP Administrators', path: 'PSPUserManagement', description: 'PSP owners & staff' },
             { icon: Building2, label: 'Tenants', path: 'TenantManagement', description: 'Multi-tenancy control', superAdminOnly: true }
         ]
