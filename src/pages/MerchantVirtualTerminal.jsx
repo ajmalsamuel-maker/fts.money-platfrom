@@ -84,11 +84,19 @@ export default function MerchantVirtualTerminal() {
         }
     }, [loading, isAuthenticated, navigate]);
 
-    const { data: merchant } = useQuery({
+    const { data: merchant, isLoading: merchantLoading } = useQuery({
         queryKey: ['merchant', user?.merchant_id],
         queryFn: async () => {
             const merchants = await base44.entities.Merchant.filter({ merchant_id: user.merchant_id });
-            return merchants[0];
+            const merchantData = merchants[0];
+            
+            // If PSP code is not in merchant record, try to get it from session
+            if (merchantData && !merchantData.psp_code && user?.psp_code) {
+                merchantData.psp_code = user.psp_code;
+            }
+            
+            console.log('🔍 Merchant data loaded:', merchantData);
+            return merchantData;
         },
         enabled: !!user?.merchant_id
     });
@@ -182,6 +190,9 @@ export default function MerchantVirtualTerminal() {
             savedCards.find(c => c.id === formData.existingCardId)?.card_last_four :
             formData.cardNumber;
         
+        // Get PSP code from merchant or session
+        const pspCode = merchant?.psp_code || user?.psp_code;
+        
         let transactionStatus = 'approved';
         let responseCode = '00';
         let responseMessage = 'Approved';
@@ -190,8 +201,9 @@ export default function MerchantVirtualTerminal() {
         
         try {
             // Ensure PSP code is available
-            if (!merchant?.psp_code) {
-                throw new Error('PSP code not found for merchant');
+            if (!pspCode) {
+                console.error('❌ MerchantVT: No PSP code found', { merchant, user });
+                throw new Error('Configuration error: PSP code not found. Please contact support.');
             }
 
             // Validate currency with ISO 4217
@@ -216,7 +228,7 @@ export default function MerchantVirtualTerminal() {
         try {
             const transactionData = {
                 transaction_id: txnId,
-                psp_code: merchant?.psp_code || 'UNKNOWN',
+                psp_code: pspCode || 'UNKNOWN',
                 merchant_transaction_id: `VT-${Date.now()}`,
                 order_id: formData.invoiceNumber || `ORD-${Date.now()}`,
                 merchant_id: user.merchant_id,
@@ -364,7 +376,7 @@ export default function MerchantVirtualTerminal() {
         setProcessing(false);
     };
 
-    if (loading) {
+    if (loading || merchantLoading) {
         return (
             <div className="min-h-screen bg-slate-50 flex items-center justify-center">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
