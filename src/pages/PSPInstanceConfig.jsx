@@ -103,6 +103,11 @@ export default function PSPInstanceConfig() {
                 return [];
             };
 
+            // Get service IDs from active subscriptions
+            const subscribedServiceIds = subscriptions
+                .filter(sub => sub.status === 'active')
+                .map(sub => sub.service_id);
+
             const newConfig = {
                 branding: {
                     company_name: psp.psp_name || '',
@@ -120,21 +125,19 @@ export default function PSPInstanceConfig() {
                 },
                 enabled_payment_methods: parseArray(psp.enabled_payment_methods),
                 enabled_payout_methods: parseArray(psp.enabled_payout_methods),
-                enabled_services: parseArray(psp.enabled_services)
+                // Combine both enabled_services and active subscriptions
+                enabled_services: [...new Set([...parseArray(psp.enabled_services), ...subscribedServiceIds])]
             };
             
             console.log('Loading PSP config from database:', {
                 enabled_services: psp.enabled_services,
-                parsed_services: newConfig.enabled_services,
-                enabled_payment_methods: psp.enabled_payment_methods,
-                parsed_payment_methods: newConfig.enabled_payment_methods,
-                enabled_payout_methods: psp.enabled_payout_methods,
-                parsed_payout_methods: newConfig.enabled_payout_methods
+                subscriptions: subscribedServiceIds,
+                final_enabled: newConfig.enabled_services
             });
             
             setConfig(newConfig);
         }
-    }, [psp]);
+    }, [psp, subscriptions]);
 
     const updateMutation = useMutation({
         mutationFn: async (data) => {
