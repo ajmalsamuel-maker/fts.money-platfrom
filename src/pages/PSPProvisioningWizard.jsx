@@ -209,11 +209,13 @@ export default function PSPProvisioningWizard() {
                         {[
                             { num: 1, label: 'Tier' },
                             { num: 2, label: 'Business' },
-                            { num: 3, label: 'Payments' },
-                            { num: 4, label: 'Fees' },
-                            { num: 5, label: 'Services' },
-                            { num: 6, label: 'Features' },
-                            { num: 7, label: 'Admin' }
+                            { num: 3, label: 'Services' },
+                            { num: 4, label: 'Appearance' },
+                            { num: 5, label: 'Fees' },
+                            { num: 6, label: 'Payments' },
+                            { num: 7, label: 'Payouts' },
+                            { num: 8, label: 'Regional' },
+                            { num: 9, label: 'Review' }
                         ].map((s) => (
                             <div key={s.num} className="flex flex-col items-center gap-1">
                                 <div className={`flex items-center justify-center w-10 h-10 rounded-full font-semibold border-2 ${
@@ -590,14 +592,141 @@ export default function PSPProvisioningWizard() {
 
                             {step === 3 && (
                                 <div>
-                                    <h2 className="text-xl font-semibold mb-4">Payment Methods & Payout Configuration</h2>
+                                    <h2 className="text-xl font-semibold mb-4">Platform Services</h2>
                                     
-                                    <div className="space-y-6">
-                                        <div>
+                                    <div className="space-y-2 max-h-[500px] overflow-y-auto">
+                                        {services.length > 0 && services.map((service) => (
+                                            <label key={service.id} className="flex items-start gap-3 p-3 border border-slate-200 rounded-lg hover:bg-slate-50 cursor-pointer">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={formData.enabled_services.includes(service.id)}
+                                                    onChange={(e) => {
+                                                        if (e.target.checked) {
+                                                            setFormData({...formData, enabled_services: [...formData.enabled_services, service.id]});
+                                                        } else {
+                                                            setFormData({...formData, enabled_services: formData.enabled_services.filter(id => id !== service.id)});
+                                                        }
+                                                    }}
+                                                    className="w-4 h-4 mt-1"
+                                                />
+                                                <div>
+                                                    <p className="font-medium text-slate-900">{service.service_name}</p>
+                                                    <p className="text-xs text-slate-600">{service.description}</p>
+                                                </div>
+                                            </label>
+                                        ))}
+                                        
+                                        <div className="border-t border-slate-200 pt-4 mt-4">
                                             <h3 className="font-medium text-slate-900 mb-3 flex items-center gap-2">
-                                                <DollarSign className="h-5 w-5 text-blue-600" />
-                                                Payment Methods
+                                                <Shield className="h-5 w-5 text-blue-600" />
+                                                Compliance Services
                                             </h3>
+                                            {Object.entries({
+                                                pci_dss: 'PCI DSS Compliance',
+                                                kyb_verification: 'KYB Verification',
+                                                aml_screening: 'AML Screening',
+                                                fatf_compliance: 'FATF Compliance',
+                                                lei_verification: 'LEI Verification'
+                                            }).map(([key, label]) => (
+                                                <label key={key} className="flex items-start gap-3 p-3 border border-slate-200 rounded-lg hover:bg-slate-50 cursor-pointer mb-2">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={formData.compliance_features[key]}
+                                                        onChange={(e) => setFormData({...formData, compliance_features: {...formData.compliance_features, [key]: e.target.checked}})}
+                                                        className="w-4 h-4 mt-1"
+                                                    />
+                                                    <div>
+                                                        <p className="font-medium text-slate-900">{label}</p>
+                                                        <p className="text-xs text-slate-600">Required for regulatory compliance</p>
+                                                    </div>
+                                                </label>
+                                            ))}
+                                        </div>
+                                        
+                                        {services.length === 0 && (
+                                            <p className="text-sm text-slate-500 py-8 text-center">No platform services configured yet</p>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+
+                            {step === 4 && (
+                                <div>
+                                    <h2 className="text-xl font-semibold mb-4">Branding & Appearance</h2>
+                                    <div className="space-y-6">
+                                        <div className="grid grid-cols-2 gap-6">
+                                            <div>
+                                                <label className="block text-sm font-medium mb-1">Company Name</label>
+                                                <input
+                                                    value={formData.branding.company_name || formData.psp_name}
+                                                    onChange={(e) => setFormData({...formData, branding: {...formData.branding, company_name: e.target.value}})}
+                                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                                                    placeholder="Enter company name"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium mb-1">Logo URL</label>
+                                                <input
+                                                    value={formData.branding.logo_url || ''}
+                                                    onChange={(e) => setFormData({...formData, branding: {...formData.branding, logo_url: e.target.value}})}
+                                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                                                    placeholder="https://example.com/logo.png"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium mb-1">Primary Color</label>
+                                                <div className="flex gap-2">
+                                                    <input
+                                                        type="color"
+                                                        value={formData.branding.primary_color || '#3b82f6'}
+                                                        onChange={(e) => setFormData({...formData, branding: {...formData.branding, primary_color: e.target.value}})}
+                                                        className="w-20 h-10"
+                                                    />
+                                                    <input
+                                                        value={formData.branding.primary_color || '#3b82f6'}
+                                                        onChange={(e) => setFormData({...formData, branding: {...formData.branding, primary_color: e.target.value}})}
+                                                        className="flex-1 px-3 py-2 border border-slate-300 rounded-lg"
+                                                        placeholder="#3b82f6"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium mb-1">Secondary Color</label>
+                                                <div className="flex gap-2">
+                                                    <input
+                                                        type="color"
+                                                        value={formData.branding.secondary_color || '#8b5cf6'}
+                                                        onChange={(e) => setFormData({...formData, branding: {...formData.branding, secondary_color: e.target.value}})}
+                                                        className="w-20 h-10"
+                                                    />
+                                                    <input
+                                                        value={formData.branding.secondary_color || '#8b5cf6'}
+                                                        onChange={(e) => setFormData({...formData, branding: {...formData.branding, secondary_color: e.target.value}})}
+                                                        className="flex-1 px-3 py-2 border border-slate-300 rounded-lg"
+                                                        placeholder="#8b5cf6"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium mb-1">Favicon URL</label>
+                                                <input
+                                                    value={formData.branding.favicon_url || ''}
+                                                    onChange={(e) => setFormData({...formData, branding: {...formData.branding, favicon_url: e.target.value}})}
+                                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                                                    placeholder="https://example.com/favicon.ico"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {step === 5 && (
+                                <div>
+                                    <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                                        <DollarSign className="h-5 w-5 text-blue-600" />
+                                        Transaction Fee Structure
+                                    </h2>
                                             <div className="space-y-4 max-h-[400px] overflow-y-auto">
                                                 {paymentMethodOptions.map((category) => (
                                                     <div key={category.category}>
@@ -655,11 +784,43 @@ export default function PSPProvisioningWizard() {
                                             </div>
                                         </div>
 
-                                        <div className="border-t border-slate-200 pt-6">
-                                            <h3 className="font-medium text-slate-900 mb-3 flex items-center gap-2">
-                                                <ArrowLeft className="h-5 w-5 text-emerald-600 rotate-180" />
-                                                Payout Methods
-                                            </h3>
+                                        {paymentProviders.length > 0 && (
+                                            <div>
+                                                <h4 className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
+                                                    <span className="bg-purple-100 text-purple-700 px-2 py-1 rounded">Payment Processors</span>
+                                                </h4>
+                                                <div className="grid grid-cols-3 gap-2">
+                                                    {paymentProviders.map((provider) => (
+                                                        <label key={provider.id} className="flex items-center gap-2 p-2 border border-slate-200 rounded-lg hover:bg-slate-50 cursor-pointer">
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={formData.enabled_payment_methods.includes(provider.id)}
+                                                                onChange={(e) => {
+                                                                    if (e.target.checked) {
+                                                                        setFormData({...formData, enabled_payment_methods: [...formData.enabled_payment_methods, provider.id]});
+                                                                    } else {
+                                                                        setFormData({...formData, enabled_payment_methods: formData.enabled_payment_methods.filter(id => id !== provider.id)});
+                                                                    }
+                                                                }}
+                                                                className="w-4 h-4"
+                                                            />
+                                                            <span className="text-sm">{provider.provider_name}</span>
+                                                        </label>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+
+                            {step === 7 && (
+                                <div>
+                                    <h2 className="text-xl font-semibold mb-4">Payout Methods Configuration</h2>
+                                    <h3 className="font-medium text-slate-900 mb-3 flex items-center gap-2">
+                                        <ArrowLeft className="h-5 w-5 text-emerald-600 rotate-180" />
+                                        Payout Methods
+                                    </h3>
                                             <div className="space-y-3">
                                                 {payoutMethodOptions.map((category) => (
                                                     <div key={category.category}>
@@ -695,14 +856,16 @@ export default function PSPProvisioningWizard() {
                                 </div>
                             )}
 
-                            {step === 4 && (
+                            {step === 6 && (
                                 <div>
-                                    <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                                        <DollarSign className="h-5 w-5 text-blue-600" />
-                                        Transaction Fee Structure
-                                    </h2>
+                                    <h2 className="text-xl font-semibold mb-4">Payment Methods Configuration</h2>
                                     
-                                    <Alert className="mb-4 bg-slate-50 border-slate-200">
+                                    <div className="space-y-6">
+                                        <div>
+                                            <h3 className="font-medium text-slate-900 mb-3 flex items-center gap-2">
+                                                <DollarSign className="h-5 w-5 text-blue-600" />
+                                                Payment Methods
+                                            </h3>
                                         <Info className="h-4 w-4 text-slate-600" />
                                         <AlertDescription className="text-sm text-slate-700">
                                             Configure detailed fee structure for different payment types. Percentage fees + fixed fees apply per transaction.
@@ -860,67 +1023,58 @@ export default function PSPProvisioningWizard() {
                             {step === 5 && (
                                 <div>
                                     <h2 className="text-xl font-semibold mb-4">Platform Services</h2>
-                                    
-                                    <div className="space-y-2 max-h-[500px] overflow-y-auto">
-                                        {services.length > 0 && services.map((service) => (
-                                            <label key={service.id} className="flex items-start gap-3 p-3 border border-slate-200 rounded-lg hover:bg-slate-50 cursor-pointer">
-                                                <input
-                                                    type="checkbox"
-                                                    checked={formData.enabled_services.includes(service.id)}
-                                                    onChange={(e) => {
-                                                        if (e.target.checked) {
-                                                            setFormData({...formData, enabled_services: [...formData.enabled_services, service.id]});
-                                                        } else {
-                                                            setFormData({...formData, enabled_services: formData.enabled_services.filter(id => id !== service.id)});
-                                                        }
-                                                    }}
-                                                    className="w-4 h-4 mt-1"
-                                                />
-                                                <div>
-                                                    <p className="font-medium text-slate-900">{service.service_name}</p>
-                                                    <p className="text-xs text-slate-600">{service.description}</p>
-                                                </div>
-                                            </label>
-                                        ))}
-                                        
-                                        <div className="border-t border-slate-200 pt-4 mt-4">
-                                            <h3 className="font-medium text-slate-900 mb-3 flex items-center gap-2">
-                                                <Shield className="h-5 w-5 text-blue-600" />
-                                                Compliance Services
-                                            </h3>
-                                            {Object.entries({
-                                                pci_dss: 'PCI DSS Compliance',
-                                                kyb_verification: 'KYB Verification',
-                                                aml_screening: 'AML Screening',
-                                                fatf_compliance: 'FATF Compliance',
-                                                lei_verification: 'LEI Verification'
-                                            }).map(([key, label]) => (
-                                                <label key={key} className="flex items-start gap-3 p-3 border border-slate-200 rounded-lg hover:bg-slate-50 cursor-pointer mb-2">
-                                                    <input
-                                                        type="checkbox"
-                                                        checked={formData.compliance_features[key]}
-                                                        onChange={(e) => setFormData({...formData, compliance_features: {...formData.compliance_features, [key]: e.target.checked}})}
-                                                        className="w-4 h-4 mt-1"
-                                                    />
-                                                    <div>
-                                                        <p className="font-medium text-slate-900">{label}</p>
-                                                        <p className="text-xs text-slate-600">Required for regulatory compliance</p>
-                                                    </div>
-                                                </label>
-                                            ))}
+                                    <div className="space-y-6">
+                                        <div className="grid grid-cols-2 gap-6">
+                                            <div>
+                                                <label className="block text-sm font-medium mb-1">Default Currency (ISO 4217)</label>
+                                                <select
+                                                    value={formData.currency}
+                                                    onChange={(e) => setFormData({...formData, currency: e.target.value})}
+                                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                                                >
+                                                    {ISO4217_CURRENCIES.map(c => <option key={c.code} value={c.code}>{c.code} - {c.name}</option>)}
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium mb-1">Timezone</label>
+                                                <select
+                                                    value={formData.timezone}
+                                                    onChange={(e) => setFormData({...formData, timezone: e.target.value})}
+                                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                                                >
+                                                    {TIMEZONES.map(tz => <option key={tz} value={tz}>{tz}</option>)}
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium mb-1">Operating Region</label>
+                                                <select
+                                                    value={formData.country}
+                                                    onChange={(e) => setFormData({...formData, country: e.target.value})}
+                                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                                                >
+                                                    <option value="">Select country</option>
+                                                    {COUNTRIES.map(c => <option key={c.code} value={c.code}>{c.name}</option>)}
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium mb-1">Language</label>
+                                                <select
+                                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                                                >
+                                                    <option value="en">English</option>
+                                                    <option value="zh">Chinese</option>
+                                                    <option value="es">Spanish</option>
+                                                    <option value="fr">French</option>
+                                                </select>
+                                            </div>
                                         </div>
-                                        
-                                        {services.length === 0 && (
-                                            <p className="text-sm text-slate-500 py-8 text-center">No platform services configured yet</p>
-                                        )}
                                     </div>
                                 </div>
                             )}
 
-                            {step === 6 && (
+                            {step === 9 && (
                                 <div>
-                                    <h2 className="text-xl font-semibold mb-4">Orchestration Features & Cloud Deployment</h2>
-                                    
+                                    <h2 className="text-xl font-semibold mb-4">Review, Admin Setup & Cloud Deployment</h2>
                                     <div className="space-y-6">
                                         <div>
                                             <h3 className="font-medium text-slate-900 mb-3 flex items-center gap-2">
@@ -996,13 +1150,8 @@ export default function PSPProvisioningWizard() {
                                                 )}
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                            )}
 
-                            {step === 7 && (
-                                <div>
-                                    <h2 className="text-xl font-semibold mb-4">Admin Account Setup & Review</h2>
+                                        <div className="border-t border-slate-200 pt-6">
                                     
                                     <div className="space-y-6">
                                         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
@@ -1168,7 +1317,7 @@ export default function PSPProvisioningWizard() {
                                         <span className="text-xs text-green-600">Saved at {savedProgress}</span>
                                     )}
                                 </div>
-                                {step < 7 && (
+                                {step < 9 && (
                                     <button
                                         onClick={() => setStep(step + 1)}
                                         className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
