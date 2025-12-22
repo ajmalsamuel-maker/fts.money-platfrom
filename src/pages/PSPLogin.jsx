@@ -9,17 +9,14 @@ export default function PSPLogin() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const hasRedirected = React.useRef(false);
+    const [checkComplete, setCheckComplete] = React.useState(false);
     
     React.useEffect(() => {
-        if (hasRedirected.current) return;
-        
         const existingSession = localStorage.getItem('staff_session');
         if (existingSession) {
             try {
                 const session = JSON.parse(existingSession);
                 if (session?.psp_code) {
-                    hasRedirected.current = true;
                     window.location.replace('/Dashboard');
                     return;
                 }
@@ -27,7 +24,12 @@ export default function PSPLogin() {
                 // Invalid session, ignore
             }
         }
+        setCheckComplete(true);
     }, []);
+    
+    if (!checkComplete) {
+        return null;
+    }
 
     const handleStep1 = async (e) => {
         e.preventDefault();
