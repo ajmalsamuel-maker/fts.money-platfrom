@@ -82,7 +82,18 @@ export default function MerchantVirtualTerminal() {
         if (!loading && !isAuthenticated) {
             navigate(createPageUrl('MerchantLogin'));
         }
-    }, [loading, isAuthenticated, navigate]);
+        
+        // Debug session data
+        if (user) {
+            console.log('🔍 Current merchant session:', {
+                merchant_id: user.merchant_id,
+                merchant_code: user.merchant_code,
+                merchant_name: user.merchant_name,
+                psp_code: user.psp_code,
+                email: user.email
+            });
+        }
+    }, [loading, isAuthenticated, navigate, user]);
 
     const { data: merchant, isLoading: merchantLoading } = useQuery({
         queryKey: ['merchant', user?.merchant_id],
@@ -241,14 +252,19 @@ export default function MerchantVirtualTerminal() {
         try {
             // Ensure PSP code is available
             if (!pspCode) {
-                console.error('❌ MerchantVT: No PSP code found', { 
-                    merchant: merchant, 
-                    user: user,
-                    merchant_exists: !!merchant,
-                    user_exists: !!user
+                console.error('❌ MerchantVT: No PSP code found - FULL DEBUG:', { 
+                    merchant_psp_code: merchant?.psp_code,
+                    merchant_merchant_code: merchant?.merchant_code,
+                    merchant_id: merchant?.merchant_id,
+                    user_psp_code: user?.psp_code,
+                    user_merchant_code: user?.merchant_code,
+                    user_merchant_id: user?.merchant_id,
+                    user_email: user?.email
                 });
-                throw new Error('Configuration error: PSP code not found. Please contact support.');
+                throw new Error(`Configuration error: Cannot find PSP code. Merchant code: ${user?.merchant_code || 'MISSING'}. Please logout and login again, or contact support.`);
             }
+            
+            console.log('✅ MerchantVT: Using PSP code:', pspCode);
 
             // Validate currency with ISO 4217
             const currencyValidation = validateCurrency(formData.currency);
