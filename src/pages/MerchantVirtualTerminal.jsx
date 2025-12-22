@@ -204,6 +204,14 @@ export default function MerchantVirtualTerminal() {
         // Get PSP code from merchant or session
         const pspCode = merchant?.psp_code || user?.psp_code;
         
+        console.log('🔍 MerchantVT: PSP code check:', {
+            merchant_psp_code: merchant?.psp_code,
+            user_psp_code: user?.psp_code,
+            final_psp_code: pspCode,
+            merchant_id: merchant?.merchant_id,
+            user_merchant_id: user?.merchant_id
+        });
+        
         let transactionStatus = 'approved';
         let responseCode = '00';
         let responseMessage = 'Approved';
@@ -213,7 +221,12 @@ export default function MerchantVirtualTerminal() {
         try {
             // Ensure PSP code is available
             if (!pspCode) {
-                console.error('❌ MerchantVT: No PSP code found', { merchant, user });
+                console.error('❌ MerchantVT: No PSP code found', { 
+                    merchant: merchant, 
+                    user: user,
+                    merchant_exists: !!merchant,
+                    user_exists: !!user
+                });
                 throw new Error('Configuration error: PSP code not found. Please contact support.');
             }
 
