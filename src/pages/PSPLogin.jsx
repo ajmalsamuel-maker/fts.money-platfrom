@@ -104,12 +104,11 @@ export default function PSPLogin() {
                     psp_code: pspCode.toUpperCase().trim(),
                     schema: data.session.schema
                 };
-                
+
+                console.log('✅ PSPLogin: Login successful, saving session and redirecting...');
                 localStorage.setItem('staff_session', JSON.stringify(sessionData));
-                
-                setTimeout(() => {
-                    window.location.href = '/Dashboard';
-                }, 100);
+                window.location.replace('/Dashboard');
+                return;
             } else {
                 setError(data.error || 'Login failed');
             }
