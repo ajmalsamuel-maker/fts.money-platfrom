@@ -9,19 +9,22 @@ export default function PSPLogin() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
-    // Redirect if already logged in
+    const hasRedirected = React.useRef(false);
+    
     React.useEffect(() => {
+        if (hasRedirected.current) return;
+        
         const existingSession = localStorage.getItem('staff_session');
         if (existingSession) {
             try {
                 const session = JSON.parse(existingSession);
                 if (session?.psp_code) {
+                    hasRedirected.current = true;
                     window.location.replace('/Dashboard');
                     return;
                 }
             } catch (err) {
-                // Invalid session, clear it
-                localStorage.clear();
+                // Invalid session, ignore
             }
         }
     }, []);

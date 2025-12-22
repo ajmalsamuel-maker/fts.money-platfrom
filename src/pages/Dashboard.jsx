@@ -56,7 +56,12 @@ export default function Dashboard() {
     const [userPspCode, setUserPspCode] = useState(null);
     const [isReady, setIsReady] = useState(false);
 
+    const hasInitialized = React.useRef(false);
+    
     React.useEffect(() => {
+        if (hasInitialized.current) return;
+        hasInitialized.current = true;
+        
         const sessionData = localStorage.getItem('staff_session');
         
         if (sessionData) {
