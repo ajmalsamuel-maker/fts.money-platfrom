@@ -20,13 +20,13 @@ export const PAYMENT_METHOD_LOGOS = {
     'apple_pay': 'https://upload.wikimedia.org/wikipedia/commons/b/b0/Apple_Pay_logo.svg',
     'google_pay': 'https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg',
     'paypal': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/color/paypal.svg',
-    'venmo': 'https://upload.wikimedia.org/wikipedia/commons/3/3d/Venmo_logo.svg',
+    'venmo': null, // Logo not available
     'cash_app': 'https://upload.wikimedia.org/wikipedia/commons/c/c5/Square_Cash_app_logo.svg',
     'square': 'https://upload.wikimedia.org/wikipedia/commons/c/c5/Square_Cash_app_logo.svg',
     
     // Bank Transfer Methods
     'ideal': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/color/ideal.svg',
-    'sofort': 'https://upload.wikimedia.org/wikipedia/commons/e/e6/Sofort_%C3%9Cberweisung_Logo.svg',
+    'sofort': null, // Logo not available
     'giropay': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/color/giropay.svg',
     'sepa': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/color/sepa.svg',
     'sepa_debit': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/color/sepa.svg',
@@ -52,15 +52,15 @@ export const PAYMENT_METHOD_LOGOS = {
     'crypto_currency': 'https://cryptologos.cc/logos/bitcoin-btc-logo.svg',
     
     // Buy Now Pay Later
-    'afterpay': 'https://upload.wikimedia.org/wikipedia/commons/b/bc/Afterpay-logo-black.svg',
+    'afterpay': null, // Logo not available
     'klarna': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/color/klarna.svg',
-    'sezzle': 'https://upload.wikimedia.org/wikipedia/commons/d/d6/Sezzle-Logo.svg',
+    'sezzle': null, // Logo not available
     
     // Other Methods
-    'bancontact': 'https://upload.wikimedia.org/wikipedia/commons/b/b8/Bancontact_logo.svg',
-    'multibanco': 'https://upload.wikimedia.org/wikipedia/commons/8/8c/Multibanco_logo.svg',
-    'p24': 'https://upload.wikimedia.org/wikipedia/commons/e/e5/Przelewy24_logo.svg',
-    'przelewy24': 'https://upload.wikimedia.org/wikipedia/commons/e/e5/Przelewy24_logo.svg',
+    'bancontact': null, // Logo not available
+    'multibanco': null, // Logo not available
+    'p24': null, // Logo not available
+    'przelewy24': null, // Logo not available
     'eps': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/color/eps.svg',
     
     // Debit Specific
