@@ -1,11 +1,4 @@
-import pg from 'npm:pg@8.11.3';
-
-const { Pool } = pg;
-
-const pool = new Pool({
-    connectionString: Deno.env.get("DATABASE_URL"),
-    ssl: { rejectUnauthorized: false }
-});
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
 
 // Public endpoint - no authentication required
 Deno.serve(async (req) => {
@@ -21,32 +14,31 @@ Deno.serve(async (req) => {
     }
 
     try {
+        const base44 = createClientFromRequest(req);
         const body = await req.json();
         const { action, email, password, user_id, new_password, merchant_code } = body;
 
         if (action === 'login') {
             console.log('Login attempt for:', email, 'with merchant code:', merchant_code);
             
-            // Query PostgreSQL for merchant user directly
-            const result = await pool.query(`
-                SELECT id, merchant_id, merchant_code, merchant_name, email, full_name, role, status, 
-                       temp_password, password_hash, must_change_password, two_factor_enabled, last_login, last_login_ip,
-                       permissions, allowed_terminals, phone
-                FROM merchant_users 
-                WHERE email = $1 AND merchant_code = $2 AND status = 'active'
-            `, [email, merchant_code]);
+            // Query Base44 entities for merchant user
+            const users = await base44.asServiceRole.entities.MerchantUser.filter({
+                email: email,
+                merchant_code: merchant_code,
+                status: 'active'
+            });
 
-            console.log('DB Query result:', result.rows.length, 'rows');
+            console.log('Query result:', users?.length || 0, 'users found');
 
-            if (!result.rows || result.rows.length === 0) {
-                console.log('User not found in database');
+            if (!users || users.length === 0) {
+                console.log('User not found');
                 return Response.json({ 
                     success: false, 
                     error: 'Invalid credentials'
                 }, { status: 401 });
             }
 
-            const user = result.rows[0];
+            const user = users[0];
             console.log('User found:', user.email);
 
             // Check password - try both temp_password and password_hash
@@ -68,10 +60,10 @@ Deno.serve(async (req) => {
                        'unknown';
 
             // Update last login with IP
-            await pool.query(
-                'UPDATE merchant_users SET last_login = NOW(), last_login_ip = $1 WHERE id = $2', 
-                [ip, user.id]
-            );
+            await base44.asServiceRole.entities.MerchantUser.update(user.id, {
+                last_login: new Date().toISOString(),
+                last_login_ip: ip
+            });
 
             // Create session token
             const session = {
@@ -98,14 +90,13 @@ Deno.serve(async (req) => {
         if (action === 'validate') {
             // Validate session by email and merchant_code
             const { email: session_email, merchant_code: session_merchant_code } = body;
-            const result = await pool.query(`
-                SELECT id, merchant_id, merchant_code, merchant_name, email, full_name, role, status,
-                       permissions, must_change_password
-                FROM merchant_users 
-                WHERE email = $1 AND merchant_code = $2 AND status = 'active'
-            `, [session_email || user_id, session_merchant_code]);
+            const users = await base44.asServiceRole.entities.MerchantUser.filter({
+                email: session_email,
+                merchant_code: session_merchant_code,
+                status: 'active'
+            });
 
-            if (!result.rows || result.rows.length === 0) {
+            if (!users || users.length === 0) {
                 return Response.json({ 
                     success: false, 
                     error: 'Session expired' 
@@ -114,17 +105,16 @@ Deno.serve(async (req) => {
 
             return Response.json({
                 success: true,
-                user: result.rows[0]
+                user: users[0]
             });
         }
 
         if (action === 'change_password') {
             // Update password and clear must_change_password flag
-            await pool.query(`
-                UPDATE merchant_users 
-                SET temp_password = $1, must_change_password = false 
-                WHERE id = $2
-            `, [new_password, user_id]);
+            await base44.asServiceRole.entities.MerchantUser.update(user_id, {
+                temp_password: new_password,
+                must_change_password: false
+            });
 
             return Response.json({ success: true });
         }
