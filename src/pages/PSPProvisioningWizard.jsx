@@ -1020,57 +1020,7 @@ export default function PSPProvisioningWizard() {
                                 </div>
                             )}
 
-                            {step === 5 && (
-                                <div>
-                                    <h2 className="text-xl font-semibold mb-4">Platform Services</h2>
-                                    <div className="space-y-6">
-                                        <div className="grid grid-cols-2 gap-6">
-                                            <div>
-                                                <label className="block text-sm font-medium mb-1">Default Currency (ISO 4217)</label>
-                                                <select
-                                                    value={formData.currency}
-                                                    onChange={(e) => setFormData({...formData, currency: e.target.value})}
-                                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg"
-                                                >
-                                                    {ISO4217_CURRENCIES.map(c => <option key={c.code} value={c.code}>{c.code} - {c.name}</option>)}
-                                                </select>
-                                            </div>
-                                            <div>
-                                                <label className="block text-sm font-medium mb-1">Timezone</label>
-                                                <select
-                                                    value={formData.timezone}
-                                                    onChange={(e) => setFormData({...formData, timezone: e.target.value})}
-                                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg"
-                                                >
-                                                    {TIMEZONES.map(tz => <option key={tz} value={tz}>{tz}</option>)}
-                                                </select>
-                                            </div>
-                                            <div>
-                                                <label className="block text-sm font-medium mb-1">Operating Region</label>
-                                                <select
-                                                    value={formData.country}
-                                                    onChange={(e) => setFormData({...formData, country: e.target.value})}
-                                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg"
-                                                >
-                                                    <option value="">Select country</option>
-                                                    {COUNTRIES.map(c => <option key={c.code} value={c.code}>{c.name}</option>)}
-                                                </select>
-                                            </div>
-                                            <div>
-                                                <label className="block text-sm font-medium mb-1">Language</label>
-                                                <select
-                                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg"
-                                                >
-                                                    <option value="en">English</option>
-                                                    <option value="zh">Chinese</option>
-                                                    <option value="es">Spanish</option>
-                                                    <option value="fr">French</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
+
 
                             {step === 9 && (
                                 <div>
