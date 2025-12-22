@@ -53,151 +53,161 @@ import {
     FileText as InvoiceIcon
 } from 'lucide-react';
 
-const menuItems = [
-            {
-                group: 'overview',
-                icon: LayoutDashboard,
-                items: [
-                    { icon: LayoutDashboard, label: 'dashboard', path: 'Dashboard', permission: 'VIEW_DASHBOARD' },
-                    { icon: BarChart3, label: 'analytics', path: 'Analytics', permission: 'VIEW_ANALYTICS' },
-                    { icon: Zap, label: 'realTimeMonitor', path: 'RealTimeMonitor', permission: 'VIEW_DASHBOARD' },
-                ]
-            },
-            {
-                group: 'transactions',
-                icon: ArrowLeftRight,
-                items: [
-                    { icon: ArrowLeftRight, label: 'allTransactions', path: 'Transactions', permission: 'VIEW_TRANSACTIONS' },
-                    { icon: Coins, label: 'cryptoTransactions', path: 'CryptoTransactions', permission: 'VIEW_TRANSACTIONS' },
-                    { icon: DollarSign, label: 'refunds', path: 'Refunds', permission: 'VIEW_TRANSACTIONS' },
-                    { icon: Receipt, label: 'settlements', path: 'Settlements', permission: 'VIEW_SETTLEMENTS' },
-                    { icon: Repeat, label: 'chargebacks', path: 'Chargebacks', permission: 'VIEW_CHARGEBACKS' },
-                    { icon: AlertTriangle, label: 'disputes', path: 'Disputes', permission: 'VIEW_DISPUTES' },
-                ]
-            },
+// Map icon strings to actual icon components
+const iconMap = {
+    LayoutDashboard, ArrowLeftRight, Store, CreditCard, Wallet, FileText,
+    Settings, Users, Shield, BarChart3, Terminal, AlertTriangle, Repeat,
+    Receipt, Globe, Key, HelpCircle, LogOut, Landmark, Smartphone, Brain,
+    Zap, CheckSquare, Palette, UserCog, Monitor, DollarSign, Percent,
+    Building, ArrowUpDown, Database, Headphones, Scale, Building2,
+    FileCheck, Coins, TrendingUp, Tag, Activity, InvoiceIcon
+};
 
-            {
-                group: 'merchants',
-                icon: Store,
-                items: [
-                    { icon: Store, label: 'allMerchants', path: 'Merchants', permission: 'VIEW_MERCHANTS' },
-                    { icon: BarChart3, label: 'merchantAnalytics', path: 'MerchantAnalytics', permission: 'VIEW_MERCHANTS' },
-                    { icon: Users, label: 'merchantUsers', path: 'MerchantUsers', permission: 'VIEW_USERS' },
-                    { icon: CreditCard, label: 'merchantMIDs', path: 'MerchantMIDs', permission: 'VIEW_MERCHANTS' },
-                    { icon: Building2, label: 'subMerchants', path: 'SubMerchants', permission: 'VIEW_MERCHANTS' },
-                    { icon: CheckSquare, label: 'approvals', path: 'Approvals', permission: 'APPROVE_ONBOARDING' },
-                    { icon: Palette, label: 'portalBuilder', path: 'MerchantPortalBuilder', permission: 'VIEW_SETTINGS' },
-                ]
-            },
-            {
-                group: 'connections',
-                icon: Globe,
-                items: [
-                    { icon: Store, label: 'merchantOnboarding', path: 'MerchantOnboarding', permission: 'VIEW_ONBOARDING' },
-                    { icon: Globe, label: 'selfServicePortal', path: 'MerchantSelfOnboarding', permission: 'VIEW_ONBOARDING' },
-                    { icon: CreditCard, label: 'paymentGateways', path: 'PaymentGateways', permission: 'VIEW_SETTINGS' },
-                    { icon: Landmark, label: 'acquirersAndBanks', path: 'AcquirerOnboarding', permission: 'VIEW_ONBOARDING' },
-                    { icon: Smartphone, label: 'alternativePayments', path: 'APMOnboarding', permission: 'VIEW_ONBOARDING' },
-                    { icon: TrendingUp, label: 'cryptoExchanges', path: 'ExchangeIntegrations', permission: 'VIEW_SETTINGS' },
-                    { icon: Coins, label: 'blockchainNodes', path: 'BlockchainConnectors', permission: 'VIEW_SETTINGS' },
-                ]
-            },
-            {
-                group: 'orchestration',
-                icon: Zap,
-                items: [
-                    { icon: Brain, label: 'aiSmartRouting', path: 'SmartOrchestration', permission: 'VIEW_ROUTING' },
-                    { icon: Zap, label: 'routingRules', path: 'PaymentOrchestration', permission: 'VIEW_ORCHESTRATION' },
-                    { icon: ArrowUpDown, label: 'midRouting', path: 'MIDRouting', permission: 'VIEW_BALANCES' },
-                    { icon: Landmark, label: 'bankMIDs', path: 'BankMIDs', permission: 'VIEW_BALANCES' },
-                ]
-            },
-            {
-                group: 'terminals',
-                icon: Terminal,
-                items: [
-                    { icon: Terminal, label: 'physicalTerminals', path: 'Terminals', permission: 'VIEW_TERMINALS' },
-                    { icon: Monitor, label: 'virtualTerminals', path: 'VirtualTerminals', permission: 'VIEW_TERMINALS' },
-                ]
-            },
-            {
-                group: 'finance',
-                icon: Wallet,
-                items: [
-                    { icon: Wallet, label: 'balances', path: 'Balances', permission: 'VIEW_BALANCES' },
-                    { icon: Zap, label: 'payoutOrchestration', path: 'PayoutOrchestration', permission: 'VIEW_PAYOUTS' },
-                    { icon: CreditCard, label: 'fiatPayouts', path: 'Payouts', permission: 'VIEW_PAYOUTS' },
-                    { icon: Coins, label: 'cryptoPayouts', path: 'CryptoPayouts', permission: 'VIEW_PAYOUTS' },
-                    { icon: Zap, label: 'instantPayments', path: 'InstantPayments', permission: 'VIEW_PAYOUTS' },
-                    { icon: Percent, label: 'payoutPricing', path: 'MerchantPayoutPricing', permission: 'VIEW_BALANCES' },
-                    { icon: ArrowUpDown, label: 'reconciliation', path: 'Reconciliation', permission: 'VIEW_BALANCES' },
-                    { icon: FileText, label: 'reports', path: 'Reports', permission: 'VIEW_REPORTS' },
-                    { icon: TrendingUp, label: 'buyRates', path: 'BuyRates', permission: 'VIEW_BALANCES' },
-                    { icon: DollarSign, label: 'merchantPricingEngine', path: 'PSPMerchantPricing', permission: 'VIEW_BALANCES' },
-                    { icon: Percent, label: 'merchantPricing', path: 'MerchantPricing', permission: 'VIEW_BALANCES' },
-                    { icon: DollarSign, label: 'midPricingConfig', path: 'MIDPricingConfiguration', permission: 'VIEW_BALANCES' },
-                    { icon: Tag, label: 'feeTypeManagement', path: 'FeeTypeManagement', permission: 'VIEW_BALANCES' },
-                    { icon: InvoiceIcon, label: 'invoices', path: 'Invoices', permission: 'VIEW_BALANCES' },
-                    { icon: Activity, label: 'usageMetering', path: 'UsageMeteringSystem', permission: 'VIEW_BALANCES' },
-                    { icon: FileText, label: 'invoiceGenerator', path: 'MerchantInvoiceGenerator', permission: 'VIEW_BALANCES' },
-                ]
-            },
-            {
-                group: 'wholesale',
-                icon: Building2,
-                items: [
-                    { icon: Building2, label: 'wholesaleBrowse', path: 'PSPWholesaleBrowse', permission: 'VIEW_DASHBOARD' },
-                    { icon: Store, label: 'myOfferings', path: 'MyWholesaleOfferings', permission: 'VIEW_DASHBOARD' },
-                ]
-            },
-            {
-                group: 'riskCompliance',
-                icon: Shield,
-                items: [
-                    { icon: Shield, label: 'fraudPrevention', path: 'FraudPrevention', permission: 'VIEW_FRAUD_PREVENTION' },
-                    { icon: AlertTriangle, label: 'fraudMonitoring', path: 'FraudMonitoring', permission: 'VIEW_FRAUD_PREVENTION' },
-                    { icon: Shield, label: '3DSecure', path: 'ThreeDSecure', permission: 'VIEW_FRAUD_PREVENTION' },
-                    { icon: CreditCard, label: 'networkTokenization', path: 'NetworkTokenization', permission: 'VIEW_FRAUD_PREVENTION' },
-                    { icon: Repeat, label: 'accountUpdater', path: 'AccountUpdater', permission: 'VIEW_FRAUD_PREVENTION' },
-                    { icon: Repeat, label: 'smartRetry', path: 'SmartRetry', permission: 'VIEW_FRAUD_PREVENTION' },
-                    { icon: Scale, label: 'complianceDashboard', path: 'Compliance', permission: 'VIEW_COMPLIANCE' },
-                    { icon: Shield, label: 'pciCompliance', path: 'PCICompliance', permission: 'VIEW_COMPLIANCE' },
-                    { icon: Shield, label: 'fatfAML', path: 'FATFCompliance', permission: 'VIEW_COMPLIANCE' },
-                ]
-            },
-            {
-                group: 'developers',
-                icon: Key,
-                items: [
-                    { icon: Key, label: 'apiKeys', path: 'APIKeys', permission: 'VIEW_SETTINGS' },
-                    { icon: Zap, label: 'webhooks', path: 'Webhooks', permission: 'VIEW_SETTINGS' },
-                    { icon: FileText, label: 'apiLogs', path: 'APILogs', permission: 'VIEW_SETTINGS' },
-                    { icon: Zap, label: 'apiGateway', path: 'APIGateway', permission: 'VIEW_SETTINGS' },
-                    { icon: Monitor, label: 'checkoutComponents', path: 'CheckoutComponents', permission: 'VIEW_SETTINGS' },
-                    { icon: FileText, label: 'documentation', path: 'Documentation', permission: 'VIEW_DASHBOARD' },
-                ]
-            },
-            {
-                group: 'system',
-                icon: Settings,
-                items: [
-                    { icon: Shield, label: 'securityPKI', path: 'SecurityManagement', permission: 'VIEW_SETTINGS' },
-                    { icon: UserCog, label: 'userManagement', path: 'UserManagement', permission: 'VIEW_USERS' },
-                    { icon: Shield, label: 'auditLogs', path: 'AuditLogs', permission: 'VIEW_USERS' },
-                    { icon: Palette, label: 'appearance', path: 'Appearance', permission: 'VIEW_APPEARANCE' },
-                    { icon: FileCheck, label: 'isoStandards', path: 'ISOConfiguration', permission: 'VIEW_SETTINGS' },
-                    { icon: Database, label: 'databaseTools', path: 'DatabaseSetup', permission: 'VIEW_SETTINGS' },
-                    { icon: Settings, label: 'generalSettings', path: 'Settings', permission: 'VIEW_SETTINGS' },
-                ]
-            },
-            {
-                group: 'resources',
-                icon: HelpCircle,
-                items: [
-                    { icon: Headphones, label: 'supportCenter', path: 'Support', permission: 'VIEW_DASHBOARD' },
-                ]
-            },
-        ];
+// Default fallback menu (for PSPs without enabled_features defined)
+const defaultMenuItems = [
+    {
+        group: 'overview',
+        icon: LayoutDashboard,
+        items: [
+            { icon: LayoutDashboard, label: 'dashboard', path: 'Dashboard', permission: 'VIEW_DASHBOARD' },
+            { icon: BarChart3, label: 'analytics', path: 'Analytics', permission: 'VIEW_ANALYTICS' },
+            { icon: Zap, label: 'realTimeMonitor', path: 'RealTimeMonitor', permission: 'VIEW_DASHBOARD' },
+        ]
+    },
+    {
+        group: 'transactions',
+        icon: ArrowLeftRight,
+        items: [
+            { icon: ArrowLeftRight, label: 'allTransactions', path: 'Transactions', permission: 'VIEW_TRANSACTIONS' },
+            { icon: Coins, label: 'cryptoTransactions', path: 'CryptoTransactions', permission: 'VIEW_TRANSACTIONS' },
+            { icon: DollarSign, label: 'refunds', path: 'Refunds', permission: 'VIEW_TRANSACTIONS' },
+            { icon: Receipt, label: 'settlements', path: 'Settlements', permission: 'VIEW_SETTLEMENTS' },
+            { icon: Repeat, label: 'chargebacks', path: 'Chargebacks', permission: 'VIEW_CHARGEBACKS' },
+            { icon: AlertTriangle, label: 'disputes', path: 'Disputes', permission: 'VIEW_DISPUTES' },
+        ]
+    },
+    {
+        group: 'merchants',
+        icon: Store,
+        items: [
+            { icon: Store, label: 'allMerchants', path: 'Merchants', permission: 'VIEW_MERCHANTS' },
+            { icon: BarChart3, label: 'merchantAnalytics', path: 'MerchantAnalytics', permission: 'VIEW_MERCHANTS' },
+            { icon: Users, label: 'merchantUsers', path: 'MerchantUsers', permission: 'VIEW_USERS' },
+            { icon: CreditCard, label: 'merchantMIDs', path: 'MerchantMIDs', permission: 'VIEW_MERCHANTS' },
+            { icon: Building2, label: 'subMerchants', path: 'SubMerchants', permission: 'VIEW_MERCHANTS' },
+            { icon: CheckSquare, label: 'approvals', path: 'Approvals', permission: 'APPROVE_ONBOARDING' },
+            { icon: Palette, label: 'portalBuilder', path: 'MerchantPortalBuilder', permission: 'VIEW_SETTINGS' },
+        ]
+    },
+    {
+        group: 'connections',
+        icon: Globe,
+        items: [
+            { icon: Store, label: 'merchantOnboarding', path: 'MerchantOnboarding', permission: 'VIEW_ONBOARDING' },
+            { icon: Globe, label: 'selfServicePortal', path: 'MerchantSelfOnboarding', permission: 'VIEW_ONBOARDING' },
+            { icon: CreditCard, label: 'paymentGateways', path: 'PaymentGateways', permission: 'VIEW_SETTINGS' },
+            { icon: Landmark, label: 'acquirersAndBanks', path: 'AcquirerOnboarding', permission: 'VIEW_ONBOARDING' },
+            { icon: Smartphone, label: 'alternativePayments', path: 'APMOnboarding', permission: 'VIEW_ONBOARDING' },
+            { icon: TrendingUp, label: 'cryptoExchanges', path: 'ExchangeIntegrations', permission: 'VIEW_SETTINGS' },
+            { icon: Coins, label: 'blockchainNodes', path: 'BlockchainConnectors', permission: 'VIEW_SETTINGS' },
+        ]
+    },
+    {
+        group: 'orchestration',
+        icon: Zap,
+        items: [
+            { icon: Brain, label: 'aiSmartRouting', path: 'SmartOrchestration', permission: 'VIEW_ROUTING' },
+            { icon: Zap, label: 'routingRules', path: 'PaymentOrchestration', permission: 'VIEW_ORCHESTRATION' },
+            { icon: ArrowUpDown, label: 'midRouting', path: 'MIDRouting', permission: 'VIEW_BALANCES' },
+            { icon: Landmark, label: 'bankMIDs', path: 'BankMIDs', permission: 'VIEW_BALANCES' },
+        ]
+    },
+    {
+        group: 'terminals',
+        icon: Terminal,
+        items: [
+            { icon: Terminal, label: 'physicalTerminals', path: 'Terminals', permission: 'VIEW_TERMINALS' },
+            { icon: Monitor, label: 'virtualTerminals', path: 'VirtualTerminals', permission: 'VIEW_TERMINALS' },
+        ]
+    },
+    {
+        group: 'finance',
+        icon: Wallet,
+        items: [
+            { icon: Wallet, label: 'balances', path: 'Balances', permission: 'VIEW_BALANCES' },
+            { icon: Zap, label: 'payoutOrchestration', path: 'PayoutOrchestration', permission: 'VIEW_PAYOUTS' },
+            { icon: CreditCard, label: 'fiatPayouts', path: 'Payouts', permission: 'VIEW_PAYOUTS' },
+            { icon: Coins, label: 'cryptoPayouts', path: 'CryptoPayouts', permission: 'VIEW_PAYOUTS' },
+            { icon: Zap, label: 'instantPayments', path: 'InstantPayments', permission: 'VIEW_PAYOUTS' },
+            { icon: Percent, label: 'payoutPricing', path: 'MerchantPayoutPricing', permission: 'VIEW_BALANCES' },
+            { icon: ArrowUpDown, label: 'reconciliation', path: 'Reconciliation', permission: 'VIEW_BALANCES' },
+            { icon: FileText, label: 'reports', path: 'Reports', permission: 'VIEW_REPORTS' },
+            { icon: TrendingUp, label: 'buyRates', path: 'BuyRates', permission: 'VIEW_BALANCES' },
+            { icon: DollarSign, label: 'merchantPricingEngine', path: 'PSPMerchantPricing', permission: 'VIEW_BALANCES' },
+            { icon: Percent, label: 'merchantPricing', path: 'MerchantPricing', permission: 'VIEW_BALANCES' },
+            { icon: DollarSign, label: 'midPricingConfig', path: 'MIDPricingConfiguration', permission: 'VIEW_BALANCES' },
+            { icon: Tag, label: 'feeTypeManagement', path: 'FeeTypeManagement', permission: 'VIEW_BALANCES' },
+            { icon: InvoiceIcon, label: 'invoices', path: 'Invoices', permission: 'VIEW_BALANCES' },
+            { icon: Activity, label: 'usageMetering', path: 'UsageMeteringSystem', permission: 'VIEW_BALANCES' },
+            { icon: FileText, label: 'invoiceGenerator', path: 'MerchantInvoiceGenerator', permission: 'VIEW_BALANCES' },
+        ]
+    },
+    {
+        group: 'wholesale',
+        icon: Building2,
+        items: [
+            { icon: Building2, label: 'wholesaleBrowse', path: 'PSPWholesaleBrowse', permission: 'VIEW_DASHBOARD' },
+            { icon: Store, label: 'myOfferings', path: 'MyWholesaleOfferings', permission: 'VIEW_DASHBOARD' },
+        ]
+    },
+    {
+        group: 'riskCompliance',
+        icon: Shield,
+        items: [
+            { icon: Shield, label: 'fraudPrevention', path: 'FraudPrevention', permission: 'VIEW_FRAUD_PREVENTION' },
+            { icon: AlertTriangle, label: 'fraudMonitoring', path: 'FraudMonitoring', permission: 'VIEW_FRAUD_PREVENTION' },
+            { icon: Shield, label: '3DSecure', path: 'ThreeDSecure', permission: 'VIEW_FRAUD_PREVENTION' },
+            { icon: CreditCard, label: 'networkTokenization', path: 'NetworkTokenization', permission: 'VIEW_FRAUD_PREVENTION' },
+            { icon: Repeat, label: 'accountUpdater', path: 'AccountUpdater', permission: 'VIEW_FRAUD_PREVENTION' },
+            { icon: Repeat, label: 'smartRetry', path: 'SmartRetry', permission: 'VIEW_FRAUD_PREVENTION' },
+            { icon: Scale, label: 'complianceDashboard', path: 'Compliance', permission: 'VIEW_COMPLIANCE' },
+            { icon: Shield, label: 'pciCompliance', path: 'PCICompliance', permission: 'VIEW_COMPLIANCE' },
+            { icon: Shield, label: 'fatfAML', path: 'FATFCompliance', permission: 'VIEW_COMPLIANCE' },
+        ]
+    },
+    {
+        group: 'developers',
+        icon: Key,
+        items: [
+            { icon: Key, label: 'apiKeys', path: 'APIKeys', permission: 'VIEW_SETTINGS' },
+            { icon: Zap, label: 'webhooks', path: 'Webhooks', permission: 'VIEW_SETTINGS' },
+            { icon: FileText, label: 'apiLogs', path: 'APILogs', permission: 'VIEW_SETTINGS' },
+            { icon: Zap, label: 'apiGateway', path: 'APIGateway', permission: 'VIEW_SETTINGS' },
+            { icon: Monitor, label: 'checkoutComponents', path: 'CheckoutComponents', permission: 'VIEW_SETTINGS' },
+            { icon: FileText, label: 'documentation', path: 'Documentation', permission: 'VIEW_DASHBOARD' },
+        ]
+    },
+    {
+        group: 'system',
+        icon: Settings,
+        items: [
+            { icon: Shield, label: 'securityPKI', path: 'SecurityManagement', permission: 'VIEW_SETTINGS' },
+            { icon: UserCog, label: 'userManagement', path: 'UserManagement', permission: 'VIEW_USERS' },
+            { icon: Shield, label: 'auditLogs', path: 'AuditLogs', permission: 'VIEW_USERS' },
+            { icon: Palette, label: 'appearance', path: 'Appearance', permission: 'VIEW_APPEARANCE' },
+            { icon: FileCheck, label: 'isoStandards', path: 'ISOConfiguration', permission: 'VIEW_SETTINGS' },
+            { icon: Database, label: 'databaseTools', path: 'DatabaseSetup', permission: 'VIEW_SETTINGS' },
+            { icon: Settings, label: 'generalSettings', path: 'Settings', permission: 'VIEW_SETTINGS' },
+        ]
+    },
+    {
+        group: 'resources',
+        icon: HelpCircle,
+        items: [
+            { icon: Headphones, label: 'supportCenter', path: 'Support', permission: 'VIEW_DASHBOARD' },
+        ]
+    },
+];
 
 export default function Sidebar({ collapsed, onToggle, currentPage }) {
     const [user, setUser] = useState(null);
