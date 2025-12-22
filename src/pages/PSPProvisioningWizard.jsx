@@ -724,162 +724,228 @@ export default function PSPProvisioningWizard() {
 
 
                             {step === 5 && (
-                                <div>
-                                    <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                                        <DollarSign className="h-5 w-5 text-blue-600" />
-                                        Transaction Fee Structure
-                                    </h2>
-                                    
-                                    <Alert className="mb-4 bg-slate-50 border-slate-200">
-                                        <Info className="h-4 w-4 text-slate-600" />
-                                        <AlertDescription className="text-sm text-slate-700">
-                                            Configure detailed fee structure for different payment types. Percentage fees + fixed fees apply per transaction.
-                                        </AlertDescription>
-                                    </Alert>
-                                    
-                                    <div className="space-y-6">
-                                        <div>
-                                            <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
-                                                <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-sm">Card Payments</span>
-                                            </h3>
-                                            <div className="grid grid-cols-2 gap-4">
-                                                <div>
-                                                    <label className="block text-sm font-medium mb-1">Domestic Card %</label>
-                                                    <input
-                                                        type="number"
-                                                        step="0.01"
-                                                        value={formData.transaction_fees.card_domestic_percentage}
-                                                        onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, card_domestic_percentage: parseFloat(e.target.value)}})}
-                                                        className="w-full px-3 py-2 border border-slate-300 rounded-lg"
-                                                    />
+                                <div className="space-y-6 max-h-[600px] overflow-y-auto pr-2">
+                                    <div className="bg-white border border-slate-200 rounded-lg p-6">
+                                        <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                                            <DollarSign className="h-5 w-5 text-blue-600" />
+                                            Base Fee Structure
+                                        </h2>
+                                        <p className="text-sm text-slate-600 mb-4">Default transaction fees applied to all merchants in this PSP instance</p>
+                                        
+                                        <div className="space-y-6">
+                                            <div>
+                                                <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
+                                                    <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-sm">Card Payments</span>
+                                                </h3>
+                                                <div className="grid grid-cols-2 gap-4">
+                                                    <div>
+                                                        <label className="block text-sm font-medium mb-1">Domestic Card %</label>
+                                                        <input
+                                                            type="number"
+                                                            step="0.01"
+                                                            value={formData.transaction_fees.card_domestic_percentage}
+                                                            onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, card_domestic_percentage: parseFloat(e.target.value)}})}
+                                                            className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium mb-1">Domestic Card Fixed ($)</label>
+                                                        <input
+                                                            type="number"
+                                                            step="0.01"
+                                                            value={formData.transaction_fees.card_domestic_fixed}
+                                                            onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, card_domestic_fixed: parseFloat(e.target.value)}})}
+                                                            className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium mb-1">International Card %</label>
+                                                        <input
+                                                            type="number"
+                                                            step="0.01"
+                                                            value={formData.transaction_fees.card_international_percentage}
+                                                            onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, card_international_percentage: parseFloat(e.target.value)}})}
+                                                            className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium mb-1">International Card Fixed ($)</label>
+                                                        <input
+                                                            type="number"
+                                                            step="0.01"
+                                                            value={formData.transaction_fees.card_international_fixed}
+                                                            onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, card_international_fixed: parseFloat(e.target.value)}})}
+                                                            className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                                                        />
+                                                    </div>
                                                 </div>
-                                                <div>
-                                                    <label className="block text-sm font-medium mb-1">Domestic Card Fixed ($)</label>
-                                                    <input
-                                                        type="number"
-                                                        step="0.01"
-                                                        value={formData.transaction_fees.card_domestic_fixed}
-                                                        onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, card_domestic_fixed: parseFloat(e.target.value)}})}
-                                                        className="w-full px-3 py-2 border border-slate-300 rounded-lg"
-                                                    />
+                                            </div>
+
+                                            <div>
+                                                <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
+                                                    <span className="bg-emerald-100 text-emerald-700 px-2 py-1 rounded text-sm">Bank Transfers</span>
+                                                </h3>
+                                                <div className="grid grid-cols-2 gap-4">
+                                                    <div>
+                                                        <label className="block text-sm font-medium mb-1">ACH/SEPA %</label>
+                                                        <input
+                                                            type="number"
+                                                            step="0.01"
+                                                            value={formData.transaction_fees.ach_percentage}
+                                                            onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, ach_percentage: parseFloat(e.target.value)}})}
+                                                            className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium mb-1">ACH/SEPA Fixed ($)</label>
+                                                        <input
+                                                            type="number"
+                                                            step="0.01"
+                                                            value={formData.transaction_fees.ach_fixed}
+                                                            onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, ach_fixed: parseFloat(e.target.value)}})}
+                                                            className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium mb-1">Wire Transfer %</label>
+                                                        <input
+                                                            type="number"
+                                                            step="0.01"
+                                                            value={formData.transaction_fees.wire_percentage}
+                                                            onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, wire_percentage: parseFloat(e.target.value)}})}
+                                                            className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium mb-1">Wire Transfer Fixed ($)</label>
+                                                        <input
+                                                            type="number"
+                                                            step="0.01"
+                                                            value={formData.transaction_fees.wire_fixed}
+                                                            onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, wire_fixed: parseFloat(e.target.value)}})}
+                                                            className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                                                        />
+                                                    </div>
                                                 </div>
-                                                <div>
-                                                    <label className="block text-sm font-medium mb-1">International Card %</label>
-                                                    <input
-                                                        type="number"
-                                                        step="0.01"
-                                                        value={formData.transaction_fees.card_international_percentage}
-                                                        onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, card_international_percentage: parseFloat(e.target.value)}})}
-                                                        className="w-full px-3 py-2 border border-slate-300 rounded-lg"
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <label className="block text-sm font-medium mb-1">International Card Fixed ($)</label>
-                                                    <input
-                                                        type="number"
-                                                        step="0.01"
-                                                        value={formData.transaction_fees.card_international_fixed}
-                                                        onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, card_international_fixed: parseFloat(e.target.value)}})}
-                                                        className="w-full px-3 py-2 border border-slate-300 rounded-lg"
-                                                    />
+                                            </div>
+
+                                            <div>
+                                                <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
+                                                    <span className="bg-purple-100 text-purple-700 px-2 py-1 rounded text-sm">Digital Wallets & Crypto</span>
+                                                </h3>
+                                                <div className="grid grid-cols-2 gap-4">
+                                                    <div>
+                                                        <label className="block text-sm font-medium mb-1">Digital Wallet %</label>
+                                                        <input
+                                                            type="number"
+                                                            step="0.01"
+                                                            value={formData.transaction_fees.wallet_percentage}
+                                                            onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, wallet_percentage: parseFloat(e.target.value)}})}
+                                                            className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium mb-1">Digital Wallet Fixed ($)</label>
+                                                        <input
+                                                            type="number"
+                                                            step="0.01"
+                                                            value={formData.transaction_fees.wallet_fixed}
+                                                            onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, wallet_fixed: parseFloat(e.target.value)}})}
+                                                            className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium mb-1">Cryptocurrency %</label>
+                                                        <input
+                                                            type="number"
+                                                            step="0.01"
+                                                            value={formData.transaction_fees.crypto_percentage}
+                                                            onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, crypto_percentage: parseFloat(e.target.value)}})}
+                                                            className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium mb-1">Cryptocurrency Fixed ($)</label>
+                                                        <input
+                                                            type="number"
+                                                            step="0.01"
+                                                            value={formData.transaction_fees.crypto_fixed}
+                                                            onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, crypto_fixed: parseFloat(e.target.value)}})}
+                                                            className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                                                        />
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
+                                    </div>
 
-                                        <div>
-                                            <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
-                                                <span className="bg-emerald-100 text-emerald-700 px-2 py-1 rounded text-sm">Bank Transfers</span>
-                                            </h3>
-                                            <div className="grid grid-cols-2 gap-4">
-                                                <div>
-                                                    <label className="block text-sm font-medium mb-1">ACH/SEPA %</label>
-                                                    <input
-                                                        type="number"
-                                                        step="0.01"
-                                                        value={formData.transaction_fees.ach_percentage}
-                                                        onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, ach_percentage: parseFloat(e.target.value)}})}
-                                                        className="w-full px-3 py-2 border border-slate-300 rounded-lg"
-                                                    />
+                                    <div className="bg-white border border-slate-200 rounded-lg p-6">
+                                        <h3 className="font-semibold text-slate-900 mb-3">Volume-Based Fee Tiers</h3>
+                                        <p className="text-sm text-slate-600 mb-4">Automatic fee reductions based on merchant transaction volume</p>
+                                        <div className="space-y-3">
+                                            {[
+                                                { min: 0, max: 100000, discount: 0, label: 'Base Tier (Standard rates)' },
+                                                { min: 100000, max: 1000000, discount: 0.2, label: 'Volume Tier 1 (-0.2% discount)' },
+                                                { min: 1000000, max: null, discount: 0.5, label: 'Volume Tier 2 (-0.5% discount)' }
+                                            ].map((tier, idx) => (
+                                                <div key={idx} className="flex items-center justify-between p-4 bg-slate-50 border border-slate-200 rounded-lg">
+                                                    <div>
+                                                        <p className="font-medium text-sm">${(tier.min / 1000).toFixed(0)}k - {tier.max ? `$${(tier.max / 1000).toFixed(0)}k` : '∞'} monthly volume</p>
+                                                        <p className="text-xs text-slate-600">{tier.label}</p>
+                                                    </div>
+                                                    <span className="text-sm font-medium text-slate-700">{tier.discount}% discount</span>
                                                 </div>
-                                                <div>
-                                                    <label className="block text-sm font-medium mb-1">ACH/SEPA Fixed ($)</label>
-                                                    <input
-                                                        type="number"
-                                                        step="0.01"
-                                                        value={formData.transaction_fees.ach_fixed}
-                                                        onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, ach_fixed: parseFloat(e.target.value)}})}
-                                                        className="w-full px-3 py-2 border border-slate-300 rounded-lg"
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <label className="block text-sm font-medium mb-1">Wire Transfer %</label>
-                                                    <input
-                                                        type="number"
-                                                        step="0.01"
-                                                        value={formData.transaction_fees.wire_percentage}
-                                                        onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, wire_percentage: parseFloat(e.target.value)}})}
-                                                        className="w-full px-3 py-2 border border-slate-300 rounded-lg"
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <label className="block text-sm font-medium mb-1">Wire Transfer Fixed ($)</label>
-                                                    <input
-                                                        type="number"
-                                                        step="0.01"
-                                                        value={formData.transaction_fees.wire_fixed}
-                                                        onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, wire_fixed: parseFloat(e.target.value)}})}
-                                                        className="w-full px-3 py-2 border border-slate-300 rounded-lg"
-                                                    />
-                                                </div>
-                                            </div>
+                                            ))}
                                         </div>
+                                    </div>
 
-                                        <div>
-                                            <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
-                                                <span className="bg-purple-100 text-purple-700 px-2 py-1 rounded text-sm">Digital Wallets & Crypto</span>
-                                            </h3>
-                                            <div className="grid grid-cols-2 gap-4">
-                                                <div>
-                                                    <label className="block text-sm font-medium mb-1">Digital Wallet %</label>
-                                                    <input
-                                                        type="number"
-                                                        step="0.01"
-                                                        value={formData.transaction_fees.wallet_percentage}
-                                                        onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, wallet_percentage: parseFloat(e.target.value)}})}
-                                                        className="w-full px-3 py-2 border border-slate-300 rounded-lg"
-                                                    />
+                                    <div className="bg-white border border-slate-200 rounded-lg p-6">
+                                        <h3 className="font-semibold text-slate-900 mb-3">Currency-Specific Fees</h3>
+                                        <p className="text-sm text-slate-600 mb-4">Override base fees for specific currencies</p>
+                                        <div className="space-y-4">
+                                            {['USD', 'EUR', 'GBP', 'SGD', 'HKD'].map((currency) => (
+                                                <div key={currency} className="grid grid-cols-3 gap-4 p-4 bg-slate-50 border border-slate-200 rounded-lg">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="font-mono font-semibold">{currency}</span>
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-xs mb-1">Percentage (%)</label>
+                                                        <input type="number" step="0.01" placeholder="2.9" className="w-full px-2 py-1 text-sm border border-slate-300 rounded" />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-xs mb-1">Fixed Fee</label>
+                                                        <input type="number" step="0.01" placeholder="0.30" className="w-full px-2 py-1 text-sm border border-slate-300 rounded" />
+                                                    </div>
                                                 </div>
-                                                <div>
-                                                    <label className="block text-sm font-medium mb-1">Digital Wallet Fixed ($)</label>
-                                                    <input
-                                                        type="number"
-                                                        step="0.01"
-                                                        value={formData.transaction_fees.wallet_fixed}
-                                                        onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, wallet_fixed: parseFloat(e.target.value)}})}
-                                                        className="w-full px-3 py-2 border border-slate-300 rounded-lg"
-                                                    />
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <div className="bg-white border border-slate-200 rounded-lg p-6">
+                                        <h3 className="font-semibold text-slate-900 mb-3">Additional Fee Types</h3>
+                                        <p className="text-sm text-slate-600 mb-4">Enable/disable specific fee types for this PSP instance</p>
+                                        <div className="space-y-3">
+                                            {[
+                                                { id: 'chargeback', name: 'Chargeback Fees', description: 'Fee charged when a chargeback occurs', defaultAmount: 15 },
+                                                { id: 'refund', name: 'Refund Processing Fees', description: 'Fee for processing refunds', defaultAmount: 0.50 },
+                                                { id: 'monthly_minimum', name: 'Monthly Minimum Fee', description: 'Minimum monthly fee charged to merchants', defaultAmount: 25 },
+                                                { id: 'retrieval', name: 'Retrieval Request Fee', description: 'Fee for dispute retrieval requests', defaultAmount: 10 },
+                                                { id: 'batch', name: 'Batch Processing Fee', description: 'Fee per batch settlement', defaultAmount: 0.25 }
+                                            ].map((feeType) => (
+                                                <div key={feeType.id} className="flex items-center justify-between p-4 bg-slate-50 border border-slate-200 rounded-lg">
+                                                    <div className="flex items-center gap-3 flex-1">
+                                                        <input type="checkbox" className="w-4 h-4" />
+                                                        <div>
+                                                            <p className="font-medium text-sm">{feeType.name}</p>
+                                                            <p className="text-xs text-slate-600">{feeType.description}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-center gap-2">
+                                                        <input type="number" step="0.01" placeholder={feeType.defaultAmount.toString()} className="w-24 px-2 py-1 text-sm border border-slate-300 rounded" />
+                                                        <span className="text-sm text-slate-600">{feeType.id === 'refund' || feeType.id === 'batch' ? 'per txn' : 'USD'}</span>
+                                                    </div>
                                                 </div>
-                                                <div>
-                                                    <label className="block text-sm font-medium mb-1">Cryptocurrency %</label>
-                                                    <input
-                                                        type="number"
-                                                        step="0.01"
-                                                        value={formData.transaction_fees.crypto_percentage}
-                                                        onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, crypto_percentage: parseFloat(e.target.value)}})}
-                                                        className="w-full px-3 py-2 border border-slate-300 rounded-lg"
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <label className="block text-sm font-medium mb-1">Cryptocurrency Fixed ($)</label>
-                                                    <input
-                                                        type="number"
-                                                        step="0.01"
-                                                        value={formData.transaction_fees.crypto_fixed}
-                                                        onChange={(e) => setFormData({...formData, transaction_fees: {...formData.transaction_fees, crypto_fixed: parseFloat(e.target.value)}})}
-                                                        className="w-full px-3 py-2 border border-slate-300 rounded-lg"
-                                                    />
-                                                </div>
-                                            </div>
+                                            ))}
                                         </div>
                                     </div>
                                 </div>
