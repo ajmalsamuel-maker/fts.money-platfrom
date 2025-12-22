@@ -55,10 +55,15 @@ export default function Dashboard() {
     const [userPspCode, setUserPspCode] = useState(null);
     const [isReady, setIsReady] = useState(false);
 
+    const hasInitialized = React.useRef(false);
+    
     React.useEffect(() => {
+        if (hasInitialized.current) return;
+        
         const sessionData = localStorage.getItem('staff_session');
         
         if (!sessionData) {
+            hasInitialized.current = true;
             window.location.href = '/PSPLogin';
             return;
         }
@@ -67,14 +72,16 @@ export default function Dashboard() {
             const session = JSON.parse(sessionData);
             
             if (session?.psp_code) {
+                hasInitialized.current = true;
                 queryClient.clear();
                 setUserPspCode(session.psp_code);
                 setIsReady(true);
             } else {
+                hasInitialized.current = true;
                 window.location.href = '/PSPLogin';
             }
         } catch (err) {
-            console.error('Session parse error:', err);
+            hasInitialized.current = true;
             window.location.href = '/PSPLogin';
         }
     }, [queryClient]);
