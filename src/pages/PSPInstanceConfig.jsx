@@ -35,13 +35,13 @@ import { ISO4217_CURRENCIES, getCurrencySymbol } from '@/components/utils/iso421
 const PAYMENT_METHOD_LOGOS = {
     'visa': 'https://upload.wikimedia.org/wikipedia/commons/d/d6/Visa_2021.svg',
     'mastercard': 'https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg',
-    'amex': 'https://upload.wikimedia.org/wikipedia/commons/3/30/American_Express_logo_%282018%29.svg',
+    'amex': 'https://upload.wikimedia.org/wikipedia/commons/f/fa/American_Express_logo_%282018%29.svg',
     'discover': 'https://upload.wikimedia.org/wikipedia/commons/5/57/Discover_Card_logo.svg',
     'unionpay': 'https://upload.wikimedia.org/wikipedia/commons/1/1b/UnionPay_logo.svg',
-    'diners_club': 'https://upload.wikimedia.org/wikipedia/commons/5/5d/Diners_Club_logo.svg',
+    'diners_club': 'https://upload.wikimedia.org/wikipedia/commons/4/40/Diners_Club_Logo3.svg',
     'jcb': 'https://upload.wikimedia.org/wikipedia/commons/4/40/JCB_logo.svg',
-    'alipay': 'https://upload.wikimedia.org/wikipedia/commons/f/f5/Alipay_logo.svg',
-    'wechat': 'https://upload.wikimedia.org/wikipedia/commons/d/dc/WeChat_logo.svg',
+    'alipay': 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Old_Alipay_logo.svg',
+    'wechat': 'https://upload.wikimedia.org/wikipedia/commons/1/1e/WeChat_logo_2020.svg',
     'apple_pay': 'https://upload.wikimedia.org/wikipedia/commons/b/b0/Apple_Pay_logo.svg',
     'google_pay': 'https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg',
     'paypal': 'https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg',
@@ -54,8 +54,8 @@ const PAYMENT_METHOD_LOGOS = {
     'ideal': 'https://upload.wikimedia.org/wikipedia/commons/f/f8/IDEAL_Logo.svg',
     'sofort': 'https://upload.wikimedia.org/wikipedia/commons/7/7b/Sofort_%C3%9Cberweisung_Logo.svg',
     'giropay': 'https://upload.wikimedia.org/wikipedia/commons/e/e8/Giropay-Logo-2024.svg',
-    'sepa': 'https://upload.wikimedia.org/wikipedia/commons/b/b7/SEPA_logo.svg',
-    'venmo': 'https://upload.wikimedia.org/wikipedia/commons/5/53/Venmo_logo.svg',
+    'sepa': 'https://upload.wikimedia.org/wikipedia/commons/e/e4/Single_Euro_Payments_Area_logo.svg',
+    'venmo': 'https://upload.wikimedia.org/wikipedia/commons/3/3f/Venmo_logo.svg',
     'cash_app': 'https://upload.wikimedia.org/wikipedia/commons/c/c5/Square_Cash_app_logo.svg'
 };
 
