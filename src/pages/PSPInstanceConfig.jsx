@@ -287,20 +287,9 @@ export default function PSPInstanceConfig() {
                                             <div className="space-y-2">
                                                 {categoryServices.map((service) => {
                                                     const serviceIdentifier = service.service_id || service.id;
-                                                    const isSubscribed = subscriptions.some(sub => 
-                                                        (sub.service_id === serviceIdentifier || sub.service_id === service.id) && 
-                                                        sub.status === 'active'
-                                                    );
-                                                    const isEnabled = config.enabled_services?.includes(serviceIdentifier) || isSubscribed;
-                                                    
-                                                    console.log('🔍 Service check:', {
-                                                        service_name: service.service_name,
-                                                        service_id: service.service_id,
-                                                        service_db_id: service.id,
-                                                        isSubscribed,
-                                                        isEnabled,
-                                                        config_has: config.enabled_services?.includes(serviceIdentifier)
-                                                    });
+                                                    // Check both service.id and service.service_id against enabled_services
+                                                    const isEnabled = config.enabled_services?.includes(service.id) || 
+                                                                      config.enabled_services?.includes(serviceIdentifier);
                                                     
                                                     return (
                                                         <div
