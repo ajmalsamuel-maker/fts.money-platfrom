@@ -72,7 +72,9 @@ export default function PSPInstanceConfig() {
         queryKey: ['psp-subscriptions', psp?.psp_code],
         queryFn: async () => {
             if (!psp?.psp_code) return [];
-            return await base44.entities.PSPServiceSubscription.filter({ psp_code: psp.psp_code });
+            const subs = await base44.entities.PSPServiceSubscription.filter({ psp_code: psp.psp_code });
+            console.log('🔍 Loaded subscriptions for PSP:', psp.psp_code, subs);
+            return subs;
         },
         enabled: !!psp?.psp_code
     });
@@ -129,10 +131,13 @@ export default function PSPInstanceConfig() {
                 enabled_services: [...new Set([...parseArray(psp.enabled_services), ...subscribedServiceIds])]
             };
             
-            console.log('Loading PSP config from database:', {
-                enabled_services: psp.enabled_services,
-                subscriptions: subscribedServiceIds,
-                final_enabled: newConfig.enabled_services
+            console.log('🔍 Loading PSP config from database:', {
+                psp_code: psp.psp_code,
+                enabled_services_from_db: psp.enabled_services,
+                subscriptions_count: subscriptions.length,
+                subscribed_service_ids: subscribedServiceIds,
+                final_enabled_services: newConfig.enabled_services,
+                all_subscriptions: subscriptions
             });
             
             setConfig(newConfig);
@@ -287,6 +292,16 @@ export default function PSPInstanceConfig() {
                                                         sub.status === 'active'
                                                     );
                                                     const isEnabled = config.enabled_services?.includes(serviceIdentifier) || isSubscribed;
+                                                    
+                                                    console.log('🔍 Service check:', {
+                                                        service_name: service.service_name,
+                                                        service_id: service.service_id,
+                                                        service_db_id: service.id,
+                                                        isSubscribed,
+                                                        isEnabled,
+                                                        config_has: config.enabled_services?.includes(serviceIdentifier)
+                                                    });
+                                                    
                                                     return (
                                                         <div
                                                             key={service.id}
