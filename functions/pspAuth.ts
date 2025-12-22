@@ -107,9 +107,13 @@ Deno.serve(async (req) => {
                     });
                 }
 
-                // Password verification using bcrypt
-                const bcrypt = await import('npm:bcrypt@5.1.1');
-                const isValid = await bcrypt.compare(password, user.password_hash);
+                // Password verification using SHA-256 (matching managePSPUsers)
+                const encoder = new TextEncoder();
+                const data = encoder.encode(password);
+                const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                const passwordHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+                const isValid = passwordHash === user.password_hash;
                 
                 if (!isValid) {
                     return Response.json({
