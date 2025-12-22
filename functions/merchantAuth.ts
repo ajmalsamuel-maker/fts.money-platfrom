@@ -65,12 +65,19 @@ Deno.serve(async (req) => {
                 last_login_ip: ip
             });
 
+            // Get merchant record for PSP code
+            const merchants = await base44.asServiceRole.entities.Merchant.filter({
+                merchant_id: user.merchant_id
+            });
+            const merchant = merchants[0];
+
             // Create session token
             const session = {
                 user_id: user.id,
                 merchant_id: user.merchant_id,
                 merchant_code: user.merchant_code,
                 merchant_name: user.merchant_name,
+                psp_code: merchant?.psp_code,
                 email: user.email,
                 full_name: user.full_name,
                 role: user.role,
