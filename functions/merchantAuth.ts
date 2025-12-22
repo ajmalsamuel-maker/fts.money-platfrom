@@ -69,7 +69,24 @@ Deno.serve(async (req) => {
             const merchants = await base44.asServiceRole.entities.Merchant.filter({
                 merchant_id: user.merchant_id
             });
-            const merchant = merchants[0];
+            const merchant = merchants?.[0];
+            
+            console.log('🔍 merchantAuth: Merchant lookup result:', {
+                merchant_id: user.merchant_id,
+                found: !!merchant,
+                psp_code: merchant?.psp_code || 'MISSING'
+            });
+
+            // If merchant doesn't have psp_code, try to get it from MerchantUser or use merchant_code prefix
+            let pspCode = merchant?.psp_code;
+            if (!pspCode && user.merchant_code) {
+                // Extract PSP code from merchant_code (format: PSP_MERCHANT)
+                const parts = user.merchant_code.split('_');
+                if (parts.length > 1) {
+                    pspCode = parts[0];
+                    console.log('✅ merchantAuth: Extracted PSP code from merchant_code:', pspCode);
+                }
+            }
 
             // Create session token
             const session = {
@@ -77,7 +94,7 @@ Deno.serve(async (req) => {
                 merchant_id: user.merchant_id,
                 merchant_code: user.merchant_code,
                 merchant_name: user.merchant_name,
-                psp_code: merchant?.psp_code,
+                psp_code: pspCode,
                 email: user.email,
                 full_name: user.full_name,
                 role: user.role,
@@ -86,6 +103,8 @@ Deno.serve(async (req) => {
                 two_factor_enabled: user.two_factor_enabled,
                 timestamp: Date.now()
             };
+            
+            console.log('🔑 merchantAuth: Session created with psp_code:', pspCode || 'STILL_MISSING');
 
             return Response.json({
                 success: true,
