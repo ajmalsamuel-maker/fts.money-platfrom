@@ -196,6 +196,7 @@ import Subscriptions from './pages/Subscriptions';
 import PaymentMethods from './pages/PaymentMethods';
 import CustomerAnalytics from './pages/CustomerAnalytics';
 import Products from './pages/Products';
+import Invoicing from './pages/Invoicing';
 import __Layout from './Layout.jsx';
 
 
@@ -398,6 +399,7 @@ export const PAGES = {
     "PaymentMethods": PaymentMethods,
     "CustomerAnalytics": CustomerAnalytics,
     "Products": Products,
+    "Invoicing": Invoicing,
 }
 
 export const pagesConfig = {
