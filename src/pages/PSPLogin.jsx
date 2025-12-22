@@ -9,9 +9,21 @@ export default function PSPLogin() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
-    // Clear any old sessions on mount
+    // Redirect if already logged in
     React.useEffect(() => {
-        localStorage.clear();
+        const existingSession = localStorage.getItem('staff_session');
+        if (existingSession) {
+            try {
+                const session = JSON.parse(existingSession);
+                if (session?.psp_code) {
+                    window.location.replace('/Dashboard');
+                    return;
+                }
+            } catch (err) {
+                // Invalid session, clear it
+                localStorage.clear();
+            }
+        }
     }, []);
 
     const handleStep1 = async (e) => {
