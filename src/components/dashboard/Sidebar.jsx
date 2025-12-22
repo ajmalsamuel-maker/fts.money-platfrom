@@ -73,25 +73,7 @@ const menuItems = [
                     { icon: AlertTriangle, label: 'disputes', path: 'Disputes', permission: 'VIEW_DISPUTES' },
                 ]
             },
-            {
-                group: 'customers',
-                icon: Users,
-                items: [
-                    { icon: Users, label: 'allCustomers', path: 'Customers', permission: 'VIEW_TRANSACTIONS' },
-                    { icon: CreditCard, label: 'paymentMethods', path: 'PaymentMethods', permission: 'VIEW_TRANSACTIONS' },
-                    { icon: BarChart3, label: 'customerAnalytics', path: 'CustomerAnalytics', permission: 'VIEW_ANALYTICS' },
-                ]
-            },
-            {
-                group: 'products',
-                icon: Building,
-                items: [
-                    { icon: Building, label: 'productCatalog', path: 'Products', permission: 'VIEW_MERCHANTS' },
-                    { icon: Repeat, label: 'subscriptions', path: 'Subscriptions', permission: 'VIEW_MERCHANTS' },
-                    { icon: FileText, label: 'paymentLinks', path: 'PaymentLinks', permission: 'VIEW_MERCHANTS' },
-                    { icon: InvoiceIcon, label: 'invoicing', path: 'Invoicing', permission: 'VIEW_MERCHANTS' },
-                ]
-            },
+
             {
                 group: 'merchants',
                 icon: Store,

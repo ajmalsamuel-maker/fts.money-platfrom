@@ -47,6 +47,14 @@ const menuSections = [
         items: [
             { label: 'All Customers', icon: Users, path: 'MerchantCustomers' },
             { label: 'Saved Cards', icon: CreditCard, path: 'MerchantSavedCards' },
+            { label: 'Customer Analytics', icon: BarChart3, path: 'MerchantCustomerAnalytics' },
+        ]
+    },
+    {
+        title: 'Products',
+        items: [
+            { label: 'Product Catalog', icon: Building, path: 'MerchantProducts' },
+            { label: 'Invoicing', icon: FileText, path: 'MerchantInvoicing' },
         ]
     },
     {

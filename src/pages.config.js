@@ -198,6 +198,8 @@ import CustomerAnalytics from './pages/CustomerAnalytics';
 import Products from './pages/Products';
 import Invoicing from './pages/Invoicing';
 import MerchantProducts from './pages/MerchantProducts';
+import MerchantCustomerAnalytics from './pages/MerchantCustomerAnalytics';
+import MerchantInvoicing from './pages/MerchantInvoicing';
 import __Layout from './Layout.jsx';
 
 
@@ -402,6 +404,8 @@ export const PAGES = {
     "Products": Products,
     "Invoicing": Invoicing,
     "MerchantProducts": MerchantProducts,
+    "MerchantCustomerAnalytics": MerchantCustomerAnalytics,
+    "MerchantInvoicing": MerchantInvoicing,
 }
 
 export const pagesConfig = {
