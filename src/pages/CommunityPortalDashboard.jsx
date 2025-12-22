@@ -20,7 +20,8 @@ import {
     Zap,
     Shield,
     TrendingUp,
-    CheckCircle2
+    CheckCircle2,
+    LogOut
 } from 'lucide-react';
 
 export default function CommunityPortalDashboard() {
@@ -143,6 +144,17 @@ export default function CommunityPortalDashboard() {
                             className="bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white"
                         >
                             Launch PSP
+                        </Button>
+                        <Button 
+                            variant="outline"
+                            onClick={() => {
+                                localStorage.removeItem('community_portal_session');
+                                navigate(createPageUrl('CommunityPortalLogin'));
+                            }}
+                            className="gap-2"
+                        >
+                            <LogOut className="h-4 w-4" />
+                            Logout
                         </Button>
                     </div>
                 </header>
