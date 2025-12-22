@@ -240,7 +240,9 @@ export default function MerchantVirtualTerminal() {
             source: merchant?.psp_code ? 'merchant.psp_code' : user?.psp_code ? 'user.psp_code' : user?.merchant_code ? 'user.merchant_code' : merchant?.merchant_code ? 'merchant.merchant_code' : 'NONE',
             psp_code: pspCode,
             user_merchant_code: user?.merchant_code,
-            merchant_merchant_code: merchant?.merchant_code
+            merchant_merchant_code: merchant?.merchant_code,
+            split_test: user?.merchant_code?.split(/[-_]/),
+            extracted: user?.merchant_code?.split(/[-_]/)?.[0]
         });
         
         let transactionStatus = 'approved';
