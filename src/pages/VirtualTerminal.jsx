@@ -79,6 +79,10 @@ export default function VirtualTerminal() {
             // Get PSP code from merchant record
             const pspCode = merchant?.psp_code;
             
+            if (!pspCode) {
+                throw new Error('PSP code not found for merchant');
+            }
+            
             console.log('🔵 VT: Processing transaction...');
             console.log('🔵 VT: PSP Code:', pspCode);
             console.log('🔵 VT: Merchant ID:', user.merchant_id);
@@ -147,6 +151,32 @@ export default function VirtualTerminal() {
         } catch (error) {
             console.error('❌ VT: Transaction error:', error);
             console.error('❌ VT: Error details:', error.response?.data || error.message);
+            
+            // Log failed transaction
+            try {
+                const txnId = `TXN-${Date.now()}-${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
+                await base44.functions.invoke('vtAuth', {
+                    action: 'processTransaction',
+                    transaction: {
+                        transaction_id: txnId,
+                        psp_code: merchant?.psp_code || 'UNKNOWN',
+                        merchant_id: user.merchant_id,
+                        merchant_name: merchant?.business_name,
+                        type: 'sale',
+                        status: 'declined',
+                        amount: parseFloat(formData.amount),
+                        currency: formData.currency,
+                        payment_method: 'card',
+                        customer_email: formData.customerEmail,
+                        customer_name: formData.cardholderName,
+                        terminal_id: user.terminal_id,
+                        response_code: 'ERR',
+                        response_message: error.response?.data?.error || error.message || 'Payment processing failed'
+                    }
+                });
+            } catch (logError) {
+                console.error('Failed to log declined transaction:', logError);
+            }
             
             // Show error dialog
             setTransactionResult({

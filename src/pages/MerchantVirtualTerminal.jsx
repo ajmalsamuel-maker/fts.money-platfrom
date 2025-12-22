@@ -177,6 +177,11 @@ export default function MerchantVirtualTerminal() {
         setProcessing(true);
         
         try {
+            // Ensure PSP code is available
+            if (!merchant?.psp_code) {
+                throw new Error('PSP code not found for merchant');
+            }
+
             const txnId = `TXN${Date.now()}${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
             const authCode = Math.random().toString(36).substr(2, 9).toUpperCase();
             const cardNum = formData.useExistingCard ? 
@@ -336,6 +341,34 @@ export default function MerchantVirtualTerminal() {
             queryClient.invalidateQueries(['transactions']);
         } catch (error) {
             console.error('❌ MerchantVT: Transaction error:', error);
+            
+            // Log failed transaction
+            try {
+                const txnId = `TXN${Date.now()}${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
+                await base44.functions.invoke('vtAuth', {
+                    action: 'processTransaction',
+                    transaction: {
+                        transaction_id: txnId,
+                        psp_code: merchant?.psp_code || 'UNKNOWN',
+                        merchant_id: user.merchant_id,
+                        merchant_name: merchant?.business_name,
+                        mid: selectedMID,
+                        type: 'sale',
+                        status: 'declined',
+                        amount: calculateTotal(),
+                        currency: formData.currency,
+                        payment_method: 'credit_card',
+                        customer_email: formData.customerEmail,
+                        customer_name: formData.customerName || formData.cardholderName,
+                        response_code: 'ERR',
+                        response_message: error.response?.data?.error || error.message || 'Payment processing failed',
+                        terminal_id: vtConfig?.id,
+                        operator: user.email
+                    }
+                });
+            } catch (logError) {
+                console.error('Failed to log declined transaction:', logError);
+            }
             
             // Show error dialog
             setTransactionResult({
