@@ -206,25 +206,30 @@ export default function MerchantVirtualTerminal() {
             savedCards.find(c => c.id === formData.existingCardId)?.card_last_four :
             formData.cardNumber;
         
-        // Get PSP code from merchant or session or extract from merchant_code
+        // Get PSP code with multiple fallbacks
         let pspCode = merchant?.psp_code || user?.psp_code;
         
-        // If still no PSP code, extract from merchant_code (format: PSP_MERCHANT)
+        // Extract from user merchant_code (format: PSP_MERCHANT)
         if (!pspCode && user?.merchant_code) {
             const parts = user.merchant_code.split('_');
             if (parts.length > 1) {
                 pspCode = parts[0];
-                console.log('✅ MerchantVT: Extracted PSP code from merchant_code:', pspCode);
             }
         }
         
-        console.log('🔍 MerchantVT: PSP code check:', {
-            merchant_psp_code: merchant?.psp_code,
-            user_psp_code: user?.psp_code,
-            merchant_code: user?.merchant_code,
-            extracted_psp_code: pspCode,
-            merchant_id: merchant?.merchant_id,
-            user_merchant_id: user?.merchant_id
+        // Extract from merchant's merchant_code
+        if (!pspCode && merchant?.merchant_code) {
+            const parts = merchant.merchant_code.split('_');
+            if (parts.length > 1) {
+                pspCode = parts[0];
+            }
+        }
+        
+        console.log('🔍 MerchantVT: PSP code resolved:', {
+            source: merchant?.psp_code ? 'merchant.psp_code' : user?.psp_code ? 'user.psp_code' : user?.merchant_code ? 'user.merchant_code' : merchant?.merchant_code ? 'merchant.merchant_code' : 'NONE',
+            psp_code: pspCode,
+            user_merchant_code: user?.merchant_code,
+            merchant_merchant_code: merchant?.merchant_code
         });
         
         let transactionStatus = 'approved';
