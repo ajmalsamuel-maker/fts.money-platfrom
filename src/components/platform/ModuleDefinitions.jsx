@@ -53,11 +53,13 @@ export const MODULE_DEFINITIONS = {
     pricing_model: { type: 'included' },
     menu_items: [
       { group: 'merchants', label: 'allMerchants', path: 'Merchants', icon: 'Store', permission: 'VIEW_MERCHANTS' },
+      { group: 'merchants', label: 'merchantAnalytics', path: 'MerchantAnalytics', icon: 'BarChart3', permission: 'VIEW_MERCHANTS' },
+      { group: 'merchants', label: 'merchantUsers', path: 'MerchantUsers', icon: 'Users', permission: 'VIEW_USERS' },
       { group: 'merchants', label: 'merchantOnboarding', path: 'MerchantOnboarding', icon: 'Store', permission: 'VIEW_ONBOARDING' },
       { group: 'merchants', label: 'approvals', path: 'Approvals', icon: 'CheckSquare', permission: 'APPROVE_ONBOARDING' }
     ],
     dependencies: [],
-    features: ['merchants', 'onboarding'],
+    features: ['merchants', 'onboarding', 'merchant_users'],
     compliance_requirements: ['PCI_DSS', 'GDPR', 'ISO_27001'],
     data_isolation_required: true,
     is_active: true
