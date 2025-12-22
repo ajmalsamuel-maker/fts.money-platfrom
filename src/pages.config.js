@@ -195,6 +195,7 @@ import XeroIntegration from './pages/XeroIntegration';
 import Subscriptions from './pages/Subscriptions';
 import PaymentMethods from './pages/PaymentMethods';
 import CustomerAnalytics from './pages/CustomerAnalytics';
+import Products from './pages/Products';
 import __Layout from './Layout.jsx';
 
 
@@ -396,6 +397,7 @@ export const PAGES = {
     "Subscriptions": Subscriptions,
     "PaymentMethods": PaymentMethods,
     "CustomerAnalytics": CustomerAnalytics,
+    "Products": Products,
 }
 
 export const pagesConfig = {
