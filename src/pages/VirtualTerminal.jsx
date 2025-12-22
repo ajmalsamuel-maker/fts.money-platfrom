@@ -330,17 +330,12 @@ export default function VirtualTerminal() {
                                     <Button 
                                         type="submit" 
                                         className="flex-1"
-                                        disabled={processing || success}
+                                        disabled={processing}
                                     >
                                         {processing ? (
                                             <>
                                                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                                                 Processing...
-                                            </>
-                                        ) : success ? (
-                                            <>
-                                                <CheckCircle2 className="h-4 w-4 mr-2" />
-                                                Success
                                             </>
                                         ) : (
                                             'Process Payment'

@@ -87,12 +87,25 @@ export default function Transactions() {
     const [viewDetailsOpen, setViewDetailsOpen] = useState(false);
     const [refundDialogOpen, setRefundDialogOpen] = useState(false);
     const [voidDialogOpen, setVoidDialogOpen] = useState(false);
+    const [userPspCode, setUserPspCode] = useState(null);
     const { can } = usePermissions();
     const queryClient = useQueryClient();
 
+    React.useEffect(() => {
+        const session = localStorage.getItem('staff_session');
+        if (session) {
+            const parsed = JSON.parse(session);
+            setUserPspCode(parsed.psp_code);
+        }
+    }, []);
+
     const { data: transactions = [], isLoading } = useQuery({
-        queryKey: ['all-transactions'],
-        queryFn: () => base44.entities.Transaction.list('-created_date', 50),
+        queryKey: ['all-transactions', userPspCode],
+        queryFn: async () => {
+            if (!userPspCode) return [];
+            return await base44.entities.Transaction.filter({ psp_code: userPspCode });
+        },
+        enabled: !!userPspCode
     });
 
     const { data: aiDecisions = [] } = useQuery({
