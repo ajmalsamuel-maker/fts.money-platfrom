@@ -571,8 +571,8 @@ export default function PSPInstanceConfig() {
                     <TabsContent value="payments">
                         <Card className="bg-white border-slate-200">
                             <CardHeader>
-                                <CardTitle>Payment Provider Configuration</CardTitle>
-                                <CardDescription>Enable payment providers for this PSP instance (Total: {paymentProviders.length})</CardDescription>
+                                <CardTitle>Payment Methods</CardTitle>
+                                <CardDescription>Enable payment methods for this PSP instance</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-3">
                                 {paymentProviders.length === 0 ? (
@@ -583,14 +583,12 @@ export default function PSPInstanceConfig() {
                                     </div>
                                 ) : (
                                     <div className="space-y-3">
-                                        <div className="text-xs text-slate-500 mb-2">
-                                            {config.enabled_payment_methods?.length || 0} of {paymentProviders.length} enabled
-                                        </div>
-                                        {paymentProviders.map((provider) => {
-                                            const isEnabled = config.enabled_payment_methods?.includes(provider.id);
+                                        {['visa', 'mastercard', 'amex', 'discover', 'unionpay', 'diners_club', 'jcb', 'alipay', 'wechat', 'apple_pay', 'google_pay', 'paypal', 'ach', 'sepa', 'faster_payments', 'bitcoin', 'ethereum', 'usdt', 'usdc', 'bitcoin_cash', 'litecoin', 'ideal', 'sofort', 'giropay', 'bancontact', 'multibanco', 'p24', 'eps', 'sezzle', 'afterpay'].map((method) => {
+                                            const isEnabled = config.enabled_payment_methods?.includes(method);
+                                            const displayName = method.replace(/_/g, ' ').split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
                                             return (
                                                 <div 
-                                                    key={provider.id} 
+                                                    key={method} 
                                                     className={cn(
                                                         "flex items-center justify-between p-4 border-2 rounded-lg transition-all",
                                                         isEnabled 
@@ -609,10 +607,7 @@ export default function PSPInstanceConfig() {
                                                             )} />
                                                         </div>
                                                         <div>
-                                                            <p className="font-medium text-slate-900">{provider.name || 'Unnamed Provider'}</p>
-                                                            {provider.type && (
-                                                                <p className="text-xs text-slate-500 capitalize">{provider.type.replace(/_/g, ' ')}</p>
-                                                            )}
+                                                            <p className="font-medium text-slate-900">{displayName}</p>
                                                         </div>
                                                     </div>
                                                     <div className="flex items-center gap-3">
@@ -621,8 +616,8 @@ export default function PSPInstanceConfig() {
                                                             checked={isEnabled}
                                                             onCheckedChange={(checked) => {
                                                                 const methods = checked
-                                                                    ? [...(config.enabled_payment_methods || []), provider.id]
-                                                                    : (config.enabled_payment_methods || []).filter(id => id !== provider.id);
+                                                                    ? [...(config.enabled_payment_methods || []), method]
+                                                                    : (config.enabled_payment_methods || []).filter(m => m !== method);
                                                                 setConfig({...config, enabled_payment_methods: methods});
                                                             }}
                                                         />
@@ -650,32 +645,37 @@ export default function PSPInstanceConfig() {
                                         <p>No payout routes configured in the platform</p>
                                     </div>
                                 ) : (
-                                    payoutRoutes.map((route) => (
-                                        <div key={route.id} className="flex items-center justify-between p-4 border border-slate-200 rounded-lg hover:border-emerald-300 transition-colors">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded bg-emerald-50 flex items-center justify-center">
-                                                    <Wallet className="h-5 w-5 text-emerald-600" />
-                                                </div>
-                                                <div>
-                                                    <p className="font-medium text-slate-900">{route.route_name}</p>
-                                                    <div className="flex items-center gap-2 text-xs text-slate-500">
-                                                        <span className="capitalize">{route.channel_type}</span>
-                                                        <span>•</span>
-                                                        <span>{route.settlement_speed}</span>
+                                    ['sepa', 'wire', 'visa_debit', 'mastercard_debit', 'cash_app', 'venmo', 'paypal', 'ethereum', 'usdt', 'usdc', 'bitcoin', 'real_time_payments', 'push_to_card'].map((method) => {
+                                        const isEnabled = config.enabled_payout_methods?.includes(method);
+                                        const displayName = method.replace(/_/g, ' ').split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+                                        return (
+                                            <div key={method} className={cn(
+                                                "flex items-center justify-between p-4 border-2 rounded-lg transition-all",
+                                                isEnabled ? "border-emerald-500 bg-emerald-50" : "border-slate-200"
+                                            )}>
+                                                <div className="flex items-center gap-3">
+                                                    <div className={cn(
+                                                        "w-10 h-10 rounded flex items-center justify-center",
+                                                        isEnabled ? "bg-emerald-600" : "bg-emerald-50"
+                                                    )}>
+                                                        <Wallet className={cn("h-5 w-5", isEnabled ? "text-white" : "text-emerald-600")} />
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-medium text-slate-900">{displayName}</p>
                                                     </div>
                                                 </div>
+                                                <Switch
+                                                    checked={isEnabled}
+                                                    onCheckedChange={(checked) => {
+                                                        const methods = checked
+                                                            ? [...(config.enabled_payout_methods || []), method]
+                                                            : (config.enabled_payout_methods || []).filter(m => m !== method);
+                                                        setConfig({...config, enabled_payout_methods: methods});
+                                                    }}
+                                                />
                                             </div>
-                                            <Switch
-                                                checked={config.enabled_payout_methods?.includes(route.id)}
-                                                onCheckedChange={(checked) => {
-                                                    const methods = checked
-                                                        ? [...(config.enabled_payout_methods || []), route.id]
-                                                        : (config.enabled_payout_methods || []).filter(id => id !== route.id);
-                                                    setConfig({...config, enabled_payout_methods: methods});
-                                                }}
-                                            />
-                                        </div>
-                                    ))
+                                        );
+                                    })
                                 )}
                             </CardContent>
                         </Card>
