@@ -22,9 +22,9 @@ Deno.serve(async (req) => {
         }
 
         // CRITICAL: Set search path to PSP-isolated schema ONLY (PCI/GDPR compliance)
-        const schemaName = `psp_${psp_code.toLowerCase()}`;
+        const schemaName = `psp_${psp_code.toLowerCase().replace(/-/g, '_')}`;
         console.log('📂 Setting schema to:', schemaName);
-        await client.query(`SET search_path TO ${schemaName}`);
+        await client.query(`SET search_path TO "${schemaName}"`);
 
         // Handle update action
         if (action === 'update') {
