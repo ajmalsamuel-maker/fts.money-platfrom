@@ -30,34 +30,7 @@ import { logAuditAction } from '@/components/platform/AuditLogger';
 import { cn } from "@/lib/utils";
 import { PLATFORM_ROLES, getRoleLabel } from '@/components/auth/usePlatformAuth';
 import { ISO4217_CURRENCIES, getCurrencySymbol } from '@/components/utils/iso4217';
-
-// Payment method logos
-const PAYMENT_METHOD_LOGOS = {
-    'visa': 'https://upload.wikimedia.org/wikipedia/commons/d/d6/Visa_2021.svg',
-    'mastercard': 'https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg',
-    'amex': 'https://upload.wikimedia.org/wikipedia/commons/f/fa/American_Express_logo_%282018%29.svg',
-    'discover': 'https://upload.wikimedia.org/wikipedia/commons/5/57/Discover_Card_logo.svg',
-    'unionpay': 'https://upload.wikimedia.org/wikipedia/commons/1/1b/UnionPay_logo.svg',
-    'diners_club': 'https://upload.wikimedia.org/wikipedia/commons/4/40/Diners_Club_Logo3.svg',
-    'jcb': 'https://upload.wikimedia.org/wikipedia/commons/4/40/JCB_logo.svg',
-    'alipay': 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Old_Alipay_logo.svg',
-    'wechat': 'https://upload.wikimedia.org/wikipedia/commons/1/1e/WeChat_logo_2020.svg',
-    'apple_pay': 'https://upload.wikimedia.org/wikipedia/commons/b/b0/Apple_Pay_logo.svg',
-    'google_pay': 'https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg',
-    'paypal': 'https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg',
-    'bitcoin': 'https://cryptologos.cc/logos/bitcoin-btc-logo.svg',
-    'ethereum': 'https://cryptologos.cc/logos/ethereum-eth-logo.svg',
-    'usdt': 'https://cryptologos.cc/logos/tether-usdt-logo.svg',
-    'usdc': 'https://cryptologos.cc/logos/usd-coin-usdc-logo.svg',
-    'bitcoin_cash': 'https://cryptologos.cc/logos/bitcoin-cash-bch-logo.svg',
-    'litecoin': 'https://cryptologos.cc/logos/litecoin-ltc-logo.svg',
-    'ideal': 'https://upload.wikimedia.org/wikipedia/commons/f/f8/IDEAL_Logo.svg',
-    'sofort': 'https://upload.wikimedia.org/wikipedia/commons/7/7b/Sofort_%C3%9Cberweisung_Logo.svg',
-    'giropay': 'https://upload.wikimedia.org/wikipedia/commons/e/e8/Giropay-Logo-2024.svg',
-    'sepa': 'https://upload.wikimedia.org/wikipedia/commons/e/e4/Single_Euro_Payments_Area_logo.svg',
-    'venmo': 'https://upload.wikimedia.org/wikipedia/commons/3/3f/Venmo_logo.svg',
-    'cash_app': 'https://upload.wikimedia.org/wikipedia/commons/c/c5/Square_Cash_app_logo.svg'
-};
+import { getPaymentMethodLogo, getPaymentMethodDisplayName } from '@/components/utils/paymentLogos';
 
 export default function PSPInstanceConfig() {
     const navigate = useNavigate();
@@ -613,8 +586,8 @@ export default function PSPInstanceConfig() {
                                     <div className="space-y-3">
                                         {['visa', 'mastercard', 'amex', 'discover', 'unionpay', 'diners_club', 'jcb', 'alipay', 'wechat', 'apple_pay', 'google_pay', 'paypal', 'ach', 'sepa', 'faster_payments', 'bitcoin', 'ethereum', 'usdt', 'usdc', 'bitcoin_cash', 'litecoin', 'ideal', 'sofort', 'giropay', 'bancontact', 'multibanco', 'p24', 'eps', 'sezzle', 'afterpay'].map((method) => {
                                             const isEnabled = config.enabled_payment_methods?.includes(method);
-                                            const displayName = method.replace(/_/g, ' ').split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-                                            const logoUrl = PAYMENT_METHOD_LOGOS[method];
+                                            const displayName = getPaymentMethodDisplayName(method);
+                                            const logoUrl = getPaymentMethodLogo(method);
                                             return (
                                                 <div 
                                                     key={method} 
@@ -676,8 +649,8 @@ export default function PSPInstanceConfig() {
                                 ) : (
                                     ['sepa', 'wire', 'visa_debit', 'mastercard_debit', 'cash_app', 'venmo', 'paypal', 'ethereum', 'usdt', 'usdc', 'bitcoin', 'real_time_payments', 'push_to_card'].map((method) => {
                                         const isEnabled = config.enabled_payout_methods?.includes(method);
-                                        const displayName = method.replace(/_/g, ' ').split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-                                        const logoUrl = PAYMENT_METHOD_LOGOS[method] || (method.includes('visa') ? PAYMENT_METHOD_LOGOS['visa'] : method.includes('mastercard') ? PAYMENT_METHOD_LOGOS['mastercard'] : null);
+                                        const displayName = getPaymentMethodDisplayName(method);
+                                        const logoUrl = getPaymentMethodLogo(method);
                                         return (
                                             <div key={method} className={cn(
                                                 "flex items-center justify-between p-4 border-2 rounded-lg transition-all",
