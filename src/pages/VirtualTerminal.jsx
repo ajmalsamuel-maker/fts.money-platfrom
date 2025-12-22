@@ -77,7 +77,10 @@ export default function VirtualTerminal() {
             // Get PSP code from merchant record
             const pspCode = merchant?.psp_code;
             
+            const transactionId = `TXN-${Date.now()}-${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
+            
             await base44.entities.Transaction.create({
+                transaction_id: transactionId,
                 psp_code: pspCode,
                 merchant_id: user.merchant_id,
                 merchant_name: merchant?.business_name,
@@ -99,7 +102,10 @@ export default function VirtualTerminal() {
             });
 
             setSuccess(true);
-            toast.success('Payment processed successfully');
+            toast.success('✅ TRANSACTION APPROVED - Transaction ID: ' + transactionId, {
+                duration: 5000,
+                className: 'text-lg'
+            });
             
             setTimeout(() => {
                 setFormData({
@@ -114,9 +120,13 @@ export default function VirtualTerminal() {
                     description: ''
                 });
                 setSuccess(false);
-            }, 3000);
+            }, 5000);
         } catch (error) {
-            toast.error('Payment processing failed');
+            console.error('Transaction error:', error);
+            toast.error('❌ TRANSACTION DECLINED - ' + (error.message || 'Payment processing failed'), {
+                duration: 5000,
+                className: 'text-lg'
+            });
         } finally {
             setProcessing(false);
         }
