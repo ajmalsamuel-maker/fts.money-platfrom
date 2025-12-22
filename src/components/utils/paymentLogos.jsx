@@ -2,14 +2,14 @@
 // Used globally across Community Portal, FTS Platform, PSP Portal, Merchant Portal, and Virtual Terminal
 
 export const PAYMENT_METHOD_LOGOS = {
-    // Card Networks - Using GitHub raw content from mpay24/payment-logos (color folder)
+    // Card Networks - Using mpay24 logos for cards that exist, fallback for others
     'visa': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/color/visa.svg',
     'mastercard': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/color/mastercard.svg',
     'amex': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/color/amex.svg',
     'american_express': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/color/amex.svg',
-    'discover': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/color/discover.svg',
-    'unionpay': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/color/unionpay.svg',
-    'china_union_pay': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/color/unionpay.svg',
+    'discover': 'https://upload.wikimedia.org/wikipedia/commons/5/57/Discover_Card_logo.svg',
+    'unionpay': 'https://upload.wikimedia.org/wikipedia/commons/1/1b/UnionPay_logo.svg',
+    'china_union_pay': 'https://upload.wikimedia.org/wikipedia/commons/1/1b/UnionPay_logo.svg',
     'diners_club': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/color/diners.svg',
     'jcb': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/color/jcb.svg',
     
@@ -17,16 +17,16 @@ export const PAYMENT_METHOD_LOGOS = {
     'alipay': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/color/alipay.svg',
     'wechat': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/color/wechat_pay.svg',
     'wechat_pay': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/color/wechat_pay.svg',
-    'apple_pay': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/color/apple_pay.svg',
-    'google_pay': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/color/google_pay.svg',
+    'apple_pay': 'https://upload.wikimedia.org/wikipedia/commons/b/b0/Apple_Pay_logo.svg',
+    'google_pay': 'https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg',
     'paypal': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/color/paypal.svg',
-    'venmo': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/color/venmo.svg',
-    'cash_app': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/color/cash_app.svg',
-    'square': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/color/cash_app.svg',
+    'venmo': 'https://upload.wikimedia.org/wikipedia/commons/3/3d/Venmo_logo.svg',
+    'cash_app': 'https://upload.wikimedia.org/wikipedia/commons/c/c5/Square_Cash_app_logo.svg',
+    'square': 'https://upload.wikimedia.org/wikipedia/commons/c/c5/Square_Cash_app_logo.svg',
     
     // Bank Transfer Methods
     'ideal': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/color/ideal.svg',
-    'sofort': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/color/sofort.svg',
+    'sofort': 'https://upload.wikimedia.org/wikipedia/commons/e/e6/Sofort_%C3%9Cberweisung_Logo.svg',
     'giropay': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/color/giropay.svg',
     'sepa': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/color/sepa.svg',
     'sepa_debit': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/color/sepa.svg',
@@ -52,15 +52,15 @@ export const PAYMENT_METHOD_LOGOS = {
     'crypto_currency': 'https://cryptologos.cc/logos/bitcoin-btc-logo.svg',
     
     // Buy Now Pay Later
-    'afterpay': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/color/afterpay.svg',
+    'afterpay': 'https://upload.wikimedia.org/wikipedia/commons/b/bc/Afterpay-logo-black.svg',
     'klarna': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/color/klarna.svg',
-    'sezzle': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/color/sezzle.svg',
+    'sezzle': 'https://upload.wikimedia.org/wikipedia/commons/d/d6/Sezzle-Logo.svg',
     
     // Other Methods
-    'bancontact': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/color/bancontact.svg',
-    'multibanco': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/color/multibanco.svg',
-    'p24': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/color/przelewy24.svg',
-    'przelewy24': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/color/przelewy24.svg',
+    'bancontact': 'https://upload.wikimedia.org/wikipedia/commons/b/b8/Bancontact_logo.svg',
+    'multibanco': 'https://upload.wikimedia.org/wikipedia/commons/8/8c/Multibanco_logo.svg',
+    'p24': 'https://upload.wikimedia.org/wikipedia/commons/e/e5/Przelewy24_logo.svg',
+    'przelewy24': 'https://upload.wikimedia.org/wikipedia/commons/e/e5/Przelewy24_logo.svg',
     'eps': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/color/eps.svg',
     
     // Debit Specific
