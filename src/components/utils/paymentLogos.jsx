@@ -2,39 +2,39 @@
 // Used globally across Community Portal, FTS Platform, PSP Portal, Merchant Portal, and Virtual Terminal
 
 export const PAYMENT_METHOD_LOGOS = {
-    // Card Networks - Using CDN jsDelivr with payrexx logos
-    'visa': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/visa.svg',
-    'mastercard': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/mastercard.svg',
-    'amex': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/american-express.svg',
-    'american_express': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/american-express.svg',
-    'discover': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/discover.svg',
-    'unionpay': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/unionpay.svg',
-    'china_union_pay': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/unionpay.svg',
-    'diners_club': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/diners-club.svg',
-    'jcb': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/jcb.svg',
+    // Card Networks - Using GitHub raw content from mpay24/payment-logos
+    'visa': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/visa.svg',
+    'mastercard': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/mastercard.svg',
+    'amex': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/amex.svg',
+    'american_express': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/amex.svg',
+    'discover': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/discover.svg',
+    'unionpay': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/unionpay.svg',
+    'china_union_pay': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/unionpay.svg',
+    'diners_club': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/diners.svg',
+    'jcb': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/jcb.svg',
     
     // Digital Wallets & Payment Apps
-    'alipay': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/alipay.svg',
-    'wechat': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/wechat.svg',
-    'wechat_pay': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/wechat.svg',
-    'apple_pay': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/apple-pay.svg',
-    'google_pay': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/google-pay.svg',
-    'paypal': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/paypal.svg',
-    'venmo': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/venmo.svg',
-    'cash_app': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/cash-app.svg',
-    'square': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/cash-app.svg',
+    'alipay': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/alipay.svg',
+    'wechat': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/wechat_pay.svg',
+    'wechat_pay': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/wechat_pay.svg',
+    'apple_pay': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/apple_pay.svg',
+    'google_pay': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/google_pay.svg',
+    'paypal': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/paypal.svg',
+    'venmo': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/venmo.svg',
+    'cash_app': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/cash_app.svg',
+    'square': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/cash_app.svg',
     
     // Bank Transfer Methods
-    'ideal': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/ideal.svg',
-    'sofort': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/sofort.svg',
-    'giropay': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/giropay.svg',
-    'sepa': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/sepa.svg',
-    'sepa_debit': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/sepa.svg',
-    'ach': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/sepa.svg',
-    'wire': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/sepa.svg',
-    'bank_transfer': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/sepa.svg',
-    'faster_payments': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/sepa.svg',
-    'real_time_payments': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/sepa.svg',
+    'ideal': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/ideal.svg',
+    'sofort': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/sofort.svg',
+    'giropay': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/giropay.svg',
+    'sepa': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/sepa.svg',
+    'sepa_debit': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/sepa.svg',
+    'ach': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/sepa.svg',
+    'wire': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/sepa.svg',
+    'bank_transfer': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/sepa.svg',
+    'faster_payments': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/sepa.svg',
+    'real_time_payments': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/sepa.svg',
     
     // Cryptocurrencies
     'bitcoin': 'https://cryptologos.cc/logos/bitcoin-btc-logo.svg',
@@ -52,28 +52,28 @@ export const PAYMENT_METHOD_LOGOS = {
     'crypto_currency': 'https://cryptologos.cc/logos/bitcoin-btc-logo.svg',
     
     // Buy Now Pay Later
-    'afterpay': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/afterpay.svg',
-    'klarna': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/klarna.svg',
-    'sezzle': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/sezzle.svg',
+    'afterpay': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/afterpay.svg',
+    'klarna': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/klarna.svg',
+    'sezzle': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/sezzle.svg',
     
     // Other Methods
-    'bancontact': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/bancontact.svg',
-    'multibanco': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/multibanco.svg',
-    'p24': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/przelewy24.svg',
-    'przelewy24': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/przelewy24.svg',
-    'eps': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/eps.svg',
+    'bancontact': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/bancontact.svg',
+    'multibanco': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/multibanco.svg',
+    'p24': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/przelewy24.svg',
+    'przelewy24': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/przelewy24.svg',
+    'eps': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/eps.svg',
     
     // Debit Specific
-    'visa_debit': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/visa.svg',
-    'mastercard_debit': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/mastercard.svg',
-    'debit_card': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/visa.svg',
-    'push_to_card': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/visa.svg',
+    'visa_debit': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/visa.svg',
+    'mastercard_debit': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/mastercard.svg',
+    'debit_card': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/visa.svg',
+    'push_to_card': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/visa.svg',
     
     // Generic/Fallback
-    'credit_card': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/visa.svg',
-    'card': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/visa.svg',
-    'wallet': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/paypal.svg',
-    'e_wallet': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/paypal.svg',
+    'credit_card': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/visa.svg',
+    'card': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/visa.svg',
+    'wallet': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/paypal.svg',
+    'e_wallet': 'https://raw.githubusercontent.com/mpay24/payment-logos/master/svg/paypal.svg',
 };
 
 // Get logo URL for a payment method
