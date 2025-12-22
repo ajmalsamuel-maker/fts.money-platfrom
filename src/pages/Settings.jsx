@@ -27,7 +27,9 @@ import {
     Plus,
     X,
     Coins,
-    UserCog
+    UserCog,
+    BookOpen,
+    ExternalLink
 } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -38,8 +40,11 @@ import { generateCryptoAssetDTI } from '@/components/utils/iso24165';
 import { getCryptoBlockchain } from '@/components/utils/cryptoRegistry';
 import { ROLE_CONFIG } from '@/components/auth/permissions';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useNavigate } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
 
 export default function Settings() {
+    const navigate = useNavigate();
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const queryClient = useQueryClient();
     const [userPspCode, setUserPspCode] = useState(null);
@@ -223,6 +228,7 @@ export default function Settings() {
                             <TabsTrigger value="login">Login & Security</TabsTrigger>
                             <TabsTrigger value="location">Location & Time</TabsTrigger>
                             <TabsTrigger value="currencies">Currencies</TabsTrigger>
+                            <TabsTrigger value="documentation">Documentation</TabsTrigger>
                         </TabsList>
 
                         <TabsContent value="company">
@@ -796,6 +802,68 @@ export default function Settings() {
                                             </div>
                                         </div>
                                     </div>
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
+
+                        <TabsContent value="documentation">
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle className="flex items-center gap-2">
+                                        <BookOpen className="h-5 w-5 text-blue-600" />
+                                        System Documentation
+                                    </CardTitle>
+                                    <CardDescription>Comprehensive platform architecture and technical guides</CardDescription>
+                                </CardHeader>
+                                <CardContent className="space-y-4">
+                                    <div 
+                                        onClick={() => navigate(createPageUrl('SystemArchitectureDocumentation'))}
+                                        className="flex items-center justify-between p-4 border-2 border-slate-200 rounded-lg hover:border-blue-400 hover:bg-blue-50 cursor-pointer transition-all group"
+                                    >
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center group-hover:bg-blue-200 transition-all">
+                                                <FileText className="h-6 w-6 text-blue-600" />
+                                            </div>
+                                            <div>
+                                                <h3 className="font-semibold text-slate-900 mb-1">System Architecture Documentation</h3>
+                                                <p className="text-sm text-slate-600">
+                                                    Complete technical documentation covering platform architecture, components, workflows, ISO standards, and compliance framework
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <ExternalLink className="h-5 w-5 text-slate-400 group-hover:text-blue-600" />
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+                                            <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
+                                                <Layers className="h-4 w-4 text-blue-600" />
+                                                Platform Components
+                                            </h4>
+                                            <p className="text-xs text-slate-600">Community Portal, FTS Platform, PSP Portal, Merchant Portal, Virtual Terminal</p>
+                                        </div>
+                                        <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+                                            <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
+                                                <Shield className="h-4 w-4 text-emerald-600" />
+                                                Security Framework
+                                            </h4>
+                                            <p className="text-xs text-slate-600">Multi-tenant isolation, LEI/vLEI compliance, RBAC, PCI DSS Level 1</p>
+                                        </div>
+                                        <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+                                            <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
+                                                <CheckCircle className="h-4 w-4 text-purple-600" />
+                                                ISO Standards
+                                            </h4>
+                                            <p className="text-xs text-slate-600">ISO 20022, ISO 8583, ISO 4217, ISO 23257, ISO 17442</p>
+                                        </div>
+                                    </div>
+
+                                    <Alert className="bg-blue-50 border-blue-200">
+                                        <Info className="h-4 w-4 text-blue-600" />
+                                        <AlertDescription className="text-sm text-blue-900">
+                                            This documentation is designed for technical stakeholders, developers, compliance officers, and regulators. It provides a complete overview of the platform's architecture, security model, and operational workflows.
+                                        </AlertDescription>
+                                    </Alert>
                                 </CardContent>
                             </Card>
                         </TabsContent>
