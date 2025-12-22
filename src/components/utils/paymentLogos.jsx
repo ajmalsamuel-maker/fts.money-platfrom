@@ -2,39 +2,39 @@
 // Used globally across Community Portal, FTS Platform, PSP Portal, Merchant Portal, and Virtual Terminal
 
 export const PAYMENT_METHOD_LOGOS = {
-    // Card Networks
-    'visa': 'https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png',
-    'mastercard': 'https://upload.wikimedia.org/wikipedia/commons/b/b7/MasterCard_Logo.svg',
-    'amex': 'https://upload.wikimedia.org/wikipedia/commons/f/fa/American_Express_logo_%282018%29.svg',
-    'american_express': 'https://upload.wikimedia.org/wikipedia/commons/f/fa/American_Express_logo_%282018%29.svg',
-    'discover': 'https://upload.wikimedia.org/wikipedia/commons/5/57/Discover_Card_logo.svg',
-    'unionpay': 'https://upload.wikimedia.org/wikipedia/commons/1/1b/UnionPay_logo.svg',
-    'china_union_pay': 'https://upload.wikimedia.org/wikipedia/commons/1/1b/UnionPay_logo.svg',
-    'diners_club': 'https://upload.wikimedia.org/wikipedia/commons/4/40/Diners_Club_Logo3.svg',
-    'jcb': 'https://upload.wikimedia.org/wikipedia/commons/4/40/JCB_logo.svg',
+    // Card Networks - Using CDN jsDelivr with payrexx logos
+    'visa': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/visa.svg',
+    'mastercard': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/mastercard.svg',
+    'amex': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/american-express.svg',
+    'american_express': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/american-express.svg',
+    'discover': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/discover.svg',
+    'unionpay': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/unionpay.svg',
+    'china_union_pay': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/unionpay.svg',
+    'diners_club': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/diners-club.svg',
+    'jcb': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/jcb.svg',
     
     // Digital Wallets & Payment Apps
-    'alipay': 'https://upload.wikimedia.org/wikipedia/commons/a/ac/Old_Alipay_logo.svg',
-    'wechat': 'https://upload.wikimedia.org/wikipedia/commons/1/1e/WeChat_logo_2020.svg',
-    'wechat_pay': 'https://upload.wikimedia.org/wikipedia/commons/1/1e/WeChat_logo_2020.svg',
-    'apple_pay': 'https://upload.wikimedia.org/wikipedia/commons/b/b0/Apple_Pay_logo.svg',
-    'google_pay': 'https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg',
-    'paypal': 'https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg',
-    'venmo': 'https://upload.wikimedia.org/wikipedia/commons/3/3f/Venmo_logo.svg',
-    'cash_app': 'https://upload.wikimedia.org/wikipedia/commons/c/c5/Square_Cash_app_logo.svg',
-    'square': 'https://upload.wikimedia.org/wikipedia/commons/c/c5/Square_Cash_app_logo.svg',
+    'alipay': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/alipay.svg',
+    'wechat': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/wechat.svg',
+    'wechat_pay': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/wechat.svg',
+    'apple_pay': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/apple-pay.svg',
+    'google_pay': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/google-pay.svg',
+    'paypal': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/paypal.svg',
+    'venmo': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/venmo.svg',
+    'cash_app': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/cash-app.svg',
+    'square': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/cash-app.svg',
     
     // Bank Transfer Methods
-    'ideal': 'https://upload.wikimedia.org/wikipedia/commons/f/f8/IDEAL_Logo.svg',
-    'sofort': 'https://upload.wikimedia.org/wikipedia/commons/7/7b/Sofort_%C3%9Cberweisung_Logo.svg',
-    'giropay': 'https://upload.wikimedia.org/wikipedia/commons/e/e8/Giropay-Logo-2024.svg',
-    'sepa': 'https://upload.wikimedia.org/wikipedia/commons/e/e4/Single_Euro_Payments_Area_logo.svg',
-    'sepa_debit': 'https://upload.wikimedia.org/wikipedia/commons/e/e4/Single_Euro_Payments_Area_logo.svg',
-    'ach': 'https://upload.wikimedia.org/wikipedia/commons/e/e4/Single_Euro_Payments_Area_logo.svg',
-    'wire': 'https://upload.wikimedia.org/wikipedia/commons/e/e4/Single_Euro_Payments_Area_logo.svg',
-    'bank_transfer': 'https://upload.wikimedia.org/wikipedia/commons/e/e4/Single_Euro_Payments_Area_logo.svg',
-    'faster_payments': 'https://upload.wikimedia.org/wikipedia/commons/e/e4/Single_Euro_Payments_Area_logo.svg',
-    'real_time_payments': 'https://upload.wikimedia.org/wikipedia/commons/e/e4/Single_Euro_Payments_Area_logo.svg',
+    'ideal': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/ideal.svg',
+    'sofort': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/sofort.svg',
+    'giropay': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/giropay.svg',
+    'sepa': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/sepa.svg',
+    'sepa_debit': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/sepa.svg',
+    'ach': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/sepa.svg',
+    'wire': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/sepa.svg',
+    'bank_transfer': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/sepa.svg',
+    'faster_payments': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/sepa.svg',
+    'real_time_payments': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/sepa.svg',
     
     // Cryptocurrencies
     'bitcoin': 'https://cryptologos.cc/logos/bitcoin-btc-logo.svg',
@@ -52,28 +52,28 @@ export const PAYMENT_METHOD_LOGOS = {
     'crypto_currency': 'https://cryptologos.cc/logos/bitcoin-btc-logo.svg',
     
     // Buy Now Pay Later
-    'afterpay': 'https://upload.wikimedia.org/wikipedia/commons/b/bc/Afterpay-logo-2020.svg',
-    'klarna': 'https://upload.wikimedia.org/wikipedia/commons/e/e9/Klarna_Logo_black.svg',
-    'sezzle': 'https://upload.wikimedia.org/wikipedia/commons/f/fc/Sezzle_Logo.svg',
+    'afterpay': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/afterpay.svg',
+    'klarna': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/klarna.svg',
+    'sezzle': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/sezzle.svg',
     
     // Other Methods
-    'bancontact': 'https://upload.wikimedia.org/wikipedia/commons/b/b8/Bancontact_logo.svg',
-    'multibanco': 'https://upload.wikimedia.org/wikipedia/commons/8/8a/Multibanco_logo.svg',
-    'p24': 'https://upload.wikimedia.org/wikipedia/commons/e/e9/Przelewy24_logo.svg',
-    'przelewy24': 'https://upload.wikimedia.org/wikipedia/commons/e/e9/Przelewy24_logo.svg',
-    'eps': 'https://upload.wikimedia.org/wikipedia/commons/6/6a/EPS_logo.svg',
+    'bancontact': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/bancontact.svg',
+    'multibanco': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/multibanco.svg',
+    'p24': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/przelewy24.svg',
+    'przelewy24': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/przelewy24.svg',
+    'eps': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/eps.svg',
     
     // Debit Specific
-    'visa_debit': 'https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png',
-    'mastercard_debit': 'https://upload.wikimedia.org/wikipedia/commons/b/b7/MasterCard_Logo.svg',
-    'debit_card': 'https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png',
-    'push_to_card': 'https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png',
+    'visa_debit': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/visa.svg',
+    'mastercard_debit': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/mastercard.svg',
+    'debit_card': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/visa.svg',
+    'push_to_card': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/visa.svg',
     
     // Generic/Fallback
-    'credit_card': 'https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png',
-    'card': 'https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png',
-    'wallet': 'https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg',
-    'e_wallet': 'https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg',
+    'credit_card': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/visa.svg',
+    'card': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/visa.svg',
+    'wallet': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/paypal.svg',
+    'e_wallet': 'https://cdn.jsdelivr.net/gh/payrexx/payment-logos/paypal.svg',
 };
 
 // Get logo URL for a payment method
