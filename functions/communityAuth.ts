@@ -23,8 +23,8 @@ Deno.serve(async (req) => {
         switch (action) {
             case 'register': {
                 // Register a new community user
-                if (!email || !password) {
-                    return Response.json({ success: false, error: 'Email and password required' }, { status: 400 });
+                if (!email || !password || !full_name) {
+                    return Response.json({ success: false, error: 'Email, password, and full name are required' }, { status: 400 });
                 }
 
                 // Check if user already exists
