@@ -79,10 +79,15 @@ export default function VirtualTerminal() {
             // Get PSP code from merchant record
             const pspCode = merchant?.psp_code;
             
+            console.log('🔵 VT: Processing transaction...');
+            console.log('🔵 VT: PSP Code:', pspCode);
+            console.log('🔵 VT: Merchant ID:', user.merchant_id);
+            
             const transactionId = `TXN-${Date.now()}-${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
             const authCode = Math.random().toString(36).substr(2, 9).toUpperCase();
             
             // Call backend function to process transaction (uses service role)
+            console.log('🔵 VT: Calling vtAuth function...');
             const result = await base44.functions.invoke('vtAuth', {
                 action: 'processTransaction',
                 transaction: {
@@ -108,6 +113,12 @@ export default function VirtualTerminal() {
                 }
             });
 
+            console.log('✅ VT: Transaction result:', result);
+            
+            if (!result.data?.success) {
+                throw new Error(result.data?.error || 'Transaction failed');
+            }
+
             // Show result dialog
             setTransactionResult({
                 success: true,
@@ -118,6 +129,8 @@ export default function VirtualTerminal() {
                 status: 'approved'
             });
             setResultDialogOpen(true);
+            
+            console.log('✅ VT: Dialog opened with result');
             
             // Clear form
             setFormData({
@@ -132,17 +145,21 @@ export default function VirtualTerminal() {
                 description: ''
             });
         } catch (error) {
-            console.error('Transaction error:', error);
+            console.error('❌ VT: Transaction error:', error);
+            console.error('❌ VT: Error details:', error.response?.data || error.message);
             
             // Show error dialog
             setTransactionResult({
                 success: false,
-                error: error.message || 'Payment processing failed',
+                error: error.response?.data?.error || error.message || 'Payment processing failed',
                 status: 'declined'
             });
             setResultDialogOpen(true);
+            
+            console.log('❌ VT: Error dialog opened');
         } finally {
             setProcessing(false);
+            console.log('🔵 VT: Processing complete');
         }
     };
 

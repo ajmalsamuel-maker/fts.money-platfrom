@@ -99,13 +99,24 @@ Deno.serve(async (req) => {
 
         if (action === 'processTransaction') {
             // Process transaction with service role to ensure visibility
-            console.log('Processing VT transaction:', transaction);
-            const createdTxn = await base44.asServiceRole.entities.Transaction.create(transaction);
+            console.log('🔵 vtAuth: Processing VT transaction...');
+            console.log('🔵 vtAuth: Transaction data:', JSON.stringify(transaction, null, 2));
             
-            return Response.json({
-                success: true,
-                transaction: createdTxn
-            });
+            try {
+                const createdTxn = await base44.asServiceRole.entities.Transaction.create(transaction);
+                console.log('✅ vtAuth: Transaction created:', createdTxn.id);
+                
+                return Response.json({
+                    success: true,
+                    transaction: createdTxn
+                });
+            } catch (error) {
+                console.error('❌ vtAuth: Transaction creation error:', error);
+                return Response.json({
+                    success: false,
+                    error: error.message || 'Failed to create transaction'
+                }, { status: 500 });
+            }
         }
 
         return Response.json({ 
