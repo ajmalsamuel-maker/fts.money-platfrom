@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import StaffAuthWrapper from '@/components/auth/StaffAuthWrapper';
 import Sidebar from '@/components/dashboard/Sidebar';
 import TopHeader from '@/components/dashboard/TopHeader';
 import { cn } from "@/lib/utils";
@@ -193,8 +192,7 @@ export default function Settings() {
     };
 
     return (
-        <StaffAuthWrapper>
-            <div className="min-h-screen bg-slate-50">
+        <div className="min-h-screen bg-slate-50">
                 <Toaster position="top-right" />
                 <Sidebar collapsed={sidebarCollapsed} currentPage="Settings" />
             <div className={cn("transition-all duration-300", "ml-64")}>
@@ -805,6 +803,5 @@ export default function Settings() {
                 </main>
             </div>
         </div>
-        </StaffAuthWrapper>
     );
 }
