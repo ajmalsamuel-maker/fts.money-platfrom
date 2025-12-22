@@ -723,58 +723,14 @@ export default function PSPProvisioningWizard() {
 
 
 
-                            {step === 7 && (
+                            {step === 5 && (
                                 <div>
-                                    <h2 className="text-xl font-semibold mb-4">Payout Methods Configuration</h2>
-                                    <h3 className="font-medium text-slate-900 mb-3 flex items-center gap-2">
-                                        <ArrowLeft className="h-5 w-5 text-emerald-600 rotate-180" />
-                                        Payout Methods
-                                    </h3>
-                                            <div className="space-y-3">
-                                                {payoutMethodOptions.map((category) => (
-                                                    <div key={category.category}>
-                                                        <h4 className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
-                                                            <span className="bg-emerald-100 text-emerald-700 px-2 py-1 rounded">{category.category}</span>
-                                                        </h4>
-                                                        <div className="grid grid-cols-5 gap-2">
-                                                            {category.methods.map((method) => (
-                                                                <label key={method} className="flex items-center gap-2 p-2 border border-slate-200 rounded hover:bg-slate-50 cursor-pointer">
-                                                                    <input
-                                                                        type="checkbox"
-                                                                        checked={formData.enabled_payout_methods.includes(method)}
-                                                                        onChange={(e) => {
-                                                                            if (e.target.checked) {
-                                                                                setFormData({...formData, enabled_payout_methods: [...formData.enabled_payout_methods, method]});
-                                                                            } else {
-                                                                                setFormData({...formData, enabled_payout_methods: formData.enabled_payout_methods.filter(m => m !== method)});
-                                                                            }
-                                                                        }}
-                                                                        className="w-3 h-3"
-                                                                    />
-                                                                    <span className="text-xs capitalize">{method.replace(/_/g, ' ')}</span>
-                                                                </label>
-                                                            ))}
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                                
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {step === 6 && (
-                                <div>
-                                    <h2 className="text-xl font-semibold mb-4">Payment Methods Configuration</h2>
+                                    <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                                        <DollarSign className="h-5 w-5 text-blue-600" />
+                                        Transaction Fee Structure
+                                    </h2>
                                     
-                                    <div className="space-y-6">
-                                        <div>
-                                            <h3 className="font-medium text-slate-900 mb-3 flex items-center gap-2">
-                                                <DollarSign className="h-5 w-5 text-blue-600" />
-                                                Payment Methods
-                                            </h3>
+                                    <Alert className="mb-4 bg-slate-50 border-slate-200">
                                         <Info className="h-4 w-4 text-slate-600" />
                                         <AlertDescription className="text-sm text-slate-700">
                                             Configure detailed fee structure for different payment types. Percentage fees + fixed fees apply per transaction.
@@ -923,6 +879,152 @@ export default function PSPProvisioningWizard() {
                                                         className="w-full px-3 py-2 border border-slate-300 rounded-lg"
                                                     />
                                                 </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {step === 6 && (
+                                <div>
+                                    <h2 className="text-xl font-semibold mb-4">Payment Methods Configuration</h2>
+                                    
+                                    <div className="space-y-4 max-h-[500px] overflow-y-auto">
+                                        {paymentMethodOptions.map((category) => (
+                                            <div key={category.category}>
+                                                <h4 className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
+                                                    <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded">{category.category}</span>
+                                                </h4>
+                                                <div className="grid grid-cols-4 gap-2">
+                                                    {category.methods.map((method) => (
+                                                        <label key={method} className="flex items-center gap-2 p-2 border border-slate-200 rounded-lg hover:bg-slate-50 cursor-pointer">
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={formData.enabled_payment_methods.includes(method)}
+                                                                onChange={(e) => {
+                                                                    if (e.target.checked) {
+                                                                        setFormData({...formData, enabled_payment_methods: [...formData.enabled_payment_methods, method]});
+                                                                    } else {
+                                                                        setFormData({...formData, enabled_payment_methods: formData.enabled_payment_methods.filter(m => m !== method)});
+                                                                    }
+                                                                }}
+                                                                className="w-4 h-4"
+                                                            />
+                                                            <span className="text-sm capitalize">{method.replace(/_/g, ' ')}</span>
+                                                        </label>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        ))}
+                                        
+                                        {paymentProviders.length > 0 && (
+                                            <div>
+                                                <h4 className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
+                                                    <span className="bg-purple-100 text-purple-700 px-2 py-1 rounded">Payment Processors</span>
+                                                </h4>
+                                                <div className="grid grid-cols-3 gap-2">
+                                                    {paymentProviders.map((provider) => (
+                                                        <label key={provider.id} className="flex items-center gap-2 p-2 border border-slate-200 rounded-lg hover:bg-slate-50 cursor-pointer">
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={formData.enabled_payment_methods.includes(provider.id)}
+                                                                onChange={(e) => {
+                                                                    if (e.target.checked) {
+                                                                        setFormData({...formData, enabled_payment_methods: [...formData.enabled_payment_methods, provider.id]});
+                                                                    } else {
+                                                                        setFormData({...formData, enabled_payment_methods: formData.enabled_payment_methods.filter(id => id !== provider.id)});
+                                                                    }
+                                                                }}
+                                                                className="w-4 h-4"
+                                                            />
+                                                            <span className="text-sm">{provider.provider_name}</span>
+                                                        </label>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+
+                            {step === 7 && (
+                                <div>
+                                    <h2 className="text-xl font-semibold mb-4">Payout Methods Configuration</h2>
+                                    <div className="space-y-3">
+                                        {payoutMethodOptions.map((category) => (
+                                            <div key={category.category}>
+                                                <h4 className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
+                                                    <span className="bg-emerald-100 text-emerald-700 px-2 py-1 rounded">{category.category}</span>
+                                                </h4>
+                                                <div className="grid grid-cols-5 gap-2">
+                                                    {category.methods.map((method) => (
+                                                        <label key={method} className="flex items-center gap-2 p-2 border border-slate-200 rounded hover:bg-slate-50 cursor-pointer">
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={formData.enabled_payout_methods.includes(method)}
+                                                                onChange={(e) => {
+                                                                    if (e.target.checked) {
+                                                                        setFormData({...formData, enabled_payout_methods: [...formData.enabled_payout_methods, method]});
+                                                                    } else {
+                                                                        setFormData({...formData, enabled_payout_methods: formData.enabled_payout_methods.filter(m => m !== method)});
+                                                                    }
+                                                                }}
+                                                                className="w-3 h-3"
+                                                            />
+                                                            <span className="text-xs capitalize">{method.replace(/_/g, ' ')}</span>
+                                                        </label>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {step === 8 && (
+                                <div>
+                                    <h2 className="text-xl font-semibold mb-4">Regional Settings</h2>
+                                    <div className="space-y-6">
+                                        <div className="grid grid-cols-2 gap-6">
+                                            <div>
+                                                <label className="block text-sm font-medium mb-1">Default Currency (ISO 4217)</label>
+                                                <select
+                                                    value={formData.currency}
+                                                    onChange={(e) => setFormData({...formData, currency: e.target.value})}
+                                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                                                >
+                                                    {ISO4217_CURRENCIES.map(c => <option key={c.code} value={c.code}>{c.code} - {c.name}</option>)}
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium mb-1">Timezone</label>
+                                                <select
+                                                    value={formData.timezone}
+                                                    onChange={(e) => setFormData({...formData, timezone: e.target.value})}
+                                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                                                >
+                                                    {TIMEZONES.map(tz => <option key={tz} value={tz}>{tz}</option>)}
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium mb-1">Operating Region</label>
+                                                <select
+                                                    value={formData.country}
+                                                    onChange={(e) => setFormData({...formData, country: e.target.value})}
+                                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg"
+                                                >
+                                                    <option value="">Select country</option>
+                                                    {COUNTRIES.map(c => <option key={c.code} value={c.code}>{c.name}</option>)}
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium mb-1">Language</label>
+                                                <select className="w-full px-3 py-2 border border-slate-300 rounded-lg">
+                                                    <option value="en">English</option>
+                                                    <option value="zh">Chinese</option>
+                                                    <option value="es">Spanish</option>
+                                                    <option value="fr">French</option>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
