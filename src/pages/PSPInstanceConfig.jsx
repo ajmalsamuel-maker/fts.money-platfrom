@@ -68,6 +68,15 @@ export default function PSPInstanceConfig() {
         enabled: !!pspId
     });
 
+    const { data: subscriptions = [] } = useQuery({
+        queryKey: ['psp-subscriptions', psp?.psp_code],
+        queryFn: async () => {
+            if (!psp?.psp_code) return [];
+            return await base44.entities.PSPServiceSubscription.filter({ psp_code: psp.psp_code });
+        },
+        enabled: !!psp?.psp_code
+    });
+
     const [config, setConfig] = useState({
         branding: {},
         transaction_fees: {},
@@ -270,7 +279,11 @@ export default function PSPInstanceConfig() {
                                             <div className="space-y-2">
                                                 {categoryServices.map((service) => {
                                                     const serviceIdentifier = service.service_id || service.id;
-                                                    const isEnabled = config.enabled_services?.includes(serviceIdentifier);
+                                                    const isSubscribed = subscriptions.some(sub => 
+                                                        (sub.service_id === serviceIdentifier || sub.service_id === service.id) && 
+                                                        sub.status === 'active'
+                                                    );
+                                                    const isEnabled = config.enabled_services?.includes(serviceIdentifier) || isSubscribed;
                                                     return (
                                                         <div
                                                             key={service.id}
