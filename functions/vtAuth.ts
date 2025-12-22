@@ -1,11 +1,4 @@
-import pg from 'npm:pg@8.11.3';
-
-const { Pool } = pg;
-
-const pool = new Pool({
-    connectionString: Deno.env.get("DATABASE_URL"),
-    ssl: { rejectUnauthorized: false }
-});
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
 
 Deno.serve(async (req) => {
     if (req.method === 'OPTIONS') {
@@ -19,30 +12,29 @@ Deno.serve(async (req) => {
     }
 
     try {
+        const base44 = createClientFromRequest(req);
         const body = await req.json();
-        const { action, email, password, user_id, new_password } = body;
+        const { action, email, password, user_id, new_password, transaction } = body;
 
         if (action === 'login') {
             console.log('VT Login attempt for:', email);
             
-            const result = await pool.query(`
-                SELECT id, terminal_id, merchant_id, email, full_name, role, status,
-                       temp_password, must_change_password, last_login, permissions
-                FROM virtual_terminal_users 
-                WHERE email = $1 AND status = 'active'
-            `, [email]);
+            const users = await base44.asServiceRole.entities.VirtualTerminalUser.filter({
+                email: email,
+                status: 'active'
+            });
 
-            console.log('DB Query result:', result.rows.length, 'rows');
+            console.log('Query result:', users?.length || 0, 'users');
 
-            if (!result.rows || result.rows.length === 0) {
-                console.log('User not found in database');
+            if (!users || users.length === 0) {
+                console.log('User not found');
                 return Response.json({ 
                     success: false, 
                     error: 'Invalid credentials'
                 }, { status: 401 });
             }
 
-            const user = result.rows[0];
+            const user = users[0];
             console.log('User found:', user.email);
 
             if (user.temp_password !== password) {
@@ -53,7 +45,9 @@ Deno.serve(async (req) => {
                 }, { status: 401 });
             }
 
-            await pool.query('UPDATE virtual_terminal_users SET last_login = NOW() WHERE id = $1', [user.id]);
+            await base44.asServiceRole.entities.VirtualTerminalUser.update(user.id, {
+                last_login: new Date().toISOString()
+            });
 
             const session = {
                 user_id: user.id,
@@ -76,13 +70,12 @@ Deno.serve(async (req) => {
 
         if (action === 'validate') {
             const { email: session_email } = body;
-            const result = await pool.query(`
-                SELECT id, terminal_id, merchant_id, email, full_name, role, status, permissions, must_change_password
-                FROM virtual_terminal_users 
-                WHERE email = $1 AND status = 'active'
-            `, [session_email || user_id]);
+            const users = await base44.asServiceRole.entities.VirtualTerminalUser.filter({
+                email: session_email,
+                status: 'active'
+            });
 
-            if (!result.rows || result.rows.length === 0) {
+            if (!users || users.length === 0) {
                 return Response.json({ 
                     success: false, 
                     error: 'Session expired' 
@@ -91,18 +84,28 @@ Deno.serve(async (req) => {
 
             return Response.json({
                 success: true,
-                user: result.rows[0]
+                user: users[0]
             });
         }
 
         if (action === 'change_password') {
-            await pool.query(`
-                UPDATE virtual_terminal_users 
-                SET temp_password = $1, must_change_password = false 
-                WHERE id = $2
-            `, [new_password, user_id]);
+            await base44.asServiceRole.entities.VirtualTerminalUser.update(user_id, {
+                temp_password: new_password,
+                must_change_password: false
+            });
 
             return Response.json({ success: true });
+        }
+
+        if (action === 'processTransaction') {
+            // Process transaction with service role to ensure visibility
+            console.log('Processing VT transaction:', transaction);
+            const createdTxn = await base44.asServiceRole.entities.Transaction.create(transaction);
+            
+            return Response.json({
+                success: true,
+                transaction: createdTxn
+            });
         }
 
         return Response.json({ 
