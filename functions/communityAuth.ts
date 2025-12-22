@@ -27,10 +27,10 @@ Deno.serve(async (req) => {
                     return Response.json({ success: false, error: 'Email, password, and full name are required' }, { status: 400 });
                 }
 
-                // Check if user already exists
-                const existingUsers = await base44.asServiceRole.entities.AuthUser.filter({ email });
+                // Check if user already exists for THIS account type (multi-tenant: same email can exist for different account types)
+                const existingUsers = await base44.asServiceRole.entities.AuthUser.filter({ email, account_type: 'community' });
                 if (existingUsers.length > 0) {
-                    return Response.json({ success: false, error: 'Email already registered' }, { status: 400 });
+                    return Response.json({ success: false, error: 'Email already registered as community user' }, { status: 400 });
                 }
 
                 // Hash password
