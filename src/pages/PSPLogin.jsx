@@ -12,15 +12,6 @@ export default function PSPLogin() {
     const [checkComplete, setCheckComplete] = React.useState(false);
     
     React.useEffect(() => {
-        // Check if we already redirected in this page load
-        const redirectFlag = sessionStorage.getItem('psp_redirect_attempted');
-        if (redirectFlag === 'true') {
-            console.log('🔐 PSPLogin: Redirect already attempted, showing login form');
-            sessionStorage.removeItem('psp_redirect_attempted');
-            setCheckComplete(true);
-            return;
-        }
-        
         console.log('🔐 PSPLogin: Checking for existing session...');
         const existingSession = localStorage.getItem('staff_session');
         console.log('🔐 PSPLogin: Session found:', !!existingSession);
@@ -30,8 +21,7 @@ export default function PSPLogin() {
                 const session = JSON.parse(existingSession);
                 console.log('🔐 PSPLogin: Session parsed:', session);
                 if (session?.psp_code) {
-                    console.log('🔐 PSPLogin: Valid session, setting redirect flag and navigating...');
-                    sessionStorage.setItem('psp_redirect_attempted', 'true');
+                    console.log('🔐 PSPLogin: Valid session, navigating to Dashboard...');
                     window.location.replace('/Dashboard');
                     return;
                 }
