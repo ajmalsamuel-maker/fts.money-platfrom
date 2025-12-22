@@ -51,8 +51,11 @@ Deno.serve(async (req) => {
 
             // Check password - try both temp_password and password_hash
             const storedPassword = user.temp_password || user.password_hash;
+            console.log('Comparing password - stored:', storedPassword ? 'exists' : 'missing', 'provided:', password ? 'exists' : 'missing');
+            
+            // Direct comparison (plain text passwords)
             if (storedPassword !== password) {
-                console.log('Password mismatch');
+                console.log('Password mismatch - stored:', storedPassword, 'provided:', password);
                 return Response.json({ 
                     success: false, 
                     error: 'Invalid credentials'
