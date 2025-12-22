@@ -30,8 +30,8 @@ export default function CommunityUserManagement() {
     const { data: communityUsers = [], isLoading: usersLoading } = useQuery({
         queryKey: ['community-users'],
         queryFn: async () => {
-            const allUsers = await base44.asServiceRole.entities.AuthUser.list('-created_date');
-            return allUsers.filter(u => u.account_type === 'community');
+            const allUsers = await base44.asServiceRole.entities.AuthUser.filter({ account_type: 'community' }, '-created_date');
+            return allUsers;
         },
         enabled: !loading
     });
