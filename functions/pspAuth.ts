@@ -19,7 +19,7 @@ Deno.serve(async (req) => {
                     SELECT schema_name 
                     FROM information_schema.schemata 
                     WHERE schema_name = $1
-                `, [`psp_${psp_code.toLowerCase()}`]);
+                `, [`psp_${psp_code.toLowerCase().replace(/-/g, '_')}`]);
                 
                 if (schemaCheck.rows.length === 0) {
                     return Response.json({
@@ -44,8 +44,8 @@ Deno.serve(async (req) => {
             const client = await pool.connect();
             
             try {
-                const schemaName = `psp_${psp_code.toLowerCase()}`;
-                await client.query(`SET search_path TO ${schemaName}`);
+                const schemaName = `psp_${psp_code.toLowerCase().replace(/-/g, '_')}`;
+                await client.query(`SET search_path TO "${schemaName}"`);
                 
                 const result = await client.query(`
                     SELECT id, email, full_name, role, status
@@ -88,8 +88,8 @@ Deno.serve(async (req) => {
             const client = await pool.connect();
             
             try {
-                const schemaName = `psp_${psp_code.toLowerCase()}`;
-                await client.query(`SET search_path TO ${schemaName}`);
+                const schemaName = `psp_${psp_code.toLowerCase().replace(/-/g, '_')}`;
+                await client.query(`SET search_path TO "${schemaName}"`);
                 
                 const result = await client.query(`
                     SELECT id, email, full_name, role, status, password_hash
