@@ -194,6 +194,7 @@ import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
 import Subscriptions from './pages/Subscriptions';
 import PaymentMethods from './pages/PaymentMethods';
+import CustomerAnalytics from './pages/CustomerAnalytics';
 import __Layout from './Layout.jsx';
 
 
@@ -394,6 +395,7 @@ export const PAGES = {
     "XeroIntegration": XeroIntegration,
     "Subscriptions": Subscriptions,
     "PaymentMethods": PaymentMethods,
+    "CustomerAnalytics": CustomerAnalytics,
 }
 
 export const pagesConfig = {
