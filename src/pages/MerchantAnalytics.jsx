@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { format, subDays, startOfMonth, endOfMonth } from 'date-fns';
-import MerchantSidebar from '@/components/merchant/MerchantSidebar';
-import MerchantTopBar from '@/components/merchant/MerchantTopBar';
+import Sidebar from '@/components/dashboard/Sidebar';
+import TopHeader from '@/components/dashboard/TopHeader';
+import { getStaffSession } from '@/components/auth/useStaffAuth';
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -82,17 +83,16 @@ export default function MerchantAnalytics() {
         to: new Date()
     });
     const [categoryFilter, setCategoryFilter] = useState('all');
-    const [selectedMID, setSelectedMID] = useState('');
-    const [user, setUser] = useState(null);
+    const [userPspCode, setUserPspCode] = useState(null);
+    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
     React.useEffect(() => {
-        const loadUser = async () => {
-            try {
-                const currentUser = await base44.auth.me();
-                setUser(currentUser);
-            } catch (err) {}
-        };
-        loadUser();
+        const session = getStaffSession();
+        if (!session?.psp_code) {
+            window.location.href = '/PSPLogin';
+            return;
+        }
+        setUserPspCode(session.psp_code);
     }, []);
 
     const { data: merchants = [], isLoading: loadingMerchants } = useQuery({
@@ -100,20 +100,7 @@ export default function MerchantAnalytics() {
         queryFn: () => base44.entities.Merchant.list('-total_volume'),
     });
 
-    const { data: mids = [] } = useQuery({
-        queryKey: ['merchant-mids', user?.merchant_id],
-        queryFn: async () => {
-            if (!user?.merchant_id) return [];
-            return await base44.entities.MerchantMID.filter({ merchant_id: user.merchant_id });
-        },
-        enabled: !!user?.merchant_id
-    });
 
-    React.useEffect(() => {
-        if (mids.length > 0 && !selectedMID) {
-            setSelectedMID(mids[0].mid);
-        }
-    }, [mids, selectedMID]);
 
     const { data: transactions = [] } = useQuery({
         queryKey: ['transactions'],
@@ -269,18 +256,21 @@ export default function MerchantAnalytics() {
         );
     };
 
+    if (!userPspCode) return null;
+
     return (
-        <div className="min-h-screen bg-slate-50 flex">
-            <MerchantSidebar 
-                selectedMID={selectedMID}
-                mids={mids}
-                onMIDChange={setSelectedMID}
+        <div className="min-h-screen bg-slate-50">
+            <Sidebar 
+                collapsed={sidebarCollapsed} 
+                onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
                 currentPage="MerchantAnalytics"
-                user={user}
             />
             
-            <div className="flex-1 flex flex-col">
-                <MerchantTopBar user={user} />
+            <div className={cn("transition-all duration-300 lg:ml-20", sidebarCollapsed && "ml-0")}>
+                <TopHeader 
+                    onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
+                    collapsed={sidebarCollapsed}
+                />
                 
                 <main className="p-6">
                     {/* Header */}
