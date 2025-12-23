@@ -390,6 +390,12 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
     const logoUrl = pspSettings?.branding?.logo_url;
 
     const activeGroupData = filteredMenuItems.find(g => g.group === activeGroup);
+    
+    // Debug: Log active group data
+    if (activeGroup === 'system' && activeGroupData) {
+        const docItem = activeGroupData.items.find(i => i.label === 'documentation');
+        console.log('🎯 ACTIVE GROUP DATA - Documentation item:', docItem);
+    }
 
     return (
         <>
