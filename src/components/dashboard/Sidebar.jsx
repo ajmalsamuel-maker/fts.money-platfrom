@@ -299,21 +299,31 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                                 }))
                             }));
                             
-                            console.log('🎯 SIDEBAR: Generated dynamic menu:', formattedMenus);
-                            
                             // Add documentation submenu to system group
                             const systemGroup = formattedMenus.find(g => g.group === 'system');
                             if (systemGroup) {
-                                const docItem = systemGroup.items.find(i => i.label === 'documentation' || i.path === 'FTSArchitectureDoc');
-                                if (docItem) {
-                                    docItem.submenu = [
-                                        { icon: FileText, label: 'platformArchitecture', path: 'FTSArchitectureDoc', permission: 'VIEW_SETTINGS' },
-                                        { icon: Building2, label: 'productEcosystem', path: 'FTSProductEcosystemReport', permission: 'VIEW_SETTINGS' },
-                                        { icon: TrendingUp, label: 'verticalSolutions', path: 'FTSVerticalSolutions', permission: 'VIEW_SETTINGS' },
-                                    ];
+                                // Find or create documentation item
+                                let docItem = systemGroup.items.find(i => i.label === 'documentation' || i.path === 'FTSArchitectureDoc');
+                                if (!docItem) {
+                                    // Add documentation item if it doesn't exist
+                                    systemGroup.items.push({
+                                        icon: iconMap['FileText'] || FileText,
+                                        label: 'documentation',
+                                        path: 'FTSArchitectureDoc',
+                                        permission: 'VIEW_SETTINGS'
+                                    });
+                                    docItem = systemGroup.items[systemGroup.items.length - 1];
                                 }
+                                
+                                // Add submenu
+                                docItem.submenu = [
+                                    { icon: iconMap['FileText'] || FileText, label: 'platformArchitecture', path: 'FTSArchitectureDoc', permission: 'VIEW_SETTINGS' },
+                                    { icon: iconMap['Building2'] || Building2, label: 'productEcosystem', path: 'FTSProductEcosystemReport', permission: 'VIEW_SETTINGS' },
+                                    { icon: iconMap['TrendingUp'] || TrendingUp, label: 'verticalSolutions', path: 'FTSVerticalSolutions', permission: 'VIEW_SETTINGS' },
+                                ];
                             }
                             
+                            console.log('🎯 SIDEBAR: Generated dynamic menu with docs:', formattedMenus);
                             setMenuItems(formattedMenus);
                         } else {
                             console.log('⚠️ SIDEBAR: No enabled_features, using default menu');
