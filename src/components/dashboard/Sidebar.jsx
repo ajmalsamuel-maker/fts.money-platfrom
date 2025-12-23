@@ -287,7 +287,7 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                             const generator = new SmartMenuGenerator(psp.enabled_features);
                             const dynamicMenus = generator.generateMenus();
                             
-                            // Convert to format expected by sidebar
+                            // Convert to format expected by sidebar (preserve submenu if exists)
                             const formattedMenus = dynamicMenus.map(group => ({
                                 group: group.id,
                                 icon: iconMap[group.icon] || Settings,
@@ -295,7 +295,8 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                                     icon: iconMap[item.icon] || FileText,
                                     label: item.label,
                                     path: item.path,
-                                    permission: item.permission
+                                    permission: item.permission,
+                                    submenu: item.submenu // Preserve submenu if it exists
                                 }))
                             }));
                             
