@@ -52,18 +52,44 @@ export default function MerchantUsers() {
     const [copied, setCopied] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const queryClient = useQueryClient();
+    const [userPspCode, setUserPspCode] = useState(null);
 
     const [newUser, setNewUser] = useState({ full_name: '', email: '', merchant_id: '', role: 'operator', phone: '' });
     const [passwordForm, setPasswordForm] = useState({ password: '', confirmPassword: '' });
 
+    // Get PSP code from staff session
+    React.useEffect(() => {
+        const sessionData = localStorage.getItem('staff_session');
+        if (sessionData) {
+            const session = JSON.parse(sessionData);
+            setUserPspCode(session.psp_code);
+        } else {
+            window.location.href = '/PSPLogin';
+        }
+    }, []);
+
     const { data: users = [] } = useQuery({
-        queryKey: ['merchant-users'],
-        queryFn: () => base44.entities.MerchantUser.list('-created_date'),
+        queryKey: ['merchant-users', userPspCode],
+        queryFn: async () => {
+            const response = await base44.functions.invoke('pspData', {
+                action: 'listMerchantUsers',
+                psp_code: userPspCode
+            });
+            return response.data.data || [];
+        },
+        enabled: !!userPspCode
     });
 
     const { data: merchants = [] } = useQuery({
-        queryKey: ['merchants'],
-        queryFn: () => base44.entities.Merchant.list(),
+        queryKey: ['merchants', userPspCode],
+        queryFn: async () => {
+            const response = await base44.functions.invoke('pspData', {
+                action: 'listMerchants',
+                psp_code: userPspCode
+            });
+            return response.data.data || [];
+        },
+        enabled: !!userPspCode
     });
 
     const createUser = useMutation({
