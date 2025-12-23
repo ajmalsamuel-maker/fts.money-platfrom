@@ -389,12 +389,15 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
     const companyName = pspSettings?.psp_name || pspSettings?.branding?.company_name || 'PaymentHub';
     const logoUrl = pspSettings?.branding?.logo_url;
 
+    // Get active group data
     const activeGroupData = filteredMenuItems.find(g => g.group === activeGroup);
     
-    // Debug: Log active group data
+    // Debug: Log what we're about to render
     if (activeGroup === 'system' && activeGroupData) {
         const docItem = activeGroupData.items.find(i => i.label === 'documentation');
-        console.log('🎯 ACTIVE GROUP DATA - Documentation item:', docItem);
+        console.log('🎯 ACTIVE GROUP - Full group:', activeGroupData);
+        console.log('🎯 ACTIVE GROUP - Documentation item found:', docItem);
+        console.log('🎯 ACTIVE GROUP - All items:', activeGroupData.items.map(i => ({label: i.label, hasSubmenu: !!i.submenu})));
     }
 
     return (
