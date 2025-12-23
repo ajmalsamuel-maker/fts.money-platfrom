@@ -198,6 +198,17 @@ const defaultMenuItems = [
             { icon: FileCheck, label: 'isoStandards', path: 'ISOConfiguration', permission: 'VIEW_SETTINGS' },
             { icon: Database, label: 'databaseTools', path: 'DatabaseSetup', permission: 'VIEW_SETTINGS' },
             { icon: Settings, label: 'generalSettings', path: 'Settings', permission: 'VIEW_SETTINGS' },
+            { 
+                icon: FileText, 
+                label: 'documentation', 
+                path: 'FTSArchitectureDoc', 
+                permission: 'VIEW_SETTINGS',
+                submenu: [
+                    { icon: FileText, label: 'platformArchitecture', path: 'FTSArchitectureDoc', permission: 'VIEW_SETTINGS' },
+                    { icon: Building2, label: 'productEcosystem', path: 'FTSProductEcosystemReport', permission: 'VIEW_SETTINGS' },
+                    { icon: TrendingUp, label: 'verticalSolutions', path: 'FTSVerticalSolutions', permission: 'VIEW_SETTINGS' },
+                ]
+            },
         ]
     },
     {
