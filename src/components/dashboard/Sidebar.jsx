@@ -299,31 +299,38 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                                 }))
                             }));
                             
-                            // Add documentation submenu to system group
-                            const systemGroup = formattedMenus.find(g => g.group === 'system');
-                            if (systemGroup) {
-                                // Find or create documentation item
-                                let docItem = systemGroup.items.find(i => i.label === 'documentation' || i.path === 'FTSArchitectureDoc');
-                                if (!docItem) {
-                                    // Add documentation item if it doesn't exist
-                                    systemGroup.items.push({
-                                        icon: iconMap['FileText'] || FileText,
-                                        label: 'documentation',
-                                        path: 'FTSArchitectureDoc',
-                                        permission: 'VIEW_SETTINGS'
-                                    });
-                                    docItem = systemGroup.items[systemGroup.items.length - 1];
-                                }
-                                
-                                // Add submenu
-                                docItem.submenu = [
-                                    { icon: iconMap['FileText'] || FileText, label: 'platformArchitecture', path: 'FTSArchitectureDoc', permission: 'VIEW_SETTINGS' },
-                                    { icon: iconMap['Building2'] || Building2, label: 'productEcosystem', path: 'FTSProductEcosystemReport', permission: 'VIEW_SETTINGS' },
-                                    { icon: iconMap['TrendingUp'] || TrendingUp, label: 'verticalSolutions', path: 'FTSVerticalSolutions', permission: 'VIEW_SETTINGS' },
-                                ];
+                            // ALWAYS ensure system group exists and has documentation with submenu
+                            let systemGroup = formattedMenus.find(g => g.group === 'system');
+                            if (!systemGroup) {
+                                systemGroup = {
+                                    group: 'system',
+                                    icon: Settings,
+                                    items: []
+                                };
+                                formattedMenus.push(systemGroup);
                             }
                             
-                            console.log('🎯 SIDEBAR: Generated dynamic menu with docs:', formattedMenus);
+                            // Find or create documentation item
+                            let docItem = systemGroup.items.find(i => i.label === 'documentation' || i.path === 'FTSArchitectureDoc');
+                            if (!docItem) {
+                                systemGroup.items.push({
+                                    icon: FileText,
+                                    label: 'documentation',
+                                    path: 'FTSArchitectureDoc',
+                                    permission: 'VIEW_SETTINGS'
+                                });
+                                docItem = systemGroup.items[systemGroup.items.length - 1];
+                            }
+                            
+                            // ALWAYS set submenu with all three documents
+                            docItem.submenu = [
+                                { icon: FileText, label: 'platformArchitecture', path: 'FTSArchitectureDoc', permission: 'VIEW_SETTINGS' },
+                                { icon: Building2, label: 'productEcosystem', path: 'FTSProductEcosystemReport', permission: 'VIEW_SETTINGS' },
+                                { icon: TrendingUp, label: 'verticalSolutions', path: 'FTSVerticalSolutions', permission: 'VIEW_SETTINGS' },
+                            ];
+                            
+                            console.log('🎯 SIDEBAR: Documentation submenu:', docItem.submenu);
+                            console.log('🎯 SIDEBAR: Full menu structure:', JSON.stringify(formattedMenus, null, 2));
                             setMenuItems(formattedMenus);
                         } else {
                             console.log('⚠️ SIDEBAR: No enabled_features, using default menu');
