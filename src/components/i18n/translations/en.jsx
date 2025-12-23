@@ -12,5 +12,9 @@ json
     "smartRetry": "Smart Retry",
     "pciCompliance": "PCI Compliance",
     "checkoutComponents": "Checkout Components",
-    "pspProvisioning": "PSP Provisioning"
+    "pspProvisioning": "PSP Provisioning",
+    "documentation": "Documentation",
+    "platformArchitecture": "Platform Architecture",
+    "productEcosystem": "Product Ecosystem",
+    "verticalSolutions": "Vertical Solutions"
 }
