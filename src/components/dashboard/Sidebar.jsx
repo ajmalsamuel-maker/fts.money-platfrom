@@ -330,7 +330,12 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
             ...group,
             items: group.items.filter(item => 
                 !item.permission || hasPermission(userRole, item.permission)
-            )
+            ).map(item => ({
+                ...item,
+                submenu: item.submenu ? item.submenu.filter(sub => 
+                    !sub.permission || hasPermission(userRole, sub.permission)
+                ) : undefined
+            }))
         }))
         .filter(group => group.items.length > 0);
 
