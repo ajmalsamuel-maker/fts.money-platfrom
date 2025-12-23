@@ -35,6 +35,7 @@ import {
 } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import TimezoneSettings from '@/components/settings/TimezoneSettings';
 import { ISO4217_CURRENCIES, getCurrencySymbol } from '@/components/utils/iso4217';
 import { CRYPTO_ASSETS, isStablecoin } from '@/components/utils/cryptoRegistry';
