@@ -75,66 +75,51 @@ export default function PSPLogin() {
         <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f1f5f9', padding: '2rem' }}>
             <div style={{ background: 'white', padding: '2rem', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', maxWidth: '400px', width: '100%' }}>
                 <h1 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '1rem', textAlign: 'center' }}>PSP Login</h1>
-                <p style={{ textAlign: 'center', color: '#64748b', marginBottom: '2rem' }}>Step {step} of 3</p>
+                <p style={{ textAlign: 'center', color: '#64748b', marginBottom: '2rem' }}>Sign in to your PSP account</p>
                 
                 {error && <div style={{ background: '#fee', color: '#c00', padding: '0.75rem', borderRadius: '4px', marginBottom: '1rem' }}>{error}</div>}
                 
-                {step === 1 && (
-                    <form onSubmit={handleStep1}>
+                <form onSubmit={handleLogin}>
+                    <div style={{ marginBottom: '1rem' }}>
                         <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>PSP Code</label>
                         <input
                             type="text"
                             value={pspCode}
                             onChange={(e) => setPspCode(e.target.value.toUpperCase())}
-                            style={{ width: '100%', padding: '0.5rem', border: '1px solid #cbd5e1', borderRadius: '4px', marginBottom: '1rem' }}
+                            style={{ width: '100%', padding: '0.5rem', border: '1px solid #cbd5e1', borderRadius: '4px' }}
                             placeholder="YOUR PSP CODE"
                             required
                         />
-                        <button type="submit" disabled={loading} style={{ width: '100%', padding: '0.75rem', background: '#2563eb', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
-                            {loading ? 'Verifying...' : 'Continue'}
-                        </button>
-                    </form>
-                )}
-                
-                {step === 2 && (
-                    <form onSubmit={handleStep2}>
+                    </div>
+                    
+                    <div style={{ marginBottom: '1rem' }}>
                         <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Email</label>
                         <input
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            style={{ width: '100%', padding: '0.5rem', border: '1px solid #cbd5e1', borderRadius: '4px', marginBottom: '1rem' }}
+                            style={{ width: '100%', padding: '0.5rem', border: '1px solid #cbd5e1', borderRadius: '4px' }}
                             placeholder="user@example.com"
                             required
                         />
-                        <div style={{ display: 'flex', gap: '0.5rem' }}>
-                            <button type="button" onClick={() => setStep(1)} style={{ padding: '0.75rem', background: '#e2e8f0', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>Back</button>
-                            <button type="submit" disabled={loading} style={{ flex: 1, padding: '0.75rem', background: '#2563eb', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
-                                {loading ? 'Verifying...' : 'Continue'}
-                            </button>
-                        </div>
-                    </form>
-                )}
-                
-                {step === 3 && (
-                    <form onSubmit={handleStep3}>
+                    </div>
+                    
+                    <div style={{ marginBottom: '1.5rem' }}>
                         <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>Password</label>
                         <input
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            style={{ width: '100%', padding: '0.5rem', border: '1px solid #cbd5e1', borderRadius: '4px', marginBottom: '1rem' }}
+                            style={{ width: '100%', padding: '0.5rem', border: '1px solid #cbd5e1', borderRadius: '4px' }}
                             placeholder="••••••••"
                             required
                         />
-                        <div style={{ display: 'flex', gap: '0.5rem' }}>
-                            <button type="button" onClick={() => setStep(2)} style={{ padding: '0.75rem', background: '#e2e8f0', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>Back</button>
-                            <button type="submit" disabled={loading} style={{ flex: 1, padding: '0.75rem', background: '#2563eb', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
-                                {loading ? 'Signing in...' : 'Sign In'}
-                            </button>
-                        </div>
-                    </form>
-                )}
+                    </div>
+                    
+                    <button type="submit" disabled={loading} style={{ width: '100%', padding: '0.75rem', background: '#2563eb', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '16px', fontWeight: '500' }}>
+                        {loading ? 'Signing in...' : 'Sign In'}
+                    </button>
+                </form>
             </div>
         </div>
     );
