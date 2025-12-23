@@ -513,7 +513,17 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                                 const isActive = currentPage === item.path;
                                 const hasSubmenu = item.submenu && item.submenu.length > 0;
                                 const isSubmenuActive = hasSubmenu && item.submenu.some(sub => currentPage === sub.path);
-                                
+
+                                // Debug logging for documentation item
+                                if (item.label === 'documentation') {
+                                    console.log('🔍 RENDER: Documentation item:', {
+                                        label: item.label,
+                                        hasSubmenu,
+                                        submenuLength: item.submenu?.length,
+                                        submenu: item.submenu
+                                    });
+                                }
+
                                 return (
                                     <div key={item.path}>
                                         {!hasSubmenu ? (
