@@ -402,9 +402,12 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
     // Debug: Log what we're about to render
     if (activeGroup === 'system' && activeGroupData) {
         const docItem = activeGroupData.items.find(i => i.label === 'documentation');
-        console.log('🎯 ACTIVE GROUP - Full group:', activeGroupData);
-        console.log('🎯 ACTIVE GROUP - Documentation item found:', docItem);
-        console.log('🎯 ACTIVE GROUP - All items:', activeGroupData.items.map(i => ({label: i.label, hasSubmenu: !!i.submenu})));
+        console.log('🎯 RENDER ACTIVE GROUP:');
+        console.log('  - All items:', activeGroupData.items.map(i => i.label));
+        console.log('  - Documentation item:', docItem);
+        console.log('  - Has submenu:', !!docItem?.submenu);
+        console.log('  - Submenu length:', docItem?.submenu?.length);
+        console.log('  - Submenu items:', docItem?.submenu?.map(s => s.label));
     }
 
     return (
