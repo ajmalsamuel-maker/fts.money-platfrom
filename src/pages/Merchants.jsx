@@ -91,6 +91,7 @@ export default function Merchants() {
     const [showOnboardingDialog, setShowOnboardingDialog] = useState(false);
     const [showDetailsDialog, setShowDetailsDialog] = useState(false);
     const [onboardingMode, setOnboardingMode] = useState('view'); // 'view' or 'edit'
+    const [userPspCode, setUserPspCode] = useState(null);
     const [newMerchant, setNewMerchant] = useState({
         business_name: '',
         trading_name: '',
@@ -104,9 +105,27 @@ export default function Merchants() {
     const queryClient = useQueryClient();
     const { can } = usePermissions();
 
+    // Get PSP code from staff session
+    React.useEffect(() => {
+        const sessionData = localStorage.getItem('staff_session');
+        if (sessionData) {
+            const session = JSON.parse(sessionData);
+            setUserPspCode(session.psp_code);
+        } else {
+            window.location.href = '/PSPLogin';
+        }
+    }, []);
+
     const { data: merchants = [], isLoading } = useQuery({
-        queryKey: ['merchants'],
-        queryFn: () => base44.entities.Merchant.list('-created_date'),
+        queryKey: ['merchants', userPspCode],
+        queryFn: async () => {
+            const response = await base44.functions.invoke('pspData', {
+                action: 'listMerchants',
+                psp_code: userPspCode
+            });
+            return response.data.data || [];
+        },
+        enabled: !!userPspCode
     });
 
     const updateStatusMutation = useMutation({
