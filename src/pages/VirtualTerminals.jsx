@@ -29,6 +29,7 @@ export default function VirtualTerminals() {
     const [showCreateDialog, setShowCreateDialog] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [copiedKey, setCopiedKey] = useState(null);
+    const [userPspCode, setUserPspCode] = useState(null);
     const queryClient = useQueryClient();
 
     const [newTerminal, setNewTerminal] = useState({
@@ -37,14 +38,38 @@ export default function VirtualTerminals() {
         requires_cvv: true, requires_avs: true, enable_3ds: true
     });
 
+    React.useEffect(() => {
+        const sessionData = localStorage.getItem('staff_session');
+        if (sessionData) {
+            const session = JSON.parse(sessionData);
+            setUserPspCode(session.psp_code);
+        } else {
+            window.location.href = '/PSPLogin';
+        }
+    }, []);
+
     const { data: terminals = [] } = useQuery({
-        queryKey: ['virtual-terminals'],
-        queryFn: () => base44.entities.VirtualTerminal.list('-created_date'),
+        queryKey: ['virtual-terminals', userPspCode],
+        queryFn: async () => {
+            const response = await base44.functions.invoke('pspData', {
+                action: 'listVirtualTerminals',
+                psp_code: userPspCode
+            });
+            return response.data.data || [];
+        },
+        enabled: !!userPspCode
     });
 
     const { data: merchants = [] } = useQuery({
-        queryKey: ['merchants'],
-        queryFn: () => base44.entities.Merchant.list(),
+        queryKey: ['merchants', userPspCode],
+        queryFn: async () => {
+            const response = await base44.functions.invoke('pspData', {
+                action: 'listMerchants',
+                psp_code: userPspCode
+            });
+            return response.data.data || [];
+        },
+        enabled: !!userPspCode
     });
 
     const createTerminal = useMutation({
