@@ -361,12 +361,18 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
             ...group,
             items: group.items.filter(item => 
                 !item.permission || hasPermission(userRole, item.permission)
-            ).map(item => ({
-                ...item,
-                submenu: item.submenu ? item.submenu.filter(sub => 
+            ).map(item => {
+                const filteredSubmenu = item.submenu ? item.submenu.filter(sub => 
                     !sub.permission || hasPermission(userRole, sub.permission)
-                ) : undefined
-            }))
+                ) : undefined;
+                
+                console.log(`📄 SIDEBAR: Item "${item.label}" submenu:`, item.submenu?.length, 'filtered:', filteredSubmenu?.length);
+                
+                return {
+                    ...item,
+                    submenu: filteredSubmenu
+                };
+            })
         }))
         .filter(group => group.items.length > 0);
 
