@@ -124,7 +124,12 @@ export default function MerchantMIDs() {
     const createMutation = useMutation({
         mutationFn: async (data) => {
             console.log('Creating MID with data:', data);
-            const mid = await base44.entities.MerchantMID.create(data);
+            const response = await base44.functions.invoke('pspData', {
+                action: 'createMerchantMID',
+                psp_code: userPspCode,
+                midData: { ...data, psp_code: userPspCode }
+            });
+            const mid = response.data.mid;
             console.log('MID created:', mid);
             await AuditLogger.logMerchantMIDCreated(mid);
             return mid;
@@ -145,16 +150,21 @@ export default function MerchantMIDs() {
         mutationFn: async ({ id, data }) => {
             console.log('Updating MID:', id, 'with data:', data);
             const oldMID = mids.find(m => m.id === id);
-            const mid = await base44.entities.MerchantMID.update(id, data);
-            console.log('MID updated:', mid);
+            await base44.functions.invoke('pspData', {
+                action: 'updateMerchantMID',
+                psp_code: userPspCode,
+                midId: id,
+                updates: data
+            });
+            console.log('MID updated');
             
             // Check if status changed
             if (oldMID?.status !== data.status) {
-                await AuditLogger.logMerchantMIDStatusChanged(mid, oldMID.status, data.status);
+                await AuditLogger.logMerchantMIDStatusChanged({ ...data, id }, oldMID.status, data.status);
             } else {
-                await AuditLogger.logMerchantMIDUpdated(mid, oldMID);
+                await AuditLogger.logMerchantMIDUpdated({ ...data, id }, oldMID);
             }
-            return mid;
+            return { id, data };
         },
         onSuccess: (data) => { 
             console.log('Update success:', data);
@@ -172,7 +182,11 @@ export default function MerchantMIDs() {
         mutationFn: async (id) => {
             const mid = mids.find(m => m.id === id);
             await AuditLogger.logMerchantMIDDeleted(mid);
-            await base44.entities.MerchantMID.delete(id);
+            await base44.functions.invoke('pspData', {
+                action: 'deleteMerchantMID',
+                psp_code: userPspCode,
+                midId: id
+            });
         },
         onSuccess: () => queryClient.invalidateQueries({ queryKey: ['merchant-mids'] }),
     });
@@ -181,10 +195,14 @@ export default function MerchantMIDs() {
         mutationFn: async ({ ids, status }) => {
             const selectedMIDsData = ids.map(id => mids.find(m => m.id === id)).filter(Boolean);
             
-            const updates = ids.map(id => {
-                const mid = mids.find(m => m.id === id);
-                return base44.entities.MerchantMID.update(id, { ...mid, status });
-            });
+            const updates = ids.map(id => 
+                base44.functions.invoke('pspData', {
+                    action: 'updateMerchantMID',
+                    psp_code: userPspCode,
+                    midId: id,
+                    updates: { status }
+                })
+            );
             
             await Promise.all(updates);
             
