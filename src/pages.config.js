@@ -205,6 +205,7 @@ import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
 import APIKeys from './pages/APIKeys';
+import APILogs from './pages/APILogs';
 import __Layout from './Layout.jsx';
 
 
@@ -416,6 +417,7 @@ export const PAGES = {
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
     "APIKeys": APIKeys,
+    "APILogs": APILogs,
 }
 
 export const pagesConfig = {
