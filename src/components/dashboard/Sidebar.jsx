@@ -378,7 +378,7 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                 
                 return {
                     ...item,
-                    submenu: filteredSubmenu
+                    submenu: filteredSubmenu && filteredSubmenu.length > 0 ? filteredSubmenu : undefined
                 };
             })
         }))
