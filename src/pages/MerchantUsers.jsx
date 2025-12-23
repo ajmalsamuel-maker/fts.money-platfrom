@@ -140,7 +140,12 @@ export default function MerchantUsers() {
         mutationFn: async ({ id, status }) => {
             const user = users.find(u => u.id === id);
             const oldStatus = user?.status;
-            await base44.entities.MerchantUser.update(id, { status });
+            await base44.functions.invoke('pspData', {
+                action: 'updateMerchantUser',
+                psp_code: userPspCode,
+                userId: id,
+                updates: { status }
+            });
             await AuditLogger.logMerchantUserStatusChanged({ ...user, id }, oldStatus, status);
             return { id, status };
         },
@@ -156,14 +161,12 @@ export default function MerchantUsers() {
                 await AuditLogger.logMerchantUserRoleChanged({ ...user, id }, user.role, data.role);
             }
             
-            const updated = await base44.entities.MerchantUser.update(id, data);
-            
-            // Sync to PostgreSQL
-            try {
-                await base44.functions.invoke('syncMerchantUser', { user: updated });
-            } catch (e) {
-                console.error('Failed to sync to PostgreSQL:', e);
-            }
+            await base44.functions.invoke('pspData', {
+                action: 'updateMerchantUser',
+                psp_code: userPspCode,
+                userId: id,
+                updates: data
+            });
             
             return { id, data };
         },
