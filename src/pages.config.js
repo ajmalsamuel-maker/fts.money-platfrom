@@ -56,6 +56,7 @@ import FTSFeeTemplates from './pages/FTSFeeTemplates';
 import FTSFinancialRegistries from './pages/FTSFinancialRegistries';
 import FTSMoneyPlatform from './pages/FTSMoneyPlatform';
 import FTSPayoutRoutes from './pages/FTSPayoutRoutes';
+import FTSProductEcosystemReport from './pages/FTSProductEcosystemReport';
 import FTSProviderPool from './pages/FTSProviderPool';
 import FTSProvisioningQueue from './pages/FTSProvisioningQueue';
 import FTSReporting from './pages/FTSReporting';
@@ -64,6 +65,7 @@ import FTSServiceManager from './pages/FTSServiceManager';
 import FTSServiceProviders from './pages/FTSServiceProviders';
 import FTSServiceRegistry from './pages/FTSServiceRegistry';
 import FTSSettings from './pages/FTSSettings';
+import FTSVerticalSolutions from './pages/FTSVerticalSolutions';
 import FeeTypeManagement from './pages/FeeTypeManagement';
 import FraudMonitoring from './pages/FraudMonitoring';
 import FraudPrevention from './pages/FraudPrevention';
@@ -202,8 +204,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import FTSProductEcosystemReport from './pages/FTSProductEcosystemReport';
-import FTSVerticalSolutions from './pages/FTSVerticalSolutions';
 import __Layout from './Layout.jsx';
 
 
@@ -266,6 +266,7 @@ export const PAGES = {
     "FTSFinancialRegistries": FTSFinancialRegistries,
     "FTSMoneyPlatform": FTSMoneyPlatform,
     "FTSPayoutRoutes": FTSPayoutRoutes,
+    "FTSProductEcosystemReport": FTSProductEcosystemReport,
     "FTSProviderPool": FTSProviderPool,
     "FTSProvisioningQueue": FTSProvisioningQueue,
     "FTSReporting": FTSReporting,
@@ -274,6 +275,7 @@ export const PAGES = {
     "FTSServiceProviders": FTSServiceProviders,
     "FTSServiceRegistry": FTSServiceRegistry,
     "FTSSettings": FTSSettings,
+    "FTSVerticalSolutions": FTSVerticalSolutions,
     "FeeTypeManagement": FeeTypeManagement,
     "FraudMonitoring": FraudMonitoring,
     "FraudPrevention": FraudPrevention,
@@ -412,8 +414,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "FTSProductEcosystemReport": FTSProductEcosystemReport,
-    "FTSVerticalSolutions": FTSVerticalSolutions,
 }
 
 export const pagesConfig = {

@@ -63,8 +63,8 @@ export default function PlatformAdminLogin() {
             </div>
             
             <div className="w-full max-w-md relative z-10">
-                <div className="text-center mb-8">
-                    <div className="inline-flex flex-col items-center gap-4 mb-4">
+                <div className="text-center mb-6">
+                    <div className="inline-flex flex-col items-center gap-3 mb-3">
                         <img 
                             src={FTS_LOGOS.symbol} 
                             alt="FTS.Money" 
