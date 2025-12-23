@@ -181,9 +181,14 @@ export default function MerchantUsers() {
         mutationFn: async ({ id, email, full_name }) => {
             const user = users.find(u => u.id === id);
             const tempPassword = `Reset${Math.random().toString(36).slice(2, 10)}!`;
-            await base44.entities.MerchantUser.update(id, { 
-                temp_password: tempPassword,
-                must_change_password: true 
+            await base44.functions.invoke('pspData', {
+                action: 'updateMerchantUser',
+                psp_code: userPspCode,
+                userId: id,
+                updates: { 
+                    temp_password: tempPassword,
+                    must_change_password: true 
+                }
             });
             
             // Audit log
@@ -193,7 +198,7 @@ export default function MerchantUsers() {
                 await base44.integrations.Core.SendEmail({
                     to: email,
                     subject: 'Password Reset - Merchant Portal',
-                    body: `Dear ${full_name},\n\nYour password has been reset.\n\nNew Temporary Password: ${tempPassword}\n\nPlease change your password upon next login.\n\nBest regards,\nPaymentHub Team`
+                    body: `Dear ${full_name},\n\nYour password has been reset.\n\nNew Temporary Password: ${tempPassword}\n\nPlease change your password upon next login.\n\nBest regards,\nPayment Platform Team`
                 });
             } catch (e) {}
             
@@ -204,9 +209,14 @@ export default function MerchantUsers() {
 
     const setPasswordMutation = useMutation({
         mutationFn: async ({ id, password }) => {
-            await base44.entities.MerchantUser.update(id, { 
-                temp_password: password,
-                must_change_password: false 
+            await base44.functions.invoke('pspData', {
+                action: 'updateMerchantUser',
+                psp_code: userPspCode,
+                userId: id,
+                updates: { 
+                    temp_password: password,
+                    must_change_password: false 
+                }
             });
         },
         onSuccess: () => {
@@ -220,7 +230,11 @@ export default function MerchantUsers() {
         mutationFn: async (id) => {
             const user = users.find(u => u.id === id);
             await AuditLogger.logMerchantUserDeleted({ ...user, id });
-            await base44.entities.MerchantUser.delete(id);
+            await base44.functions.invoke('pspData', {
+                action: 'deleteMerchantUser',
+                psp_code: userPspCode,
+                userId: id
+            });
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['merchant-users'] });
@@ -231,7 +245,12 @@ export default function MerchantUsers() {
     const toggle2FAMutation = useMutation({
         mutationFn: async ({ id, enabled }) => {
             const user = users.find(u => u.id === id);
-            await base44.entities.MerchantUser.update(id, { two_factor_enabled: enabled });
+            await base44.functions.invoke('pspData', {
+                action: 'updateMerchantUser',
+                psp_code: userPspCode,
+                userId: id,
+                updates: { two_factor_enabled: enabled }
+            });
             await AuditLogger.logMerchantUser2FAToggled({ ...user, id }, enabled);
         },
         onSuccess: () => queryClient.invalidateQueries({ queryKey: ['merchant-users'] })
