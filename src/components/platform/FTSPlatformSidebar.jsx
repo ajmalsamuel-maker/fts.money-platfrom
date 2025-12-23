@@ -103,11 +103,19 @@ const menuSections = [
         ]
     },
     {
+        title: 'Documentation',
+        collapsed: true,
+        items: [
+            { icon: BookOpen, label: 'Platform Architecture', path: 'FTSArchitectureDoc', description: 'System architecture' },
+            { icon: Package, label: 'Product Ecosystem', path: 'FTSProductEcosystemReport', description: 'Products & revenue models' },
+            { icon: Building2, label: 'Vertical Solutions', path: 'FTSVerticalSolutions', description: 'Industry-specific offerings' }
+        ]
+    },
+    {
         title: 'Settings',
         collapsed: true,
         items: [
             { icon: Settings, label: 'Platform Configuration', path: 'FTSSettings', description: 'System settings' },
-            { icon: BookOpen, label: 'Documentation', path: 'FTSArchitectureDoc', description: 'Architecture & roadmap' },
             { icon: Code, label: 'Advanced Tools', path: 'ModuleCatalogTest', description: 'Module testing' }
         ]
     }
