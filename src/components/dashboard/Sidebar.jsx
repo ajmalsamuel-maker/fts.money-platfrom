@@ -50,7 +50,8 @@ import {
     TrendingUp,
     Tag,
     Activity,
-    FileText as InvoiceIcon
+    FileText as InvoiceIcon,
+    Layers
 } from 'lucide-react';
 
 // Map icon strings to actual icon components
