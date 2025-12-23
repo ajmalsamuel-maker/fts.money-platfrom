@@ -131,7 +131,12 @@ export default function Merchants() {
     const updateStatusMutation = useMutation({
         mutationFn: async ({ merchantId, newStatus, merchant }) => {
             const oldStatus = merchant.status;
-            const updated = await base44.entities.Merchant.update(merchantId, { status: newStatus });
+            await base44.functions.invoke('pspData', {
+                action: 'updateMerchant',
+                psp_code: userPspCode,
+                merchantId: merchantId,
+                updates: { status: newStatus }
+            });
             
             // Audit log
             await AuditLogger.logMerchantStatusChanged({ ...merchant, id: merchantId }, oldStatus, newStatus);
@@ -155,7 +160,7 @@ export default function Merchants() {
                 }
             }
             
-            return updated;
+            return { merchantId, status: newStatus };
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['merchants'] });
@@ -167,13 +172,20 @@ export default function Merchants() {
             // Generate unique merchant code
             const merchantCode = generateUniqueMerchantCode(data.business_name, merchants);
             
-            const merchant = await base44.entities.Merchant.create({
-                ...data,
-                merchant_id: `MID-${Date.now()}`,
-                merchant_code: merchantCode,
-                status: 'pending',
-                risk_level: 'medium',
+            const response = await base44.functions.invoke('pspData', {
+                action: 'createMerchant',
+                psp_code: userPspCode,
+                merchantData: {
+                    ...data,
+                    merchant_id: `MID-${Date.now()}`,
+                    merchant_code: merchantCode,
+                    psp_code: userPspCode,
+                    status: 'pending',
+                    risk_level: 'medium',
+                }
             });
+            
+            const merchant = response.data.merchant;
             
             // Audit log
             await AuditLogger.logMerchantCreated(merchant);
@@ -197,9 +209,14 @@ export default function Merchants() {
 
     const updateMerchantMutation = useMutation({
         mutationFn: async ({ merchantId, data }) => {
-            const updated = await base44.entities.Merchant.update(merchantId, data);
-            await AuditLogger.logMerchantUpdated(updated);
-            return updated;
+            await base44.functions.invoke('pspData', {
+                action: 'updateMerchant',
+                psp_code: userPspCode,
+                merchantId: merchantId,
+                updates: data
+            });
+            await AuditLogger.logMerchantUpdated({ ...data, id: merchantId });
+            return { merchantId, data };
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['merchants'] });
