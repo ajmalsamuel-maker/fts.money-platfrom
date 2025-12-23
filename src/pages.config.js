@@ -27,6 +27,7 @@ import CommunityPSPProvisioning from './pages/CommunityPSPProvisioning';
 import CommunityPortalDashboard from './pages/CommunityPortalDashboard';
 import CommunityPortalLogin from './pages/CommunityPortalLogin';
 import CommunityProductCatalog from './pages/CommunityProductCatalog';
+import CommunityUserManagement from './pages/CommunityUserManagement';
 import Compliance from './pages/Compliance';
 import ComplianceFramework from './pages/ComplianceFramework';
 import CryptoPayouts from './pages/CryptoPayouts';
@@ -201,7 +202,7 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import CommunityUserManagement from './pages/CommunityUserManagement';
+import FTSProductEcosystemReport from './pages/FTSProductEcosystemReport';
 import __Layout from './Layout.jsx';
 
 
@@ -235,6 +236,7 @@ export const PAGES = {
     "CommunityPortalDashboard": CommunityPortalDashboard,
     "CommunityPortalLogin": CommunityPortalLogin,
     "CommunityProductCatalog": CommunityProductCatalog,
+    "CommunityUserManagement": CommunityUserManagement,
     "Compliance": Compliance,
     "ComplianceFramework": ComplianceFramework,
     "CryptoPayouts": CryptoPayouts,
@@ -409,7 +411,7 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "CommunityUserManagement": CommunityUserManagement,
+    "FTSProductEcosystemReport": FTSProductEcosystemReport,
 }
 
 export const pagesConfig = {
