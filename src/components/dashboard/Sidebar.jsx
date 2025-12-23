@@ -300,6 +300,20 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                             }));
                             
                             console.log('🎯 SIDEBAR: Generated dynamic menu:', formattedMenus);
+                            
+                            // Add documentation submenu to system group
+                            const systemGroup = formattedMenus.find(g => g.group === 'system');
+                            if (systemGroup) {
+                                const docItem = systemGroup.items.find(i => i.label === 'documentation' || i.path === 'FTSArchitectureDoc');
+                                if (docItem) {
+                                    docItem.submenu = [
+                                        { icon: FileText, label: 'platformArchitecture', path: 'FTSArchitectureDoc', permission: 'VIEW_SETTINGS' },
+                                        { icon: Building2, label: 'productEcosystem', path: 'FTSProductEcosystemReport', permission: 'VIEW_SETTINGS' },
+                                        { icon: TrendingUp, label: 'verticalSolutions', path: 'FTSVerticalSolutions', permission: 'VIEW_SETTINGS' },
+                                    ];
+                                }
+                            }
+                            
                             setMenuItems(formattedMenus);
                         } else {
                             console.log('⚠️ SIDEBAR: No enabled_features, using default menu');
