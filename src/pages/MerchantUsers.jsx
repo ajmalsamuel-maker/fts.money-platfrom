@@ -96,22 +96,23 @@ export default function MerchantUsers() {
         mutationFn: async (data) => {
             const merchant = merchants.find(m => m.id === data.merchant_id);
             const tempPassword = `Temp${Math.random().toString(36).slice(2, 10)}!`;
-            const user = await base44.entities.MerchantUser.create({
-                ...data,
-                user_id: `MU-${Date.now()}`,
-                merchant_name: merchant?.business_name,
-                merchant_code: merchant?.merchant_code,
-                status: 'pending',
-                temp_password: tempPassword,
-                must_change_password: true
+            
+            const response = await base44.functions.invoke('pspData', {
+                action: 'createMerchantUser',
+                psp_code: userPspCode,
+                userData: {
+                    ...data,
+                    user_id: `MU-${Date.now()}`,
+                    merchant_name: merchant?.business_name,
+                    merchant_code: merchant?.merchant_code,
+                    psp_code: userPspCode,
+                    status: 'pending',
+                    temp_password: tempPassword,
+                    must_change_password: true
+                }
             });
             
-            // Sync to PostgreSQL
-            try {
-                await base44.functions.invoke('syncMerchantUser', { user });
-            } catch (e) {
-                console.error('Failed to sync to PostgreSQL:', e);
-            }
+            const user = response.data.user;
             
             // Audit log
             await AuditLogger.logMerchantUserCreated(user);
@@ -120,8 +121,8 @@ export default function MerchantUsers() {
             try {
                 await base44.integrations.Core.SendEmail({
                     to: data.email,
-                    subject: `Your PaymentHub Merchant Portal Credentials - ${merchant?.business_name}`,
-                    body: `Dear ${data.full_name},\n\nYour merchant portal account has been created.\n\nLogin URL: https://merchant.paymenthub.com/login\nEmail: ${data.email}\nTemporary Password: ${tempPassword}\n\nPlease change your password upon first login.\n\nBest regards,\nPaymentHub Team`
+                    subject: `Your Merchant Portal Credentials - ${merchant?.business_name}`,
+                    body: `Dear ${data.full_name},\n\nYour merchant portal account has been created.\n\nEmail: ${data.email}\nTemporary Password: ${tempPassword}\n\nPlease change your password upon first login.\n\nBest regards,\nPayment Platform Team`
                 });
             } catch (e) {}
             
