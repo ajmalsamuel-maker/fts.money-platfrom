@@ -2,13 +2,11 @@ import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 
 export default function PSPLogin() {
-    const [step, setStep] = useState(1);
     const [pspCode, setPspCode] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-
     const [checkComplete, setCheckComplete] = React.useState(false);
     
     React.useEffect(() => {
@@ -37,52 +35,7 @@ export default function PSPLogin() {
         return null;
     }
 
-    const handleStep1 = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        setError('');
-        
-        try {
-            const { data } = await base44.functions.invoke('pspAuth', {
-                action: 'verifyPSP',
-                psp_code: pspCode.trim()
-            });
-
-            if (data.success) {
-                setStep(2);
-            } else {
-                setError(data.error || 'Invalid PSP code');
-            }
-        } catch (err) {
-            setError('Error verifying PSP code');
-        }
-        setLoading(false);
-    };
-
-    const handleStep2 = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        setError('');
-        
-        try {
-            const { data } = await base44.functions.invoke('pspAuth', {
-                action: 'verifyEmail',
-                email: email,
-                psp_code: pspCode
-            });
-
-            if (data.success) {
-                setStep(3);
-            } else {
-                setError(data.error || 'Email not found');
-            }
-        } catch (err) {
-            setError('Error verifying email');
-        }
-        setLoading(false);
-    };
-
-    const handleStep3 = async (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
         setLoading(true);
         setError('');
@@ -92,7 +45,7 @@ export default function PSPLogin() {
                 action: 'login',
                 email: email,
                 password: password,
-                psp_code: pspCode
+                psp_code: pspCode.trim()
             });
 
             if (data.success) {
