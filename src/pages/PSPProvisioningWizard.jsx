@@ -247,15 +247,7 @@ export default function PSPProvisioningWizard() {
                         <div className="space-y-6">
                             {step === 1 && (
                                 <div>
-                                    <div className="flex items-center justify-between mb-4">
-                                        <h2 className="text-xl font-semibold">Select Service Tier</h2>
-                                        <button
-                                            onClick={() => setEditingTier(editingTier ? null : 'all')}
-                                            className="text-sm text-blue-600 hover:text-blue-700"
-                                        >
-                                            {editingTier ? 'Done Editing' : 'Edit Pricing'}
-                                        </button>
-                                    </div>
+                                    <h2 className="text-xl font-semibold mb-4">Select & Configure Service Tier</h2>
                                     <div className="grid grid-cols-2 gap-4">
                                         {customTiers.map((tier) => {
                                             const Icon = tier.icon;
@@ -283,81 +275,66 @@ export default function PSPProvisioningWizard() {
                                                         </button>
                                                     </div>
                                                     
-                                                    {editingTier ? (
-                                                        <div className="space-y-2">
-                                                            <div>
-                                                                <label className="text-xs text-slate-600">Monthly Price ($)</label>
-                                                                <input
-                                                                    type="number"
-                                                                    value={tier.price}
-                                                                    onChange={(e) => {
-                                                                        const updated = customTiers.map(t => 
-                                                                            t.id === tier.id ? {...t, price: parseFloat(e.target.value)} : t
-                                                                        );
-                                                                        setCustomTiers(updated);
-                                                                    }}
-                                                                    className="w-full px-2 py-1 border border-slate-300 rounded text-sm"
-                                                                />
-                                                            </div>
-                                                            <div>
-                                                                <label className="text-xs text-slate-600">Revenue Share (%)</label>
-                                                                <input
-                                                                    type="number"
-                                                                    value={tier.revenue_share}
-                                                                    onChange={(e) => {
-                                                                        const updated = customTiers.map(t => 
-                                                                            t.id === tier.id ? {...t, revenue_share: parseFloat(e.target.value)} : t
-                                                                        );
-                                                                        setCustomTiers(updated);
-                                                                    }}
-                                                                    className="w-full px-2 py-1 border border-slate-300 rounded text-sm"
-                                                                />
-                                                            </div>
-                                                            <div>
-                                                                <label className="text-xs text-slate-600">Max Providers</label>
-                                                                <input
-                                                                    type="number"
-                                                                    value={tier.limits.max_payment_providers || ''}
-                                                                    onChange={(e) => {
-                                                                        const updated = customTiers.map(t => 
-                                                                            t.id === tier.id ? {...t, limits: {...t.limits, max_payment_providers: e.target.value ? parseInt(e.target.value) : null}} : t
-                                                                        );
-                                                                        setCustomTiers(updated);
-                                                                    }}
-                                                                    placeholder="Unlimited"
-                                                                    className="w-full px-2 py-1 border border-slate-300 rounded text-sm"
-                                                                />
-                                                            </div>
-                                                            <div>
-                                                                <label className="text-xs text-slate-600">Max Merchants</label>
-                                                                <input
-                                                                    type="number"
-                                                                    value={tier.limits.max_merchants || ''}
-                                                                    onChange={(e) => {
-                                                                        const updated = customTiers.map(t => 
-                                                                            t.id === tier.id ? {...t, limits: {...t.limits, max_merchants: e.target.value ? parseInt(e.target.value) : null}} : t
-                                                                        );
-                                                                        setCustomTiers(updated);
-                                                                    }}
-                                                                    placeholder="Unlimited"
-                                                                    className="w-full px-2 py-1 border border-slate-300 rounded text-sm"
-                                                                />
-                                                            </div>
+                                                    <div className="space-y-2">
+                                                        <div>
+                                                            <label className="text-xs text-slate-600">Monthly Price ($)</label>
+                                                            <input
+                                                                type="number"
+                                                                value={tier.price}
+                                                                onChange={(e) => {
+                                                                    const updated = customTiers.map(t => 
+                                                                        t.id === tier.id ? {...t, price: parseFloat(e.target.value) || 0} : t
+                                                                    );
+                                                                    setCustomTiers(updated);
+                                                                }}
+                                                                className="w-full px-2 py-1 border border-slate-300 rounded text-sm"
+                                                            />
                                                         </div>
-                                                    ) : (
-                                                        <div className="space-y-1 text-sm">
-                                                            <p className="text-lg font-bold text-slate-900">
-                                                                {tier.price === 0 ? 'Custom' : `$${tier.price.toLocaleString()}/mo`}
-                                                            </p>
-                                                            <p className="text-slate-600">Revenue Share: {tier.revenue_share}%</p>
-                                                            <p className="text-xs text-slate-500">
-                                                                Providers: {tier.limits.max_payment_providers || 'Unlimited'}
-                                                            </p>
-                                                            <p className="text-xs text-slate-500">
-                                                                Merchants: {tier.limits.max_merchants || 'Unlimited'}
-                                                            </p>
+                                                        <div>
+                                                            <label className="text-xs text-slate-600">Revenue Share (%)</label>
+                                                            <input
+                                                                type="number"
+                                                                value={tier.revenue_share}
+                                                                onChange={(e) => {
+                                                                    const updated = customTiers.map(t => 
+                                                                        t.id === tier.id ? {...t, revenue_share: parseFloat(e.target.value) || 0} : t
+                                                                    );
+                                                                    setCustomTiers(updated);
+                                                                }}
+                                                                className="w-full px-2 py-1 border border-slate-300 rounded text-sm"
+                                                            />
                                                         </div>
-                                                    )}
+                                                        <div>
+                                                            <label className="text-xs text-slate-600">Max Providers</label>
+                                                            <input
+                                                                type="number"
+                                                                value={tier.limits.max_payment_providers || ''}
+                                                                onChange={(e) => {
+                                                                    const updated = customTiers.map(t => 
+                                                                        t.id === tier.id ? {...t, limits: {...t.limits, max_payment_providers: e.target.value ? parseInt(e.target.value) : null}} : t
+                                                                    );
+                                                                    setCustomTiers(updated);
+                                                                }}
+                                                                placeholder="Unlimited"
+                                                                className="w-full px-2 py-1 border border-slate-300 rounded text-sm"
+                                                            />
+                                                        </div>
+                                                        <div>
+                                                            <label className="text-xs text-slate-600">Max Merchants</label>
+                                                            <input
+                                                                type="number"
+                                                                value={tier.limits.max_merchants || ''}
+                                                                onChange={(e) => {
+                                                                    const updated = customTiers.map(t => 
+                                                                        t.id === tier.id ? {...t, limits: {...t.limits, max_merchants: e.target.value ? parseInt(e.target.value) : null}} : t
+                                                                    );
+                                                                    setCustomTiers(updated);
+                                                                }}
+                                                                placeholder="Unlimited"
+                                                                className="w-full px-2 py-1 border border-slate-300 rounded text-sm"
+                                                            />
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             );
                                         })}
