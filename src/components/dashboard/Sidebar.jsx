@@ -469,21 +469,49 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                         <div className="space-y-1">
                             {activeGroupData.items.map((item) => {
                                 const isActive = currentPage === item.path;
+                                const hasSubmenu = item.submenu && item.submenu.length > 0;
+                                
                                 return (
-                                    <Link
-                                        key={item.path}
-                                        to={createPageUrl(item.path)}
-                                        className={cn(
-                                            "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-sm"
+                                    <div key={item.path}>
+                                        <Link
+                                            to={createPageUrl(item.path)}
+                                            className={cn(
+                                                "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-sm"
+                                            )}
+                                            style={isActive 
+                                                ? { backgroundColor: '#4b5563', color: '#ffffff' }
+                                                : { color: sidebarText }
+                                            }
+                                        >
+                                            <item.icon className="h-4 w-4 flex-shrink-0" />
+                                            <span>{t(item.label)}</span>
+                                        </Link>
+                                        
+                                        {/* Submenu Items */}
+                                        {hasSubmenu && (
+                                            <div className="ml-7 mt-1 space-y-1">
+                                                {item.submenu.map((subItem) => {
+                                                    const isSubActive = currentPage === subItem.path;
+                                                    return (
+                                                        <Link
+                                                            key={subItem.path}
+                                                            to={createPageUrl(subItem.path)}
+                                                            className={cn(
+                                                                "flex items-center gap-2 px-2 py-1.5 rounded text-xs transition-all"
+                                                            )}
+                                                            style={isSubActive 
+                                                                ? { backgroundColor: '#4b5563', color: '#ffffff' }
+                                                                : { color: sidebarText }
+                                                            }
+                                                        >
+                                                            <subItem.icon className="h-3 w-3 flex-shrink-0" />
+                                                            <span>{t(subItem.label)}</span>
+                                                        </Link>
+                                                    );
+                                                })}
+                                            </div>
                                         )}
-                                        style={isActive 
-                                            ? { backgroundColor: '#4b5563', color: '#ffffff' }
-                                            : { color: sidebarText }
-                                        }
-                                    >
-                                        <item.icon className="h-4 w-4 flex-shrink-0" />
-                                        <span>{t(item.label)}</span>
-                                    </Link>
+                                    </div>
                                 );
                             })}
                         </div>
