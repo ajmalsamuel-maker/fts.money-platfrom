@@ -77,31 +77,41 @@ export default function VirtualTerminals() {
             const merchant = merchants.find(m => m.id === data.merchant_id);
             const terminalId = `VT-${Date.now()}`;
             
-            const terminal = await base44.entities.VirtualTerminal.create({
-                ...data,
-                terminal_id: terminalId,
-                merchant_name: merchant?.business_name,
-                api_key: `vt_${btoa(data.merchant_id + Date.now()).slice(0, 24)}`,
-                status: 'active'
+            const response = await base44.functions.invoke('pspData', {
+                action: 'createVirtualTerminal',
+                psp_code: userPspCode,
+                terminalData: {
+                    ...data,
+                    terminal_id: terminalId,
+                    merchant_name: merchant?.business_name,
+                    api_key: `vt_${btoa(data.merchant_id + Date.now()).slice(0, 24)}`,
+                    status: 'active',
+                    psp_code: userPspCode
+                }
             });
 
             // Create default VT user
             const tempPassword = Math.random().toString(36).slice(-8);
             const userEmail = `vt.${terminalId.toLowerCase()}@terminal.local`;
             
-            await base44.entities.VirtualTerminalUser.create({
-                terminal_id: terminalId,
-                merchant_id: data.merchant_id,
-                email: userEmail,
-                full_name: `${data.name} Operator`,
-                role: 'operator',
-                status: 'active',
-                temp_password: tempPassword,
-                must_change_password: true,
-                permissions: ['process_payment', 'view_transactions']
+            await base44.functions.invoke('pspData', {
+                action: 'createVirtualTerminalUser',
+                psp_code: userPspCode,
+                userData: {
+                    terminal_id: terminalId,
+                    merchant_id: data.merchant_id,
+                    email: userEmail,
+                    full_name: `${data.name} Operator`,
+                    role: 'operator',
+                    status: 'active',
+                    temp_password: tempPassword,
+                    must_change_password: true,
+                    permissions: ['process_payment', 'view_transactions'],
+                    psp_code: userPspCode
+                }
             });
 
-            return { terminal, userEmail, tempPassword };
+            return { terminal: response.data.terminal, userEmail, tempPassword };
         },
         onSuccess: (data) => { 
             queryClient.invalidateQueries({ queryKey: ['virtual-terminals'] }); 
