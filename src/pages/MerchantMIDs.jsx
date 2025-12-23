@@ -71,6 +71,7 @@ export default function MerchantMIDs() {
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [selectedMIDs, setSelectedMIDs] = useState([]);
     const [isSuggestingMID, setIsSuggestingMID] = useState(false);
+    const [userPspCode, setUserPspCode] = useState(null);
     const [formData, setFormData] = useState({
         merchant_id: '', merchant_name: '', mid: '',
         provider_id: '', provider_name: '', account_type: 'ecommerce',
@@ -80,14 +81,39 @@ export default function MerchantMIDs() {
 
     const queryClient = useQueryClient();
 
+    // Get PSP code from staff session
+    React.useEffect(() => {
+        const sessionData = localStorage.getItem('staff_session');
+        if (sessionData) {
+            const session = JSON.parse(sessionData);
+            setUserPspCode(session.psp_code);
+        } else {
+            window.location.href = '/PSPLogin';
+        }
+    }, []);
+
     const { data: mids = [], isLoading } = useQuery({
-        queryKey: ['merchant-mids'],
-        queryFn: () => base44.entities.MerchantMID.list('-created_date'),
+        queryKey: ['merchant-mids', userPspCode],
+        queryFn: async () => {
+            const response = await base44.functions.invoke('pspData', {
+                action: 'listMerchantMIDs',
+                psp_code: userPspCode
+            });
+            return response.data.data || [];
+        },
+        enabled: !!userPspCode
     });
 
     const { data: merchants = [] } = useQuery({
-        queryKey: ['merchants'],
-        queryFn: () => base44.entities.Merchant.list(),
+        queryKey: ['merchants', userPspCode],
+        queryFn: async () => {
+            const response = await base44.functions.invoke('pspData', {
+                action: 'listMerchants',
+                psp_code: userPspCode
+            });
+            return response.data.data || [];
+        },
+        enabled: !!userPspCode
     });
 
     const { data: providers = [] } = useQuery({
