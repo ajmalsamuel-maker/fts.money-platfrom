@@ -470,26 +470,42 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                             {activeGroupData.items.map((item) => {
                                 const isActive = currentPage === item.path;
                                 const hasSubmenu = item.submenu && item.submenu.length > 0;
+                                const isSubmenuActive = hasSubmenu && item.submenu.some(sub => currentPage === sub.path);
                                 
                                 return (
                                     <div key={item.path}>
-                                        <Link
-                                            to={createPageUrl(item.path)}
-                                            className={cn(
-                                                "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-sm"
-                                            )}
-                                            style={isActive 
-                                                ? { backgroundColor: '#4b5563', color: '#ffffff' }
-                                                : { color: sidebarText }
-                                            }
-                                        >
-                                            <item.icon className="h-4 w-4 flex-shrink-0" />
-                                            <span>{t(item.label)}</span>
-                                        </Link>
+                                        {!hasSubmenu ? (
+                                            <Link
+                                                to={createPageUrl(item.path)}
+                                                className={cn(
+                                                    "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-sm"
+                                                )}
+                                                style={isActive 
+                                                    ? { backgroundColor: '#4b5563', color: '#ffffff' }
+                                                    : { color: sidebarText }
+                                                }
+                                            >
+                                                <item.icon className="h-4 w-4 flex-shrink-0" />
+                                                <span>{t(item.label)}</span>
+                                            </Link>
+                                        ) : (
+                                            <div
+                                                className={cn(
+                                                    "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-sm cursor-default"
+                                                )}
+                                                style={(isActive || isSubmenuActive)
+                                                    ? { backgroundColor: '#4b5563', color: '#ffffff' }
+                                                    : { color: sidebarText }
+                                                }
+                                            >
+                                                <item.icon className="h-4 w-4 flex-shrink-0" />
+                                                <span className="font-semibold">{t(item.label)}</span>
+                                            </div>
+                                        )}
                                         
-                                        {/* Submenu Items */}
+                                        {/* Submenu Items - Always visible */}
                                         {hasSubmenu && (
-                                            <div className="ml-7 mt-1 space-y-1">
+                                            <div className="ml-4 mt-1 space-y-0.5 mb-2">
                                                 {item.submenu.map((subItem) => {
                                                     const isSubActive = currentPage === subItem.path;
                                                     return (
@@ -497,7 +513,7 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                                                             key={subItem.path}
                                                             to={createPageUrl(subItem.path)}
                                                             className={cn(
-                                                                "flex items-center gap-2 px-2 py-1.5 rounded text-xs transition-all"
+                                                                "flex items-center gap-2 px-3 py-2 rounded-lg text-xs transition-all hover:bg-white/5"
                                                             )}
                                                             style={isSubActive 
                                                                 ? { backgroundColor: '#4b5563', color: '#ffffff' }
