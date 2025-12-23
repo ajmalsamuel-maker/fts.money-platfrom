@@ -352,6 +352,13 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
     const userRole = user?.app_role || 'viewer';
     const roleConfig = ROLE_CONFIG[userRole] || ROLE_CONFIG.viewer;
 
+    // Debug: Check what's in menuItems BEFORE filtering
+    const systemGroup = menuItems.find(g => g.group === 'system');
+    if (systemGroup) {
+        const docItem = systemGroup.items.find(i => i.label === 'documentation');
+        console.log('🔍 BEFORE FILTER - System group doc item:', docItem);
+    }
+
     const filteredMenuItems = menuItems
         .filter(group => {
             // Filter by role's accessible groups
