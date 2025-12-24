@@ -74,7 +74,7 @@ export default function PSPLogin() {
     return (
         <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f1f5f9', padding: '2rem' }}>
             <div style={{ background: 'white', padding: '2rem', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', maxWidth: '400px', width: '100%' }}>
-                <h1 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '1rem', textAlign: 'center' }}>PSP Login</h1>
+                <h1 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '1rem', textAlign: 'center', color: '#0f172a' }}>PSP Login</h1>
                 <p style={{ textAlign: 'center', color: '#64748b', marginBottom: '2rem' }}>Sign in to your PSP account</p>
                 
                 {error && <div style={{ background: '#fee', color: '#c00', padding: '0.75rem', borderRadius: '4px', marginBottom: '1rem' }}>{error}</div>}

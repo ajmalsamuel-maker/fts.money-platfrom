@@ -81,7 +81,7 @@ export default function CommunityPortalLogin() {
                                 className="h-32 w-32 object-contain"
                             />
                             <div>
-                                <h1 className="text-3xl font-bold text-white" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                                <h1 className="text-3xl font-bold text-slate-900" style={{ fontFamily: 'Montserrat, sans-serif' }}>
                                     FTS.Money Community
                                 </h1>
                                 <p className="text-lg mt-1" style={{ color: FTS_COLORS.aqua }}>

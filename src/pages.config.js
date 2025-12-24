@@ -4,6 +4,8 @@ import AIMerchantInsights from './pages/AIMerchantInsights';
 import APIDocumentation from './pages/APIDocumentation';
 import APIGateway from './pages/APIGateway';
 import APIGatewayConfiguration from './pages/APIGatewayConfiguration';
+import APIKeys from './pages/APIKeys';
+import APILogs from './pages/APILogs';
 import APMOnboarding from './pages/APMOnboarding';
 import AccountUpdater from './pages/AccountUpdater';
 import AcquirerOnboarding from './pages/AcquirerOnboarding';
@@ -204,8 +206,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import APIKeys from './pages/APIKeys';
-import APILogs from './pages/APILogs';
 import __Layout from './Layout.jsx';
 
 
@@ -216,6 +216,8 @@ export const PAGES = {
     "APIDocumentation": APIDocumentation,
     "APIGateway": APIGateway,
     "APIGatewayConfiguration": APIGatewayConfiguration,
+    "APIKeys": APIKeys,
+    "APILogs": APILogs,
     "APMOnboarding": APMOnboarding,
     "AccountUpdater": AccountUpdater,
     "AcquirerOnboarding": AcquirerOnboarding,
@@ -416,8 +418,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "APIKeys": APIKeys,
-    "APILogs": APILogs,
 }
 
 export const pagesConfig = {
