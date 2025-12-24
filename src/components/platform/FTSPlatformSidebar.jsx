@@ -87,7 +87,8 @@ const menuSections = [
     {
         title: 'ISO Gateway Service',
         items: [
-            { icon: Zap, label: 'Customers', path: 'ISOGatewayCustomers', description: 'Service subscribers', priority: true },
+            { icon: Code, label: 'Test Console', path: 'ISOGatewayTestConsole', description: 'API testing & docs', priority: true },
+            { icon: Zap, label: 'Customers', path: 'ISOGatewayCustomers', description: 'Service subscribers' },
             { icon: GitBranch, label: 'Connections', path: 'ISOGatewayConnections', description: 'Translation routing' },
             { icon: Activity, label: 'Message Monitor', path: 'ISOMessageMonitor', description: 'Real-time logs' }
         ]

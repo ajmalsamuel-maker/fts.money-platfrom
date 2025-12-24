@@ -209,6 +209,7 @@ import XeroIntegration from './pages/XeroIntegration';
 import ISOGatewayCustomers from './pages/ISOGatewayCustomers';
 import ISOGatewayConnections from './pages/ISOGatewayConnections';
 import ISOMessageMonitor from './pages/ISOMessageMonitor';
+import ISOGatewayTestConsole from './pages/ISOGatewayTestConsole';
 import __Layout from './Layout.jsx';
 
 
@@ -424,6 +425,7 @@ export const PAGES = {
     "ISOGatewayCustomers": ISOGatewayCustomers,
     "ISOGatewayConnections": ISOGatewayConnections,
     "ISOMessageMonitor": ISOMessageMonitor,
+    "ISOGatewayTestConsole": ISOGatewayTestConsole,
 }
 
 export const pagesConfig = {
