@@ -85,6 +85,14 @@ const menuSections = [
         ]
     },
     {
+        title: 'ISO Gateway Service',
+        items: [
+            { icon: Zap, label: 'Customers', path: 'ISOGatewayCustomers', description: 'Service subscribers', priority: true },
+            { icon: GitBranch, label: 'Connections', path: 'ISOGatewayConnections', description: 'Translation routing' },
+            { icon: Activity, label: 'Message Monitor', path: 'ISOMessageMonitor', description: 'Real-time logs' }
+        ]
+    },
+    {
         title: 'Analytics & Reports',
         items: [
             { icon: BarChart3, label: 'Platform Analytics', path: 'FTSAnalytics', description: 'Cross-PSP insights' },
