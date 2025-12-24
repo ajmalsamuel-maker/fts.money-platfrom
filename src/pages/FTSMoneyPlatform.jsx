@@ -36,10 +36,10 @@ import {
 
 const quickActions = [
     { icon: Building2, label: 'PSP Instances', path: 'PSPProvisioning', color: 'bg-blue-50 text-blue-700 border-blue-200' },
+    { icon: Zap, label: 'ISO Gateway', path: 'ISOGatewayTestConsole', color: 'bg-violet-50 text-violet-700 border-violet-200' },
     { icon: Package, label: 'Service Catalog', path: 'FTSServiceManager', color: 'bg-indigo-50 text-indigo-700 border-indigo-200' },
     { icon: Database, label: 'Provider Pool', path: 'FTSProviderPool', color: 'bg-purple-50 text-purple-700 border-purple-200' },
     { icon: Wallet, label: 'Payout Routes', path: 'FTSPayoutRoutes', color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
-    { icon: Zap, label: 'Fee Templates', path: 'FTSFeeTemplates', color: 'bg-amber-50 text-amber-700 border-amber-200' },
     { icon: BarChart3, label: 'Analytics', path: 'FTSAnalytics', color: 'bg-cyan-50 text-cyan-700 border-cyan-200' },
     { icon: DollarSign, label: 'Revenue', path: 'FTSRevenue', color: 'bg-pink-50 text-pink-700 border-pink-200' }
 ];
