@@ -131,6 +131,18 @@ const menuSections = [
 ];
 
 export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, isSuperAdmin }) {
+    const [pinnedSection, setPinnedSection] = React.useState(null);
+    
+    // Auto-pin the section containing the current page
+    React.useEffect(() => {
+        const currentSection = menuSections.find(section => 
+            section.items.some(item => item.path === currentPage)
+        );
+        if (currentSection && !pinnedSection) {
+            setPinnedSection(currentSection.title);
+        }
+    }, [currentPage]);
+    
     return (
         <aside className="w-64 bg-white border-r border-slate-200 flex flex-col h-screen">
             {/* Logo */}
@@ -161,24 +173,41 @@ export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, i
             <nav className="flex-1 overflow-y-auto p-3">
                 <div className="space-y-5">
                     {menuSections.map((section) => {
-                        const [isCollapsed, setIsCollapsed] = React.useState(section.collapsed || false);
+                            const [isCollapsed, setIsCollapsed] = React.useState(section.collapsed || false);
+                            const isPinned = pinnedSection === section.title;
+                            const hasCurrentPage = section.items.some(item => item.path === currentPage);
 
-                        return (
-                            <div key={section.title}>
-                                <div className="flex items-center justify-between px-3 mb-2">
-                                    <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                                        {section.title}
-                                    </h3>
-                                    {section.collapsed !== undefined && (
-                                        <button
-                                            onClick={() => setIsCollapsed(!isCollapsed)}
-                                            className="text-slate-400 hover:text-slate-600"
-                                        >
-                                            {isCollapsed ? '▶' : '▼'}
-                                        </button>
-                                    )}
-                                </div>
-                                {!isCollapsed && (
+                            return (
+                                <div key={section.title} className={hasCurrentPage ? 'bg-blue-50/50 -mx-2 px-2 py-1 rounded-lg' : ''}>
+                                    <div className="flex items-center justify-between px-3 mb-2">
+                                        <h3 className={cn(
+                                            "text-xs font-semibold uppercase tracking-wider",
+                                            hasCurrentPage ? "text-blue-700" : "text-slate-500"
+                                        )}>
+                                            {section.title}
+                                            {hasCurrentPage && <span className="ml-1">📍</span>}
+                                        </h3>
+                                        <div className="flex items-center gap-1">
+                                            {!section.collapsed && (
+                                                <button
+                                                    onClick={() => setPinnedSection(isPinned ? null : section.title)}
+                                                    className="text-slate-400 hover:text-blue-600 text-xs"
+                                                    title={isPinned ? "Unpin" : "Pin section"}
+                                                >
+                                                    {isPinned ? '📌' : '📍'}
+                                                </button>
+                                            )}
+                                            {section.collapsed !== undefined && (
+                                                <button
+                                                    onClick={() => setIsCollapsed(!isCollapsed)}
+                                                    className="text-slate-400 hover:text-slate-600"
+                                                >
+                                                    {isCollapsed ? '▶' : '▼'}
+                                                </button>
+                                            )}
+                                        </div>
+                                    </div>
+                                    {(!isCollapsed || isPinned) && (
                                     <div className="space-y-1">
                                         {section.items.filter(item => !item.superAdminOnly || isSuperAdmin).map((item) => {
                                             const Icon = item.icon;

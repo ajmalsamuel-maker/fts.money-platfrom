@@ -33,6 +33,63 @@ import {
     HardDrive,
     Cloud
 } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+
+function AddServiceButton({ navigate }) {
+    const [open, setOpen] = useState(false);
+
+    return (
+        <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+                <Button className="gap-2 bg-blue-600 hover:bg-blue-700">
+                    <Plus className="h-4 w-4" />
+                    Add Service
+                </Button>
+            </DialogTrigger>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Add New Service</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-3 py-4">
+                    <button
+                        onClick={() => {
+                            setOpen(false);
+                            navigate(createPageUrl('PSPProvisioningWizard'));
+                        }}
+                        className="w-full p-4 rounded-lg border-2 border-blue-200 hover:border-blue-400 hover:bg-blue-50 transition-all text-left"
+                    >
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                                <Building2 className="h-6 w-6 text-blue-600" />
+                            </div>
+                            <div>
+                                <p className="font-semibold text-slate-900">PSP Instance</p>
+                                <p className="text-sm text-slate-600">Provision a new Payment Service Provider</p>
+                            </div>
+                        </div>
+                    </button>
+                    <button
+                        onClick={() => {
+                            setOpen(false);
+                            navigate(createPageUrl('ISOGatewayCustomers'));
+                        }}
+                        className="w-full p-4 rounded-lg border-2 border-violet-200 hover:border-violet-400 hover:bg-violet-50 transition-all text-left"
+                    >
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-lg bg-violet-100 flex items-center justify-center">
+                                <Zap className="h-6 w-6 text-violet-600" />
+                            </div>
+                            <div>
+                                <p className="font-semibold text-slate-900">ISO Gateway Customer</p>
+                                <p className="text-sm text-slate-600">Add customer to ISO Gateway service</p>
+                            </div>
+                        </div>
+                    </button>
+                </div>
+            </DialogContent>
+        </Dialog>
+    );
+}
 
 const quickActions = [
     { icon: Building2, label: 'PSP Instances', path: 'PSPProvisioning', color: 'bg-blue-50 text-blue-700 border-blue-200' },
@@ -123,13 +180,7 @@ export default function FTSMoneyPlatform() {
                             <p className="text-xs text-slate-600">Logged in as</p>
                             <p className="text-sm font-medium text-slate-900">{platformUser?.email}</p>
                         </div>
-                        <Button 
-                            onClick={() => navigate(createPageUrl('PSPProvisioningWizard'))}
-                            className="gap-2 bg-blue-600 hover:bg-blue-700"
-                        >
-                            <Plus className="h-4 w-4" />
-                            Provision New PSP
-                        </Button>
+                        <AddServiceButton navigate={navigate} />
                     </div>
                 </header>
 
