@@ -222,16 +222,20 @@ export default function MerchantDashboard() {
 
     if (!user) return null;
 
+    const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
+
     return (
         <div className="flex h-screen bg-slate-50">
-            {/* Sidebar */}
-            <MerchantSidebar 
-                selectedMID={selectedMID}
-                mids={mids}
-                onMIDChange={setSelectedMID}
+            {/* Optimized Sidebar */}
+            <MerchantSidebarOptimized 
                 currentPage="MerchantDashboard"
-                user={user}
-                merchant={merchant}
+                merchantData={merchant}
+                onLogout={logout}
+            />
+            <UnifiedCommandPalette 
+                open={commandPaletteOpen} 
+                onOpenChange={setCommandPaletteOpen}
+                portalType="merchant"
             />
 
             {/* Main Content */}
