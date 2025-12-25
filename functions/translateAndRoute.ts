@@ -3,7 +3,7 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 Deno.serve(async (req) => {
     try {
         const base44 = createClientFromRequest(req);
-        const { message_log_id, connection_id, customer_id } = await req.json();
+        const { message_log_id, connection_id, customer_id, enable_routing = false } = await req.json();
         
         const startTime = Date.now();
         
@@ -62,10 +62,36 @@ Deno.serve(async (req) => {
                 enrichment_applied: enrichmentApplied
             });
             
-            // DELIVERY to destination endpoint
-            if (connection.destination_endpoint) {
+            // CHECK FOR ORCHESTRATION ROUTING
+            let routingResult = null;
+            if (enable_routing) {
+                try {
+                    const routeResponse = await base44.functions.invoke('orchestrationEngine', {
+                        action: 'route',
+                        owner_type: 'iso_gateway',
+                        owner_id: customer_id,
+                        transaction_data: {
+                            message_id: messageLog.id,
+                            amount: extractAmount(messageLog.source_message),
+                            currency: extractCurrency(messageLog.source_message) || 'USD',
+                            country: null
+                        }
+                    });
+                    
+                    if (routeResponse.data?.success) {
+                        routingResult = routeResponse.data;
+                    }
+                } catch (routeError) {
+                    console.error('Routing error:', routeError);
+                }
+            }
+
+            // DELIVERY to destination endpoint or routed provider
+            const deliveryEndpoint = routingResult?.selected_route?.provider_endpoint || connection.destination_endpoint;
+            
+            if (deliveryEndpoint) {
                 const deliveryResult = await deliverMessage(
-                    connection.destination_endpoint,
+                    deliveryEndpoint,
                     translatedMessage,
                     connection.destination_auth,
                     messageLog.target_standard
@@ -74,7 +100,12 @@ Deno.serve(async (req) => {
                 await base44.asServiceRole.entities.ISOMessageLog.update(messageLog.id, {
                     delivery_status: deliveryResult.success ? 'delivered' : 'failed',
                     delivery_attempts: 1,
-                    delivered_at: deliveryResult.success ? new Date().toISOString() : null
+                    delivered_at: deliveryResult.success ? new Date().toISOString() : null,
+                    metadata: {
+                        routed: !!routingResult,
+                        selected_route: routingResult?.selected_route?.route_name,
+                        routing_strategy: routingResult?.matched_rule?.routing_strategy
+                    }
                 });
             }
             
@@ -241,4 +272,26 @@ async function deliverMessage(endpoint, message, auth, messageType) {
 function calculateAvgLatency(currentAvg, newValue, count) {
     if (!currentAvg || count === 0) return newValue;
     return ((currentAvg * count) + newValue) / (count + 1);
+}
+
+function extractAmount(message) {
+    try {
+        if (typeof message === 'string' && message.startsWith('{')) {
+            return JSON.parse(message).amount || 0;
+        }
+        return 100.00; // Default
+    } catch {
+        return 100.00;
+    }
+}
+
+function extractCurrency(message) {
+    try {
+        if (typeof message === 'string' && message.startsWith('{')) {
+            return JSON.parse(message).currency;
+        }
+        return null;
+    } catch {
+        return null;
+    }
 }
