@@ -120,8 +120,8 @@ export default function FTSPlatformSidebarRestructured({ currentPage, userRole, 
             id: 'documentation',
             title: 'Documentation',
             defaultOpen: false,
-            collapsed: true,
             items: [
+                { label: 'System Documentation', path: 'SystemDocumentation', icon: BookOpen, description: 'Complete docs', priority: true },
                 { label: 'Architecture', path: 'FTSArchitectureDoc', icon: BookOpen, description: 'System design' },
                 { label: 'Product Ecosystem', path: 'FTSProductEcosystemReport', icon: Package, description: 'Products' },
                 { label: 'Vertical Solutions', path: 'FTSVerticalSolutions', icon: Building2, description: 'Industries' }
