@@ -26,9 +26,9 @@ export default function FTSServiceBilling() {
         queryFn: async () => await base44.entities.OrchestrationCustomer.list() || []
     });
 
-    const { data: pricing = [] } = useQuery({
-        queryKey: ['master-pricing'],
-        queryFn: async () => await base44.entities.MasterPricing.list() || []
+    const { data: pricingConfig = [] } = useQuery({
+        queryKey: ['service-pricing-config'],
+        queryFn: async () => await base44.entities.ServicePricingConfig.filter({ status: 'active' }) || []
     });
 
     // Calculate totals
@@ -36,18 +36,30 @@ export default function FTSServiceBilling() {
     const orchRevenue = orchCustomers.reduce((sum, c) => sum + (c.total_revenue || 0), 0);
     const totalRevenue = isoRevenue + orchRevenue;
 
-    const tierPricing = {
-        iso_gateway: {
-            developer: { monthly: 499, perMessage: 0.001, limit: 50000 },
-            business: { monthly: 1999, perMessage: 0.0008, limit: 500000 },
-            enterprise: { monthly: 4999, perMessage: 0.0005, limit: 999999999 }
-        },
-        orchestration: {
-            starter: { monthly: 199, perExecution: 0.002, limit: 50000 },
-            professional: { monthly: 999, perExecution: 0.0015, limit: 500000 },
-            enterprise: { monthly: 2999, perExecution: 0.001, limit: 999999999 }
-        }
-    };
+    // Convert pricing config to structured format
+    const tierPricing = pricingConfig.reduce((acc, config) => {
+        if (!acc[config.service_type]) acc[config.service_type] = {};
+        acc[config.service_type][config.tier_name] = {
+            monthly: config.monthly_fee,
+            perUnit: config.overage_rate,
+            limit: config.included_units
+        };
+        return acc;
+    }, {});
+
+    // Fallback to defaults if no config exists
+    if (Object.keys(tierPricing).length === 0) {
+        tierPricing.iso_gateway = {
+            developer: { monthly: 499, perUnit: 0.001, limit: 50000 },
+            business: { monthly: 1999, perUnit: 0.0008, limit: 500000 },
+            enterprise: { monthly: 4999, perUnit: 0.0005, limit: 999999999 }
+        };
+        tierPricing.orchestration = {
+            starter: { monthly: 199, perUnit: 0.002, limit: 50000 },
+            professional: { monthly: 999, perUnit: 0.0015, limit: 500000 },
+            enterprise: { monthly: 2999, perUnit: 0.001, limit: 999999999 }
+        };
+    }
 
     const generateInvoice = async (customer, service) => {
         const isISO = service === 'iso_gateway';
@@ -57,7 +69,7 @@ export default function FTSServiceBilling() {
         
         const baseCharge = pricing.monthly;
         const overageCharge = usage > pricing.limit 
-            ? (usage - pricing.limit) * (isISO ? pricing.perMessage : pricing.perExecution)
+            ? (usage - pricing.limit) * pricing.perUnit
             : 0;
         const totalCharge = baseCharge + overageCharge;
 
@@ -137,6 +149,7 @@ export default function FTSServiceBilling() {
                             <TabsTrigger value="iso">ISO Gateway Billing</TabsTrigger>
                             <TabsTrigger value="orchestration">Orchestration Billing</TabsTrigger>
                             <TabsTrigger value="pricing">Pricing Tiers</TabsTrigger>
+                            <TabsTrigger value="config">Configure Pricing</TabsTrigger>
                         </TabsList>
 
                         {/* ISO Gateway Billing */}
@@ -152,7 +165,7 @@ export default function FTSServiceBilling() {
                                             const usage = customer.current_month_usage || 0;
                                             const baseCharge = tier.monthly;
                                             const overageCharge = usage > tier.limit 
-                                                ? (usage - tier.limit) * tier.perMessage 
+                                                ? (usage - tier.limit) * tier.perUnit 
                                                 : 0;
                                             const totalCharge = baseCharge + overageCharge;
 
@@ -216,7 +229,7 @@ export default function FTSServiceBilling() {
                                             const usage = customer.current_month_usage || 0;
                                             const baseCharge = tier.monthly;
                                             const overageCharge = usage > tier.limit 
-                                                ? (usage - tier.limit) * tier.perExecution 
+                                                ? (usage - tier.limit) * tier.perUnit 
                                                 : 0;
                                             const totalCharge = baseCharge + overageCharge;
 
@@ -288,7 +301,7 @@ export default function FTSServiceBilling() {
                                                 </div>
                                                 <div className="text-sm space-y-1 text-slate-600">
                                                     <p>• {price.limit.toLocaleString()} messages/month</p>
-                                                    <p>• ${price.perMessage} per message overage</p>
+                                                    <p>• ${price.perUnit} per message overage</p>
                                                 </div>
                                             </div>
                                         ))}
@@ -313,7 +326,7 @@ export default function FTSServiceBilling() {
                                                 </div>
                                                 <div className="text-sm space-y-1 text-slate-600">
                                                     <p>• {price.limit.toLocaleString()} executions/month</p>
-                                                    <p>• ${price.perExecution} per execution overage</p>
+                                                    <p>• ${price.perUnit} per execution overage</p>
                                                 </div>
                                             </div>
                                         ))}
@@ -321,9 +334,160 @@ export default function FTSServiceBilling() {
                                 </Card>
                             </div>
                         </TabsContent>
+
+                        {/* Configure Pricing */}
+                        <TabsContent value="config">
+                            <div className="grid grid-cols-2 gap-6">
+                                <PricingConfigCard 
+                                    serviceType="iso_gateway" 
+                                    serviceName="ISO Gateway"
+                                    pricingConfig={pricingConfig.filter(p => p.service_type === 'iso_gateway')}
+                                    queryClient={queryClient}
+                                />
+                                <PricingConfigCard 
+                                    serviceType="orchestration" 
+                                    serviceName="Orchestration"
+                                    pricingConfig={pricingConfig.filter(p => p.service_type === 'orchestration')}
+                                    queryClient={queryClient}
+                                />
+                            </div>
+                        </TabsContent>
                     </Tabs>
                 </div>
             </div>
         </div>
+    );
+}
+
+function PricingConfigCard({ serviceType, serviceName, pricingConfig, queryClient }) {
+    const [editMode, setEditMode] = useState(false);
+    const [editingTier, setEditingTier] = useState(null);
+
+    const createOrUpdateMutation = useMutation({
+        mutationFn: async (data) => {
+            if (data.id) {
+                return await base44.entities.ServicePricingConfig.update(data.id, data);
+            } else {
+                return await base44.entities.ServicePricingConfig.create(data);
+            }
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries(['service-pricing-config']);
+            setEditMode(false);
+            setEditingTier(null);
+        }
+    });
+
+    const defaultTiers = serviceType === 'iso_gateway' 
+        ? [
+            { tier_name: 'developer', monthly_fee: 499, included_units: 50000, overage_rate: 0.001 },
+            { tier_name: 'business', monthly_fee: 1999, included_units: 500000, overage_rate: 0.0008 },
+            { tier_name: 'enterprise', monthly_fee: 4999, included_units: 999999999, overage_rate: 0.0005 }
+        ]
+        : [
+            { tier_name: 'starter', monthly_fee: 199, included_units: 50000, overage_rate: 0.002 },
+            { tier_name: 'professional', monthly_fee: 999, included_units: 500000, overage_rate: 0.0015 },
+            { tier_name: 'enterprise', monthly_fee: 2999, included_units: 999999999, overage_rate: 0.001 }
+        ];
+
+    const initializeDefaults = async () => {
+        for (const tier of defaultTiers) {
+            await base44.entities.ServicePricingConfig.create({
+                service_type: serviceType,
+                ...tier,
+                status: 'active'
+            });
+        }
+        queryClient.invalidateQueries(['service-pricing-config']);
+    };
+
+    return (
+        <Card>
+            <CardHeader>
+                <div className="flex justify-between items-center">
+                    <CardTitle>{serviceName} Pricing</CardTitle>
+                    {pricingConfig.length === 0 && (
+                        <Button size="sm" onClick={initializeDefaults} className="bg-blue-600 hover:bg-blue-700">
+                            Initialize Defaults
+                        </Button>
+                    )}
+                </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+                {pricingConfig.length === 0 ? (
+                    <div className="text-center py-8 text-slate-600">
+                        <p>No pricing configured. Click "Initialize Defaults" to set up standard pricing tiers.</p>
+                    </div>
+                ) : (
+                    pricingConfig.map(config => (
+                        <div key={config.id} className="p-4 border rounded-lg">
+                            {editMode && editingTier?.id === config.id ? (
+                                <div className="space-y-3">
+                                    <Input
+                                        type="number"
+                                        placeholder="Monthly Fee"
+                                        value={editingTier.monthly_fee}
+                                        onChange={(e) => setEditingTier({...editingTier, monthly_fee: parseFloat(e.target.value)})}
+                                    />
+                                    <Input
+                                        type="number"
+                                        placeholder="Included Units"
+                                        value={editingTier.included_units}
+                                        onChange={(e) => setEditingTier({...editingTier, included_units: parseInt(e.target.value)})}
+                                    />
+                                    <Input
+                                        type="number"
+                                        step="0.0001"
+                                        placeholder="Overage Rate"
+                                        value={editingTier.overage_rate}
+                                        onChange={(e) => setEditingTier({...editingTier, overage_rate: parseFloat(e.target.value)})}
+                                    />
+                                    <div className="flex gap-2">
+                                        <Button 
+                                            size="sm" 
+                                            onClick={() => createOrUpdateMutation.mutate(editingTier)}
+                                            className="bg-blue-600 hover:bg-blue-700"
+                                        >
+                                            Save
+                                        </Button>
+                                        <Button 
+                                            size="sm" 
+                                            variant="outline"
+                                            onClick={() => {
+                                                setEditMode(false);
+                                                setEditingTier(null);
+                                            }}
+                                        >
+                                            Cancel
+                                        </Button>
+                                    </div>
+                                </div>
+                            ) : (
+                                <>
+                                    <div className="flex justify-between items-start mb-2">
+                                        <p className="font-semibold capitalize">{config.tier_name}</p>
+                                        <Button 
+                                            size="sm" 
+                                            variant="ghost"
+                                            onClick={() => {
+                                                setEditMode(true);
+                                                setEditingTier({...config});
+                                            }}
+                                        >
+                                            Edit
+                                        </Button>
+                                    </div>
+                                    <div className="text-sm space-y-1 text-slate-600">
+                                        <p>• Monthly Fee: ${config.monthly_fee}</p>
+                                        <p>• Included: {config.included_units.toLocaleString()} units</p>
+                                        <p>• Overage: ${config.overage_rate} per unit</p>
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                    ))
+                )}
+            </CardContent>
+        </Card>
     );
 }
