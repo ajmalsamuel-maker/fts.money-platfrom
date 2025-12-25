@@ -39,9 +39,27 @@ export default function FTSServiceBilling() {
     // Convert pricing config to structured format with defaults
     const tierPricing = {
         iso_gateway: {
-            developer: { monthly: 499, perUnit: 0.001, limit: 50000 },
-            business: { monthly: 1999, perUnit: 0.0008, limit: 500000 },
-            enterprise: { monthly: 4999, perUnit: 0.0005, limit: 999999999 }
+            developer: { 
+                monthly: 499, 
+                perUnit: 0.001, 
+                limit: 50000,
+                features: ['iso8583_translation', 'iso20022_translation'],
+                enrichment_fees: {}
+            },
+            business: { 
+                monthly: 1999, 
+                perUnit: 0.0008, 
+                limit: 500000,
+                features: ['iso8583_translation', 'iso20022_translation', 'mt_translation', 'lei_enrichment', 'structured_remittance'],
+                enrichment_fees: { lei: 0.0001, structured_remittance: 0.00005 }
+            },
+            enterprise: { 
+                monthly: 4999, 
+                perUnit: 0.0005, 
+                limit: 999999999,
+                features: ['iso8583_translation', 'iso20022_translation', 'mt_translation', 'lei_enrichment', 'structured_remittance', 'purpose_codes', 'end_to_end_refs', 'ultimate_party_id'],
+                enrichment_fees: { lei: 0.0001, structured_remittance: 0.00005, purpose_codes: 0.00002, mt: 0.0003 }
+            }
         },
         orchestration: {
             starter: { monthly: 199, perUnit: 0.002, limit: 50000 },
@@ -303,6 +321,24 @@ export default function FTSServiceBilling() {
                                                 <div className="text-sm space-y-1 text-slate-600">
                                                     <p>• {price.limit.toLocaleString()} messages/month</p>
                                                     <p>• ${price.perUnit} per message overage</p>
+                                                    {price.features && (
+                                                        <div className="mt-2 pt-2 border-t">
+                                                            <p className="font-medium text-slate-700 mb-1">Included Features:</p>
+                                                            {price.features.includes('mt_translation') && <p>✓ SWIFT MT Translation</p>}
+                                                            {price.features.includes('lei_enrichment') && <p>✓ LEI Enrichment</p>}
+                                                            {price.features.includes('structured_remittance') && <p>✓ Structured Remittance</p>}
+                                                            {price.features.includes('purpose_codes') && <p>✓ Purpose Codes</p>}
+                                                            {price.features.includes('end_to_end_refs') && <p>✓ End-to-End Tracking</p>}
+                                                        </div>
+                                                    )}
+                                                    {price.enrichment_fees && Object.keys(price.enrichment_fees).length > 0 && (
+                                                        <div className="mt-2 pt-2 border-t">
+                                                            <p className="font-medium text-slate-700 mb-1">Enrichment Fees:</p>
+                                                            {price.enrichment_fees.lei && <p>• LEI: +${price.enrichment_fees.lei}/msg</p>}
+                                                            {price.enrichment_fees.structured_remittance && <p>• Structured Remittance: +${price.enrichment_fees.structured_remittance}/msg</p>}
+                                                            {price.enrichment_fees.mt && <p>• MT Translation: +${price.enrichment_fees.mt}/msg</p>}
+                                                        </div>
+                                                    )}
                                                 </div>
                                             </div>
                                         ))}
