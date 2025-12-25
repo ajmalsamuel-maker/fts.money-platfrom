@@ -212,6 +212,7 @@ import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
 import ISOGatewayCustomerPortal from './pages/ISOGatewayCustomerPortal';
 import ISOGatewayLogin from './pages/ISOGatewayLogin';
+import ISOGatewayRouting from './pages/ISOGatewayRouting';
 import __Layout from './Layout.jsx';
 
 
@@ -430,6 +431,7 @@ export const PAGES = {
     "XeroIntegration": XeroIntegration,
     "ISOGatewayCustomerPortal": ISOGatewayCustomerPortal,
     "ISOGatewayLogin": ISOGatewayLogin,
+    "ISOGatewayRouting": ISOGatewayRouting,
 }
 
 export const pagesConfig = {

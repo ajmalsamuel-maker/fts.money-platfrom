@@ -8,7 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Building2, Plus, Search, TrendingUp, Activity, AlertCircle, Pencil, Shield } from 'lucide-react';
+import { Building2, Plus, Search, TrendingUp, Activity, AlertCircle, Pencil, Shield, GitBranch } from 'lucide-react';
+import OrchestrationRuleBuilder from '@/components/orchestration/OrchestrationRuleBuilder';
 
 export default function ISOGatewayCustomers() {
     const [searchQuery, setSearchQuery] = useState('');
@@ -332,7 +333,15 @@ export default function ISOGatewayCustomers() {
                                                 <Pencil className="h-4 w-4 mr-2" />
                                                 Edit
                                             </Button>
-                                        </div>
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => window.location.href = `/ISOGatewayRouting?customer_id=${customer.id}`}
+                                            >
+                                                <GitBranch className="h-4 w-4 mr-2" />
+                                                Routing
+                                            </Button>
+                                            </div>
 
                                         {customer.lei_grace_period_end && new Date(customer.lei_grace_period_end) > new Date() && (
                                             <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg flex items-start gap-3">
