@@ -143,6 +143,24 @@ export const MODULE_DEFINITIONS = {
   },
 
   // ORCHESTRATION & ROUTING
+  'orchestration': {
+    module_id: 'orchestration',
+    module_name: 'Payment & Payout Orchestration',
+    module_category: 'advanced',
+    description: 'Intelligent routing, failover, and load balancing',
+    icon: 'GitBranch',
+    subscription_tier: 'enterprise',
+    pricing_model: { type: 'usage_based', base_price: 499 },
+    menu_items: [
+      { group: 'orchestration', label: 'paymentRouting', path: 'PSPRouting', icon: 'GitBranch', permission: 'VIEW_ROUTING' }
+    ],
+    dependencies: ['payment_gateways'],
+    features: ['orchestration', 'smart_routing', 'failover', 'load_balancing'],
+    compliance_requirements: ['PCI_DSS', 'ISO_27001'],
+    data_isolation_required: true,
+    is_active: true
+  },
+
   'smart_routing': {
     module_id: 'smart_routing',
     module_name: 'AI Smart Routing',
@@ -155,7 +173,7 @@ export const MODULE_DEFINITIONS = {
       { group: 'orchestration', label: 'aiSmartRouting', path: 'SmartOrchestration', icon: 'Brain', permission: 'VIEW_ROUTING' },
       { group: 'orchestration', label: 'routingRules', path: 'PaymentOrchestration', icon: 'Zap', permission: 'VIEW_ORCHESTRATION' }
     ],
-    dependencies: ['payment_gateways'],
+    dependencies: ['payment_gateways', 'orchestration'],
     features: ['smart_routing', 'ai_optimization'],
     compliance_requirements: ['PCI_DSS', 'ISO_27001'],
     data_isolation_required: true,
