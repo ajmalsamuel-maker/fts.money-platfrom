@@ -23,6 +23,8 @@ export default function ISOGatewayCustomers() {
         customer_type: 'fintech',
         subscription_tier: 'developer',
         monthly_message_limit: 50000,
+        identifier_type: 'none',
+        tas_number: '',
         lei: '',
         lei_status: 'not_provided',
         lei_grace_period_end: null
@@ -202,34 +204,67 @@ export default function ISOGatewayCustomers() {
                                     </div>
                                     
                                     <div>
-                                        <label className="text-sm font-medium">LEI / TAS Number</label>
-                                        <Input
-                                            value={newCustomer.lei}
-                                            onChange={(e) => setNewCustomer({...newCustomer, lei: e.target.value})}
-                                            placeholder="20-character LEI or leave blank"
-                                            maxLength={20}
-                                        />
-                                    </div>
-                                    
-                                    <div>
-                                        <label className="text-sm font-medium">LEI Status</label>
-                                        <Select value={newCustomer.lei_status} onValueChange={(v) => setNewCustomer({...newCustomer, lei_status: v})}>
+                                        <label className="text-sm font-medium">Business Identifier Type</label>
+                                        <Select value={newCustomer.identifier_type} onValueChange={(v) => setNewCustomer({...newCustomer, identifier_type: v})}>
                                             <SelectTrigger>
                                                 <SelectValue />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="not_provided">Not Provided (6-month grace period)</SelectItem>
-                                                <SelectItem value="verified">Verified</SelectItem>
-                                                <SelectItem value="pending">Pending Issuance</SelectItem>
-                                                <SelectItem value="grace_period">Grace Period (6 months)</SelectItem>
+                                                <SelectItem value="none">None (6-month grace period)</SelectItem>
+                                                <SelectItem value="tas">TAS Number</SelectItem>
+                                                <SelectItem value="lei">LEI</SelectItem>
                                             </SelectContent>
                                         </Select>
-                                        {(newCustomer.lei_status === 'not_provided' || newCustomer.lei_status === 'grace_period') && (
-                                            <p className="text-xs text-amber-600 mt-1">
-                                                ⚠️ Customer will have 6 months to provide valid LEI/TAS
-                                            </p>
-                                        )}
                                     </div>
+                                    
+                                    {newCustomer.identifier_type === 'tas' && (
+                                        <div>
+                                            <label className="text-sm font-medium">TAS Number</label>
+                                            <Input
+                                                value={newCustomer.tas_number}
+                                                onChange={(e) => setNewCustomer({...newCustomer, tas_number: e.target.value})}
+                                                placeholder="Enter TAS number"
+                                            />
+                                            <p className="text-xs text-blue-600 mt-1">
+                                                ℹ️ Will be verified against TAS system
+                                            </p>
+                                        </div>
+                                    )}
+                                    
+                                    {newCustomer.identifier_type === 'lei' && (
+                                        <>
+                                            <div>
+                                                <label className="text-sm font-medium">LEI Number</label>
+                                                <Input
+                                                    value={newCustomer.lei}
+                                                    onChange={(e) => setNewCustomer({...newCustomer, lei: e.target.value})}
+                                                    placeholder="20-character LEI"
+                                                    maxLength={20}
+                                                />
+                                            </div>
+                                            
+                                            <div>
+                                                <label className="text-sm font-medium">LEI Status</label>
+                                                <Select value={newCustomer.lei_status} onValueChange={(v) => setNewCustomer({...newCustomer, lei_status: v})}>
+                                                    <SelectTrigger>
+                                                        <SelectValue />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="pending">Pending Verification</SelectItem>
+                                                        <SelectItem value="verified">Verified</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
+                                        </>
+                                    )}
+                                    
+                                    {newCustomer.identifier_type === 'none' && (
+                                        <div className="p-3 bg-amber-50 border border-amber-200 rounded">
+                                            <p className="text-xs text-amber-800">
+                                                ⚠️ Customer will have 6 months grace period to provide TAS or LEI
+                                            </p>
+                                        </div>
+                                    )}
                                     
                                     <Button 
                                         onClick={() => createCustomerMutation.mutate(newCustomer)}
@@ -418,41 +453,44 @@ export default function ISOGatewayCustomers() {
                             
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="text-sm font-medium">LEI / TAS Number</label>
-                                    <Input
-                                        value={editingCustomer.lei || ''}
-                                        onChange={(e) => setEditingCustomer({...editingCustomer, lei: e.target.value})}
-                                        placeholder="20-character LEI"
-                                        maxLength={20}
-                                    />
-                                </div>
-                                
-                                <div>
-                                    <label className="text-sm font-medium">LEI Status</label>
+                                    <label className="text-sm font-medium">Identifier Type</label>
                                     <Select 
-                                        value={editingCustomer.lei_status || 'not_provided'} 
-                                        onValueChange={(v) => {
-                                            const gracePeriodEnd = (v === 'grace_period' || v === 'not_provided')
-                                                ? new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString()
-                                                : null;
-                                            setEditingCustomer({
-                                                ...editingCustomer, 
-                                                lei_status: v,
-                                                lei_grace_period_end: gracePeriodEnd
-                                            });
-                                        }}
+                                        value={editingCustomer.identifier_type || 'none'} 
+                                        onValueChange={(v) => setEditingCustomer({...editingCustomer, identifier_type: v})}
                                     >
                                         <SelectTrigger>
                                             <SelectValue />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="not_provided">Not Provided</SelectItem>
-                                            <SelectItem value="verified">Verified</SelectItem>
-                                            <SelectItem value="pending">Pending Issuance</SelectItem>
-                                            <SelectItem value="grace_period">Grace Period (6 months)</SelectItem>
+                                            <SelectItem value="none">None</SelectItem>
+                                            <SelectItem value="tas">TAS Number</SelectItem>
+                                            <SelectItem value="lei">LEI</SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </div>
+                                
+                                {editingCustomer.identifier_type === 'tas' && (
+                                    <div>
+                                        <label className="text-sm font-medium">TAS Number</label>
+                                        <Input
+                                            value={editingCustomer.tas_number || ''}
+                                            onChange={(e) => setEditingCustomer({...editingCustomer, tas_number: e.target.value})}
+                                            placeholder="Enter TAS number"
+                                        />
+                                    </div>
+                                )}
+                                
+                                {editingCustomer.identifier_type === 'lei' && (
+                                    <div>
+                                        <label className="text-sm font-medium">LEI Number</label>
+                                        <Input
+                                            value={editingCustomer.lei || ''}
+                                            onChange={(e) => setEditingCustomer({...editingCustomer, lei: e.target.value})}
+                                            placeholder="20-character LEI"
+                                            maxLength={20}
+                                        />
+                                    </div>
+                                )}
                             </div>
                             
                             <div className="grid grid-cols-2 gap-4">
