@@ -2,7 +2,7 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
-import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
+import FTSPlatformSidebarRestructured from '@/components/platform/FTSPlatformSidebarRestructured';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Activity, CheckCircle2, AlertTriangle, XCircle, Cpu, HardDrive, Database } from 'lucide-react';
@@ -30,7 +30,7 @@ export default function FTSSystemHealth() {
 
     return (
         <div className="flex h-screen bg-slate-50">
-            <FTSPlatformSidebar 
+            <FTSPlatformSidebarRestructured 
                 currentPage="FTSSystemHealth" 
                 userRole={platformUser?.platform_role} 
                 userEmail={platformUser?.email}

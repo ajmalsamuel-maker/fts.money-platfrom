@@ -13,7 +13,8 @@ const pageHierarchy = {
     'OrchestrationLogin': ['My Services', 'Orchestration'],
     'CommunityMarketplace': ['Explore', 'Marketplace'],
     'MySubscriptions': ['My Services', 'Subscriptions'],
-    'CommunityBilling': ['Business', 'Billing'],
+    'CommunityBilling': ['Business & Operations', 'Billing'],
+    'CommunityAnalytics': ['Business & Operations', 'Analytics'],
     'ServiceProviderRegistration': ['Provider Hub', 'Registration'],
     'MyWholesaleOfferings': ['Provider Hub', 'My Offerings'],
     'CommunityAccountSettings': ['Settings', 'Account']
