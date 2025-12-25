@@ -36,30 +36,29 @@ export default function FTSServiceBilling() {
     const orchRevenue = orchCustomers.reduce((sum, c) => sum + (c.total_revenue || 0), 0);
     const totalRevenue = isoRevenue + orchRevenue;
 
-    // Convert pricing config to structured format
-    const tierPricing = pricingConfig.reduce((acc, config) => {
-        if (!acc[config.service_type]) acc[config.service_type] = {};
-        acc[config.service_type][config.tier_name] = {
+    // Convert pricing config to structured format with defaults
+    const tierPricing = {
+        iso_gateway: {
+            developer: { monthly: 499, perUnit: 0.001, limit: 50000 },
+            business: { monthly: 1999, perUnit: 0.0008, limit: 500000 },
+            enterprise: { monthly: 4999, perUnit: 0.0005, limit: 999999999 }
+        },
+        orchestration: {
+            starter: { monthly: 199, perUnit: 0.002, limit: 50000 },
+            professional: { monthly: 999, perUnit: 0.0015, limit: 500000 },
+            enterprise: { monthly: 2999, perUnit: 0.001, limit: 999999999 }
+        }
+    };
+
+    // Override with config from database if exists
+    pricingConfig.forEach(config => {
+        if (!tierPricing[config.service_type]) tierPricing[config.service_type] = {};
+        tierPricing[config.service_type][config.tier_name] = {
             monthly: config.monthly_fee,
             perUnit: config.overage_rate,
             limit: config.included_units
         };
-        return acc;
-    }, {});
-
-    // Fallback to defaults if no config exists
-    if (Object.keys(tierPricing).length === 0) {
-        tierPricing.iso_gateway = {
-            developer: { monthly: 499, perUnit: 0.001, limit: 50000 },
-            business: { monthly: 1999, perUnit: 0.0008, limit: 500000 },
-            enterprise: { monthly: 4999, perUnit: 0.0005, limit: 999999999 }
-        };
-        tierPricing.orchestration = {
-            starter: { monthly: 199, perUnit: 0.002, limit: 50000 },
-            professional: { monthly: 999, perUnit: 0.0015, limit: 500000 },
-            enterprise: { monthly: 2999, perUnit: 0.001, limit: 999999999 }
-        };
-    }
+    });
 
     const generateInvoice = async (customer, service) => {
         const isISO = service === 'iso_gateway';
@@ -161,7 +160,8 @@ export default function FTSServiceBilling() {
                                 <CardContent>
                                     <div className="space-y-3">
                                         {isoCustomers.map(customer => {
-                                            const tier = tierPricing.iso_gateway[customer.subscription_tier];
+                                            const tier = tierPricing.iso_gateway?.[customer.subscription_tier] || tierPricing.iso_gateway?.developer;
+                                            if (!tier) return null;
                                             const usage = customer.current_month_usage || 0;
                                             const baseCharge = tier.monthly;
                                             const overageCharge = usage > tier.limit 
@@ -225,7 +225,8 @@ export default function FTSServiceBilling() {
                                 <CardContent>
                                     <div className="space-y-3">
                                         {orchCustomers.map(customer => {
-                                            const tier = tierPricing.orchestration[customer.subscription_tier];
+                                            const tier = tierPricing.orchestration?.[customer.subscription_tier] || tierPricing.orchestration?.starter;
+                                            if (!tier) return null;
                                             const usage = customer.current_month_usage || 0;
                                             const baseCharge = tier.monthly;
                                             const overageCharge = usage > tier.limit 
