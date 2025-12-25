@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import UnifiedCommandPalette from '@/components/system/UnifiedCommandPalette';
-import { usePrefetchData } from '@/hooks/usePrefetchData';
+import { usePrefetchData } from '@/components/hooks/usePrefetchData';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';

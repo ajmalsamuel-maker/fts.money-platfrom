@@ -639,13 +639,9 @@ export default function CommunityPortalDashboard() {
                                                         <p className="font-semibold text-slate-900">{customer.company_name}</p>
                                                         <p className="text-sm text-slate-600">{customer.subscription_tier} • {customer.total_executions || 0} executions</p>
                                                     </div>
-                                                </div>
-                                                <div className="flex items-center gap-3">
-                                                    <Badge className={cn(
-                                                        customer.status === 'active' ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700'
-                                                    )}>
-                                                        {customer.status}
-                                                    </Badge>
+                                                    </div>
+                                                    <div className="flex items-center gap-3">
+                                                    <StatusBadge status={customer.status} />
                                                     <Button 
                                                         size="sm"
                                                         onClick={() => navigate(createPageUrl('OrchestrationLogin'))}
