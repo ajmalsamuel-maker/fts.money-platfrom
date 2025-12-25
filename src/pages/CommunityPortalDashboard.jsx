@@ -8,7 +8,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-import CommunityPortalSidebar from '@/components/community/CommunityPortalSidebar';
+import CommunityPortalSidebarOptimized from '@/components/community/CommunityPortalSidebarOptimized';
+import Breadcrumbs from '@/components/community/Breadcrumbs';
+import CommandPalette from '@/components/community/CommandPalette';
 import ComplianceFooter from '@/components/community/ComplianceFooter';
 import { FTS_COLORS, FTS_GRADIENTS } from '@/components/community/FTSBrandColors';
 import { 
@@ -31,6 +33,7 @@ import {
 export default function CommunityPortalDashboard() {
     const navigate = useNavigate();
     const [session, setSession] = useState(null);
+    const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
 
     useEffect(() => {
         const sessionData = localStorage.getItem('community_portal_session');
@@ -83,6 +86,9 @@ export default function CommunityPortalDashboard() {
         enabled: !!session?.email
     });
 
+    const totalServices = myPSPs.length + myISOCustomers.length + myOrchCustomers.length;
+    const isNewUser = totalServices === 0;
+
     const quickActions = [
         {
             icon: Building2,
@@ -129,7 +135,8 @@ export default function CommunityPortalDashboard() {
 
     return (
         <div className="flex h-screen bg-slate-50">
-            <CommunityPortalSidebar currentPage="CommunityPortalDashboard" userEmail={session?.email} />
+            <CommunityPortalSidebarOptimized currentPage="CommunityPortalDashboard" userEmail={session?.email} />
+            <CommandPalette open={commandPaletteOpen} onOpenChange={setCommandPaletteOpen} />
 
             <div className="flex-1 overflow-auto">
                 {/* Header - FTS.Money Style */}
@@ -160,6 +167,15 @@ export default function CommunityPortalDashboard() {
                         </nav>
                     </div>
                     <div className="flex items-center gap-3">
+                        <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => setCommandPaletteOpen(true)}
+                            className="hidden md:flex gap-2 text-slate-600"
+                        >
+                            <span className="text-xs">Search</span>
+                            <Badge variant="secondary" className="text-xs">⌘K</Badge>
+                        </Button>
                         <span className="text-xs text-slate-600">{session?.email}</span>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -208,7 +224,12 @@ export default function CommunityPortalDashboard() {
                 </header>
 
                 <div className="p-6">
-                    {/* Hero Section with Wave */}
+                    <Breadcrumbs currentPage="CommunityPortalDashboard" />
+
+                    {/* NEW USER ONBOARDING VIEW */}
+                    {isNewUser ? (
+                        <>
+                            {/* Hero Section with Wave */}
                     <Card className="mb-6 border-0 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)' }}>
                         <CardContent className="p-8 relative z-10">
                             <div className="flex items-center justify-between">
@@ -273,34 +294,82 @@ export default function CommunityPortalDashboard() {
                         </div>
                     </Card>
 
-                    {/* Quick Actions */}
-                    <div className="mb-6">
-                        <h3 className="text-lg font-semibold text-slate-900 mb-4">Quick Actions</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                            {quickActions.map((action, i) => {
-                                const Icon = action.icon;
-                                return (
-                                    <button
-                                        key={i}
-                                        onClick={() => navigate(createPageUrl(action.path))}
-                                        className={cn(
-                                            "p-6 rounded-xl border-2 text-left hover:shadow-lg transition-all",
-                                            action.color
-                                        )}
-                                    >
-                                        <div className="flex items-start justify-between mb-3">
-                                            <Icon className="h-8 w-8" />
-                                            <Badge variant="secondary" className="text-xs">
-                                                {action.badge}
-                                            </Badge>
+                            {/* Service Comparison Cards */}
+                            <div className="mb-6">
+                                <h3 className="text-2xl font-bold text-slate-900 mb-4">Choose Your First Service</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    {quickActions.slice(0, 3).map((action, i) => {
+                                        const Icon = action.icon;
+                                        return (
+                                            <Card key={i} className="hover:shadow-xl transition-all border-2 hover:border-blue-300">
+                                                <CardContent className="p-6">
+                                                    <div className={cn("w-14 h-14 rounded-xl mb-4 flex items-center justify-center", action.color)}>
+                                                        <Icon className="h-7 w-7" />
+                                                    </div>
+                                                    <h4 className="font-bold text-lg mb-2">{action.title}</h4>
+                                                    <p className="text-sm text-slate-600 mb-4">{action.description}</p>
+                                                    <Button 
+                                                        onClick={() => navigate(createPageUrl(action.path))}
+                                                        className="w-full bg-gradient-to-r from-blue-600 to-cyan-500"
+                                                    >
+                                                        Get Started
+                                                        <ArrowRight className="ml-2 h-4 w-4" />
+                                                    </Button>
+                                                </CardContent>
+                                            </Card>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+
+                            {/* What You Can Do Section */}
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>What You Can Do</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="grid md:grid-cols-2 gap-6">
+                                        <div>
+                                            <h4 className="font-semibold text-slate-900 mb-3">Build & Launch</h4>
+                                            <ul className="space-y-2 text-sm text-slate-600">
+                                                <li className="flex items-center gap-2">
+                                                    <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                                                    Launch white-label PSP in 24-48 hours
+                                                </li>
+                                                <li className="flex items-center gap-2">
+                                                    <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                                                    Deploy ISO message translation gateway
+                                                </li>
+                                                <li className="flex items-center gap-2">
+                                                    <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                                                    Set up smart payment routing
+                                                </li>
+                                            </ul>
                                         </div>
-                                        <h4 className="font-semibold mb-1">{action.title}</h4>
-                                        <p className="text-sm opacity-80">{action.description}</p>
-                                    </button>
-                                );
-                            })}
-                        </div>
-                    </div>
+                                        <div>
+                                            <h4 className="font-semibold text-slate-900 mb-3">Integrate & Grow</h4>
+                                            <ul className="space-y-2 text-sm text-slate-600">
+                                                <li className="flex items-center gap-2">
+                                                    <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                                                    Access 150+ payment services
+                                                </li>
+                                                <li className="flex items-center gap-2">
+                                                    <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                                                    Offer services to other PSPs
+                                                </li>
+                                                <li className="flex items-center gap-2">
+                                                    <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                                                    Enterprise compliance built-in
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </>
+                    ) : (
+                        <>
+                            {/* ACTIVE USER DASHBOARD VIEW */}
 
                     {/* Stats Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
@@ -361,8 +430,59 @@ export default function CommunityPortalDashboard() {
                         </Card>
                     </div>
 
-                    {/* My Services */}
-                    <div className="grid gap-6">
+                            {/* Recent Activity Feed */}
+                            <Card className="mb-6">
+                                <CardHeader>
+                                    <CardTitle>Recent Activity</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="space-y-3 text-sm">
+                                        {myPSPs.slice(0, 3).map(psp => (
+                                            <div key={psp.id} className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg">
+                                                <Building2 className="h-4 w-4 text-blue-600" />
+                                                <span className="flex-1 text-slate-700">PSP <strong>{psp.psp_name}</strong> is {psp.status}</span>
+                                                <span className="text-xs text-slate-500">{new Date(psp.created_date).toLocaleDateString()}</span>
+                                            </div>
+                                        ))}
+                                        {myISOCustomers.slice(0, 2).map(c => (
+                                            <div key={c.id} className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg">
+                                                <Code className="h-4 w-4 text-indigo-600" />
+                                                <span className="flex-1 text-slate-700">ISO Gateway <strong>{c.company_name}</strong> processed {c.total_messages_processed || 0} messages</span>
+                                            </div>
+                                        ))}
+                                        {totalServices === 0 && (
+                                            <p className="text-center text-slate-500 py-4">No recent activity</p>
+                                        )}
+                                    </div>
+                                </CardContent>
+                            </Card>
+
+                            {/* Recommended Actions */}
+                            {myPSPs.length > 0 && myISOCustomers.length === 0 && (
+                                <Card className="mb-6 border-2 border-blue-200 bg-blue-50">
+                                    <CardContent className="p-6">
+                                        <div className="flex items-start gap-4">
+                                            <Code className="h-10 w-10 text-blue-600" />
+                                            <div className="flex-1">
+                                                <h4 className="font-semibold text-slate-900 mb-1">Add ISO Gateway to Your Stack</h4>
+                                                <p className="text-sm text-slate-600 mb-3">
+                                                    Translate payment messages between ISO 8583, ISO 20022, and SWIFT MT
+                                                </p>
+                                                <Button 
+                                                    size="sm"
+                                                    onClick={() => navigate(createPageUrl('LaunchServices'))}
+                                                    className="bg-blue-600 hover:bg-blue-700"
+                                                >
+                                                    Learn More
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            )}
+
+                            {/* My Services */}
+                            <div className="grid gap-6">
                         {/* PSP Instances */}
                         {myPSPs.length > 0 && (
                             <Card>
@@ -501,6 +621,8 @@ export default function CommunityPortalDashboard() {
                             </Card>
                         )}
                     </div>
+                        </>
+                    )}
                 </div>
 
                 <ComplianceFooter />

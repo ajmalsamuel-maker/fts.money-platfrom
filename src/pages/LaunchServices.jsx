@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import CommunityPortalSidebar from '@/components/community/CommunityPortalSidebar';
+import CommunityPortalSidebarOptimized from '@/components/community/CommunityPortalSidebarOptimized';
+import Breadcrumbs from '@/components/community/Breadcrumbs';
 import ComplianceFooter from '@/components/community/ComplianceFooter';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -126,7 +127,7 @@ export default function LaunchServices() {
 
     return (
         <div className="flex h-screen bg-slate-50">
-            <CommunityPortalSidebar currentPage="LaunchServices" userEmail={session?.email} />
+            <CommunityPortalSidebarOptimized currentPage="LaunchServices" userEmail={session?.email} />
 
             <div className="flex-1 overflow-auto">
                 {/* Header */}
@@ -140,6 +141,8 @@ export default function LaunchServices() {
                 </header>
 
                 <div className="p-6 max-w-7xl mx-auto">
+                    <Breadcrumbs currentPage="LaunchServices" />
+                    
                     {/* Hero Section */}
                     <div className="text-center mb-12">
                         <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500 mb-4" style={{ fontFamily: 'Montserrat, sans-serif' }}>

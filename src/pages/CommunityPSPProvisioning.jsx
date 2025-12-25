@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import CommunityPortalSidebar from '@/components/community/CommunityPortalSidebar';
+import CommunityPortalSidebarOptimized from '@/components/community/CommunityPortalSidebarOptimized';
+import Breadcrumbs from '@/components/community/Breadcrumbs';
 import ComplianceFooter from '@/components/community/ComplianceFooter';
 import LEIVerificationStep from '@/components/onboarding/LEIVerificationStep';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -287,7 +288,7 @@ export default function CommunityPSPProvisioning() {
 
     return (
         <div className="flex h-screen bg-slate-50">
-            <CommunityPortalSidebar currentPage="CommunityPSPProvisioning" userEmail={session?.email} />
+            <CommunityPortalSidebarOptimized currentPage="CommunityPSPProvisioning" userEmail={session?.email} />
 
             <div className="flex-1 overflow-auto">
                 {/* Header */}
@@ -302,6 +303,8 @@ export default function CommunityPSPProvisioning() {
                 </header>
 
                 <div className="p-6 max-w-6xl mx-auto">
+                    <Breadcrumbs currentPage="CommunityPSPProvisioning" />
+                    
                     {/* Progress Steps */}
                     <div className="flex items-center justify-center mb-8">
                         {[1, 2, 3, 4].map((s, idx) => (

@@ -221,6 +221,7 @@ import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
 import LaunchServices from './pages/LaunchServices';
+import MyAllServices from './pages/MyAllServices';
 import __Layout from './Layout.jsx';
 
 
@@ -448,6 +449,7 @@ export const PAGES = {
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
     "LaunchServices": LaunchServices,
+    "MyAllServices": MyAllServices,
 }
 
 export const pagesConfig = {

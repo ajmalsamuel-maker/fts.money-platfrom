@@ -1,0 +1,43 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
+import { ChevronRight, Home } from 'lucide-react';
+
+const pageHierarchy = {
+    'CommunityPortalDashboard': ['Dashboard'],
+    'LaunchServices': ['Get Started', 'Launch Services'],
+    'CommunityPSPProvisioning': ['Get Started', 'Launch PSP'],
+    'MyPSPInstances': ['My Services', 'PSP Instances'],
+    'MyAllServices': ['My Services', 'All Services'],
+    'ISOGatewayLogin': ['My Services', 'ISO Gateway'],
+    'OrchestrationLogin': ['My Services', 'Orchestration'],
+    'CommunityMarketplace': ['Explore', 'Marketplace'],
+    'MySubscriptions': ['My Services', 'Subscriptions'],
+    'CommunityBilling': ['Business', 'Billing'],
+    'ServiceProviderRegistration': ['Provider Hub', 'Registration'],
+    'MyWholesaleOfferings': ['Provider Hub', 'My Offerings'],
+    'CommunityAccountSettings': ['Settings', 'Account']
+};
+
+export default function Breadcrumbs({ currentPage }) {
+    const breadcrumbs = pageHierarchy[currentPage] || ['Dashboard'];
+
+    return (
+        <nav className="flex items-center gap-2 text-sm text-slate-600 mb-4">
+            <Link 
+                to={createPageUrl('CommunityPortalDashboard')}
+                className="hover:text-blue-600 transition-colors"
+            >
+                <Home className="h-4 w-4" />
+            </Link>
+            {breadcrumbs.map((crumb, index) => (
+                <React.Fragment key={index}>
+                    <ChevronRight className="h-3 w-3 text-slate-400" />
+                    <span className={index === breadcrumbs.length - 1 ? 'text-slate-900 font-medium' : ''}>
+                        {crumb}
+                    </span>
+                </React.Fragment>
+            ))}
+        </nav>
+    );
+}
