@@ -58,6 +58,7 @@ const menuSections = [
         items: [
             { icon: DollarSign, label: 'Master Pricing', path: 'MasterPricingManagement', description: 'All pricing control', priority: true },
             { icon: BarChart3, label: 'Revenue Dashboard', path: 'FTSRevenue', description: 'Analytics & billing' },
+            { icon: FileText, label: 'Service Billing', path: 'FTSServiceBilling', description: 'ISO & Orchestration billing', priority: true },
             { icon: DollarSign, label: 'Platform Pricing', path: 'PlatformPricingConfiguration', description: 'PSP tier pricing' },
             { icon: DollarSign, label: 'Merchant Pricing Engine', path: 'MerchantPricingEngine', description: 'Dynamic merchant pricing' },
             { icon: Zap, label: 'Accounting Integration', path: 'XeroIntegration', description: 'Xero sync' }

@@ -1,0 +1,329 @@
+import React, { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { base44 } from '@/api/base44Client';
+import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Input } from '@/components/ui/input';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { DollarSign, Code, GitBranch, FileText, TrendingUp } from 'lucide-react';
+
+export default function FTSServiceBilling() {
+    const [selectedService, setSelectedService] = useState(null);
+    const [showPricingDialog, setShowPricingDialog] = useState(false);
+
+    const queryClient = useQueryClient();
+
+    const { data: isoCustomers = [] } = useQuery({
+        queryKey: ['iso-gateway-customers'],
+        queryFn: async () => await base44.entities.ISOGatewayCustomer.list() || []
+    });
+
+    const { data: orchCustomers = [] } = useQuery({
+        queryKey: ['orchestration-customers'],
+        queryFn: async () => await base44.entities.OrchestrationCustomer.list() || []
+    });
+
+    const { data: pricing = [] } = useQuery({
+        queryKey: ['master-pricing'],
+        queryFn: async () => await base44.entities.MasterPricing.list() || []
+    });
+
+    // Calculate totals
+    const isoRevenue = isoCustomers.reduce((sum, c) => sum + (c.total_revenue || 0), 0);
+    const orchRevenue = orchCustomers.reduce((sum, c) => sum + (c.total_revenue || 0), 0);
+    const totalRevenue = isoRevenue + orchRevenue;
+
+    const tierPricing = {
+        iso_gateway: {
+            developer: { monthly: 499, perMessage: 0.001, limit: 50000 },
+            business: { monthly: 1999, perMessage: 0.0008, limit: 500000 },
+            enterprise: { monthly: 4999, perMessage: 0.0005, limit: 999999999 }
+        },
+        orchestration: {
+            starter: { monthly: 199, perExecution: 0.002, limit: 50000 },
+            professional: { monthly: 999, perExecution: 0.0015, limit: 500000 },
+            enterprise: { monthly: 2999, perExecution: 0.001, limit: 999999999 }
+        }
+    };
+
+    const generateInvoice = async (customer, service) => {
+        const isISO = service === 'iso_gateway';
+        const tier = customer.subscription_tier;
+        const usage = customer.current_month_usage || 0;
+        const pricing = isISO ? tierPricing.iso_gateway[tier] : tierPricing.orchestration[tier];
+        
+        const baseCharge = pricing.monthly;
+        const overageCharge = usage > pricing.limit 
+            ? (usage - pricing.limit) * (isISO ? pricing.perMessage : pricing.perExecution)
+            : 0;
+        const totalCharge = baseCharge + overageCharge;
+
+        alert(`Invoice Generated:\n\nService: ${isISO ? 'ISO Gateway' : 'Orchestration'}\nCustomer: ${customer.company_name}\nTier: ${tier}\nBase: $${baseCharge}\nOverage: $${overageCharge.toFixed(2)}\nTotal: $${totalCharge.toFixed(2)}`);
+    };
+
+    return (
+        <div className="flex h-screen bg-gray-50">
+            <FTSPlatformSidebar currentPage="FTSServiceBilling" />
+            
+            <div className="flex-1 overflow-auto">
+                <div className="p-8">
+                    <div className="mb-6">
+                        <h1 className="text-3xl font-bold text-gray-900">Service Billing & Revenue</h1>
+                        <p className="text-gray-600 mt-1">Manage billing for ISO Gateway and Orchestration services</p>
+                    </div>
+
+                    {/* Revenue Stats */}
+                    <div className="grid grid-cols-4 gap-4 mb-6">
+                        <Card>
+                            <CardContent className="p-4">
+                                <div className="flex justify-between items-start">
+                                    <div>
+                                        <p className="text-xs text-slate-600">Total Revenue</p>
+                                        <p className="text-2xl font-bold text-slate-900 mt-1">
+                                            ${totalRevenue.toLocaleString()}
+                                        </p>
+                                    </div>
+                                    <DollarSign className="h-8 w-8 text-emerald-600" />
+                                </div>
+                            </CardContent>
+                        </Card>
+                        <Card>
+                            <CardContent className="p-4">
+                                <div className="flex justify-between items-start">
+                                    <div>
+                                        <p className="text-xs text-slate-600">ISO Gateway</p>
+                                        <p className="text-2xl font-bold text-indigo-600 mt-1">
+                                            ${isoRevenue.toLocaleString()}
+                                        </p>
+                                        <p className="text-xs text-slate-500">{isoCustomers.length} customers</p>
+                                    </div>
+                                    <Code className="h-8 w-8 text-indigo-600" />
+                                </div>
+                            </CardContent>
+                        </Card>
+                        <Card>
+                            <CardContent className="p-4">
+                                <div className="flex justify-between items-start">
+                                    <div>
+                                        <p className="text-xs text-slate-600">Orchestration</p>
+                                        <p className="text-2xl font-bold text-purple-600 mt-1">
+                                            ${orchRevenue.toLocaleString()}
+                                        </p>
+                                        <p className="text-xs text-slate-500">{orchCustomers.length} customers</p>
+                                    </div>
+                                    <GitBranch className="h-8 w-8 text-purple-600" />
+                                </div>
+                            </CardContent>
+                        </Card>
+                        <Card>
+                            <CardContent className="p-4">
+                                <div className="flex justify-between items-start">
+                                    <div>
+                                        <p className="text-xs text-slate-600">MRR Growth</p>
+                                        <p className="text-2xl font-bold text-emerald-600 mt-1">+23.5%</p>
+                                        <p className="text-xs text-slate-500">Month over month</p>
+                                    </div>
+                                    <TrendingUp className="h-8 w-8 text-emerald-600" />
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
+
+                    <Tabs defaultValue="iso" className="space-y-6">
+                        <TabsList>
+                            <TabsTrigger value="iso">ISO Gateway Billing</TabsTrigger>
+                            <TabsTrigger value="orchestration">Orchestration Billing</TabsTrigger>
+                            <TabsTrigger value="pricing">Pricing Tiers</TabsTrigger>
+                        </TabsList>
+
+                        {/* ISO Gateway Billing */}
+                        <TabsContent value="iso">
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>ISO Gateway Customers</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="space-y-3">
+                                        {isoCustomers.map(customer => {
+                                            const tier = tierPricing.iso_gateway[customer.subscription_tier];
+                                            const usage = customer.current_month_usage || 0;
+                                            const baseCharge = tier.monthly;
+                                            const overageCharge = usage > tier.limit 
+                                                ? (usage - tier.limit) * tier.perMessage 
+                                                : 0;
+                                            const totalCharge = baseCharge + overageCharge;
+
+                                            return (
+                                                <div key={customer.id} className="p-4 border rounded-lg">
+                                                    <div className="flex justify-between items-start mb-3">
+                                                        <div>
+                                                            <p className="font-semibold text-slate-900">{customer.company_name}</p>
+                                                            <p className="text-sm text-slate-600">{customer.contact_email}</p>
+                                                        </div>
+                                                        <Badge className="bg-indigo-100 text-indigo-700">
+                                                            {customer.subscription_tier}
+                                                        </Badge>
+                                                    </div>
+                                                    <div className="grid grid-cols-5 gap-4 text-sm">
+                                                        <div>
+                                                            <p className="text-slate-600">Usage</p>
+                                                            <p className="font-semibold">{usage.toLocaleString()}</p>
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-slate-600">Base Fee</p>
+                                                            <p className="font-semibold">${baseCharge}</p>
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-slate-600">Overage</p>
+                                                            <p className="font-semibold">${overageCharge.toFixed(2)}</p>
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-slate-600">Total</p>
+                                                            <p className="font-semibold text-emerald-600">${totalCharge.toFixed(2)}</p>
+                                                        </div>
+                                                        <div>
+                                                            <Button 
+                                                                size="sm"
+                                                                onClick={() => generateInvoice(customer, 'iso_gateway')}
+                                                                className="bg-blue-600 hover:bg-blue-700"
+                                                            >
+                                                                <FileText className="h-4 w-4 mr-2" />
+                                                                Invoice
+                                                            </Button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
+
+                        {/* Orchestration Billing */}
+                        <TabsContent value="orchestration">
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Orchestration Customers</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="space-y-3">
+                                        {orchCustomers.map(customer => {
+                                            const tier = tierPricing.orchestration[customer.subscription_tier];
+                                            const usage = customer.current_month_usage || 0;
+                                            const baseCharge = tier.monthly;
+                                            const overageCharge = usage > tier.limit 
+                                                ? (usage - tier.limit) * tier.perExecution 
+                                                : 0;
+                                            const totalCharge = baseCharge + overageCharge;
+
+                                            return (
+                                                <div key={customer.id} className="p-4 border rounded-lg">
+                                                    <div className="flex justify-between items-start mb-3">
+                                                        <div>
+                                                            <p className="font-semibold text-slate-900">{customer.company_name}</p>
+                                                            <p className="text-sm text-slate-600">{customer.contact_email}</p>
+                                                        </div>
+                                                        <Badge className="bg-purple-100 text-purple-700">
+                                                            {customer.subscription_tier}
+                                                        </Badge>
+                                                    </div>
+                                                    <div className="grid grid-cols-5 gap-4 text-sm">
+                                                        <div>
+                                                            <p className="text-slate-600">Executions</p>
+                                                            <p className="font-semibold">{usage.toLocaleString()}</p>
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-slate-600">Base Fee</p>
+                                                            <p className="font-semibold">${baseCharge}</p>
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-slate-600">Overage</p>
+                                                            <p className="font-semibold">${overageCharge.toFixed(2)}</p>
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-slate-600">Total</p>
+                                                            <p className="font-semibold text-emerald-600">${totalCharge.toFixed(2)}</p>
+                                                        </div>
+                                                        <div>
+                                                            <Button 
+                                                                size="sm"
+                                                                onClick={() => generateInvoice(customer, 'orchestration')}
+                                                                className="bg-blue-600 hover:bg-blue-700"
+                                                            >
+                                                                <FileText className="h-4 w-4 mr-2" />
+                                                                Invoice
+                                                            </Button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
+
+                        {/* Pricing Tiers */}
+                        <TabsContent value="pricing">
+                            <div className="grid grid-cols-2 gap-6">
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle className="flex items-center gap-2">
+                                            <Code className="h-5 w-5 text-indigo-600" />
+                                            ISO Gateway Pricing
+                                        </CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="space-y-4">
+                                        {Object.entries(tierPricing.iso_gateway).map(([tier, price]) => (
+                                            <div key={tier} className="p-4 border rounded-lg">
+                                                <div className="flex justify-between items-start mb-2">
+                                                    <p className="font-semibold capitalize">{tier}</p>
+                                                    <Badge className="bg-indigo-100 text-indigo-700">
+                                                        ${price.monthly}/mo
+                                                    </Badge>
+                                                </div>
+                                                <div className="text-sm space-y-1 text-slate-600">
+                                                    <p>• {price.limit.toLocaleString()} messages/month</p>
+                                                    <p>• ${price.perMessage} per message overage</p>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </CardContent>
+                                </Card>
+
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle className="flex items-center gap-2">
+                                            <GitBranch className="h-5 w-5 text-purple-600" />
+                                            Orchestration Pricing
+                                        </CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="space-y-4">
+                                        {Object.entries(tierPricing.orchestration).map(([tier, price]) => (
+                                            <div key={tier} className="p-4 border rounded-lg">
+                                                <div className="flex justify-between items-start mb-2">
+                                                    <p className="font-semibold capitalize">{tier}</p>
+                                                    <Badge className="bg-purple-100 text-purple-700">
+                                                        ${price.monthly}/mo
+                                                    </Badge>
+                                                </div>
+                                                <div className="text-sm space-y-1 text-slate-600">
+                                                    <p>• {price.limit.toLocaleString()} executions/month</p>
+                                                    <p>• ${price.perExecution} per execution overage</p>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </CardContent>
+                                </Card>
+                            </div>
+                        </TabsContent>
+                    </Tabs>
+                </div>
+            </div>
+        </div>
+    );
+}

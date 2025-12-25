@@ -219,6 +219,7 @@ import OrchestrationLogin from './pages/OrchestrationLogin';
 import OrchestrationPortal from './pages/OrchestrationPortal';
 import OrchestrationCustomers from './pages/OrchestrationCustomers';
 import FTSSetupGuide from './pages/FTSSetupGuide';
+import FTSServiceBilling from './pages/FTSServiceBilling';
 import __Layout from './Layout.jsx';
 
 
@@ -444,6 +445,7 @@ export const PAGES = {
     "OrchestrationPortal": OrchestrationPortal,
     "OrchestrationCustomers": OrchestrationCustomers,
     "FTSSetupGuide": FTSSetupGuide,
+    "FTSServiceBilling": FTSServiceBilling,
 }
 
 export const pagesConfig = {
