@@ -73,7 +73,10 @@ import FraudMonitoring from './pages/FraudMonitoring';
 import FraudPrevention from './pages/FraudPrevention';
 import ISOConfiguration from './pages/ISOConfiguration';
 import ISOGatewayConnections from './pages/ISOGatewayConnections';
+import ISOGatewayCustomerPortal from './pages/ISOGatewayCustomerPortal';
 import ISOGatewayCustomers from './pages/ISOGatewayCustomers';
+import ISOGatewayLogin from './pages/ISOGatewayLogin';
+import ISOGatewayRouting from './pages/ISOGatewayRouting';
 import ISOGatewayTestConsole from './pages/ISOGatewayTestConsole';
 import ISOMessageMonitor from './pages/ISOMessageMonitor';
 import InstantPayments from './pages/InstantPayments';
@@ -210,9 +213,8 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import ISOGatewayCustomerPortal from './pages/ISOGatewayCustomerPortal';
-import ISOGatewayLogin from './pages/ISOGatewayLogin';
-import ISOGatewayRouting from './pages/ISOGatewayRouting';
+import ISOCustomerRouting from './pages/ISOCustomerRouting';
+import PSPRouting from './pages/PSPRouting';
 import __Layout from './Layout.jsx';
 
 
@@ -292,7 +294,10 @@ export const PAGES = {
     "FraudPrevention": FraudPrevention,
     "ISOConfiguration": ISOConfiguration,
     "ISOGatewayConnections": ISOGatewayConnections,
+    "ISOGatewayCustomerPortal": ISOGatewayCustomerPortal,
     "ISOGatewayCustomers": ISOGatewayCustomers,
+    "ISOGatewayLogin": ISOGatewayLogin,
+    "ISOGatewayRouting": ISOGatewayRouting,
     "ISOGatewayTestConsole": ISOGatewayTestConsole,
     "ISOMessageMonitor": ISOMessageMonitor,
     "InstantPayments": InstantPayments,
@@ -429,9 +434,8 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "ISOGatewayCustomerPortal": ISOGatewayCustomerPortal,
-    "ISOGatewayLogin": ISOGatewayLogin,
-    "ISOGatewayRouting": ISOGatewayRouting,
+    "ISOCustomerRouting": ISOCustomerRouting,
+    "PSPRouting": PSPRouting,
 }
 
 export const pagesConfig = {
