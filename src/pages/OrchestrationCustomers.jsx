@@ -20,7 +20,12 @@ export default function OrchestrationCustomers() {
         password_hash: 'demo123',
         customer_type: 'merchant',
         subscription_tier: 'starter',
-        monthly_routing_limit: 50000
+        monthly_routing_limit: 50000,
+        identifier_type: 'none',
+        tas_number: '',
+        lei: '',
+        lei_status: 'not_provided',
+        lei_grace_period_end: null
     });
 
     const queryClient = useQueryClient();
@@ -32,6 +37,10 @@ export default function OrchestrationCustomers() {
 
     const createCustomerMutation = useMutation({
         mutationFn: async (data) => {
+            const gracePeriodEnd = data.identifier_type === 'none' 
+                ? new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString()
+                : null;
+            
             return await base44.entities.OrchestrationCustomer.create({
                 ...data,
                 customer_id: `orch_${Date.now()}`,
@@ -40,20 +49,26 @@ export default function OrchestrationCustomers() {
                 current_month_usage: 0,
                 total_executions: 0,
                 api_key: 'orch_key_' + Math.random().toString(36).substr(2, 24),
-                enabled_features: ['payment_routing', 'payout_routing']
+                enabled_features: ['payment_routing', 'payout_routing'],
+                lei_grace_period_end: gracePeriodEnd
             });
         },
         onSuccess: () => {
             queryClient.invalidateQueries(['orchestration-customers']);
             setShowCreateDialog(false);
             setNewCustomer({
-                company_name: '',
-                contact_email: '',
-                contact_phone: '',
-                password_hash: 'demo123',
-                customer_type: 'merchant',
-                subscription_tier: 'starter',
-                monthly_routing_limit: 50000
+            company_name: '',
+            contact_email: '',
+            contact_phone: '',
+            password_hash: 'demo123',
+            customer_type: 'merchant',
+            subscription_tier: 'starter',
+            monthly_routing_limit: 50000,
+            identifier_type: 'none',
+            tas_number: '',
+            lei: '',
+            lei_status: 'not_provided',
+            lei_grace_period_end: null
             });
         }
     });
@@ -174,6 +189,69 @@ export default function OrchestrationCustomers() {
                                             </Select>
                                         </div>
                                     </div>
+                                    
+                                    <div>
+                                        <label className="text-sm font-medium">Business Identifier Type</label>
+                                        <Select value={newCustomer.identifier_type} onValueChange={(v) => setNewCustomer({...newCustomer, identifier_type: v})}>
+                                            <SelectTrigger>
+                                                <SelectValue />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="none">None (6-month grace period)</SelectItem>
+                                                <SelectItem value="tas">TAS Number</SelectItem>
+                                                <SelectItem value="lei">LEI</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    
+                                    {newCustomer.identifier_type === 'tas' && (
+                                        <div>
+                                            <label className="text-sm font-medium">TAS Number</label>
+                                            <Input
+                                                value={newCustomer.tas_number}
+                                                onChange={(e) => setNewCustomer({...newCustomer, tas_number: e.target.value})}
+                                                placeholder="Enter TAS number"
+                                            />
+                                            <p className="text-xs text-blue-600 mt-1">
+                                                ℹ️ Will be verified against TAS system
+                                            </p>
+                                        </div>
+                                    )}
+                                    
+                                    {newCustomer.identifier_type === 'lei' && (
+                                        <>
+                                            <div>
+                                                <label className="text-sm font-medium">LEI Number</label>
+                                                <Input
+                                                    value={newCustomer.lei}
+                                                    onChange={(e) => setNewCustomer({...newCustomer, lei: e.target.value})}
+                                                    placeholder="20-character LEI"
+                                                    maxLength={20}
+                                                />
+                                            </div>
+                                            
+                                            <div>
+                                                <label className="text-sm font-medium">LEI Status</label>
+                                                <Select value={newCustomer.lei_status} onValueChange={(v) => setNewCustomer({...newCustomer, lei_status: v})}>
+                                                    <SelectTrigger>
+                                                        <SelectValue />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="pending">Pending Verification</SelectItem>
+                                                        <SelectItem value="verified">Verified</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
+                                        </>
+                                    )}
+                                    
+                                    {newCustomer.identifier_type === 'none' && (
+                                        <div className="p-3 bg-amber-50 border border-amber-200 rounded">
+                                            <p className="text-xs text-amber-800">
+                                                ⚠️ Customer will have 6 months grace period to provide TAS or LEI
+                                            </p>
+                                        </div>
+                                    )}
                                     
                                     <Button 
                                         onClick={() => createCustomerMutation.mutate(newCustomer)}
