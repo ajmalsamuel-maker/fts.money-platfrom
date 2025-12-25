@@ -31,7 +31,8 @@ import {
     Package,
     Cpu,
     HardDrive,
-    Cloud
+    Cloud,
+    GitBranch
 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
@@ -82,6 +83,23 @@ function AddServiceButton({ navigate }) {
                             <div>
                                 <p className="font-semibold text-slate-900">ISO Gateway Customer</p>
                                 <p className="text-sm text-slate-600">Add customer to ISO Gateway service</p>
+                            </div>
+                        </div>
+                    </button>
+                    <button
+                        onClick={() => {
+                            setOpen(false);
+                            navigate(createPageUrl('OrchestrationCustomers'));
+                        }}
+                        className="w-full p-4 rounded-lg border-2 border-purple-200 hover:border-purple-400 hover:bg-purple-50 transition-all text-left"
+                    >
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
+                                <GitBranch className="h-6 w-6 text-purple-600" />
+                            </div>
+                            <div>
+                                <p className="font-semibold text-slate-900">Standalone Orchestration</p>
+                                <p className="text-sm text-slate-600">Add routing-only customer</p>
                             </div>
                         </div>
                     </button>
