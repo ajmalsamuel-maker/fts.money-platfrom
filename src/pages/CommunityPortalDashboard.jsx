@@ -227,10 +227,7 @@ export default function CommunityPortalDashboard() {
                 <div className="p-6">
                     <Breadcrumbs currentPage="CommunityPortalDashboard" />
 
-                    {/* NEW USER ONBOARDING VIEW */}
-                    {isNewUser ? (
-                        <>
-                            {/* Hero Section with Wave & Arrow */}
+                    {/* Hero Section with Wave & Arrow - Always visible */}
                     <Card className="mb-6 border-0 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%)' }}>
                         <CardContent className="p-12 relative z-10">
                             <div className="flex items-center justify-between">
@@ -335,6 +332,9 @@ export default function CommunityPortalDashboard() {
                         </div>
                     </Card>
 
+                    {/* NEW USER ONBOARDING VIEW */}
+                    {isNewUser ? (
+                        <>
                             {/* Service Comparison Cards */}
                             <div className="mb-6">
                                 <h3 className="text-2xl font-bold text-slate-900 mb-4">Choose Your First Service</h3>
