@@ -68,13 +68,17 @@ export default function FTSServiceBilling() {
         }
     };
 
-    // Override with config from database if exists
+    // Override with config from database if exists (preserve features)
     pricingConfig.forEach(config => {
         if (!tierPricing[config.service_type]) tierPricing[config.service_type] = {};
+        const existingTier = tierPricing[config.service_type][config.tier_name] || {};
         tierPricing[config.service_type][config.tier_name] = {
+            ...existingTier,
             monthly: config.monthly_fee,
             perUnit: config.overage_rate,
-            limit: config.included_units
+            limit: config.included_units,
+            features: config.features_included || existingTier.features || [],
+            enrichment_fees: config.enrichment_fees || existingTier.enrichment_fees || {}
         };
     });
 
