@@ -47,16 +47,16 @@ export default function ISOGatewayLogin() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-violet-50 to-purple-50 flex items-center justify-center p-4">
-            <Card className="w-full max-w-md">
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center p-4">
+            <Card className="w-full max-w-md shadow-xl">
                 <CardHeader>
                     <div className="flex items-center justify-center gap-3 mb-4">
-                        <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-violet-600 to-purple-600 flex items-center justify-center">
+                        <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center">
                             <Zap className="h-6 w-6 text-white" />
                         </div>
                         <div>
                             <CardTitle className="text-2xl">ISO Gateway</CardTitle>
-                            <p className="text-sm text-slate-600">Customer Portal</p>
+                            <p className="text-sm text-slate-600">by FTS.Money</p>
                         </div>
                     </div>
                 </CardHeader>
@@ -90,14 +90,15 @@ export default function ISOGatewayLogin() {
                         <Button 
                             type="submit" 
                             disabled={loading}
-                            className="w-full bg-violet-600 hover:bg-violet-700"
+                            className="w-full bg-blue-600 hover:bg-blue-700"
                         >
                             {loading ? 'Signing in...' : 'Sign In'}
                         </Button>
                     </form>
-                    <p className="text-xs text-center text-slate-600 mt-4">
-                        Need access? Contact your account manager
-                    </p>
+                    <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded">
+                        <p className="text-xs text-blue-800 font-medium">Demo Credentials:</p>
+                        <p className="text-xs text-blue-700 mt-1">Any customer email + password: <code className="bg-white px-1 rounded">demo123</code></p>
+                    </div>
                 </CardContent>
             </Card>
         </div>

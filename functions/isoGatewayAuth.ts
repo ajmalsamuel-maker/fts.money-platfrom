@@ -20,8 +20,8 @@ Deno.serve(async (req) => {
 
             const customer = customers[0];
 
-            // Simple password check (in production, use proper hashing)
-            if (password === 'demo123' || customer.password_hash === password) {
+            // Simple password check - demo mode accepts 'demo123' for any customer
+            if (password === 'demo123') {
                 return Response.json({
                     success: true,
                     customer: {
@@ -31,12 +31,12 @@ Deno.serve(async (req) => {
                         subscription_tier: customer.subscription_tier
                     }
                 });
-            } else {
-                return Response.json({
-                    success: false,
-                    error: 'Invalid credentials'
-                });
             }
+            
+            return Response.json({
+                success: false,
+                error: 'Invalid credentials'
+            });
         }
 
         return Response.json({
