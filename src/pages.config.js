@@ -72,6 +72,7 @@ import FeeTypeManagement from './pages/FeeTypeManagement';
 import FraudMonitoring from './pages/FraudMonitoring';
 import FraudPrevention from './pages/FraudPrevention';
 import ISOConfiguration from './pages/ISOConfiguration';
+import ISOCustomerRouting from './pages/ISOCustomerRouting';
 import ISOGatewayConnections from './pages/ISOGatewayConnections';
 import ISOGatewayCustomerPortal from './pages/ISOGatewayCustomerPortal';
 import ISOGatewayCustomers from './pages/ISOGatewayCustomers';
@@ -160,6 +161,7 @@ import PSPPasswordReset from './pages/PSPPasswordReset';
 import PSPProductCatalog from './pages/PSPProductCatalog';
 import PSPProvisioning from './pages/PSPProvisioning';
 import PSPProvisioningWizard from './pages/PSPProvisioningWizard';
+import PSPRouting from './pages/PSPRouting';
 import PSPSetupWizard from './pages/PSPSetupWizard';
 import PSPUserManagement from './pages/PSPUserManagement';
 import PSPWholesaleBrowse from './pages/PSPWholesaleBrowse';
@@ -213,8 +215,9 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import ISOCustomerRouting from './pages/ISOCustomerRouting';
-import PSPRouting from './pages/PSPRouting';
+import OrchestrationLogin from './pages/OrchestrationLogin';
+import OrchestrationPortal from './pages/OrchestrationPortal';
+import OrchestrationCustomers from './pages/OrchestrationCustomers';
 import __Layout from './Layout.jsx';
 
 
@@ -293,6 +296,7 @@ export const PAGES = {
     "FraudMonitoring": FraudMonitoring,
     "FraudPrevention": FraudPrevention,
     "ISOConfiguration": ISOConfiguration,
+    "ISOCustomerRouting": ISOCustomerRouting,
     "ISOGatewayConnections": ISOGatewayConnections,
     "ISOGatewayCustomerPortal": ISOGatewayCustomerPortal,
     "ISOGatewayCustomers": ISOGatewayCustomers,
@@ -381,6 +385,7 @@ export const PAGES = {
     "PSPProductCatalog": PSPProductCatalog,
     "PSPProvisioning": PSPProvisioning,
     "PSPProvisioningWizard": PSPProvisioningWizard,
+    "PSPRouting": PSPRouting,
     "PSPSetupWizard": PSPSetupWizard,
     "PSPUserManagement": PSPUserManagement,
     "PSPWholesaleBrowse": PSPWholesaleBrowse,
@@ -434,8 +439,9 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "ISOCustomerRouting": ISOCustomerRouting,
-    "PSPRouting": PSPRouting,
+    "OrchestrationLogin": OrchestrationLogin,
+    "OrchestrationPortal": OrchestrationPortal,
+    "OrchestrationCustomers": OrchestrationCustomers,
 }
 
 export const pagesConfig = {

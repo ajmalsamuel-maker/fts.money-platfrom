@@ -94,6 +94,12 @@ const menuSections = [
         ]
     },
     {
+        title: 'Orchestration Service',
+        items: [
+            { icon: GitBranch, label: 'Customers', path: 'OrchestrationCustomers', description: 'Routing subscribers', priority: true }
+        ]
+    },
+    {
         title: 'Analytics & Reports',
         items: [
             { icon: BarChart3, label: 'Platform Analytics', path: 'FTSAnalytics', description: 'Cross-PSP insights' },
