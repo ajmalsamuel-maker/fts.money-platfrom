@@ -33,16 +33,33 @@ Deno.serve(async (req) => {
         let enrichmentApplied = [];
         
         try {
-            // TRANSLATION LOGIC
-            if (messageLog.source_standard === 'ISO8583' && messageLog.target_standard === 'ISO20022') {
+            // TRANSLATION LOGIC - Handle MT messages
+            if (messageLog.source_standard.startsWith('MT') || messageLog.target_standard.startsWith('MT')) {
+                const mtResponse = await base44.functions.invoke('translateMT', {
+                    mt_message: messageLog.source_message,
+                    target_standard: messageLog.target_standard,
+                    enrichment_features: connection.enrichment_features || {}
+                });
+                
+                if (mtResponse.data?.status === 'success') {
+                    translatedMessage = mtResponse.data.translated_message;
+                    enrichmentApplied = mtResponse.data.enrichments_applied || [];
+                } else {
+                    throw new Error(mtResponse.data?.message || 'MT translation failed');
+                }
+                
+            } else if (messageLog.source_standard === 'ISO8583' && messageLog.target_standard === 'ISO20022') {
                 // ISO 8583 → ISO 20022
                 translatedMessage = await translateISO8583ToISO20022(messageLog.source_message);
                 
-                // ENRICHMENT (if enabled)
+                // ENHANCED ENRICHMENT (if enabled)
                 if (connection.enrichment_enabled) {
-                    const enriched = await enrichISO20022Message(translatedMessage, connection.enrichment_sources);
-                    translatedMessage = enriched.message;
-                    enrichmentApplied = enriched.applied;
+                    translatedMessage = await enrichISO20022Enhanced(
+                        translatedMessage, 
+                        connection.enrichment_features || {},
+                        base44
+                    );
+                    enrichmentApplied = getAppliedEnrichments(connection.enrichment_features);
                 }
                 
             } else if (messageLog.source_standard === 'ISO20022' && messageLog.target_standard === 'ISO8583') {
@@ -223,21 +240,82 @@ async function translateISO20022ToISO8583(iso20022Xml) {
     return btoa(String.fromCharCode(...message));
 }
 
-async function enrichISO20022Message(xml, sources) {
-    const enriched = { message: xml, applied: [] };
+async function enrichISO20022Enhanced(xml, features, base44) {
+    let enriched = xml;
     
-    // Add LEI enrichment (mock - in production call GLEIF API)
-    if (sources?.includes('GLEIF')) {
-        // Add LEI to debtor/creditor
-        enriched.applied.push('LEI_ENRICHMENT');
+    // LEI Enrichment
+    if (features?.lei_enrichment) {
+        const debtorMatch = xml.match(/<Dbtr>[\s\S]*?<Nm>(.*?)<\/Nm>/);
+        if (debtorMatch && !xml.includes('<LEI>')) {
+            try {
+                const customers = await base44.asServiceRole.entities.ISOGatewayCustomer.filter({
+                    company_name: debtorMatch[1].trim()
+                });
+                if (customers[0]?.lei) {
+                    enriched = enriched.replace(
+                        '</Dbtr>',
+                        `<Id><OrgId><LEI>${customers[0].lei}</LEI></OrgId></Id></Dbtr>`
+                    );
+                }
+            } catch (e) {
+                console.error('LEI enrichment failed:', e);
+            }
+        }
     }
     
-    // Add BIC enrichment
-    if (sources?.includes('SWIFT')) {
-        enriched.applied.push('BIC_VALIDATION');
+    // Structured Remittance
+    if (features?.structured_remittance && xml.includes('<InstdAmt>')) {
+        const remittanceMatch = xml.match(/<RmtInf>(.*?)<\/RmtInf>/s);
+        if (remittanceMatch) {
+            const text = remittanceMatch[1];
+            const invoiceMatch = text.match(/INV[:\s]*(\S+)/i);
+            const poMatch = text.match(/PO[:\s]*(\S+)/i);
+            
+            if (invoiceMatch || poMatch) {
+                let structured = '<RmtInf><Strd>';
+                if (invoiceMatch) {
+                    structured += `<RfrdDocInf><Tp><CdOrPrtry><Cd>CINV</Cd></CdOrPrtry></Tp><Nb>${invoiceMatch[1]}</Nb></RfrdDocInf>`;
+                }
+                if (poMatch) {
+                    structured += `<RfrdDocInf><Tp><CdOrPrtry><Cd>PUOR</Cd></CdOrPrtry></Tp><Nb>${poMatch[1]}</Nb></RfrdDocInf>`;
+                }
+                structured += '</Strd></RmtInf>';
+                enriched = enriched.replace(/<RmtInf>.*?<\/RmtInf>/s, structured);
+            }
+        }
+    }
+    
+    // Purpose Codes
+    if (features?.purpose_codes && !xml.includes('<Purp>')) {
+        enriched = enriched.replace(
+            '</PmtId>',
+            '</PmtId><Purp><Cd>SUPP</Cd></Purp>'
+        );
+    }
+    
+    // End-to-End References
+    if (features?.end_to_end_refs && !xml.includes('<EndToEndId>')) {
+        const msgId = xml.match(/<MsgId>(.*?)<\/MsgId>/)?.[1];
+        if (msgId) {
+            enriched = enriched.replace(
+                '<PmtId>',
+                `<PmtId><EndToEndId>${msgId}</EndToEndId>`
+            );
+        }
     }
     
     return enriched;
+}
+
+function getAppliedEnrichments(features) {
+    const applied = [];
+    if (features?.lei_enrichment) applied.push('LEI_ENRICHMENT');
+    if (features?.structured_remittance) applied.push('STRUCTURED_REMITTANCE');
+    if (features?.purpose_codes) applied.push('PURPOSE_CODES');
+    if (features?.end_to_end_refs) applied.push('END_TO_END_REFERENCES');
+    if (features?.ultimate_party_id) applied.push('ULTIMATE_PARTY_ID');
+    if (features?.party_info_structure) applied.push('PARTY_INFO_STRUCTURE');
+    return applied;
 }
 
 async function deliverMessage(endpoint, message, auth, messageType) {
