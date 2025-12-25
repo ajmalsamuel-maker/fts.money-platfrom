@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
+import UnifiedCommandPalette from '@/components/system/UnifiedCommandPalette';
 import Sidebar from '@/components/dashboard/Sidebar';
 import TopHeader from '@/components/dashboard/TopHeader';
 import StatsCards from '@/components/dashboard/StatsCards';
@@ -39,6 +40,7 @@ import {
     Sparkles
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useTranslation } from '@/components/i18n/LanguageContext';
 import { useNavigate } from 'react-router-dom';
@@ -49,6 +51,7 @@ export default function Dashboard() {
     const queryClient = useQueryClient();
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const [helpOpen, setHelpOpen] = useState(false);
+    const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
     const { t, language } = useTranslation();
 
     // Get current PSP session - CRITICAL: Each PSP must be completely isolated
@@ -185,10 +188,15 @@ export default function Dashboard() {
 
     return (
         <div className="min-h-screen bg-slate-50">
-                <Sidebar 
+            <Sidebar 
                 collapsed={sidebarCollapsed} 
                 onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
                 currentPage="Dashboard"
+            />
+            <UnifiedCommandPalette 
+                open={commandPaletteOpen} 
+                onOpenChange={setCommandPaletteOpen}
+                portalType="psp"
             />
             
             <div className={cn(
@@ -218,6 +226,15 @@ export default function Dashboard() {
                             </div>
                         </div>
                         <div className="flex items-center gap-2">
+                            <Button 
+                                variant="outline" 
+                                size="sm"
+                                onClick={() => setCommandPaletteOpen(true)}
+                                className="gap-2 text-slate-600"
+                            >
+                                <span className="text-xs">Search</span>
+                                <Badge variant="secondary" className="text-xs">⌘K</Badge>
+                            </Button>
                             <Button variant="outline" className="gap-2 text-sm" onClick={() => setHelpOpen(true)}>
                                 <HelpCircle className="h-4 w-4" />
                                 <span className="hidden sm:inline">
