@@ -65,7 +65,7 @@ Deno.serve(async (req) => {
                 last_login_ip: ip
             });
 
-            // Get merchant record for PSP code
+            // Get merchant record for PSP code - CRITICAL: Every merchant MUST have psp_code
             const merchants = await base44.asServiceRole.entities.Merchant.filter({
                 merchant_id: user.merchant_id
             });
@@ -77,14 +77,30 @@ Deno.serve(async (req) => {
                 psp_code: merchant?.psp_code || 'MISSING'
             });
 
-            // If merchant doesn't have psp_code, try to get it from MerchantUser or use merchant_code prefix
+            // Get PSP code (required for multi-tenancy)
             let pspCode = merchant?.psp_code;
-            if (!pspCode && user.merchant_code) {
-                // Extract PSP code from merchant_code (format: PSP_MERCHANT or PSP-MERCHANT)
-                const parts = user.merchant_code.split(/[-_]/);
-                if (parts.length > 1) {
-                    pspCode = parts[0];
-                    console.log('✅ merchantAuth: Extracted PSP code from merchant_code:', pspCode);
+            
+            if (!pspCode) {
+                // FALLBACK 1: Extract from merchant_code (format: PSP_MERCHANT or PSP-MERCHANT)
+                if (user.merchant_code) {
+                    const parts = user.merchant_code.split(/[-_]/);
+                    if (parts.length > 1) {
+                        pspCode = parts[0];
+                        console.log('⚠️ merchantAuth: Extracted PSP code from merchant_code (FALLBACK):', pspCode);
+                    }
+                }
+                
+                // FALLBACK 2: If still no PSP code, this is a critical error
+                if (!pspCode) {
+                    console.error('❌ CRITICAL: Merchant has no PSP code. Multi-tenancy broken!', {
+                        merchant_id: user.merchant_id,
+                        merchant_code: user.merchant_code,
+                        email: user.email
+                    });
+                    return Response.json({
+                        success: false,
+                        error: 'System configuration error. Please contact administrator.'
+                    }, { status: 500 });
                 }
             }
 
