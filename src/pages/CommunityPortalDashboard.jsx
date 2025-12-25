@@ -27,7 +27,8 @@ import {
     LogOut,
     Code,
     GitBranch,
-    ChevronDown
+    ChevronDown,
+    Rocket
 } from 'lucide-react';
 
 export default function CommunityPortalDashboard() {
