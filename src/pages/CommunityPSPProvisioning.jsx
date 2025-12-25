@@ -24,39 +24,47 @@ import {
     Globe, CreditCard, Wallet, TrendingUp, Lock, Code, BarChart3, Brain, Search, ExternalLink
 } from 'lucide-react';
 
-const frameworks = [
+// Framework options - UI display only, pricing comes from DB
+const frameworkTemplates = [
     {
-        id: 'monolithic',
-        name: 'Monolithic Platform',
+        id: 'starter',
+        name: 'Starter Platform',
         description: 'All-in-one solution, fastest to launch',
         icon: Building2,
         timeToLaunch: '24-48 hours',
         complexity: 'Low',
         benefits: ['Quick setup', 'Unified management', 'Lower initial cost'],
-        price: 1500,
         color: 'from-blue-500 to-cyan-500'
     },
     {
-        id: 'modular',
-        name: 'Modular Stack',
+        id: 'growth',
+        name: 'Growth Stack',
         description: 'Best-of-breed components you control',
         icon: Zap,
         timeToLaunch: '3-5 days',
         complexity: 'Medium',
         benefits: ['Flexible', 'Customizable', 'Scalable'],
-        price: 3000,
         popular: true,
         color: 'from-purple-500 to-pink-500'
     },
     {
-        id: 'microservices',
-        name: 'Microservices Architecture',
+        id: 'professional',
+        name: 'Professional Architecture',
+        description: 'Advanced features for growing businesses',
+        icon: TrendingUp,
+        timeToLaunch: '5-7 days',
+        complexity: 'Medium-High',
+        benefits: ['Advanced routing', 'Premium support', 'Enhanced security'],
+        color: 'from-indigo-500 to-purple-500'
+    },
+    {
+        id: 'enterprise',
+        name: 'Enterprise Architecture',
         description: 'Enterprise-grade, fully distributed',
         icon: Brain,
         timeToLaunch: '1-2 weeks',
         complexity: 'High',
         benefits: ['Maximum flexibility', 'Independent scaling', 'Future-proof'],
-        price: 5000,
         color: 'from-amber-500 to-orange-500'
     }
 ];
@@ -114,7 +122,7 @@ export default function CommunityPSPProvisioning() {
     const queryClient = useQueryClient();
     const [session, setSession] = useState(null);
     const [step, setStep] = useState(1);
-    const [selectedFramework, setSelectedFramework] = useState('modular');
+    const [selectedFramework, setSelectedFramework] = useState('growth');
     const [selectedComponents, setSelectedComponents] = useState([]);
     const [selectedPricing, setSelectedPricing] = useState('hybrid');
     const [formData, setFormData] = useState({
@@ -135,6 +143,15 @@ export default function CommunityPSPProvisioning() {
     const [domainSuggestions, setDomainSuggestions] = useState([]);
     const [checkingDomain, setCheckingDomain] = useState(false);
     const [countries, setCountries] = useState([]);
+
+    // Fetch pricing configuration from platform
+    const { data: pricingTiers = [] } = useQuery({
+        queryKey: ['platform-pricing-tiers'],
+        queryFn: async () => {
+            const tiers = await base44.entities.PlatformPricingConfig.filter({ is_active: true }, 'sort_order');
+            return tiers || [];
+        }
+    });
 
     useEffect(() => {
         setCountries(getAllCountries());
@@ -200,7 +217,7 @@ export default function CommunityPSPProvisioning() {
     };
 
     const handleProvision = async () => {
-        const framework = frameworks.find(f => f.id === selectedFramework);
+        const tierConfig = pricingTiers.find(t => t.tier_name === selectedFramework);
         const pricing = pricingModels.find(p => p.id === selectedPricing);
         
         const advancedFees = selectedComponents.reduce((sum, compId) => {
@@ -208,7 +225,7 @@ export default function CommunityPSPProvisioning() {
             return sum + (comp?.monthlyFee || 0);
         }, 0);
 
-        const totalMonthlyFee = (framework.price || 0) + advancedFees + (pricing.monthlyFee || 0);
+        const totalMonthlyFee = (tierConfig?.monthly_hosting_fee || 0) + advancedFees + (pricing.monthlyFee || 0);
 
         const pspData = {
             ...formData,
@@ -225,7 +242,7 @@ export default function CommunityPSPProvisioning() {
             pricing_model: selectedPricing,
             revenue_share_percentage: pricing.percentage || 0,
             monthly_fee: totalMonthlyFee,
-            setup_fee: pricing.setup || 0,
+            setup_fee: tierConfig?.setup_fee || pricing.setup || 0,
             enabled_features: [...coreComponents.map(c => c.id), ...selectedComponents],
             ssl_enabled: formData.domain_option !== 'subdomain', // Auto SSL for custom domains
             lei_status: formData.lei_verification_result?.verified ? 'verified' : 'pending',
@@ -244,14 +261,27 @@ export default function CommunityPSPProvisioning() {
     };
 
     const calculateTotalCost = () => {
-        const framework = frameworks.find(f => f.id === selectedFramework);
+        const tierConfig = pricingTiers.find(t => t.tier_name === selectedFramework);
         const pricing = pricingModels.find(p => p.id === selectedPricing);
         const advancedFees = selectedComponents.reduce((sum, compId) => {
             const comp = advancedComponents.find(c => c.id === compId);
             return sum + (comp?.monthlyFee || 0);
         }, 0);
-        return (framework.price || 0) + advancedFees + (pricing.monthlyFee || 0);
+        return (tierConfig?.monthly_hosting_fee || 0) + advancedFees + (pricing.monthlyFee || 0);
     };
+
+    // Merge framework templates with pricing from database
+    const frameworks = frameworkTemplates.map(template => {
+        const tierConfig = pricingTiers.find(t => t.tier_name === template.id);
+        return {
+            ...template,
+            price: tierConfig?.monthly_hosting_fee || 0,
+            setup_fee: tierConfig?.setup_fee || 0,
+            max_merchants: tierConfig?.max_merchants,
+            max_transactions: tierConfig?.max_transactions_per_month,
+            support_level: tierConfig?.support_level
+        };
+    });
 
     if (!session) return null;
 
@@ -344,6 +374,12 @@ export default function CommunityPSPProvisioning() {
                                                     <span className="text-slate-600">Complexity</span>
                                                     <Badge variant="outline">{framework.complexity}</Badge>
                                                 </div>
+                                                {framework.max_merchants && (
+                                                    <div className="flex items-center justify-between text-sm">
+                                                        <span className="text-slate-600">Max Merchants</span>
+                                                        <Badge variant="outline">{framework.max_merchants}</Badge>
+                                                    </div>
+                                                )}
                                             </div>
 
                                             <ul className="space-y-2 mb-4">
@@ -357,8 +393,13 @@ export default function CommunityPSPProvisioning() {
 
                                             <div className="pt-4 border-t">
                                                 <p className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">
-                                                    ${framework.price.toLocaleString()}/mo
+                                                    ${(framework.price || 0).toLocaleString()}/mo
                                                 </p>
+                                                {framework.setup_fee > 0 && (
+                                                    <p className="text-xs text-slate-600 mt-1">
+                                                        +${framework.setup_fee.toLocaleString()} setup fee
+                                                    </p>
+                                                )}
                                             </div>
                                         </button>
                                     );
@@ -857,7 +898,7 @@ export default function CommunityPSPProvisioning() {
                                     <div className="mt-6 pt-6 border-t border-blue-200">
                                         <div className="flex items-center justify-between mb-2">
                                             <span className="text-slate-700">Platform Base</span>
-                                            <span className="font-semibold">${frameworks.find(f => f.id === selectedFramework)?.price}/mo</span>
+                                            <span className="font-semibold">${frameworks.find(f => f.id === selectedFramework)?.price?.toLocaleString() || 0}/mo</span>
                                         </div>
                                         {selectedComponents.length > 0 && (
                                             <div className="flex items-center justify-between mb-2">
