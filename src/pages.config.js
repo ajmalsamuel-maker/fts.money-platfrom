@@ -72,6 +72,10 @@ import FeeTypeManagement from './pages/FeeTypeManagement';
 import FraudMonitoring from './pages/FraudMonitoring';
 import FraudPrevention from './pages/FraudPrevention';
 import ISOConfiguration from './pages/ISOConfiguration';
+import ISOGatewayConnections from './pages/ISOGatewayConnections';
+import ISOGatewayCustomers from './pages/ISOGatewayCustomers';
+import ISOGatewayTestConsole from './pages/ISOGatewayTestConsole';
+import ISOMessageMonitor from './pages/ISOMessageMonitor';
 import InstantPayments from './pages/InstantPayments';
 import Invoices from './pages/Invoices';
 import Invoicing from './pages/Invoicing';
@@ -206,10 +210,7 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import ISOGatewayCustomers from './pages/ISOGatewayCustomers';
-import ISOGatewayConnections from './pages/ISOGatewayConnections';
-import ISOMessageMonitor from './pages/ISOMessageMonitor';
-import ISOGatewayTestConsole from './pages/ISOGatewayTestConsole';
+import ISOGatewayCustomerPortal from './pages/ISOGatewayCustomerPortal';
 import __Layout from './Layout.jsx';
 
 
@@ -288,6 +289,10 @@ export const PAGES = {
     "FraudMonitoring": FraudMonitoring,
     "FraudPrevention": FraudPrevention,
     "ISOConfiguration": ISOConfiguration,
+    "ISOGatewayConnections": ISOGatewayConnections,
+    "ISOGatewayCustomers": ISOGatewayCustomers,
+    "ISOGatewayTestConsole": ISOGatewayTestConsole,
+    "ISOMessageMonitor": ISOMessageMonitor,
     "InstantPayments": InstantPayments,
     "Invoices": Invoices,
     "Invoicing": Invoicing,
@@ -422,10 +427,7 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "ISOGatewayCustomers": ISOGatewayCustomers,
-    "ISOGatewayConnections": ISOGatewayConnections,
-    "ISOMessageMonitor": ISOMessageMonitor,
-    "ISOGatewayTestConsole": ISOGatewayTestConsole,
+    "ISOGatewayCustomerPortal": ISOGatewayCustomerPortal,
 }
 
 export const pagesConfig = {
