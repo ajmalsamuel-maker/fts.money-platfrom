@@ -17,6 +17,7 @@ export default function ISOGatewayCustomers() {
         company_name: '',
         contact_email: '',
         contact_phone: '',
+        password_hash: 'demo123',
         customer_type: 'fintech',
         subscription_tier: 'developer',
         monthly_message_limit: 50000
@@ -51,6 +52,7 @@ export default function ISOGatewayCustomers() {
                 company_name: '',
                 contact_email: '',
                 contact_phone: '',
+                password_hash: 'demo123',
                 customer_type: 'fintech',
                 subscription_tier: 'developer',
                 monthly_message_limit: 50000
@@ -112,7 +114,7 @@ export default function ISOGatewayCustomers() {
                                     
                                     <div className="grid grid-cols-2 gap-4">
                                         <div>
-                                            <label className="text-sm font-medium">Contact Email</label>
+                                            <label className="text-sm font-medium">Contact Email (Login)</label>
                                             <Input
                                                 type="email"
                                                 value={newCustomer.contact_email}
@@ -122,13 +124,23 @@ export default function ISOGatewayCustomers() {
                                         </div>
                                         
                                         <div>
-                                            <label className="text-sm font-medium">Contact Phone</label>
+                                            <label className="text-sm font-medium">Password</label>
                                             <Input
-                                                value={newCustomer.contact_phone}
-                                                onChange={(e) => setNewCustomer({...newCustomer, contact_phone: e.target.value})}
-                                                placeholder="+1 555 0100"
+                                                type="password"
+                                                value={newCustomer.password_hash}
+                                                onChange={(e) => setNewCustomer({...newCustomer, password_hash: e.target.value})}
+                                                placeholder="demo123"
                                             />
                                         </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <label className="text-sm font-medium">Contact Phone</label>
+                                        <Input
+                                            value={newCustomer.contact_phone}
+                                            onChange={(e) => setNewCustomer({...newCustomer, contact_phone: e.target.value})}
+                                            placeholder="+1 555 0100"
+                                        />
                                     </div>
                                     
                                     <div className="grid grid-cols-2 gap-4">

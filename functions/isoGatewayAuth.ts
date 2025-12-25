@@ -20,8 +20,8 @@ Deno.serve(async (req) => {
 
             const customer = customers[0];
 
-            // Simple password check - demo mode accepts 'demo123' for any customer
-            if (password === 'demo123') {
+            // Check password against stored password_hash
+            if (customer.password_hash && password === customer.password_hash) {
                 return Response.json({
                     success: true,
                     customer: {
@@ -35,7 +35,7 @@ Deno.serve(async (req) => {
             
             return Response.json({
                 success: false,
-                error: 'Invalid credentials'
+                error: 'Invalid email or password'
             });
         }
 

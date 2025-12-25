@@ -96,8 +96,8 @@ export default function ISOGatewayLogin() {
                         </Button>
                     </form>
                     <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded">
-                        <p className="text-xs text-blue-800 font-medium">Demo Credentials:</p>
-                        <p className="text-xs text-blue-700 mt-1">Any customer email + password: <code className="bg-white px-1 rounded">demo123</code></p>
+                        <p className="text-xs text-blue-800 font-medium">Login Instructions:</p>
+                        <p className="text-xs text-blue-700 mt-1">Use customer email and password set in Control Panel → ISO Gateway → Customers</p>
                     </div>
                 </CardContent>
             </Card>
