@@ -220,6 +220,12 @@ export default function ISOGatewayCustomerPortal() {
                     <TabsList>
                         <TabsTrigger value="keys">API Keys</TabsTrigger>
                         <TabsTrigger value="connections">Connections</TabsTrigger>
+                        {customer?.enabled_features?.includes('orchestration') && (
+                            <TabsTrigger value="routing">
+                                <GitBranch className="h-4 w-4 mr-2" />
+                                Routing
+                            </TabsTrigger>
+                        )}
                         <TabsTrigger value="logs">Message Logs</TabsTrigger>
                         <TabsTrigger value="docs">Documentation</TabsTrigger>
                     </TabsList>
@@ -322,6 +328,29 @@ export default function ISOGatewayCustomerPortal() {
                             </CardContent>
                         </Card>
                     </TabsContent>
+
+                    {/* Routing Tab */}
+                    {customer?.enabled_features?.includes('orchestration') && (
+                        <TabsContent value="routing">
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Payment Routing</CardTitle>
+                                    <p className="text-sm text-slate-600">
+                                        Route translated messages to payment providers or payout methods
+                                    </p>
+                                </CardHeader>
+                                <CardContent>
+                                    <Button 
+                                        onClick={() => window.location.href = '/ISOCustomerRouting'}
+                                        className="bg-blue-600 hover:bg-blue-700"
+                                    >
+                                        <GitBranch className="h-4 w-4 mr-2" />
+                                        Configure Routing Rules
+                                    </Button>
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
+                    )}
 
                     {/* Connections Tab */}
                     <TabsContent value="connections">
