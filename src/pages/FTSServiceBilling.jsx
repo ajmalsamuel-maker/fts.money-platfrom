@@ -483,6 +483,55 @@ function PricingConfigCard({ serviceType, serviceName, pricingConfig, queryClien
                                         value={editingTier.overage_rate}
                                         onChange={(e) => setEditingTier({...editingTier, overage_rate: parseFloat(e.target.value)})}
                                     />
+                                    {serviceType === 'iso_gateway' && (
+                                        <>
+                                            <div className="pt-2 border-t">
+                                                <label className="text-xs font-medium text-slate-700">Enrichment Fees (per message)</label>
+                                                <div className="grid grid-cols-2 gap-2 mt-2">
+                                                    <Input
+                                                        type="number"
+                                                        step="0.0001"
+                                                        placeholder="LEI"
+                                                        value={editingTier.enrichment_fees?.lei_enrichment || ''}
+                                                        onChange={(e) => setEditingTier({
+                                                            ...editingTier, 
+                                                            enrichment_fees: {...(editingTier.enrichment_fees || {}), lei_enrichment: parseFloat(e.target.value) || 0}
+                                                        })}
+                                                    />
+                                                    <Input
+                                                        type="number"
+                                                        step="0.0001"
+                                                        placeholder="Structured Remittance"
+                                                        value={editingTier.enrichment_fees?.structured_remittance || ''}
+                                                        onChange={(e) => setEditingTier({
+                                                            ...editingTier, 
+                                                            enrichment_fees: {...(editingTier.enrichment_fees || {}), structured_remittance: parseFloat(e.target.value) || 0}
+                                                        })}
+                                                    />
+                                                    <Input
+                                                        type="number"
+                                                        step="0.0001"
+                                                        placeholder="Purpose Codes"
+                                                        value={editingTier.enrichment_fees?.purpose_codes || ''}
+                                                        onChange={(e) => setEditingTier({
+                                                            ...editingTier, 
+                                                            enrichment_fees: {...(editingTier.enrichment_fees || {}), purpose_codes: parseFloat(e.target.value) || 0}
+                                                        })}
+                                                    />
+                                                    <Input
+                                                        type="number"
+                                                        step="0.0001"
+                                                        placeholder="MT Translation"
+                                                        value={editingTier.enrichment_fees?.mt_translation || ''}
+                                                        onChange={(e) => setEditingTier({
+                                                            ...editingTier, 
+                                                            enrichment_fees: {...(editingTier.enrichment_fees || {}), mt_translation: parseFloat(e.target.value) || 0}
+                                                        })}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </>
+                                    )}
                                     <div className="flex gap-2">
                                         <Button 
                                             size="sm" 
@@ -522,6 +571,15 @@ function PricingConfigCard({ serviceType, serviceName, pricingConfig, queryClien
                                         <p>• Monthly Fee: ${config.monthly_fee}</p>
                                         <p>• Included: {config.included_units.toLocaleString()} units</p>
                                         <p>• Overage: ${config.overage_rate} per unit</p>
+                                        {serviceType === 'iso_gateway' && config.enrichment_fees && Object.keys(config.enrichment_fees).length > 0 && (
+                                            <div className="mt-2 pt-2 border-t">
+                                                <p className="font-medium text-slate-700">Enrichment Fees:</p>
+                                                {config.enrichment_fees.lei_enrichment > 0 && <p>• LEI: +${config.enrichment_fees.lei_enrichment}/msg</p>}
+                                                {config.enrichment_fees.structured_remittance > 0 && <p>• Structured Remittance: +${config.enrichment_fees.structured_remittance}/msg</p>}
+                                                {config.enrichment_fees.purpose_codes > 0 && <p>• Purpose Codes: +${config.enrichment_fees.purpose_codes}/msg</p>}
+                                                {config.enrichment_fees.mt_translation > 0 && <p>• MT Translation: +${config.enrichment_fees.mt_translation}/msg</p>}
+                                            </div>
+                                        )}
                                     </div>
                                 </>
                             )}
