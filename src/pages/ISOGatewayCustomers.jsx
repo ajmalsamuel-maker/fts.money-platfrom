@@ -8,11 +8,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Building2, Plus, Search, TrendingUp, Activity, AlertCircle } from 'lucide-react';
+import { Building2, Plus, Search, TrendingUp, Activity, AlertCircle, Pencil, Shield } from 'lucide-react';
 
 export default function ISOGatewayCustomers() {
     const [searchQuery, setSearchQuery] = useState('');
     const [showCreateDialog, setShowCreateDialog] = useState(false);
+    const [showEditDialog, setShowEditDialog] = useState(false);
+    const [editingCustomer, setEditingCustomer] = useState(null);
     const [newCustomer, setNewCustomer] = useState({
         company_name: '',
         contact_email: '',
@@ -20,7 +22,10 @@ export default function ISOGatewayCustomers() {
         password_hash: 'demo123',
         customer_type: 'fintech',
         subscription_tier: 'developer',
-        monthly_message_limit: 50000
+        monthly_message_limit: 50000,
+        lei: '',
+        lei_status: 'not_provided',
+        lei_grace_period_end: null
     });
 
     const queryClient = useQueryClient();
@@ -35,6 +40,10 @@ export default function ISOGatewayCustomers() {
 
     const createCustomerMutation = useMutation({
         mutationFn: async (data) => {
+            const gracePeriodEnd = data.lei_status === 'grace_period' 
+                ? new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString()
+                : null;
+            
             return await base44.entities.ISOGatewayCustomer.create({
                 ...data,
                 customer_id: `iso_cust_${Date.now()}`,
@@ -42,7 +51,8 @@ export default function ISOGatewayCustomers() {
                 trial_ends_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
                 current_month_usage: 0,
                 total_messages_processed: 0,
-                webhook_secret: crypto.randomUUID()
+                webhook_secret: crypto.randomUUID(),
+                lei_grace_period_end: gracePeriodEnd
             });
         },
         onSuccess: () => {
@@ -55,8 +65,22 @@ export default function ISOGatewayCustomers() {
                 password_hash: 'demo123',
                 customer_type: 'fintech',
                 subscription_tier: 'developer',
-                monthly_message_limit: 50000
+                monthly_message_limit: 50000,
+                lei: '',
+                lei_status: 'not_provided',
+                lei_grace_period_end: null
             });
+        }
+    });
+
+    const updateCustomerMutation = useMutation({
+        mutationFn: async ({ id, data }) => {
+            return await base44.entities.ISOGatewayCustomer.update(id, data);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries(['iso-gateway-customers']);
+            setShowEditDialog(false);
+            setEditingCustomer(null);
         }
     });
 
@@ -177,6 +201,36 @@ export default function ISOGatewayCustomers() {
                                         </div>
                                     </div>
                                     
+                                    <div>
+                                        <label className="text-sm font-medium">LEI / TAS Number</label>
+                                        <Input
+                                            value={newCustomer.lei}
+                                            onChange={(e) => setNewCustomer({...newCustomer, lei: e.target.value})}
+                                            placeholder="20-character LEI or leave blank"
+                                            maxLength={20}
+                                        />
+                                    </div>
+                                    
+                                    <div>
+                                        <label className="text-sm font-medium">LEI Status</label>
+                                        <Select value={newCustomer.lei_status} onValueChange={(v) => setNewCustomer({...newCustomer, lei_status: v})}>
+                                            <SelectTrigger>
+                                                <SelectValue />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="not_provided">Not Provided (6-month grace period)</SelectItem>
+                                                <SelectItem value="verified">Verified</SelectItem>
+                                                <SelectItem value="pending">Pending Issuance</SelectItem>
+                                                <SelectItem value="grace_period">Grace Period (6 months)</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        {(newCustomer.lei_status === 'not_provided' || newCustomer.lei_status === 'grace_period') && (
+                                            <p className="text-xs text-amber-600 mt-1">
+                                                ⚠️ Customer will have 6 months to provide valid LEI/TAS
+                                            </p>
+                                        )}
+                                    </div>
+                                    
                                     <Button 
                                         onClick={() => createCustomerMutation.mutate(newCustomer)}
                                         disabled={!newCustomer.company_name || !newCustomer.contact_email}
@@ -231,6 +285,32 @@ export default function ISOGatewayCustomers() {
                                     </CardHeader>
                                     
                                     <CardContent>
+                                        <div className="flex justify-end mb-4">
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => {
+                                                    setEditingCustomer(customer);
+                                                    setShowEditDialog(true);
+                                                }}
+                                            >
+                                                <Pencil className="h-4 w-4 mr-2" />
+                                                Edit
+                                            </Button>
+                                        </div>
+
+                                        {customer.lei_grace_period_end && new Date(customer.lei_grace_period_end) > new Date() && (
+                                            <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg flex items-start gap-3">
+                                                <Shield className="h-5 w-5 text-amber-600 mt-0.5" />
+                                                <div>
+                                                    <p className="text-sm font-medium text-amber-900">LEI Grace Period Active</p>
+                                                    <p className="text-xs text-amber-700 mt-1">
+                                                        Must provide LEI/TAS by {new Date(customer.lei_grace_period_end).toLocaleDateString()}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+
                                         <div className="grid grid-cols-4 gap-6">
                                             <div>
                                                 <div className="flex items-center gap-2 text-sm text-gray-600 mb-1">
@@ -290,6 +370,135 @@ export default function ISOGatewayCustomers() {
                     )}
                 </div>
             </div>
+            
+            {/* Edit Customer Dialog */}
+            <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+                <DialogContent className="max-w-2xl">
+                    <DialogHeader>
+                        <DialogTitle>Edit Customer - {editingCustomer?.company_name}</DialogTitle>
+                    </DialogHeader>
+                    
+                    {editingCustomer && (
+                        <div className="space-y-4">
+                            <div>
+                                <label className="text-sm font-medium">Company Name</label>
+                                <Input
+                                    value={editingCustomer.company_name}
+                                    onChange={(e) => setEditingCustomer({...editingCustomer, company_name: e.target.value})}
+                                />
+                            </div>
+                            
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="text-sm font-medium">Contact Email (Login)</label>
+                                    <Input
+                                        type="email"
+                                        value={editingCustomer.contact_email}
+                                        onChange={(e) => setEditingCustomer({...editingCustomer, contact_email: e.target.value})}
+                                    />
+                                </div>
+                                
+                                <div>
+                                    <label className="text-sm font-medium">Password (leave blank to keep)</label>
+                                    <Input
+                                        type="password"
+                                        placeholder="Enter new password"
+                                        onChange={(e) => setEditingCustomer({...editingCustomer, password_hash: e.target.value || editingCustomer.password_hash})}
+                                    />
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label className="text-sm font-medium">Contact Phone</label>
+                                <Input
+                                    value={editingCustomer.contact_phone || ''}
+                                    onChange={(e) => setEditingCustomer({...editingCustomer, contact_phone: e.target.value})}
+                                />
+                            </div>
+                            
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="text-sm font-medium">LEI / TAS Number</label>
+                                    <Input
+                                        value={editingCustomer.lei || ''}
+                                        onChange={(e) => setEditingCustomer({...editingCustomer, lei: e.target.value})}
+                                        placeholder="20-character LEI"
+                                        maxLength={20}
+                                    />
+                                </div>
+                                
+                                <div>
+                                    <label className="text-sm font-medium">LEI Status</label>
+                                    <Select 
+                                        value={editingCustomer.lei_status || 'not_provided'} 
+                                        onValueChange={(v) => {
+                                            const gracePeriodEnd = (v === 'grace_period' || v === 'not_provided')
+                                                ? new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString()
+                                                : null;
+                                            setEditingCustomer({
+                                                ...editingCustomer, 
+                                                lei_status: v,
+                                                lei_grace_period_end: gracePeriodEnd
+                                            });
+                                        }}
+                                    >
+                                        <SelectTrigger>
+                                            <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="not_provided">Not Provided</SelectItem>
+                                            <SelectItem value="verified">Verified</SelectItem>
+                                            <SelectItem value="pending">Pending Issuance</SelectItem>
+                                            <SelectItem value="grace_period">Grace Period (6 months)</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            </div>
+                            
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="text-sm font-medium">Status</label>
+                                    <Select value={editingCustomer.status} onValueChange={(v) => setEditingCustomer({...editingCustomer, status: v})}>
+                                        <SelectTrigger>
+                                            <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="trial">Trial</SelectItem>
+                                            <SelectItem value="active">Active</SelectItem>
+                                            <SelectItem value="suspended">Suspended</SelectItem>
+                                            <SelectItem value="cancelled">Cancelled</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                
+                                <div>
+                                    <label className="text-sm font-medium">Subscription Tier</label>
+                                    <Select value={editingCustomer.subscription_tier} onValueChange={(v) => {
+                                        const limits = { developer: 50000, business: 500000, enterprise: 999999999 };
+                                        setEditingCustomer({...editingCustomer, subscription_tier: v, monthly_message_limit: limits[v]});
+                                    }}>
+                                        <SelectTrigger>
+                                            <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="developer">Developer</SelectItem>
+                                            <SelectItem value="business">Business</SelectItem>
+                                            <SelectItem value="enterprise">Enterprise</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            </div>
+                            
+                            <Button 
+                                onClick={() => updateCustomerMutation.mutate({ id: editingCustomer.id, data: editingCustomer })}
+                                className="w-full bg-blue-600 hover:bg-blue-700"
+                            >
+                                Update Customer
+                            </Button>
+                        </div>
+                    )}
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }
