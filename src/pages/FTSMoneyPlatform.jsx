@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
+import UnifiedCommandPalette from '@/components/system/UnifiedCommandPalette';
+import { usePrefetchData } from '@/hooks/usePrefetchData';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
@@ -122,6 +124,10 @@ const quickActions = [
 export default function FTSMoneyPlatform() {
     const navigate = useNavigate();
     const { platformUser, loading } = usePlatformAuth();
+    const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
+    
+    // Prefetch likely next destinations
+    usePrefetchData('FTSMoneyPlatform');
 
     const { data: psps = [] } = useQuery({
         queryKey: ['provisioned-psps'],
@@ -184,16 +190,30 @@ export default function FTSMoneyPlatform() {
                 userEmail={platformUser?.email}
                 isSuperAdmin={platformUser?.platform_role === PLATFORM_ROLES.SUPER_ADMIN}
             />
+            <UnifiedCommandPalette 
+                open={commandPaletteOpen} 
+                onOpenChange={setCommandPaletteOpen}
+                portalType="platform"
+            />
 
             {/* Main Content */}
             <div className="flex-1 overflow-auto bg-slate-50">
                 {/* Header */}
-                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
+                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10" style={{ height: '64px' }}>
                     <div>
                         <h2 className="text-lg font-semibold text-slate-900">Control Panel Dashboard</h2>
                         <p className="text-xs text-slate-600">Unified management for all PSP instances and global configurations</p>
                     </div>
                     <div className="flex items-center gap-3">
+                        <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => setCommandPaletteOpen(true)}
+                            className="gap-2 text-slate-600"
+                        >
+                            <span className="text-xs">Search</span>
+                            <Badge variant="secondary" className="text-xs">⌘K</Badge>
+                        </Button>
                         <div className="text-right mr-2">
                             <p className="text-xs text-slate-600">Logged in as</p>
                             <p className="text-sm font-medium text-slate-900">{platformUser?.email}</p>

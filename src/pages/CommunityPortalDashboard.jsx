@@ -10,7 +10,8 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { cn } from "@/lib/utils";
 import CommunityPortalSidebarOptimized from '@/components/community/CommunityPortalSidebarOptimized';
 import Breadcrumbs from '@/components/community/Breadcrumbs';
-import CommandPalette from '@/components/community/CommandPalette';
+import UnifiedCommandPalette from '@/components/system/UnifiedCommandPalette';
+import { StatusBadge } from '@/components/system/StatusConfig';
 import ComplianceFooter from '@/components/community/ComplianceFooter';
 import { FTS_COLORS, FTS_GRADIENTS } from '@/components/community/FTSBrandColors';
 import { 
@@ -137,11 +138,15 @@ export default function CommunityPortalDashboard() {
     return (
         <div className="flex h-screen bg-slate-50">
             <CommunityPortalSidebarOptimized currentPage="CommunityPortalDashboard" userEmail={session?.email} />
-            <CommandPalette open={commandPaletteOpen} onOpenChange={setCommandPaletteOpen} />
+            <UnifiedCommandPalette 
+                open={commandPaletteOpen} 
+                onOpenChange={setCommandPaletteOpen}
+                portalType="community"
+            />
 
             <div className="flex-1 overflow-auto">
                 {/* Header - FTS.Money Style */}
-                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
+                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10" style={{ height: '64px' }}>
                     <div className="flex items-center gap-6">
                         <h2 className="text-sm font-semibold text-slate-900" style={{ fontFamily: 'Montserrat, sans-serif' }}>
                             Community Portal
@@ -550,11 +555,7 @@ export default function CommunityPortalDashboard() {
                                                     </div>
                                                 </div>
                                                 <div className="flex items-center gap-3">
-                                                    <Badge className={cn(
-                                                        psp.status === 'active' ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700'
-                                                    )}>
-                                                        {psp.status}
-                                                    </Badge>
+                                                    <StatusBadge status={psp.status} />
                                                     <Button 
                                                         size="sm"
                                                         onClick={() => navigate(createPageUrl('PSPInstanceConfig', `?id=${psp.id}`))}

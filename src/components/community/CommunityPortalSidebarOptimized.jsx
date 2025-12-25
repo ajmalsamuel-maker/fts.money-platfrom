@@ -70,19 +70,21 @@ export default function CommunityPortalSidebarOptimized({ currentPage, userEmail
                 { icon: LayoutDashboard, label: 'Dashboard', path: 'CommunityPortalDashboard' }
             ]
         },
-        {
+        // Progressive disclosure: Show "Get Started" only for new users
+        ...(totalServices === 0 ? [{
             id: 'get-started',
             title: 'Get Started',
-            defaultOpen: totalServices === 0,
+            defaultOpen: true,
             items: [
-                { icon: Rocket, label: 'Launch Services', path: 'LaunchServices', highlight: totalServices === 0 },
+                { icon: Rocket, label: 'Launch Services', path: 'LaunchServices', highlight: true },
                 { icon: Globe, label: 'Marketplace', path: 'CommunityMarketplace' }
             ]
-        },
-        {
+        }] : []),
+        // Show "My Services" only when user has services
+        ...(totalServices > 0 ? [{
             id: 'my-services',
             title: 'My Services',
-            defaultOpen: totalServices > 0,
+            defaultOpen: true,
             items: [
                 { icon: Package, label: 'All Services', path: 'MyAllServices', count: totalServices },
                 { icon: Building2, label: 'PSP Instances', path: 'MyPSPInstances', count: myPSPs.length },
@@ -90,16 +92,18 @@ export default function CommunityPortalSidebarOptimized({ currentPage, userEmail
                 { icon: GitBranch, label: 'Orchestration', path: 'OrchestrationLogin', count: myOrchCustomers.length },
                 { icon: FileText, label: 'Subscriptions', path: 'MySubscriptions', count: subscriptions.length }
             ]
-        },
-        {
+        }] : []),
+        // "Business & Operations" for active users
+        ...(totalServices > 0 ? [{
             id: 'business',
-            title: 'Business',
+            title: 'Business & Operations',
             defaultOpen: false,
             items: [
+                { icon: BarChart3, label: 'Analytics', path: 'CommunityAnalytics' },
                 { icon: FileText, label: 'Service Requests', path: 'MyServiceRequests' },
                 { icon: DollarSign, label: 'Billing', path: 'CommunityBilling' }
             ]
-        },
+        }] : []),
         {
             id: 'provider',
             title: 'Provider Hub',
@@ -137,9 +141,9 @@ export default function CommunityPortalSidebarOptimized({ currentPage, userEmail
     };
 
     return (
-        <aside className="w-64 flex flex-col h-screen bg-white border-r border-slate-200">
+        <aside className="w-64 flex flex-col h-screen bg-white border-r border-slate-200" style={{ width: '256px' }}>
             {/* Logo */}
-            <div className="h-16 flex items-center justify-center px-4 border-b border-slate-200">
+            <div className="h-16 flex items-center justify-center px-4 border-b border-slate-200" style={{ height: '64px' }}>
                 <div className="flex items-center gap-2">
                     <img 
                         src={FTS_LOGOS.symbol} 

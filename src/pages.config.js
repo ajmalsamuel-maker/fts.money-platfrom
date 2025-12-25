@@ -87,6 +87,7 @@ import Invoices from './pages/Invoices';
 import Invoicing from './pages/Invoicing';
 import LEIComplianceDashboard from './pages/LEIComplianceDashboard';
 import LEIGLEIFTestReport from './pages/LEIGLEIFTestReport';
+import LaunchServices from './pages/LaunchServices';
 import MIDPricingConfiguration from './pages/MIDPricingConfiguration';
 import MIDRouting from './pages/MIDRouting';
 import MarketAnalysis from './pages/MarketAnalysis';
@@ -107,10 +108,10 @@ import MerchantCustomerAnalytics from './pages/MerchantCustomerAnalytics';
 import MerchantCustomers from './pages/MerchantCustomers';
 import MerchantDashboard from './pages/MerchantDashboard';
 import MerchantDataTransactions from './pages/MerchantDataTransactions';
+import MerchantInfo from './pages/MerchantInfo';
 import MerchantDisputeManagement from './pages/MerchantDisputeManagement';
 import MerchantEmailTemplates from './pages/MerchantEmailTemplates';
 import MerchantHelpCenter from './pages/MerchantHelpCenter';
-import MerchantInfo from './pages/MerchantInfo';
 import MerchantInvoiceGenerator from './pages/MerchantInvoiceGenerator';
 import MerchantInvoices from './pages/MerchantInvoices';
 import MerchantInvoicing from './pages/MerchantInvoicing';
@@ -145,6 +146,7 @@ import MerchantVirtualTerminals from './pages/MerchantVirtualTerminals';
 import MerchantWebhooks from './pages/MerchantWebhooks';
 import Merchants from './pages/Merchants';
 import ModuleCatalogTest from './pages/ModuleCatalogTest';
+import MyAllServices from './pages/MyAllServices';
 import MyPSPInstances from './pages/MyPSPInstances';
 import MyServiceRequests from './pages/MyServiceRequests';
 import MySubscriptions from './pages/MySubscriptions';
@@ -220,8 +222,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import LaunchServices from './pages/LaunchServices';
-import MyAllServices from './pages/MyAllServices';
 import __Layout from './Layout.jsx';
 
 
@@ -315,6 +315,7 @@ export const PAGES = {
     "Invoicing": Invoicing,
     "LEIComplianceDashboard": LEIComplianceDashboard,
     "LEIGLEIFTestReport": LEIGLEIFTestReport,
+    "LaunchServices": LaunchServices,
     "MIDPricingConfiguration": MIDPricingConfiguration,
     "MIDRouting": MIDRouting,
     "MarketAnalysis": MarketAnalysis,
@@ -335,10 +336,10 @@ export const PAGES = {
     "MerchantCustomers": MerchantCustomers,
     "MerchantDashboard": MerchantDashboard,
     "MerchantDataTransactions": MerchantDataTransactions,
+    "MerchantInfo": MerchantInfo,
     "MerchantDisputeManagement": MerchantDisputeManagement,
     "MerchantEmailTemplates": MerchantEmailTemplates,
     "MerchantHelpCenter": MerchantHelpCenter,
-    "MerchantInfo": MerchantInfo,
     "MerchantInvoiceGenerator": MerchantInvoiceGenerator,
     "MerchantInvoices": MerchantInvoices,
     "MerchantInvoicing": MerchantInvoicing,
@@ -373,6 +374,7 @@ export const PAGES = {
     "MerchantWebhooks": MerchantWebhooks,
     "Merchants": Merchants,
     "ModuleCatalogTest": ModuleCatalogTest,
+    "MyAllServices": MyAllServices,
     "MyPSPInstances": MyPSPInstances,
     "MyServiceRequests": MyServiceRequests,
     "MySubscriptions": MySubscriptions,
@@ -448,8 +450,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "LaunchServices": LaunchServices,
-    "MyAllServices": MyAllServices,
 }
 
 export const pagesConfig = {
