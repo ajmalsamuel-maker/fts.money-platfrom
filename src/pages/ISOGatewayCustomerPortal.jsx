@@ -28,17 +28,17 @@ export default function ISOGatewayCustomerPortal() {
 
     const queryClient = useQueryClient();
 
-    // Get current customer (would be from session/auth)
+    // Get current customer from session
     const [customerId, setCustomerId] = useState(null);
 
     useEffect(() => {
-        const loadCustomer = async () => {
-            const customers = await base44.entities.ISOGatewayCustomer.list();
-            if (customers.length > 0) {
-                setCustomerId(customers[0].id);
-            }
-        };
-        loadCustomer();
+        const session = localStorage.getItem('iso_gateway_session');
+        if (!session) {
+            window.location.href = '/ISOGatewayLogin';
+            return;
+        }
+        const sessionData = JSON.parse(session);
+        setCustomerId(sessionData.customer_id);
     }, []);
 
     const { data: customer } = useQuery({
@@ -144,7 +144,14 @@ export default function ISOGatewayCustomerPortal() {
                         <Button variant="ghost" size="icon">
                             <Settings className="h-5 w-5" />
                         </Button>
-                        <Button variant="ghost" size="icon">
+                        <Button 
+                            variant="ghost" 
+                            size="icon"
+                            onClick={() => {
+                                localStorage.removeItem('iso_gateway_session');
+                                window.location.href = '/ISOGatewayLogin';
+                            }}
+                        >
                             <LogOut className="h-5 w-5" />
                         </Button>
                     </div>
