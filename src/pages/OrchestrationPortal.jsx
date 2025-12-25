@@ -1,15 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { GitBranch, Activity, TrendingUp, Zap, LogOut, Settings } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { GitBranch, Activity, TrendingUp, Zap, LogOut, Settings, Key, Webhook, Bell, Plus, Copy, Trash2, Eye, EyeOff } from 'lucide-react';
 import OrchestrationRuleBuilder from '@/components/orchestration/OrchestrationRuleBuilder';
 
 export default function OrchestrationPortal() {
     const [customerId, setCustomerId] = useState(null);
+    const [showSettings, setShowSettings] = useState(false);
+    const [settingsTab, setSettingsTab] = useState('api_keys');
+    const [visibleKeys, setVisibleKeys] = useState({});
+    
+    const queryClient = useQueryClient();
 
     useEffect(() => {
         const session = localStorage.getItem('orchestration_session');
@@ -47,6 +54,27 @@ export default function OrchestrationPortal() {
         ? ((executions.filter(e => e.status === 'executed').length / executions.length) * 100).toFixed(1)
         : '0.0';
 
+    // API Keys Management
+    const generateApiKey = () => {
+        const newKey = {
+            key_name: 'Orchestration API Key',
+            api_key: 'orch_' + Math.random().toString(36).substr(2, 32),
+            status: 'active'
+        };
+        const updatedCustomer = {
+            ...customer,
+            api_key: newKey.api_key
+        };
+        updateCustomerMutation.mutate(updatedCustomer);
+    };
+
+    const updateCustomerMutation = useMutation({
+        mutationFn: async (data) => await base44.entities.OrchestrationCustomer.update(customer.id, data),
+        onSuccess: () => {
+            queryClient.invalidateQueries(['orchestration-customer']);
+        }
+    });
+
     return (
         <div className="min-h-screen bg-slate-50">
             {/* Header */}
@@ -68,7 +96,7 @@ export default function OrchestrationPortal() {
                         <Button 
                             variant="ghost" 
                             size="icon"
-                            onClick={() => alert('Settings coming soon - manage API keys, webhooks, and notification preferences')}
+                            onClick={() => setShowSettings(true)}
                         >
                             <Settings className="h-5 w-5" />
                         </Button>
@@ -217,6 +245,171 @@ export default function OrchestrationPortal() {
                     </TabsContent>
                 </Tabs>
             </div>
+
+            {/* Settings Dialog */}
+            <Dialog open={showSettings} onOpenChange={setShowSettings}>
+                <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+                    <DialogHeader>
+                        <DialogTitle>Settings</DialogTitle>
+                    </DialogHeader>
+
+                    <Tabs value={settingsTab} onValueChange={setSettingsTab}>
+                        <TabsList className="grid w-full grid-cols-3">
+                            <TabsTrigger value="api_keys">
+                                <Key className="h-4 w-4 mr-2" />
+                                API Keys
+                            </TabsTrigger>
+                            <TabsTrigger value="webhooks">
+                                <Webhook className="h-4 w-4 mr-2" />
+                                Webhooks
+                            </TabsTrigger>
+                            <TabsTrigger value="notifications">
+                                <Bell className="h-4 w-4 mr-2" />
+                                Notifications
+                            </TabsTrigger>
+                        </TabsList>
+
+                        {/* API Keys Tab */}
+                        <TabsContent value="api_keys" className="space-y-4">
+                            <div className="flex justify-between items-center">
+                                <p className="text-sm text-slate-600">Manage API keys for programmatic access</p>
+                                <Button size="sm" onClick={generateApiKey} className="bg-blue-600 hover:bg-blue-700">
+                                    <Plus className="h-4 w-4 mr-2" />
+                                    Generate Key
+                                </Button>
+                            </div>
+
+                            {customer?.api_key ? (
+                                <div className="p-4 border rounded-lg bg-slate-50">
+                                    <div className="flex justify-between items-start">
+                                        <div className="flex-1">
+                                            <p className="font-medium text-slate-900 mb-2">Active API Key</p>
+                                            <div className="flex items-center gap-2">
+                                                <code className="text-xs bg-white px-3 py-2 rounded border font-mono">
+                                                    {visibleKeys['main'] ? customer.api_key : customer.api_key.substring(0, 12) + '...'}
+                                                </code>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    onClick={() => setVisibleKeys({...visibleKeys, main: !visibleKeys['main']})}
+                                                >
+                                                    {visibleKeys['main'] ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                                </Button>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    onClick={() => {
+                                                        navigator.clipboard.writeText(customer.api_key);
+                                                        alert('API key copied to clipboard');
+                                                    }}
+                                                >
+                                                    <Copy className="h-4 w-4" />
+                                                </Button>
+                                            </div>
+                                        </div>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="text-red-600"
+                                            onClick={() => {
+                                                if (confirm('Revoke this API key? This cannot be undone.')) {
+                                                    updateCustomerMutation.mutate({ ...customer, api_key: null });
+                                                }
+                                            }}
+                                        >
+                                            <Trash2 className="h-4 w-4" />
+                                        </Button>
+                                    </div>
+                                    <div className="mt-3 pt-3 border-t text-xs text-slate-600">
+                                        <p>Include this key in your API requests:</p>
+                                        <code className="block mt-2 bg-slate-900 text-green-400 p-2 rounded">
+                                            Authorization: Bearer {customer.api_key.substring(0, 12)}...
+                                        </code>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="p-8 text-center border-2 border-dashed rounded-lg">
+                                    <Key className="h-12 w-12 text-slate-400 mx-auto mb-3" />
+                                    <p className="text-slate-600 mb-4">No API key generated yet</p>
+                                    <Button onClick={generateApiKey} className="bg-blue-600 hover:bg-blue-700">
+                                        Generate Your First API Key
+                                    </Button>
+                                </div>
+                            )}
+                        </TabsContent>
+
+                        {/* Webhooks Tab */}
+                        <TabsContent value="webhooks" className="space-y-4">
+                            <p className="text-sm text-slate-600">Configure webhook endpoints for routing notifications</p>
+                            
+                            <div className="space-y-3">
+                                <label className="text-sm font-medium">Webhook URL</label>
+                                <Input
+                                    value={customer?.webhook_url || ''}
+                                    onChange={(e) => {
+                                        const updated = { ...customer, webhook_url: e.target.value };
+                                        updateCustomerMutation.mutate(updated);
+                                    }}
+                                    placeholder="https://your-api.com/webhooks/orchestration"
+                                />
+                                <p className="text-xs text-slate-500">
+                                    Receive notifications when routing decisions are made
+                                </p>
+                            </div>
+
+                            {customer?.webhook_url && (
+                                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                                    <p className="text-sm font-medium text-blue-900 mb-2">Webhook Events:</p>
+                                    <ul className="text-xs text-blue-700 space-y-1">
+                                        <li>✓ routing.executed - When a routing decision is made</li>
+                                        <li>✓ routing.failed - When routing fails</li>
+                                        <li>✓ rule.matched - When a rule matches a transaction</li>
+                                    </ul>
+                                </div>
+                            )}
+                        </TabsContent>
+
+                        {/* Notifications Tab */}
+                        <TabsContent value="notifications" className="space-y-4">
+                            <p className="text-sm text-slate-600">Configure email and notification preferences</p>
+
+                            <div className="space-y-4">
+                                <div className="flex items-center justify-between p-4 border rounded-lg">
+                                    <div>
+                                        <p className="font-medium">Routing Failure Alerts</p>
+                                        <p className="text-sm text-slate-600">Get notified when routing fails</p>
+                                    </div>
+                                    <input type="checkbox" className="h-5 w-5" defaultChecked />
+                                </div>
+
+                                <div className="flex items-center justify-between p-4 border rounded-lg">
+                                    <div>
+                                        <p className="font-medium">Monthly Usage Report</p>
+                                        <p className="text-sm text-slate-600">Receive monthly summary emails</p>
+                                    </div>
+                                    <input type="checkbox" className="h-5 w-5" defaultChecked />
+                                </div>
+
+                                <div className="flex items-center justify-between p-4 border rounded-lg">
+                                    <div>
+                                        <p className="font-medium">Quota Warnings</p>
+                                        <p className="text-sm text-slate-600">Alert when approaching limits</p>
+                                    </div>
+                                    <input type="checkbox" className="h-5 w-5" defaultChecked />
+                                </div>
+
+                                <div className="flex items-center justify-between p-4 border rounded-lg">
+                                    <div>
+                                        <p className="font-medium">New Feature Updates</p>
+                                        <p className="text-sm text-slate-600">Product announcements and updates</p>
+                                    </div>
+                                    <input type="checkbox" className="h-5 w-5" defaultChecked />
+                                </div>
+                            </div>
+                        </TabsContent>
+                    </Tabs>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }
