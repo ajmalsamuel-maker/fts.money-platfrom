@@ -6,6 +6,7 @@ import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import CommunityPortalSidebar from '@/components/community/CommunityPortalSidebar';
 import ComplianceFooter from '@/components/community/ComplianceFooter';
@@ -21,7 +22,10 @@ import {
     Shield,
     TrendingUp,
     CheckCircle2,
-    LogOut
+    LogOut,
+    Code,
+    GitBranch,
+    ChevronDown
 } from 'lucide-react';
 
 export default function CommunityPortalDashboard() {
@@ -61,38 +65,56 @@ export default function CommunityPortalDashboard() {
         queryFn: () => base44.entities.PSPServiceSubscription.list()
     });
 
+    const { data: myISOCustomers = [] } = useQuery({
+        queryKey: ['my-iso-customers', session?.email],
+        queryFn: async () => {
+            const all = await base44.entities.ISOGatewayCustomer.list('-created_date');
+            return all.filter(c => c.contact_email === session?.email);
+        },
+        enabled: !!session?.email
+    });
+
+    const { data: myOrchCustomers = [] } = useQuery({
+        queryKey: ['my-orch-customers', session?.email],
+        queryFn: async () => {
+            const all = await base44.entities.OrchestrationCustomer.list('-created_date');
+            return all.filter(c => c.contact_email === session?.email);
+        },
+        enabled: !!session?.email
+    });
+
     const quickActions = [
         {
             icon: Building2,
-            title: 'Launch New PSP',
-            description: 'Self-service provisioning wizard',
+            title: 'Launch PSP Instance',
+            description: 'Full payment processing platform',
             path: 'CommunityPSPProvisioning',
             color: 'bg-blue-50 text-blue-700 border-blue-200',
-            badge: 'Get Started'
+            badge: myPSPs.length > 0 ? `${myPSPs.length} Active` : 'New'
+        },
+        {
+            icon: Code,
+            title: 'ISO Gateway Service',
+            description: 'Message translation & enrichment',
+            path: 'ISOGatewayLogin',
+            color: 'bg-indigo-50 text-indigo-700 border-indigo-200',
+            badge: myISOCustomers.length > 0 ? `${myISOCustomers.length} Active` : 'New'
+        },
+        {
+            icon: GitBranch,
+            title: 'Orchestration Service',
+            description: 'Smart payment routing',
+            path: 'OrchestrationLogin',
+            color: 'bg-purple-50 text-purple-700 border-purple-200',
+            badge: myOrchCustomers.length > 0 ? `${myOrchCustomers.length} Active` : 'New'
         },
         {
             icon: Globe,
             title: 'Browse Marketplace',
             description: '150+ payment services',
             path: 'CommunityMarketplace',
-            color: 'bg-purple-50 text-purple-700 border-purple-200',
-            badge: 'Explore'
-        },
-        {
-            icon: Users,
-            title: 'Register as Provider',
-            description: 'Offer your services',
-            path: 'ServiceProviderRegistration',
             color: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-            badge: 'Provider'
-        },
-        {
-            icon: Zap,
-            title: 'My PSP Instances',
-            description: 'Manage existing PSPs',
-            path: 'MyPSPInstances',
-            color: 'bg-amber-50 text-amber-700 border-amber-200',
-            badge: myPSPs.length > 0 ? `${myPSPs.length} Active` : 'None'
+            badge: 'Explore'
         }
     ];
 
@@ -139,12 +161,38 @@ export default function CommunityPortalDashboard() {
                     </div>
                     <div className="flex items-center gap-3">
                         <span className="text-xs text-slate-600">{session?.email}</span>
-                        <Button 
-                            onClick={() => navigate(createPageUrl('CommunityPSPProvisioning'))}
-                            className="bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white"
-                        >
-                            Launch PSP
-                        </Button>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button className="bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white">
+                                    <Plus className="h-4 w-4 mr-2" />
+                                    Launch Services
+                                    <ChevronDown className="h-4 w-4 ml-2" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-64">
+                                <DropdownMenuItem onClick={() => navigate(createPageUrl('CommunityPSPProvisioning'))}>
+                                    <Building2 className="h-4 w-4 mr-3 text-blue-600" />
+                                    <div>
+                                        <p className="font-medium">PSP Instance</p>
+                                        <p className="text-xs text-slate-600">Full payment platform</p>
+                                    </div>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => navigate(createPageUrl('ISOGatewayLogin'))}>
+                                    <Code className="h-4 w-4 mr-3 text-indigo-600" />
+                                    <div>
+                                        <p className="font-medium">ISO Gateway</p>
+                                        <p className="text-xs text-slate-600">Message translation</p>
+                                    </div>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => navigate(createPageUrl('OrchestrationLogin'))}>
+                                    <GitBranch className="h-4 w-4 mr-3 text-purple-600" />
+                                    <div>
+                                        <p className="font-medium">Orchestration</p>
+                                        <p className="text-xs text-slate-600">Smart routing</p>
+                                    </div>
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                         <Button 
                             variant="outline"
                             onClick={() => {
@@ -255,12 +303,12 @@ export default function CommunityPortalDashboard() {
                     </div>
 
                     {/* Stats Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
                         <Card>
                             <CardContent className="p-6">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-sm text-slate-600">My PSP Instances</p>
+                                        <p className="text-sm text-slate-600">PSP Instances</p>
                                         <p className="text-3xl font-bold text-slate-900 mt-1">{myPSPs.length}</p>
                                     </div>
                                     <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
@@ -274,11 +322,11 @@ export default function CommunityPortalDashboard() {
                             <CardContent className="p-6">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-sm text-slate-600">Active Subscriptions</p>
-                                        <p className="text-3xl font-bold text-slate-900 mt-1">{subscriptions.length}</p>
+                                        <p className="text-sm text-slate-600">ISO Gateway</p>
+                                        <p className="text-3xl font-bold text-slate-900 mt-1">{myISOCustomers.length}</p>
                                     </div>
-                                    <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center">
-                                        <Zap className="h-6 w-6 text-purple-600" />
+                                    <div className="w-12 h-12 rounded-xl bg-indigo-100 flex items-center justify-center">
+                                        <Code className="h-6 w-6 text-indigo-600" />
                                     </div>
                                 </div>
                             </CardContent>
@@ -288,7 +336,21 @@ export default function CommunityPortalDashboard() {
                             <CardContent className="p-6">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-sm text-slate-600">Available Services</p>
+                                        <p className="text-sm text-slate-600">Orchestration</p>
+                                        <p className="text-3xl font-bold text-slate-900 mt-1">{myOrchCustomers.length}</p>
+                                    </div>
+                                    <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center">
+                                        <GitBranch className="h-6 w-6 text-purple-600" />
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        <Card>
+                            <CardContent className="p-6">
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <p className="text-sm text-slate-600">Marketplace</p>
                                         <p className="text-3xl font-bold text-slate-900 mt-1">{services.length}</p>
                                     </div>
                                     <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center">
@@ -299,50 +361,146 @@ export default function CommunityPortalDashboard() {
                         </Card>
                     </div>
 
-                    {/* My PSP Instances */}
-                    {myPSPs.length > 0 && (
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>My PSP Instances</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="space-y-3">
-                                    {myPSPs.map((psp) => (
-                                        <div 
-                                            key={psp.id}
-                                            className="flex items-center justify-between p-4 bg-slate-50 rounded-lg border border-slate-200"
-                                        >
-                                            <div className="flex items-center gap-3">
-                                                <div 
-                                                    className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-bold"
-                                                    style={{ background: psp.branding?.primary_color || '#3b82f6' }}
-                                                >
-                                                    {psp.psp_code?.substring(0, 2)}
+                    {/* My Services */}
+                    <div className="grid gap-6">
+                        {/* PSP Instances */}
+                        {myPSPs.length > 0 && (
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle className="flex items-center gap-2">
+                                        <Building2 className="h-5 w-5 text-blue-600" />
+                                        My PSP Instances
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="space-y-3">
+                                        {myPSPs.map((psp) => (
+                                            <div 
+                                                key={psp.id}
+                                                className="flex items-center justify-between p-4 bg-slate-50 rounded-lg border border-slate-200"
+                                            >
+                                                <div className="flex items-center gap-3">
+                                                    <div 
+                                                        className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-bold"
+                                                        style={{ background: psp.branding?.primary_color || '#3b82f6' }}
+                                                    >
+                                                        {psp.psp_code?.substring(0, 2)}
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-semibold text-slate-900">{psp.psp_name}</p>
+                                                        <p className="text-sm text-slate-600">{psp.psp_code}</p>
+                                                    </div>
                                                 </div>
-                                                <div>
-                                                    <p className="font-semibold text-slate-900">{psp.psp_name}</p>
-                                                    <p className="text-sm text-slate-600">{psp.psp_code}</p>
+                                                <div className="flex items-center gap-3">
+                                                    <Badge className={cn(
+                                                        psp.status === 'active' ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700'
+                                                    )}>
+                                                        {psp.status}
+                                                    </Badge>
+                                                    <Button 
+                                                        size="sm"
+                                                        onClick={() => navigate(createPageUrl('PSPInstanceConfig', `?id=${psp.id}`))}
+                                                    >
+                                                        Manage
+                                                    </Button>
                                                 </div>
                                             </div>
-                                            <div className="flex items-center gap-3">
-                                                <Badge className={cn(
-                                                    psp.status === 'active' ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700'
-                                                )}>
-                                                    {psp.status}
-                                                </Badge>
-                                                <Button 
-                                                    size="sm"
-                                                    onClick={() => navigate(createPageUrl('PSPInstanceConfig', `?id=${psp.id}`))}
-                                                >
-                                                    Manage
-                                                </Button>
+                                        ))}
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        )}
+
+                        {/* ISO Gateway Services */}
+                        {myISOCustomers.length > 0 && (
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle className="flex items-center gap-2">
+                                        <Code className="h-5 w-5 text-indigo-600" />
+                                        My ISO Gateway Services
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="space-y-3">
+                                        {myISOCustomers.map((customer) => (
+                                            <div 
+                                                key={customer.id}
+                                                className="flex items-center justify-between p-4 bg-slate-50 rounded-lg border border-slate-200"
+                                            >
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center">
+                                                        <Code className="h-5 w-5 text-indigo-600" />
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-semibold text-slate-900">{customer.company_name}</p>
+                                                        <p className="text-sm text-slate-600">{customer.subscription_tier} • {customer.total_messages_processed || 0} messages</p>
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-center gap-3">
+                                                    <Badge className={cn(
+                                                        customer.status === 'active' ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700'
+                                                    )}>
+                                                        {customer.status}
+                                                    </Badge>
+                                                    <Button 
+                                                        size="sm"
+                                                        onClick={() => navigate(createPageUrl('ISOGatewayLogin'))}
+                                                    >
+                                                        Access
+                                                    </Button>
+                                                </div>
                                             </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </CardContent>
-                        </Card>
-                    )}
+                                        ))}
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        )}
+
+                        {/* Orchestration Services */}
+                        {myOrchCustomers.length > 0 && (
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle className="flex items-center gap-2">
+                                        <GitBranch className="h-5 w-5 text-purple-600" />
+                                        My Orchestration Services
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="space-y-3">
+                                        {myOrchCustomers.map((customer) => (
+                                            <div 
+                                                key={customer.id}
+                                                className="flex items-center justify-between p-4 bg-slate-50 rounded-lg border border-slate-200"
+                                            >
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
+                                                        <GitBranch className="h-5 w-5 text-purple-600" />
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-semibold text-slate-900">{customer.company_name}</p>
+                                                        <p className="text-sm text-slate-600">{customer.subscription_tier} • {customer.total_executions || 0} executions</p>
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-center gap-3">
+                                                    <Badge className={cn(
+                                                        customer.status === 'active' ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700'
+                                                    )}>
+                                                        {customer.status}
+                                                    </Badge>
+                                                    <Button 
+                                                        size="sm"
+                                                        onClick={() => navigate(createPageUrl('OrchestrationLogin'))}
+                                                    >
+                                                        Access
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        )}
+                    </div>
                 </div>
 
                 <ComplianceFooter />
