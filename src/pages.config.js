@@ -63,10 +63,12 @@ import FTSProviderPool from './pages/FTSProviderPool';
 import FTSProvisioningQueue from './pages/FTSProvisioningQueue';
 import FTSReporting from './pages/FTSReporting';
 import FTSRevenue from './pages/FTSRevenue';
+import FTSServiceBilling from './pages/FTSServiceBilling';
 import FTSServiceManager from './pages/FTSServiceManager';
 import FTSServiceProviders from './pages/FTSServiceProviders';
 import FTSServiceRegistry from './pages/FTSServiceRegistry';
 import FTSSettings from './pages/FTSSettings';
+import FTSSetupGuide from './pages/FTSSetupGuide';
 import FTSVerticalSolutions from './pages/FTSVerticalSolutions';
 import FeeTypeManagement from './pages/FeeTypeManagement';
 import FraudMonitoring from './pages/FraudMonitoring';
@@ -149,6 +151,9 @@ import MySubscriptions from './pages/MySubscriptions';
 import MyWholesaleOfferings from './pages/MyWholesaleOfferings';
 import NetworkTokenization from './pages/NetworkTokenization';
 import OpenBankingConfiguration from './pages/OpenBankingConfiguration';
+import OrchestrationCustomers from './pages/OrchestrationCustomers';
+import OrchestrationLogin from './pages/OrchestrationLogin';
+import OrchestrationPortal from './pages/OrchestrationPortal';
 import PCICompliance from './pages/PCICompliance';
 import PSPDetails from './pages/PSPDetails';
 import PSPEmpowermentRoadmap from './pages/PSPEmpowermentRoadmap';
@@ -215,11 +220,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import OrchestrationLogin from './pages/OrchestrationLogin';
-import OrchestrationPortal from './pages/OrchestrationPortal';
-import OrchestrationCustomers from './pages/OrchestrationCustomers';
-import FTSSetupGuide from './pages/FTSSetupGuide';
-import FTSServiceBilling from './pages/FTSServiceBilling';
 import __Layout from './Layout.jsx';
 
 
@@ -289,10 +289,12 @@ export const PAGES = {
     "FTSProvisioningQueue": FTSProvisioningQueue,
     "FTSReporting": FTSReporting,
     "FTSRevenue": FTSRevenue,
+    "FTSServiceBilling": FTSServiceBilling,
     "FTSServiceManager": FTSServiceManager,
     "FTSServiceProviders": FTSServiceProviders,
     "FTSServiceRegistry": FTSServiceRegistry,
     "FTSSettings": FTSSettings,
+    "FTSSetupGuide": FTSSetupGuide,
     "FTSVerticalSolutions": FTSVerticalSolutions,
     "FeeTypeManagement": FeeTypeManagement,
     "FraudMonitoring": FraudMonitoring,
@@ -375,6 +377,9 @@ export const PAGES = {
     "MyWholesaleOfferings": MyWholesaleOfferings,
     "NetworkTokenization": NetworkTokenization,
     "OpenBankingConfiguration": OpenBankingConfiguration,
+    "OrchestrationCustomers": OrchestrationCustomers,
+    "OrchestrationLogin": OrchestrationLogin,
+    "OrchestrationPortal": OrchestrationPortal,
     "PCICompliance": PCICompliance,
     "PSPDetails": PSPDetails,
     "PSPEmpowermentRoadmap": PSPEmpowermentRoadmap,
@@ -441,11 +446,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "OrchestrationLogin": OrchestrationLogin,
-    "OrchestrationPortal": OrchestrationPortal,
-    "OrchestrationCustomers": OrchestrationCustomers,
-    "FTSSetupGuide": FTSSetupGuide,
-    "FTSServiceBilling": FTSServiceBilling,
 }
 
 export const pagesConfig = {

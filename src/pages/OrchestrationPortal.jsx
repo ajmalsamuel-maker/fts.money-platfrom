@@ -65,7 +65,11 @@ export default function OrchestrationPortal() {
                         <Badge className="bg-emerald-100 text-emerald-700 border-emerald-300">
                             {customer?.subscription_tier}
                         </Badge>
-                        <Button variant="ghost" size="icon">
+                        <Button 
+                            variant="ghost" 
+                            size="icon"
+                            onClick={() => alert('Settings coming soon - manage API keys, webhooks, and notification preferences')}
+                        >
                             <Settings className="h-5 w-5" />
                         </Button>
                         <Button 
