@@ -291,9 +291,6 @@ export default function CommunityPortalDashboard() {
                                                 filter="url(#glow)"
                                                 className="animate-pulse"
                                             />
-                                            {/* Rocket Icon at arrow end */}
-                                            <circle cx="200" cy="80" r="30" fill="url(#arrow-gradient-new)" opacity="0.2"/>
-                                            <text x="200" y="90" fontSize="24" textAnchor="middle" fill="#0066CC">🚀</text>
                                         </svg>
                                     </div>
                                 </div>
