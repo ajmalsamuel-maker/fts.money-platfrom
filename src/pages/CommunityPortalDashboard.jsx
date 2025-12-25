@@ -229,67 +229,107 @@ export default function CommunityPortalDashboard() {
                     {/* NEW USER ONBOARDING VIEW */}
                     {isNewUser ? (
                         <>
-                            {/* Hero Section with Wave */}
-                    <Card className="mb-6 border-0 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)' }}>
-                        <CardContent className="p-8 relative z-10">
+                            {/* Hero Section with Wave & Arrow */}
+                    <Card className="mb-6 border-0 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%)' }}>
+                        <CardContent className="p-12 relative z-10">
                             <div className="flex items-center justify-between">
-                                <div>
-                                    <h1 className="text-4xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                                <div className="max-w-xl">
+                                    <h1 className="text-5xl font-bold mb-3 text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-cyan-500 to-blue-400" style={{ fontFamily: 'Montserrat, sans-serif' }}>
                                         Fluid Global Payments
                                     </h1>
-                                    <p className="mb-6 text-lg text-slate-700">
-                                        Everything you need to launch and scale your PSP business
+                                    <p className="mb-8 text-xl text-slate-700 font-medium">
+                                        Launch your payment empire in 24 hours
                                     </p>
-                                    <div className="grid grid-cols-2 gap-4 mb-6">
+                                    <div className="grid grid-cols-1 gap-3 mb-8">
                                         {benefits.map((benefit, i) => {
                                             const Icon = benefit.icon;
                                             return (
-                                                <div key={i} className="flex items-center gap-2">
-                                                    <div className="w-6 h-6 rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 flex items-center justify-center">
-                                                        <CheckCircle2 className="h-4 w-4 text-white" />
+                                                <div key={i} className="flex items-center gap-3 p-3 bg-white/80 backdrop-blur rounded-lg">
+                                                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-cyan-500 flex items-center justify-center flex-shrink-0">
+                                                        <Icon className="h-4 w-4 text-white" />
                                                     </div>
-                                                    <span className="text-sm text-slate-700">{benefit.text}</span>
+                                                    <span className="text-sm font-medium text-slate-800">{benefit.text}</span>
                                                 </div>
                                             );
                                         })}
                                     </div>
                                     <Button 
-                                        onClick={() => navigate(createPageUrl('CommunityPSPProvisioning'))}
-                                        className="bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white"
+                                        onClick={() => navigate(createPageUrl('LaunchServices'))}
+                                        size="lg"
+                                        className="bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white shadow-xl hover:shadow-2xl transition-all"
                                         style={{ fontFamily: 'Montserrat, sans-serif' }}
                                     >
-                                        Get Started
-                                        <ArrowRight className="ml-2 h-4 w-4" />
+                                        <Rocket className="mr-2 h-5 w-5" />
+                                        Launch Your First Service
+                                        <ArrowRight className="ml-2 h-5 w-5" />
                                     </Button>
                                 </div>
                                 <div className="hidden lg:block">
                                     <div className="relative">
-                                        {/* Dynamic Arrow Graphic */}
-                                        <svg width="240" height="240" viewBox="0 0 240 240" className="opacity-20">
+                                        {/* Animated Arrow Graphic pointing to Launch Services */}
+                                        <svg width="280" height="280" viewBox="0 0 280 280" className="drop-shadow-2xl">
                                             <defs>
-                                                <linearGradient id="arrow-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                <linearGradient id="arrow-gradient-new" x1="0%" y1="0%" x2="100%" y2="100%">
                                                     <stop offset="0%" style={{ stopColor: '#0066CC' }} />
-                                                    <stop offset="100%" style={{ stopColor: '#00BFFF' }} />
+                                                    <stop offset="50%" style={{ stopColor: '#00BFFF' }} />
+                                                    <stop offset="100%" style={{ stopColor: '#87CEEB' }} />
                                                 </linearGradient>
+                                                <filter id="glow">
+                                                    <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                                                    <feMerge>
+                                                        <feMergeNode in="coloredBlur"/>
+                                                        <feMergeNode in="SourceGraphic"/>
+                                                    </feMerge>
+                                                </filter>
                                             </defs>
-                                            <path d="M60 180 L180 60 M180 60 L140 60 M180 60 L180 100" stroke="url(#arrow-gradient)" strokeWidth="8" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+                                            {/* Main Arrow */}
+                                            <path 
+                                                d="M80 200 L200 80 M200 80 L150 80 M200 80 L200 130" 
+                                                stroke="url(#arrow-gradient-new)" 
+                                                strokeWidth="12" 
+                                                fill="none" 
+                                                strokeLinecap="round" 
+                                                strokeLinejoin="round"
+                                                filter="url(#glow)"
+                                                className="animate-pulse"
+                                            />
+                                            {/* Rocket Icon at arrow end */}
+                                            <circle cx="200" cy="80" r="30" fill="url(#arrow-gradient-new)" opacity="0.2"/>
+                                            <text x="200" y="90" fontSize="24" textAnchor="middle" fill="#0066CC">🚀</text>
                                         </svg>
                                     </div>
                                 </div>
                             </div>
                         </CardContent>
                         
-                        {/* Flat Wave Bottom */}
-                        <div className="absolute bottom-0 left-0 right-0 h-20 opacity-30">
-                            <svg className="absolute bottom-0 w-full h-full" viewBox="0 0 1440 120" preserveAspectRatio="none">
-                                <path fill="url(#hero-wave)" d="M0,64L48,69.3C96,75,192,85,288,80C384,75,480,53,576,58.7C672,64,768,96,864,96C960,96,1056,64,1152,58.7C1248,53,1344,75,1392,85.3L1440,96L1440,120L1392,120C1344,120,1248,120,1152,120C1056,120,960,120,864,120C768,120,672,120,576,120C480,120,384,120,288,120C192,120,96,120,48,120L0,120Z"></path>
+                        {/* Fluid Wave Bottom - More Dynamic */}
+                        <div className="absolute bottom-0 left-0 right-0 h-32">
+                            <svg className="absolute bottom-0 w-full h-full" viewBox="0 0 1440 200" preserveAspectRatio="none">
                                 <defs>
-                                    <linearGradient id="hero-wave" x1="0%" y1="0%" x2="100%" y2="0%">
-                                        <stop offset="0%" style={{ stopColor: '#0066CC' }} />
-                                        <stop offset="50%" style={{ stopColor: '#00BFFF' }} />
-                                        <stop offset="100%" style={{ stopColor: '#87CEEB' }} />
+                                    <linearGradient id="hero-wave-fluid" x1="0%" y1="0%" x2="100%" y2="0%">
+                                        <stop offset="0%" style={{ stopColor: '#0066CC', stopOpacity: 0.4 }} />
+                                        <stop offset="25%" style={{ stopColor: '#00BFFF', stopOpacity: 0.5 }} />
+                                        <stop offset="50%" style={{ stopColor: '#87CEEB', stopOpacity: 0.4 }} />
+                                        <stop offset="75%" style={{ stopColor: '#00BFFF', stopOpacity: 0.5 }} />
+                                        <stop offset="100%" style={{ stopColor: '#0066CC', stopOpacity: 0.4 }} />
                                     </linearGradient>
                                 </defs>
+                                {/* First wave layer */}
+                                <path 
+                                    fill="url(#hero-wave-fluid)" 
+                                    fillOpacity="0.6" 
+                                    d="M0,96L48,112C96,128,192,160,288,165.3C384,171,480,149,576,144C672,139,768,149,864,154.7C960,160,1056,160,1152,149.3C1248,139,1344,117,1392,106.7L1440,96L1440,200L1392,200C1344,200,1248,200,1152,200C1056,200,960,200,864,200C768,200,672,200,576,200C480,200,384,200,288,200C192,200,96,200,48,200L0,200Z"
+                                    className="animate-pulse"
+                                    style={{ animationDuration: '3s' }}
+                                />
+                                {/* Second wave layer */}
+                                <path 
+                                    fill="url(#hero-wave-fluid)" 
+                                    fillOpacity="0.4" 
+                                    d="M0,128L48,133.3C96,139,192,149,288,138.7C384,128,480,96,576,90.7C672,85,768,107,864,122.7C960,139,1056,149,1152,144C1248,139,1344,117,1392,106.7L1440,96L1440,200L1392,200C1344,200,1248,200,1152,200C1056,200,960,200,864,200C768,200,672,200,576,200C480,200,384,200,288,200C192,200,96,200,48,200L0,200Z"
+                                    className="animate-pulse"
+                                    style={{ animationDuration: '4s', animationDelay: '0.5s' }}
+                                />
                             </svg>
                         </div>
                     </Card>
