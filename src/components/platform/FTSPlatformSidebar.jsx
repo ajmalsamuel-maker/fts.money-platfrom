@@ -32,7 +32,8 @@ const menuSections = [
     {
         title: 'Dashboard',
         items: [
-            { icon: Activity, label: 'Home', path: 'FTSMoneyPlatform', description: 'Quick actions', priority: true }
+            { icon: Activity, label: 'Home', path: 'FTSMoneyPlatform', description: 'Quick actions', priority: true },
+            { icon: BookOpen, label: 'Setup Guide', path: 'FTSSetupGuide', description: 'How to access services', priority: true }
         ]
     },
     {

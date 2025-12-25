@@ -218,6 +218,7 @@ import XeroIntegration from './pages/XeroIntegration';
 import OrchestrationLogin from './pages/OrchestrationLogin';
 import OrchestrationPortal from './pages/OrchestrationPortal';
 import OrchestrationCustomers from './pages/OrchestrationCustomers';
+import FTSSetupGuide from './pages/FTSSetupGuide';
 import __Layout from './Layout.jsx';
 
 
@@ -442,6 +443,7 @@ export const PAGES = {
     "OrchestrationLogin": OrchestrationLogin,
     "OrchestrationPortal": OrchestrationPortal,
     "OrchestrationCustomers": OrchestrationCustomers,
+    "FTSSetupGuide": FTSSetupGuide,
 }
 
 export const pagesConfig = {
