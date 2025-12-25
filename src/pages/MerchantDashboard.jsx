@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
+import MerchantSidebarOptimized from '@/components/merchant/MerchantSidebarOptimized';
+import UnifiedCommandPalette from '@/components/system/UnifiedCommandPalette';
 import { useMerchantAuth } from '@/components/auth/useMerchantAuth';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';

@@ -25,136 +25,160 @@ import {
     GitBranch,
     Workflow,
     Code,
-    TestTube2
+    TestTube2,
+    ChevronDown,
+    ChevronRight
 } from 'lucide-react';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 const menuSections = [
     {
-        title: 'Dashboard',
+        id: 'control-plane',
+        title: 'Control Plane',
+        defaultOpen: true,
         items: [
-            { icon: Activity, label: 'Home', path: 'FTSMoneyPlatform', description: 'Quick actions', priority: true },
-            { icon: BookOpen, label: 'Setup Guide', path: 'FTSSetupGuide', description: 'How to access services', priority: true }
+            { label: 'Dashboard', path: 'FTSMoneyPlatform', icon: Activity, description: 'Platform overview', priority: true },
+            { label: 'System Health', path: 'FTSSystemHealth', icon: Activity, description: 'Real-time monitoring' },
+            { label: 'Setup Guide', path: 'FTSSetupGuide', icon: BookOpen, description: 'Quick start guide', priority: true }
         ]
     },
     {
-        title: 'PSP Operations',
+        id: 'customer-management',
+        title: 'Customer Management',
+        defaultOpen: false,
         items: [
-            { icon: Building2, label: 'PSP Instances', path: 'PSPProvisioning', description: 'Manage all PSPs', priority: true },
-            { icon: Activity, label: 'Provisioning Queue', path: 'FTSProvisioningQueue', description: 'Deploy & monitor' },
-            { icon: Users, label: 'Client Accounts', path: 'FTSClients', description: 'Client management' }
+            { label: 'PSP Operations', path: 'PSPProvisioning', icon: Building2, description: 'Manage all PSPs', priority: true },
+            { label: 'Provisioning Queue', path: 'FTSProvisioningQueue', icon: Activity, description: 'Deploy & monitor' },
+            { label: 'Community Users', path: 'CommunityUserManagement', icon: Users, description: 'Portal users' },
+            { label: 'PSP Administrators', path: 'PSPUserManagement', icon: Users, description: 'PSP staff' },
+            { label: 'Client Accounts', path: 'FTSClients', icon: Users, description: 'Client management' },
+            { label: 'Tenants', path: 'TenantManagement', icon: Building2, description: 'Multi-tenancy', superAdminOnly: true }
         ]
     },
     {
-        title: 'Users & Access',
+        id: 'financial',
+        title: 'Financial Operations',
+        defaultOpen: false,
         items: [
-            { icon: Users, label: 'Platform Team', path: 'PlatformUserManagement', description: 'FTS administrators' },
-            { icon: Users, label: 'Community Users', path: 'CommunityUserManagement', description: 'Portal users & PSP owners' },
-            { icon: Users, label: 'PSP Administrators', path: 'PSPUserManagement', description: 'PSP owners & staff' },
-            { icon: Building2, label: 'Tenants', path: 'TenantManagement', description: 'Multi-tenancy control', superAdminOnly: true }
+            { label: 'Revenue Dashboard', path: 'FTSRevenue', icon: BarChart3, description: 'Consolidated revenue', priority: true },
+            { label: 'Service Billing', path: 'FTSServiceBilling', icon: FileText, description: 'ISO & Orchestration', priority: true },
+            { label: 'Master Pricing', path: 'MasterPricingManagement', icon: DollarSign, description: 'All pricing control' },
+            { label: 'Platform Pricing', path: 'PlatformPricingConfiguration', icon: DollarSign, description: 'PSP tier pricing' },
+            { label: 'Accounting', path: 'XeroIntegration', icon: Zap, description: 'Xero integration' }
         ]
     },
     {
-        title: 'Financial Management',
+        id: 'marketplace',
+        title: 'Marketplace & Services',
+        defaultOpen: false,
         items: [
-            { icon: DollarSign, label: 'Master Pricing', path: 'MasterPricingManagement', description: 'All pricing control', priority: true },
-            { icon: BarChart3, label: 'Revenue Dashboard', path: 'FTSRevenue', description: 'Analytics & billing' },
-            { icon: FileText, label: 'Service Billing', path: 'FTSServiceBilling', description: 'ISO & Orchestration billing', priority: true },
-            { icon: DollarSign, label: 'Platform Pricing', path: 'PlatformPricingConfiguration', description: 'PSP tier pricing' },
-            { icon: DollarSign, label: 'Merchant Pricing Engine', path: 'MerchantPricingEngine', description: 'Dynamic merchant pricing' },
-            { icon: Zap, label: 'Accounting Integration', path: 'XeroIntegration', description: 'Xero sync' }
+            { label: 'Service Catalog', path: 'FTSServiceManager', icon: Package, description: 'All services', priority: true },
+            { label: 'Payment Providers', path: 'FTSProviderPool', icon: Database, description: 'Provider pool' },
+            { label: 'Payout Routes', path: 'FTSPayoutRoutes', icon: Wallet, description: 'Payout methods' },
+            { label: 'Service Providers', path: 'FTSServiceProviders', icon: Users, description: 'Vendors' },
+            { label: 'Wholesale Marketplace', path: 'PSPWholesaleMarketplace', icon: Building2, description: 'PSP-to-PSP' }
         ]
     },
     {
-        title: 'Marketplace',
-        items: [
-            { icon: Database, label: 'Payment Providers', path: 'FTSProviderPool', description: 'Provider pool' },
-            { icon: Wallet, label: 'Payout Routes', path: 'FTSPayoutRoutes', description: 'Payout methods' },
-            { icon: Package, label: 'Available Services', path: 'FTSServiceManager', description: 'Service catalog' },
-            { icon: Users, label: 'Service Providers', path: 'FTSServiceProviders', description: '3rd party vendors' },
-            { icon: Building2, label: 'PSP Wholesale', path: 'PSPWholesaleMarketplace', description: 'PSP-to-PSP marketplace', priority: true },
-            { icon: Package, label: 'Product Templates', path: 'ProductTemplateLibrary', description: 'Template library' },
-            { icon: Workflow, label: 'Workflow Templates', path: 'WorkflowTemplateLibrary', description: 'Workflow library' },
-            { icon: Package, label: 'Community Products', path: 'CommunityProductCatalog', description: 'Community catalog' }
-        ]
-    },
-    {
+        id: 'infrastructure',
         title: 'Infrastructure',
+        defaultOpen: false,
         items: [
-            { icon: Activity, label: 'Resource Management', path: 'ResourceOrchestration', description: 'Capacity & auto-scaling' },
-            { icon: Zap, label: 'API Gateway', path: 'APIGatewayConfiguration', description: 'Configuration & monitoring' },
-            { icon: Globe, label: 'Domain Management', path: 'FTSDomainManagement', description: 'SSL & DNS' },
-            { icon: Globe, label: 'Integrations Hub', path: 'FTSBlockchainIntegration', description: 'Blockchain, Open Banking, Registries' }
+            { label: 'Resource Orchestration', path: 'ResourceOrchestration', icon: Activity, description: 'Auto-scaling' },
+            { label: 'API Gateway', path: 'APIGatewayConfiguration', icon: Zap, description: 'Configuration' },
+            { label: 'Domain Management', path: 'FTSDomainManagement', icon: Globe, description: 'SSL & DNS' },
+            { label: 'Integrations Hub', path: 'FTSBlockchainIntegration', icon: Globe, description: 'Blockchain, OB' }
         ]
     },
     {
+        id: 'iso-gateway',
         title: 'ISO Gateway Service',
+        defaultOpen: false,
         items: [
-            { icon: Code, label: 'Test Console', path: 'ISOGatewayTestConsole', description: 'API testing & docs', priority: true },
-            { icon: Zap, label: 'Customers', path: 'ISOGatewayCustomers', description: 'Service subscribers' },
-            { icon: GitBranch, label: 'Connections', path: 'ISOGatewayConnections', description: 'Translation routing' },
-            { icon: Activity, label: 'Message Monitor', path: 'ISOMessageMonitor', description: 'Real-time logs' }
+            { label: 'Test Console', path: 'ISOGatewayTestConsole', icon: Code, description: 'API testing', priority: true },
+            { label: 'Customers', path: 'ISOGatewayCustomers', icon: Zap, description: 'Subscribers' },
+            { label: 'Connections', path: 'ISOGatewayConnections', icon: GitBranch, description: 'Translation routing' },
+            { label: 'Message Monitor', path: 'ISOMessageMonitor', icon: Activity, description: 'Real-time logs' }
         ]
     },
     {
+        id: 'orchestration',
         title: 'Orchestration Service',
+        defaultOpen: false,
         items: [
-            { icon: GitBranch, label: 'Customers', path: 'OrchestrationCustomers', description: 'Routing subscribers', priority: true }
+            { label: 'Customers', path: 'OrchestrationCustomers', icon: GitBranch, description: 'Routing subscribers', priority: true }
         ]
     },
     {
+        id: 'analytics',
         title: 'Analytics & Reports',
+        defaultOpen: false,
         items: [
-            { icon: BarChart3, label: 'Platform Analytics', path: 'FTSAnalytics', description: 'Cross-PSP insights' },
-            { icon: FileText, label: 'Custom Reports', path: 'FTSReporting', description: 'Report builder' }
+            { label: 'Platform Analytics', path: 'FTSAnalytics', icon: BarChart3, description: 'Cross-PSP insights' },
+            { label: 'Custom Reports', path: 'FTSReporting', icon: FileText, description: 'Report builder' }
         ]
     },
     {
+        id: 'compliance',
         title: 'Compliance & Security',
+        defaultOpen: false,
         items: [
-            { icon: Shield, label: 'LEI/vLEI Management', path: 'LEIComplianceDashboard', description: 'Credential tracking', priority: true },
-            { icon: TestTube2, label: 'Testing & Validation', path: 'FTSComplianceTesting', description: 'Compliance tests' },
-            { icon: FileText, label: 'Audit Trail', path: 'EnhancedAuditLogs', description: 'All logs & AI detection' },
-            { icon: Shield, label: 'Policy Templates', path: 'FTSCompliance', description: 'Compliance policies' },
-            { icon: GitBranch, label: 'ISO Workflows', path: 'WorkflowManagement', description: 'ISO compliance processes' },
-            { icon: Database, label: 'Data Retention', path: 'DataRetentionManagement', description: 'GDPR & cleanup' }
+            { label: 'LEI/vLEI Dashboard', path: 'LEIComplianceDashboard', icon: Shield, description: 'Credentials', priority: true },
+            { label: 'Compliance Testing', path: 'FTSComplianceTesting', icon: TestTube2, description: 'Validation' },
+            { label: 'Audit Logs', path: 'EnhancedAuditLogs', icon: FileText, description: 'All logs' },
+            { label: 'Policy Management', path: 'FTSCompliance', icon: Shield, description: 'Policies' },
+            { label: 'Workflows', path: 'WorkflowManagement', icon: GitBranch, description: 'ISO processes' },
+            { label: 'Data Retention', path: 'DataRetentionManagement', icon: Database, description: 'GDPR' }
         ]
     },
     {
+        id: 'documentation',
         title: 'Documentation',
         collapsed: true,
         items: [
-            { icon: BookOpen, label: 'Platform Architecture', path: 'FTSArchitectureDoc', description: 'System architecture' },
-            { icon: Package, label: 'Product Ecosystem', path: 'FTSProductEcosystemReport', description: 'Products & revenue models' },
-            { icon: Building2, label: 'Vertical Solutions', path: 'FTSVerticalSolutions', description: 'Industry-specific offerings' }
+            { label: 'Architecture', path: 'FTSArchitectureDoc', icon: BookOpen, description: 'System design' },
+            { label: 'Product Ecosystem', path: 'FTSProductEcosystemReport', icon: Package, description: 'Products & models' },
+            { label: 'Vertical Solutions', path: 'FTSVerticalSolutions', icon: Building2, description: 'Industry offerings' }
         ]
     },
     {
+        id: 'settings',
         title: 'Settings',
         collapsed: true,
         items: [
-            { icon: Settings, label: 'Platform Configuration', path: 'FTSSettings', description: 'System settings' },
-            { icon: Code, label: 'Advanced Tools', path: 'ModuleCatalogTest', description: 'Module testing' }
+            { label: 'Platform Config', path: 'FTSSettings', icon: Settings, description: 'System settings' },
+            { label: 'Advanced Tools', path: 'ModuleCatalogTest', icon: Code, description: 'Module testing' }
         ]
     }
 ];
 
 export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, isSuperAdmin }) {
-    const [pinnedSection, setPinnedSection] = React.useState(null);
+    const [openSections, setOpenSections] = React.useState(
+        menuSections.filter(s => s.defaultOpen).map(s => s.id)
+    );
     
-    // Auto-pin the section containing the current page
+    // Auto-open section containing current page
     React.useEffect(() => {
         const currentSection = menuSections.find(section => 
             section.items.some(item => item.path === currentPage)
         );
-        if (currentSection && !pinnedSection) {
-            setPinnedSection(currentSection.title);
+        if (currentSection && !openSections.includes(currentSection.id)) {
+            setOpenSections(prev => [...prev, currentSection.id]);
         }
     }, [currentPage]);
     
+    const toggleSection = (sectionId) => {
+        setOpenSections(prev => 
+            prev.includes(sectionId) 
+                ? prev.filter(id => id !== sectionId)
+                : [...prev, sectionId]
+        );
+    };
+    
     return (
-        <aside className="w-64 bg-white border-r border-slate-200 flex flex-col h-screen">
+        <aside className="w-64 bg-white border-r border-slate-200 flex flex-col h-screen" style={{ width: '256px' }}>
             {/* Logo */}
-            <div className="h-20 flex items-center justify-center border-b border-slate-200 px-3 py-2">
+            <div className="h-16 flex items-center justify-center border-b border-slate-200 px-3 py-2" style={{ height: '64px' }}>
                 <img 
                     src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6931510c4507988f66a42ca8/865871aa1_FTSMoney-primary-logo-RGB.jpg"
                     alt="FTS.Money"
@@ -179,44 +203,30 @@ export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, i
 
             {/* Menu */}
             <nav className="flex-1 overflow-y-auto p-3">
-                <div className="space-y-5">
+                <div className="space-y-4">
                     {menuSections.map((section) => {
-                            const [isCollapsed, setIsCollapsed] = React.useState(section.collapsed || false);
-                            const isPinned = pinnedSection === section.title;
-                            const hasCurrentPage = section.items.some(item => item.path === currentPage);
+                        const isOpen = openSections.includes(section.id);
+                        const hasCurrentPage = section.items.some(item => item.path === currentPage);
 
-                            return (
-                                <div key={section.title} className={hasCurrentPage ? 'bg-blue-50/50 -mx-2 px-2 py-1 rounded-lg' : ''}>
-                                    <div className="flex items-center justify-between px-3 mb-2">
-                                        <h3 className={cn(
-                                            "text-xs font-semibold uppercase tracking-wider",
-                                            hasCurrentPage ? "text-blue-700" : "text-slate-500"
-                                        )}>
-                                            {section.title}
-                                            {hasCurrentPage && <span className="ml-1">📍</span>}
-                                        </h3>
-                                        <div className="flex items-center gap-1">
-                                            {!section.collapsed && (
-                                                <button
-                                                    onClick={() => setPinnedSection(isPinned ? null : section.title)}
-                                                    className="text-slate-400 hover:text-blue-600 text-xs"
-                                                    title={isPinned ? "Unpin" : "Pin section"}
-                                                >
-                                                    {isPinned ? '📌' : '📍'}
-                                                </button>
-                                            )}
-                                            {section.collapsed !== undefined && (
-                                                <button
-                                                    onClick={() => setIsCollapsed(!isCollapsed)}
-                                                    className="text-slate-400 hover:text-slate-600"
-                                                >
-                                                    {isCollapsed ? '▶' : '▼'}
-                                                </button>
-                                            )}
-                                        </div>
-                                    </div>
-                                    {(!isCollapsed || isPinned) && (
-                                    <div className="space-y-1">
+                        return (
+                            <div key={section.id} className={hasCurrentPage ? 'bg-blue-50/50 -mx-2 px-2 py-1 rounded-lg' : ''}>
+                                <button
+                                    onClick={() => toggleSection(section.id)}
+                                    className="w-full flex items-center justify-between px-2 py-1 hover:bg-slate-50 rounded-lg transition-colors"
+                                >
+                                    <h3 className={cn(
+                                        "text-xs font-semibold uppercase tracking-wider",
+                                        hasCurrentPage ? "text-blue-700" : "text-slate-600"
+                                    )}>
+                                        {section.title}
+                                    </h3>
+                                    <span className="text-xs text-slate-400">
+                                        {isOpen ? '▼' : '▶'}
+                                    </span>
+                                </button>
+                                
+                                {isOpen && (
+                                    <div className="space-y-1 mt-1">
                                         {section.items.filter(item => !item.superAdminOnly || isSuperAdmin).map((item) => {
                                             const Icon = item.icon;
                                             const isActive = currentPage === item.path;
@@ -225,21 +235,26 @@ export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, i
                                                     key={item.path}
                                                     to={createPageUrl(item.path)}
                                                     className={cn(
-                                                        "flex items-center gap-3 px-3 py-2 rounded-lg transition-all group",
+                                                        "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group",
                                                         isActive
-                                                            ? "bg-blue-50 text-blue-700"
+                                                            ? "bg-gradient-to-r from-blue-50 to-cyan-50 text-blue-700"
                                                             : "text-slate-700 hover:bg-slate-50"
                                                     )}
                                                 >
-                                                    <Icon className="h-4 w-4 flex-shrink-0" />
+                                                    <Icon className={cn("h-4 w-4 flex-shrink-0", isActive && "text-blue-600")} />
                                                     <div className="flex-1 min-w-0">
                                                         <div className="flex items-center gap-2">
                                                             <span className="text-sm font-medium truncate">{item.label}</span>
                                                             {item.priority && <span className="text-xs">⭐</span>}
                                                             {item.superAdminOnly && <Badge className="text-[9px] px-1 py-0 bg-red-100 text-red-700 border-red-300">ADMIN</Badge>}
                                                         </div>
-                                                        <p className="text-xs text-slate-500 truncate">{item.description}</p>
+                                                        {item.description && (
+                                                            <p className="text-xs text-slate-500 truncate">{item.description}</p>
+                                                        )}
                                                     </div>
+                                                    {isActive && (
+                                                        <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-600 to-cyan-500 rounded-r-full"></div>
+                                                    )}
                                                 </Link>
                                             );
                                         })}
