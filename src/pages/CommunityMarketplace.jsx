@@ -36,7 +36,8 @@ const categoryConfig = {
     crypto: { label: 'Crypto', color: 'bg-amber-100 text-amber-700', icon: DollarSign },
     developer_tools: { label: 'Developer Tools', color: 'bg-green-100 text-green-700', icon: Zap },
     orchestration: { label: 'Orchestration', color: 'bg-indigo-100 text-indigo-700', icon: Zap },
-    payout: { label: 'Payout', color: 'bg-pink-100 text-pink-700', icon: DollarSign }
+    payout: { label: 'Payout', color: 'bg-pink-100 text-pink-700', icon: DollarSign },
+    financial_messaging: { label: 'Financial Messaging', color: 'bg-violet-100 text-violet-700', icon: Zap }
 };
 
 const pricingModelLabels = {
@@ -280,6 +281,53 @@ export default function CommunityMarketplace() {
                         </TabsList>
 
                         <TabsContent value="all" className="space-y-6">
+                            {/* Featured ISO Gateway */}
+                            {ftsServices.some(s => s.service_name === 'ISO Standards Gateway') && (
+                                <div className="mb-8 p-6 border-2 border-violet-300 rounded-lg bg-gradient-to-br from-violet-50 to-purple-50">
+                                    <div className="flex items-center gap-2 mb-3">
+                                        <Badge className="bg-violet-600 text-white">⭐ Featured Service</Badge>
+                                        <Badge className="bg-amber-100 text-amber-700">New</Badge>
+                                    </div>
+                                    {(() => {
+                                        const isoGateway = ftsServices.find(s => s.service_name === 'ISO Standards Gateway');
+                                        return (
+                                            <>
+                                                <h3 className="text-2xl font-bold text-slate-900 mb-2">{isoGateway.service_name}</h3>
+                                                <p className="text-slate-700 mb-4">{isoGateway.description}</p>
+                                                <div className="flex gap-4 mb-4">
+                                                    <div>
+                                                        <p className="text-sm text-slate-600">Starting at</p>
+                                                        <p className="text-2xl font-bold text-violet-600">${isoGateway.base_price}/mo</p>
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-sm text-slate-600">Wholesale Discount</p>
+                                                        <p className="text-2xl font-bold text-emerald-600">{isoGateway.wholesale_discount_percentage}%</p>
+                                                    </div>
+                                                </div>
+                                                <div className="flex gap-3">
+                                                    <Button 
+                                                        onClick={() => {
+                                                            setSelectedService(isoGateway);
+                                                            setDetailsOpen(true);
+                                                        }}
+                                                        className="bg-violet-600 hover:bg-violet-700"
+                                                    >
+                                                        View Details & Subscribe
+                                                    </Button>
+                                                    <Button 
+                                                        variant="outline"
+                                                        onClick={() => window.open(isoGateway.documentation_url, '_blank')}
+                                                    >
+                                                        <ExternalLink className="h-4 w-4 mr-2" />
+                                                        View Documentation
+                                                    </Button>
+                                                </div>
+                                            </>
+                                        );
+                                    })()}
+                                </div>
+                            )}
+
                             {ftsServices.length > 0 && (
                                 <div>
                                     <h3 className="text-lg font-semibold text-slate-900 mb-4">FTS.Money Services</h3>
