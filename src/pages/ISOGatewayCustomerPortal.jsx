@@ -12,12 +12,14 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { 
     Key, Plus, Copy, Eye, EyeOff, Trash2, GitBranch, Activity,
-    FileText, Code, Zap, TrendingUp, DollarSign, LogOut, Settings
+    FileText, Code, Zap, TrendingUp, DollarSign, LogOut, Settings, Webhook, Bell
 } from 'lucide-react';
 
 export default function ISOGatewayCustomerPortal() {
     const [showKeyDialog, setShowKeyDialog] = useState(false);
     const [showConnDialog, setShowConnDialog] = useState(false);
+    const [showSettings, setShowSettings] = useState(false);
+    const [settingsTab, setSettingsTab] = useState('webhooks');
     const [visibleKeys, setVisibleKeys] = useState({});
     const [newKey, setNewKey] = useState({ key_name: '', environment: 'test' });
     const [newConn, setNewConn] = useState({
@@ -115,6 +117,11 @@ export default function ISOGatewayCustomerPortal() {
         onSuccess: () => queryClient.invalidateQueries(['api-keys'])
     });
 
+    const updateCustomerMutation = useMutation({
+        mutationFn: async (data) => await base44.entities.ISOGatewayCustomer.update(customer.id, data),
+        onSuccess: () => queryClient.invalidateQueries(['customer'])
+    });
+
     const copyToClipboard = (text) => {
         navigator.clipboard.writeText(text);
     };
@@ -141,7 +148,7 @@ export default function ISOGatewayCustomerPortal() {
                         <Badge className="bg-emerald-100 text-emerald-700 border-emerald-300">
                             {customer?.subscription_tier}
                         </Badge>
-                        <Button variant="ghost" size="icon">
+                        <Button variant="ghost" size="icon" onClick={() => setShowSettings(true)}>
                             <Settings className="h-5 w-5" />
                         </Button>
                         <Button 
@@ -550,7 +557,121 @@ export default function ISOGatewayCustomerPortal() {
                         </Card>
                     </TabsContent>
                 </Tabs>
-            </div>
-        </div>
-    );
-}
+                </div>
+
+                {/* Settings Dialog */}
+                <Dialog open={showSettings} onOpenChange={setShowSettings}>
+                <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+                    <DialogHeader>
+                        <DialogTitle>Settings</DialogTitle>
+                    </DialogHeader>
+
+                    <Tabs value={settingsTab} onValueChange={setSettingsTab}>
+                        <TabsList className="grid w-full grid-cols-2">
+                            <TabsTrigger value="webhooks">
+                                <Webhook className="h-4 w-4 mr-2" />
+                                Webhooks
+                            </TabsTrigger>
+                            <TabsTrigger value="notifications">
+                                <Bell className="h-4 w-4 mr-2" />
+                                Notifications
+                            </TabsTrigger>
+                        </TabsList>
+
+                        {/* Webhooks Tab */}
+                        <TabsContent value="webhooks" className="space-y-4">
+                            <p className="text-sm text-slate-600">Configure webhook endpoints for message notifications</p>
+
+                            <div className="space-y-3">
+                                <label className="text-sm font-medium">Webhook URL</label>
+                                <Input
+                                    value={customer?.webhook_url || ''}
+                                    onChange={(e) => {
+                                        const updated = { ...customer, webhook_url: e.target.value };
+                                        updateCustomerMutation.mutate(updated);
+                                    }}
+                                    placeholder="https://your-api.com/webhooks/iso-gateway"
+                                />
+                                <p className="text-xs text-slate-500">
+                                    Receive notifications when messages are translated
+                                </p>
+                            </div>
+
+                            <div className="space-y-3">
+                                <label className="text-sm font-medium">Webhook Secret</label>
+                                <div className="flex items-center gap-2">
+                                    <code className="text-xs bg-slate-100 px-3 py-2 rounded border font-mono flex-1">
+                                        {customer?.webhook_secret || 'Not generated'}
+                                    </code>
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() => {
+                                            navigator.clipboard.writeText(customer?.webhook_secret || '');
+                                            alert('Webhook secret copied');
+                                        }}
+                                    >
+                                        <Copy className="h-4 w-4" />
+                                    </Button>
+                                </div>
+                                <p className="text-xs text-slate-500">
+                                    Use this to verify webhook signatures
+                                </p>
+                            </div>
+
+                            {customer?.webhook_url && (
+                                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                                    <p className="text-sm font-medium text-blue-900 mb-2">Webhook Events:</p>
+                                    <ul className="text-xs text-blue-700 space-y-1">
+                                        <li>✓ message.translated - When a message is successfully translated</li>
+                                        <li>✓ message.failed - When translation fails</li>
+                                        <li>✓ message.delivered - When message is delivered to destination</li>
+                                    </ul>
+                                </div>
+                            )}
+                        </TabsContent>
+
+                        {/* Notifications Tab */}
+                        <TabsContent value="notifications" className="space-y-4">
+                            <p className="text-sm text-slate-600">Configure email and notification preferences</p>
+
+                            <div className="space-y-4">
+                                <div className="flex items-center justify-between p-4 border rounded-lg">
+                                    <div>
+                                        <p className="font-medium">Translation Failure Alerts</p>
+                                        <p className="text-sm text-slate-600">Get notified when translation fails</p>
+                                    </div>
+                                    <input type="checkbox" className="h-5 w-5" defaultChecked />
+                                </div>
+
+                                <div className="flex items-center justify-between p-4 border rounded-lg">
+                                    <div>
+                                        <p className="font-medium">Monthly Usage Report</p>
+                                        <p className="text-sm text-slate-600">Receive monthly summary emails</p>
+                                    </div>
+                                    <input type="checkbox" className="h-5 w-5" defaultChecked />
+                                </div>
+
+                                <div className="flex items-center justify-between p-4 border rounded-lg">
+                                    <div>
+                                        <p className="font-medium">Quota Warnings</p>
+                                        <p className="text-sm text-slate-600">Alert when approaching limits</p>
+                                    </div>
+                                    <input type="checkbox" className="h-5 w-5" defaultChecked />
+                                </div>
+
+                                <div className="flex items-center justify-between p-4 border rounded-lg">
+                                    <div>
+                                        <p className="font-medium">New Feature Updates</p>
+                                        <p className="text-sm text-slate-600">Product announcements and updates</p>
+                                    </div>
+                                    <input type="checkbox" className="h-5 w-5" defaultChecked />
+                                </div>
+                            </div>
+                        </TabsContent>
+                    </Tabs>
+                </DialogContent>
+                </Dialog>
+                </div>
+                );
+                }
