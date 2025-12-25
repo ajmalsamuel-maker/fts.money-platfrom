@@ -14,12 +14,13 @@ import {
     Sparkles,
     Zap,
     FileText,
-    DollarSign
+    DollarSign,
+    Rocket
 } from 'lucide-react';
 
 const menuItems = [
     { icon: LayoutDashboard, label: 'Dashboard', path: 'CommunityPortalDashboard' },
-    { icon: Building2, label: 'Launch PSP', path: 'CommunityPSPProvisioning' },
+    { icon: Rocket, label: 'Launch Services', path: 'LaunchServices' },
     { icon: Globe, label: 'Marketplace', path: 'CommunityMarketplace' },
     { icon: Zap, label: 'My PSP Instances', path: 'MyPSPInstances' },
     { icon: Sparkles, label: 'Service Requests', path: 'MyServiceRequests' },
