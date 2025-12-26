@@ -275,7 +275,7 @@ sequenceDiagram
     participant PSP as PSP Operator
     participant Market as FTS Marketplace
     participant Provider as Service Provider
-    participant End as End User
+    participant User as End User
     
     PSP->>Market: Browse Services
     Market->>PSP: Display Catalog
@@ -284,7 +284,7 @@ sequenceDiagram
     Provider-->>Market: Credentials & Config
     Market-->>PSP: Service Ready
     
-    End->>PSP: Trigger Service (e.g., KYB)
+    User->>PSP: Trigger Service (e.g., KYB)
     PSP->>Market: API Call
     Market->>Provider: Forward Request
     Provider-->>Market: Result
