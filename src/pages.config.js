@@ -34,7 +34,6 @@ import CommunityUserManagement from './pages/CommunityUserManagement';
 import Compliance from './pages/Compliance';
 import ComplianceFramework from './pages/ComplianceFramework';
 import CryptoGatewayDashboard from './pages/CryptoGatewayDashboard';
-import CryptoGatewayLogin from './pages/CryptoGatewayLogin';
 import CryptoPayouts from './pages/CryptoPayouts';
 import CryptoTransactions from './pages/CryptoTransactions';
 import CustomerAnalytics from './pages/CustomerAnalytics';
@@ -268,7 +267,6 @@ export const PAGES = {
     "Compliance": Compliance,
     "ComplianceFramework": ComplianceFramework,
     "CryptoGatewayDashboard": CryptoGatewayDashboard,
-    "CryptoGatewayLogin": CryptoGatewayLogin,
     "CryptoPayouts": CryptoPayouts,
     "CryptoTransactions": CryptoTransactions,
     "CustomerAnalytics": CustomerAnalytics,
