@@ -122,9 +122,7 @@ export default function FTSPlatformSidebarRestructured({ currentPage, userRole, 
             defaultOpen: false,
             collapsed: true,
             items: [
-                { label: 'Portal Guides', path: 'FTSDocumentation', icon: BookOpen, description: 'All portals', priority: true },
-                { label: 'ISO Gateway', path: 'ISOGatewayDocumentation', icon: Code, description: 'Message translation' },
-                { label: 'Orchestration', path: 'OrchestrationDocumentation', icon: GitBranch, description: 'Smart routing' },
+                { label: 'Portal Guides', path: 'FTSDocumentation', icon: BookOpen, description: 'All 6 portals', priority: true },
                 { label: 'Architecture', path: 'FTSArchitectureDoc', icon: BookOpen, description: 'System design' },
                 { label: 'Product Ecosystem', path: 'FTSProductEcosystemReport', icon: Package, description: 'Products' },
                 { label: 'Vertical Solutions', path: 'FTSVerticalSolutions', icon: Building2, description: 'Industries' }

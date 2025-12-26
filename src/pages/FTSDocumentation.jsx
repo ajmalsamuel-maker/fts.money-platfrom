@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Download, FileText, BookOpen } from 'lucide-react';
+import { Download, FileText, BookOpen, Code, GitBranch } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
 import FTSPlatformSidebarRestructured from '@/components/platform/FTSPlatformSidebarRestructured';
@@ -10,6 +10,8 @@ import FTSOverviewDoc from '@/components/docs/FTSOverviewDoc';
 import FTSControlPanelDoc from '@/components/docs/FTSControlPanelDoc';
 import PSPPortalDoc from '@/components/docs/PSPPortalDoc';
 import CommunityPortalDoc from '@/components/docs/CommunityPortalDoc';
+import ISOGatewayDoc from '@/components/docs/ISOGatewayDoc';
+import OrchestrationDoc from '@/components/docs/OrchestrationDoc';
 import jsPDF from 'jspdf';
 
 export default function FTSDocumentation() {
@@ -44,6 +46,20 @@ export default function FTSDocumentation() {
             icon: FileText,
             content: CommunityPortalDoc,
             description: 'Self-service payment infrastructure marketplace'
+        },
+        {
+            id: 'iso-gateway',
+            title: 'ISO Gateway Service',
+            icon: Code,
+            content: ISOGatewayDoc,
+            description: 'Message translation for ISO 8583, ISO 20022, and SWIFT MT'
+        },
+        {
+            id: 'orchestration',
+            title: 'Orchestration Service',
+            icon: GitBranch,
+            content: OrchestrationDoc,
+            description: 'Intelligent payment routing and optimization'
         }
     ];
 

@@ -225,8 +225,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import ISOGatewayDocumentation from './pages/ISOGatewayDocumentation';
-import OrchestrationDocumentation from './pages/OrchestrationDocumentation';
 import __Layout from './Layout.jsx';
 
 
@@ -458,8 +456,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "ISOGatewayDocumentation": ISOGatewayDocumentation,
-    "OrchestrationDocumentation": OrchestrationDocumentation,
 }
 
 export const pagesConfig = {
