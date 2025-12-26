@@ -735,3 +735,5 @@ timeline
 **Next Review:** March 2026  
 **Owner:** FTS.Money Product Team
 `;
+
+export default FTSOverviewDoc;
