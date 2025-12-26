@@ -12,6 +12,7 @@ import PSPPortalDoc from '@/components/docs/PSPPortalDoc';
 import CommunityPortalDoc from '@/components/docs/CommunityPortalDoc';
 import ISOGatewayDoc from '@/components/docs/ISOGatewayDoc';
 import OrchestrationDoc from '@/components/docs/OrchestrationDoc';
+import MermaidDiagram from '@/components/docs/MermaidDiagram';
 import jsPDF from 'jspdf';
 
 export default function FTSDocumentation() {
@@ -242,26 +243,38 @@ export default function FTSDocumentation() {
                                         <div className="prose prose-slate max-w-none">
                                             <ReactMarkdown
                                                 components={{
-                                                    h1: ({ children }) => (
-                                                        <h1 className="text-4xl font-bold mb-4 text-slate-900 border-b pb-2">
-                                                            {children}
-                                                        </h1>
-                                                    ),
-                                                    h2: ({ children }) => (
-                                                        <h2 className="text-3xl font-bold mt-8 mb-4 text-slate-800">
-                                                            {children}
-                                                        </h2>
-                                                    ),
-                                                    h3: ({ children }) => (
-                                                        <h3 className="text-2xl font-semibold mt-6 mb-3 text-slate-700">
-                                                            {children}
-                                                        </h3>
-                                                    ),
-                                                    h4: ({ children }) => (
-                                                        <h4 className="text-xl font-semibold mt-4 mb-2 text-slate-700">
-                                                            {children}
-                                                        </h4>
-                                                    ),
+                                                    h1: ({ children }) => {
+                                                        const id = String(children).toLowerCase().replace(/[^a-z0-9]+/g, '-');
+                                                        return (
+                                                            <h1 id={id} className="text-4xl font-bold mb-4 text-slate-900 border-b pb-2 scroll-mt-6">
+                                                                {children}
+                                                            </h1>
+                                                        );
+                                                    },
+                                                    h2: ({ children }) => {
+                                                        const id = String(children).toLowerCase().replace(/[^a-z0-9]+/g, '-');
+                                                        return (
+                                                            <h2 id={id} className="text-3xl font-bold mt-8 mb-4 text-slate-800 scroll-mt-6">
+                                                                {children}
+                                                            </h2>
+                                                        );
+                                                    },
+                                                    h3: ({ children }) => {
+                                                        const id = String(children).toLowerCase().replace(/[^a-z0-9]+/g, '-');
+                                                        return (
+                                                            <h3 id={id} className="text-2xl font-semibold mt-6 mb-3 text-slate-700 scroll-mt-6">
+                                                                {children}
+                                                            </h3>
+                                                        );
+                                                    },
+                                                    h4: ({ children }) => {
+                                                        const id = String(children).toLowerCase().replace(/[^a-z0-9]+/g, '-');
+                                                        return (
+                                                            <h4 id={id} className="text-xl font-semibold mt-4 mb-2 text-slate-700 scroll-mt-6">
+                                                                {children}
+                                                            </h4>
+                                                        );
+                                                    },
                                                     p: ({ children }) => (
                                                         <p className="mb-4 text-slate-600 leading-relaxed">
                                                             {children}
@@ -282,7 +295,10 @@ export default function FTSDocumentation() {
                                                             {children}
                                                         </li>
                                                     ),
-                                                    code: ({ inline, children }) => {
+                                                    code: ({ inline, className, children }) => {
+                                                        const match = /language-(\w+)/.exec(className || '');
+                                                        const language = match ? match[1] : '';
+                                                        
                                                         if (inline) {
                                                             return (
                                                                 <code className="px-1.5 py-0.5 bg-slate-100 text-slate-800 rounded text-sm font-mono">
@@ -290,6 +306,11 @@ export default function FTSDocumentation() {
                                                                 </code>
                                                             );
                                                         }
+                                                        
+                                                        if (language === 'mermaid') {
+                                                            return <MermaidDiagram chart={String(children)} />;
+                                                        }
+                                                        
                                                         return (
                                                             <pre className="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto mb-4">
                                                                 <code className="text-sm font-mono">
