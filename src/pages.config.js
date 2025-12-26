@@ -34,6 +34,7 @@ import CommunityUserManagement from './pages/CommunityUserManagement';
 import Compliance from './pages/Compliance';
 import ComplianceFramework from './pages/ComplianceFramework';
 import CryptoGatewayDashboard from './pages/CryptoGatewayDashboard';
+import CryptoGatewayLogin from './pages/CryptoGatewayLogin';
 import CryptoPayouts from './pages/CryptoPayouts';
 import CryptoTransactions from './pages/CryptoTransactions';
 import CustomerAnalytics from './pages/CustomerAnalytics';
@@ -227,7 +228,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import CryptoGatewayLogin from './pages/CryptoGatewayLogin';
 import __Layout from './Layout.jsx';
 
 
@@ -268,6 +268,7 @@ export const PAGES = {
     "Compliance": Compliance,
     "ComplianceFramework": ComplianceFramework,
     "CryptoGatewayDashboard": CryptoGatewayDashboard,
+    "CryptoGatewayLogin": CryptoGatewayLogin,
     "CryptoPayouts": CryptoPayouts,
     "CryptoTransactions": CryptoTransactions,
     "CustomerAnalytics": CustomerAnalytics,
@@ -461,7 +462,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "CryptoGatewayLogin": CryptoGatewayLogin,
 }
 
 export const pagesConfig = {

@@ -55,7 +55,7 @@ export default function CryptoGatewayLogin() {
                     <div>
                         <img src={FTS_LOGOS.primary} alt="FTS.Money" className="h-12 mb-6" />
                         <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
-                            Crypto Gateway
+                            Crypto Gateway Portal
                         </h1>
                         <p className="text-xl text-slate-300">
                             Enterprise crypto banking infrastructure for exchanges & DeFi platforms
