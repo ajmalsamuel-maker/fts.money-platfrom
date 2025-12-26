@@ -43,6 +43,11 @@ mindmap
       Configure
       Deploy 24-48h
       Go Live
+    Crypto Gateway
+      Multi-Chain Wallets
+      Virtual IBANs
+      Card Issuing
+      EU Compliant
     ISO Gateway
       Legacy Systems
       8583 & 20022
@@ -70,6 +75,8 @@ mindmap
 - 🌐 Marketplaces
 - 🏢 Enterprise Payment Teams
 - 💻 Software Companies (Embedded Finance)
+- 🪙 Cryptocurrency Exchanges
+- 🔗 DeFi Platforms
 
 ---
 
@@ -904,6 +911,132 @@ ROI Calculation:
   Orchestration Cost:           -$1,499/month
   Net Benefit:                  +$1,001/month
 \`\`\`
+
+---
+
+## Crypto Gateway Service
+
+### What is Crypto Gateway?
+
+The **FTS.Money Crypto Gateway** is your enterprise crypto banking infrastructure, offering everything needed to launch crypto services without the $10M+ investment typically required.
+
+**Available in Two Ways:**
+
+1. **Embedded in PSP** - Enable from Service Marketplace, white-label for your customers
+2. **Standalone Portal** - Direct access for exchanges and DeFi platforms at `/CryptoGatewayLogin`
+
+### Crypto Gateway Architecture
+
+\`\`\`mermaid
+graph TB
+    subgraph "Customer Access"
+        A[PSP Marketplace<br/>Embedded]
+        B[Standalone Portal<br/>Direct]
+    end
+    
+    subgraph "FTS.Money Crypto Gateway"
+        C[Wallet Engine]
+        D[Banking Rails]
+        E[Card Issuance]
+        F[Compliance]
+    end
+    
+    subgraph "Features"
+        G[BTC/ETH/USDC<br/>Lightning]
+        H[Virtual IBANs<br/>SEPA Instant]
+        I[Visa Cards<br/>Physical + Virtual]
+        J[KYC/AML<br/>VASP/MiCA]
+    end
+    
+    A --> C
+    B --> C
+    C --> G
+    D --> H
+    E --> I
+    F --> J
+    
+    style C fill:#2563eb,color:#fff
+    style D fill:#06b6d4,color:#fff
+    style E fill:#8b5cf6,color:#fff
+    style F fill:#10b981,color:#fff
+\`\`\`
+
+### Key Features
+
+**Multi-Chain Wallets:**
+- Bitcoin, Ethereum, USDC, USDT
+- Lightning Network integration
+- Non-custodial and custodial options
+- Enterprise-grade security
+
+**Virtual IBANs:**
+- Named SEPA accounts
+- SEPA Instant support
+- Direct bank integration
+- Multi-currency balances
+
+**Card Issuance:**
+- Virtual Visa cards (instant)
+- Physical Visa cards
+- Spend crypto as fiat
+- Real-time conversion
+
+**Full Compliance:**
+- VASP licensed (EU)
+- MiCA ready
+- KYC/AML built-in
+- Travel Rule compliant
+
+### Pricing
+
+| Feature | Starter | Professional | Enterprise |
+|---------|---------|--------------|------------|
+| Monthly Fee | $2,500 | $2,500 | Custom |
+| KYC per user | $5.00 | $5.00 | $3.00 |
+| Virtual card | $8.00 | $8.00 | $5.00 |
+| Physical card | $20.00 | $20.00 | $15.00 |
+| Crypto transaction | 1.5% | 1.5% | 1.0% |
+| Exchange fee | 1.2% | 1.2% | 0.8% |
+| White-label setup | $500 | Included | Included |
+
+### Use Cases
+
+**Cryptocurrency Exchanges:**
+\`\`\`
+Challenge: Need fiat on/off-ramps and banking rails
+Solution: Virtual IBANs for deposits, cards for withdrawals
+Benefit: Seamless crypto-to-fiat experience for traders
+\`\`\`
+
+**DeFi Platforms:**
+\`\`\`
+Challenge: Bridge DeFi to traditional finance
+Solution: SEPA accounts + KYC/AML compliance
+Benefit: Regulatory compliant fiat gateway
+\`\`\`
+
+**Payment Service Providers:**
+\`\`\`
+Challenge: Customers want crypto acceptance
+Solution: Embed crypto gateway in marketplace
+Benefit: White-labeled crypto without building infrastructure
+\`\`\`
+
+### Getting Started
+
+**Option 1: PSP Marketplace (Embedded)**
+
+1. Browse Service Marketplace in PSP Portal
+2. Enable "FTS.Money Crypto Gateway"
+3. Configure white-label branding
+4. Activate for your customers
+
+**Option 2: Standalone Portal (Direct)**
+
+1. Visit https://cryptogateway.fts.money
+2. Contact sales: crypto@fts.money
+3. Provision your account (48 hours)
+4. Access dedicated Crypto Gateway Portal
 
 ---
 

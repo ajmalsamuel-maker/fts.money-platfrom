@@ -569,6 +569,249 @@ sequenceDiagram
 
 ---
 
+## Crypto Gateway Management
+
+### Overview
+
+The Crypto Gateway Service represents a strategic white-label opportunity where FTS.Money resells Striga/Lightspark infrastructure as proprietary technology. This section covers administration, customer management, and revenue tracking.
+
+**Access:** Platform Admin → Striga Service Management (`/StrigaServiceManagement`)
+
+### Dual Distribution Model
+
+\`\`\`mermaid
+graph TB
+    subgraph "FTS.Money Platform"
+        A[Crypto Gateway Service<br/>White-labeled]
+    end
+    
+    subgraph "Distribution Channel 1"
+        B[PSP Marketplace]
+        C[PSP Customers]
+    end
+    
+    subgraph "Distribution Channel 2"
+        D[Standalone Portal]
+        E[Direct Customers<br/>Exchanges/DeFi]
+    end
+    
+    subgraph "Revenue"
+        F[Monthly Subscriptions<br/>$2,500/customer]
+        G[Usage Fees<br/>KYC, Cards, Txns]
+    end
+    
+    A --> B
+    A --> D
+    B --> C
+    C --> F
+    D --> E
+    E --> F
+    F --> G
+    
+    style A fill:#2563eb,color:#fff
+    style F fill:#10b981,color:#fff
+    style G fill:#10b981,color:#fff
+\`\`\`
+
+### Managing PSP Subscriptions
+
+**View Active Subscriptions:**
+
+\`\`\`sql
+-- Query PSP marketplace subscriptions
+SELECT 
+  psp_id,
+  psp_name,
+  service_name,
+  subscription_status,
+  monthly_fee,
+  activated_date
+FROM psp_service_subscriptions
+WHERE service_name LIKE '%Crypto Gateway%'
+  AND subscription_status = 'active'
+ORDER BY activated_date DESC;
+\`\`\`
+
+**Subscription Lifecycle:**
+
+1. **Activation** - PSP enables from marketplace
+2. **Configuration** - White-label settings, API keys
+3. **Usage Tracking** - Monitor transactions, KYC checks
+4. **Billing** - Monthly fee + usage charges
+5. **Support** - Technical assistance, compliance guidance
+
+### Managing Direct Customers (Exchanges/DeFi)
+
+**Customer Portal:** `/CryptoGatewayLogin`
+
+**Customer Entity:** `CryptoGatewayCustomer`
+
+\`\`\`javascript
+// Create new direct customer
+const customer = await base44.asServiceRole.entities.CryptoGatewayCustomer.create({
+  company_name: "BitExchange Pro",
+  company_type: "exchange",
+  email: "admin@bitexchange.com",
+  subscription_tier: "professional",
+  monthly_fee: 2500,
+  supported_assets: ["BTC", "ETH", "USDC"],
+  kyc_enabled: true,
+  status: "active"
+});
+
+// Generate API credentials
+const apiKey = generateSecureKey();
+await base44.asServiceRole.entities.CryptoGatewayCustomer.update(customer.id, {
+  api_key: apiKey,
+  striga_user_id: await createStrigaUser(customer)
+});
+\`\`\`
+
+### Revenue Tracking
+
+**Dashboard Metrics:**
+
+\`\`\`
+Crypto Gateway Revenue Dashboard
+
+Active Subscriptions:        47
+  - PSP Marketplace:         32 × $2,500 = $80,000/mo
+  - Direct Customers:        15 × $2,500 = $37,500/mo
+  
+Monthly Recurring Revenue:   $117,500
+Annual Run Rate:             $1,410,000
+
+Usage Revenue (Last 30 Days):
+  - KYC Checks:             $12,450 (2,490 @ $5)
+  - Virtual Cards:          $8,960 (1,120 @ $8)
+  - Physical Cards:         $4,200 (210 @ $20)
+  - Transaction Fees:       $18,750 (1.5% on $1.25M)
+  
+Total Monthly Revenue:       $161,860
+
+Costs:
+  - Striga Base Fees:       $70,500 (47 × $1,500)
+  - Usage Pass-through:     $28,407
+  Total Costs:              $98,907
+  
+Gross Margin:               $62,953 (39%)
+\`\`\`
+
+### White-Label Configuration
+
+**For PSP Customers:**
+
+\`\`\`json
+{
+  "psp_id": "psp_abc123",
+  "white_label_config": {
+    "branding": {
+      "company_name": "ABC Payments Crypto",
+      "logo_url": "https://abc.com/crypto-logo.png",
+      "primary_color": "#2563eb",
+      "custom_domain": "crypto.abcpayments.com"
+    },
+    "features": {
+      "wallets": ["BTC", "ETH", "USDC"],
+      "cards": {
+        "virtual": true,
+        "physical": true,
+        "card_design_url": "https://abc.com/card-design.png"
+      },
+      "kyc": {
+        "provider": "internal",
+        "verification_levels": ["basic", "enhanced"]
+      }
+    },
+    "notifications": {
+      "email_from": "crypto@abcpayments.com",
+      "webhook_url": "https://api.abcpayments.com/crypto-webhooks"
+    }
+  }
+}
+\`\`\`
+
+### Compliance Monitoring
+
+**VASP Compliance Dashboard:**
+
+\`\`\`
+Regulatory Compliance Status
+
+VASP License (EU):           ✅ Active (Striga)
+MiCA Readiness:              ✅ Compliant
+AML/CFT Monitoring:          ✅ Real-time
+Travel Rule:                 ✅ Implemented
+
+Customer Screening:
+  - Total Users:             12,453
+  - High Risk:               127 (1.0%)
+  - PEP Matches:             43 (0.3%)
+  - Sanctions Hits:          0
+
+Transaction Monitoring:
+  - Flagged Transactions:    89 (0.7%)
+  - Under Review:            12
+  - Blocked:                 3
+  - Reported to FIU:         0
+\`\`\`
+
+### Striga API Management
+
+**API Connector:** `functions/strigaConnector.js`
+
+**Available Operations:**
+
+\`\`\`javascript
+// User Management
+await strigaConnector.createUser({ email, mobile, KYC data });
+await strigaConnector.getUser(userId);
+
+// Wallet Operations
+await strigaConnector.createWallet(userId, currency);
+await strigaConnector.getWallets(userId);
+await strigaConnector.getWalletBalance(walletId);
+
+// IBAN Management
+await strigaConnector.createIBAN(userId);
+await strigaConnector.getIBANs(userId);
+
+// Card Issuance
+await strigaConnector.issueCard(userId, type: 'VIRTUAL' | 'PHYSICAL');
+await strigaConnector.getCards(userId);
+
+// Transactions
+await strigaConnector.initiateWithdrawal(walletId, amount, destination);
+await strigaConnector.exchangeCrypto(fromCurrency, toCurrency, amount);
+await strigaConnector.getTransactionHistory(userId, filters);
+\`\`\`
+
+### Support & Operations
+
+**Common Issues:**
+
+1. **KYC Failure**
+   - Check document quality
+   - Verify Striga KYC status
+   - Manual review if needed
+
+2. **Transaction Delays**
+   - Check blockchain confirmations
+   - Verify SEPA processing times
+   - Review Striga API status
+
+3. **Card Activation Issues**
+   - Confirm user KYC level
+   - Check card limit settings
+   - Verify Striga card inventory
+
+**Escalation:**
+- Technical Issues: crypto-support@fts.money
+- Striga Infrastructure: support@striga.com
+- Compliance Questions: compliance@fts.money
+
+---
+
 ## Service Catalog Administration
 
 ### Provider Management
