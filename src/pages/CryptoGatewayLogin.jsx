@@ -57,7 +57,7 @@ export default function CryptoGatewayLogin() {
                 {/* Left side - Branding & Value Props */}
                 <div className="text-white space-y-8">
                     <div>
-                        <img src={FTS_LOGOS.dark} alt="FTS.Money" className="h-12 mb-6" />
+                        <img src={FTS_LOGOS.primary} alt="FTS.Money" className="h-12 mb-6" />
                         <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
                             Crypto Gateway
                         </h1>
