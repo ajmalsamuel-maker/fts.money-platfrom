@@ -23,6 +23,12 @@ const ProductEcosystemDoc = `# FTS.Money Product Ecosystem
 
 ### Platform Portfolio
 
+The FTS.Money product ecosystem is more than just a collection of services - it's a strategic architecture designed to maximize customer value while creating multiple revenue streams and defensible competitive moats.
+
+Most payment companies focus on a single product (e.g., just orchestration or just fraud detection). We've built a complete stack that addresses every aspect of payment infrastructure. This comprehensive approach creates powerful synergies: customers who use multiple products get better results, and we capture more wallet share.
+
+Our three-tier structure allows customers to start simple and grow sophisticated. A fintech startup might begin with basic PSP provisioning ($499/month), then add orchestration as transaction volume grows, then integrate marketplace services for KYC and compliance. Each expansion increases their lifetime value while solving real business problems.
+
 FTS.Money offers a comprehensive ecosystem of payment products and services across three tiers:
 
 **Tier 1: PSP Infrastructure** (Core Platform)
@@ -107,6 +113,14 @@ Deploy fully-functional Payment Service Provider instances in 24-48 hours
 
 ### 2. ISO Gateway Service
 
+The payments industry has a dirty secret: most of the infrastructure running today was built 20-40 years ago. Banks, processors, and networks all speak different languages - ISO 8583 from the 1980s, SWIFT MT from the 1970s, and modern ISO 20022 from the 2000s.
+
+This creates a massive integration problem. A bank wanting to connect to modern payment networks needs to spend millions building translation layers. Most don't bother, which limits innovation and competition.
+
+Our ISO Gateway Service solves this elegantly. We've built enterprise-grade translators that convert between any payment message format in real-time. A 30-year-old banking system can talk to a cutting-edge payment network without any code changes. This opens up enormous opportunities - legacy financial institutions can modernize without expensive rewrites.
+
+The economics are compelling: we charge $499-$2,499/month plus per-message fees, but customers save millions in development costs. It's a rare win-win where our profit margins are excellent while delivering massive customer value.
+
 **What It Does:**
 Translate between payment messaging standards (ISO 8583, ISO 20022, SWIFT MT)
 
@@ -137,6 +151,14 @@ graph LR
 - **Annual: $3.6M**
 
 ### 3. Payment Orchestration Service
+
+Modern PSPs face a critical challenge: relying on a single payment processor creates massive risk. If that processor goes down, you're dead in the water. If their fees increase, you have no negotiating power. If their success rates drop, your revenue suffers.
+
+The solution is multi-processor orchestration - connecting to 5-10 different processors and intelligently routing each transaction to the optimal one. But building orchestration in-house typically costs $2M+ and takes 12-18 months. Most PSPs can't afford it.
+
+Our Orchestration Service provides enterprise-grade intelligent routing at a fraction of the cost. We analyze every transaction in real-time and route it to the processor most likely to approve it at the lowest cost. When a processor fails, we instantly failover to a backup. When a processor's performance degrades, we automatically shift traffic away.
+
+The ROI is immediate: customers typically see 2-4% improvement in success rates (which directly increases revenue) plus 15-30% reduction in processing costs. The service pays for itself within 3-6 months while providing business continuity insurance.
 
 **What It Does:**
 Intelligently route transactions across multiple processors for optimal success rates and costs
@@ -182,6 +204,14 @@ graph TD
 
 ### 4. AI Fraud Detection Suite
 
+Fraud is the silent killer of payment businesses. The obvious cost is direct fraud losses (industry average: 0.8% of volume), but the hidden costs are even worse - chargebacks, manual review labor, false positives that block good customers, and regulatory fines.
+
+Traditional rule-based fraud detection misses sophisticated fraud while flagging legitimate transactions. Manual review is slow and expensive. Card network chargeback programs impose severe penalties on merchants with high fraud rates, potentially terminating their ability to accept cards entirely.
+
+Our AI Fraud Detection Suite uses machine learning trained on billions of transactions to catch fraud that rules-based systems miss. We analyze hundreds of signals in real-time - device fingerprinting, behavioral patterns, velocity anomalies, geolocation mismatches - and produce a risk score in under 5ms.
+
+The results speak for themselves: customers typically see 85% reduction in fraud losses while cutting false positives by 76%. This means more revenue (fewer declined good customers) and lower costs (less fraud, fewer chargebacks, less manual review). For a PSP processing $100M annually, this can save $600K-$1M per year.
+
 **What It Does:**
 ML-powered fraud prevention, risk scoring, and chargeback reduction
 
@@ -226,6 +256,14 @@ graph TB
 - Annual: $12K-36K per PSP
 
 ### 5. Crypto Gateway Service
+
+Cryptocurrency represents a massive opportunity in payments, but integration is notoriously complex. Each blockchain has different protocols, wallet formats, and security requirements. Regulatory compliance (AML/CFT) is strict and constantly evolving. Custody is a nightmare - lose the private keys and the funds are gone forever.
+
+Most PSPs want to offer crypto payments but lack the expertise and resources to build it safely. They're afraid of security risks, regulatory scrutiny, and technical complexity. This leaves a huge gap in the market.
+
+Our Crypto Gateway Service provides turnkey cryptocurrency payment acceptance across 6+ major blockchains. We handle all the complexity: blockchain node management, wallet generation, transaction monitoring, exchange integration for automatic fiat conversion, and compliance screening via Chainalysis.
+
+Merchants get a simple API that looks just like accepting a credit card, but behind the scenes we're managing multi-signature wallets, monitoring mempool congestion, optimizing gas fees, and ensuring regulatory compliance. For PSPs, this opens up the growing crypto-native market (420M users globally) without the technical headaches.
 
 **What It Does:**
 Multi-chain cryptocurrency payments, custody integration, compliance
@@ -274,6 +312,14 @@ graph LR
 
 ### Marketplace Model
 
+The Service Marketplace is our highest-margin business unit and creates powerful network effects. The concept is simple: PSPs need dozens of ancillary services (KYC, AML, fraud detection, monitoring, etc.), and integrating each one takes weeks of engineering time.
+
+We've pre-integrated 150+ services so PSPs can activate them with one click. Think of it like an app store for payment services. PSPs get instant access to best-in-class tools without integration work. Service providers get distribution to hundreds of PSPs without individual sales cycles. We take a 15-20% commission on all transactions.
+
+This creates a flywheel: more PSPs make the marketplace more attractive to service providers, which brings better services, which attracts more PSPs. As the marketplace grows, it becomes increasingly difficult for competitors to replicate our network.
+
+The economics are beautiful: we invest engineering time once to build an integration, then earn commission forever with minimal ongoing costs. Gross margins exceed 80% since we're not providing the actual service, just the plumbing.
+
 **How It Works:**
 
 \`\`\`mermaid
@@ -303,6 +349,10 @@ sequenceDiagram
 \`\`\`
 
 ### Service Categories
+
+We've organized the marketplace into three main categories based on customer needs and use cases. Each category serves a different purpose in the PSP operation, and most customers subscribe to services from all three categories.
+
+The categories also differ in pricing models and commission structures. Payment infrastructure tends to be volume-based with revenue share models. Compliance services are typically per-check pricing. Developer tools are usually flat monthly subscriptions.
 
 **Payment Infrastructure (60+ Services):**
 
@@ -351,6 +401,12 @@ sequenceDiagram
 ## Revenue Model
 
 ### Five Revenue Streams
+
+Our revenue model is intentionally diversified to reduce risk and maximize lifetime value. Unlike single-product companies that rely entirely on one revenue stream, we capture value at multiple points in the customer journey.
+
+This diversification is strategic: if payment processing margins compress (as they historically have), we still have healthy revenue from subscriptions, services, and marketplace commissions. If a regulatory change impacts one revenue stream, others remain stable.
+
+The model also creates natural upsell paths. A customer starts with a basic PSP subscription, adds orchestration as volume grows, integrates marketplace services for compliance, and we earn transaction revenue share on their processing volume. Each expansion is a value upgrade for them and incremental revenue for us.
 
 **Stream 1: Platform Subscriptions**
 
@@ -441,6 +497,14 @@ FTS revenue share (25%): $81M/year
 
 ### Total Addressable Market
 
+The global payments market is enormous and growing rapidly. Total payment volume is projected to exceed $320 trillion by 2032, driven by digital transformation, e-commerce growth, and financial inclusion in emerging markets.
+
+However, not all of this is addressable for FTS.Money. We're not trying to process consumer-to-consumer Venmo transactions or compete with Visa for card network dominance. Our target is the B2B infrastructure layer - the companies that provide payment processing services to merchants.
+
+This PSP infrastructure market is massive but underserved. There are only a few dozen major PSPs globally (Stripe, Adyen, Worldpay, etc.) serving millions of merchants. The long tail of mid-market and specialized PSPs struggle with outdated technology and high infrastructure costs.
+
+Our addressable market is the 1,000-10,000 companies globally that could benefit from modern payment infrastructure but can't justify the traditional $5M-$50M investment to build it. By making the economics work for smaller players, we massively expand the serviceable market.
+
 \`\`\`mermaid
 graph TB
     A[Global Payments<br/>$320T by 2032] --> B[Merchant Acquiring<br/>$45T]
@@ -466,6 +530,12 @@ graph TB
 
 ### Competitive Landscape
 
+Understanding our competitive position requires looking at both direct and indirect competitors. Direct competitors offer similar infrastructure-as-a-service models. Indirect competitors are the traditional "build it yourself" approach or legacy PSP vendors.
+
+Interestingly, our biggest competitor isn't another company - it's the status quo. Many potential customers haven't realized that modern payment infrastructure can be deployed as a service. They assume they need to build everything in-house or accept vendor lock-in with a legacy provider.
+
+Our differentiation comes from being the only platform that combines full PSP provisioning, ISO message translation, orchestration, and a marketplace in one integrated offering. Competitors typically excel at one thing (e.g., Primer's orchestration) but force customers to cobble together multiple vendors for a complete solution.
+
 **Direct Competitors:**
 
 | Competitor | Model | Strengths | Weaknesses |
@@ -488,6 +558,12 @@ graph TB
 ## Product Roadmap
 
 ### Q1 2026 - Foundation
+
+Our product roadmap balances three competing priorities: customer demand, technical feasibility, and revenue impact. We've learned that the best product strategies focus on depth over breadth - it's better to have one product that solves a problem completely than five products that partially solve five problems.
+
+The roadmap is organized into quarterly themes that build on each other. Q1 focuses on getting our foundation solid - PSP provisioning, ISO Gateway, and Orchestration must be rock-solid before we layer on additional services. Q2 expands into adjacent problems like fraud and crypto. Q3 and Q4 tackle more advanced use cases.
+
+Each product on the roadmap has been validated through customer interviews and market analysis. We're not building features in search of problems - we're solving problems customers are actively experiencing and willing to pay to solve.
 
 | Product | Status | Priority | Revenue Impact |
 |---------|--------|----------|----------------|
@@ -529,6 +605,12 @@ graph TB
 
 ### Platform Advantages
 
+Sustainable competitive advantage in technology comes from three sources: proprietary technology that's hard to replicate, network effects that strengthen with scale, and operational efficiencies that improve over time. FTS.Money has all three.
+
+Our multi-tenant architecture is a 3-year development investment that new entrants would struggle to replicate. The ISO Gateway required deep expertise in legacy payment systems that most modern engineers lack. The marketplace network effects are already creating switching costs and lock-in.
+
+Perhaps most importantly, our advantages compound over time. As we process more transactions, our fraud detection improves. As we add more PSPs, our per-customer costs decrease. As we grow the marketplace, service provider pricing improves. Competitors face an increasingly steep hill to climb.
+
 \`\`\`mermaid
 mindmap
   root((Competitive<br/>Moat))
@@ -556,6 +638,12 @@ mindmap
 
 ### Economic Moat
 
+An economic moat isn't just about having good products - it's about making it painful for customers to leave. The best SaaS businesses embed themselves so deeply into customer workflows that switching becomes unthinkable.
+
+We build switching costs deliberately into our platform. Once a PSP onboards merchants to their FTS-powered instance, migrating to another platform means re-onboarding every merchant, rebuilding integrations, and risking service disruption. The more merchants they have, the higher the switching cost.
+
+The marketplace amplifies this effect. If a PSP is using 10 integrated services from our marketplace, switching means finding and integrating 10 replacement services. The probability of a seamless migration approaches zero.
+
 **Switching Costs:**
 - Deep integration with PSP workflows
 - Merchant onboarded to PSP's instance
@@ -578,6 +666,14 @@ mindmap
 ## Success Metrics
 
 ### Platform Health
+
+We measure success through three lenses: technical health (is the platform working?), business health (is it growing profitably?), and product adoption (are customers using our services?).
+
+Platform health metrics ensure we're delivering on our core promises. A PSP can't succeed if our uptime is poor, our APIs are slow, or provisioning fails. These are table stakes - we must excel here just to stay in the game.
+
+Business metrics show whether our revenue model is working. We track not just total revenue but also metrics like ARPU (average revenue per user), NRR (net revenue retention), and gross margins. These indicate whether we're efficiently monetizing our customer base.
+
+Product adoption metrics reveal where we should invest. If orchestration adoption is high but crypto gateway adoption is low, that tells us something about market fit and pricing. We use these signals to prioritize roadmap and adjust product strategy.
 
 | Metric | Target | Current | Status |
 |--------|--------|---------|--------|
@@ -608,6 +704,12 @@ mindmap
 ---
 
 ## Conclusion
+
+The FTS.Money product ecosystem represents a fundamental reimagining of how payment infrastructure should work. Instead of monolithic, single-vendor solutions that lock customers in, we've created a flexible platform where customers compose their ideal payment stack from best-in-class components.
+
+This approach aligns our incentives with customer success. When customers grow and process more volume, we grow with them through transaction revenue share. When they need additional capabilities, we have services ready to deploy. When they want specialized tools, our marketplace provides options.
+
+The result is a product ecosystem that's more than the sum of its parts - each component enhances the value of others, creating a comprehensive solution that's difficult for competitors to replicate.
 
 FTS.Money's product ecosystem provides:
 
