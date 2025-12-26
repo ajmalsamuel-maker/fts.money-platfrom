@@ -16,23 +16,24 @@ export default function StrigaServiceManagement() {
     const { user, isLoading: authLoading } = usePlatformAuth(['service_catalog:read']);
     const [selectedTab, setSelectedTab] = useState('overview');
 
-    // Fetch Striga subscriptions
+    // Fetch Crypto Gateway subscriptions
     const { data: subscriptions = [], isLoading: subsLoading } = useQuery({
-        queryKey: ['striga-subscriptions'],
+        queryKey: ['crypto-gateway-subscriptions'],
         queryFn: async () => {
             const subs = await base44.asServiceRole.entities.PSPServiceSubscription.filter({
-                service_name: { $regex: 'Striga' }
+                service_name: { $regex: 'FTS.Money Crypto|FTS.Money Lightning' }
             });
             return subs || [];
         }
     });
 
-    // Fetch Striga service catalog entries
-    const { data: strigaServices = [], isLoading: servicesLoading } = useQuery({
-        queryKey: ['striga-services'],
+    // Fetch Crypto Gateway service catalog entries
+    const { data: cryptoServices = [], isLoading: servicesLoading } = useQuery({
+        queryKey: ['crypto-gateway-services'],
         queryFn: async () => {
             const services = await base44.asServiceRole.entities.ServiceCatalog.filter({
-                provider_name: 'Striga (Lightspark)'
+                service_category: { $in: ['crypto_banking', 'crypto_payment'] },
+                provider_name: 'FTS.Money'
             });
             return services || [];
         }
@@ -43,7 +44,7 @@ export default function StrigaServiceManagement() {
             <div className="flex h-screen">
                 <FTSPlatformSidebarRestructured currentPage="StrigaServiceManagement" />
                 <div className="flex-1 flex items-center justify-center">
-                    <div className="text-slate-500">Loading Striga data...</div>
+                    <div className="text-slate-500">Loading Crypto Gateway data...</div>
                 </div>
             </div>
         );
@@ -69,12 +70,12 @@ export default function StrigaServiceManagement() {
                                 <Wallet className="w-6 h-6 text-white" />
                             </div>
                             <div>
-                                <h1 className="text-3xl font-bold text-slate-900">Striga Integration</h1>
-                                <p className="text-slate-600">EU Crypto Banking Infrastructure Management</p>
+                                <h1 className="text-3xl font-bold text-slate-900">FTS.Money Crypto Gateway</h1>
+                                <p className="text-slate-600">Enterprise Crypto Banking Infrastructure</p>
                             </div>
                         </div>
                         <Badge className="bg-blue-100 text-blue-700 border-blue-300">
-                            Powered by Lightspark
+                            White-Label Ready
                         </Badge>
                     </div>
 
@@ -98,7 +99,7 @@ export default function StrigaServiceManagement() {
                                 <div className="text-3xl font-bold text-slate-900">
                                     ${totalRevenue.toLocaleString()}
                                 </div>
-                                <p className="text-xs text-slate-500 mt-1">From Striga services</p>
+                                <p className="text-xs text-slate-500 mt-1">From Crypto Gateway</p>
                             </CardContent>
                         </Card>
 
@@ -136,11 +137,11 @@ export default function StrigaServiceManagement() {
                         </TabsList>
 
                         <TabsContent value="overview" className="space-y-6">
-                            {/* Striga Capabilities */}
+                            {/* Crypto Gateway Capabilities */}
                             <Card>
                                 <CardHeader>
-                                    <CardTitle>Striga Capabilities</CardTitle>
-                                    <CardDescription>What Striga provides to your PSP customers</CardDescription>
+                                    <CardTitle>FTS.Money Crypto Gateway</CardTitle>
+                                    <CardDescription>White-labeled crypto banking infrastructure for your PSPs</CardDescription>
                                 </CardHeader>
                                 <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="p-4 border border-slate-200 rounded-lg">
@@ -185,15 +186,19 @@ export default function StrigaServiceManagement() {
                                 <CardContent className="space-y-3">
                                     <Button variant="outline" className="w-full justify-start">
                                         <ExternalLink className="w-4 h-4 mr-2" />
-                                        Open Striga Portal
+                                        View FTS Crypto Dashboard
                                     </Button>
                                     <Button variant="outline" className="w-full justify-start">
                                         <ExternalLink className="w-4 h-4 mr-2" />
-                                        View API Documentation
+                                        API Documentation
                                     </Button>
                                     <Button variant="outline" className="w-full justify-start">
                                         <Users className="w-4 h-4 mr-2" />
                                         Test Integration
+                                    </Button>
+                                    <Button variant="outline" className="w-full justify-start">
+                                        <CreditCard className="w-4 h-4 mr-2" />
+                                        White-Label Configuration
                                     </Button>
                                 </CardContent>
                             </Card>
@@ -202,8 +207,8 @@ export default function StrigaServiceManagement() {
                         <TabsContent value="subscriptions">
                             <Card>
                                 <CardHeader>
-                                    <CardTitle>Active Striga Subscriptions</CardTitle>
-                                    <CardDescription>PSPs currently using Striga services</CardDescription>
+                                    <CardTitle>Active Crypto Gateway Subscriptions</CardTitle>
+                                    <CardDescription>PSPs using FTS.Money Crypto Gateway</CardDescription>
                                 </CardHeader>
                                 <CardContent>
                                     {subscriptions.length === 0 ? (
@@ -236,7 +241,7 @@ export default function StrigaServiceManagement() {
 
                         <TabsContent value="services">
                             <div className="space-y-4">
-                                {strigaServices.map((service) => (
+                                {cryptoServices.map((service) => (
                                     <Card key={service.id}>
                                         <CardHeader>
                                             <div className="flex items-start justify-between">
@@ -287,7 +292,7 @@ export default function StrigaServiceManagement() {
                             <Card>
                                 <CardHeader>
                                     <CardTitle>Integration Setup Guide</CardTitle>
-                                    <CardDescription>How to enable Striga for your PSPs</CardDescription>
+                                    <CardDescription>How to enable FTS Crypto Gateway for your PSPs</CardDescription>
                                 </CardHeader>
                                 <CardContent className="space-y-6">
                                     <div className="space-y-4">
@@ -314,7 +319,7 @@ export default function StrigaServiceManagement() {
                                             <div>
                                                 <h3 className="font-semibold mb-1">Add to Service Marketplace</h3>
                                                 <p className="text-sm text-slate-600 mb-2">
-                                                    Run the seed function to add Striga to your marketplace
+                                                    Run the seed function to add FTS Crypto Gateway to marketplace
                                                 </p>
                                                 <Button size="sm">Run Seed Function</Button>
                                             </div>
@@ -327,7 +332,7 @@ export default function StrigaServiceManagement() {
                                             <div>
                                                 <h3 className="font-semibold mb-1">PSPs Enable Service</h3>
                                                 <p className="text-sm text-slate-600">
-                                                    PSPs can now browse marketplace and enable Striga services with one click
+                                                    PSPs can now enable Crypto Gateway and optionally white-label it
                                                 </p>
                                             </div>
                                         </div>
@@ -351,7 +356,10 @@ export default function StrigaServiceManagement() {
                                             <div>
                                                 <h4 className="font-semibold text-blue-900 mb-1">Documentation</h4>
                                                 <p className="text-sm text-blue-800">
-                                                    Full integration docs: <a href="https://docs.striga.com" className="underline" target="_blank">docs.striga.com</a>
+                                                    Full integration docs: <a href="https://docs.fts.money/crypto-gateway" className="underline">docs.fts.money/crypto-gateway</a>
+                                                </p>
+                                                <p className="text-xs text-blue-700 mt-1">
+                                                    Internal: Infrastructure powered by Striga/Lightspark
                                                 </p>
                                             </div>
                                         </div>

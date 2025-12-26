@@ -15,79 +15,89 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'Unauthorized' }, { status: 401 });
         }
         
-        // Create Striga as a Service Provider
+        // Create FTS.Money Crypto Gateway (white-labeled Striga)
         const provider = await base44.asServiceRole.entities.ServiceProvider.create({
-            company_name: 'Striga (Lightspark)',
-            legal_name: 'Striga Technology OU',
-            name: 'Striga (Lightspark)',
+            company_name: 'FTS.Money',
+            legal_name: 'FTS.Money Inc',
+            name: 'FTS.Money',
             type: 'crypto_banking',
-            description: 'EU-compliant crypto banking infrastructure with wallets, IBANs, cards, and on/off-ramps',
-            website: 'https://striga.com',
-            logo_url: 'https://striga.com/logo.png',
+            description: 'Enterprise-grade crypto banking infrastructure with wallets, IBANs, cards, and on/off-ramps',
+            website: 'https://fts.money',
+            logo_url: 'https://fts.money/logo.png',
             status: 'active',
-            supported_regions: ['EU', 'EEA'],
-            supported_currencies: ['EUR', 'BTC', 'ETH', 'USDC', 'USDT'],
-            compliance_certifications: ['VASP', 'MiCA-ready', 'AML', 'KYC'],
-            api_documentation_url: 'https://docs.striga.com',
-            contact_email: 'partnerships@striga.com'
+            supported_regions: ['EU', 'EEA', 'US', 'Global'],
+            supported_currencies: ['EUR', 'USD', 'BTC', 'ETH', 'USDC', 'USDT'],
+            compliance_certifications: ['VASP', 'MiCA-ready', 'PCI DSS', 'AML', 'KYC'],
+            api_documentation_url: 'https://docs.fts.money/crypto-gateway',
+            contact_email: 'crypto@fts.money',
+            notes: 'Internal: Powered by Striga/Lightspark infrastructure'
         });
         
         // Create Striga Services in Service Catalog
         const services = [
             {
-                service_name: 'Striga Crypto Banking Platform',
-                name: 'Striga Crypto Banking Platform',
+                service_name: 'FTS.Money Crypto Gateway',
+                name: 'FTS.Money Crypto Gateway',
                 service_provider_id: provider.id,
                 provider_id: provider.id,
-                provider_name: 'Striga (Lightspark)',
+                provider_name: 'FTS.Money',
                 service_category: 'crypto_banking',
                 category: 'crypto_banking',
-                description: 'Complete crypto banking infrastructure: wallets, virtual IBANs, card issuing, and on/off-ramps',
+                description: 'Enterprise crypto banking infrastructure: multi-chain wallets, virtual IBANs, card issuing, and seamless on/off-ramps. Fully compliant and white-labelable.',
                 features: [
-                    'Multi-chain crypto wallets (BTC, ETH, USDC, Lightning)',
-                    'Named virtual IBANs (SEPA)',
-                    'Virtual & physical card issuing',
-                    'Crypto-to-fiat exchange',
-                    'On/off-ramp infrastructure',
-                    'KYC/AML compliance built-in',
-                    'MiCA & VASP licensed',
-                    'Travel Rule compliant'
+                    'Multi-chain crypto wallets (BTC, ETH, USDC, Lightning Network)',
+                    'Named virtual IBANs (SEPA + SEPA Instant)',
+                    'Virtual & physical card issuing (Visa)',
+                    'Crypto-to-fiat exchange (real-time rates)',
+                    'Enterprise on/off-ramp infrastructure',
+                    'Full KYC/AML/Travel Rule compliance',
+                    'MiCA & VASP licensed (EU)',
+                    'White-label ready for PSPs',
+                    'Dedicated API & webhooks'
                 ],
                 pricing_model: 'usage',
-                base_price: 1500.00,
+                base_price: 2500.00,
                 pricing_details: {
-                    monthly_fee: 1500.00,
-                    kyc_per_user: 3.00,
-                    card_virtual: 5.00,
-                    card_physical: 15.00,
-                    crypto_transaction_fee_percent: 1.0,
-                    sepa_transaction_fee_percent: 0.5,
-                    exchange_fee_percent: 0.8
+                    monthly_fee: 2500.00,
+                    kyc_per_user: 5.00,
+                    card_virtual: 8.00,
+                    card_physical: 20.00,
+                    crypto_transaction_fee_percent: 1.5,
+                    sepa_transaction_fee_percent: 0.8,
+                    exchange_fee_percent: 1.2,
+                    white_label_setup: 500.00
                 },
-                setup_time_days: 3,
+                setup_time_days: 2,
                 api_available: true,
                 requires_approval: true,
                 status: 'active',
                 use_cases: [
-                    'PSPs wanting EU crypto capabilities',
-                    'Neobanks with crypto features',
-                    'Crypto exchanges needing fiat rails',
-                    'DeFi platforms requiring compliance'
+                    'PSPs launching crypto payment capabilities',
+                    'Neobanks adding crypto accounts',
+                    'Payment platforms with crypto on/off-ramps',
+                    'Fintech apps requiring EU crypto compliance',
+                    'White-label crypto banking solutions'
                 ],
                 target_customers: 'PSP',
-                integration_complexity: 'medium',
-                documentation_url: 'https://docs.striga.com',
-                support_email: 'support@striga.com'
+                integration_complexity: 'low',
+                documentation_url: 'https://docs.fts.money/crypto-gateway',
+                support_email: 'crypto-support@fts.money',
+                white_label_options: {
+                    custom_branding: true,
+                    custom_domain: true,
+                    branded_cards: true,
+                    custom_emails: true
+                }
             },
             {
-                service_name: 'Striga Lightning Network',
-                name: 'Striga Lightning Network',
+                service_name: 'FTS.Money Lightning Payments',
+                name: 'FTS.Money Lightning Payments',
                 service_provider_id: provider.id,
                 provider_id: provider.id,
-                provider_name: 'Striga (Lightspark)',
+                provider_name: 'FTS.Money',
                 service_category: 'crypto_payment',
                 category: 'crypto_payment',
-                description: 'Bitcoin Lightning Network instant payments with no node management overhead',
+                description: 'Bitcoin Lightning Network instant payments - no node management, instant settlements, enterprise infrastructure',
                 features: [
                     'Instant Bitcoin transfers',
                     'Lightning invoice creation',
@@ -97,25 +107,30 @@ Deno.serve(async (req) => {
                     'Enterprise-grade infrastructure'
                 ],
                 pricing_model: 'usage',
-                base_price: 500.00,
+                base_price: 799.00,
                 pricing_details: {
-                    monthly_fee: 500.00,
-                    per_payment: 0.01,
-                    fee_percent: 0.5
+                    monthly_fee: 799.00,
+                    per_payment: 0.02,
+                    fee_percent: 0.8
                 },
                 setup_time_days: 1,
                 api_available: true,
                 requires_approval: false,
                 status: 'active',
                 use_cases: [
-                    'Cross-border remittances',
-                    'Micropayments',
-                    'Instant settlements'
+                    'Instant cross-border payments',
+                    'Bitcoin micropayments',
+                    'Real-time settlements',
+                    'Remittance services'
                 ],
                 target_customers: 'PSP',
                 integration_complexity: 'low',
-                documentation_url: 'https://docs.striga.com/lightning',
-                support_email: 'support@striga.com'
+                documentation_url: 'https://docs.fts.money/lightning',
+                support_email: 'crypto-support@fts.money',
+                white_label_options: {
+                    custom_branding: true,
+                    custom_notifications: true
+                }
             }
         ];
         
