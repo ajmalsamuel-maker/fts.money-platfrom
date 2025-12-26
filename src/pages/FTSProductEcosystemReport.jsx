@@ -196,7 +196,7 @@ export default function FTSProductEcosystemReport() {
                                         },
                                     }}
                                 >
-                                    {ArchitectureDoc}
+                                    {ProductEcosystemDoc}
                                 </ReactMarkdown>
                             </div>
                         </CardContent>
