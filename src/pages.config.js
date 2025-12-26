@@ -54,6 +54,7 @@ import FTSBlockchainIntegration from './pages/FTSBlockchainIntegration';
 import FTSClients from './pages/FTSClients';
 import FTSCompliance from './pages/FTSCompliance';
 import FTSComplianceTesting from './pages/FTSComplianceTesting';
+import FTSDocumentation from './pages/FTSDocumentation';
 import FTSDomainManagement from './pages/FTSDomainManagement';
 import FTSFeeTemplates from './pages/FTSFeeTemplates';
 import FTSFinancialRegistries from './pages/FTSFinancialRegistries';
@@ -208,7 +209,6 @@ import SubMerchants from './pages/SubMerchants';
 import Subscriptions from './pages/Subscriptions';
 import Support from './pages/Support';
 import SystemArchitectureDocumentation from './pages/SystemArchitectureDocumentation';
-import FTSDocumentation from './pages/FTSDocumentation';
 import TenantManagement from './pages/TenantManagement';
 import TenantUserManagement from './pages/TenantUserManagement';
 import Terminals from './pages/Terminals';
@@ -285,6 +285,7 @@ export const PAGES = {
     "FTSClients": FTSClients,
     "FTSCompliance": FTSCompliance,
     "FTSComplianceTesting": FTSComplianceTesting,
+    "FTSDocumentation": FTSDocumentation,
     "FTSDomainManagement": FTSDomainManagement,
     "FTSFeeTemplates": FTSFeeTemplates,
     "FTSFinancialRegistries": FTSFinancialRegistries,
@@ -439,7 +440,6 @@ export const PAGES = {
     "Subscriptions": Subscriptions,
     "Support": Support,
     "SystemArchitectureDocumentation": SystemArchitectureDocumentation,
-    "FTSDocumentation": FTSDocumentation,
     "TenantManagement": TenantManagement,
     "TenantUserManagement": TenantUserManagement,
     "Terminals": Terminals,
