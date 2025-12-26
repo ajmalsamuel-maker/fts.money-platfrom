@@ -6,8 +6,8 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
 import FTSPlatformSidebarRestructured from '@/components/platform/FTSPlatformSidebarRestructured';
-import ArchitectureDoc from '@/components/docs/ArchitectureDoc';
 import MermaidDiagram from '@/components/docs/MermaidDiagram';
+import ArchitectureDoc from '@/components/docs/ArchitectureDoc';
 
 export default function FTSArchitectureDoc() {
     const { platformUser, loading } = usePlatformAuth();

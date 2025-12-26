@@ -6,8 +6,8 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
 import FTSPlatformSidebarRestructured from '@/components/platform/FTSPlatformSidebarRestructured';
-import VerticalSolutionsDoc from '@/components/docs/VerticalSolutionsDoc';
 import MermaidDiagram from '@/components/docs/MermaidDiagram';
+import VerticalSolutionsDoc from '@/components/docs/VerticalSolutionsDoc';
 
 export default function FTSVerticalSolutions() {
     const { platformUser, loading } = usePlatformAuth();

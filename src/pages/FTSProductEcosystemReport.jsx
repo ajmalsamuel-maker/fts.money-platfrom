@@ -6,8 +6,8 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
 import FTSPlatformSidebarRestructured from '@/components/platform/FTSPlatformSidebarRestructured';
-import ProductEcosystemDoc from '@/components/docs/ProductEcosystemDoc';
 import MermaidDiagram from '@/components/docs/MermaidDiagram';
+import ProductEcosystemDoc from '@/components/docs/ProductEcosystemDoc';
 
 export default function FTSProductEcosystemReport() {
     const { platformUser, loading } = usePlatformAuth();
