@@ -381,7 +381,7 @@ graph TD
 - Per-Transaction: $0.005-$0.02
 - ROI: 3-6 months payback
 
-### 4. AI Fraud Detection Suite
+### 5. AI Fraud Detection Suite
 
 Fraud is the silent killer of payment businesses. The obvious cost is direct fraud losses (industry average: 0.8% of volume), but the hidden costs are even worse - chargebacks, manual review labor, false positives that block good customers, and regulatory fines.
 
@@ -434,7 +434,7 @@ graph TB
 - Per Check: $0.10
 - Annual: $12K-36K per PSP
 
-### 5. Crypto Gateway Service
+### 6. Sub-Merchant Platform
 
 Cryptocurrency represents a massive opportunity in payments, but integration is notoriously complex. Each blockchain has different protocols, wallet formats, and security requirements. Regulatory compliance (AML/CFT) is strict and constantly evolving. Custody is a nightmare - lose the private keys and the funds are gone forever.
 

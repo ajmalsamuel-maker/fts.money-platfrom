@@ -70,6 +70,94 @@ FTS.Money Platform
 
 ---
 
+## For Direct Customers (Exchanges/DeFi)
+
+Cryptocurrency exchanges and DeFi platforms can access the Crypto Gateway via a dedicated standalone portal.
+
+**Portal Access:**
+- URL: https://cryptogateway.fts.money/login
+- Portal: Dedicated Crypto Gateway Dashboard
+- Authentication: Independent login system
+- Entity: `CryptoGatewayCustomer`
+
+**Features:**
+
+\`\`\`yaml
+customer_portal:
+  dashboard:
+    - Total volume (24h, 7d, 30d)
+    - Active wallets count
+    - Transaction metrics
+    - Compliance status
+    
+  wallet_management:
+    - Create multi-chain wallets
+    - View all addresses
+    - Send/receive crypto
+    - Transaction history
+    
+  banking_rails:
+    - Request virtual IBAN
+    - View account details
+    - SEPA transaction history
+    - Balance management
+    
+  card_issuance:
+    - Issue virtual Visa cards
+    - Order physical cards
+    - Set spending limits
+    - Card transaction history
+    
+  exchange:
+    - Crypto-to-fiat conversion
+    - Real-time exchange rates
+    - Exchange history
+    - Fee calculator
+    
+  kyc_management:
+    - User KYC status
+    - Document upload
+    - Verification progress
+    - Risk assessment
+    
+  integration:
+    - API credentials
+    - Webhook configuration
+    - API documentation
+    - Test environment
+    
+  analytics:
+    - Volume by asset
+    - User growth
+    - Conversion rates
+    - Revenue metrics
+\`\`\`
+
+**Self-Service Onboarding:**
+
+\`\`\`mermaid
+flowchart LR
+    A[Visit Portal] --> B[Contact Sales<br/>crypto@fts.money]
+    B --> C[Business Verification<br/>48 hours]
+    C --> D[Account Provisioned]
+    D --> E[Login Credentials<br/>Sent]
+    E --> F[Configure Settings]
+    F --> G[Test in Sandbox]
+    G --> H[Go Live]
+    H --> I[Process Transactions]
+\`\`\`
+
+**Customer Types:**
+
+| Type | Examples | Primary Use Case | Typical Volume |
+|------|----------|------------------|----------------|
+| **Exchanges** | Binance, Coinbase, Kraken | Fiat on/off-ramps, IBANs | $10M-$500M/mo |
+| **DeFi Platforms** | Aave, Uniswap | Bridge to trad finance | $1M-$50M/mo |
+| **Wallet Providers** | MetaMask, Trust Wallet | Add banking rails | $500K-$10M/mo |
+| **Neobanks** | Revolut, N26 | Add crypto accounts | $5M-$100M/mo |
+
+---
+
 ## For Platform Administrators
 
 ### Initial Setup

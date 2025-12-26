@@ -359,7 +359,297 @@ graph TB
 
 ## Core Services
 
-### 1. PSP Provisioning Service
+### 1. Crypto Gateway Service
+
+#### Overview
+
+The **FTS.Money Crypto Gateway** is an enterprise-grade crypto banking infrastructure that enables businesses to offer comprehensive cryptocurrency capabilities without the typical $10M+ investment and 18-month build timeline.
+
+**What It Solves:**
+
+Traditional barriers to crypto integration:
+1. **Compliance Complexity** - Navigating VASP, MiCA, AML regulations costs $2M-$5M
+2. **Infrastructure Cost** - Building secure multi-chain custody costs $5M-$10M
+3. **Fiat Integration Gap** - Connecting crypto to banking (IBANs, cards) requires complex partnerships
+4. **Technical Expertise** - Blockchain development requires rare specialized talent
+
+FTS.Money Crypto Gateway removes these barriers by providing turnkey infrastructure white-labeled as your own technology.
+
+#### Dual Distribution Model
+
+\`\`\`mermaid
+graph TB
+    subgraph "Customer Types"
+        A[PSPs<br/>Marketplace]
+        B[Exchanges<br/>Direct]
+        C[DeFi Platforms<br/>Direct]
+    end
+    
+    subgraph "FTS.Money Crypto Gateway"
+        D[Portal Login<br/>cryptogateway.fts.money]
+        E[Crypto API Layer]
+        F[Wallet Management]
+        G[Banking Rails]
+        H[Card Issuance]
+        I[KYC/AML Engine]
+    end
+    
+    subgraph "Infrastructure Layer"
+        J[Striga/Lightspark<br/>Core Banking]
+        K[Multi-Chain Custody<br/>BTC, ETH, USDC]
+        L[Lightning Network<br/>Instant BTC]
+        M[Banking Partners<br/>SEPA, Cards]
+    end
+    
+    A -->|Service Subscription| E
+    B --> D
+    C --> D
+    D --> E
+    E --> F
+    E --> G
+    E --> H
+    E --> I
+    
+    F --> J
+    G --> J
+    H --> J
+    I --> J
+    
+    J --> K
+    J --> L
+    J --> M
+    
+    style E fill:#2563eb,color:#fff
+    style J fill:#10b981,color:#fff
+\`\`\`
+
+**Distribution Channel 1: PSP Marketplace (Embedded)**
+- PSPs enable "FTS.Money Crypto Gateway" from Service Marketplace
+- Crypto features embedded into PSP Portal
+- White-labeled for PSP's customers
+- Revenue share: FTS.Money margin + PSP markup
+
+**Distribution Channel 2: Standalone Portal (Direct Sales)**
+- Dedicated Crypto Gateway Portal at `/CryptoGatewayLogin`
+- Direct sales to exchanges and DeFi platforms
+- Independent authentication and billing
+- Full self-service crypto banking
+
+#### Key Features
+
+\`\`\`mermaid
+mindmap
+  root((Crypto<br/>Gateway))
+    Multi-Chain Wallets
+      Bitcoin
+      Ethereum
+      USDC/USDT
+      Lightning Network
+      Custodial & Non-Custodial
+    Virtual IBANs
+      Named SEPA Accounts
+      SEPA Instant
+      Multi-Currency
+      Direct Bank Integration
+    Card Issuance
+      Virtual Visa Cards
+      Physical Visa Cards
+      Crypto-to-Fiat Spend
+      Real-Time Conversion
+    On/Off Ramps
+      Bank Transfer Deposits
+      Crypto Deposits
+      Instant Exchange
+      Batch Processing
+    Full Compliance
+      VASP Licensed (EU)
+      MiCA Ready
+      KYC/AML Built-in
+      Travel Rule
+      GDPR Compliant
+\`\`\`
+
+#### Architecture Deep Dive
+
+\`\`\`mermaid
+sequenceDiagram
+    participant Cust as Customer
+    participant Portal as Crypto Gateway<br/>Portal
+    participant API as FTS API Layer
+    participant Striga as Striga/Lightspark
+    participant Banks as Banking Rails
+    participant Chains as Blockchains
+    
+    Note over Cust,Chains: Wallet Creation Flow
+    Cust->>Portal: Create Crypto Wallet
+    Portal->>API: POST /wallets/create
+    API->>Striga: createUser + createWallet
+    Striga->>Chains: Deploy Addresses
+    Chains-->>Striga: BTC/ETH/USDC Addresses
+    Striga-->>API: Wallet Created
+    API-->>Portal: Wallet Details
+    Portal-->>Cust: Multi-Chain Wallet Ready
+    
+    Note over Cust,Chains: IBAN Creation Flow
+    Cust->>Portal: Request Virtual IBAN
+    Portal->>API: POST /ibans/create
+    API->>Striga: createIBAN
+    Striga->>Banks: Allocate Virtual IBAN
+    Banks-->>Striga: IBAN: DE89370400440532013000
+    Striga-->>API: IBAN Active
+    API-->>Portal: IBAN Details
+    Portal-->>Cust: SEPA Account Ready
+    
+    Note over Cust,Chains: Deposit via Bank Transfer
+    Cust->>Banks: SEPA Transfer to IBAN
+    Banks->>Striga: Credit Notification
+    Striga->>API: Webhook: Deposit Received
+    API->>Portal: Update Balance
+    Portal->>Cust: Balance Updated: €1,000
+    
+    Note over Cust,Chains: Exchange Crypto to Fiat
+    Cust->>Portal: Exchange €1,000 to BTC
+    Portal->>API: POST /exchange
+    API->>Striga: exchangeFunds(EUR, BTC)
+    Striga->>Striga: Real-time Rate: €1,000 = 0.0234 BTC
+    Striga-->>API: Exchange Complete
+    API-->>Portal: BTC Balance Updated
+    Portal-->>Cust: You now have 0.0234 BTC
+\`\`\`
+
+#### Target Markets & Use Cases
+
+**Cryptocurrency Exchanges:**
+\`\`\`
+Challenge: Need compliant fiat on/off-ramps + banking rails
+Solution: Virtual IBANs for EUR deposits, cards for withdrawals
+Result: Seamless fiat-crypto bridge for traders
+Revenue: $2,500/mo + 1.5% transaction fees
+\`\`\`
+
+**DeFi Platforms:**
+\`\`\`
+Challenge: Bridge DeFi to traditional finance while staying compliant
+Solution: SEPA accounts + KYC/AML + crypto custody
+Result: Regulatory compliant fiat gateway for DeFi users
+Revenue: $2,500/mo + usage fees
+\`\`\`
+
+**Neobanks:**
+\`\`\`
+Challenge: Add crypto accounts without building infrastructure
+Solution: Embedded crypto wallets + compliance + card issuance
+Result: Crypto banking features in days, not years
+Revenue: White-label embedded in their app
+\`\`\`
+
+**PSPs (via Marketplace):**
+\`\`\`
+Challenge: Merchants want crypto payment acceptance
+Solution: Enable from Service Marketplace, white-label
+Result: Offer crypto without building it
+Revenue: Revenue share with FTS.Money
+\`\`\`
+
+#### Pricing & Economics
+
+\`\`\`
+Cost Structure (Striga/Lightspark):
+  Monthly Base Fee:           $1,500
+  KYC per user:               $3.00
+  Virtual card issuance:      $5.00
+  Physical card issuance:     $15.00
+  Crypto transaction fee:     1.0%
+  SEPA transaction fee:       0.5%
+  Exchange fee:               0.8%
+
+FTS.Money Pricing (White-labeled):
+  Monthly Base Fee:           $2,500  (+$1,000 markup = 67% margin)
+  KYC per user:               $5.00   (+$2.00 markup)
+  Virtual card issuance:      $8.00   (+$3.00 markup)
+  Physical card issuance:     $20.00  (+$5.00 markup)
+  Crypto transaction fee:     1.5%    (+0.5% markup)
+  SEPA transaction fee:       0.8%    (+0.3% markup)
+  Exchange fee:               1.2%    (+0.4% markup)
+  White-label setup:          $500    (one-time)
+
+Gross Margins:
+  Base subscription:          67%
+  Usage fees:                 30-60%
+  Blended margin:             ~55%
+\`\`\`
+
+**Revenue Projections:**
+
+| Year | Customers | Monthly Revenue | Annual Revenue | Gross Profit (55%) |
+|------|-----------|-----------------|----------------|--------------------|
+| **Year 1** | 20 | $50,000 | $600,000 | $330,000 |
+| **Year 2** | 75 | $187,500 | $2,250,000 | $1,237,500 |
+| **Year 3** | 200 | $500,000 | $6,000,000 | $3,300,000 |
+
+#### Competitive Positioning
+
+| Feature | FTS.Money Crypto Gateway | BitGo | Fireblocks | Anchorage | Circle |
+|---------|--------------------------|-------|------------|-----------|--------|
+| **Fiat Integration** | ✅ IBANs + Cards | ❌ | ❌ | ⚠️ Limited | ✅ USDC only |
+| **EU Compliance** | ✅ VASP + MiCA | ⚠️ Partial | ⚠️ Partial | ✅ | ✅ |
+| **White-Label** | ✅ Full branding | ❌ | ⚠️ Limited | ❌ | ❌ |
+| **PSP Integration** | ✅ Marketplace | ❌ | ❌ | ❌ | ❌ |
+| **Setup Time** | 2 days | 30-60 days | 30-90 days | 90+ days | 30 days |
+| **Pricing** | $2,500/mo | $10,000/mo | $15,000/mo | Enterprise | $5,000/mo |
+| **Custody** | ✅ Enterprise | ✅ Institutional | ✅ Best-in-class | ✅ Bank-grade | ✅ USDC native |
+| **Lightning** | ✅ Via Lightspark | ❌ | ⚠️ Coming | ❌ | ❌ |
+
+**Key Differentiators:**
+1. **Only solution with IBAN + crypto wallet + cards in one platform**
+2. **67% margins vs competitors' 30-40% on custody-only**
+3. **White-label ready - customers brand it as their own**
+4. **Embedded in PSP marketplace - unique distribution advantage**
+5. **EU compliance built-in - VASP + MiCA ready**
+
+#### Go-To-Market Timeline
+
+**Phase 1: Q1 2026 - PSP Marketplace Launch**
+- Enable crypto gateway in Service Marketplace
+- Onboard 5 beta PSP customers
+- Validate integration workflows
+- Target: 10 PSPs subscribed by end of Q1
+
+**Phase 2: Q2 2026 - Standalone Portal Launch**
+- Launch dedicated Crypto Gateway Portal
+- Direct sales to exchanges (cold outreach + inbound)
+- Self-service onboarding wizard
+- Target: 10 exchange customers
+
+**Phase 3: Q3 2026 - DeFi Expansion**
+- Expand marketing to DeFi platforms
+- Add DeFi-specific features (staking, yield)
+- Partner with DeFi aggregators
+- Target: 15 DeFi customers
+
+**Phase 4: Q4 2026 - Feature Expansion**
+- Add Solana, Avalanche support
+- Launch staking infrastructure
+- Integrate DeFi protocols
+- Target: 50 total customers, $1.5M ARR
+
+#### Portal Access
+
+**For PSP Customers:**
+- Access via PSP Portal → Service Marketplace
+- Enable "FTS.Money Crypto Gateway"
+- Configure white-label settings
+- Embed in merchant offerings
+
+**For Direct Customers (Exchanges/DeFi):**
+- Portal: https://cryptogateway.fts.money/login
+- Contact sales: crypto@fts.money
+- Provisioning: 48 hours
+- Dedicated Crypto Gateway Dashboard
+
+---
+
+### 2. PSP Provisioning Service
 
 #### Overview
 
@@ -521,7 +811,7 @@ Total Time: 24-48 hours (including KYB)
 
 ---
 
-### 2. ISO Gateway Service
+### 3. ISO Gateway Service
 
 #### Overview
 
@@ -619,7 +909,7 @@ graph LR
 
 ---
 
-### 3. Orchestration Service
+### 4. Orchestration Service
 
 #### Overview
 
@@ -720,7 +1010,7 @@ Monthly savings (10,000 txns): $6,500
 
 ---
 
-### 4. Service Marketplace
+### 5. Service Marketplace
 
 #### Overview
 

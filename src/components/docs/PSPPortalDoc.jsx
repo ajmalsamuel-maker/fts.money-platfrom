@@ -175,6 +175,12 @@ Reports
 ├── Merchant Analytics
 └── Custom Reports
 
+Service Marketplace
+├── Browse Services
+├── My Subscriptions
+├── FTS.Money Crypto Gateway
+└── Integration Settings
+
 Settings
 ├── Company Profile
 ├── Payment Methods
@@ -1144,6 +1150,257 @@ SELECT
 FROM processor_data p
 LEFT JOIN psp_data psp ON p.transaction_date = psp.transaction_date;
 \`\`\`
+
+---
+
+## Crypto Gateway Integration (Marketplace)
+
+### Enabling Crypto for Your PSP
+
+If your customers are asking for cryptocurrency payment capabilities, you can enable the **FTS.Money Crypto Gateway** directly from your PSP Portal's Service Marketplace. No development required - activate, configure white-label settings, and offer crypto to your merchants.
+
+**What You Get:**
+
+\`\`\`mermaid
+graph LR
+    A[Enable in<br/>Marketplace] --> B[Configure<br/>White-Label]
+    B --> C[Your Merchants<br/>Access Crypto]
+    C --> D[Multi-Chain<br/>Wallets]
+    C --> E[Virtual<br/>IBANs]
+    C --> F[Crypto<br/>Cards]
+    C --> G[On/Off<br/>Ramps]
+    
+    style A fill:#2563eb,color:#fff
+    style B fill:#06b6d4,color:#fff
+    style C fill:#10b981,color:#fff
+\`\`\`
+
+**Features Available to Your Merchants:**
+
+1. **Crypto Acceptance**
+   - Accept BTC, ETH, USDC, USDT payments
+   - Automatic conversion to fiat (optional)
+   - Lightning Network for instant BTC
+   - Real-time exchange rates
+
+2. **Crypto Wallets**
+   - Create multi-chain wallets for customers
+   - Non-custodial and custodial options
+   - Blockchain transaction tracking
+   - QR code payment generation
+
+3. **Virtual IBANs**
+   - Named SEPA accounts for each customer
+   - Deposit fiat, hold as crypto
+   - SEPA Instant support
+   - Multi-currency balances (EUR, BTC, ETH)
+
+4. **Card Issuance**
+   - Issue Visa cards linked to crypto wallets
+   - Spend crypto balances as fiat
+   - Virtual cards (instant) + physical cards
+   - Real-time crypto-to-fiat conversion
+
+5. **Full Compliance**
+   - Automated KYC/AML for crypto users
+   - Travel Rule compliance
+   - VASP licensing (inherited from FTS.Money)
+   - Transaction monitoring
+
+**Activation Steps:**
+
+\`\`\`
+Step 1: Browse Service Marketplace
+  → Navigate to Settings → Service Marketplace
+  → Find "FTS.Money Crypto Gateway"
+
+Step 2: Review Pricing & Features
+  → Monthly fee: $2,500
+  → Usage fees: KYC, cards, transaction %
+  → White-label setup: $500 (one-time)
+
+Step 3: Subscribe & Configure
+  → Click "Enable Service"
+  → Enter white-label settings:
+     • Your company name for crypto features
+     • Logo for cards and emails
+     • Primary color scheme
+     • Custom domain (optional)
+
+Step 4: Integration
+  → Access API credentials
+  → Review documentation
+  → Test in sandbox environment
+  → Enable for merchants
+
+Total Time: 2 hours
+\`\`\`
+
+**White-Label Configuration:**
+
+\`\`\`json
+{
+  "psp_id": "psp_yourcompany",
+  "crypto_branding": {
+    "service_name": "YourCompany Crypto Banking",
+    "logo_url": "https://yourcompany.com/crypto-logo.png",
+    "card_design_url": "https://yourcompany.com/card-design.png",
+    "primary_color": "#2563eb",
+    "custom_domain": "crypto.yourcompany.com"
+  },
+  "features_enabled": {
+    "wallets": ["BTC", "ETH", "USDC", "USDT"],
+    "lightning_network": true,
+    "virtual_ibans": true,
+    "cards": {
+      "virtual": true,
+      "physical": true
+    },
+    "auto_convert_to_fiat": true
+  },
+  "compliance_settings": {
+    "kyc_required": true,
+    "kyc_provider": "internal",
+    "aml_screening": true,
+    "travel_rule_enabled": true
+  }
+}
+\`\`\`
+
+**Pricing Passthrough:**
+
+As a PSP, you can markup the Crypto Gateway service:
+
+\`\`\`
+Your Cost (FTS.Money):
+  Monthly fee:              $2,500
+  KYC per user:             $5.00
+  Virtual card:             $8.00
+  Physical card:            $20.00
+  Crypto transaction:       1.5%
+
+Your Selling Price (Example):
+  Monthly fee:              $3,500  (+$1,000 markup)
+  KYC per user:             $7.00   (+$2.00 markup)
+  Virtual card:             $12.00  (+$4.00 markup)
+  Physical card:            $30.00  (+$10.00 markup)
+  Crypto transaction:       2.5%    (+1.0% markup)
+
+Your Margin:
+  Base subscription:        $1,000/mo (40% margin)
+  Usage fees:               30-50% margin
+  Annual revenue per merchant: $42,000 - $84,000
+\`\`\`
+
+**Merchant Dashboard:**
+
+Your merchants access crypto features directly in their Merchant Portal:
+
+\`\`\`
+Merchant Portal → Crypto Banking
+├── Dashboard
+│   ├── Wallet balances (BTC, ETH, USDC, EUR)
+│   ├── Recent transactions
+│   ├── Exchange rates
+│   └── Quick actions
+│
+├── Wallets
+│   ├── View all wallets
+│   ├── Generate deposit addresses
+│   ├── Send crypto
+│   └── Transaction history
+│
+├── IBAN Account
+│   ├── Account details
+│   ├── Deposit instructions
+│   ├── Transaction history
+│   └── Balance (EUR)
+│
+├── Cards
+│   ├── Active cards
+│   ├── Issue new card (virtual/physical)
+│   ├── Card transactions
+│   └── Spending limits
+│
+├── Exchange
+│   ├── Crypto ↔ Fiat conversion
+│   ├── Real-time rates
+│   ├── Exchange history
+│   └── Fee calculator
+│
+└── Settings
+    ├── KYC verification status
+    ├── Wallet settings
+    ├── Notification preferences
+    └── API integration
+\`\`\`
+
+### API Integration Example
+
+**For Merchants Using Your PSP's Crypto:**
+
+\`\`\`javascript
+// Your merchant's code (using YOUR branded API)
+const yourPSP = require('@yourcompany/payment-sdk');
+
+const client = new yourPSP({
+  apiKey: 'merchant_api_key_from_your_psp'
+});
+
+// Create crypto wallet for customer
+const wallet = await client.crypto.createWallet({
+  customer_id: 'cust_12345',
+  currencies: ['BTC', 'ETH', 'USDC']
+});
+
+// Generate deposit address
+const address = await client.crypto.getDepositAddress({
+  wallet_id: wallet.id,
+  currency: 'BTC'
+});
+
+console.log(\`Deposit BTC to: \${address.address}\`);
+
+// Accept crypto payment
+const payment = await client.crypto.createPayment({
+  wallet_id: wallet.id,
+  amount: 0.001,  // BTC
+  currency: 'BTC',
+  auto_convert_to_fiat: true,  // Auto-convert to EUR
+  description: 'Order #12345'
+});
+
+// Check balance
+const balance = await client.crypto.getBalance({
+  wallet_id: wallet.id
+});
+
+console.log(balance);
+// {
+//   BTC: 0.0234,
+//   ETH: 1.5,
+//   USDC: 5000,
+//   EUR: 1250  // From conversions
+// }
+\`\`\`
+
+**Under the Hood (FTS.Money handles):**
+- All API calls proxy through your PSP instance
+- Striga/Lightspark infrastructure powers the backend
+- Branded as YOUR service, not FTS.Money or Striga
+- You earn margin on every transaction
+
+### Support & Documentation
+
+**For PSP Staff:**
+- Crypto integration guide: `/FTSDocumentation` → Crypto Gateway
+- API reference: Auto-generated for your domain
+- Support: crypto-support@fts.money
+
+**For Your Merchants:**
+- Self-service docs (white-labeled)
+- In-app crypto tutorials
+- Email/chat support (routed to your team or FTS.Money)
 
 ---
 
