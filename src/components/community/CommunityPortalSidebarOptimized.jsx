@@ -11,7 +11,7 @@ import { FTS_COLORS, FTS_LOGOS } from '@/components/community/FTSBrandColors';
 import { 
     LayoutDashboard, Building2, Globe, Users, Settings, LogOut,
     Rocket, FileText, DollarSign, ChevronDown, ChevronRight,
-    Code, GitBranch, Package, Briefcase
+    Code, GitBranch, Package, Briefcase, Zap, BarChart3
 } from 'lucide-react';
 
 export default function CommunityPortalSidebarOptimized({ currentPage, userEmail }) {
@@ -53,13 +53,22 @@ export default function CommunityPortalSidebarOptimized({ currentPage, userEmail
         enabled: !!session?.email
     });
 
+    const { data: myCryptoCustomers = [] } = useQuery({
+        queryKey: ['my-crypto-customers', session?.email],
+        queryFn: async () => {
+            const all = await base44.entities.CryptoGatewayCustomer.list();
+            return all.filter(c => c.email === session?.email);
+        },
+        enabled: !!session?.email
+    });
+
     const { data: subscriptions = [] } = useQuery({
         queryKey: ['my-subscriptions'],
         queryFn: () => base44.entities.PSPServiceSubscription.list(),
         enabled: !!session?.email
     });
 
-    const totalServices = myPSPs.length + myISOCustomers.length + myOrchCustomers.length;
+    const totalServices = myPSPs.length + myISOCustomers.length + myOrchCustomers.length + myCryptoCustomers.length;
 
     const menuSections = [
         {
@@ -90,6 +99,7 @@ export default function CommunityPortalSidebarOptimized({ currentPage, userEmail
                 { icon: Building2, label: 'PSP Instances', path: 'MyPSPInstances', count: myPSPs.length },
                 { icon: Code, label: 'ISO Gateway', path: 'ISOGatewayLogin', count: myISOCustomers.length },
                 { icon: GitBranch, label: 'Orchestration', path: 'OrchestrationLogin', count: myOrchCustomers.length },
+                { icon: Zap, label: 'Crypto Gateway', path: 'CryptoGatewayLogin', count: myCryptoCustomers.length },
                 { icon: FileText, label: 'Subscriptions', path: 'MySubscriptions', count: subscriptions.length }
             ]
         }] : []),
