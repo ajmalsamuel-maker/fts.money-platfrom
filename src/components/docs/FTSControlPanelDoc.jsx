@@ -335,7 +335,7 @@ stateDiagram-v2
 
 \`\`\`yaml
 starter:
-  monthly_fee: $99
+  monthly_fee: $499
   transactions_included: 1000
   merchant_limit: 5
   regions: 1
