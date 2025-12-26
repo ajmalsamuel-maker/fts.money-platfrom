@@ -23,6 +23,7 @@ import BuyRates from './pages/BuyRates';
 import Chargebacks from './pages/Chargebacks';
 import CheckoutComponents from './pages/CheckoutComponents';
 import CommunityAccountSettings from './pages/CommunityAccountSettings';
+import CommunityAnalytics from './pages/CommunityAnalytics';
 import CommunityBilling from './pages/CommunityBilling';
 import CommunityMarketplace from './pages/CommunityMarketplace';
 import CommunityPSPProvisioning from './pages/CommunityPSPProvisioning';
@@ -69,6 +70,7 @@ import FTSServiceProviders from './pages/FTSServiceProviders';
 import FTSServiceRegistry from './pages/FTSServiceRegistry';
 import FTSSettings from './pages/FTSSettings';
 import FTSSetupGuide from './pages/FTSSetupGuide';
+import FTSSystemHealth from './pages/FTSSystemHealth';
 import FTSVerticalSolutions from './pages/FTSVerticalSolutions';
 import FeeTypeManagement from './pages/FeeTypeManagement';
 import FraudMonitoring from './pages/FraudMonitoring';
@@ -108,10 +110,10 @@ import MerchantCustomerAnalytics from './pages/MerchantCustomerAnalytics';
 import MerchantCustomers from './pages/MerchantCustomers';
 import MerchantDashboard from './pages/MerchantDashboard';
 import MerchantDataTransactions from './pages/MerchantDataTransactions';
-import MerchantInfo from './pages/MerchantInfo';
 import MerchantDisputeManagement from './pages/MerchantDisputeManagement';
 import MerchantEmailTemplates from './pages/MerchantEmailTemplates';
 import MerchantHelpCenter from './pages/MerchantHelpCenter';
+import MerchantInfo from './pages/MerchantInfo';
 import MerchantInvoiceGenerator from './pages/MerchantInvoiceGenerator';
 import MerchantInvoices from './pages/MerchantInvoices';
 import MerchantInvoicing from './pages/MerchantInvoicing';
@@ -222,8 +224,7 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import CommunityAnalytics from './pages/CommunityAnalytics';
-import FTSSystemHealth from './pages/FTSSystemHealth';
+import FTSDocumentation from './pages/FTSDocumentation';
 import __Layout from './Layout.jsx';
 
 
@@ -253,6 +254,7 @@ export const PAGES = {
     "Chargebacks": Chargebacks,
     "CheckoutComponents": CheckoutComponents,
     "CommunityAccountSettings": CommunityAccountSettings,
+    "CommunityAnalytics": CommunityAnalytics,
     "CommunityBilling": CommunityBilling,
     "CommunityMarketplace": CommunityMarketplace,
     "CommunityPSPProvisioning": CommunityPSPProvisioning,
@@ -299,6 +301,7 @@ export const PAGES = {
     "FTSServiceRegistry": FTSServiceRegistry,
     "FTSSettings": FTSSettings,
     "FTSSetupGuide": FTSSetupGuide,
+    "FTSSystemHealth": FTSSystemHealth,
     "FTSVerticalSolutions": FTSVerticalSolutions,
     "FeeTypeManagement": FeeTypeManagement,
     "FraudMonitoring": FraudMonitoring,
@@ -338,10 +341,10 @@ export const PAGES = {
     "MerchantCustomers": MerchantCustomers,
     "MerchantDashboard": MerchantDashboard,
     "MerchantDataTransactions": MerchantDataTransactions,
-    "MerchantInfo": MerchantInfo,
     "MerchantDisputeManagement": MerchantDisputeManagement,
     "MerchantEmailTemplates": MerchantEmailTemplates,
     "MerchantHelpCenter": MerchantHelpCenter,
+    "MerchantInfo": MerchantInfo,
     "MerchantInvoiceGenerator": MerchantInvoiceGenerator,
     "MerchantInvoices": MerchantInvoices,
     "MerchantInvoicing": MerchantInvoicing,
@@ -452,8 +455,7 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "CommunityAnalytics": CommunityAnalytics,
-    "FTSSystemHealth": FTSSystemHealth,
+    "FTSDocumentation": FTSDocumentation,
 }
 
 export const pagesConfig = {
