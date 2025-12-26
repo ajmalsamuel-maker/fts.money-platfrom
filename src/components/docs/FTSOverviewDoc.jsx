@@ -1340,82 +1340,64 @@ DELETE /v1/subscriptions/:id     Cancel subscription
 
 ## Roadmap
 
-### Q1 2025 (Completed)
-
-✅ Core platform launch
-✅ PSP provisioning service
-✅ Starter, Pro, Enterprise tiers
-✅ 50+ payment provider integrations
-✅ PCI DSS Level 1 certification
-✅ ISO 20022 support
-✅ Multi-tenant architecture
-✅ Admin & merchant portals
-
-### Q2 2025 (Current)
-
-🔨 ISO Gateway service launch
-🔨 Payment orchestration engine
-🔨 Service marketplace (150+ services)
-🔨 Advanced fraud detection (ML-powered)
-🔨 Mobile SDKs (iOS, Android)
-🔨 Cryptocurrency support (Bitcoin, ETH, stablecoins)
-🔨 Enhanced analytics dashboard
-
-### Q3 2025
-
-📋 Account-to-account (A2A) payments
-📋 Open banking integrations (Europe, UK, US)
-📋 Buy Now Pay Later (BNPL) partnerships
-📋 Biometric authentication (WebAuthn)
-📋 AI-powered routing optimization
-📋 Cross-border settlement optimization
-📋 Regulatory reporting automation
-
-### Q4 2025
-
-📋 PSP-to-PSP wholesale marketplace
-📋 White-label mobile apps
-📋 Embedded finance toolkit
-📋 No-code payment page builder
-📋 Advanced API gateway (GraphQL)
-📋 Real-time settlement
-📋 Central Bank Digital Currency (CBDC) support
+| Quarter | Status | Feature | Description |
+|---------|--------|---------|-------------|
+| **Q1 2025** | ✅ Completed | Core platform launch | Full platform infrastructure |
+| | ✅ Completed | PSP provisioning service | Automated PSP deployment |
+| | ✅ Completed | Starter, Pro, Enterprise tiers | Three pricing tiers |
+| | ✅ Completed | 50+ payment provider integrations | Multiple payment rails |
+| | ✅ Completed | PCI DSS Level 1 certification | Security compliance |
+| | ✅ Completed | ISO 20022 support | Banking message standard |
+| | ✅ Completed | Multi-tenant architecture | Secure data isolation |
+| | ✅ Completed | Admin & merchant portals | Management interfaces |
+| **Q2 2025** | 🔨 Current | ISO Gateway service launch | Legacy system integration |
+| | 🔨 Current | Payment orchestration engine | Smart routing platform |
+| | 🔨 Current | Service marketplace (150+ services) | Third-party integrations |
+| | 🔨 Current | Advanced fraud detection (ML-powered) | AI-based risk management |
+| | 🔨 Current | Mobile SDKs (iOS, Android) | Native mobile support |
+| | 🔨 Current | Cryptocurrency support | Bitcoin, ETH, stablecoins |
+| | 🔨 Current | Enhanced analytics dashboard | Real-time insights |
+| **Q3 2025** | 📋 Planned | Account-to-account (A2A) payments | Direct bank transfers |
+| | 📋 Planned | Open banking integrations | Europe, UK, US support |
+| | 📋 Planned | Buy Now Pay Later (BNPL) partnerships | Flexible payment options |
+| | 📋 Planned | Biometric authentication (WebAuthn) | Passwordless security |
+| | 📋 Planned | AI-powered routing optimization | Machine learning routing |
+| | 📋 Planned | Cross-border settlement optimization | International payments |
+| | 📋 Planned | Regulatory reporting automation | Compliance tools |
+| **Q4 2025** | 📋 Planned | PSP-to-PSP wholesale marketplace | B2B payment services |
+| | 📋 Planned | White-label mobile apps | Custom branded apps |
+| | 📋 Planned | Embedded finance toolkit | Payment embedding |
+| | 📋 Planned | No-code payment page builder | Visual design tool |
+| | 📋 Planned | Advanced API gateway (GraphQL) | Modern API protocol |
+| | 📋 Planned | Real-time settlement | Instant fund transfers |
+| | 📋 Planned | Central Bank Digital Currency (CBDC) | Government crypto support |
 
 ### 2026 & Beyond
 
-**Innovation Initiatives:**
-
-1. **Decentralized Payment Networks**
-   - Blockchain-based settlement
-   - Smart contract automation
-   - DeFi integration
-
-2. **AI & Machine Learning**
-   - Predictive analytics
-   - Automated underwriting
-   - Personalized merchant experiences
-   - Fraud prevention (99.9% accuracy)
-
-3. **Global Expansion**
-   - 150+ countries supported
-   - Local payment methods everywhere
-   - Multi-currency accounts
-   - Instant cross-border settlement
-
-4. **Vertical Solutions**
-   - E-commerce optimized stack
-   - SaaS billing platform
-   - Marketplace payment solutions
-   - Travel & hospitality specialized
-   - Healthcare payments (HIPAA compliant)
-   - Gaming & gambling (licensed)
-
-5. **Developer Experience**
-   - No-code integrations
-   - Drag-and-drop payment flows
-   - Visual API designer
-   - Integrated testing tools
-   - AI code generation
+| Initiative | Feature | Target | Description |
+|------------|---------|--------|-------------|
+| **Decentralized Payment Networks** | Blockchain-based settlement | 2026 Q1 | Distributed ledger payments |
+| | Smart contract automation | 2026 Q1 | Automated payment logic |
+| | DeFi integration | 2026 Q2 | Decentralized finance support |
+| **AI & Machine Learning** | Predictive analytics | 2026 Q1 | Transaction forecasting |
+| | Automated underwriting | 2026 Q2 | AI merchant approval |
+| | Personalized merchant experiences | 2026 Q2 | Custom recommendations |
+| | Fraud prevention (99.9% accuracy) | 2026 Q3 | Advanced ML models |
+| **Global Expansion** | 150+ countries supported | 2026 Q2 | Worldwide coverage |
+| | Local payment methods everywhere | 2026 Q3 | Regional payment rails |
+| | Multi-currency accounts | 2026 Q2 | Global wallets |
+| | Instant cross-border settlement | 2026 Q4 | Real-time international |
+| **Vertical Solutions** | E-commerce optimized stack | 2026 Q1 | Online retail focus |
+| | SaaS billing platform | 2026 Q2 | Subscription management |
+| | Marketplace payment solutions | 2026 Q2 | Platform commerce |
+| | Travel & hospitality specialized | 2026 Q3 | Tourism industry |
+| | Healthcare payments (HIPAA compliant) | 2026 Q3 | Medical billing |
+| | Gaming & gambling (licensed) | 2026 Q4 | Regulated gaming |
+| **Developer Experience** | No-code integrations | 2026 Q1 | Visual integration builder |
+| | Drag-and-drop payment flows | 2026 Q2 | Flow designer |
+| | Visual API designer | 2026 Q2 | API builder |
+| | Integrated testing tools | 2026 Q3 | Built-in test suite |
+| | AI code generation | 2026 Q4 | Automated code creation |
 
 ---
 
