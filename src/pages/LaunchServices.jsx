@@ -51,6 +51,15 @@ export default function LaunchServices() {
         enabled: !!session?.email
     });
 
+    const { data: myCryptoCustomers = [] } = useQuery({
+        queryKey: ['my-crypto-customers', session?.email],
+        queryFn: async () => {
+            const all = await base44.entities.CryptoGatewayCustomer.list();
+            return all.filter(c => c.email === session?.email);
+        },
+        enabled: !!session?.email
+    });
+
     const services = [
         {
             id: 'psp',
@@ -120,6 +129,29 @@ export default function LaunchServices() {
             borderColor: 'border-purple-200',
             textColor: 'text-purple-700',
             action: () => navigate(createPageUrl('OrchestrationLogin'))
+        },
+        {
+            id: 'crypto-gateway',
+            icon: Zap,
+            name: 'Crypto Gateway',
+            tagline: 'Enterprise Crypto Banking Infrastructure',
+            description: 'Multi-chain wallets, virtual IBANs, card issuance, and crypto-fiat on/off ramps with full EU compliance',
+            features: [
+                'BTC, ETH, USDC, USDT wallets',
+                'Lightning Network integration',
+                'Virtual SEPA IBANs',
+                'Visa card issuance',
+                'KYC/AML compliance',
+                'VASP licensed (EU)'
+            ],
+            pricing: 'From $2,500/month',
+            setupTime: '48 hours',
+            myCount: myCryptoCustomers.length,
+            color: 'from-emerald-600 to-teal-500',
+            bgColor: 'bg-emerald-50',
+            borderColor: 'border-emerald-200',
+            textColor: 'text-emerald-700',
+            action: () => navigate(createPageUrl('CryptoGatewayLogin'))
         }
     ];
 
@@ -154,7 +186,7 @@ export default function LaunchServices() {
                     </div>
 
                     {/* Service Cards */}
-                    <div className="grid md:grid-cols-3 gap-6 mb-8">
+                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                         {services.map((service) => {
                             const Icon = service.icon;
                             return (
@@ -224,9 +256,10 @@ export default function LaunchServices() {
                                 <div>
                                     <h3 className="font-semibold text-slate-900 mb-2">Need Help Choosing?</h3>
                                     <p className="text-sm text-slate-600 mb-4">
-                                        <strong>PSP Instance:</strong> Choose this if you want to run a complete payment platform with multiple merchants.<br />
-                                        <strong>ISO Gateway:</strong> Choose this if you need to translate payment messages between different formats.<br />
-                                        <strong>Orchestration:</strong> Choose this if you need intelligent routing across multiple payment providers.
+                                        <strong>PSP Instance:</strong> Complete payment platform with multiple merchants.<br />
+                                        <strong>ISO Gateway:</strong> Translate payment messages between formats.<br />
+                                        <strong>Orchestration:</strong> Intelligent routing across providers.<br />
+                                        <strong>Crypto Gateway:</strong> Multi-chain wallets, IBANs, and crypto banking.
                                     </p>
                                     <p className="text-xs text-slate-500">
                                         💡 You can launch multiple services and integrate them together for maximum flexibility.
