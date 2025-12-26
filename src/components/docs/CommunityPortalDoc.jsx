@@ -223,7 +223,7 @@ journey
 \`\`\`mermaid
 graph LR
     subgraph Starter
-        S1[Monthly: $99]
+        S1[Monthly: $499]
         S2[1K txns included]
         S3[5 merchants]
         S4[1 region]
