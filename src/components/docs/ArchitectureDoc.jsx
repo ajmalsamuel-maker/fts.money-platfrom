@@ -66,6 +66,8 @@ graph TB
         COM[Community Portal<br/>Self-Service]
         PSP[PSP Portal<br/>Operations]
         MER[Merchant Portal<br/>Self-Service]
+        ISOP[ISO Gateway Portal<br/>Customer Portal]
+        ORCHP[Orchestration Portal<br/>Customer Portal]
     end
     
     subgraph "API Gateway"
@@ -110,6 +112,8 @@ graph TB
     COM --> ALB
     PSP --> ALB
     MER --> ALB
+    ISOP --> ALB
+    ORCHP --> ALB
     
     ALB --> API
     API --> ECS1
