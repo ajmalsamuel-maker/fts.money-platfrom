@@ -7,7 +7,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Wallet, ArrowRight, Shield, Zap, Globe } from 'lucide-react';
 import { FTS_LOGOS } from '@/components/community/FTSBrandColors';
 
-function CryptoGatewayLogin() {
+export default function CryptoGatewayLogin() {
     const [credentials, setCredentials] = useState({ email: '', password: '' });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
@@ -163,5 +163,3 @@ function CryptoGatewayLogin() {
         </div>
     );
 }
-
-export default CryptoGatewayLogin;
