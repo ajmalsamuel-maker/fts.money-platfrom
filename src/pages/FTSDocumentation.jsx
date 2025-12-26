@@ -13,6 +13,9 @@ import PSPPortalDoc from '@/components/docs/PSPPortalDoc';
 import CommunityPortalDoc from '@/components/docs/CommunityPortalDoc';
 import ISOGatewayDoc from '@/components/docs/ISOGatewayDoc';
 import OrchestrationDoc from '@/components/docs/OrchestrationDoc';
+import ArchitectureDoc from '@/components/docs/ArchitectureDoc';
+import ProductEcosystemDoc from '@/components/docs/ProductEcosystemDoc';
+import VerticalSolutionsDoc from '@/components/docs/VerticalSolutionsDoc';
 import MermaidDiagram from '@/components/docs/MermaidDiagram';
 import jsPDF from 'jspdf';
 
@@ -62,6 +65,27 @@ export default function FTSDocumentation() {
             icon: GitBranch,
             content: OrchestrationDoc,
             description: 'Intelligent payment routing and optimization'
+        },
+        {
+            id: 'architecture',
+            title: 'Platform Architecture',
+            icon: Code,
+            content: ArchitectureDoc,
+            description: 'Technical infrastructure, system design, and security architecture'
+        },
+        {
+            id: 'products',
+            title: 'Product Ecosystem',
+            icon: FileText,
+            content: ProductEcosystemDoc,
+            description: 'Complete product portfolio, revenue models, and market analysis'
+        },
+        {
+            id: 'verticals',
+            title: 'Vertical Solutions',
+            icon: BookOpen,
+            content: VerticalSolutionsDoc,
+            description: 'Industry-specific payment solutions and implementations'
         }
     ];
 
