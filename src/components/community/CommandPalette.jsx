@@ -15,6 +15,7 @@ const commands = [
     { id: 'psp', label: 'My PSP Instances', icon: Building2, path: 'MyPSPInstances', category: 'My Services' },
     { id: 'iso', label: 'ISO Gateway', icon: Code, path: 'ISOGatewayLogin', category: 'My Services' },
     { id: 'orch', label: 'Orchestration', icon: GitBranch, path: 'OrchestrationLogin', category: 'My Services' },
+    { id: 'crypto', label: 'Crypto Gateway', icon: Package, path: 'CryptoGatewayLogin', category: 'My Services' },
     { id: 'marketplace', label: 'Marketplace', icon: Globe, path: 'CommunityMarketplace', category: 'Explore' },
     { id: 'subscriptions', label: 'My Subscriptions', path: 'MySubscriptions', category: 'My Services' },
     { id: 'billing', label: 'Billing', icon: DollarSign, path: 'CommunityBilling', category: 'Business' },
