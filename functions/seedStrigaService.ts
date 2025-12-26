@@ -35,9 +35,12 @@ Deno.serve(async (req) => {
         // Create Striga Services in Service Catalog
         const services = [
             {
+                service_name: 'Striga Crypto Banking Platform',
                 name: 'Striga Crypto Banking Platform',
                 service_provider_id: provider.id,
+                provider_id: provider.id,
                 provider_name: 'Striga (Lightspark)',
+                service_category: 'crypto_banking',
                 category: 'crypto_banking',
                 description: 'Complete crypto banking infrastructure: wallets, virtual IBANs, card issuing, and on/off-ramps',
                 features: [
@@ -77,9 +80,12 @@ Deno.serve(async (req) => {
                 support_email: 'support@striga.com'
             },
             {
+                service_name: 'Striga Lightning Network',
                 name: 'Striga Lightning Network',
                 service_provider_id: provider.id,
+                provider_id: provider.id,
                 provider_name: 'Striga (Lightspark)',
+                service_category: 'crypto_payment',
                 category: 'crypto_payment',
                 description: 'Bitcoin Lightning Network instant payments with no node management overhead',
                 features: [
