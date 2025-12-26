@@ -1175,14 +1175,21 @@ Verification time: 30 minutes - 24 hours
 
 #### Step 5: Provision & Deploy
 
-Automated provisioning:
-1. Database schema created (2 minutes)
-2. Cloud resources allocated (5 minutes)
-3. Services deployed (10 minutes)
-4. Configuration applied (5 minutes)
-5. Testing & validation (8 minutes)
-
-Total time: ~30 minutes
+| Step | Task | Duration | Details |
+|------|------|----------|---------|
+| 1 | Initialize provisioning queue | 30 seconds | Request validation & priority assignment |
+| 2 | Create tenant schema | 2 minutes | PostgreSQL schema with isolation |
+| 3 | Allocate cloud resources | 5 minutes | Compute, storage, network (K8s cluster) |
+| 4 | Deploy database cluster | 3 minutes | Primary + replica nodes with encryption |
+| 5 | Deploy core services | 10 minutes | API gateway, auth, transaction processor |
+| 6 | Deploy portals | 8 minutes | Admin portal, merchant portal, VT |
+| 7 | Configure networking | 2 minutes | Load balancer, SSL certificates, DNS |
+| 8 | Apply security policies | 3 minutes | Firewall rules, IAM roles, encryption keys |
+| 9 | Initialize data | 2 minutes | Default settings, templates, fee structures |
+| 10 | Run health checks | 4 minutes | API tests, database connectivity, service mesh |
+| 11 | Generate credentials | 1 minute | API keys, admin passwords, webhook secrets |
+| 12 | Send welcome email | 30 seconds | Access credentials & quickstart guide |
+| **Total** | **End-to-end provisioning** | **~40 minutes** | Fully automated, zero manual steps |
 
 #### Step 6: Onboard First Merchant
 
