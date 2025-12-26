@@ -348,16 +348,38 @@ export default function FTSDocumentation() {
                                                             {children}
                                                         </blockquote>
                                                     ),
-                                                    a: ({ children, href }) => (
-                                                        <a
-                                                            href={href}
-                                                            className="text-blue-600 hover:text-blue-700 underline"
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                        >
-                                                            {children}
-                                                        </a>
-                                                    ),
+                                                    a: ({ children, href }) => {
+                                                        // Check if it's an internal anchor link
+                                                        if (href && href.startsWith('#')) {
+                                                            return (
+                                                                <a
+                                                                    href={href}
+                                                                    className="text-blue-600 hover:text-blue-700 underline"
+                                                                    onClick={(e) => {
+                                                                        e.preventDefault();
+                                                                        const id = href.replace('#', '');
+                                                                        const element = document.getElementById(id);
+                                                                        if (element) {
+                                                                            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                                                        }
+                                                                    }}
+                                                                >
+                                                                    {children}
+                                                                </a>
+                                                            );
+                                                        }
+                                                        // External link
+                                                        return (
+                                                            <a
+                                                                href={href}
+                                                                className="text-blue-600 hover:text-blue-700 underline"
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                            >
+                                                                {children}
+                                                            </a>
+                                                        );
+                                                    },
                                                 }}
                                             >
                                                 {doc.content}
