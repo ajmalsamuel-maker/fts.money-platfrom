@@ -99,7 +99,7 @@ function CryptoGatewayLogin() {
 
                 <Card className="border-slate-800 bg-slate-900/80 backdrop-blur-xl">
                     <CardHeader>
-                        <CardTitle className="text-2xl text-white">Sign In</CardTitle>
+                        <CardTitle className="text-2xl text-white">Crypto Gateway Sign In</CardTitle>
                         <CardDescription className="text-slate-400">
                             Access your Crypto Gateway dashboard
                         </CardDescription>
