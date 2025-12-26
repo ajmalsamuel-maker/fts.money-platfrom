@@ -41,7 +41,7 @@ FTS.Money is a revolutionary **payments infrastructure platform** that democrati
 
 **FTS.Money Solution:**
 - Launch PSP in 24-48 hours
-- $99-$4,999/month pricing (pay-as-you-grow)
+- $499-$4,999/month pricing (pay-as-you-grow)
 - Built-in compliance (PCI DSS, ISO 20022, GDPR)
 - Access to 150+ payment services
 - Multi-cloud infrastructure included
@@ -184,7 +184,7 @@ Digital Payment Share: 71% (growing to 89% by 2030)
 | **Wholesale B2B** | No | PSP-to-PSP marketplace |
 | **Multi-Cloud** | Single cloud | AWS, GCP, Azure, more |
 | **Compliance** | Partial | Full (PCI, ISO, LEI) |
-| **Pricing** | $500-$5K/mo | $99-$4,999/mo |
+| **Pricing** | $500-$5K/mo | $499-$4,999/mo |
 
 ---
 
@@ -440,7 +440,7 @@ sequenceDiagram
 
 #### Deployment Options
 
-**1. Starter Tier** ($99/month)
+**1. Starter Tier** ($499/month)
 - Single region deployment
 - Up to 1,000 transactions/month
 - 5 merchant accounts
@@ -970,12 +970,12 @@ FTS.Money integrates with the Global Legal Entity Identifier Foundation (GLEIF) 
 **1. Platform Subscription Revenue**
 
 \`\`\`
-Starter Tier:     $99/month  × 1,000 customers  = $99,000/month
+Starter Tier:    $499/month  × 1,000 customers  = $499,000/month
 Professional:    $999/month  ×   300 customers  = $299,700/month
 Enterprise:    $4,999/month  ×    50 customers  = $249,950/month
 
-Total Monthly Recurring Revenue (MRR): $648,650
-Annual Recurring Revenue (ARR): $7,783,800
+Total Monthly Recurring Revenue (MRR): $1,048,650
+Annual Recurring Revenue (ARR): $12,583,800
 \`\`\`
 
 **2. Transaction Revenue Share**
@@ -1012,19 +1012,19 @@ Annual Recurring Revenue (ARR): $7,783,800
 **Total Revenue Projection (Year 2):**
 
 \`\`\`
-Subscription ARR:        $7.8M
+Subscription ARR:       $12.6M
 Transaction Revenue:    $75.0M
 Marketplace Commission: $3.6M
 Professional Services:   $3.5M
 ISO/Orchestration:      $5.4M
 
-Total Annual Revenue:   $95.3M
+Total Annual Revenue:  $100.1M
 \`\`\`
 
 ### Pricing Strategy
 
 **Penetration Pricing:**
-- Entry-level tier at $99/month (70% below competitors)
+- Entry-level tier at $499/month (competitive positioning)
 - Goal: Capture market share rapidly
 - Land-and-expand model
 
@@ -1138,7 +1138,7 @@ Goal: 5,000+ customers, $50M+ ARR
 #### Step 2: Select PSP Configuration
 
 **Choose Your Tier:**
-- Starter ($99/month)
+- Starter ($499/month)
 - Professional ($999/month)
 - Enterprise ($4,999/month)
 

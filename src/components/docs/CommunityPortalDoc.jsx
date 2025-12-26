@@ -184,7 +184,7 @@ Risk: High failure rate
 
 **FTS.Money Approach:**
 \`\`\`
-Cost: $99 - $4,999/month
+Cost: $499 - $4,999/month
 Time: 24-48 hours
 Team: Focus on business (not tech)
 Infrastructure: Fully managed
@@ -255,7 +255,7 @@ graph LR
 | Feature | Starter | Professional | Enterprise |
 |---------|---------|--------------|------------|
 | **Pricing** |
-| Monthly Fee | $99 | $999 | $4,999 |
+| Monthly Fee | $499 | $999 | $4,999 |
 | Included Transactions | 1,000 | 50,000 | Unlimited |
 | Overage Fee | $0.05/txn | $0.02/txn | Custom |
 | **Limits** |
