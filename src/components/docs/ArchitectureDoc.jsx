@@ -43,9 +43,11 @@ FTS.Money is a **multi-tenant payment infrastructure platform** that enables rap
 
 **Standards-First:**
 - ISO 8583 (card processing)
-- ISO 20022 (banking)
-- ISO 23257 (cryptocurrency)
-- ISO 27001 (security)
+- ISO 20022 (banking messages)
+- ISO 23257 (cryptocurrency/DLT)
+- ISO 24165 (digital token identifiers)
+- ISO 27001 (information security)
+- PCI DSS Level 1 (payment card compliance)
 
 ---
 
@@ -77,11 +79,17 @@ graph TB
         ECS3[Payment Processor<br/>ECS Task N]
     end
     
-    subgraph "Service Layer"
-        ISO[ISO Gateway<br/>Service]
-        ORCH[Orchestration<br/>Service]
-        FRAUD[Fraud Detection<br/>Service]
-        COMP[Compliance<br/>Service]
+    subgraph "Core Services"
+        ISO[ISO Gateway<br/>Message Translation]
+        ORCH[Orchestration<br/>Smart Routing]
+        FRAUD[Fraud Detection<br/>ML-Powered]
+        COMP[Compliance<br/>KYB/AML]
+    end
+    
+    subgraph "Premium Services"
+        CRYPTO[Crypto Gateway<br/>Digital Assets]
+        AI[AI Automation<br/>Decision Engine]
+        RECURR[Recurring<br/>Billing]
     end
     
     subgraph "Data Layer"
@@ -112,6 +120,9 @@ graph TB
     ECS1 --> ORCH
     ECS1 --> FRAUD
     ECS1 --> COMP
+    ECS1 --> CRYPTO
+    ECS1 --> AI
+    ECS1 --> RECURR
     
     ECS1 --> RDS
     ECS1 --> REDIS
@@ -120,7 +131,9 @@ graph TB
     ORCH --> PROC
     ISO --> BANK
     FRAUD --> KYC
-    ECS1 --> CRYPTO
+    CRYPTO --> CRYPTO[Exchanges]
+    AI --> FRAUD
+    RECURR --> ORCH
 \`\`\`
 
 ### Request Flow
@@ -132,13 +145,14 @@ graph TB
 | **3** | ALB | SSL termination, load balancing | <5ms |
 | **4** | API Gateway | Authentication, rate limiting | <10ms |
 | **5** | ECS Task | Payment processor validation | <20ms |
-| **6** | Redis Cache | Check routing rules | <1ms |
-| **7** | Orchestration | Select optimal processor | <15ms |
-| **8** | External Processor | Authorize transaction | 50-150ms |
-| **9** | PostgreSQL | Log transaction | <10ms |
-| **10** | SQS Queue | Async webhook delivery | <5ms |
-| **11** | Response | Return to client | - |
-| **Total** | **End-to-end latency** | **P99 < 200ms** | **Target met** |
+| **6** | ISO Gateway | Message translation (if needed) | <10ms |
+| **7** | Redis Cache | Check routing rules | <1ms |
+| **8** | Orchestration | Select optimal processor | <15ms |
+| **9** | External Processor | Authorize transaction | 50-150ms |
+| **10** | PostgreSQL | Log transaction | <10ms |
+| **11** | SQS Queue | Async webhook delivery | <5ms |
+| **12** | Response | Return to client | - |
+| **Total** | **End-to-end latency** | **P99 < 220ms** | **Target met** |
 
 ---
 
