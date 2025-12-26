@@ -6,10 +6,10 @@ import { Download, FileText, BookOpen } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
 import FTSPlatformSidebarRestructured from '@/components/platform/FTSPlatformSidebarRestructured';
-import FTSOverviewDoc from '@/components/docs/FTSOverviewDoc.jsx';
-import FTSControlPanelDoc from '@/components/docs/FTSControlPanelDoc.jsx';
-import PSPPortalDoc from '@/components/docs/PSPPortalDoc.jsx';
-import CommunityPortalDoc from '@/components/docs/CommunityPortalDoc.jsx';
+import FTSOverviewDoc from '@/components/docs/FTSOverviewDoc';
+import FTSControlPanelDoc from '@/components/docs/FTSControlPanelDoc';
+import PSPPortalDoc from '@/components/docs/PSPPortalDoc';
+import CommunityPortalDoc from '@/components/docs/CommunityPortalDoc';
 import jsPDF from 'jspdf';
 
 export default function FTSDocumentation() {
