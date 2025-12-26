@@ -978,23 +978,22 @@ sequenceDiagram
 
 ### Settlement Schedule
 
-\`\`\`mermaid
-gantt
-    title Settlement Timeline (T+2 Example)
-    dateFormat YYYY-MM-DD
-    
-    section Day 1 (Transaction Date)
-    Transactions Processed    :2025-01-24, 1d
-    Batch Closed (11:59 PM)   :2025-01-24, 1d
-    
-    section Day 2 (T+1)
-    Settlement Initiated      :2025-01-25, 1d
-    Bank Processing           :2025-01-25, 1d
-    
-    section Day 3 (T+2)
-    Funds Available           :2025-01-26, 1d
-    Payout Processed          :2025-01-26, 1d
-\`\`\`
+| Day | Event | Time | Description |
+|-----|-------|------|-------------|
+| **Day 1** (Transaction Date) | Transactions processed | All day | Merchants process customer payments |
+| | Batch cutoff | 11:59 PM UTC | Daily batch closes, no more same-day txns |
+| **Day 2** (T+1) | Settlement initiated | 12:00 AM UTC | PSP initiates settlement with processors |
+| | Bank processing | Throughout day | Banks process settlement instructions |
+| **Day 3** (T+2) | Funds available | 9:00 AM local | Funds credited to merchant accounts |
+| | Payout processed | 10:00 AM local | ACH/wire transfers initiated |
+| | Settlement complete | End of day | Merchants can access funds |
+
+**Settlement Periods:**
+- T+0: Same-day settlement (instant, premium pricing)
+- T+1: Next business day (standard for high-volume)
+- T+2: Two business days (most common, lowest cost)
+- T+3: Three business days (high-risk merchants)
+- T+7: Weekly settlement (new merchants)
 
 ### Settlement Reports
 
