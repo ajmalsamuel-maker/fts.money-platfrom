@@ -17,6 +17,8 @@ Deno.serve(async (req) => {
         
         // Create Striga as a Service Provider
         const provider = await base44.asServiceRole.entities.ServiceProvider.create({
+            company_name: 'Striga (Lightspark)',
+            legal_name: 'Striga Technology OU',
             name: 'Striga (Lightspark)',
             type: 'crypto_banking',
             description: 'EU-compliant crypto banking infrastructure with wallets, IBANs, cards, and on/off-ramps',
