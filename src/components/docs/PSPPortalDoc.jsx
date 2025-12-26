@@ -27,7 +27,13 @@ const PSPPortalDoc = `# PSP Portal Documentation
 
 ### What is the PSP Portal?
 
-The **PSP Portal** is the operational command center for Payment Service Providers built on the FTS.Money platform. It provides comprehensive tools to manage merchants, process transactions, monitor risk, and ensure compliance.
+Think of the PSP Portal as the cockpit of your payment business. Just as a pilot needs instruments to fly a plane safely and efficiently, you need the PSP Portal to run a payment service provider successfully.
+
+The **PSP Portal** is the operational command center for Payment Service Providers built on the FTS.Money platform. This isn't just another admin dashboard - it's a comprehensive operational platform designed by payment industry veterans who understand the daily challenges of running a PSP.
+
+Every feature exists because we've seen PSPs struggle without it. The real-time transaction feed solves the "what's happening right now" problem. The manual review queue addresses the fraud-vs-friction balance. The settlement reconciliation tools prevent the nightmare of mismatched payouts.
+
+This portal is where your business happens. Your operations team onboards merchants here. Your finance team reconciles settlements here. Your risk team reviews suspicious transactions here. Your executives monitor performance here. It's designed to be the single source of truth for your entire payment operation.
 
 ### Key Capabilities
 
@@ -86,6 +92,12 @@ mindmap
 ## Getting Started
 
 ### First Login
+
+Your first login to the PSP Portal is a critical moment. Unlike generic payment platforms where you're just another customer, this is YOUR platform. Your brand, your rules, your data. The setup process is designed to get you operational quickly while ensuring security best practices.
+
+The initial configuration follows a deliberate sequence - security first (password and 2FA), then branding (make it yours), then business setup (payment methods and fees), and finally team building (invite your colleagues). This order isn't arbitrary; it's based on thousands of PSP deployments and optimized for the fastest path to your first processed transaction.
+
+Most PSPs complete the initial setup in 30-45 minutes and process their first test transaction within 2 hours. The configuration wizard guides you through every step with sensible defaults, so you can accept the defaults and customize later, or dive deep into every setting from day one.
 
 **Step 1: Access Your PSP**
 
@@ -178,6 +190,14 @@ Settings
 
 ### Real-Time Metrics
 
+The dashboard is designed around one principle: give you the critical information you need at a glance, with the ability to drill down into details when needed. We've studied how successful PSPs operate and identified the metrics they check most frequently.
+
+Transaction metrics tell you if money is flowing - volume shows business health, count indicates activity level, success rate reveals processing quality. Merchant metrics show your business pipeline - active merchants are your revenue base, onboarding pipeline is future growth, at-risk merchants need attention before they churn.
+
+Financial metrics connect operations to money - revenue earned today, pending settlements you'll receive, chargebacks that might reverse, disputes requiring attention. System health metrics ensure your infrastructure isn't becoming a bottleneck - uptime prevents lost revenue, response time affects customer experience, fraud blocks protect your business.
+
+These aren't vanity metrics - they're actionable indicators that successful PSPs use to run their businesses. If success rate drops below 98%, investigate processor performance. If chargebacks exceed 0.5%, review fraud detection rules. If response time increases, scale your infrastructure.
+
 **Primary KPIs:**
 
 \`\`\`mermaid
@@ -247,6 +267,14 @@ Most common operations accessible from dashboard:
 ## Merchant Management
 
 ### Merchant Lifecycle
+
+Managing merchants is the core of your PSP business. Every merchant represents recurring revenue, but also compliance risk and operational overhead. The key is balancing speed-to-activation with proper risk management.
+
+Traditional banks take 30-90 days to onboard a merchant because everything is manual. Modern PSPs can onboard in 24-48 hours through automation, but only if they have the right systems. The FTS.Money merchant lifecycle is designed for this balance - automate what can be automated, flag what needs human review, and never compromise on compliance.
+
+The lifecycle isn't just about onboarding - it's about ongoing management. Merchants change over time. A low-risk merchant can become high-risk if their business model changes. An at-risk merchant can improve with better fraud controls. The system helps you identify these transitions early and take appropriate action.
+
+Understanding these states is crucial because each state has different implications for operations, revenue, and compliance. An "Active" merchant generates revenue but requires monitoring. A "Suspended" merchant retains their data but can't process - useful for temporary issues. A "Closed" merchant enters a termination workflow with regulatory retention requirements.
 
 \`\`\`mermaid
 stateDiagram-v2
@@ -506,6 +534,14 @@ graph LR
 
 ### Processing Flow
 
+Transaction processing is where theory meets reality. Every transaction flows through multiple systems in milliseconds, with dozens of validation checks, fraud analysis, and routing decisions happening automatically. Understanding this flow helps you diagnose issues and optimize performance.
+
+The seemingly simple act of "charging a card" involves coordination between your merchant's system, your PSP infrastructure, payment processors, card networks, and issuing banks. Each step introduces potential failure points - network issues, timeouts, fraud blocks, insufficient funds, expired cards, incorrect data.
+
+Your job as a PSP operator is to maximize success rates while minimizing fraud and costs. This means monitoring the processing flow constantly, identifying bottlenecks, optimizing fraud rules to balance security and approval rates, and ensuring your processor connections are reliable.
+
+The sequence diagram below shows the happy path (transaction approved) and the most common failure scenarios. In production, about 96-98% of legitimate transactions follow the happy path, while 2-4% hit various failure points. Understanding where failures occur helps you optimize the experience.
+
 \`\`\`mermaid
 sequenceDiagram
     participant C as Customer
@@ -664,6 +700,14 @@ Bank Account: ****6789
 
 ### Smart Routing Engine
 
+Payment routing is one of the most powerful tools in your arsenal, yet many PSPs don't leverage it effectively. The basic idea is simple: you connect to multiple payment processors and intelligently route each transaction to the optimal one based on your business goals.
+
+Why does routing matter? Because not all processors are equal. Some excel at US domestic transactions but struggle internationally. Others have great pricing for high-value transactions but expensive fees for small purchases. Some maintain 99%+ success rates but charge premium prices. Your goal is to use the right processor for each transaction.
+
+Smart routing also provides business continuity. If your primary processor goes down (and they all do eventually), your backup processor takes over automatically. Your merchants never know there was an issue - transactions just keep flowing. This redundancy is the difference between losing thousands in revenue during an outage versus seamless operation.
+
+The routing logic below shows a simplified decision tree. In production, routing rules can be far more sophisticated - considering merchant risk profile, customer location, historical success rates, current processor load, time of day, and dozens of other factors. The goal is simple: approve more transactions at lower cost.
+
 **Routing Logic:**
 
 \`\`\`mermaid
@@ -804,6 +848,14 @@ failover_policy:
 ## Risk & Fraud Management
 
 ### Fraud Detection System
+
+Fraud is the eternal enemy of payment businesses. Too strict and you decline good customers, hurting revenue and customer satisfaction. Too lenient and fraudsters exploit you, leading to chargebacks, fines, and potentially losing your ability to process payments entirely.
+
+The challenge is that fraud evolves constantly. Fraudsters share tactics, automate attacks, and quickly abandon techniques that stop working. Rule-based fraud detection can't keep up - by the time you write a rule to block a fraud pattern, criminals have moved to a new one.
+
+Modern fraud detection uses machine learning to identify patterns humans can't see. The system analyzes hundreds of signals in real-time - device fingerprints, behavioral patterns, velocity anomalies, geolocation mismatches - and produces a risk score in milliseconds. This score determines whether to approve automatically, challenge with 3D Secure, or decline.
+
+The key insight: fraud detection isn't just about blocking bad transactions - it's about approving good ones. Every legitimate transaction you decline is lost revenue plus a frustrated customer who might not return. The best fraud systems maximize approvals while minimizing fraud, not just minimize fraud at any cost.
 
 \`\`\`mermaid
 graph TB
@@ -978,6 +1030,14 @@ sequenceDiagram
 
 ### Settlement Schedule
 
+Settlement is how money moves from customers' bank accounts through your PSP to your merchants' accounts. Understanding settlement timing is crucial because it affects cash flow, reconciliation, and merchant satisfaction. Merchants want their money fast; you need time to ensure transactions are legitimate and won't reverse.
+
+The settlement period (T+0, T+1, T+2, etc.) represents the number of business days between the transaction and when merchants receive funds. Faster settlement is better for merchants but riskier for you - if a chargeback comes later, you've already paid the merchant and must recover those funds.
+
+Most PSPs use T+2 (two business days) as the default because it provides a buffer for chargeback prevention while being fast enough for merchant satisfaction. High-risk merchants might require T+3 or T+7 as protection. High-volume, low-risk merchants can negotiate T+1 or even T+0 (same-day) settlement at premium pricing.
+
+The settlement schedule below shows a typical T+2 cycle. Understanding each step helps you explain timing to merchants and diagnose settlement delays when they occur.
+
 | Day | Event | Time | Description |
 |-----|-------|------|-------------|
 | **Day 1** (Transaction Date) | Transactions processed | All day | Merchants process customer payments |
@@ -1091,6 +1151,14 @@ LEFT JOIN psp_data psp ON p.transaction_date = psp.transaction_date;
 
 ### Pre-Built Reports
 
+Data without insights is just noise. The reporting system transforms your transaction data into actionable intelligence that drives business decisions. Should you pursue high-volume or high-margin merchants? Which payment methods have the best success rates? Where are you losing money to chargebacks?
+
+Pre-built reports answer the most common questions PSPs ask every day. Financial reports show where revenue comes from and where costs go. Transaction reports identify processing patterns and optimization opportunities. Merchant reports reveal which customers are profitable and which are problematic. Compliance reports prove to regulators that you're following the rules.
+
+The custom report builder lets you answer unique questions specific to your business. Maybe you want to analyze success rates by merchant category and time of day. Or calculate profitability by payment method after factoring in fraud rates. Or forecast cash flow based on settlement schedules. The flexible builder makes this possible without writing SQL.
+
+Smart PSPs review key reports daily (settlement reconciliation, fraud alerts), weekly (merchant performance, processor comparison), and monthly (financial statements, compliance status). This rhythm keeps you on top of your business without drowning in data.
+
 **Financial Reports:**
 - Daily/Weekly/Monthly transaction summary
 - Revenue by payment method
@@ -1168,6 +1236,14 @@ LEFT JOIN psp_data psp ON p.transaction_date = psp.transaction_date;
 ## Compliance & Security
 
 ### PCI DSS Requirements
+
+Compliance isn't optional in payments - it's the license to operate. Lose PCI DSS certification and payment networks revoke your ability to process cards. Fail a security audit and regulators can shut you down. Experience a data breach and your business is finished.
+
+The good news: FTS.Money handles the heavy lifting of PCI DSS Level 1 compliance at the platform level. You inherit this compliance automatically. However, your merchants still have their own compliance requirements based on their transaction volume.
+
+Understanding merchant compliance levels helps you onboard them correctly and avoid surprises. Level 4 merchants (under 1M transactions/year) just complete a simple Self-Assessment Questionnaire. Level 3 requires quarterly scans. Level 2 and above need annual audits by qualified assessors.
+
+Your role is to educate merchants about their compliance obligations, provide them with tools to maintain compliance (tokenization, encrypted data transmission), and document everything for auditors. The portal makes this manageable with automated compliance tracking and report generation.
 
 **Merchant Compliance:**
 

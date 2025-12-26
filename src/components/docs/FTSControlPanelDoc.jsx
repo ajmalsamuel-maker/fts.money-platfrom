@@ -27,6 +27,14 @@ const FTSControlPanelDoc = `# FTS Control Panel Documentation
 
 ### Purpose
 
+The Control Panel is where we run the FTS.Money platform itself. This is the administrative interface used by our internal team and trusted partners to manage the global payment infrastructure that powers thousands of PSPs.
+
+If individual PSP Portals are cockpits for payment businesses, the Control Panel is mission control. From here, we provision new PSPs in minutes, monitor the health of the entire platform, manage our service catalog, track financial operations, ensure compliance across all tenants, and orchestrate multi-cloud infrastructure.
+
+This isn't customer-facing documentation - it's an operational manual for platform administrators. The people using this interface need deep technical knowledge and carry significant responsibility. A misconfigured provisioning setting could break new PSP deployments. An incorrect pricing change could cost millions in revenue. A security oversight could expose sensitive data.
+
+Access to the Control Panel is therefore highly restricted. Multi-factor authentication is mandatory. All actions are logged. Sensitive operations require approval workflows. We take the principle of least privilege seriously - even our own team members only get access to what they need for their role.
+
 The **FTS Control Panel** is the centralized platform administration interface that provides super-admin level control over the entire FTS.Money ecosystem. It enables platform operators to:
 
 - Provision and manage PSP instances
@@ -94,6 +102,14 @@ mindmap
 ## Platform Architecture
 
 ### System Overview
+
+Understanding the platform architecture is essential for effective administration. The Control Panel doesn't exist in isolation - it's the administrative layer on top of a complex distributed system with multiple services, databases, queues, and external integrations.
+
+The architecture follows a clear layered model. At the top is the Control Plane (the portal you're using). Below that are Management Services that handle specific domains - PSP provisioning, service catalog, financial operations, monitoring. The Data Layer stores platform configuration and tenant data. External Systems provide cloud infrastructure, payment processing, and compliance services.
+
+This separation allows us to scale different parts independently. If PSP provisioning demand increases, we scale just that service. If financial operations need more compute, we add capacity there. If monitoring traffic spikes, its resources scale independently.
+
+The key architectural decision is multi-tenancy at the data layer. Every PSP gets its own database schema, providing strong isolation while sharing infrastructure. This allows us to offer enterprise-grade capabilities at startup-friendly prices - the first customer pays for development, customer 100 costs us almost nothing to add.
 
 \`\`\`mermaid
 graph TB
@@ -176,6 +192,14 @@ graph TB
 
 ### Role Hierarchy
 
+Access control is critical in a platform that manages sensitive financial data and powerful administrative functions. We implement strict role-based access control (RBAC) where every user has exactly the permissions they need - nothing more, nothing less.
+
+The role hierarchy reflects how we organize our team. Super Admins (founders and CTO) have unrestricted access for emergency situations. Platform Admins handle day-to-day operations. Specialized roles (Finance, Compliance, Operations) have permissions relevant to their function.
+
+This granular permission model serves multiple purposes. It reduces security risk by limiting the blast radius of any single compromised account. It satisfies compliance requirements by implementing segregation of duties. It prevents accidental mistakes by restricting dangerous operations to senior staff.
+
+For example, Finance Manager can view revenue and modify pricing but can't provision new PSPs or access source code. Compliance Officer can run audits and view logs but can't change system configuration. Operations team can manage PSPs but can't access financial data. This separation is intentional and auditable.
+
 \`\`\`mermaid
 graph TD
     A[Super Admin] --> B[Platform Admin]
@@ -252,6 +276,14 @@ graph TD
 ## PSP Lifecycle Management
 
 ### Provisioning Flow
+
+PSP provisioning is our core value proposition - taking something that normally requires 18 months and automating it to 40 minutes of infrastructure work plus 24-48 hours of business verification. The technical provisioning is fully automated; the time variance comes from KYB (Know Your Business) verification.
+
+Every provisioning request goes through multiple phases: validation (is the request complete and valid?), verification (is this a legitimate business?), infrastructure setup (create compute, storage, and network resources), deployment (install and configure software), and validation (ensure everything works).
+
+The sequence diagram shows the happy path, but provisioning can fail at multiple points. Database schema creation might fail if the PSP code is already taken. Cloud resource allocation might fail if we hit quota limits. Deployment might fail if health checks don't pass. The system handles these failures gracefully with automatic retries and detailed error logging for manual intervention if needed.
+
+As a platform administrator, you'll monitor the provisioning queue for stuck jobs, investigate failures, and occasionally retry failed provisions after fixing underlying issues. Most provisions complete automatically, but about 5-10% require some manual attention - usually to clarify business verification questions or resolve resource allocation issues.
 
 \`\`\`mermaid
 sequenceDiagram
@@ -541,6 +573,14 @@ sequenceDiagram
 
 ### Provider Management
 
+The service catalog is one of our key competitive advantages - 150+ pre-integrated services that PSPs can activate with one click. But maintaining this catalog requires constant work: onboarding new providers, updating existing integrations when APIs change, monitoring performance, and removing services that don't meet quality standards.
+
+Adding a new payment provider is a multi-week process involving technical assessment, legal negotiations, integration development, testing, and documentation. We don't add every provider that requests inclusion - we're selective because every integration creates ongoing maintenance burden and our reputation depends on every service working reliably.
+
+The technical assessment evaluates their API quality, stability, and documentation. Do they have proper authentication? Is their API well-designed? Do they version properly? Can they handle our expected volume? Poor API quality means constant integration maintenance issues.
+
+Legal review examines their terms of service, data handling practices, and financial stability. We're betting our platform's reliability on their service remaining available. If a critical provider goes out of business, we need contingency plans.
+
 **Adding New Payment Provider:**
 
 \`\`\`mermaid
@@ -711,6 +751,14 @@ await platform.payoutRoutes.create({
 ## Financial Operations
 
 ### Revenue Tracking
+
+Financial operations at the platform level require tracking revenue and costs across hundreds or thousands of PSPs, each with different pricing tiers, usage patterns, and service subscriptions. This complexity demands sophisticated systems for accurate tracking, billing, and reconciliation.
+
+We track five distinct revenue streams: platform subscriptions (recurring tier fees), FTS-owned services (ISO Gateway, Orchestration, etc.), marketplace commissions (our cut of third-party services), transaction revenue share (percentage of payment processing fees), and professional services (custom work).
+
+Each stream has different characteristics. Subscriptions are predictable and high-margin. Services are usage-based with moderate margins. Marketplace commissions are high-margin but depend on provider adoption. Transaction revenue share is high-volume but low-margin. Professional services are lumpy but lucrative.
+
+The revenue dashboard provides real-time visibility into all these streams, helping leadership make informed decisions about pricing, capacity planning, and strategic priorities. If marketplace revenue is growing faster than expected, maybe we invest more in provider onboarding. If transaction revenue is below projections, maybe we need to help PSPs increase their volume.
 
 **Revenue Dashboard Metrics:**
 
@@ -896,6 +944,14 @@ ORDER BY psp_id;
 
 ### PCI DSS Compliance
 
+Platform-level compliance is non-negotiable. We maintain PCI DSS Level 1 certification not because any single PSP requires it, but because it's the foundation of trust for the entire platform. Lose this certification and every PSP we host is immediately non-compliant - a catastrophic scenario.
+
+PCI DSS Level 1 is the highest certification level, required for companies processing over 6 million card transactions annually. It requires annual on-site audits by a Qualified Security Assessor (QSA), quarterly vulnerability scans by an Approved Scanning Vendor (ASV), and continuous compliance with 12 major requirements.
+
+Achieving Level 1 certification cost us over $500K and 12 months of dedicated security engineering. Maintaining it requires constant vigilance - quarterly scans, continuous monitoring, immediate remediation of any findings, and annual re-certification. But it's the price of entry for running a payment platform.
+
+The compliance timeline is carefully orchestrated because missing any deadline means losing certification. We start preparing for the annual audit in Q4, complete the on-site assessment in Q1, remediate any findings in Q2, and receive our Attestation of Compliance (AOC) in Q2. This AOC is then submitted to all card networks and acquiring banks.
+
 **Quarterly ASV Scans:**
 
 Automated vulnerability scanning schedule:
@@ -1009,6 +1065,14 @@ interface AuditLogEntry {
 ## Infrastructure Management
 
 ### Multi-Cloud Orchestration
+
+Multi-cloud isn't just a buzzword for us - it's a strategic imperative. Payment processing requires global reach, high availability, and resilience to provider-specific outages. Relying on a single cloud provider creates unacceptable risk.
+
+Our multi-cloud strategy distributes workloads across AWS, Google Cloud, Azure, Oracle Cloud, and Alibaba Cloud based on each provider's strengths. AWS handles most web application traffic due to maturity and global reach. Google Cloud runs ML/AI workloads because their tools are superior. Azure serves enterprise customers that prefer Microsoft ecosystems. Alibaba Cloud handles China traffic for regulatory compliance.
+
+This distribution also provides leverage in negotiations. Cloud providers compete aggressively for large customers, and our multi-cloud architecture means we're never locked into one vendor's pricing. If AWS raises prices, we can shift more workload to GCP. If GCP has an outage, traffic fails over to AWS automatically.
+
+The cost of this flexibility is operational complexity. We need expertise in multiple cloud platforms, tooling to manage resources across providers, and monitoring to track costs and performance. But the benefits - reliability, cost optimization, regulatory flexibility - far outweigh the complexity.
 
 **Cloud Provider Distribution:**
 
@@ -1142,6 +1206,14 @@ sequenceDiagram
 
 ### Identity & Access Management
 
+Security at the platform level requires defense in depth - multiple layers of protection so that if one layer fails, others prevent breaches. We implement security controls at the network layer (firewalls, DDoS protection), application layer (authentication, authorization), data layer (encryption, tokenization), and operational layer (monitoring, audit logs).
+
+Authentication is the first line of defense. We require strong passwords (16+ characters), multi-factor authentication (TOTP or SMS), and IP whitelisting for platform admins. Sessions timeout after 30 minutes of inactivity. Failed login attempts trigger account lockout after 5 attempts.
+
+Different types of users authenticate differently. Platform administrators use username/password + 2FA with IP restrictions. API clients use API keys with secret tokens. Services authenticate to each other using mutual TLS (mTLS) where both sides verify identity. This layered approach ensures that compromising one authentication mechanism doesn't grant access to everything.
+
+We also rotate credentials regularly - API keys every 90 days, service certificates every 180 days, database passwords annually. This limits the window of exposure if credentials are somehow compromised.
+
 **Authentication Methods:**
 
 1. **Platform Admin Login**
@@ -1244,6 +1316,14 @@ graph LR
 ## Troubleshooting & Support
 
 ### Common Issues & Resolutions
+
+Even with robust automation, things occasionally go wrong. Database connections fail. Cloud providers hit quota limits. Network issues cause timeouts. Configuration bugs surface in edge cases. The key is diagnosing issues quickly and resolving them systematically.
+
+This section documents the most common issues platform administrators encounter, their symptoms, diagnostic procedures, and resolution steps. These runbooks are living documents - we update them every time we encounter a new issue or discover a better resolution approach.
+
+The troubleshooting philosophy: gather data first (logs, metrics, error messages), form hypotheses about root cause, test hypotheses systematically, implement fix, verify resolution, and document for future reference. Avoid the temptation to blindly retry operations without understanding why they failed - you'll just hit the same failure repeatedly.
+
+For each issue, we provide the typical symptoms (what the user reports), diagnostic commands (how to investigate), and resolution steps (how to fix). Start with the diagnostics to confirm the root cause, then proceed with the appropriate resolution.
 
 **Issue 1: PSP Provisioning Failed**
 

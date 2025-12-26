@@ -25,6 +25,16 @@ const VerticalSolutionsDoc = `# FTS.Money Vertical Solutions
 
 ### The Vertical SaaS Opportunity
 
+The payments industry is undergoing a fundamental shift. For decades, payment processing was horizontal - Stripe, Square, and PayPal served all industries with the same basic product. But the future is vertical - industry-specific solutions that embed payments into specialized software.
+
+Why vertical? Because horizontal payment providers leave enormous value on the table. They can't build deep features for restaurants, schools, hotels, and hospitals simultaneously. They optimize for breadth, not depth. This creates opportunities for vertical-focused companies to deliver 10x better solutions for specific industries.
+
+The data proves this strategy works. Vertical SaaS companies achieve 3-5x higher ARPU than horizontal competitors because they solve complete workflows, not just payment acceptance. Toast (restaurant POS) captures far more wallet share than Square ever could in restaurants because they handle online ordering, kitchen management, and inventory - not just payments.
+
+Similarly, vertical SaaS companies experience 25-40% lower churn because switching costs are higher. Replacing a horizontal payment provider is easy - just swap the API. Replacing a vertical solution means migrating your entire operational workflow - reservations, scheduling, inventory, reporting - which most businesses won't attempt.
+
+FTS.Money's vertical strategy leverages our platform's flexibility. We can rapidly deploy industry-specific PSPs with specialized features, white-labeled for each vertical, powered by the same underlying infrastructure. This allows us to compete in multiple verticals simultaneously without the traditional development cost of building separate products.
+
 **Market Dynamics:**
 
 | Metric | Value | Growth |
@@ -85,6 +95,14 @@ graph LR
 ## Education Vertical
 
 ### Market Overview
+
+Education is an ideal first vertical for several reasons. The market is enormous ($6.5T globally), payment pain points are clear and consistent across institutions, the sales cycle is predictable (budget decisions happen in Q1-Q2 for fall implementation), and schools desperately need better payment solutions.
+
+Current education payment systems are terrible. Most schools use 15-year-old software with clunky parent portals, no mobile support, rigid payment plans, and poor integration with student information systems. Parents complain about user experience. Finance offices struggle with reconciliation. International students face currency conversion nightmares.
+
+We've identified three high-value use cases where we can deliver immediate ROI: tuition management (replacing legacy systems with modern payment plans and automation), campus card systems (closed-loop payments for campus stores and dining), and international student payments (multi-currency acceptance with transparent FX rates).
+
+The revenue model is attractive: $50-200 per student annually for schools using our full platform. A 5,000-student university would pay $250K-$1M yearly - far more than they'd pay a horizontal payment provider, but justified by the comprehensive solution addressing their complete payment workflow.
 
 | Metric | Value |
 |--------|-------|
@@ -180,6 +198,16 @@ sequenceDiagram
 ## Food & Beverage
 
 ### Market Overview
+
+The restaurant industry is undergoing massive technological transformation. COVID-19 accelerated digital adoption by 5+ years - contactless payments, QR code ordering, and online delivery went from nice-to-have to essential overnight. This created a massive greenfield opportunity for modern payment infrastructure.
+
+Restaurant payment needs are unique. They need table management (tracking who ordered what at which table). They need split bill functionality (divide by item, person, or custom amounts). They need tip management with complex pooling rules. They need tight integration with kitchen display systems and inventory management.
+
+Generic payment providers like Stripe can't address these needs - they just process card transactions. Specialized restaurant POS systems like Toast do address them but charge 40-60 basis points more than commodity processors as "software fees." This creates an opening for us.
+
+Our F&B solution provides restaurant-specific workflows at competitive payment processing rates. We make money on payment volume (2-3%), not inflated software fees. Restaurants get better economics; we get higher attach rates because the solution is purpose-built for their operations.
+
+The market is also fragmented - 1M+ restaurants in the US alone, with most independents still using legacy POS systems or expensive incumbents. The migration from cash to digital, plus the shift to online ordering, creates a decade-long replacement cycle we can capitalize on.
 
 | Metric | Value |
 |--------|-------|
@@ -323,6 +351,16 @@ sequenceDiagram
 
 ### Market Overview
 
+The hotel industry has been slower to modernize than restaurants or retail, creating an enormous catch-up opportunity. Most hotels still use property management systems (PMS) from the early 2000s with clunky interfaces, limited mobile capabilities, and poor payment integration.
+
+Modern travelers expect seamless digital experiences - book online, check in via mobile app, access rooms with phone as key, charge purchases to room, and check out without visiting the front desk. Yet most hotels can't deliver this because their PMS wasn't designed for mobile-first experiences.
+
+The payment component of hospitality is particularly complex. Hotels need to pre-authorize cards without charging (to ensure funds are available), handle incidentals (minibar, room service, late checkout), manage deposits and cancellations, process group bookings with master billing, and reconcile charges across multiple properties.
+
+Our hospitality solution addresses the complete payment journey from booking through checkout. We integrate with existing PMS systems (avoiding rip-and-replace) while adding modern payment capabilities they lack. This allows hotels to modernize their payment experience without replacing their core systems - a much easier sell than full PMS replacement.
+
+Revenue potential is significant. A 200-room hotel processing $12M annually in bookings could generate $180K-$360K in payment revenue for us at 1.5-3% take rates. Multiply across hotel chains with hundreds of properties and you see why hospitality is a priority vertical.
+
 | Metric | Value |
 |--------|-------|
 | **Global Market** | $1.5T hospitality industry |
@@ -376,6 +414,16 @@ graph TB
 ## Healthcare
 
 ### Market Overview
+
+Healthcare payments are broken. Medical billing is notorious for being confusing, slow, and frustrating for patients. The typical flow involves insurance claims (6-8 weeks), patient responsibility calculation (complex and error-prone), billing statement arrival (weeks later), and payment (check in mail or awkward phone calls).
+
+This archaic process creates massive accounts receivable problems for healthcare providers. Medical practices carry 60-90 days of outstanding receivables on average. Collection rates are poor - only 60-70% of patient responsibility is ever collected. Bad debt write-offs are significant.
+
+The solution is modern payment infrastructure with patient-friendly payment plans. Offer 0% interest payment plans for 3-12 months. Accept payments via text message. Provide self-service portals for viewing balances and making payments. Automate dunning for failed payments. Integrate with insurance systems for real-time eligibility and coverage verification.
+
+Healthcare is also unique in requiring HIPAA compliance for any system that touches Protected Health Information (PHI). Our payment system is designed to be HIPAA-compliant out of the box with Business Associate Agreements (BAA), encrypted storage, access logging, and minimum necessary principles. This is a significant barrier to entry that we've already overcome.
+
+The opportunity is massive - $3.5T in annual patient payments with most healthcare providers using inadequate payment systems. Even capturing 0.1% of this market represents $3.5B in payment volume and $50M+ in revenue for us.
 
 | Metric | Value |
 |--------|-------|
@@ -440,6 +488,16 @@ graph TB
 ## Real Estate
 
 ### Market Overview
+
+Rent collection is still largely manual for most property managers. Tenants mail checks (yes, physical checks in 2025), property managers deposit them at banks, accounting staff manually reconciles payments, and late fees are assessed inconsistently. This process is expensive, error-prone, and provides poor tenant experience.
+
+The shift to digital rent payment has been slower than other industries because real estate is traditionally conservative and fragmented - millions of small landlords and regional property management companies, not large national operators who could drive standardization.
+
+But the economics are compelling. Property managers paying $2-5 per unit monthly for automated rent collection is a tiny fraction of rental income (typically $1,000-$3,000 per unit monthly), yet it saves them enormous time in manual processing and improves cash flow through faster, more reliable collection.
+
+The key is integration with property management software. Property managers won't switch their core PMS just for better payments, but they'll happily add payment integration if it works seamlessly with their existing workflow. This is why we've prioritized integrations with Buildium, AppFolio, Yardi, and Rent Manager - collectively they cover 90%+ of professionally managed properties.
+
+Our pricing model aligns with the economics of real estate - low per-unit fees that scale with property count, plus small transaction percentages (0.5-1.5%) that are far below credit card rates. Most rent is collected via ACH (low cost) rather than cards, making this a high-volume, lower-margin business - but one with extreme stickiness once deployed.
 
 | Metric | Value |
 |--------|-------|
@@ -507,6 +565,14 @@ gantt
 
 ### Go-to-Market by Vertical
 
+Vertical expansion requires careful sequencing. We can't launch all verticals simultaneously - each needs dedicated development, sales expertise, and customer success resources. The phased approach prioritizes verticals by market size, competitive intensity, technical complexity, and strategic fit.
+
+Phase 1 targets F&B, Retail, and Education because they offer the fastest path to revenue with clear ROI stories. Restaurants need contactless ordering (COVID-accelerated demand). Retailers need omnichannel (online + in-store). Schools need better tuition management (parent satisfaction + administrative efficiency). These are established pain points with quantifiable solutions.
+
+Phase 2 adds Hotels, Healthcare, and Real Estate - larger opportunities but with longer sales cycles or more complex compliance requirements. Hotels have budget cycles tied to property renovations. Healthcare requires HIPAA compliance and insurance integration. Real estate has highly fragmented decision-making.
+
+Each vertical launch follows a playbook: develop core features, create demo environment, recruit 3-5 pilot customers, refine based on feedback, build sales materials, train sales team, and launch marketing campaign. This disciplined approach prevents the common mistake of spreading resources too thin across too many verticals.
+
 **Phase 1: Tier 1 Verticals (Months 1-6)**
 
 | Vertical | Priority | Rationale | Target |
@@ -526,6 +592,14 @@ gantt
 ### Partner Strategy
 
 **Vertical SaaS Partnerships:**
+
+The fastest path to scale in vertical markets is partnering with existing vertical SaaS platforms that already serve thousands of customers but lack sophisticated payment infrastructure. This is a win-win: they get better payments for their customers (improving retention and satisfaction), we get distribution to their installed base.
+
+Consider Toast, the leading restaurant POS system with 10,000+ customers. They currently use a third-party processor for payments, taking a small revenue share. If they partnered with FTS.Money, they could white-label our full PSP infrastructure, increase their payment revenue, and offer better features (multi-processor routing, advanced fraud detection, international payment acceptance).
+
+For us, a single partnership with Toast could represent 10,000 restaurants instantly - the equivalent of 2-3 years of direct sales effort. We'd power Toast's payment infrastructure behind the scenes while they maintain the customer relationship and brand. Revenue splits 50-70% to the partner, with us handling the operational complexity.
+
+This partnership model is our primary go-to-market strategy for verticals. Rather than trying to outmarket Toast in restaurants or Mindbody in fitness, we power their payment infrastructure and focus on what we do best - building and operating PSP platforms at scale.
 
 \`\`\`mermaid
 graph LR
@@ -567,6 +641,14 @@ graph LR
 ## Revenue Projections
 
 ### Unit Economics
+
+Vertical solutions economics are fundamentally different from horizontal SaaS. ARPU is 3-5x higher because you're solving complete workflows, not just one feature. Churn is 25-40% lower because replacing a deeply embedded operational system is extremely difficult. Sales cycles are 40-60% shorter because ROI is clear and quantifiable.
+
+These superior economics justify the higher investment required for vertical development. Building restaurant-specific features costs more than building generic payment processing. But the payback is faster and the lifetime value is dramatically higher.
+
+Our model assumes conservative customer acquisition in Year 1 (10 customers per vertical as we refine product-market fit), rapid expansion in Years 2-3 (reaching 50 customers as we scale sales), and continued growth in Years 4-5 (hitting 150 customers per vertical at maturity). ARPU grows over time as customers expand usage and adopt additional features.
+
+The gross margin improvement from 65% to 75% over five years reflects increasing operational efficiency. Early customers require more hand-holding and custom work. Later customers benefit from refined onboarding, better documentation, and more automated operations. The marginal cost of customer 100 is far lower than customer 1.
 
 **Per Vertical Solution:**
 

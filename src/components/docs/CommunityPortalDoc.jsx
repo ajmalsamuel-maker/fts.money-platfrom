@@ -25,7 +25,13 @@ const CommunityPortalDoc = `# Community Portal Documentation
 
 ### What is the Community Portal?
 
-The **FTS.Money Community Portal** is your gateway to launching and managing payment infrastructure services. Whether you're building a PSP, connecting legacy systems, or optimizing payment routing—everything starts here.
+Welcome to the future of payment infrastructure. The Community Portal is where you transform from a payment infrastructure consumer to a payment infrastructure provider. This is where fintech founders become PSP owners, where ISOs expand their capabilities, and where software companies add embedded finance.
+
+The **FTS.Money Community Portal** is your gateway to launching and managing payment infrastructure services. It's designed to be incredibly simple for beginners (you can launch a basic PSP in under an hour) while providing the depth that sophisticated operators need for complex deployments.
+
+Think of it as the "AWS Console" for payments. Just as AWS democratized cloud computing by making enterprise infrastructure accessible to startups, we're democratizing payment infrastructure. You get the same capabilities that power companies like Stripe and Adyen, without the $50M investment and 18-month development timeline.
+
+Whether you're building a PSP, connecting legacy systems, or optimizing payment routing—everything starts here. Your journey to becoming a payment infrastructure provider begins with a single click.
 
 ### Platform Services
 
@@ -70,6 +76,12 @@ mindmap
 ## Getting Started
 
 ### Create Your Account
+
+Creating your account is deliberately simple - we don't ask for payment details or business verification upfront. We want you to explore the platform, understand the capabilities, and provision a test PSP before committing financially.
+
+This approach differs from traditional payment companies that require extensive paperwork and business verification before you can even see their platform. We believe in transparency - try the product, understand the value, then buy. The entire signup process takes under 5 minutes.
+
+After signup, you'll complete your profile with information that helps us provide better service and appropriate resources. Are you a solo founder or a 50-person team? That determines what onboarding support you need. Are you processing $10K or $10M monthly? That affects which tier makes sense.
 
 **Step 1: Sign Up**
 
@@ -171,6 +183,14 @@ graph TB
 ## PSP Provisioning
 
 ### Why Launch a PSP?
+
+Launching a PSP has traditionally been the domain of well-funded companies with $10M+ in capital and teams of 50+ engineers. This high barrier to entry meant the payment processing market was dominated by a few large players, with limited competition and innovation.
+
+But the market is changing. Embedded finance is exploding - software companies want to offer payments as part of their product. Regional players want to compete with global processors by focusing on local payment methods. Vertical SaaS companies want to own the payment experience in their industry.
+
+All these businesses need PSP capabilities, but they don't want to build payment infrastructure - it's not their core competency. They want to focus on their unique value proposition (e.g., the best restaurant POS, the best education management system) and use a white-label PSP for payments.
+
+That's the opportunity FTS.Money addresses. We've compressed the 18-36 month build timeline into 24-48 hours. We've reduced the $5M-$50M investment to $499-$4,999/month. We've abstracted the complexity so you can focus on your business while we handle the infrastructure.
 
 **Traditional Approach:**
 \`\`\`
@@ -464,6 +484,14 @@ gantt
 
 ### What is ISO Gateway?
 
+Here's a problem most people outside the payment industry don't realize exists: financial systems speak different languages. A bank's core system from 1985 speaks ISO 8583. Modern payment networks speak ISO 20022. International wire transfers speak SWIFT MT. They literally cannot communicate directly.
+
+This creates a massive integration bottleneck. Banks want to offer modern payment capabilities but their 30-year-old core systems can't connect to new payment networks without expensive translation layers. Building these translators costs millions and takes 12-18 months. Most banks simply don't bother, which stifles innovation.
+
+The ISO Gateway Service solves this elegantly. We've built enterprise-grade translators that convert between any payment message format in real-time - ISO 8583 to ISO 20022, SWIFT MT to ISO 20022, proprietary formats to standard formats, you name it.
+
+For a regional bank, this means they can connect their legacy core banking system to modern instant payment networks (FedNow, RTP) without a multi-year, multi-million dollar rewrite. They just plug into our gateway, we handle the translation, and they're instantly modern. For us, it's a high-margin SaaS product with strong lock-in because switching translation layers is risky and expensive.
+
 The ISO Gateway Service enables seamless translation between payment messaging standards, allowing you to connect legacy systems to modern payment networks.
 
 ### Supported Standards
@@ -650,6 +678,14 @@ Cost per Message: $0.078
 ## Orchestration Service
 
 ### What is Payment Orchestration?
+
+Imagine you're running a PSP and relying entirely on Stripe for payment processing. One day, Stripe has an outage (they all do eventually). Your entire business stops. Merchants can't process transactions. You're losing thousands in revenue per minute. Customer support is overwhelmed. Your reputation takes a hit.
+
+Or consider a different scenario: you're paying Stripe 2.9% + $0.30 per transaction. Then you discover that for European transactions, Adyen charges only 2.5% + $0.25. For small transactions under $25, Checkout.com is even cheaper. You're overpaying on every transaction because you're locked into a single processor.
+
+Payment orchestration solves both problems. It connects you to multiple processors and intelligently routes each transaction to the optimal one based on your goals - minimize cost, maximize success rate, reduce latency, ensure redundancy, or any combination.
+
+The system monitors processor performance in real-time. When a processor's success rate drops or their API times out, traffic automatically shifts to alternatives. When a processor goes down completely, failover happens in seconds with zero manual intervention. This isn't just a nice-to-have feature - it's business continuity insurance.
 
 Payment orchestration intelligently routes transactions across multiple payment processors to optimize success rates, reduce costs, and ensure high availability.
 
@@ -875,6 +911,16 @@ ROI Calculation:
 
 ### Browse Services
 
+Running a PSP requires dozens of supporting services beyond core payment processing. You need KYC verification to onboard merchants compliantly. AML screening to prevent money laundering. Fraud detection to block bad actors. Email delivery for receipts. SMS for 2FA. Monitoring to track performance. The list goes on.
+
+Traditionally, integrating each service takes weeks of engineering time. You need to study their API, write connector code, handle authentication, manage errors, monitor performance, and maintain the integration as their API evolves. For a typical PSP, this represents 6-12 months of engineering effort.
+
+The Service Marketplace changes this equation entirely. We've pre-integrated 150+ services so you can activate them with literally one click. Need KYC verification? Click "Enable" on Jumio. Need fraud detection? Click "Enable" on Sift. Need email delivery? Click "Enable" on SendGrid.
+
+Behind the scenes, we've done the integration work - authentication, API calls, error handling, monitoring, billing consolidation. You get instant access to best-in-class services without writing a single line of code. We handle the technical complexity; you focus on business decisions (which services to use and when).
+
+This is our "app store" moment for payment infrastructure - taking complex B2B integrations and making them as simple as installing a mobile app.
+
 \`\`\`mermaid
 graph TB
     A[Service Marketplace<br/>150+ Services] --> B[Payment Rails]
@@ -982,6 +1028,14 @@ Total Monthly Cost: $816/month
 
 ### Understanding Your Bill
 
+Transparent, predictable billing is core to our philosophy. We've seen too many payment companies hide fees in complex pricing structures or surprise customers with unexpected charges. Our approach: clear pricing, itemized invoices, no surprises.
+
+Your monthly bill has four main components: base subscription (the tier you selected), usage overages (transactions beyond included amount), add-on features (optional modules you've enabled), and marketplace services (third-party services you use).
+
+Everything is metered and displayed clearly. If you process 52,000 transactions on a Professional plan that includes 50,000, you pay for exactly 2,000 overages at the published rate. If you use Jumio for 247 KYC checks, you see exactly what that costs. No hidden multipliers or surprise adjustments.
+
+We also aggregate all your service marketplace charges into a single FTS.Money invoice. Instead of managing 8 separate vendor invoices and payment methods, you pay one bill and we handle the distribution to service providers. This simplifies accounting and gives you visibility into total payment infrastructure costs.
+
 \`\`\`
 FTS.Money Invoice - January 2025
 Account: community_user_abc123
@@ -1062,6 +1116,14 @@ gantt
 ## Support & Resources
 
 ### Getting Help
+
+We believe great products need great support. Building payment infrastructure is complex, and even experienced teams hit roadblocks. Our support philosophy: make it easy to get help, respond quickly, and solve problems thoroughly.
+
+Support channels are tiered based on subscription level, but everyone gets access to comprehensive documentation and community resources. Documentation covers common scenarios and is continuously updated based on support tickets. The community forum lets you learn from other PSPs facing similar challenges.
+
+For paid support, response times scale with your tier - Starter customers get 24-hour email response, Professional customers get 4-hour priority support with chat access, Enterprise customers get dedicated Slack channels with 1-hour response and phone support for emergencies.
+
+The key is knowing where to go for different types of help. Check documentation for "how-to" questions. Use the forum for strategic advice from peers. Contact support for technical issues or bugs. For Enterprise customers, your dedicated success manager is your first point of contact for anything.
 
 **Documentation:**
 - Platform guides: [docs.fts.money](https://docs.fts.money)
