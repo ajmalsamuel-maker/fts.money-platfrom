@@ -224,6 +224,65 @@ graph TB
 
 ---
 
+## Core Services Architecture
+
+**Service Layer Components:**
+
+\`\`\`mermaid
+graph TB
+    subgraph "ISO Gateway Service"
+        ISO1[Message Parser]
+        ISO2[Format Validator]
+        ISO3[Protocol Translator]
+        ISO4[Routing Engine]
+    end
+    
+    subgraph "Orchestration Service"
+        ORCH1[Smart Router]
+        ORCH2[Health Monitor]
+        ORCH3[Cost Optimizer]
+        ORCH4[Failover Logic]
+    end
+    
+    subgraph "Crypto Gateway"
+        CRYPTO1[Blockchain Connectors]
+        CRYPTO2[Wallet Manager]
+        CRYPTO3[Exchange APIs]
+        CRYPTO4[Compliance Layer]
+    end
+    
+    APP[Payment Processor] --> ISO1
+    ISO1 --> ISO2
+    ISO2 --> ISO3
+    ISO3 --> ISO4
+    
+    APP --> ORCH1
+    ORCH1 --> ORCH2
+    ORCH2 --> ORCH3
+    ORCH3 --> ORCH4
+    
+    APP --> CRYPTO1
+    CRYPTO1 --> CRYPTO2
+    CRYPTO2 --> CRYPTO3
+    CRYPTO3 --> CRYPTO4
+    
+    ISO4 --> EXT1[Payment Networks]
+    ORCH4 --> EXT2[Payment Processors]
+    CRYPTO4 --> EXT3[Crypto Exchanges]
+\`\`\`
+
+**Service Specifications:**
+
+| Service | Purpose | Throughput | Latency | Availability |
+|---------|---------|------------|---------|--------------|
+| **ISO Gateway** | Message translation (8583, 20022, MT) | 10K msg/sec | <10ms | 99.99% |
+| **Orchestration** | Intelligent routing & failover | 50K txn/sec | <15ms | 99.99% |
+| **Crypto Gateway** | Digital asset processing | 5K txn/sec | 30-60s | 99.95% |
+| **Fraud Detection** | ML-powered risk scoring | 100K req/sec | <5ms | 99.99% |
+| **Compliance** | KYB/AML/Sanctions screening | 1K checks/sec | 2-5s | 99.9% |
+
+---
+
 ## Technology Stack
 
 ### Frontend Technologies
