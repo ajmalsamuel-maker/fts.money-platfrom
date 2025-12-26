@@ -226,6 +226,8 @@ import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
 import StrigaServiceManagement from './pages/StrigaServiceManagement';
+import CryptoGatewayLogin from './pages/CryptoGatewayLogin';
+import CryptoGatewayDashboard from './pages/CryptoGatewayDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -458,6 +460,8 @@ export const PAGES = {
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
     "StrigaServiceManagement": StrigaServiceManagement,
+    "CryptoGatewayLogin": CryptoGatewayLogin,
+    "CryptoGatewayDashboard": CryptoGatewayDashboard,
 }
 
 export const pagesConfig = {
