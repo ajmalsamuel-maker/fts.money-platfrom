@@ -758,7 +758,7 @@ Transaction Monitoring:
 
 ### Striga API Management
 
-**API Connector:** `functions/strigaConnector.js`
+**API Connector:** functions/strigaConnector.js
 
 **Available Operations:**
 
