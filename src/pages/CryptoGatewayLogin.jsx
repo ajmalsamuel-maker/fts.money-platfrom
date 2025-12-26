@@ -7,12 +7,10 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Wallet, ArrowRight, Shield, Zap } from 'lucide-react';
 import { FTS_LOGOS } from '@/components/community/FTSBrandColors';
 
-function CryptoGatewayLogin() {
+export default function CryptoGatewayLogin() {
     const [credentials, setCredentials] = useState({ email: '', password: '' });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-    
-    // Crypto Gateway Login Portal
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -20,7 +18,6 @@ function CryptoGatewayLogin() {
         setLoading(true);
 
         try {
-            // Call crypto gateway auth endpoint
             const response = await fetch('/api/cryptoGatewayAuth', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -30,7 +27,6 @@ function CryptoGatewayLogin() {
             const data = await response.json();
 
             if (data.success) {
-                // Store session
                 localStorage.setItem('crypto_gateway_session', JSON.stringify({
                     user: data.user,
                     customer_id: data.customer_id,
@@ -49,14 +45,12 @@ function CryptoGatewayLogin() {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950 flex items-center justify-center p-6 relative overflow-hidden">
-            {/* Animated background elements */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse"></div>
                 <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
             </div>
 
             <div className="relative z-10 w-full max-w-6xl grid md:grid-cols-2 gap-8 items-center">
-                {/* Left side - Branding & Value Props */}
                 <div className="text-white space-y-8">
                     <div>
                         <img src={FTS_LOGOS.primary} alt="FTS.Money" className="h-12 mb-6" />
@@ -93,7 +87,6 @@ function CryptoGatewayLogin() {
                     </div>
                 </div>
 
-                {/* Right side - Login Card */}
                 <Card className="border-slate-800 bg-slate-900/80 backdrop-blur-xl">
                     <CardHeader>
                         <CardTitle className="text-2xl text-white">Sign In</CardTitle>
@@ -103,6 +96,12 @@ function CryptoGatewayLogin() {
                     </CardHeader>
                     <CardContent>
                         <form onSubmit={handleLogin} className="space-y-4">
+                            {error && (
+                                <Alert variant="destructive" className="bg-red-900/20 border-red-500/50">
+                                    <AlertDescription className="text-red-200">{error}</AlertDescription>
+                                </Alert>
+                            )}
+
                             <div>
                                 <Label htmlFor="email" className="text-slate-300">Email</Label>
                                 <Input
@@ -128,12 +127,6 @@ function CryptoGatewayLogin() {
                                     required
                                 />
                             </div>
-
-                            {error && (
-                                <Alert variant="destructive" className="bg-red-900/20 border-red-500/50">
-                                    <AlertDescription className="text-red-200">{error}</AlertDescription>
-                                </Alert>
-                            )}
 
                             <Button 
                                 type="submit" 
@@ -163,5 +156,3 @@ function CryptoGatewayLogin() {
         </div>
     );
 }
-
-export default CryptoGatewayLogin;
