@@ -1,4 +1,4 @@
-export const CommunityPortalDoc = `
+const CommunityPortalDoc = `
 # Community Portal Documentation
 ## Self-Service Payment Infrastructure Marketplace
 
@@ -2027,3 +2027,5 @@ FTS.Money aims to become the universal operating system for payments, where:
 **Last Updated:** December 26, 2025  
 **Owner:** FTS.Money Product Team
 `;
+
+export default CommunityPortalDoc;

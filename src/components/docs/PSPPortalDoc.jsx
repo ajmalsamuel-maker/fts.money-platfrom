@@ -1,4 +1,5 @@
-export const PSPPortalDoc = `
+
+const PSPPortalDoc = `
 # PSP Portal Documentation
 ## Payment Service Provider Operations & Management Platform
 
@@ -39,3 +40,5 @@ Complete architecture documentation with multi-tenancy isolation, authentication
 **Last Updated:** December 26, 2025  
 **Owner:** FTS.Money Product Team
 `;
+
+export default PSPPortalDoc;

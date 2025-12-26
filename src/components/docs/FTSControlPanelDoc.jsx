@@ -1,4 +1,4 @@
-export const FTSControlPanelDoc = `
+const FTSControlPanelDoc = `
 # FTS Control Panel Documentation
 ## Platform Administration & Global Infrastructure Management
 
@@ -1685,3 +1685,5 @@ useEffect(() => {
 **Next Review:** March 2026  
 **Owner:** FTS.Money Platform Team
 `;
+
+export default FTSControlPanelDoc;

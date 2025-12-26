@@ -208,6 +208,7 @@ import SubMerchants from './pages/SubMerchants';
 import Subscriptions from './pages/Subscriptions';
 import Support from './pages/Support';
 import SystemArchitectureDocumentation from './pages/SystemArchitectureDocumentation';
+import FTSDocumentation from './pages/FTSDocumentation';
 import TenantManagement from './pages/TenantManagement';
 import TenantUserManagement from './pages/TenantUserManagement';
 import Terminals from './pages/Terminals';
@@ -224,7 +225,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import FTSDocumentation from './pages/FTSDocumentation';
 import __Layout from './Layout.jsx';
 
 
@@ -439,6 +439,7 @@ export const PAGES = {
     "Subscriptions": Subscriptions,
     "Support": Support,
     "SystemArchitectureDocumentation": SystemArchitectureDocumentation,
+    "FTSDocumentation": FTSDocumentation,
     "TenantManagement": TenantManagement,
     "TenantUserManagement": TenantUserManagement,
     "Terminals": Terminals,
@@ -455,7 +456,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "FTSDocumentation": FTSDocumentation,
 }
 
 export const pagesConfig = {
