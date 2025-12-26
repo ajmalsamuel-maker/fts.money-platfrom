@@ -224,7 +224,6 @@ import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
 import CommunityAnalytics from './pages/CommunityAnalytics';
 import FTSSystemHealth from './pages/FTSSystemHealth';
-import SystemDocumentation from './pages/SystemDocumentation';
 import __Layout from './Layout.jsx';
 
 
@@ -455,7 +454,6 @@ export const PAGES = {
     "XeroIntegration": XeroIntegration,
     "CommunityAnalytics": CommunityAnalytics,
     "FTSSystemHealth": FTSSystemHealth,
-    "SystemDocumentation": SystemDocumentation,
 }
 
 export const pagesConfig = {
