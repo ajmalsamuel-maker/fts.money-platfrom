@@ -73,6 +73,12 @@ mindmap
 
 ### 1. PSP Provisioning Service
 
+This is our flagship product - the foundation everything else builds on. PSP Provisioning is like "AWS for payment processing" - click a few buttons, wait 24-48 hours, and you have a fully functional payment service provider with all the bells and whistles.
+
+The magic happens in the automation. What traditionally takes 50+ engineers 18 months to build, we provision automatically through infrastructure-as-code, pre-built templates, and intelligent configuration. The customer just makes decisions about what they want; we handle the technical implementation.
+
+This product generates our core recurring revenue ($499-$4,999/month) and serves as the entry point for all other services. Once a customer has a PSP instance, we can upsell them on ISO Gateway, Orchestration, marketplace services, and more.
+
 **What It Does:**
 Deploy fully-functional Payment Service Provider instances in 24-48 hours
 

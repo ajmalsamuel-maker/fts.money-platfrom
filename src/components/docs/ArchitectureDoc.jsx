@@ -25,7 +25,11 @@ const ArchitectureDoc = `# FTS.Money Platform Architecture
 
 ### Platform Overview
 
-FTS.Money is a **multi-tenant payment infrastructure platform** that enables rapid deployment of fully-functional Payment Service Provider (PSP) instances. Our architecture is designed for:
+FTS.Money represents a paradigm shift in payment infrastructure deployment. Traditional payment service providers take 12-36 months and $5M-$50M to build, requiring teams of 50+ engineers and extensive compliance work. Our platform changes this equation entirely.
+
+We've built a **multi-tenant payment infrastructure platform** that enables businesses to launch fully-functional Payment Service Provider (PSP) instances in just 24-48 hours. Think of it as "AWS for payment processing" - we provide the underlying infrastructure, security, and compliance framework so you can focus on your business.
+
+Our architecture is battle-tested and designed for:
 
 - **High Performance:** 100,000+ TPS capacity
 - **Global Scale:** Multi-region deployment
@@ -34,6 +38,10 @@ FTS.Money is a **multi-tenant payment infrastructure platform** that enables rap
 - **Cost Efficiency:** Shared infrastructure, isolated data
 
 ### Architecture Philosophy
+
+Our architectural decisions are driven by three core principles: efficiency, security, and scalability. Rather than building isolated systems for each customer, we've created a sophisticated multi-tenant architecture that shares infrastructure while maintaining strict data isolation.
+
+This approach allows us to offer enterprise-grade payment processing at a fraction of the traditional cost, while maintaining the highest security standards. Every component is designed with multi-tenancy in mind, from the database layer to the API gateway.
 
 **Multi-Tenant by Design:**
 - Single codebase serves all PSPs
@@ -54,6 +62,12 @@ FTS.Money is a **multi-tenant payment infrastructure platform** that enables rap
 ## System Architecture
 
 ### High-Level Architecture
+
+The FTS.Money platform consists of multiple layers, each serving a specific purpose in the payment processing flow. This layered architecture provides clear separation of concerns, makes the system easier to scale, and enhances security through segmentation.
+
+At the edge, Cloudflare protects us from attacks and accelerates global delivery. Behind that, our portal layer provides different interfaces for different user types - platform administrators, community users, PSP operators, merchants, and service-specific customers. The API gateway handles authentication and rate limiting before requests reach our processing layer.
+
+The application layer runs on AWS ECS, allowing us to scale horizontally based on demand. Our service layer contains specialized services for ISO message translation, payment orchestration, and crypto processing. Finally, our data layer uses PostgreSQL for transactions, Redis for caching, and SQS for async processing.
 
 \`\`\`mermaid
 graph TB
@@ -142,6 +156,12 @@ graph TB
 
 ### Request Flow
 
+Understanding how a payment flows through our system is crucial for performance optimization. Every millisecond matters in payment processing - customers expect instant responses, and slower processing can lead to cart abandonment.
+
+We've optimized our request flow to minimize latency at every step. From the initial request to the final response, we aim for sub-200ms processing time at the 99th percentile. This is achieved through strategic caching, efficient routing, and parallel processing where possible.
+
+Here's how a typical transaction flows through the system:
+
 | Step | Component | Action | Duration |
 |------|-----------|--------|----------|
 | **1** | Client | Initiates payment request | - |
@@ -163,6 +183,14 @@ graph TB
 ## Multi-Tenancy Model
 
 ### Tenant Isolation Strategy
+
+Multi-tenancy is the foundation of our cost efficiency and scalability. By sharing infrastructure across multiple PSPs while maintaining strict data isolation, we achieve economies of scale that would be impossible with dedicated deployments.
+
+However, multi-tenancy introduces unique challenges, particularly around security and data isolation. In the payments industry, where PCI DSS compliance is mandatory, we must ensure that one tenant can never access another tenant's data - even accidentally.
+
+Our solution uses a combination of logical and physical isolation mechanisms. At the database level, each PSP gets its own schema with row-level security enforcement. This means even if application code has a bug, the database itself prevents cross-tenant data access.
+
+Here's how our multi-tenant architecture works:
 
 \`\`\`mermaid
 graph TB
@@ -200,6 +228,10 @@ graph TB
 
 ### Isolation Mechanisms
 
+Every layer of our stack implements isolation in a way that's appropriate for that layer's characteristics. The database requires the strongest isolation (separate schemas), while the cache can use logical separation through key prefixing since it doesn't contain sensitive card data.
+
+This defense-in-depth approach means that even if one isolation mechanism fails, others are in place to prevent cross-tenant access. It's not just about security - it's also about compliance. Auditors need to see multiple layers of protection to certify our PCI DSS compliance.
+
 | Layer | Isolation Method | Security Boundary |
 |-------|-----------------|-------------------|
 | **Database** | Separate schema per PSP | Row-level security (RLS) enforced |
@@ -210,6 +242,10 @@ graph TB
 | **Domain** | Subdomain per PSP | SSL per domain |
 
 ### Benefits of Multi-Tenancy
+
+The multi-tenant model delivers benefits that compound over time. As we add more PSPs to the platform, the per-PSP cost continues to decrease while reliability increases (more traffic means better anomaly detection and faster optimization).
+
+This creates a virtuous cycle: lower costs allow us to serve smaller PSPs profitably, which increases our scale, which further reduces costs. Traditional PSPs can't compete at the low end of the market because their dedicated infrastructure model doesn't scale down cost-effectively.
 
 **Cost Efficiency:**
 - Shared infrastructure reduces cost by 70%
