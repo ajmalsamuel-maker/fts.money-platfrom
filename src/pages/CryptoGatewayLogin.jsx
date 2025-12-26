@@ -11,6 +11,8 @@ function CryptoGatewayLogin() {
     const [credentials, setCredentials] = useState({ email: '', password: '' });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    
+    // Force refresh
 
     const handleLogin = async (e) => {
         e.preventDefault();
