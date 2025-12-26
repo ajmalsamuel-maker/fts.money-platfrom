@@ -80,7 +80,8 @@
     "iso-3166-1-codes": "^1.0.0",
     "ibantools": "^4.5.1",
     "xlsx": "^0.18.5",
-    "mermaid": "^10.6.1"
+    "mermaid": "^10.6.1",
+    "remark-gfm": "^4.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",

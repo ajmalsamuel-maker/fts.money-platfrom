@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Download, FileText, BookOpen, Code, GitBranch } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
 import FTSPlatformSidebarRestructured from '@/components/platform/FTSPlatformSidebarRestructured';
 import FTSOverviewDoc from '@/components/docs/FTSOverviewDoc';
@@ -242,6 +243,7 @@ export default function FTSDocumentation() {
                                     <CardContent className="p-8 bg-white">
                                         <div className="prose prose-slate max-w-none">
                                             <ReactMarkdown
+                                                remarkPlugins={[remarkGfm]}
                                                 components={{
                                                     h1: ({ children }) => {
                                                         const id = String(children).toLowerCase().replace(/[^a-z0-9]+/g, '-');
