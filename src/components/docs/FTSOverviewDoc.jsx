@@ -372,24 +372,66 @@ sequenceDiagram
     participant User as Community User
     participant Portal as Community Portal
     participant Prov as Provisioning Service
+    participant KYB as KYB Service
     participant DB as Database
     participant Cloud as Cloud Provider
+    participant K8s as Kubernetes
     participant Deploy as Deployment Engine
+    participant Sec as Security Service
     
-    User->>Portal: Select PSP Tier
-    Portal->>Prov: Create PSP Request
+    User->>Portal: Select PSP Tier & Configure
+    Portal->>Portal: Validate Configuration
+    Portal->>Prov: Submit PSP Request
+    
+    Note over Prov: Verification Phase (30min-24h)
+    Prov->>KYB: Verify Business Info
+    KYB->>KYB: Check Registration
+    KYB->>KYB: Validate Tax ID
+    KYB->>KYB: Screen Sanctions
+    KYB-->>Prov: Verification Complete
+    
+    Note over Prov: Database Setup (2-3 min)
     Prov->>DB: Create Tenant Schema
-    DB-->>Prov: Schema Created
-    Prov->>Cloud: Provision Resources
-    Cloud-->>Prov: Resources Ready
-    Prov->>Deploy: Deploy PSP Stack
-    Deploy->>Deploy: Install Components
-    Deploy->>Deploy: Configure Services
-    Deploy->>Deploy: Setup Monitoring
-    Deploy-->>Prov: Deployment Complete
-    Prov->>DB: Update PSP Status
-    Prov-->>Portal: PSP Ready
-    Portal-->>User: Access Credentials
+    DB->>DB: Initialize Tables
+    DB->>DB: Apply Constraints
+    DB->>DB: Setup Replication
+    DB-->>Prov: Schema Ready
+    
+    Note over Prov: Cloud Provisioning (5-8 min)
+    Prov->>Cloud: Request Resources
+    Cloud->>Cloud: Allocate Compute (vCPUs)
+    Cloud->>Cloud: Allocate Storage (SSD)
+    Cloud->>Cloud: Configure Network (VPC)
+    Cloud-->>Prov: Resources Allocated
+    
+    Note over Prov: Kubernetes Deployment (10-15 min)
+    Prov->>K8s: Deploy Application Stack
+    K8s->>Deploy: Install API Gateway
+    K8s->>Deploy: Install Auth Service
+    K8s->>Deploy: Install Transaction Processor
+    K8s->>Deploy: Install Admin Portal
+    K8s->>Deploy: Install Merchant Portal
+    Deploy-->>K8s: Services Running
+    
+    Note over Prov: Security Setup (3-5 min)
+    Prov->>Sec: Configure Security
+    Sec->>Sec: Generate API Keys
+    Sec->>Sec: Setup SSL Certificates
+    Sec->>Sec: Configure Firewall Rules
+    Sec->>Sec: Initialize Encryption Keys
+    Sec-->>Prov: Security Ready
+    
+    Note over Prov: Health Checks (4-6 min)
+    Prov->>Deploy: Run Health Checks
+    Deploy->>Deploy: Test API Endpoints
+    Deploy->>Deploy: Test DB Connectivity
+    Deploy->>Deploy: Test Service Mesh
+    Deploy-->>Prov: All Systems Operational
+    
+    Prov->>DB: Update PSP Status (Active)
+    Prov->>Portal: Send Credentials
+    Portal->>User: Email Welcome Package
+    Portal-->>User: Access PSP Portal
 \`\`\`
 
 #### Features
