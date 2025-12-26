@@ -642,9 +642,9 @@ ORDER BY activated_date DESC;
 
 ### Managing Direct Customers (Exchanges/DeFi)
 
-**Customer Portal:** `/CryptoGatewayLogin`
+**Customer Portal:** /CryptoGatewayLogin
 
-**Customer Entity:** `CryptoGatewayCustomer`
+**Customer Entity:** CryptoGatewayCustomer
 
 \`\`\`javascript
 // Create new direct customer
