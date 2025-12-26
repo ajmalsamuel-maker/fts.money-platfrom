@@ -167,3 +167,5 @@ function CryptoGatewayLogin() {
         </div>
     );
 }
+
+export default CryptoGatewayLogin;
