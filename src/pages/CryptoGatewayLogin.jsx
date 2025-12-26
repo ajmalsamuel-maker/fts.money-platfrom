@@ -1,3 +1,4 @@
+// Crypto Gateway Login - FTS.Money Enterprise Portal
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -9,7 +10,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Wallet, ArrowRight, Shield, Zap } from 'lucide-react';
 import { FTS_COLORS, FTS_LOGOS } from '@/components/community/FTSBrandColors';
 
-export default function CryptoGatewayLogin() {
+function CryptoGatewayLogin() {
     const navigate = useNavigate();
     const [credentials, setCredentials] = useState({ email: '', password: '' });
     const [error, setError] = useState('');
