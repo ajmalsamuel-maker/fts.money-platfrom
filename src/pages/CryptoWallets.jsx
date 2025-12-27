@@ -29,8 +29,6 @@ export default function CryptoWallets() {
             <CryptoGatewaySidebar currentPage="CryptoWallets" userEmail={session.user.email} />
             
             <div className="flex-1 flex flex-col overflow-hidden">
-                <FintechNewsTicker />
-                
                 <div className="flex-1 overflow-auto">
                     <div className="p-8">
                         <div className="flex justify-between items-center mb-8">
@@ -38,7 +36,10 @@ export default function CryptoWallets() {
                                 <h1 className="text-3xl font-bold text-slate-900 mb-2">Crypto Wallets</h1>
                                 <p className="text-slate-600">Manage your cryptocurrency wallets</p>
                             </div>
-                            <Button className="bg-gradient-to-r from-blue-600 to-cyan-600">
+                            <Button 
+                                className="bg-gradient-to-r from-blue-600 to-cyan-600"
+                                onClick={() => alert('Wallet creation feature coming soon - will integrate with Striga API')}
+                            >
                                 <Plus className="w-4 h-4 mr-2" />
                                 Create Wallet
                             </Button>

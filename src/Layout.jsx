@@ -10,8 +10,9 @@ export default function Layout({ children }) {
         const staffSession = localStorage.getItem('staff_session');
         const merchantSession = localStorage.getItem('merchantSession');
         const platformSession = localStorage.getItem('platform_admin_session');
+        const cryptoSession = localStorage.getItem('crypto_gateway_session');
         
-        if (staffSession || merchantSession || platformSession) {
+        if (staffSession || merchantSession || platformSession || cryptoSession) {
             setIsStaffSession(true);
         }
     }, []);
