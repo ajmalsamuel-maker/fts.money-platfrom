@@ -108,7 +108,7 @@ export default function StrigaServiceManagement() {
                                 <CardTitle className="text-sm font-medium text-slate-600">Available Services</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <div className="text-3xl font-bold text-slate-900">{strigaServices.length}</div>
+                                <div className="text-3xl font-bold text-slate-900">{cryptoServices.length}</div>
                                 <p className="text-xs text-slate-500 mt-1">In marketplace</p>
                             </CardContent>
                         </Card>
