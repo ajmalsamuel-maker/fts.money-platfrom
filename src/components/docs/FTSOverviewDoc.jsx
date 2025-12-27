@@ -430,7 +430,7 @@ graph TB
 - Revenue share: FTS.Money margin + PSP markup
 
 **Distribution Channel 2: Standalone Portal (Direct Sales)**
-- Dedicated Crypto Gateway Portal at /CryptoGatewayLogin
+- Dedicated Crypto Gateway Portal (CryptoGatewayLogin page)
 - Direct sales to exchanges and DeFi platforms
 - Independent authentication and billing
 - Full self-service crypto banking
