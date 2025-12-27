@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { cn } from "@/lib/utils";
-import { FTS_LOGOS } from '@/components/community/FTSBrandColors';
 import { 
     LayoutDashboard, Wallet, Users, Activity, Settings, 
     Key, FileText, LogOut, Shield, TrendingUp

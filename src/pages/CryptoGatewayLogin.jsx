@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { FTS_COLORS, FTS_GRADIENTS, FTS_LOGOS } from '@/components/community/FTSBrandColors';
+import StrigaDisclaimer from '@/components/crypto/StrigaDisclaimer';
 import { Wallet, ArrowRight } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
@@ -65,21 +66,21 @@ export default function CryptoGatewayLogin() {
                         />
                         <div>
                             <h1 className="text-3xl font-bold text-slate-900" style={{ fontFamily: 'Montserrat, sans-serif' }}>
-                                FTS.Money Crypto Gateway
+                                FTS.Money Crypto Banking
                             </h1>
                             <p className="text-lg mt-1" style={{ color: FTS_COLORS.aqua }}>
                                 Fluid global payments
                             </p>
                         </div>
-                    </div>
-                    <p className="text-slate-700 text-lg font-medium">Enterprise Crypto Banking</p>
+                        </div>
+                        <p className="text-slate-700 text-lg font-medium">Enterprise Crypto Banking Infrastructure</p>
                 </div>
 
                 <Card className="bg-white/95 backdrop-blur border-slate-200 shadow-xl">
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                             <Wallet className="h-5 w-5 text-blue-600" />
-                            Gateway Login
+                            Banking Portal Login
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
@@ -117,22 +118,24 @@ export default function CryptoGatewayLogin() {
                                 className="w-full text-white"
                                 style={{ background: FTS_GRADIENTS.dark1 }}
                                 disabled={loading}
-                            >
-                                {loading ? 'Signing in...' : 'Access Gateway'}
+                                >
+                                {loading ? 'Signing in...' : 'Access Banking Portal'}
                                 <ArrowRight className="ml-2 h-4 w-4" />
-                            </Button>
+                                </Button>
 
                             <p className="text-center text-sm text-slate-600">
                                 Forgot password? <a href="#" className="text-blue-600 hover:underline">Reset here</a>
                             </p>
                         </form>
                     </CardContent>
-                </Card>
+                    </Card>
 
-                <p className="text-center text-slate-600 text-sm mt-6" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                    <StrigaDisclaimer />
+
+                    <p className="text-center text-slate-600 text-sm mt-6" style={{ fontFamily: 'Montserrat, sans-serif' }}>
                     © 2025 FTS.Money - Fluid global payments
-                </p>
-            </div>
-        </div>
-    );
-}
+                    </p>
+                    </div>
+                    </div>
+                    );
+                    }

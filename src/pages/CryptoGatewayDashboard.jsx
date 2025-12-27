@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { FTS_COLORS, FTS_LOGOS } from '@/components/community/FTSBrandColors';
+import StrigaDisclaimer from '@/components/crypto/StrigaDisclaimer';
 import { 
     Wallet, TrendingUp, Users, Activity, Bitcoin, 
     ArrowUpRight, ArrowDownRight, Zap, AlertCircle,
@@ -142,7 +143,7 @@ export default function CryptoGatewayDashboard() {
                 <div className="flex items-center gap-3">
                     <div className="text-right">
                         <p className="text-sm font-medium text-slate-900">{session.user.email}</p>
-                        <p className="text-xs text-slate-500">Crypto Gateway</p>
+                        <p className="text-xs text-slate-500">Crypto Banking</p>
                     </div>
                     <button
                         onClick={() => {
@@ -682,8 +683,11 @@ export default function CryptoGatewayDashboard() {
                                 </CardContent>
                             </Card>
                             </div>
-                </div>
-            </div>
-        </div>
-    );
-}
+
+                            {/* Legal Disclaimer */}
+                            <StrigaDisclaimer />
+                            </div>
+                            </div>
+                            </div>
+                            );
+                            }
