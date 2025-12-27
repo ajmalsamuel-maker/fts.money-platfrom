@@ -98,7 +98,7 @@ export default function CommunityPortalSidebarOptimized({ currentPage, userEmail
                 { icon: Package, label: 'All Services', path: 'MyAllServices', count: totalServices },
                 { icon: Building2, label: 'PSP Instances', path: 'MyPSPInstances', count: myPSPs.length },
                 { icon: Code, label: 'ISO Gateway', path: 'ISOGatewayLogin', count: myISOCustomers.length },
-                { icon: GitBranch, label: 'Orchestration', path: 'OrchestrationLogin', count: myOrchCustomers.length }
+                { icon: GitBranch, label: 'Orchestration', path: 'OrchestrationLogin', count: myOrchCustomers.length },
                 { icon: FileText, label: 'Subscriptions', path: 'MySubscriptions', count: subscriptions.length }
             ]
         }] : []),
