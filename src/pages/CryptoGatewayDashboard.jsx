@@ -39,23 +39,10 @@ export default function CryptoGatewayDashboard() {
     ];
 
     return (
-        <div className="flex h-screen bg-slate-50">
+        <div className="flex flex-col h-screen bg-slate-50">
             <CryptoGatewaySidebar currentPage="CryptoGatewayDashboard" userEmail={session.user.email} />
 
-            <div className="flex-1 flex flex-col overflow-hidden">
-                <div className="flex-1 overflow-auto">
-                    <div className="bg-white border-b border-slate-200 px-8 py-5 sticky top-0 z-10">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <h1 className="text-2xl font-bold text-slate-900" style={{ fontFamily: 'Montserrat, sans-serif' }}>
-                                    Dashboard
-                                </h1>
-                                <p className="text-sm text-slate-600 mt-1">Welcome back, {session.user.company_name || session.user.email}</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div className="p-8">
+            <div className="p-8">
 
                         <div className="space-y-8">
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -217,9 +204,7 @@ export default function CryptoGatewayDashboard() {
                                     </CardContent>
                                 </Card>
                             </div>
-                        </div>
-                    </div>
-                </div>
+                            </div>
             </div>
         </div>
     );
