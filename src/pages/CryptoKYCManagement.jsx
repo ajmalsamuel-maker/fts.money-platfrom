@@ -159,6 +159,28 @@ export default function CryptoKYCManagement() {
                                                             <span>Contact: {customer.contact_name || 'N/A'}</span>
                                                             <span>Submitted: {new Date(customer.created_date).toLocaleDateString()}</span>
                                                         </div>
+                                                        {customer.lei && (
+                                                            <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded text-xs">
+                                                                <div className="flex items-center gap-2">
+                                                                    <Shield className="h-3 w-3 text-blue-600" />
+                                                                    <span className="font-semibold text-blue-900">LEI:</span>
+                                                                    <span className="font-mono text-blue-800">{customer.lei}</span>
+                                                                    <Badge variant={
+                                                                        customer.lei_status === 'verified' ? 'default' :
+                                                                        customer.lei_status === 'pending' ? 'secondary' : 'destructive'
+                                                                    } className="text-[9px]">
+                                                                        {customer.lei_status}
+                                                                    </Badge>
+                                                                </div>
+                                                                {customer.vlei && (
+                                                                    <div className="flex items-center gap-2 mt-1">
+                                                                        <span className="font-semibold text-blue-900">vLEI:</span>
+                                                                        <CheckCircle2 className="h-3 w-3 text-green-600" />
+                                                                        <span className="text-green-700">Verified</span>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        )}
                                                     </div>
                                                     <div className="flex gap-2">
                                                         <Button 
@@ -207,8 +229,16 @@ export default function CryptoKYCManagement() {
                                                         <div className="flex items-center gap-2 mb-1">
                                                             <h3 className="font-semibold text-slate-900">{customer.company_name}</h3>
                                                             <Badge className="bg-green-600">Compliant</Badge>
+                                                            {customer.lei_status === 'verified' && (
+                                                                <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-300">
+                                                                    LEI Verified
+                                                                </Badge>
+                                                            )}
                                                         </div>
                                                         <p className="text-sm text-slate-600">{customer.email}</p>
+                                                        {customer.lei && (
+                                                            <p className="text-xs text-slate-500 font-mono mt-1">LEI: {customer.lei}</p>
+                                                        )}
                                                     </div>
                                                     <Button variant="outline" size="sm">View Details</Button>
                                                 </div>
