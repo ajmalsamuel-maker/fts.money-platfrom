@@ -73,13 +73,10 @@ export default function CryptoGatewayDashboard() {
     return (
         <div className="flex flex-col h-screen bg-slate-50">
             <CryptoGatewaySidebar currentPage="CryptoGatewayDashboard" userEmail={session.user.email} />
-            
-            {/* Main Content */}
-            <div className="flex-1 overflow-auto p-8">
-                <div className="mb-6">
-                    <h1 className="text-3xl font-bold text-slate-900">Dashboard</h1>
-                    <p className="text-slate-600 mt-1">Welcome back, {session.user.company_name || session.user.email}</p>
-                </div>
+            <div className="mb-6">
+                <h1 className="text-3xl font-bold text-slate-900">Dashboard</h1>
+                <p className="text-slate-600 mt-1">Welcome back, {session.user.company_name || session.user.email}</p>
+            </div>
 
                 <div className="space-y-6">
                     {/* Alerts Banner */}
@@ -395,9 +392,7 @@ export default function CryptoGatewayDashboard() {
                                     </div>
                                 </CardContent>
                             </Card>
-                            </div>
                         </div>
-            </div>
         </div>
     );
 }
