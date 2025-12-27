@@ -22,7 +22,9 @@ export default function CryptoGatewayCustomers() {
         company_type: 'exchange',
         contact_name: '',
         phone: '',
-        website: ''
+        website: '',
+        lei: '',
+        tas_id: ''
     });
     const queryClient = useQueryClient();
 
@@ -258,6 +260,16 @@ export default function CryptoGatewayCustomers() {
                                                         }>
                                                             {customer.status}
                                                         </Badge>
+                                                        {customer.compliance_status === 'grace_period' && (
+                                                            <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-300">
+                                                                Grace Period
+                                                            </Badge>
+                                                        )}
+                                                        {customer.requires_kyb && customer.kyb_status !== 'completed' && (
+                                                            <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-300">
+                                                                KYB Required
+                                                            </Badge>
+                                                        )}
                                                         {customer.kyc_enabled && (
                                                             <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
                                                                 KYC Enabled
