@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Users, Plus, Search, Building2, CheckCircle2, AlertCircle, Clock, TrendingUp } from 'lucide-react';
+import { Users, Plus, Search, Building2, CheckCircle2, AlertCircle, Clock, TrendingUp, Shield, Activity } from 'lucide-react';
 
 export default function CryptoGatewayCustomers() {
     const { platformUser, loading: authLoading } = usePlatformAuth();
@@ -34,7 +34,25 @@ export default function CryptoGatewayCustomers() {
     });
 
     const createCustomerMutation = useMutation({
-        mutationFn: (data) => base44.asServiceRole.entities.CryptoGatewayCustomer.create(data),
+        mutationFn: (data) => {
+            const gracePeriodEnd = new Date();
+            gracePeriodEnd.setMonth(gracePeriodEnd.getMonth() + 3);
+            
+            const hasLEI = data.lei && data.lei.trim() !== '';
+            const hasTAS = data.tas_id && data.tas_id.trim() !== '';
+            
+            const customerData = {
+                ...data,
+                compliance_status: (!hasLEI && !hasTAS) ? 'grace_period' : 'pending_review',
+                compliance_grace_period_end: (!hasLEI && !hasTAS) ? gracePeriodEnd.toISOString() : null,
+                requires_kyb: hasLEI && !hasTAS,
+                kyb_status: (hasLEI && !hasTAS) ? 'not_started' : 'not_started',
+                lei_status: hasLEI ? 'pending' : 'not_applicable',
+                tas_status: hasTAS ? 'pending' : 'not_provided'
+            };
+            
+            return base44.asServiceRole.entities.CryptoGatewayCustomer.create(customerData);
+        },
         onSuccess: () => {
             queryClient.invalidateQueries(['crypto-gateway-customers']);
             setCreateDialogOpen(false);
@@ -44,7 +62,9 @@ export default function CryptoGatewayCustomers() {
                 company_type: 'exchange',
                 contact_name: '',
                 phone: '',
-                website: ''
+                website: '',
+                lei: '',
+                tas_id: ''
             });
         }
     });
@@ -162,6 +182,49 @@ export default function CryptoGatewayCustomers() {
                                             />
                                         </div>
                                     </div>
+                                    
+                                    <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg space-y-4">
+                                        <div className="flex items-start gap-2">
+                                            <Shield className="h-5 w-5 text-blue-600 mt-0.5" />
+                                            <div className="flex-1">
+                                                <h4 className="font-semibold text-blue-900 mb-1">Compliance Requirements</h4>
+                                                <p className="text-sm text-blue-800 mb-3">
+                                                    Provide either TAS ID or LEI. Without either, customer gets 3-month grace period.
+                                                </p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div>
+                                            <Label>Trust Anchor Service (TAS) ID <span className="text-xs text-slate-500">(Preferred)</span></Label>
+                                            <Input
+                                                value={newCustomer.tas_id}
+                                                onChange={(e) => setNewCustomer({...newCustomer, tas_id: e.target.value})}
+                                                placeholder="TAS-XXXX-XXXX-XXXX"
+                                            />
+                                        </div>
+                                        
+                                        <div>
+                                            <Label>Legal Entity Identifier (LEI) <span className="text-xs text-slate-500">(Alternative)</span></Label>
+                                            <Input
+                                                value={newCustomer.lei}
+                                                onChange={(e) => setNewCustomer({...newCustomer, lei: e.target.value})}
+                                                placeholder="20-character GLEIF LEI"
+                                                maxLength={20}
+                                            />
+                                            {newCustomer.lei && !newCustomer.tas_id && (
+                                                <p className="text-xs text-amber-700 mt-1">
+                                                    ⚠️ Full KYB verification will be required
+                                                </p>
+                                            )}
+                                        </div>
+                                        
+                                        {!newCustomer.lei && !newCustomer.tas_id && (
+                                            <div className="p-3 bg-amber-50 border border-amber-200 rounded text-xs text-amber-800">
+                                                <strong>Grace Period:</strong> Customer will have 3 months to provide credentials.
+                                            </div>
+                                        )}
+                                    </div>
+                                    
                                     <Button 
                                         onClick={() => createCustomerMutation.mutate(newCustomer)}
                                         disabled={!newCustomer.company_name || !newCustomer.email}
@@ -284,6 +347,43 @@ export default function CryptoGatewayCustomers() {
                                                         </span>
                                                         <span>Volume: ${(customer.total_volume || 0).toLocaleString()}</span>
                                                         <span>Txns: {customer.total_transactions || 0}</span>
+                                                    </div>
+                                                    
+                                                    <div className="mt-3 pt-3 border-t border-slate-200">
+                                                        <div className="grid grid-cols-2 gap-2 text-xs">
+                                                            {customer.tas_id ? (
+                                                                <div className="flex items-center gap-1 text-green-700">
+                                                                    <CheckCircle2 className="h-3 w-3" />
+                                                                    <span>TAS: {customer.tas_status}</span>
+                                                                </div>
+                                                            ) : (
+                                                                <div className="flex items-center gap-1 text-slate-500">
+                                                                    <AlertCircle className="h-3 w-3" />
+                                                                    <span>No TAS</span>
+                                                                </div>
+                                                            )}
+                                                            {customer.lei ? (
+                                                                <div className="flex items-center gap-1 text-blue-700">
+                                                                    <Shield className="h-3 w-3" />
+                                                                    <span>LEI: {customer.lei_status}</span>
+                                                                </div>
+                                                            ) : (
+                                                                <div className="flex items-center gap-1 text-slate-500">
+                                                                    <AlertCircle className="h-3 w-3" />
+                                                                    <span>No LEI</span>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                        {customer.compliance_grace_period_end && (
+                                                            <div className="mt-2 p-2 bg-amber-50 border border-amber-200 rounded text-xs text-amber-800">
+                                                                Grace period ends: {new Date(customer.compliance_grace_period_end).toLocaleDateString()}
+                                                            </div>
+                                                        )}
+                                                        {customer.requires_kyb && customer.kyb_status !== 'completed' && (
+                                                            <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded text-xs text-blue-800">
+                                                                ⚠️ Full KYB verification required
+                                                            </div>
+                                                        )}
                                                     </div>
                                                 </div>
                                             </div>
