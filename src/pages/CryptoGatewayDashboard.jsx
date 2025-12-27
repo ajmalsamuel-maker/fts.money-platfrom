@@ -190,7 +190,6 @@ export default function CryptoGatewayDashboard() {
                         </Card>
                     </div>
                 </div>
-                </div>
             </div>
         </div>
     );
