@@ -579,11 +579,11 @@ The FTS.Money Crypto Banking Service is a comprehensive white-labeled enterprise
 This service represents a strategic opportunity where FTS.Money aggregates and resells crypto banking infrastructure as a proprietary platform solution to both PSPs (via marketplace) and direct enterprise customers (crypto exchanges, DeFi platforms, wallet providers).
 
 **Access Points:**
-- Platform Admin → Overview: `/StrigaServiceManagement`
-- Customer Management: `/CryptoGatewayCustomers`
-- KYC/KYB Verification: `/CryptoKYCManagement`
-- Transaction Monitoring: `/CryptoGatewayTransactions`
-- Portal Management: `/CryptoPortalManagement`
+- Platform Admin → Overview: StrigaServiceManagement page
+- Customer Management: CryptoGatewayCustomers page
+- KYC/KYB Verification: CryptoKYCManagement page
+- Transaction Monitoring: CryptoGatewayTransactions page
+- Portal Management: CryptoPortalManagement page
 
 **Core Infrastructure:**
 - Backend: Striga API (VASP-licensed, EU-regulated)
