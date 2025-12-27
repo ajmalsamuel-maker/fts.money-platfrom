@@ -6,12 +6,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { FTS_COLORS } from '@/components/community/FTSBrandColors';
+import { FTS_COLORS, FTS_LOGOS } from '@/components/community/FTSBrandColors';
 import { 
     Wallet, TrendingUp, Users, Activity, Bitcoin, 
     ArrowUpRight, ArrowDownRight, Zap, AlertCircle,
     CheckCircle2, DollarSign, Globe, Shield, CreditCard,
-    Clock, TrendingDown, ArrowRight, ExternalLink
+    Clock, TrendingDown, ArrowRight, ExternalLink, LogOut
 } from 'lucide-react';
 
 export default function CryptoGatewayDashboard() {
