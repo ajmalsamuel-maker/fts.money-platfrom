@@ -11,8 +11,10 @@ import {
     Wallet, TrendingUp, Users, Activity, Bitcoin, 
     ArrowUpRight, ArrowDownRight, Zap, AlertCircle,
     CheckCircle2, DollarSign, Globe, Shield, CreditCard,
-    Clock, TrendingDown, ArrowRight, ExternalLink, LogOut
+    Clock, TrendingDown, ArrowRight, ExternalLink, LogOut,
+    BarChart3, PieChart, Calendar
 } from 'lucide-react';
+import { LineChart, Line, BarChart, Bar, PieChart as RePieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 export default function CryptoGatewayDashboard() {
     const [session, setSession] = useState(() => {
@@ -23,6 +25,7 @@ export default function CryptoGatewayDashboard() {
         }
         return JSON.parse(stored);
     });
+    const [timeRange, setTimeRange] = useState('7d');
 
     if (!session) return null;
 
@@ -68,6 +71,67 @@ export default function CryptoGatewayDashboard() {
         { item: 'AML Screening', status: 'good', value: 'Up to date' },
         { item: 'Travel Rule Compliance', status: 'good', value: 'Active' },
         { item: 'Transaction Monitoring', status: 'warning', value: '3 Flagged' }
+    ];
+
+    // Transaction volume data over time
+    const getVolumeData = () => {
+        if (timeRange === '24h') {
+            return Array.from({ length: 24 }, (_, i) => ({
+                time: `${i}:00`,
+                volume: Math.floor(Math.random() * 50000) + 10000,
+                transactions: Math.floor(Math.random() * 500) + 100
+            }));
+        } else if (timeRange === '7d') {
+            return ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(day => ({
+                time: day,
+                volume: Math.floor(Math.random() * 300000) + 100000,
+                transactions: Math.floor(Math.random() * 3000) + 1000
+            }));
+        } else {
+            return Array.from({ length: 30 }, (_, i) => ({
+                time: `Day ${i + 1}`,
+                volume: Math.floor(Math.random() * 400000) + 100000,
+                transactions: Math.floor(Math.random() * 4000) + 1000
+            }));
+        }
+    };
+
+    // Asset breakdown data
+    const assetBreakdown = [
+        { name: 'BTC', volume: 1250000, percentage: 29.4, color: '#F7931A' },
+        { name: 'ETH', volume: 980000, percentage: 23.1, color: '#627EEA' },
+        { name: 'USDC', volume: 1520000, percentage: 35.8, color: '#2775CA' },
+        { name: 'USDT', volume: 500000, percentage: 11.7, color: '#26A17B' }
+    ];
+
+    // KYC status distribution
+    const kycStatusData = [
+        { status: 'Approved', count: 1170, color: '#10b981' },
+        { status: 'Pending', count: 23, color: '#f59e0b' },
+        { status: 'Rejected', count: 7, color: '#ef4444' },
+        { status: 'Not Started', count: 34, color: '#94a3b8' }
+    ];
+
+    // Wallet creation trends
+    const walletTrends = [
+        { date: 'Week 1', wallets: 45 },
+        { date: 'Week 2', wallets: 67 },
+        { date: 'Week 3', wallets: 89 },
+        { date: 'Week 4', wallets: 123 },
+        { date: 'Week 5', wallets: 156 },
+        { date: 'Week 6', wallets: 198 },
+        { date: 'Week 7', wallets: 234 },
+        { date: 'Week 8', wallets: 289 }
+    ];
+
+    // On-ramp and off-ramp volumes
+    const rampVolumes = [
+        { month: 'Jan', onRamp: 450000, offRamp: 320000 },
+        { month: 'Feb', onRamp: 520000, offRamp: 380000 },
+        { month: 'Mar', onRamp: 680000, offRamp: 420000 },
+        { month: 'Apr', onRamp: 750000, offRamp: 510000 },
+        { month: 'May', onRamp: 890000, offRamp: 640000 },
+        { month: 'Jun', onRamp: 1020000, offRamp: 720000 }
     ];
 
     return (
@@ -373,6 +437,205 @@ export default function CryptoGatewayDashboard() {
                                 </CardContent>
                             </Card>
 
+                            {/* Analytics Section */}
+                            <div className="space-y-6">
+                                <div className="flex items-center justify-between">
+                                    <h2 className="text-2xl font-bold text-slate-900">Advanced Analytics</h2>
+                                    <div className="flex items-center gap-2">
+                                        <Button
+                                            variant={timeRange === '24h' ? 'default' : 'outline'}
+                                            size="sm"
+                                            onClick={() => setTimeRange('24h')}
+                                        >
+                                            24h
+                                        </Button>
+                                        <Button
+                                            variant={timeRange === '7d' ? 'default' : 'outline'}
+                                            size="sm"
+                                            onClick={() => setTimeRange('7d')}
+                                        >
+                                            7d
+                                        </Button>
+                                        <Button
+                                            variant={timeRange === '30d' ? 'default' : 'outline'}
+                                            size="sm"
+                                            onClick={() => setTimeRange('30d')}
+                                        >
+                                            30d
+                                        </Button>
+                                    </div>
+                                </div>
+
+                                {/* Transaction Volume Chart */}
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle className="flex items-center gap-2">
+                                            <BarChart3 className="h-5 w-5 text-blue-600" />
+                                            Transaction Volume
+                                        </CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <ResponsiveContainer width="100%" height={300}>
+                                            <LineChart data={getVolumeData()}>
+                                                <CartesianGrid strokeDasharray="3 3" />
+                                                <XAxis dataKey="time" />
+                                                <YAxis yAxisId="left" />
+                                                <YAxis yAxisId="right" orientation="right" />
+                                                <Tooltip />
+                                                <Legend />
+                                                <Line yAxisId="left" type="monotone" dataKey="volume" stroke="#3b82f6" strokeWidth={2} name="Volume ($)" />
+                                                <Line yAxisId="right" type="monotone" dataKey="transactions" stroke="#06b6d4" strokeWidth={2} name="Transactions" />
+                                            </LineChart>
+                                        </ResponsiveContainer>
+                                    </CardContent>
+                                </Card>
+
+                                <div className="grid lg:grid-cols-2 gap-6">
+                                    {/* Asset Breakdown */}
+                                    <Card>
+                                        <CardHeader>
+                                            <CardTitle className="flex items-center gap-2">
+                                                <PieChart className="h-5 w-5 text-purple-600" />
+                                                Asset Volume Breakdown
+                                            </CardTitle>
+                                        </CardHeader>
+                                        <CardContent>
+                                            <ResponsiveContainer width="100%" height={300}>
+                                                <RePieChart>
+                                                    <Pie
+                                                        data={assetBreakdown}
+                                                        cx="50%"
+                                                        cy="50%"
+                                                        labelLine={false}
+                                                        label={({ name, percentage }) => `${name} ${percentage}%`}
+                                                        outerRadius={80}
+                                                        fill="#8884d8"
+                                                        dataKey="volume"
+                                                    >
+                                                        {assetBreakdown.map((entry, index) => (
+                                                            <Cell key={`cell-${index}`} fill={entry.color} />
+                                                        ))}
+                                                    </Pie>
+                                                    <Tooltip formatter={(value) => `$${value.toLocaleString()}`} />
+                                                </RePieChart>
+                                            </ResponsiveContainer>
+                                            <div className="mt-4 space-y-2">
+                                                {assetBreakdown.map((asset) => (
+                                                    <div key={asset.name} className="flex items-center justify-between">
+                                                        <div className="flex items-center gap-2">
+                                                            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: asset.color }} />
+                                                            <span className="text-sm font-medium">{asset.name}</span>
+                                                        </div>
+                                                        <span className="text-sm text-slate-600">${(asset.volume / 1000).toFixed(0)}K</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+
+                                    {/* KYC Status Distribution */}
+                                    <Card>
+                                        <CardHeader>
+                                            <CardTitle className="flex items-center gap-2">
+                                                <Users className="h-5 w-5 text-green-600" />
+                                                KYC Status Distribution
+                                            </CardTitle>
+                                        </CardHeader>
+                                        <CardContent>
+                                            <ResponsiveContainer width="100%" height={300}>
+                                                <RePieChart>
+                                                    <Pie
+                                                        data={kycStatusData}
+                                                        cx="50%"
+                                                        cy="50%"
+                                                        labelLine={false}
+                                                        label={({ status, count }) => `${status}: ${count}`}
+                                                        outerRadius={80}
+                                                        fill="#8884d8"
+                                                        dataKey="count"
+                                                    >
+                                                        {kycStatusData.map((entry, index) => (
+                                                            <Cell key={`cell-${index}`} fill={entry.color} />
+                                                        ))}
+                                                    </Pie>
+                                                    <Tooltip />
+                                                </RePieChart>
+                                            </ResponsiveContainer>
+                                            <div className="mt-4 space-y-2">
+                                                {kycStatusData.map((status) => (
+                                                    <div key={status.status} className="flex items-center justify-between">
+                                                        <div className="flex items-center gap-2">
+                                                            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: status.color }} />
+                                                            <span className="text-sm font-medium">{status.status}</span>
+                                                        </div>
+                                                        <span className="text-sm text-slate-600">{status.count} users</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+                                </div>
+
+                                {/* Wallet Creation Trends */}
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle className="flex items-center gap-2">
+                                            <Calendar className="h-5 w-5 text-cyan-600" />
+                                            Wallet Creation Trends
+                                        </CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <ResponsiveContainer width="100%" height={300}>
+                                            <BarChart data={walletTrends}>
+                                                <CartesianGrid strokeDasharray="3 3" />
+                                                <XAxis dataKey="date" />
+                                                <YAxis />
+                                                <Tooltip />
+                                                <Legend />
+                                                <Bar dataKey="wallets" fill="#06b6d4" name="New Wallets" />
+                                            </BarChart>
+                                        </ResponsiveContainer>
+                                    </CardContent>
+                                </Card>
+
+                                {/* On-Ramp / Off-Ramp Volumes */}
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle className="flex items-center gap-2">
+                                            <ArrowLeftRight className="h-5 w-5 text-amber-600" />
+                                            On-Ramp vs Off-Ramp Volumes
+                                        </CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <ResponsiveContainer width="100%" height={300}>
+                                            <BarChart data={rampVolumes}>
+                                                <CartesianGrid strokeDasharray="3 3" />
+                                                <XAxis dataKey="month" />
+                                                <YAxis />
+                                                <Tooltip formatter={(value) => `$${value.toLocaleString()}`} />
+                                                <Legend />
+                                                <Bar dataKey="onRamp" fill="#10b981" name="On-Ramp (Fiat → Crypto)" />
+                                                <Bar dataKey="offRamp" fill="#ef4444" name="Off-Ramp (Crypto → Fiat)" />
+                                            </BarChart>
+                                        </ResponsiveContainer>
+                                        <div className="mt-4 grid grid-cols-2 gap-4">
+                                            <div className="p-3 bg-green-50 rounded-lg">
+                                                <div className="text-sm text-green-700 font-medium">Total On-Ramp</div>
+                                                <div className="text-2xl font-bold text-green-900">
+                                                    ${rampVolumes.reduce((sum, v) => sum + v.onRamp, 0).toLocaleString()}
+                                                </div>
+                                            </div>
+                                            <div className="p-3 bg-red-50 rounded-lg">
+                                                <div className="text-sm text-red-700 font-medium">Total Off-Ramp</div>
+                                                <div className="text-2xl font-bold text-red-900">
+                                                    ${rampVolumes.reduce((sum, v) => sum + v.offRamp, 0).toLocaleString()}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </div>
+
                             {/* Quick Actions */}
                             <Card className="bg-gradient-to-br from-slate-900 to-slate-800 border-0 text-white">
                                 <CardHeader>
@@ -418,7 +681,7 @@ export default function CryptoGatewayDashboard() {
                                     </div>
                                 </CardContent>
                             </Card>
-                        </div>
+                            </div>
                 </div>
             </div>
         </div>
