@@ -575,7 +575,7 @@ sequenceDiagram
 
 The Crypto Gateway Service represents a strategic white-label opportunity where FTS.Money resells Striga/Lightspark infrastructure as proprietary technology. This section covers administration, customer management, and revenue tracking.
 
-**Access:** Platform Admin → Striga Service Management (`/StrigaServiceManagement`)
+**Access:** Platform Admin → Striga Service Management at /StrigaServiceManagement
 
 ### Dual Distribution Model
 

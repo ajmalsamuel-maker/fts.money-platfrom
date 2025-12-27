@@ -182,7 +182,7 @@ Authorization: Bearer <platform_admin_token>
 
 **Step 3: Monitor Dashboard**
 
-Access: Control Panel → Striga Service Management
+Access: Control Panel - Striga Service Management
 
 Tracks:
 - Active subscriptions
