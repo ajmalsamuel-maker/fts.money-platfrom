@@ -14,12 +14,13 @@ const FTSControlPanelDoc = `# FTS Control Panel Documentation
 2. [Platform Architecture](#platform-architecture)
 3. [User Roles & Permissions](#user-roles--permissions)
 4. [PSP Lifecycle Management](#psp-lifecycle-management)
-5. [Service Catalog Administration](#service-catalog-administration)
-6. [Financial Operations](#financial-operations)
-7. [Compliance & Monitoring](#compliance--monitoring)
-8. [Infrastructure Management](#infrastructure-management)
-9. [Security & Access Control](#security--access-control)
-10. [Troubleshooting & Support](#troubleshooting--support)
+5. [Crypto Banking Administration](#crypto-banking-administration)
+6. [Service Catalog Administration](#service-catalog-administration)
+7. [Financial Operations](#financial-operations)
+8. [Compliance & Monitoring](#compliance--monitoring)
+9. [Infrastructure Management](#infrastructure-management)
+10. [Security & Access Control](#security--access-control)
+11. [Troubleshooting & Support](#troubleshooting--support)
 
 ---
 
@@ -569,49 +570,123 @@ sequenceDiagram
 
 ---
 
-## Crypto Gateway Management
+## Crypto Banking Administration
 
 ### Overview
 
-The Crypto Gateway Service represents a strategic white-label opportunity where FTS.Money resells Striga/Lightspark infrastructure as proprietary technology. This section covers administration, customer management, and revenue tracking.
+The FTS.Money Crypto Banking Service is a comprehensive white-labeled enterprise crypto banking infrastructure built on Striga/Lightspark technology. It provides a full suite of crypto financial services including multi-chain wallets, virtual IBANs, card issuance, on/off-ramps, and integrated compliance with LEI/vLEI verification and KYB/KYC workflows.
 
-**Access:** Platform Admin → Striga Service Management at /StrigaServiceManagement
+This service represents a strategic opportunity where FTS.Money aggregates and resells crypto banking infrastructure as a proprietary platform solution to both PSPs (via marketplace) and direct enterprise customers (crypto exchanges, DeFi platforms, wallet providers).
 
-### Dual Distribution Model
+**Access Points:**
+- Platform Admin → Overview: `/StrigaServiceManagement`
+- Customer Management: `/CryptoGatewayCustomers`
+- KYC/KYB Verification: `/CryptoKYCManagement`
+- Transaction Monitoring: `/CryptoGatewayTransactions`
+- Portal Management: `/CryptoPortalManagement`
+
+**Core Infrastructure:**
+- Backend: Striga API (VASP-licensed, EU-regulated)
+- Network Layer: Lightspark (Lightning Network)
+- Frontend: FTS.Money branded portal
+- Compliance: Built-in AML/CFT, Travel Rule, GLEIF LEI integration
+
+### Architecture & Distribution Model
 
 \`\`\`mermaid
 graph TB
-    subgraph "FTS.Money Platform"
-        A[Crypto Gateway Service<br/>White-labeled]
+    subgraph "FTS.Money Crypto Banking Platform"
+        CORE[Crypto Banking Core<br/>White-labeled Infrastructure]
+        API[Striga API Layer<br/>VASP-Licensed]
+        LN[Lightspark Network<br/>Lightning Protocol]
+        COMP[Compliance Engine<br/>LEI/vLEI + KYB/KYC]
     end
     
-    subgraph "Distribution Channel 1"
-        B[PSP Marketplace]
-        C[PSP Customers]
+    subgraph "Distribution Channel 1: PSP Marketplace"
+        PSP[PSP Marketplace]
+        PSPCAT[Service Catalog]
+        PSPCUST[PSP Customer<br/>White-label Config]
     end
     
-    subgraph "Distribution Channel 2"
-        D[Standalone Portal]
-        E[Direct Customers<br/>Exchanges/DeFi]
+    subgraph "Distribution Channel 2: Direct Enterprise"
+        PORTAL[Standalone Portal<br/>CryptoGatewayLogin]
+        DIRECT[Direct Customers]
+        EXCHANGE[Crypto Exchanges]
+        DEFI[DeFi Platforms]
+        WALLET[Wallet Providers]
     end
     
-    subgraph "Revenue"
-        F[Monthly Subscriptions<br/>$2,500/customer]
-        G[Usage Fees<br/>KYC, Cards, Txns]
+    subgraph "Customer Identity & Compliance"
+        TAS[Trust Anchor Service<br/>TAS ID]
+        LEI[Legal Entity Identifier<br/>GLEIF]
+        VLEI[Verifiable LEI<br/>Cryptographic Proof]
+        GRACE[3-Month Grace Period<br/>Compliance Buffer]
     end
     
-    A --> B
-    A --> D
-    B --> C
-    C --> F
-    D --> E
-    E --> F
-    F --> G
+    subgraph "Services Provided"
+        WALLETS[Multi-Chain Wallets<br/>BTC, ETH, USDC]
+        IBAN[Virtual IBANs<br/>SEPA Accounts]
+        CARDS[Card Issuance<br/>Virtual + Physical]
+        RAMP[On/Off-Ramps<br/>Crypto ↔ Fiat]
+        KYC[KYC/KYB Verification<br/>Automated + Manual]
+    end
     
-    style A fill:#2563eb,color:#fff
-    style F fill:#10b981,color:#fff
-    style G fill:#10b981,color:#fff
+    subgraph "Revenue Streams"
+        SUB[Monthly Subscriptions<br/>$2,500/customer]
+        USAGE[Usage Fees<br/>Per Transaction]
+        KYCFEE[KYC Checks<br/>$5 per verification]
+        CARDFEE[Card Fees<br/>$8 virtual / $20 physical]
+    end
+    
+    CORE --> API
+    CORE --> LN
+    CORE --> COMP
+    API --> WALLETS
+    API --> IBAN
+    API --> CARDS
+    API --> RAMP
+    COMP --> TAS
+    COMP --> LEI
+    COMP --> VLEI
+    COMP --> KYC
+    
+    CORE --> PSP
+    CORE --> PORTAL
+    PSP --> PSPCAT
+    PSPCAT --> PSPCUST
+    PORTAL --> DIRECT
+    DIRECT --> EXCHANGE
+    DIRECT --> DEFI
+    DIRECT --> WALLET
+    
+    PSPCUST --> SUB
+    DIRECT --> SUB
+    WALLETS --> USAGE
+    IBAN --> USAGE
+    CARDS --> CARDFEE
+    KYC --> KYCFEE
+    
+    TAS -.->|Preferred| DIRECT
+    LEI -.->|Alternative| DIRECT
+    LEI -->|No TAS| GRACE
+    GRACE -->|Requires| KYC
+    
+    style CORE fill:#2563eb,color:#fff
+    style COMP fill:#f59e0b,color:#fff
+    style SUB fill:#10b981,color:#fff
+    style USAGE fill:#10b981,color:#fff
+    style TAS fill:#8b5cf6,color:#fff
+    style LEI fill:#0ea5e9,color:#fff
 \`\`\`
+
+**Distribution Philosophy:**
+
+The platform operates on a dual-channel model:
+
+1. **PSP Marketplace Channel**: PSPs purchase and white-label the crypto banking service for their merchant base
+2. **Direct Enterprise Channel**: Large crypto businesses (exchanges, DeFi platforms) access services directly
+
+This strategy maximizes reach while maintaining quality control and compliance standards.
 
 ### Managing PSP Subscriptions
 
@@ -786,29 +861,564 @@ await strigaConnector.exchangeCrypto(fromCurrency, toCurrency, amount);
 await strigaConnector.getTransactionHistory(userId, filters);
 \`\`\`
 
+### Customer Identity & Compliance Framework
+
+**Trust-Based Identity Hierarchy:**
+
+The crypto banking service implements a sophisticated identity and compliance framework based on verifiable credentials and legal entity identifiers:
+
+\`\`\`mermaid
+graph TD
+    A[New Customer Registration] --> B{Identity Type?}
+    
+    B -->|Has TAS ID| C[Trust Anchor Service]
+    B -->|Has LEI Only| D[Legal Entity Identifier]
+    B -->|Neither| E[Grace Period]
+    
+    C --> C1[TAS Verification]
+    C1 -->|Verified| C2[✅ Full Access<br/>No Additional KYB]
+    C1 -->|Failed| E
+    
+    D --> D1[LEI Verification via GLEIF]
+    D1 -->|Verified| D2[⚠️ Requires Full KYB]
+    D2 --> D3[KYB Process]
+    D3 -->|Approved| D4[✅ Full Access]
+    D3 -->|Rejected| D5[❌ Account Suspended]
+    D1 -->|Failed| E
+    
+    E --> E1[3-Month Grace Period]
+    E1 --> E2[Limited Services]
+    E2 --> E3{Credentials Provided?}
+    E3 -->|Yes| C1
+    E3 -->|No - 90 Days| E4[❌ Account Suspended]
+    
+    style C fill:#10b981,color:#fff
+    style D fill:#f59e0b,color:#fff
+    style E fill:#ef4444,color:#fff
+    style C2 fill:#10b981,color:#fff
+    style D4 fill:#10b981,color:#fff
+    style D5 fill:#ef4444,color:#fff
+    style E4 fill:#ef4444,color:#fff
+\`\`\`
+
+**Identity Verification Matrix:**
+
+| Credential Type | Verification Source | KYB Required | Grace Period | Access Level | Recommended For |
+|----------------|-------------------|--------------|--------------|--------------|----------------|
+| **TAS ID** (Preferred) | Trust Anchor Service | No | N/A | Full immediate access | Established entities with vLEI |
+| **LEI** (Alternative) | GLEIF API | Yes (Full) | N/A | Full after KYB approval | Traditional enterprises |
+| **vLEI** (Advanced) | Cryptographic verification | No | N/A | Full + enhanced features | Digital-first organizations |
+| **Neither** | N/A | Yes (after 90 days) | 3 months | Limited trial access | New/small businesses |
+
+**TAS ID (Trust Anchor Service Identifier):**
+
+Trust Anchor Service credentials represent the highest tier of verifiable organizational identity:
+
+- Issued by accredited Trust Anchors in the ToIP (Trust over IP) ecosystem
+- Provides cryptographic proof of legal entity status
+- Enables instant verification without manual KYB
+- Automatically includes vLEI (Verifiable LEI) capabilities
+- Format: \`TAS-XXXX-XXXX-XXXX\` (provider-specific)
+
+**LEI (Legal Entity Identifier):**
+
+20-character alphanumeric code issued by GLEIF (Global Legal Entity Identifier Foundation):
+
+- Global standard for legal entity identification (ISO 17442)
+- Verified against GLEIF database via API integration
+- Provides company registration and ownership information
+- **Triggers mandatory KYB** when used without TAS ID
+- Format: \`XXXXXXXXXXXXXXXXXXXXXX\` (20 characters)
+
+**vLEI (Verifiable LEI):**
+
+Cryptographically signed digital credential built on LEI:
+
+- Combines traditional LEI with W3C Verifiable Credentials
+- Enables automated verification without central authorities
+- Includes digital signatures for non-repudiation
+- Blockchain-agnostic (typically uses DID infrastructure)
+- Part of GLEIF's digitization initiative
+
+**Grace Period Policy:**
+
+Customers without TAS or LEI receive a 3-month compliance grace period:
+
+\`\`\`typescript
+interface GracePeriodPolicy {
+  duration: "90 days from registration",
+  services_allowed: [
+    "Limited wallet creation (1 wallet)",
+    "Small transactions (<$1,000/day)",
+    "Virtual IBAN (view only)",
+    "No card issuance"
+  ],
+  warnings: [
+    "Day 60: First reminder email",
+    "Day 75: Second reminder + portal notification",
+    "Day 85: Final warning + service restriction notice",
+    "Day 90: Account suspension + data retention (30 days)"
+  ],
+  reinstatement: "Provide TAS or LEI + complete KYB"
+}
+\`\`\`
+
+### KYB/KYC Verification Workflows
+
+**Customer Onboarding Flow:**
+
+\`\`\`mermaid
+sequenceDiagram
+    participant C as Customer
+    participant P as Portal
+    participant DB as Database
+    participant GLEIF as GLEIF API
+    participant TAS as Trust Anchor Service
+    participant KYB as KYB Provider
+    participant Admin as Platform Admin
+    
+    C->>P: Register Account
+    P->>C: Request Credentials
+    
+    alt Has TAS ID
+        C->>P: Provide TAS ID
+        P->>TAS: Verify TAS Credential
+        TAS-->>P: ✅ Verified + vLEI
+        P->>DB: Create Customer (Full Access)
+        P->>C: ✅ Account Activated
+    else Has LEI Only
+        C->>P: Provide LEI
+        P->>GLEIF: Verify LEI
+        GLEIF-->>P: ✅ LEI Valid
+        P->>DB: Create Customer (KYB Required)
+        P->>KYB: Initiate KYB Process
+        KYB->>C: Request Documents
+        C->>KYB: Submit Documents
+        KYB->>Admin: Manual Review Required
+        Admin->>KYB: Approve/Reject
+        alt Approved
+            KYB-->>P: ✅ KYB Approved
+            P->>DB: Update Status (Full Access)
+            P->>C: ✅ Account Activated
+        else Rejected
+            KYB-->>P: ❌ KYB Rejected
+            P->>DB: Suspend Account
+            P->>C: ❌ Access Denied
+        end
+    else No Credentials
+        P->>DB: Create Customer (Grace Period)
+        P->>C: ⚠️ 90-Day Trial - Provide Credentials
+        Note over P,C: Limited services for 90 days
+    end
+\`\`\`
+
+**KYB Verification Requirements (LEI-only customers):**
+
+\`\`\`yaml
+kyb_requirements:
+  company_information:
+    - legal_name
+    - registration_number
+    - incorporation_date
+    - jurisdiction
+    - business_type
+    - operational_address
+    
+  ownership_structure:
+    - ultimate_beneficial_owners (>25% ownership)
+    - directors_and_officers
+    - ownership_chart
+    - related_entities
+    
+  financial_information:
+    - bank_account_details
+    - financial_statements (last 2 years)
+    - funding_sources
+    - expected_transaction_volume
+    
+  documentation:
+    required:
+      - certificate_of_incorporation
+      - proof_of_address (utility bill <3 months)
+      - directors_id_verification
+      - banking_reference_letter
+    
+    optional:
+      - audited_financial_statements
+      - licenses_permits
+      - aml_compliance_certificate
+      - existing_vasp_license
+      
+  verification_timeline:
+    submission: "Day 0"
+    initial_review: "Day 1-3"
+    document_requests: "Day 4-7"
+    compliance_checks: "Day 8-10"
+    final_decision: "Day 11-14"
+    
+  approval_criteria:
+    - clean_aml_screening
+    - valid_lei_in_gleif
+    - verified_business_operations
+    - acceptable_risk_profile
+    - complete_documentation
+\`\`\`
+
+**KYC/KYB Verification Dashboard:**
+
+| Status | Description | Customer Count | Action Required | Average Time |
+|--------|-------------|----------------|-----------------|--------------|
+| **Pending Review** | Awaiting initial assessment | 23 | Platform Admin review | 24-48 hours |
+| **Document Request** | Additional documents needed | 12 | Customer submission | 3-5 days |
+| **AML Screening** | Sanctions/PEP checks | 8 | Automated | 10 minutes |
+| **Manual Review** | Complex cases | 5 | Compliance Officer | 2-3 days |
+| **Approved** | Full compliance verified | 847 | None | N/A |
+| **Rejected** | Failed verification | 7 | Appeal process | N/A |
+| **Grace Period** | No credentials yet | 34 | Reminder emails | 90 days max |
+
+### LEI/vLEI Integration
+
+**GLEIF API Integration:**
+
+\`\`\`javascript
+// LEI Verification via GLEIF API
+async function verifyLEI(lei) {
+  const response = await fetch(\`https://api.gleif.org/api/v1/lei-records/\${lei}\`);
+  const data = await response.json();
+  
+  return {
+    valid: data.attributes.entity.status === "ACTIVE",
+    legalName: data.attributes.entity.legalName.name,
+    jurisdiction: data.attributes.entity.legalAddress.country,
+    registrationDate: data.attributes.registration.initialRegistrationDate,
+    nextRenewalDate: data.attributes.registration.nextRenewalDate,
+    status: data.attributes.entity.status,
+    category: data.attributes.entity.category
+  };
+}
+
+// vLEI Verification (Cryptographic)
+async function verifyVLEI(vlei, signature) {
+  const publicKey = await fetchTrustAnchorPublicKey(vlei.issuerId);
+  const isValid = await crypto.subtle.verify(
+    { name: "ECDSA", hash: "SHA-256" },
+    publicKey,
+    signature,
+    vlei.credential
+  );
+  
+  return {
+    valid: isValid,
+    lei: vlei.lei,
+    issuer: vlei.issuerId,
+    issueDate: vlei.validFrom,
+    expiryDate: vlei.validUntil,
+    trustLevel: isValid ? "HIGH" : "INVALID"
+  };
+}
+\`\`\`
+
+**LEI Status Monitoring:**
+
+\`\`\`mermaid
+stateDiagram-v2
+    [*] --> Pending: LEI Provided
+    Pending --> Verifying: Query GLEIF
+    Verifying --> Verified: Active in GLEIF
+    Verifying --> Expired: Expired in GLEIF
+    Verifying --> NotFound: Invalid LEI
+    
+    Verified --> Expired: Annual Check
+    Verified --> [*]: Full Access
+    
+    Expired --> Pending: LEI Renewed
+    Expired --> Suspended: 30 Days Grace
+    
+    NotFound --> Suspended: Invalid
+    Suspended --> [*]: Account Closed
+    
+    note right of Verified
+        Annual renewal check
+        GLEIF API validation
+        Auto-notification before expiry
+    end note
+    
+    note right of Suspended
+        Grace period: 30 days
+        Service restrictions apply
+        Manual reactivation possible
+    end note
+\`\`\`
+
+### Portal Management
+
+**Standalone Portal Configuration:**
+
+Platform administrators can customize the customer-facing crypto gateway portal:
+
+\`\`\`json
+{
+  "portal_config": {
+    "branding": {
+      "company_name": "FTS.Money Crypto Banking",
+      "tagline": "Fluid global payments",
+      "logo_url": "https://fts.money/crypto-logo.png",
+      "favicon_url": "https://fts.money/favicon.ico",
+      "primary_color": "#0066CC",
+      "accent_color": "#00BFFF",
+      "background_gradient": "linear-gradient(135deg, #003EFF 0%, #54F0E4 100%)"
+    },
+    
+    "features": {
+      "wallets": {
+        "enabled": true,
+        "supported_assets": ["BTC", "ETH", "USDC", "USDT", "SOL"],
+        "max_wallets_per_user": 10,
+        "default_currency": "USDC"
+      },
+      "virtual_ibans": {
+        "enabled": true,
+        "currency": "EUR",
+        "instant_creation": true,
+        "max_per_customer": 5
+      },
+      "cards": {
+        "virtual_enabled": true,
+        "physical_enabled": true,
+        "card_design_url": "https://fts.money/card-design.png",
+        "daily_limit": 10000,
+        "monthly_limit": 100000
+      },
+      "kyc": {
+        "provider": "striga",
+        "verification_levels": ["basic", "enhanced"],
+        "auto_approve_threshold": 1000
+      }
+    },
+    
+    "compliance": {
+      "require_lei_or_tas": true,
+      "grace_period_days": 90,
+      "auto_kyb_for_lei_only": true,
+      "aml_screening": "real-time",
+      "transaction_monitoring": true,
+      "travel_rule_threshold": 1000
+    },
+    
+    "api": {
+      "striga_app_id": "{{STRIGA_APPLICATION_ID}}",
+      "webhook_url": "https://api.fts.money/crypto/webhooks",
+      "rate_limit": "1000/minute",
+      "sandbox_mode": false
+    }
+  }
+}
+\`\`\`
+
+**Portal Access Management:**
+
+\`\`\`
+Portal URL: https://fts.money/CryptoGatewayLogin
+Subdomain: crypto.fts.money (optional)
+SSL Certificate: Wildcard *.fts.money
+CDN: CloudFlare (global distribution)
+
+Authentication:
+  - Email/password (bcrypt hashed)
+  - 2FA optional (TOTP)
+  - Session timeout: 30 minutes
+  - Failed login lockout: 5 attempts
+
+Customer Portal Features:
+  ✅ Dashboard (balances, transactions)
+  ✅ Wallet Management (create, fund, withdraw)
+  ✅ IBAN Management (view, transactions)
+  ✅ Card Management (order, activate, freeze)
+  ✅ Transaction History (filter, export)
+  ✅ KYC Verification (upload docs, status)
+  ✅ API Keys (generate, revoke)
+  ✅ Settings (profile, security)
+  ✅ Support (tickets, chat)
+\`\`\`
+
+### Service Feature Matrix
+
+**Crypto Banking Service Tiers:**
+
+| Feature | Starter | Professional | Enterprise |
+|---------|---------|--------------|------------|
+| **Monthly Fee** | $2,500 | $5,000 | $15,000 |
+| **Included Users** | 100 | 1,000 | Unlimited |
+| **Wallet Types** | 3 assets | 10 assets | All supported |
+| **Virtual IBANs** | 50 | 500 | Unlimited |
+| **Virtual Cards** | 100 | 1,000 | Unlimited |
+| **Physical Cards** | ❌ | ✅ | ✅ |
+| **Daily Volume Limit** | $100K | $1M | $10M+ |
+| **KYC Checks/month** | 50 included | 500 included | Unlimited |
+| **Lightning Network** | ❌ | ✅ | ✅ |
+| **White-label Portal** | ❌ | ❌ | ✅ |
+| **Custom Integration** | ❌ | ❌ | ✅ |
+| **Dedicated Support** | Email | Priority | 24/7 Phone |
+| **SLA** | 99.5% | 99.9% | 99.99% |
+
+**Usage-Based Pricing:**
+
+\`\`\`
+Per-Transaction Fees:
+  On-Ramp (Fiat → Crypto):     1.5% (min $5)
+  Off-Ramp (Crypto → Fiat):    1.5% (min $5)
+  Crypto-to-Crypto Exchange:   0.5%
+  IBAN Transfer In:            Free
+  IBAN Transfer Out:           €0.50
+  Blockchain Transfer Out:     Network fee + $1
+
+KYC/Verification:
+  Basic KYC:                   $5 per user
+  Enhanced KYC:                $15 per user
+  Business KYB:                $50 per entity
+  LEI Verification:            Free (GLEIF API)
+  TAS Verification:            Free (automated)
+
+Card Fees:
+  Virtual Card Issuance:       $8 per card
+  Physical Card Issuance:      $20 per card
+  Card Replacement:            $15
+  ATM Withdrawal:              $2.50 + 2%
+  Foreign Exchange:            2.5%
+
+Other Fees:
+  Failed Transaction:          $0.25
+  Chargeback:                  $50
+  Compliance Review:           $100/hour
+  Custom Integration:          $10,000 setup
+\`\`\`
+
 ### Support & Operations
 
 **Common Issues:**
 
-1. **KYC Failure**
-   - Check document quality
-   - Verify Striga KYC status
-   - Manual review if needed
+**1. KYC/KYB Failure**
 
-2. **Transaction Delays**
-   - Check blockchain confirmations
-   - Verify SEPA processing times
-   - Review Striga API status
+*Symptoms:* Customer stuck in verification
 
-3. **Card Activation Issues**
-   - Confirm user KYC level
-   - Check card limit settings
-   - Verify Striga card inventory
+*Diagnosis:*
+\`\`\`sql
+SELECT 
+  customer_id,
+  company_name,
+  compliance_status,
+  kyb_status,
+  lei_status,
+  tas_status,
+  compliance_grace_period_end
+FROM crypto_gateway_customers
+WHERE kyb_status IN ('failed', 'in_progress')
+ORDER BY created_date;
+\`\`\`
 
-**Escalation:**
-- Technical Issues: crypto-support@fts.money
-- Striga Infrastructure: support@striga.com
-- Compliance Questions: compliance@fts.money
+*Resolution:*
+- Check document quality/completeness
+- Verify LEI in GLEIF database
+- Validate TAS credentials with issuer
+- Manual review by compliance team
+- Contact customer for additional docs
+
+**2. LEI Verification Failed**
+
+*Symptoms:* LEI shows as "expired" or "not_found"
+
+*Resolution:*
+\`\`\`javascript
+// Re-verify LEI via GLEIF API
+const leiData = await verifyLEI(customer.lei);
+if (leiData.status === "EXPIRED") {
+  // Notify customer to renew
+  await sendRenewalNotification(customer);
+  // 30-day grace period
+  await updateCustomerGracePeriod(customer.id, 30);
+} else if (!leiData.valid) {
+  // Invalid LEI - suspend account
+  await suspendCustomerAccount(customer.id, "Invalid LEI");
+}
+\`\`\`
+
+**3. Transaction Delays**
+
+*Causes:*
+- Blockchain confirmations (BTC: 10-60 min, ETH: 1-5 min)
+- SEPA processing times (1-2 business days)
+- Striga API rate limits
+- Compliance holds (AML screening)
+
+*Resolution:*
+- Check blockchain explorers for confirmation status
+- Verify SEPA batch processing schedules
+- Review Striga API status page
+- Check AML screening results
+
+**4. Card Activation Issues**
+
+*Requirements:*
+- Enhanced KYC level required for cards
+- LEI or TAS must be verified
+- Address verification completed
+- Sufficient balance in linked wallet
+
+*Resolution:*
+\`\`\`javascript
+// Check card eligibility
+const customer = await getCustomer(customerId);
+const canIssueCard = 
+  customer.kyb_status === 'completed' &&
+  (customer.lei_status === 'verified' || customer.tas_status === 'verified') &&
+  customer.address_verified === true;
+
+if (!canIssueCard) {
+  return {
+    error: "Card issuance requirements not met",
+    missing: checkMissingRequirements(customer)
+  };
+}
+\`\`\`
+
+**5. Grace Period Expiration**
+
+*Process:*
+\`\`\`mermaid
+flowchart LR
+    A[Day 60] --> B[First Email Reminder]
+    B --> C[Day 75: Second Reminder]
+    C --> D[Day 85: Final Warning]
+    D --> E[Day 90: Suspension]
+    E --> F{Credentials Provided?}
+    F -->|Yes| G[Reinstate Account]
+    F -->|No| H[Data Retention 30 Days]
+    H --> I[Permanent Deletion]
+\`\`\`
+
+**Escalation Contacts:**
+
+\`\`\`
+Level 1 - Technical Issues:
+  Email: crypto-support@fts.money
+  Response: 4 hours (business hours)
+  
+Level 2 - Striga Infrastructure:
+  Email: support@striga.com
+  Response: 1 hour (24/7)
+  
+Level 3 - Compliance/LEI Issues:
+  Email: compliance@fts.money
+  Response: Next business day
+  
+Level 4 - Platform Emergency:
+  Phone: +1-800-FTS-CRYPTO
+  Response: Immediate (24/7)
+  
+GLEIF Support:
+  Website: www.gleif.org/en/contact
+  For LEI renewal/validation issues
+\`\`\`
 
 ---
 
