@@ -76,7 +76,7 @@ Cryptocurrency exchanges and DeFi platforms can access the Crypto Gateway via a 
 
 **Portal Access:**
 - URL: https://cryptogateway.fts.money/login
-- Portal: Dedicated Crypto Gateway Dashboard
+- Portal: Dedicated Crypto Gateway Dashboard  
 - Authentication: Independent login system
 - Entity: CryptoGatewayCustomer
 
