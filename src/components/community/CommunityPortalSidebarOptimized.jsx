@@ -53,14 +53,7 @@ export default function CommunityPortalSidebarOptimized({ currentPage, userEmail
         enabled: !!session?.email
     });
 
-    const { data: myCryptoCustomers = [] } = useQuery({
-        queryKey: ['my-crypto-customers', session?.email],
-        queryFn: async () => {
-            const all = await base44.entities.CryptoGatewayCustomer.list();
-            return all.filter(c => c.email === session?.email);
-        },
-        enabled: !!session?.email
-    });
+
 
     const { data: subscriptions = [] } = useQuery({
         queryKey: ['my-subscriptions'],
@@ -68,7 +61,7 @@ export default function CommunityPortalSidebarOptimized({ currentPage, userEmail
         enabled: !!session?.email
     });
 
-    const totalServices = myPSPs.length + myISOCustomers.length + myOrchCustomers.length + myCryptoCustomers.length;
+    const totalServices = myPSPs.length + myISOCustomers.length + myOrchCustomers.length;
 
     const menuSections = [
         {
