@@ -44,13 +44,13 @@ export default function CryptoGatewayDashboard() {
 
             <div className="flex-1 flex flex-col overflow-hidden">
                 <div className="flex-1 overflow-auto">
-                    <div className="bg-white border-b border-slate-200 px-8 py-6 sticky top-0 z-10">
+                    <div className="bg-white border-b border-slate-200 px-8 py-5 sticky top-0 z-10">
                         <div className="flex items-center justify-between">
                             <div>
-                                <h1 className="text-3xl font-bold text-slate-900" style={{ fontFamily: 'Montserrat, sans-serif' }}>
-                                    Crypto Gateway Dashboard
+                                <h1 className="text-2xl font-bold text-slate-900" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                                    Dashboard
                                 </h1>
-                                <p className="text-slate-600 mt-1">Welcome back, {session.user.company_name || session.user.email}</p>
+                                <p className="text-sm text-slate-600 mt-1">Welcome back, {session.user.company_name || session.user.email}</p>
                             </div>
                         </div>
                     </div>
@@ -178,7 +178,10 @@ export default function CryptoGatewayDashboard() {
                             </Card>
 
                             <div className="grid md:grid-cols-3 gap-6">
-                                <Card className="bg-white border-slate-200 cursor-pointer hover:shadow-lg transition-shadow">
+                                <Card 
+                                    className="bg-white border-slate-200 cursor-pointer hover:shadow-lg transition-shadow"
+                                    onClick={() => window.location.href = '/CryptoWallets'}
+                                >
                                     <CardContent className="pt-6 text-center">
                                         <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center mx-auto mb-3">
                                             <Wallet className="w-6 h-6 text-blue-600" />
@@ -187,8 +190,11 @@ export default function CryptoGatewayDashboard() {
                                         <p className="text-sm text-slate-500">Create and manage crypto wallets</p>
                                     </CardContent>
                                 </Card>
-                                
-                                <Card className="bg-white border-slate-200 cursor-pointer hover:shadow-lg transition-shadow">
+
+                                <Card 
+                                    className="bg-white border-slate-200 cursor-pointer hover:shadow-lg transition-shadow"
+                                    onClick={() => window.location.href = '/CryptoUsers'}
+                                >
                                     <CardContent className="pt-6 text-center">
                                         <div className="w-12 h-12 rounded-xl bg-cyan-100 flex items-center justify-center mx-auto mb-3">
                                             <Users className="w-6 h-6 text-cyan-600" />
@@ -197,8 +203,11 @@ export default function CryptoGatewayDashboard() {
                                         <p className="text-sm text-slate-500">Manage customer verification</p>
                                     </CardContent>
                                 </Card>
-                                
-                                <Card className="bg-white border-slate-200 cursor-pointer hover:shadow-lg transition-shadow">
+
+                                <Card 
+                                    className="bg-white border-slate-200 cursor-pointer hover:shadow-lg transition-shadow"
+                                    onClick={() => window.location.href = '/CryptoTransactions'}
+                                >
                                     <CardContent className="pt-6 text-center">
                                         <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center mx-auto mb-3">
                                             <Activity className="w-6 h-6 text-purple-600" />
