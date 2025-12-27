@@ -5,6 +5,8 @@ import CryptoGatewaySidebar from '@/components/crypto/CryptoGatewaySidebar';
 import FintechNewsTicker from '@/components/dashboard/FintechNewsTicker';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { FTS_COLORS } from '@/components/community/FTSBrandColors';
 import { 
     Wallet, TrendingUp, Users, Activity, Bitcoin, 
     ArrowUpRight, ArrowDownRight, Zap 
@@ -45,86 +47,103 @@ export default function CryptoGatewayDashboard() {
                 <FintechNewsTicker />
                 
                 <div className="flex-1 overflow-auto">
+                    <div className="bg-white border-b border-slate-200 px-8 py-6 sticky top-0 z-10">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <h1 className="text-3xl font-bold text-slate-900" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                                    Crypto Gateway Dashboard
+                                </h1>
+                                <p className="text-slate-600 mt-1">Welcome back, {session.user.company_name || session.user.email}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div className="p-8">
-                        <h1 className="text-3xl font-bold text-slate-900 mb-2">Crypto Gateway Dashboard</h1>
-                        <p className="text-slate-600 mb-8">Welcome back, {session.user.email}</p>
 
                         <div className="space-y-8">
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                                <Card className="border-blue-200 bg-gradient-to-br from-white to-blue-50">
-                                    <CardHeader className="flex flex-row items-center justify-between pb-2">
-                                        <CardTitle className="text-sm font-medium text-slate-600">
-                                            Total Volume (24h)
-                                        </CardTitle>
-                                        <Wallet className="h-4 w-4 text-blue-600" />
-                                    </CardHeader>
-                                    <CardContent>
-                                        <div className="text-2xl font-bold text-slate-900">
-                                            ${stats.totalVolume.toLocaleString()}
-                                        </div>
-                                        <div className="flex items-center gap-1 text-xs text-green-600 mt-1">
-                                            <ArrowUpRight className="h-3 w-3" />
-                                            <span>+12.5%</span>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-
-                                <Card className="border-cyan-200 bg-gradient-to-br from-white to-cyan-50">
-                                    <CardHeader className="flex flex-row items-center justify-between pb-2">
-                                        <CardTitle className="text-sm font-medium text-slate-600">
-                                            Transactions
-                                        </CardTitle>
-                                        <Activity className="h-4 w-4 text-cyan-600" />
-                                    </CardHeader>
-                                    <CardContent>
-                                        <div className="text-2xl font-bold text-slate-900">
-                                            {stats.totalTransactions.toLocaleString()}
-                                        </div>
-                                        <div className="flex items-center gap-1 text-xs text-green-600 mt-1">
-                                            <ArrowUpRight className="h-3 w-3" />
-                                            <span>+8.2%</span>
+                                <Card className="bg-white border-slate-200">
+                                    <CardContent className="p-6">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="text-sm text-slate-600">Total Volume (24h)</p>
+                                                <p className="text-3xl font-bold text-slate-900 mt-1">
+                                                    ${stats.totalVolume.toLocaleString()}
+                                                </p>
+                                                <div className="flex items-center gap-1 text-xs text-emerald-600 mt-1">
+                                                    <ArrowUpRight className="h-3 w-3" />
+                                                    <span>+12.5%</span>
+                                                </div>
+                                            </div>
+                                            <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
+                                                <Wallet className="h-6 w-6 text-blue-600" />
+                                            </div>
                                         </div>
                                     </CardContent>
                                 </Card>
 
-                                <Card className="border-purple-200 bg-gradient-to-br from-white to-purple-50">
-                                    <CardHeader className="flex flex-row items-center justify-between pb-2">
-                                        <CardTitle className="text-sm font-medium text-slate-600">
-                                            Active Wallets
-                                        </CardTitle>
-                                        <Users className="h-4 w-4 text-purple-600" />
-                                    </CardHeader>
-                                    <CardContent>
-                                        <div className="text-2xl font-bold text-slate-900">
-                                            {stats.activeWallets}
-                                        </div>
-                                        <div className="flex items-center gap-1 text-xs text-green-600 mt-1">
-                                            <ArrowUpRight className="h-3 w-3" />
-                                            <span>+5.1%</span>
+                                <Card className="bg-white border-slate-200">
+                                    <CardContent className="p-6">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="text-sm text-slate-600">Transactions</p>
+                                                <p className="text-3xl font-bold text-slate-900 mt-1">
+                                                    {stats.totalTransactions.toLocaleString()}
+                                                </p>
+                                                <div className="flex items-center gap-1 text-xs text-emerald-600 mt-1">
+                                                    <ArrowUpRight className="h-3 w-3" />
+                                                    <span>+8.2%</span>
+                                                </div>
+                                            </div>
+                                            <div className="w-12 h-12 rounded-xl bg-cyan-100 flex items-center justify-center">
+                                                <Activity className="h-6 w-6 text-cyan-600" />
+                                            </div>
                                         </div>
                                     </CardContent>
                                 </Card>
 
-                                <Card className="border-yellow-200 bg-gradient-to-br from-white to-yellow-50">
-                                    <CardHeader className="flex flex-row items-center justify-between pb-2">
-                                        <CardTitle className="text-sm font-medium text-slate-600">
-                                            Avg Transaction
-                                        </CardTitle>
-                                        <TrendingUp className="h-4 w-4 text-yellow-600" />
-                                    </CardHeader>
-                                    <CardContent>
-                                        <div className="text-2xl font-bold text-slate-900">
-                                            ${stats.avgTransactionValue}
+                                <Card className="bg-white border-slate-200">
+                                    <CardContent className="p-6">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="text-sm text-slate-600">Active Wallets</p>
+                                                <p className="text-3xl font-bold text-slate-900 mt-1">
+                                                    {stats.activeWallets}
+                                                </p>
+                                                <div className="flex items-center gap-1 text-xs text-emerald-600 mt-1">
+                                                    <ArrowUpRight className="h-3 w-3" />
+                                                    <span>+5.1%</span>
+                                                </div>
+                                            </div>
+                                            <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center">
+                                                <Users className="h-6 w-6 text-purple-600" />
+                                            </div>
                                         </div>
-                                        <div className="flex items-center gap-1 text-xs text-red-600 mt-1">
-                                            <ArrowDownRight className="h-3 w-3" />
-                                            <span>-2.3%</span>
+                                    </CardContent>
+                                </Card>
+
+                                <Card className="bg-white border-slate-200">
+                                    <CardContent className="p-6">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="text-sm text-slate-600">Avg Transaction</p>
+                                                <p className="text-3xl font-bold text-slate-900 mt-1">
+                                                    ${stats.avgTransactionValue}
+                                                </p>
+                                                <div className="flex items-center gap-1 text-xs text-red-600 mt-1">
+                                                    <ArrowDownRight className="h-3 w-3" />
+                                                    <span>-2.3%</span>
+                                                </div>
+                                            </div>
+                                            <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center">
+                                                <TrendingUp className="h-6 w-6 text-amber-600" />
+                                            </div>
                                         </div>
                                     </CardContent>
                                 </Card>
                             </div>
 
-                            <Card>
+                            <Card className="bg-white border-slate-200">
                                 <CardHeader>
                                     <CardTitle>Recent Activity</CardTitle>
                                 </CardHeader>
@@ -162,25 +181,31 @@ export default function CryptoGatewayDashboard() {
                             </Card>
 
                             <div className="grid md:grid-cols-3 gap-6">
-                                <Card className="cursor-pointer hover:shadow-lg transition-shadow border-blue-200">
+                                <Card className="bg-white border-slate-200 cursor-pointer hover:shadow-lg transition-shadow">
                                     <CardContent className="pt-6 text-center">
-                                        <Wallet className="w-12 h-12 text-blue-600 mx-auto mb-3" />
+                                        <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center mx-auto mb-3">
+                                            <Wallet className="w-6 h-6 text-blue-600" />
+                                        </div>
                                         <h3 className="font-semibold mb-1">Wallet Management</h3>
                                         <p className="text-sm text-slate-500">Create and manage crypto wallets</p>
                                     </CardContent>
                                 </Card>
                                 
-                                <Card className="cursor-pointer hover:shadow-lg transition-shadow border-cyan-200">
+                                <Card className="bg-white border-slate-200 cursor-pointer hover:shadow-lg transition-shadow">
                                     <CardContent className="pt-6 text-center">
-                                        <Users className="w-12 h-12 text-cyan-600 mx-auto mb-3" />
+                                        <div className="w-12 h-12 rounded-xl bg-cyan-100 flex items-center justify-center mx-auto mb-3">
+                                            <Users className="w-6 h-6 text-cyan-600" />
+                                        </div>
                                         <h3 className="font-semibold mb-1">User KYC</h3>
                                         <p className="text-sm text-slate-500">Manage customer verification</p>
                                     </CardContent>
                                 </Card>
                                 
-                                <Card className="cursor-pointer hover:shadow-lg transition-shadow border-purple-200">
+                                <Card className="bg-white border-slate-200 cursor-pointer hover:shadow-lg transition-shadow">
                                     <CardContent className="pt-6 text-center">
-                                        <Activity className="w-12 h-12 text-purple-600 mx-auto mb-3" />
+                                        <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center mx-auto mb-3">
+                                            <Activity className="w-6 h-6 text-purple-600" />
+                                        </div>
                                         <h3 className="font-semibold mb-1">Transaction Monitor</h3>
                                         <p className="text-sm text-slate-500">Real-time transaction tracking</p>
                                     </CardContent>
