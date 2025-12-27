@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import Sidebar from '@/components/dashboard/Sidebar';
-import TopHeader from '@/components/dashboard/TopHeader';
+import CryptoGatewaySidebar from '@/components/crypto/CryptoGatewaySidebar';
 import { cn } from "@/lib/utils";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -45,11 +44,20 @@ import { validateBlockchainTransaction, BLOCKCHAIN_NETWORKS, DLT_STATUS_CODES } 
 import ISOComplianceBadge from '@/components/transaction/ISOComplianceBadge';
 
 export default function CryptoTransactions() {
-    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+    const [session, setSession] = useState(() => {
+        const stored = localStorage.getItem('crypto_gateway_session');
+        if (!stored) {
+            window.location.href = '/CryptoGatewayLogin';
+            return null;
+        }
+        return JSON.parse(stored);
+    });
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedAsset, setSelectedAsset] = useState('');
     const [showNewDialog, setShowNewDialog] = useState(false);
     const queryClient = useQueryClient();
+
+    if (!session) return null;
 
     // Fetch crypto prices
     const { data: pricesData, isLoading: pricesLoading } = useQuery({
@@ -95,13 +103,12 @@ export default function CryptoTransactions() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50">
+        <div className="flex h-screen bg-slate-50">
             <Toaster position="top-right" />
-            <Sidebar collapsed={sidebarCollapsed} currentPage="CryptoTransactions" />
-            <div className={cn("transition-all duration-300", "ml-64")}>
-                <TopHeader onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} collapsed={sidebarCollapsed} />
-                
-                <main className="p-6">
+            <CryptoGatewaySidebar currentPage="CryptoTransactions" userEmail={session.user.email} />
+            
+            <div className="flex-1 overflow-auto">
+                <div className="p-6">
                     <div className="flex items-center justify-between mb-6">
                         <div>
                             <h1 className="text-2xl font-bold text-slate-900">Crypto Transactions</h1>
@@ -390,7 +397,7 @@ export default function CryptoTransactions() {
                             </Card>
                         </TabsContent>
                     </Tabs>
-                </main>
+                </div>
             </div>
         </div>
     );
