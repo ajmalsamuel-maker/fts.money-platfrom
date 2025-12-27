@@ -1,11 +1,7 @@
-import { createClient } from 'npm:@base44/sdk@0.8.6';
-
-const base44 = createClient({
-    projectId: Deno.env.get('BASE44_PROJECT_ID'),
-    serviceRoleKey: Deno.env.get('BASE44_SERVICE_ROLE_KEY')
-});
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 Deno.serve(async (req) => {
+    const base44 = createClientFromRequest(req);
     try {
         const { email, password } = await req.json();
 
