@@ -11,7 +11,7 @@ import { FTS_COLORS, FTS_LOGOS } from '@/components/community/FTSBrandColors';
 import { 
     LayoutDashboard, Building2, Globe, Users, Settings, LogOut,
     Rocket, FileText, DollarSign, ChevronDown, ChevronRight,
-    Code, GitBranch, Package, Briefcase, Zap, BarChart3
+    Code, GitBranch, Package, Briefcase
 } from 'lucide-react';
 
 export default function CommunityPortalSidebarOptimized({ currentPage, userEmail }) {
@@ -52,8 +52,6 @@ export default function CommunityPortalSidebarOptimized({ currentPage, userEmail
         },
         enabled: !!session?.email
     });
-
-
 
     const { data: subscriptions = [] } = useQuery({
         queryKey: ['my-subscriptions'],

@@ -11,7 +11,6 @@ const pageHierarchy = {
     'MyAllServices': ['My Services', 'All Services'],
     'ISOGatewayLogin': ['My Services', 'ISO Gateway'],
     'OrchestrationLogin': ['My Services', 'Orchestration'],
-    'CryptoGatewayLogin': ['My Services', 'Crypto Gateway'],
     'CommunityMarketplace': ['Explore', 'Marketplace'],
     'MySubscriptions': ['My Services', 'Subscriptions'],
     'CommunityBilling': ['Business & Operations', 'Billing'],

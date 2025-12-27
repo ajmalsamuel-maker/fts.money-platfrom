@@ -33,7 +33,6 @@ import CommunityProductCatalog from './pages/CommunityProductCatalog';
 import CommunityUserManagement from './pages/CommunityUserManagement';
 import Compliance from './pages/Compliance';
 import ComplianceFramework from './pages/ComplianceFramework';
-import CryptoGatewayDashboard from './pages/CryptoGatewayDashboard';
 import CryptoPayouts from './pages/CryptoPayouts';
 import CryptoTransactions from './pages/CryptoTransactions';
 import CustomerAnalytics from './pages/CustomerAnalytics';
@@ -206,7 +205,6 @@ import Settlements from './pages/Settlements';
 import SmartOrchestration from './pages/SmartOrchestration';
 import SmartRetry from './pages/SmartRetry';
 import StaffLogin from './pages/StaffLogin';
-import StrigaServiceManagement from './pages/StrigaServiceManagement';
 import SubMerchants from './pages/SubMerchants';
 import Subscriptions from './pages/Subscriptions';
 import Support from './pages/Support';
@@ -227,6 +225,9 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
+import StrigaServiceManagement from './pages/StrigaServiceManagement';
+import CryptoGatewayLogin from './pages/CryptoGatewayLogin';
+import CryptoGatewayDashboard from './pages/CryptoGatewayDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -266,7 +267,6 @@ export const PAGES = {
     "CommunityUserManagement": CommunityUserManagement,
     "Compliance": Compliance,
     "ComplianceFramework": ComplianceFramework,
-    "CryptoGatewayDashboard": CryptoGatewayDashboard,
     "CryptoPayouts": CryptoPayouts,
     "CryptoTransactions": CryptoTransactions,
     "CustomerAnalytics": CustomerAnalytics,
@@ -439,7 +439,6 @@ export const PAGES = {
     "SmartOrchestration": SmartOrchestration,
     "SmartRetry": SmartRetry,
     "StaffLogin": StaffLogin,
-    "StrigaServiceManagement": StrigaServiceManagement,
     "SubMerchants": SubMerchants,
     "Subscriptions": Subscriptions,
     "Support": Support,
@@ -460,6 +459,9 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
+    "StrigaServiceManagement": StrigaServiceManagement,
+    "CryptoGatewayLogin": CryptoGatewayLogin,
+    "CryptoGatewayDashboard": CryptoGatewayDashboard,
 }
 
 export const pagesConfig = {

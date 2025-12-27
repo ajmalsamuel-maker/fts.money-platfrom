@@ -104,23 +104,6 @@ function AddServiceButton({ navigate }) {
                             </div>
                         </div>
                     </button>
-                    <button
-                        onClick={() => {
-                            setOpen(false);
-                            navigate(createPageUrl('StrigaServiceManagement'));
-                        }}
-                        className="w-full p-4 rounded-lg border-2 border-emerald-200 hover:border-emerald-400 hover:bg-emerald-50 transition-all text-left"
-                    >
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center">
-                                <Wallet className="h-6 w-6 text-emerald-600" />
-                            </div>
-                            <div>
-                                <p className="font-semibold text-slate-900">Crypto Gateway Customer</p>
-                                <p className="text-sm text-slate-600">Add crypto banking customer</p>
-                            </div>
-                        </div>
-                    </button>
                 </div>
             </DialogContent>
         </Dialog>
@@ -130,9 +113,9 @@ function AddServiceButton({ navigate }) {
 const quickActions = [
     { icon: Building2, label: 'PSP Instances', path: 'PSPProvisioning', color: 'bg-blue-50 text-blue-700 border-blue-200' },
     { icon: Zap, label: 'ISO Gateway', path: 'ISOGatewayTestConsole', color: 'bg-violet-50 text-violet-700 border-violet-200' },
-    { icon: Wallet, label: 'Crypto Gateway', path: 'StrigaServiceManagement', color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
     { icon: Package, label: 'Service Catalog', path: 'FTSServiceManager', color: 'bg-indigo-50 text-indigo-700 border-indigo-200' },
     { icon: Database, label: 'Provider Pool', path: 'FTSProviderPool', color: 'bg-purple-50 text-purple-700 border-purple-200' },
+    { icon: Wallet, label: 'Payout Routes', path: 'FTSPayoutRoutes', color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
     { icon: BarChart3, label: 'Analytics', path: 'FTSAnalytics', color: 'bg-cyan-50 text-cyan-700 border-cyan-200' },
     { icon: DollarSign, label: 'Revenue', path: 'FTSRevenue', color: 'bg-pink-50 text-pink-700 border-pink-200' }
 ];

@@ -9,7 +9,7 @@ import ComplianceFooter from '@/components/community/ComplianceFooter';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Building2, Code, GitBranch, ArrowRight, CheckCircle2, Package } from 'lucide-react';
+import { Building2, Code, GitBranch, ArrowRight, CheckCircle2, Zap } from 'lucide-react';
 
 export default function LaunchServices() {
     const navigate = useNavigate();
@@ -50,8 +50,6 @@ export default function LaunchServices() {
         },
         enabled: !!session?.email
     });
-
-
 
     const services = [
         {
@@ -122,8 +120,7 @@ export default function LaunchServices() {
             borderColor: 'border-purple-200',
             textColor: 'text-purple-700',
             action: () => navigate(createPageUrl('OrchestrationLogin'))
-        },
-
+        }
     ];
 
     if (!session) return null;
@@ -157,7 +154,7 @@ export default function LaunchServices() {
                     </div>
 
                     {/* Service Cards */}
-                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div className="grid md:grid-cols-3 gap-6 mb-8">
                         {services.map((service) => {
                             const Icon = service.icon;
                             return (
@@ -222,14 +219,14 @@ export default function LaunchServices() {
                         <CardContent className="p-6">
                             <div className="flex items-start gap-4">
                                 <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
-                                    <Package className="h-6 w-6 text-blue-600" />
+                                    <Zap className="h-6 w-6 text-blue-600" />
                                 </div>
                                 <div>
                                     <h3 className="font-semibold text-slate-900 mb-2">Need Help Choosing?</h3>
                                     <p className="text-sm text-slate-600 mb-4">
-                                        <strong>PSP Instance:</strong> Complete payment platform with multiple merchants.<br />
-                                        <strong>ISO Gateway:</strong> Translate payment messages between formats.<br />
-                                        <strong>Orchestration:</strong> Intelligent routing across providers.
+                                        <strong>PSP Instance:</strong> Choose this if you want to run a complete payment platform with multiple merchants.<br />
+                                        <strong>ISO Gateway:</strong> Choose this if you need to translate payment messages between different formats.<br />
+                                        <strong>Orchestration:</strong> Choose this if you need intelligent routing across multiple payment providers.
                                     </p>
                                     <p className="text-xs text-slate-500">
                                         💡 You can launch multiple services and integrate them together for maximum flexibility.

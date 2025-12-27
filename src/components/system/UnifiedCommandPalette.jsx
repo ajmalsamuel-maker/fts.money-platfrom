@@ -36,7 +36,6 @@ export default function UnifiedCommandPalette({
             { id: 'psp', label: 'My PSPs', icon: Building2, path: 'MyPSPInstances', category: 'Services' },
             { id: 'iso', label: 'ISO Gateway', icon: Code, path: 'ISOGatewayLogin', category: 'Services' },
             { id: 'orch', label: 'Orchestration', icon: GitBranch, path: 'OrchestrationLogin', category: 'Services' },
-            { id: 'crypto', label: 'Crypto Gateway', icon: Zap, path: 'CryptoGatewayLogin', category: 'Services' },
             { id: 'marketplace', label: 'Marketplace', icon: Globe, path: 'CommunityMarketplace', category: 'Navigation' },
             { id: 'billing', label: 'Billing', icon: DollarSign, path: 'CommunityBilling', category: 'Business' },
             { id: 'settings', label: 'Settings', icon: Settings, path: 'CommunityAccountSettings', category: 'Settings' },

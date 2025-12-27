@@ -88,16 +88,7 @@ export default function CommunityPortalDashboard() {
         enabled: !!session?.email
     });
 
-    const { data: myCryptoCustomers = [] } = useQuery({
-        queryKey: ['my-crypto-customers', session?.email],
-        queryFn: async () => {
-            const all = await base44.entities.CryptoGatewayCustomer.list('-created_date');
-            return all.filter(c => c.email === session?.email);
-        },
-        enabled: !!session?.email
-    });
-
-    const totalServices = myPSPs.length + myISOCustomers.length + myOrchCustomers.length + myCryptoCustomers.length;
+    const totalServices = myPSPs.length + myISOCustomers.length + myOrchCustomers.length;
     const isNewUser = totalServices === 0;
 
     const quickActions = [
@@ -222,15 +213,8 @@ export default function CommunityPortalDashboard() {
                                         <p className="text-xs text-slate-600">Smart routing</p>
                                     </div>
                                 </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => navigate(createPageUrl('CryptoGatewayLogin'))}>
-                                    <Zap className="h-4 w-4 mr-3 text-emerald-600" />
-                                    <div>
-                                        <p className="font-medium">Crypto Gateway</p>
-                                        <p className="text-xs text-slate-600">Crypto banking</p>
-                                    </div>
-                                </DropdownMenuItem>
-                                </DropdownMenuContent>
-                                </DropdownMenu>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                         <Button 
                             variant="outline"
                             onClick={() => {
