@@ -12,7 +12,7 @@ import {
     ArrowUpRight, ArrowDownRight, Zap, AlertCircle,
     CheckCircle2, DollarSign, Globe, Shield, CreditCard,
     Clock, TrendingDown, ArrowRight, ExternalLink, LogOut,
-    BarChart3, PieChart, Calendar
+    BarChart3, PieChart, Calendar, ArrowLeftRight
 } from 'lucide-react';
 import { LineChart, Line, BarChart, Bar, PieChart as RePieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
