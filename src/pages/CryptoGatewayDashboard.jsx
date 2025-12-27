@@ -72,11 +72,37 @@ export default function CryptoGatewayDashboard() {
 
     return (
         <div className="flex flex-col h-screen bg-slate-50">
-            <CryptoGatewaySidebar currentPage="CryptoGatewayDashboard" userEmail={session.user.email} />
-            <div className="mb-6">
-                <h1 className="text-3xl font-bold text-slate-900">Dashboard</h1>
-                <p className="text-slate-600 mt-1">Welcome back, {session.user.company_name || session.user.email}</p>
+            {/* Top Header */}
+            <div className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 flex-shrink-0">
+                <img src={FTS_LOGOS.primary} alt="FTS.Money" className="h-8" />
+                <div className="flex items-center gap-3">
+                    <div className="text-right">
+                        <p className="text-sm font-medium text-slate-900">{session.user.email}</p>
+                        <p className="text-xs text-slate-500">Crypto Gateway</p>
+                    </div>
+                    <button
+                        onClick={() => {
+                            localStorage.removeItem('crypto_gateway_session');
+                            window.location.href = '/CryptoGatewayLogin';
+                        }}
+                        className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 transition-colors"
+                    >
+                        <LogOut className="h-4 w-4" />
+                        Logout
+                    </button>
+                </div>
             </div>
+
+            {/* Main Content Area with Sidebar */}
+            <div className="flex flex-1 overflow-hidden">
+                <CryptoGatewaySidebar currentPage="CryptoGatewayDashboard" userEmail={session.user.email} />
+                
+                {/* Dashboard Content */}
+                <div className="flex-1 overflow-auto p-8">
+                    <div className="mb-6">
+                        <h1 className="text-3xl font-bold text-slate-900">Dashboard</h1>
+                        <p className="text-slate-600 mt-1">Welcome back, {session.user.company_name || session.user.email}</p>
+                    </div>
 
                 <div className="space-y-6">
                     {/* Alerts Banner */}
@@ -393,6 +419,8 @@ export default function CryptoGatewayDashboard() {
                                 </CardContent>
                             </Card>
                         </div>
+                </div>
+            </div>
         </div>
     );
 }
