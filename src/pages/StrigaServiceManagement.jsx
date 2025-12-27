@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 
 export default function StrigaServiceManagement() {
-    const { user, isLoading: authLoading } = usePlatformAuth(['service_catalog:read']);
+    const { platformUser, loading: authLoading } = usePlatformAuth();
     const [selectedTab, setSelectedTab] = useState('overview');
 
     // Fetch Crypto Gateway subscriptions
@@ -57,8 +57,8 @@ export default function StrigaServiceManagement() {
         <div className="flex h-screen bg-slate-50">
             <FTSPlatformSidebarRestructured 
                 currentPage="StrigaServiceManagement"
-                userRole={user?.role}
-                userEmail={user?.email}
+                userRole={platformUser?.platform_role}
+                userEmail={platformUser?.email}
             />
             
             <div className="flex-1 overflow-auto">
