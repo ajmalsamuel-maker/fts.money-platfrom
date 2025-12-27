@@ -18,9 +18,16 @@ export default function CryptoGatewaySidebar({ currentPage, userEmail }) {
             ]
         },
         {
-            section: 'Operations',
+            section: 'Banking',
             items: [
                 { label: 'Wallets', path: 'CryptoWallets', icon: Wallet },
+                { label: 'Virtual IBANs', path: 'CryptoIBANs', icon: Shield },
+                { label: 'Payment Cards', path: 'CryptoCards', icon: Key }
+            ]
+        },
+        {
+            section: 'Operations',
+            items: [
                 { label: 'Transactions', path: 'CryptoTransactions', icon: Activity },
                 { label: 'Users & KYC', path: 'CryptoUsers', icon: Users }
             ]

@@ -235,6 +235,8 @@ import CryptoAPIKeys from './pages/CryptoAPIKeys';
 import CryptoDocs from './pages/CryptoDocs';
 import CryptoCompliance from './pages/CryptoCompliance';
 import CryptoSettings from './pages/CryptoSettings';
+import CryptoIBANs from './pages/CryptoIBANs';
+import CryptoCards from './pages/CryptoCards';
 import __Layout from './Layout.jsx';
 
 
@@ -476,6 +478,8 @@ export const PAGES = {
     "CryptoDocs": CryptoDocs,
     "CryptoCompliance": CryptoCompliance,
     "CryptoSettings": CryptoSettings,
+    "CryptoIBANs": CryptoIBANs,
+    "CryptoCards": CryptoCards,
 }
 
 export const pagesConfig = {
