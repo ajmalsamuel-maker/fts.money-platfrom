@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Wallet, ArrowRight, Shield, Zap, Globe } from 'lucide-react';
 import { FTS_LOGOS } from '@/components/community/FTSBrandColors';
+import { base44 } from '@/api/base44Client';
 
 export default function CryptoGatewayLogin() {
     const [credentials, setCredentials] = useState({ email: '', password: '' });
@@ -18,14 +19,9 @@ export default function CryptoGatewayLogin() {
         setLoading(true);
 
         try {
-            // Call crypto gateway auth endpoint
-            const response = await fetch('/api/cryptoGatewayAuth', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(credentials)
-            });
-
-            const data = await response.json();
+            // Call crypto gateway auth function
+            const response = await base44.functions.invoke('cryptoGatewayAuth', credentials);
+            const data = response.data;
 
             if (data.success) {
                 // Store session
