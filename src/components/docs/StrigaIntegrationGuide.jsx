@@ -78,7 +78,7 @@ Cryptocurrency exchanges and DeFi platforms can access the Crypto Gateway via a 
 - URL: https://cryptogateway.fts.money/login
 - Portal: Dedicated Crypto Gateway Dashboard
 - Authentication: Independent login system
-- Entity: `CryptoGatewayCustomer`
+- Entity: CryptoGatewayCustomer
 
 **Features:**
 
@@ -165,10 +165,10 @@ flowchart LR
 **Step 1: Verify API Credentials**
 
 Credentials are stored in platform secrets:
-- \`STRIGA_APPLICATION_ID\`
-- \`STRIGA_API_KEY\`
-- \`STRIGA_API_SECRET\`
-- \`STRIGA_UI_SECRET\`
+- STRIGA_APPLICATION_ID
+- STRIGA_API_KEY
+- STRIGA_API_SECRET
+- STRIGA_UI_SECRET
 
 **Step 2: Seed Marketplace**
 
@@ -192,7 +192,7 @@ Tracks:
 
 ### API Connector Usage
 
-The \`strigaConnector\` function provides methods for:
+The strigaConnector function provides methods for:
 
 **User Management:**
 \`\`\`javascript
