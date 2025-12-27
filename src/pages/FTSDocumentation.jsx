@@ -18,6 +18,7 @@ import ProductEcosystemDoc from '@/components/docs/ProductEcosystemDoc';
 import VerticalSolutionsDoc from '@/components/docs/VerticalSolutionsDoc';
 import MermaidDiagram from '@/components/docs/MermaidDiagram';
 import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 export default function FTSDocumentation() {
     const { platformUser, loading } = usePlatformAuth();
@@ -100,18 +101,17 @@ export default function FTSDocumentation() {
     };
 
     const downloadPDF = async (doc) => {
-        const html2canvas = (await import('html2canvas')).default;
         const pdf = new jsPDF('p', 'mm', 'a4');
         const pageWidth = pdf.internal.pageSize.getWidth();
         const pageHeight = pdf.internal.pageSize.getHeight();
         
         // Create loading indicator
         const loadingDiv = document.createElement('div');
-        loadingDiv.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+        loadingDiv.style.cssText = 'position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 9999;';
         loadingDiv.innerHTML = `
-            <div class="bg-white rounded-lg p-6 shadow-xl">
-                <div class="animate-spin h-8 w-8 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4"></div>
-                <p class="text-slate-600">Generating PDF with full formatting...</p>
+            <div style="background: white; border-radius: 8px; padding: 24px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);">
+                <div style="width: 32px; height: 32px; border: 4px solid #2563eb; border-top-color: transparent; border-radius: 50%; margin: 0 auto 16px; animation: spin 1s linear infinite;"></div>
+                <p style="color: #475569; margin: 0;">Generating PDF with full formatting...</p>
             </div>
         `;
         document.body.appendChild(loadingDiv);
@@ -130,51 +130,59 @@ export default function FTSDocumentation() {
                 throw new Error('Content element not found');
             }
 
+            // Wait a bit for any pending renders (especially Mermaid diagrams)
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
             // Capture the rendered content as canvas
             const canvas = await html2canvas(contentElement, {
-                scale: 2,
+                scale: 1.5,
                 useCORS: true,
+                allowTaint: true,
                 logging: false,
-                backgroundColor: '#ffffff'
+                backgroundColor: '#ffffff',
+                windowWidth: contentElement.scrollWidth,
+                windowHeight: contentElement.scrollHeight
             });
 
-            const imgData = canvas.toDataURL('image/png');
-            const imgWidth = pageWidth - 20; // 10mm margin on each side
+            const imgData = canvas.toDataURL('image/jpeg', 0.95);
+            const imgWidth = pageWidth - 20;
             const imgHeight = (canvas.height * imgWidth) / canvas.width;
             
             // Calculate how many pages we need
-            const pageContentHeight = pageHeight - 30; // Leave space for margins
+            const pageContentHeight = pageHeight - 30;
             let heightLeft = imgHeight;
-            let position = 0;
+            let position = 10;
 
             // Add first page of content
             pdf.addPage();
-            pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight, undefined, 'FAST');
+            pdf.addImage(imgData, 'JPEG', 10, position, imgWidth, imgHeight);
             heightLeft -= pageContentHeight;
 
             // Add remaining pages if content is longer than one page
             while (heightLeft > 0) {
-                position = heightLeft - imgHeight;
+                position = -(imgHeight - heightLeft) + 10;
                 pdf.addPage();
-                pdf.addImage(imgData, 'PNG', 10, position + 10, imgWidth, imgHeight, undefined, 'FAST');
+                pdf.addImage(imgData, 'JPEG', 10, position, imgWidth, imgHeight);
                 heightLeft -= pageContentHeight;
             }
 
             // Add page numbers
             const totalPages = pdf.internal.pages.length - 1;
+            pdf.setTextColor(100);
             for (let i = 2; i <= totalPages; i++) {
                 pdf.setPage(i);
                 pdf.setFontSize(8);
-                pdf.setTextColor(100);
                 pdf.text(`Page ${i - 1} of ${totalPages - 1}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
             }
 
             pdf.save(`${doc.title.replace(/\s+/g, '-').toLowerCase()}.pdf`);
         } catch (error) {
             console.error('PDF generation error:', error);
-            alert('Failed to generate PDF. Please try again.');
+            alert(`Failed to generate PDF: ${error.message}. Please try again.`);
         } finally {
-            document.body.removeChild(loadingDiv);
+            if (loadingDiv.parentNode) {
+                document.body.removeChild(loadingDiv);
+            }
         }
     };
 
