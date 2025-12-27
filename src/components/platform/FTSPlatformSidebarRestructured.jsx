@@ -84,7 +84,7 @@ export default function FTSPlatformSidebarRestructured({ currentPage, userRole, 
                 { label: 'Customers', path: 'CryptoGatewayCustomers', icon: Users, description: 'All customers', priority: true },
                 { label: 'KYC/KYB Verification', path: 'CryptoKYCManagement', icon: Shield, description: 'Compliance' },
                 { label: 'Transactions', path: 'CryptoGatewayTransactions', icon: Activity, description: 'All txns' },
-                { label: 'Gateway Portal', path: 'CryptoGatewayLogin', icon: Building2, description: 'Customer view' }
+                { label: 'Portal Management', path: 'CryptoPortalManagement', icon: Settings, description: 'Customize' }
             ]
         },
         {

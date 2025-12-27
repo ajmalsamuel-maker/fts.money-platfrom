@@ -240,6 +240,7 @@ import CryptoCards from './pages/CryptoCards';
 import CryptoGatewayCustomers from './pages/CryptoGatewayCustomers';
 import CryptoKYCManagement from './pages/CryptoKYCManagement';
 import CryptoGatewayTransactions from './pages/CryptoGatewayTransactions';
+import CryptoPortalManagement from './pages/CryptoPortalManagement';
 import __Layout from './Layout.jsx';
 
 
@@ -486,6 +487,7 @@ export const PAGES = {
     "CryptoGatewayCustomers": CryptoGatewayCustomers,
     "CryptoKYCManagement": CryptoKYCManagement,
     "CryptoGatewayTransactions": CryptoGatewayTransactions,
+    "CryptoPortalManagement": CryptoPortalManagement,
 }
 
 export const pagesConfig = {
