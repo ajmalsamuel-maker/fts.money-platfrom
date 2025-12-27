@@ -58,7 +58,6 @@ export default function FTSPlatformSidebarRestructured({ currentPage, userRole, 
             defaultOpen: false,
             items: [
                 { label: 'Service Catalog', path: 'FTSServiceManager', icon: Package, description: 'All services', priority: true },
-                { label: 'Crypto Banking (Striga)', path: 'StrigaServiceManagement', icon: Wallet, description: 'White-label', priority: true },
                 { label: 'Payment Providers', path: 'FTSProviderPool', icon: Database, description: 'Provider pool' },
                 { label: 'Payout Routes', path: 'FTSPayoutRoutes', icon: Wallet, description: 'Methods' },
                 { label: 'Service Providers', path: 'FTSServiceProviders', icon: Users, description: 'Vendors' },
@@ -74,6 +73,15 @@ export default function FTSPlatformSidebarRestructured({ currentPage, userRole, 
                 { label: 'API Gateway', path: 'APIGatewayConfiguration', icon: Zap, description: 'Config' },
                 { label: 'Domain Management', path: 'FTSDomainManagement', icon: Globe, description: 'SSL/DNS' },
                 { label: 'Integrations', path: 'FTSBlockchainIntegration', icon: Globe, description: 'Blockchain' }
+            ]
+        },
+        {
+            id: 'crypto-banking',
+            title: 'Crypto Banking Service',
+            defaultOpen: false,
+            items: [
+                { label: 'Management', path: 'StrigaServiceManagement', icon: Wallet, description: 'Dashboard', priority: true },
+                { label: 'Gateway Portal', path: 'CryptoGatewayLogin', icon: Building2, description: 'Customer view' }
             ]
         },
         {
