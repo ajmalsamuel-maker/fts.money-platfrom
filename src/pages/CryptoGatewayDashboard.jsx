@@ -43,8 +43,6 @@ export default function CryptoGatewayDashboard() {
             <CryptoGatewaySidebar currentPage="CryptoGatewayDashboard" userEmail={session.user.email} />
 
             <div className="flex-1 flex flex-col overflow-hidden">
-                <FintechNewsTicker />
-                
                 <div className="flex-1 overflow-auto">
                     <div className="bg-white border-b border-slate-200 px-8 py-6 sticky top-0 z-10">
                         <div className="flex items-center justify-between">
