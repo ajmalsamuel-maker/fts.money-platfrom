@@ -228,6 +228,13 @@ import XeroIntegration from './pages/XeroIntegration';
 import StrigaServiceManagement from './pages/StrigaServiceManagement';
 import CryptoGatewayLogin from './pages/CryptoGatewayLogin';
 import CryptoGatewayDashboard from './pages/CryptoGatewayDashboard';
+import CryptoAnalytics from './pages/CryptoAnalytics';
+import CryptoWallets from './pages/CryptoWallets';
+import CryptoUsers from './pages/CryptoUsers';
+import CryptoAPIKeys from './pages/CryptoAPIKeys';
+import CryptoDocs from './pages/CryptoDocs';
+import CryptoCompliance from './pages/CryptoCompliance';
+import CryptoSettings from './pages/CryptoSettings';
 import __Layout from './Layout.jsx';
 
 
@@ -462,6 +469,13 @@ export const PAGES = {
     "StrigaServiceManagement": StrigaServiceManagement,
     "CryptoGatewayLogin": CryptoGatewayLogin,
     "CryptoGatewayDashboard": CryptoGatewayDashboard,
+    "CryptoAnalytics": CryptoAnalytics,
+    "CryptoWallets": CryptoWallets,
+    "CryptoUsers": CryptoUsers,
+    "CryptoAPIKeys": CryptoAPIKeys,
+    "CryptoDocs": CryptoDocs,
+    "CryptoCompliance": CryptoCompliance,
+    "CryptoSettings": CryptoSettings,
 }
 
 export const pagesConfig = {

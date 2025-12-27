@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import CryptoGatewaySidebar from '@/components/crypto/CryptoGatewaySidebar';
+import FintechNewsTicker from '@/components/dashboard/FintechNewsTicker';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { 
@@ -40,15 +41,16 @@ export default function CryptoGatewayDashboard() {
         <div className="flex h-screen bg-slate-50">
             <CryptoGatewaySidebar currentPage="CryptoGatewayDashboard" userEmail={session.user.email} />
 
-            <div className="flex-1 overflow-auto">
-                {/* Header */}
-                <div className="bg-gradient-to-r from-blue-600 to-cyan-600 text-white p-8">
-                    <h1 className="text-3xl font-bold mb-2">Crypto Gateway Dashboard</h1>
-                    <p className="text-blue-100">Welcome back, {session.user.email}</p>
-                </div>
+            <div className="flex-1 flex flex-col overflow-hidden">
+                <FintechNewsTicker />
+                
+                <div className="flex-1 overflow-auto">
+                    <div className="p-8">
+                        <h1 className="text-3xl font-bold text-slate-900 mb-2">Crypto Gateway Dashboard</h1>
+                        <p className="text-slate-600 mb-8">Welcome back, {session.user.email}</p>
 
-                {/* Stats Grid */}
-                <div className="p-8 space-y-8">
+                        {/* Stats Grid */}
+                        <div className="space-y-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         <Card className="border-blue-200 bg-gradient-to-br from-white to-blue-50">
                             <CardHeader className="flex flex-row items-center justify-between pb-2">
