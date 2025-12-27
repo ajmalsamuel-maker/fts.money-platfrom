@@ -430,7 +430,7 @@ graph TB
 - Revenue share: FTS.Money margin + PSP markup
 
 **Distribution Channel 2: Standalone Portal (Direct Sales)**
-- Dedicated Crypto Gateway Portal at `/CryptoGatewayLogin`
+- Dedicated Crypto Gateway Portal at /CryptoGatewayLogin
 - Direct sales to exchanges and DeFi platforms
 - Independent authentication and billing
 - Full self-service crypto banking
@@ -1642,8 +1642,8 @@ app.post('/webhooks/ftsmoney',
 #### API Reference
 
 **Base URL:**
-- Sandbox: \`https://api.sandbox.fts.money\`
-- Production: \`https://api.fts.money\`
+- Sandbox: https://api.sandbox.fts.money
+- Production: https://api.fts.money
 
 **Authentication:**
 \`\`\`
