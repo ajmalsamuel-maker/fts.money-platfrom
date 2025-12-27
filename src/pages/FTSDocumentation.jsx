@@ -99,95 +99,83 @@ export default function FTSDocumentation() {
         document.body.removeChild(element);
     };
 
-    const downloadPDF = (doc) => {
+    const downloadPDF = async (doc) => {
+        const html2canvas = (await import('html2canvas')).default;
         const pdf = new jsPDF('p', 'mm', 'a4');
         const pageWidth = pdf.internal.pageSize.getWidth();
         const pageHeight = pdf.internal.pageSize.getHeight();
-        const margin = 15;
-        const maxLineWidth = pageWidth - (margin * 2);
         
-        // Split content into lines and pages
-        const lines = doc.content.split('\n');
-        let yPosition = margin;
-        let currentPage = 1;
+        // Create loading indicator
+        const loadingDiv = document.createElement('div');
+        loadingDiv.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+        loadingDiv.innerHTML = `
+            <div class="bg-white rounded-lg p-6 shadow-xl">
+                <div class="animate-spin h-8 w-8 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4"></div>
+                <p class="text-slate-600">Generating PDF with full formatting...</p>
+            </div>
+        `;
+        document.body.appendChild(loadingDiv);
 
-        // Add title page
-        pdf.setFontSize(24);
-        pdf.text(doc.title, pageWidth / 2, 40, { align: 'center' });
-        pdf.setFontSize(12);
-        pdf.text('FTS.Money Documentation', pageWidth / 2, 50, { align: 'center' });
-        pdf.text(`Generated: ${new Date().toLocaleDateString()}`, pageWidth / 2, 60, { align: 'center' });
-        pdf.addPage();
-        
-        yPosition = margin;
-        pdf.setFontSize(10);
-
-        lines.forEach((line, index) => {
-            // Handle headers
-            if (line.startsWith('# ')) {
-                if (yPosition > margin + 10) {
-                    pdf.addPage();
-                    yPosition = margin;
-                }
-                pdf.setFontSize(18);
-                pdf.setFont(undefined, 'bold');
-                const text = line.replace('# ', '');
-                pdf.text(text, margin, yPosition);
-                yPosition += 10;
-                pdf.setFontSize(10);
-                pdf.setFont(undefined, 'normal');
-            } else if (line.startsWith('## ')) {
-                if (yPosition > pageHeight - 30) {
-                    pdf.addPage();
-                    yPosition = margin;
-                }
-                pdf.setFontSize(14);
-                pdf.setFont(undefined, 'bold');
-                const text = line.replace('## ', '');
-                pdf.text(text, margin, yPosition);
-                yPosition += 8;
-                pdf.setFontSize(10);
-                pdf.setFont(undefined, 'normal');
-            } else if (line.startsWith('### ')) {
-                if (yPosition > pageHeight - 25) {
-                    pdf.addPage();
-                    yPosition = margin;
-                }
-                pdf.setFontSize(12);
-                pdf.setFont(undefined, 'bold');
-                const text = line.replace('### ', '');
-                pdf.text(text, margin, yPosition);
-                yPosition += 7;
-                pdf.setFontSize(10);
-                pdf.setFont(undefined, 'normal');
-            } else if (line.trim().startsWith('```')) {
-                // Skip code blocks for now
-                return;
-            } else if (line.trim() === '') {
-                yPosition += 4;
-            } else if (!line.includes('```mermaid') && !line.includes('graph') && !line.includes('sequenceDiagram')) {
-                // Regular text
-                const wrappedLines = pdf.splitTextToSize(line, maxLineWidth);
-                wrappedLines.forEach(wrappedLine => {
-                    if (yPosition > pageHeight - 20) {
-                        pdf.addPage();
-                        yPosition = margin;
-                    }
-                    pdf.text(wrappedLine, margin, yPosition);
-                    yPosition += 5;
-                });
+        try {
+            // Add title page
+            pdf.setFontSize(24);
+            pdf.text(doc.title, pageWidth / 2, 40, { align: 'center' });
+            pdf.setFontSize(12);
+            pdf.text('FTS.Money Documentation', pageWidth / 2, 50, { align: 'center' });
+            pdf.text(`Generated: ${new Date().toLocaleDateString()}`, pageWidth / 2, 60, { align: 'center' });
+            
+            // Get the rendered content element
+            const contentElement = document.querySelector('.prose');
+            if (!contentElement) {
+                throw new Error('Content element not found');
             }
-        });
 
-        // Add page numbers
-        const totalPages = pdf.internal.pages.length - 1;
-        for (let i = 2; i <= totalPages; i++) {
-            pdf.setPage(i);
-            pdf.setFontSize(8);
-            pdf.text(`Page ${i - 1} of ${totalPages - 1}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
+            // Capture the rendered content as canvas
+            const canvas = await html2canvas(contentElement, {
+                scale: 2,
+                useCORS: true,
+                logging: false,
+                backgroundColor: '#ffffff'
+            });
+
+            const imgData = canvas.toDataURL('image/png');
+            const imgWidth = pageWidth - 20; // 10mm margin on each side
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            
+            // Calculate how many pages we need
+            const pageContentHeight = pageHeight - 30; // Leave space for margins
+            let heightLeft = imgHeight;
+            let position = 0;
+
+            // Add first page of content
+            pdf.addPage();
+            pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight, undefined, 'FAST');
+            heightLeft -= pageContentHeight;
+
+            // Add remaining pages if content is longer than one page
+            while (heightLeft > 0) {
+                position = heightLeft - imgHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'PNG', 10, position + 10, imgWidth, imgHeight, undefined, 'FAST');
+                heightLeft -= pageContentHeight;
+            }
+
+            // Add page numbers
+            const totalPages = pdf.internal.pages.length - 1;
+            for (let i = 2; i <= totalPages; i++) {
+                pdf.setPage(i);
+                pdf.setFontSize(8);
+                pdf.setTextColor(100);
+                pdf.text(`Page ${i - 1} of ${totalPages - 1}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
+            }
+
+            pdf.save(`${doc.title.replace(/\s+/g, '-').toLowerCase()}.pdf`);
+        } catch (error) {
+            console.error('PDF generation error:', error);
+            alert('Failed to generate PDF. Please try again.');
+        } finally {
+            document.body.removeChild(loadingDiv);
         }
-
-        pdf.save(`${doc.title.replace(/\s+/g, '-').toLowerCase()}.pdf`);
     };
 
     const currentDoc = documents.find(d => d.id === activeTab);
