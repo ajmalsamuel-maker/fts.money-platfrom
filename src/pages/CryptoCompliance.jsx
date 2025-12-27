@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import CryptoGatewaySidebar from '@/components/crypto/CryptoGatewaySidebar';
-import FintechNewsTicker from '@/components/dashboard/FintechNewsTicker';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Shield, CheckCircle } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
@@ -21,10 +20,7 @@ export default function CryptoCompliance() {
         <div className="flex h-screen bg-slate-50">
             <CryptoGatewaySidebar currentPage="CryptoCompliance" userEmail={session.user.email} />
             
-            <div className="flex-1 flex flex-col overflow-hidden">
-                <FintechNewsTicker />
-                
-                <div className="flex-1 overflow-auto">
+            <div className="flex-1 overflow-auto">
                     <div className="p-8">
                         <h1 className="text-3xl font-bold text-slate-900 mb-2">Compliance</h1>
                         <p className="text-slate-600 mb-8">Regulatory compliance status</p>
@@ -84,7 +80,6 @@ export default function CryptoCompliance() {
                         </div>
                     </div>
                 </div>
-            </div>
         </div>
     );
 }

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import CryptoGatewaySidebar from '@/components/crypto/CryptoGatewaySidebar';
-import FintechNewsTicker from '@/components/dashboard/FintechNewsTicker';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Key, Plus, Copy } from 'lucide-react';
@@ -27,10 +26,7 @@ export default function CryptoAPIKeys() {
         <div className="flex h-screen bg-slate-50">
             <CryptoGatewaySidebar currentPage="CryptoAPIKeys" userEmail={session.user.email} />
             
-            <div className="flex-1 flex flex-col overflow-hidden">
-                <FintechNewsTicker />
-                
-                <div className="flex-1 overflow-auto">
+            <div className="flex-1 overflow-auto">
                     <div className="p-8">
                         <div className="flex justify-between items-center mb-8">
                             <div>
@@ -74,7 +70,6 @@ export default function CryptoAPIKeys() {
                         </Card>
                     </div>
                 </div>
-            </div>
         </div>
     );
 }

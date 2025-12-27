@@ -51,21 +51,8 @@ export default function CryptoGatewaySidebar({ currentPage, userEmail }) {
     return (
         <aside className="w-56 bg-slate-900 text-white flex flex-col h-screen">
             {/* Logo */}
-            <div className="h-16 flex items-center justify-center border-b border-slate-800 px-3">
-                <img src={FTS_LOGOS.symbol} alt="FTS.Money" className="h-10 w-10" />
-            </div>
-
-            {/* User Info */}
-            <div className="p-3 border-b border-slate-800">
-                <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center flex-shrink-0">
-                        <Wallet className="w-4 h-4" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                        <p className="text-xs font-medium truncate">{userEmail}</p>
-                        <p className="text-xs text-slate-400">Gateway</p>
-                    </div>
-                </div>
+            <div className="h-16 flex items-center px-4 border-b border-slate-800">
+                <img src={FTS_LOGOS.primary} alt="FTS.Money" className="h-8" />
             </div>
 
             {/* Menu */}
@@ -102,18 +89,31 @@ export default function CryptoGatewaySidebar({ currentPage, userEmail }) {
                 </div>
             </nav>
 
-            {/* Footer */}
-            <div className="p-3 border-t border-slate-800">
-                <button
-                    onClick={() => {
-                        localStorage.removeItem('crypto_gateway_session');
-                        window.location.href = '/CryptoGatewayLogin';
-                    }}
-                    className="w-full flex items-center gap-2 px-2 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 transition-colors"
-                >
-                    <LogOut className="h-4 w-4" />
-                    Sign Out
-                </button>
+            {/* User Info & Footer */}
+            <div className="border-t border-slate-800">
+                <div className="p-3 border-b border-slate-800">
+                    <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center flex-shrink-0">
+                            <Wallet className="w-4 h-4" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <p className="text-xs font-medium truncate">{userEmail}</p>
+                            <p className="text-xs text-slate-400">Gateway</p>
+                        </div>
+                    </div>
+                </div>
+                <div className="p-3">
+                    <button
+                        onClick={() => {
+                            localStorage.removeItem('crypto_gateway_session');
+                            window.location.href = '/CryptoGatewayLogin';
+                        }}
+                        className="w-full flex items-center gap-2 px-2 py-2 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 transition-colors"
+                    >
+                        <LogOut className="h-4 w-4" />
+                        Sign Out
+                    </button>
+                </div>
             </div>
         </aside>
     );

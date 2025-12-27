@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import CryptoGatewaySidebar from '@/components/crypto/CryptoGatewaySidebar';
-import FintechNewsTicker from '@/components/dashboard/FintechNewsTicker';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Users, CheckCircle, Clock, XCircle } from 'lucide-react';
@@ -27,10 +26,7 @@ export default function CryptoUsers() {
         <div className="flex h-screen bg-slate-50">
             <CryptoGatewaySidebar currentPage="CryptoUsers" userEmail={session.user.email} />
             
-            <div className="flex-1 flex flex-col overflow-hidden">
-                <FintechNewsTicker />
-                
-                <div className="flex-1 overflow-auto">
+            <div className="flex-1 overflow-auto">
                     <div className="p-8">
                         <h1 className="text-3xl font-bold text-slate-900 mb-2">Users & KYC</h1>
                         <p className="text-slate-600 mb-8">Manage customer verification</p>
@@ -66,7 +62,6 @@ export default function CryptoUsers() {
                         </Card>
                     </div>
                 </div>
-            </div>
         </div>
     );
 }
