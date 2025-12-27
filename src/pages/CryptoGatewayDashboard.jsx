@@ -191,6 +191,7 @@ export default function CryptoGatewayDashboard() {
                     </div>
                 </div>
             </div>
+            </div>
         </div>
     );
 }
