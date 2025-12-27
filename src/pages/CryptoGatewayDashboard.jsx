@@ -96,7 +96,8 @@ export default function CryptoGatewayDashboard() {
                                                 </p>
                                             ))}
                                         </div>
-                                    </div>
+                                        </div>
+                                        </div>
                                     <Button variant="outline" size="sm" className="border-amber-300 hover:bg-amber-100">
                                         View All
                                     </Button>
