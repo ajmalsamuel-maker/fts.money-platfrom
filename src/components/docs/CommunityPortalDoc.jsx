@@ -923,7 +923,7 @@ The **FTS.Money Crypto Gateway** is your enterprise crypto banking infrastructur
 **Available in Two Ways:**
 
 1. **Embedded in PSP** - Enable from Service Marketplace, white-label for your customers
-2. **Standalone Portal** - Direct access for exchanges and DeFi platforms at `/CryptoGatewayLogin`
+2. **Standalone Portal** - Direct access for exchanges and DeFi platforms at /CryptoGatewayLogin
 
 ### Crypto Gateway Architecture
 
@@ -1036,7 +1036,7 @@ Benefit: White-labeled crypto without building infrastructure
 1. Visit https://cryptogateway.fts.money
 2. Contact sales: crypto@fts.money
 3. Provision your account (48 hours)
-4. Access dedicated Crypto Gateway Portal at /CryptoGatewayLogin
+4. Access dedicated Crypto Gateway Portal
 
 ---
 

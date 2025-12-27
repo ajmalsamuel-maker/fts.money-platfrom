@@ -1393,7 +1393,7 @@ console.log(balance);
 ### Support & Documentation
 
 **For PSP Staff:**
-- Crypto integration guide: /FTSDocumentation → Crypto Gateway
+- Crypto integration guide: FTS Documentation - Crypto Gateway section
 - API reference: Auto-generated for your domain
 - Support: crypto-support@fts.money
 
