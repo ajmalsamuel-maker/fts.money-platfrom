@@ -80,7 +80,10 @@ export default function FTSPlatformSidebarRestructured({ currentPage, userRole, 
             title: 'Crypto Banking Service',
             defaultOpen: false,
             items: [
-                { label: 'Management', path: 'StrigaServiceManagement', icon: Wallet, description: 'Dashboard', priority: true },
+                { label: 'Overview', path: 'StrigaServiceManagement', icon: BarChart3, description: 'Dashboard', priority: true },
+                { label: 'Customers', path: 'CryptoGatewayCustomers', icon: Users, description: 'All customers', priority: true },
+                { label: 'KYC/KYB Verification', path: 'CryptoKYCManagement', icon: Shield, description: 'Compliance' },
+                { label: 'Transactions', path: 'CryptoGatewayTransactions', icon: Activity, description: 'All txns' },
                 { label: 'Gateway Portal', path: 'CryptoGatewayLogin', icon: Building2, description: 'Customer view' }
             ]
         },

@@ -237,6 +237,9 @@ import CryptoCompliance from './pages/CryptoCompliance';
 import CryptoSettings from './pages/CryptoSettings';
 import CryptoIBANs from './pages/CryptoIBANs';
 import CryptoCards from './pages/CryptoCards';
+import CryptoGatewayCustomers from './pages/CryptoGatewayCustomers';
+import CryptoKYCManagement from './pages/CryptoKYCManagement';
+import CryptoGatewayTransactions from './pages/CryptoGatewayTransactions';
 import __Layout from './Layout.jsx';
 
 
@@ -480,6 +483,9 @@ export const PAGES = {
     "CryptoSettings": CryptoSettings,
     "CryptoIBANs": CryptoIBANs,
     "CryptoCards": CryptoCards,
+    "CryptoGatewayCustomers": CryptoGatewayCustomers,
+    "CryptoKYCManagement": CryptoKYCManagement,
+    "CryptoGatewayTransactions": CryptoGatewayTransactions,
 }
 
 export const pagesConfig = {
