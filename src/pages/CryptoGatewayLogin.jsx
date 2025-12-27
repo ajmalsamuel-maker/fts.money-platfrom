@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
+import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -11,7 +12,8 @@ import { FTS_COLORS, FTS_LOGOS } from '@/components/community/FTSBrandColors';
 
 export default function CryptoGatewayLogin() {
     const navigate = useNavigate();
-    const [credentials, setCredentials] = useState({ email: '', password: '' });
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
@@ -28,23 +30,21 @@ export default function CryptoGatewayLogin() {
         setLoading(true);
 
         try {
-            const response = await fetch('/api/cryptoGatewayAuth', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(credentials)
+            const response = await base44.functions.invoke('cryptoGatewayAuth', {
+                action: 'login',
+                email,
+                password
             });
 
-            const data = await response.json();
-
-            if (data.success) {
+            if (response.data.success) {
                 localStorage.setItem('crypto_gateway_session', JSON.stringify({
-                    user: data.user,
-                    customer_id: data.customer_id,
+                    user: response.data.user,
+                    customer_id: response.data.customer_id,
                     timestamp: Date.now()
                 }));
                 navigate(createPageUrl('CryptoGatewayDashboard'));
             } else {
-                setError(data.message || 'Invalid credentials');
+                setError(response.data.message || 'Invalid credentials');
             }
         } catch (err) {
             setError('Login failed. Please try again.');
@@ -118,8 +118,8 @@ export default function CryptoGatewayLogin() {
                                     id="email"
                                     type="email"
                                     placeholder="you@exchange.com"
-                                    value={credentials.email}
-                                    onChange={(e) => setCredentials({...credentials, email: e.target.value})}
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
                                     className="bg-slate-800 border-slate-700 text-white"
                                     required
                                 />
@@ -131,8 +131,8 @@ export default function CryptoGatewayLogin() {
                                     id="password"
                                     type="password"
                                     placeholder="••••••••"
-                                    value={credentials.password}
-                                    onChange={(e) => setCredentials({...credentials, password: e.target.value})}
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
                                     className="bg-slate-800 border-slate-700 text-white"
                                     required
                                 />
