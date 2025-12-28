@@ -295,7 +295,7 @@ export default function RWAWhiteLabelProvisioning() {
 
                                         <Button 
                                             onClick={handleProvision}
-                                            disabled={!newCustomer.customer_code || !newCustomer.lei || provisionMutation.isPending}
+                                            disabled={!newCustomer.customer_code || !newCustomer.company_name || !newCustomer.lei || !newCustomer.admin_email || provisionMutation.isPending}
                                             className="w-full"
                                         >
                                             {provisionMutation.isPending ? 'Provisioning...' : 'Start Provisioning'}
