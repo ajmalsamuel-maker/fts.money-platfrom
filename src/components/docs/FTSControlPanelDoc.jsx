@@ -15,12 +15,13 @@ const FTSControlPanelDoc = `# FTS Control Panel Documentation
 3. [User Roles & Permissions](#user-roles--permissions)
 4. [PSP Lifecycle Management](#psp-lifecycle-management)
 5. [Crypto Banking Administration](#crypto-banking-administration)
-6. [Service Catalog Administration](#service-catalog-administration)
-7. [Financial Operations](#financial-operations)
-8. [Compliance & Monitoring](#compliance--monitoring)
-9. [Infrastructure Management](#infrastructure-management)
-10. [Security & Access Control](#security--access-control)
-11. [Troubleshooting & Support](#troubleshooting--support)
+6. [Real World Assets (RWA) Platform](#rwa-platform-administration)
+7. [Service Catalog Administration](#service-catalog-administration)
+8. [Financial Operations](#financial-operations)
+9. [Compliance & Monitoring](#compliance--monitoring)
+10. [Infrastructure Management](#infrastructure-management)
+11. [Security & Access Control](#security--access-control)
+12. [Troubleshooting & Support](#troubleshooting--support)
 
 ---
 
@@ -1419,6 +1420,335 @@ GLEIF Support:
   Website: www.gleif.org/en/contact
   For LEI renewal/validation issues
 \`\`\`
+
+---
+
+## Real World Assets (RWA) Platform Administration {#rwa-platform-administration}
+
+### Overview
+
+The FTS.Money RWA Platform enables whitelabel tokenization of real-world assets including real estate, treasury bills, private credit, and commodities. Built on ERC-3643 compliant smart contracts with institutional-grade custody, oracle pricing, and automated compliance.
+
+**Market Opportunity:**
+- Current RWA market: $24-33B (2025)
+- Projected: $30T by 2030 (380% growth since 2022)
+- Fastest-growing crypto sector after stablecoins
+
+**Platform Status:** Design Phase → MVP Development (Q1-Q4 2026)
+
+### Technical Architecture
+
+\`\`\`mermaid
+graph TB
+    subgraph "RWA Platform Core"
+        A[Tokenization Engine]
+        B[Compliance Engine]
+        C[Custody Manager]
+        D[Oracle Aggregator]
+        E[Settlement Engine]
+    end
+    
+    subgraph "Blockchain Layer"
+        F[Smart Contract Factory]
+        G[ERC-3643 Token Contracts]
+        H[Oracle Price Feeds]
+    end
+    
+    subgraph "External Partners"
+        I[Fireblocks<br/>Custody]
+        J[Chainlink<br/>Oracles]
+        K[Chainalysis<br/>AML]
+    end
+    
+    subgraph "FTS Infrastructure"
+        L[Payment Rails<br/>ISO 20022]
+        M[Crypto Banking<br/>Striga]
+        N[Compliance<br/>KYC/LEI]
+    end
+    
+    A --> F
+    B --> K
+    C --> I
+    D --> J
+    E --> L
+    F --> G
+    G --> H
+    A --> M
+    B --> N
+    
+    style A fill:#2563eb,color:#fff
+    style B fill:#f59e0b,color:#fff
+    style C fill:#10b981,color:#fff
+\`\`\`
+
+### Supported Asset Classes
+
+| Asset Type | Min Value | Tokenization Fee | Compliance Level | Settlement Time |
+|------------|-----------|------------------|------------------|-----------------|
+| **Treasury Bills** | $100K | 0.5% | Moderate | T+1 |
+| **Real Estate** | $500K | 1.5% | High | T+7 |
+| **Private Credit** | $250K | 1.0% | High | T+3 |
+| **Commodities** | $50K | 0.75% | Moderate | T+2 |
+| **Corporate Bonds** | $100K | 0.5% | Moderate | T+2 |
+
+### Smart Contract Specifications
+
+**Primary Standard:** ERC-3643 (T-REX Token for Securities)
+
+**Key Contracts:**
+- \`RWASecurityToken\`: Asset token with compliance
+- \`RWAAssetFactory\`: Deploy new tokens
+- \`RWAOracleFeed\`: Price aggregation
+- \`IdentityRegistry\`: KYC/investor verification
+- \`ComplianceValidator\`: Transfer restrictions
+
+**Multi-Chain Support:**
+- Ethereum (primary)
+- Polygon (scalability)
+- Avalanche (alternative)
+- Base (L2 for lower fees)
+
+### Asset Tokenization Workflow
+
+\`\`\`mermaid
+sequenceDiagram
+    participant Issuer as Asset Issuer
+    participant Portal as RWA Portal
+    participant Engine as Tokenization Engine
+    participant Custody as Fireblocks
+    participant Chain as Blockchain
+    participant Oracle as Chainlink
+    
+    Issuer->>Portal: Submit Asset Details
+    Portal->>Engine: Validate Asset
+    Engine->>Engine: Calculate Tokenomics
+    
+    Engine->>Custody: Create Vault
+    Custody-->>Engine: Vault ID
+    
+    Engine->>Chain: Deploy Token Contract
+    Chain-->>Engine: Contract Address
+    
+    Engine->>Oracle: Register Price Feed
+    Oracle-->>Engine: Feed Active
+    
+    Engine->>Chain: Mint Initial Supply
+    Chain-->>Engine: Tokens Minted
+    
+    Engine->>Portal: Tokenization Complete
+    Portal-->>Issuer: Asset Live
+\`\`\`
+
+### Compliance Framework
+
+**Regulatory Requirements:**
+- SEC Regulation D (US)
+- MiFID II (EU)
+- Investor accreditation verification
+- Transfer restriction enforcement
+- Beneficial ownership tracking
+
+**KYC/AML Integration:**
+- Leverages existing FTS KYC/KYB infrastructure
+- Enhanced due diligence for high-value assets
+- Ongoing transaction monitoring
+- Sanctions screening (OFAC, EU, UN)
+
+**LEI/vLEI for RWAs:**
+\`\`\`yaml
+rwa_identity_requirements:
+  asset_issuers:
+    - lei_required: true
+    - vlei_preferred: true
+    - kyb_verification: mandatory
+    
+  institutional_investors:
+    - lei_required: true (>$100K investment)
+    - vlei_enables: faster_onboarding
+    
+  retail_investors:
+    - lei_required: false
+    - kyc_level: enhanced
+    - accreditation_check: true (US)
+\`\`\`
+
+### Custody & Security
+
+**Institutional-Grade Custody:**
+- **Primary:** Fireblocks (MPC technology)
+- **Backup:** Copper.co (redundancy)
+- **Cold Storage:** 95% of assets
+- **Hot Wallet:** 5% for operations
+
+**Multi-Sig Policies:**
+\`\`\`json
+{
+  "tokenization": {
+    "required_signers": 3,
+    "total_signers": 5,
+    "roles": ["cto", "cfo", "compliance_officer"]
+  },
+  "large_transfers": {
+    "threshold": 1000000,
+    "required_signers": 2,
+    "total_signers": 3
+  },
+  "emergency_operations": {
+    "required_signers": 4,
+    "total_signers": 5,
+    "includes_ceo": true
+  }
+}
+\`\`\`
+
+### Oracle Price Feeds
+
+**Supported Oracles:**
+- **Chainlink:** Crypto assets, commodities
+- **Band Protocol:** Backup/redundancy
+- **Custom APIs:** Real estate appraisals, private valuations
+
+**Price Update Frequency:**
+- Liquid assets (crypto): Every 5 minutes
+- Treasury bills: Daily
+- Real estate: Monthly + event-driven
+- Private credit: Quarterly + event-driven
+
+### Revenue Model
+
+**Platform Fees:**
+\`\`\`
+Asset Tokenization:
+  Setup Fee:              $10,000 - $50,000
+  Tokenization Fee:       0.5% - 1.5% of asset value
+  
+Subscription Tiers:
+  Starter:                $5,000/month (up to $10M AUM)
+  Professional:           $15,000/month (up to $100M AUM)
+  Enterprise:             $50,000/month (unlimited AUM)
+  
+Transaction Fees:
+  Primary Sale:           0.5% of transaction
+  Secondary Trading:      0.25% per trade
+  
+Management Fees:
+  Annual Custody:         0.15% - 0.25% of AUM
+  
+Success Fees:
+  Revenue Share:          10-15% of asset management fees
+\`\`\`
+
+**Revenue Projections:**
+\`\`\`
+Year 1 (10 clients):
+  Subscriptions:          $1.8M
+  Tokenization Fees:      $1.2M
+  Transaction Fees:       $400K
+  Total Revenue:          $3.4M
+  
+Year 3 (50 clients, $2B AUM):
+  Subscriptions:          $9M
+  Tokenization Fees:      $8M
+  Transaction Fees:       $5M
+  Management Fees:        $3M
+  Total Revenue:          $25M
+\`\`\`
+
+### Implementation Roadmap
+
+**Phase 1: Foundation (Q1 2026 - 3 months)**
+- Smart contract development (ERC-3643)
+- Fireblocks custody integration
+- Core API endpoints
+- Admin dashboard
+- **Cost:** $180K
+
+**Phase 2: Compliance & Custody (Q2 2026 - 3 months)**
+- KYC/AML workflows
+- Investor portal
+- Compliance engine
+- Oracle integration
+- **Cost:** $220K
+
+**Phase 3: Trading & Settlement (Q3 2026 - 3 months)**
+- Order management
+- Payment integration
+- DvP settlement
+- Secondary market
+- **Cost:** $200K
+
+**Phase 4: Launch (Q4 2026 - 3 months)**
+- Chainlink oracles
+- Dividend automation
+- Public API v1.0
+- Marketing launch
+- **Cost:** $180K
+
+**Total Investment:** $780K over 12 months
+
+### Integration with Existing FTS Infrastructure
+
+**Leverages Existing Capabilities:**
+
+✅ **Crypto Banking (Striga)**
+- Fiat on/off ramps for investors
+- Custody accounts for dividends
+- Card issuance for liquidity
+
+✅ **Payment Rails**
+- ISO 20022 settlement
+- Cross-border investor payments
+- Automated dividend distribution
+
+✅ **PSP Multi-Tenancy**
+- Same whitelabel architecture
+- Asset issuers as "merchants"
+- Tenant isolation model
+
+✅ **Compliance Infrastructure**
+- KYC/KYB reuse
+- LEI/vLEI integration
+- Audit logging
+
+### Competitive Advantages
+
+| Feature | Traditional RWA | FTS.Money RWA |
+|---------|----------------|---------------|
+| **Time to Market** | 12-18 months | 2-3 months (whitelabel) |
+| **Setup Cost** | $500K - $2M | $50K (platform fee) |
+| **Compliance** | Build from scratch | Built-in (KYC/LEI) |
+| **Payment Integration** | Manual | ISO 20022 native |
+| **Custody** | Contract separately | Fireblocks integrated |
+| **Target Clients** | Large funds only | SMB to Enterprise |
+
+### Monitoring & Analytics
+
+**RWA Dashboard Metrics:**
+\`\`\`
+Platform Overview:
+  Total Assets Tokenized:        47
+  Total Asset Value (AUM):       $847M
+  Active Investors:              3,284
+  Total Transactions:            12,453
+  
+Asset Breakdown:
+  Treasury Bills:                23 ($520M)
+  Real Estate:                   12 ($210M)
+  Private Credit:                8 ($95M)
+  Commodities:                   4 ($22M)
+  
+Performance:
+  Avg Tokenization Time:         4.2 hours
+  Settlement Success Rate:       99.7%
+  Oracle Uptime:                 99.95%
+  Custody Security:              100% (no incidents)
+\`\`\`
+
+### For Full Technical Details
+
+**Complete specifications available in:**
+- Portal Guides → Documentation → "RWA Platform - Technical Spec" tab
+- Includes: Smart contract code, API specs, database schemas, integration guides
 
 ---
 
