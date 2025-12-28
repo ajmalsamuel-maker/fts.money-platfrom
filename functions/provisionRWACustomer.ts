@@ -37,6 +37,16 @@ Deno.serve(async (req) => {
             }]
         });
 
+        // Create RWAProvider record for portal access
+        await base44.asServiceRole.entities.RWAProvider.create({
+            provider_code: customerDataWithoutPassword.customer_code,
+            whitelabel_customer_id: customer.id,
+            company_name: customerDataWithoutPassword.company_name,
+            portal_url: `https://${customerDataWithoutPassword.customer_code}.rwa.fts.money`,
+            logo_url: customerDataWithoutPassword.branding?.logo_url || '',
+            primary_color: customerDataWithoutPassword.branding?.primary_color || '#3b82f6'
+        });
+
         // Simulate provisioning stages
         const stages = [
             { stage: 'deploying_contracts', message: 'Deploying smart contracts to blockchain' },
