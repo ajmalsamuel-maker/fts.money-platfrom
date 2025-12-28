@@ -36,31 +36,10 @@ export default function RWAWhiteLabelProvisioning() {
 
     const provisionMutation = useMutation({
         mutationFn: async (customerData) => {
-            console.log('Starting provisioning with data:', customerData);
-            
-            // Create customer record
-            const customer = await base44.asServiceRole.entities.RWAWhiteLabelCustomer.create({
-                ...customerData,
-                status: 'provisioning',
-                provisioning_status: 'deploying_contracts',
-                provisioning_log: [{
-                    timestamp: new Date().toISOString(),
-                    stage: 'initialization',
-                    status: 'started',
-                    message: 'Provisioning started'
-                }]
-            });
-
-            console.log('Customer created:', customer);
-
-            // In production, this would trigger actual deployment
-            // For now, simulate the process
-            await simulateProvisioning(customer.id);
-
-            return customer;
+            const response = await base44.functions.invoke('provisionRWACustomer', customerData);
+            return response.data;
         },
         onSuccess: () => {
-            console.log('Provisioning completed successfully');
             queryClient.invalidateQueries(['rwa-customers']);
             setShowDialog(false);
             setNewCustomer({
