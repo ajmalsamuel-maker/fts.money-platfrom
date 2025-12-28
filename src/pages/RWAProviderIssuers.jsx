@@ -9,12 +9,14 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Badge } from "@/components/ui/badge";
 import { useRWAProviderAuth } from '@/components/auth/useRWAProviderAuth';
 import RWAProviderSidebar from '@/components/rwa/RWAProviderSidebar';
-import { Plus, Building2, Mail } from 'lucide-react';
+import { Plus, Building2, Mail, Edit, Key } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function RWAProviderIssuers() {
     const { provider } = useRWAProviderAuth();
     const queryClient = useQueryClient();
     const [showDialog, setShowDialog] = useState(false);
+    const [editingIssuer, setEditingIssuer] = useState(null);
     const [newIssuer, setNewIssuer] = useState({
         company_name: '',
         lei: '',
@@ -54,6 +56,32 @@ export default function RWAProviderIssuers() {
             queryClient.invalidateQueries(['issuers']);
             setShowDialog(false);
             setNewIssuer({ company_name: '', lei: '', email: '', issuer_type: 'corporation' });
+        }
+    });
+
+    const updateMutation = useMutation({
+        mutationFn: async ({ id, data }) => {
+            return await base44.entities.AssetIssuer.update(id, data);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries(['issuers']);
+            setEditingIssuer(null);
+        }
+    });
+
+    const resetPasswordMutation = useMutation({
+        mutationFn: async (issuer) => {
+            const newPassword = Math.random().toString(36).slice(-8);
+            await base44.entities.AssetIssuer.update(issuer.id, { password_hash: newPassword });
+            
+            await base44.integrations.Core.SendEmail({
+                to: issuer.email,
+                subject: 'Password Reset',
+                body: `Your new password is: ${newPassword}`
+            });
+        },
+        onSuccess: () => {
+            alert('Password reset email sent!');
         }
     });
 
@@ -144,16 +172,26 @@ export default function RWAProviderIssuers() {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className="text-right">
-                                                <Badge className={
-                                                    issuer.status === 'active' ? 'bg-green-100 text-green-700' :
-                                                    issuer.kyb_status === 'approved' ? 'bg-blue-100 text-blue-700' :
-                                                    'bg-yellow-100 text-yellow-700'
-                                                }>
-                                                    {issuer.status}
-                                                </Badge>
-                                                <p className="text-xs text-slate-500 mt-2">Assets: {issuer.total_assets_tokenized || 0}</p>
-                                                <p className="text-xs text-slate-500">Value: ${((issuer.total_value || 0) / 1000000).toFixed(1)}M</p>
+                                            <div className="flex items-start gap-2">
+                                               <div className="text-right mr-2">
+                                                   <Badge className={
+                                                       issuer.status === 'active' ? 'bg-green-100 text-green-700' :
+                                                       issuer.kyb_status === 'approved' ? 'bg-blue-100 text-blue-700' :
+                                                       'bg-yellow-100 text-yellow-700'
+                                                   }>
+                                                       {issuer.status}
+                                                   </Badge>
+                                                   <p className="text-xs text-slate-500 mt-2">Assets: {issuer.total_assets_tokenized || 0}</p>
+                                                   <p className="text-xs text-slate-500">Value: ${((issuer.total_value || 0) / 1000000).toFixed(1)}M</p>
+                                               </div>
+                                               <div className="flex flex-col gap-1">
+                                                   <Button size="sm" variant="outline" onClick={() => setEditingIssuer(issuer)}>
+                                                       <Edit className="h-3 w-3" />
+                                                   </Button>
+                                                   <Button size="sm" variant="outline" onClick={() => resetPasswordMutation.mutate(issuer)}>
+                                                       <Key className="h-3 w-3" />
+                                                   </Button>
+                                               </div>
                                             </div>
                                         </div>
                                     </div>
@@ -164,6 +202,80 @@ export default function RWAProviderIssuers() {
                             </div>
                         </CardContent>
                     </Card>
+
+                    {/* Edit Dialog */}
+                    {editingIssuer && (
+                        <Dialog open={!!editingIssuer} onOpenChange={() => setEditingIssuer(null)}>
+                            <DialogContent>
+                                <DialogHeader>
+                                    <DialogTitle>Edit Issuer: {editingIssuer.company_name}</DialogTitle>
+                                </DialogHeader>
+                                <div className="space-y-4">
+                                    <div>
+                                        <Label>Company Name</Label>
+                                        <Input
+                                            value={editingIssuer.company_name}
+                                            onChange={(e) => setEditingIssuer({...editingIssuer, company_name: e.target.value})}
+                                        />
+                                    </div>
+                                    <div>
+                                        <Label>LEI</Label>
+                                        <Input
+                                            value={editingIssuer.lei}
+                                            onChange={(e) => setEditingIssuer({...editingIssuer, lei: e.target.value})}
+                                        />
+                                    </div>
+                                    <div>
+                                        <Label>Email</Label>
+                                        <Input
+                                            value={editingIssuer.email}
+                                            onChange={(e) => setEditingIssuer({...editingIssuer, email: e.target.value})}
+                                        />
+                                    </div>
+                                    <div>
+                                        <Label>Status</Label>
+                                        <Select
+                                            value={editingIssuer.status}
+                                            onValueChange={(value) => setEditingIssuer({...editingIssuer, status: value})}
+                                        >
+                                            <SelectTrigger>
+                                                <SelectValue />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="pending_kyb">Pending KYB</SelectItem>
+                                                <SelectItem value="active">Active</SelectItem>
+                                                <SelectItem value="suspended">Suspended</SelectItem>
+                                                <SelectItem value="terminated">Terminated</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    <div>
+                                        <Label>KYB Status</Label>
+                                        <Select
+                                            value={editingIssuer.kyb_status}
+                                            onValueChange={(value) => setEditingIssuer({...editingIssuer, kyb_status: value})}
+                                        >
+                                            <SelectTrigger>
+                                                <SelectValue />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="pending">Pending</SelectItem>
+                                                <SelectItem value="in_progress">In Progress</SelectItem>
+                                                <SelectItem value="approved">Approved</SelectItem>
+                                                <SelectItem value="rejected">Rejected</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    <Button 
+                                        onClick={() => updateMutation.mutate({ id: editingIssuer.id, data: editingIssuer })}
+                                        className="w-full"
+                                    >
+                                        Save Changes
+                                    </Button>
+                                </div>
+                            </DialogContent>
+                        </Dialog>
+                    )}
                 </div>
             </div>
         </div>

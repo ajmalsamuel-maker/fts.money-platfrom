@@ -218,6 +218,7 @@ import QuickPSPProvisioning from './pages/QuickPSPProvisioning';
 import RWAPlatform from './pages/RWAPlatform';
 import RWAProviderAssets from './pages/RWAProviderAssets';
 import RWAProviderDashboard from './pages/RWAProviderDashboard';
+import RWAProviderInvestors from './pages/RWAProviderInvestors';
 import RWAProviderIssuers from './pages/RWAProviderIssuers';
 import RWAProviderLogin from './pages/RWAProviderLogin';
 import RWAWhiteLabelProvisioning from './pages/RWAWhiteLabelProvisioning';
@@ -254,7 +255,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import RWAProviderInvestors from './pages/RWAProviderInvestors';
 import __Layout from './Layout.jsx';
 
 
@@ -479,6 +479,7 @@ export const PAGES = {
     "RWAPlatform": RWAPlatform,
     "RWAProviderAssets": RWAProviderAssets,
     "RWAProviderDashboard": RWAProviderDashboard,
+    "RWAProviderInvestors": RWAProviderInvestors,
     "RWAProviderIssuers": RWAProviderIssuers,
     "RWAProviderLogin": RWAProviderLogin,
     "RWAWhiteLabelProvisioning": RWAWhiteLabelProvisioning,
@@ -515,7 +516,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "RWAProviderInvestors": RWAProviderInvestors,
 }
 
 export const pagesConfig = {
