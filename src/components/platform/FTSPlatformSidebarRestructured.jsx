@@ -8,7 +8,7 @@ import { FTS_LOGOS } from '@/components/community/FTSBrandColors';
 import { 
     Building2, BarChart3, DollarSign, Users, Settings, Shield, Database,
     Globe, Wallet, Zap, FileText, Activity, BookOpen, LogOut, Package,
-    GitBranch, Workflow, Code, TestTube2, ChevronDown, ChevronRight
+    GitBranch, Workflow, Code, TestTube2, ChevronDown, ChevronRight, Rocket
 } from 'lucide-react';
 
 /**
