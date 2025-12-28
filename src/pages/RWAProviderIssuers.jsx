@@ -10,7 +10,8 @@ import { Badge } from "@/components/ui/badge";
 import { useRWAProviderAuth } from '@/components/auth/useRWAProviderAuth';
 import RWAProviderSidebar from '@/components/rwa/RWAProviderSidebar';
 import AssetIssuerOnboardingWizard from '@/components/rwa/onboarding/AssetIssuerOnboardingWizard';
-import { Plus, Building2, Mail, Edit, Key } from 'lucide-react';
+import IssuerAuditTrail from '@/components/rwa/IssuerAuditTrail';
+import { Plus, Building2, Mail, Edit, Key, History } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function RWAProviderIssuers() {
@@ -19,6 +20,29 @@ export default function RWAProviderIssuers() {
     const [showOnboardingWizard, setShowOnboardingWizard] = useState(false);
     const [editingIssuer, setEditingIssuer] = useState(null);
     const [credentialsDialog, setCredentialsDialog] = useState(null);
+    const [viewingAuditTrail, setViewingAuditTrail] = useState(null);
+
+    const createAuditLog = async (issuerId, issuerCode, actionType, description, oldValues = null, newValues = null, severity = 'info') => {
+        try {
+            await base44.entities.IssuerAuditLog.create({
+                issuer_id: issuerId,
+                issuer_code: issuerCode,
+                provider_code: provider.provider_code,
+                action_type: actionType,
+                action_description: description,
+                performed_by: provider.email,
+                performed_by_name: provider.company_name,
+                old_values: oldValues,
+                new_values: newValues,
+                severity: severity,
+                metadata: {
+                    timestamp: new Date().toISOString()
+                }
+            });
+        } catch (error) {
+            console.error('Failed to create audit log:', error);
+        }
+    };
 
     const { data: issuers = [] } = useQuery({
         queryKey: ['issuers', provider?.provider_code],
@@ -27,11 +51,57 @@ export default function RWAProviderIssuers() {
     });
 
     const updateMutation = useMutation({
-        mutationFn: async ({ id, data }) => {
-            return await base44.entities.AssetIssuer.update(id, data);
+        mutationFn: async ({ id, data, originalData }) => {
+            const updated = await base44.entities.AssetIssuer.update(id, data);
+            
+            // Create audit logs for changes
+            const changes = {};
+            const oldValues = {};
+            const newValues = {};
+            
+            Object.keys(data).forEach(key => {
+                if (originalData[key] !== data[key]) {
+                    oldValues[key] = originalData[key];
+                    newValues[key] = data[key];
+                }
+            });
+
+            if (Object.keys(newValues).length > 0) {
+                let actionType = 'issuer_updated';
+                let description = 'Issuer details updated';
+                let severity = 'info';
+
+                if (newValues.status) {
+                    actionType = newValues.status === 'suspended' ? 'suspension' : 
+                                 newValues.status === 'terminated' ? 'termination' : 
+                                 newValues.status === 'active' ? 'reactivation' : 'status_changed';
+                    description = `Status changed from ${oldValues.status} to ${newValues.status}`;
+                    severity = newValues.status === 'terminated' ? 'critical' : 
+                               newValues.status === 'suspended' ? 'warning' : 'info';
+                }
+                
+                if (newValues.kyb_status) {
+                    actionType = 'kyb_status_changed';
+                    description = `KYB status changed from ${oldValues.kyb_status} to ${newValues.kyb_status}`;
+                    severity = newValues.kyb_status === 'rejected' ? 'warning' : 'info';
+                }
+
+                await createAuditLog(
+                    id,
+                    originalData.issuer_code,
+                    actionType,
+                    description,
+                    oldValues,
+                    newValues,
+                    severity
+                );
+            }
+
+            return updated;
         },
         onSuccess: () => {
             queryClient.invalidateQueries(['issuers']);
+            queryClient.invalidateQueries(['issuer-audit']);
             setEditingIssuer(null);
         }
     });
@@ -40,6 +110,16 @@ export default function RWAProviderIssuers() {
         mutationFn: async (issuer) => {
             const newPassword = Math.random().toString(36).slice(-8) + 'A1!';
             await base44.entities.AssetIssuer.update(issuer.id, { password_hash: newPassword });
+            
+            await createAuditLog(
+                issuer.id,
+                issuer.issuer_code,
+                'password_reset',
+                `Password reset for issuer ${issuer.company_name}`,
+                null,
+                { reset_by: provider.email },
+                'warning'
+            );
             
             await base44.integrations.Core.SendEmail({
                 to: issuer.email,
@@ -50,6 +130,7 @@ export default function RWAProviderIssuers() {
             return { issuer, newPassword };
         },
         onSuccess: (data) => {
+            queryClient.invalidateQueries(['issuer-audit']);
             setCredentialsDialog({ ...data.issuer, tempPassword: data.newPassword });
         }
     });
@@ -127,6 +208,9 @@ export default function RWAProviderIssuers() {
                                                    </Button>
                                                    <Button size="sm" variant="outline" onClick={() => resetPasswordMutation.mutate(issuer)}>
                                                        <Key className="h-3 w-3" />
+                                                   </Button>
+                                                   <Button size="sm" variant="outline" onClick={() => setViewingAuditTrail(issuer)}>
+                                                       <History className="h-3 w-3" />
                                                    </Button>
                                                </div>
                                             </div>
@@ -220,7 +304,14 @@ export default function RWAProviderIssuers() {
                                         </p>
                                     </div>
                                     <Button 
-                                        onClick={() => updateMutation.mutate({ id: editingIssuer.id, data: editingIssuer })}
+                                        onClick={() => {
+                                            const { id, ...originalData } = editingIssuer;
+                                            updateMutation.mutate({ 
+                                                id: editingIssuer.id, 
+                                                data: editingIssuer,
+                                                originalData: originalData
+                                            });
+                                        }}
                                         className="w-full"
                                     >
                                         Save Changes
@@ -282,13 +373,50 @@ export default function RWAProviderIssuers() {
                         </Dialog>
                     )}
 
+                    {/* Audit Trail Dialog */}
+                    {viewingAuditTrail && (
+                        <Dialog open={!!viewingAuditTrail} onOpenChange={() => setViewingAuditTrail(null)}>
+                            <DialogContent className="max-w-3xl max-h-[80vh] overflow-hidden flex flex-col">
+                                <DialogHeader>
+                                    <DialogTitle>Audit Trail: {viewingAuditTrail.company_name}</DialogTitle>
+                                </DialogHeader>
+                                <div className="flex-1 overflow-hidden">
+                                    <IssuerAuditTrail 
+                                        issuerId={viewingAuditTrail.id} 
+                                        issuerCode={viewingAuditTrail.issuer_code}
+                                    />
+                                </div>
+                            </DialogContent>
+                        </Dialog>
+                    )}
+
                     {/* Onboarding Wizard */}
                     <AssetIssuerOnboardingWizard
                         open={showOnboardingWizard}
                         onClose={() => setShowOnboardingWizard(false)}
                         providerCode={provider?.provider_code}
-                        onSuccess={() => {
+                        providerEmail={provider?.email}
+                        providerName={provider?.company_name}
+                        onSuccess={async (issuerData) => {
                             queryClient.invalidateQueries(['issuers']);
+                            
+                            // Create initial audit log for issuer creation
+                            if (issuerData.id) {
+                                await createAuditLog(
+                                    issuerData.id,
+                                    issuerData.issuer_code,
+                                    'issuer_created',
+                                    `Asset issuer ${issuerData.company_name} onboarded to the platform`,
+                                    null,
+                                    {
+                                        company_name: issuerData.company_name,
+                                        status: issuerData.status,
+                                        kyb_status: issuerData.kyb_status,
+                                        lei: issuerData.lei || 'Grace Period'
+                                    },
+                                    'info'
+                                );
+                            }
                         }}
                     />
                 </div>

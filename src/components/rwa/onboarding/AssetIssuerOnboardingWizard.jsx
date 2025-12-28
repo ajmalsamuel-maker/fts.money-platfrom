@@ -38,7 +38,7 @@ const STEPS = [
     { id: 10, label: 'Review & Submit', description: 'Final review' }
 ];
 
-export default function AssetIssuerOnboardingWizard({ open, onClose, providerCode, onSuccess }) {
+export default function AssetIssuerOnboardingWizard({ open, onClose, providerCode, providerEmail, providerName, onSuccess }) {
     const [currentStep, setCurrentStep] = useState(1);
     const [completedSteps, setCompletedSteps] = useState([]);
     const [formData, setFormData] = useState({
@@ -211,6 +211,13 @@ export default function AssetIssuerOnboardingWizard({ open, onClose, providerCod
 
             const created = await base44.entities.AssetIssuer.create(issuerData);
 
+            // Return created issuer data for audit logging
+            const issuerWithCredentials = {
+                ...created,
+                tempPassword,
+                issuer_code: issuerCode
+            };
+
             // Send welcome email
             await base44.integrations.Core.SendEmail({
                 to: formData.business.admin_email,
@@ -243,6 +250,11 @@ Need help? Contact support.`
                 status: status,
                 grace_period: !formData.lei.lei && !formData.lei.tas_number
             });
+
+            // Call onSuccess with full issuer data for audit logging
+            if (onSuccess) {
+                onSuccess(issuerWithCredentials);
+            }
 
         } catch (error) {
             console.error('Issuer creation failed:', error);
@@ -377,7 +389,7 @@ Need help? Contact support.`
                         </div>
 
                         <div className="flex gap-2">
-                            <Button onClick={() => { onSuccess(); onClose(); }} className="flex-1">
+                            <Button onClick={onClose} className="flex-1">
                                 Done
                             </Button>
                             <Button variant="outline" onClick={() => window.open('/AssetIssuerLogin', '_blank')}>
