@@ -11,12 +11,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
 import FTSPlatformSidebarRestructured from '@/components/platform/FTSPlatformSidebarRestructured';
-import { Plus, Rocket, AlertCircle, CheckCircle2, Clock, Building2 } from 'lucide-react';
+import { Plus, Rocket, AlertCircle, CheckCircle2, Clock, Building2, Edit } from 'lucide-react';
 
 export default function RWAWhiteLabelProvisioning() {
     const { platformUser } = usePlatformAuth();
     const queryClient = useQueryClient();
     const [showDialog, setShowDialog] = useState(false);
+    const [editingCustomer, setEditingCustomer] = useState(null);
     const [newCustomer, setNewCustomer] = useState({
         customer_code: '',
         company_name: '',
@@ -62,10 +63,32 @@ export default function RWAWhiteLabelProvisioning() {
         }
     });
 
+    const updateMutation = useMutation({
+        mutationFn: async ({ id, data }) => {
+            const response = await base44.functions.invoke('updateRWACustomer', { id, data });
+            return response.data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries(['rwa-customers']);
+            setEditingCustomer(null);
+        },
+        onError: (error) => {
+            console.error('Update failed:', error);
+            alert('Update failed: ' + error.message);
+        }
+    });
+
 
 
     const handleProvision = () => {
         provisionMutation.mutate(newCustomer);
+    };
+
+    const handleUpdate = () => {
+        updateMutation.mutate({
+            id: editingCustomer.id,
+            data: editingCustomer
+        });
     };
 
     const getStatusColor = (status) => {
@@ -415,19 +438,164 @@ export default function RWAWhiteLabelProvisioning() {
                                                             ))}
                                                         </div>
                                                     )}
-                                                </div>
-                                                <div className="text-right">
-                                                    <p className="text-xs text-slate-500">Assets: {customer.total_assets_tokenized || 0}</p>
-                                                    <p className="text-xs text-slate-500">AUM: ${((customer.total_value_locked || 0) / 1000000).toFixed(1)}M</p>
-                                                    <p className="text-xs text-slate-500">Investors: {customer.total_investors || 0}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))}
+                                                    </div>
+                                                    <div className="flex items-start gap-3">
+                                                    <div className="text-right">
+                                                        <p className="text-xs text-slate-500">Assets: {customer.total_assets_tokenized || 0}</p>
+                                                        <p className="text-xs text-slate-500">AUM: ${((customer.total_value_locked || 0) / 1000000).toFixed(1)}M</p>
+                                                        <p className="text-xs text-slate-500">Investors: {customer.total_investors || 0}</p>
+                                                    </div>
+                                                    <Button
+                                                        size="sm"
+                                                        variant="outline"
+                                                        onClick={() => setEditingCustomer(customer)}
+                                                    >
+                                                        <Edit className="h-4 w-4" />
+                                                    </Button>
+                                                    </div>
+                                                    </div>
+                                                    </div>
+                                                    ))}
                                 </div>
                             )}
                         </CardContent>
                     </Card>
+
+                    {/* Edit Customer Dialog */}
+                    {editingCustomer && (
+                        <Dialog open={!!editingCustomer} onOpenChange={() => setEditingCustomer(null)}>
+                            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                                <DialogHeader>
+                                    <DialogTitle>Edit Customer: {editingCustomer.company_name}</DialogTitle>
+                                </DialogHeader>
+                                <div className="space-y-4">
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <Label>Customer Code</Label>
+                                            <Input value={editingCustomer.customer_code} disabled />
+                                        </div>
+                                        <div>
+                                            <Label>Company Name</Label>
+                                            <Input
+                                                value={editingCustomer.company_name}
+                                                onChange={(e) => setEditingCustomer({...editingCustomer, company_name: e.target.value})}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <Label>Company Type</Label>
+                                            <Select
+                                                value={editingCustomer.company_type}
+                                                onValueChange={(value) => setEditingCustomer({...editingCustomer, company_type: value})}
+                                            >
+                                                <SelectTrigger><SelectValue /></SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="fund_manager">Fund Manager</SelectItem>
+                                                    <SelectItem value="broker_dealer">Broker-Dealer</SelectItem>
+                                                    <SelectItem value="investment_bank">Investment Bank</SelectItem>
+                                                    <SelectItem value="wealth_manager">Wealth Manager</SelectItem>
+                                                    <SelectItem value="family_office">Family Office</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                        <div>
+                                            <Label>Status</Label>
+                                            <Select
+                                                value={editingCustomer.status}
+                                                onValueChange={(value) => setEditingCustomer({...editingCustomer, status: value})}
+                                            >
+                                                <SelectTrigger><SelectValue /></SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="pending">Pending</SelectItem>
+                                                    <SelectItem value="provisioning">Provisioning</SelectItem>
+                                                    <SelectItem value="active">Active</SelectItem>
+                                                    <SelectItem value="suspended">Suspended</SelectItem>
+                                                    <SelectItem value="terminated">Terminated</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <Label>LEI</Label>
+                                            <Input
+                                                value={editingCustomer.lei}
+                                                onChange={(e) => setEditingCustomer({...editingCustomer, lei: e.target.value})}
+                                            />
+                                        </div>
+                                        <div>
+                                            <Label>Admin Email</Label>
+                                            <Input
+                                                value={editingCustomer.admin_email}
+                                                onChange={(e) => setEditingCustomer({...editingCustomer, admin_email: e.target.value})}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <Label>New Password (leave blank to keep current)</Label>
+                                        <Input
+                                            type="password"
+                                            placeholder="Enter new password to change"
+                                            value={editingCustomer.password || ''}
+                                            onChange={(e) => setEditingCustomer({...editingCustomer, password: e.target.value})}
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <Label>Subscription Tier</Label>
+                                        <Select
+                                            value={editingCustomer.subscription_tier}
+                                            onValueChange={(value) => setEditingCustomer({...editingCustomer, subscription_tier: value})}
+                                        >
+                                            <SelectTrigger><SelectValue /></SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="starter">Starter - $5,000/mo</SelectItem>
+                                                <SelectItem value="professional">Professional - $15,000/mo</SelectItem>
+                                                <SelectItem value="enterprise">Enterprise - $50,000/mo</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+
+                                    <div>
+                                        <Label className="mb-2 block">Asset Types Enabled</Label>
+                                        <div className="grid grid-cols-2 gap-2">
+                                            {['real_estate', 'treasury_bill', 'private_credit', 'commodity', 'equity', 'corporate_bond'].map(type => (
+                                                <div key={type} className="flex items-center gap-2">
+                                                    <Checkbox
+                                                        id={`edit-${type}`}
+                                                        checked={editingCustomer.asset_types_enabled?.includes(type)}
+                                                        onCheckedChange={(checked) => {
+                                                            const current = editingCustomer.asset_types_enabled || [];
+                                                            setEditingCustomer({
+                                                                ...editingCustomer,
+                                                                asset_types_enabled: checked 
+                                                                    ? [...current, type]
+                                                                    : current.filter(t => t !== type)
+                                                            });
+                                                        }}
+                                                    />
+                                                    <Label htmlFor={`edit-${type}`} className="text-sm">{type.replace('_', ' ')}</Label>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <div className="flex gap-2 justify-end">
+                                        <Button variant="outline" onClick={() => setEditingCustomer(null)}>
+                                            Cancel
+                                        </Button>
+                                        <Button onClick={handleUpdate} disabled={updateMutation.isPending}>
+                                            {updateMutation.isPending ? 'Updating...' : 'Save Changes'}
+                                        </Button>
+                                    </div>
+                                </div>
+                            </DialogContent>
+                        </Dialog>
+                    )}
 
                     {/* Architecture Comparison */}
                     <Card className="mt-6">
