@@ -13,6 +13,10 @@ import AdvancedReports from './pages/AdvancedReports';
 import Analytics from './pages/Analytics';
 import Appearance from './pages/Appearance';
 import Approvals from './pages/Approvals';
+import AssetIssuerAssets from './pages/AssetIssuerAssets';
+import AssetIssuerDashboard from './pages/AssetIssuerDashboard';
+import AssetIssuerLogin from './pages/AssetIssuerLogin';
+import AssetIssuerTokenize from './pages/AssetIssuerTokenize';
 import AuditLogs from './pages/AuditLogs';
 import AutomatedPayouts from './pages/AutomatedPayouts';
 import BINTable from './pages/BINTable';
@@ -33,8 +37,23 @@ import CommunityProductCatalog from './pages/CommunityProductCatalog';
 import CommunityUserManagement from './pages/CommunityUserManagement';
 import Compliance from './pages/Compliance';
 import ComplianceFramework from './pages/ComplianceFramework';
+import CryptoAPIKeys from './pages/CryptoAPIKeys';
+import CryptoAnalytics from './pages/CryptoAnalytics';
+import CryptoCards from './pages/CryptoCards';
+import CryptoCompliance from './pages/CryptoCompliance';
+import CryptoDocs from './pages/CryptoDocs';
+import CryptoGatewayCustomers from './pages/CryptoGatewayCustomers';
+import CryptoGatewayDashboard from './pages/CryptoGatewayDashboard';
+import CryptoGatewayLogin from './pages/CryptoGatewayLogin';
+import CryptoGatewayTransactions from './pages/CryptoGatewayTransactions';
+import CryptoIBANs from './pages/CryptoIBANs';
+import CryptoKYCManagement from './pages/CryptoKYCManagement';
 import CryptoPayouts from './pages/CryptoPayouts';
+import CryptoPortalManagement from './pages/CryptoPortalManagement';
+import CryptoSettings from './pages/CryptoSettings';
 import CryptoTransactions from './pages/CryptoTransactions';
+import CryptoUsers from './pages/CryptoUsers';
+import CryptoWallets from './pages/CryptoWallets';
 import CustomerAnalytics from './pages/CustomerAnalytics';
 import Customers from './pages/Customers';
 import Dashboard from './pages/Dashboard';
@@ -86,6 +105,9 @@ import ISOGatewayRouting from './pages/ISOGatewayRouting';
 import ISOGatewayTestConsole from './pages/ISOGatewayTestConsole';
 import ISOMessageMonitor from './pages/ISOMessageMonitor';
 import InstantPayments from './pages/InstantPayments';
+import InvestorLogin from './pages/InvestorLogin';
+import InvestorMarketplace from './pages/InvestorMarketplace';
+import InvestorPortfolio from './pages/InvestorPortfolio';
 import Invoices from './pages/Invoices';
 import Invoicing from './pages/Invoicing';
 import LEIComplianceDashboard from './pages/LEIComplianceDashboard';
@@ -193,6 +215,12 @@ import ProductTemplateLibrary from './pages/ProductTemplateLibrary';
 import Products from './pages/Products';
 import PublicSupport from './pages/PublicSupport';
 import QuickPSPProvisioning from './pages/QuickPSPProvisioning';
+import RWAPlatform from './pages/RWAPlatform';
+import RWAProviderAssets from './pages/RWAProviderAssets';
+import RWAProviderDashboard from './pages/RWAProviderDashboard';
+import RWAProviderIssuers from './pages/RWAProviderIssuers';
+import RWAProviderLogin from './pages/RWAProviderLogin';
+import RWAWhiteLabelProvisioning from './pages/RWAWhiteLabelProvisioning';
 import RealTimeMonitor from './pages/RealTimeMonitor';
 import Reconciliation from './pages/Reconciliation';
 import Refunds from './pages/Refunds';
@@ -205,6 +233,7 @@ import Settlements from './pages/Settlements';
 import SmartOrchestration from './pages/SmartOrchestration';
 import SmartRetry from './pages/SmartRetry';
 import StaffLogin from './pages/StaffLogin';
+import StrigaServiceManagement from './pages/StrigaServiceManagement';
 import SubMerchants from './pages/SubMerchants';
 import Subscriptions from './pages/Subscriptions';
 import Support from './pages/Support';
@@ -225,35 +254,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import StrigaServiceManagement from './pages/StrigaServiceManagement';
-import CryptoGatewayLogin from './pages/CryptoGatewayLogin';
-import CryptoGatewayDashboard from './pages/CryptoGatewayDashboard';
-import CryptoAnalytics from './pages/CryptoAnalytics';
-import CryptoWallets from './pages/CryptoWallets';
-import CryptoUsers from './pages/CryptoUsers';
-import CryptoAPIKeys from './pages/CryptoAPIKeys';
-import CryptoDocs from './pages/CryptoDocs';
-import CryptoCompliance from './pages/CryptoCompliance';
-import CryptoSettings from './pages/CryptoSettings';
-import CryptoIBANs from './pages/CryptoIBANs';
-import CryptoCards from './pages/CryptoCards';
-import CryptoGatewayCustomers from './pages/CryptoGatewayCustomers';
-import CryptoKYCManagement from './pages/CryptoKYCManagement';
-import CryptoGatewayTransactions from './pages/CryptoGatewayTransactions';
-import CryptoPortalManagement from './pages/CryptoPortalManagement';
-import RWAPlatform from './pages/RWAPlatform';
-import RWAWhiteLabelProvisioning from './pages/RWAWhiteLabelProvisioning';
-import RWAProviderLogin from './pages/RWAProviderLogin';
-import AssetIssuerLogin from './pages/AssetIssuerLogin';
-import InvestorLogin from './pages/InvestorLogin';
-import RWAProviderDashboard from './pages/RWAProviderDashboard';
-import RWAProviderIssuers from './pages/RWAProviderIssuers';
-import AssetIssuerDashboard from './pages/AssetIssuerDashboard';
-import AssetIssuerTokenize from './pages/AssetIssuerTokenize';
-import InvestorPortfolio from './pages/InvestorPortfolio';
-import InvestorMarketplace from './pages/InvestorMarketplace';
-import RWAProviderAssets from './pages/RWAProviderAssets';
-import AssetIssuerAssets from './pages/AssetIssuerAssets';
 import __Layout from './Layout.jsx';
 
 
@@ -273,6 +273,10 @@ export const PAGES = {
     "Analytics": Analytics,
     "Appearance": Appearance,
     "Approvals": Approvals,
+    "AssetIssuerAssets": AssetIssuerAssets,
+    "AssetIssuerDashboard": AssetIssuerDashboard,
+    "AssetIssuerLogin": AssetIssuerLogin,
+    "AssetIssuerTokenize": AssetIssuerTokenize,
     "AuditLogs": AuditLogs,
     "AutomatedPayouts": AutomatedPayouts,
     "BINTable": BINTable,
@@ -293,8 +297,23 @@ export const PAGES = {
     "CommunityUserManagement": CommunityUserManagement,
     "Compliance": Compliance,
     "ComplianceFramework": ComplianceFramework,
+    "CryptoAPIKeys": CryptoAPIKeys,
+    "CryptoAnalytics": CryptoAnalytics,
+    "CryptoCards": CryptoCards,
+    "CryptoCompliance": CryptoCompliance,
+    "CryptoDocs": CryptoDocs,
+    "CryptoGatewayCustomers": CryptoGatewayCustomers,
+    "CryptoGatewayDashboard": CryptoGatewayDashboard,
+    "CryptoGatewayLogin": CryptoGatewayLogin,
+    "CryptoGatewayTransactions": CryptoGatewayTransactions,
+    "CryptoIBANs": CryptoIBANs,
+    "CryptoKYCManagement": CryptoKYCManagement,
     "CryptoPayouts": CryptoPayouts,
+    "CryptoPortalManagement": CryptoPortalManagement,
+    "CryptoSettings": CryptoSettings,
     "CryptoTransactions": CryptoTransactions,
+    "CryptoUsers": CryptoUsers,
+    "CryptoWallets": CryptoWallets,
     "CustomerAnalytics": CustomerAnalytics,
     "Customers": Customers,
     "Dashboard": Dashboard,
@@ -346,6 +365,9 @@ export const PAGES = {
     "ISOGatewayTestConsole": ISOGatewayTestConsole,
     "ISOMessageMonitor": ISOMessageMonitor,
     "InstantPayments": InstantPayments,
+    "InvestorLogin": InvestorLogin,
+    "InvestorMarketplace": InvestorMarketplace,
+    "InvestorPortfolio": InvestorPortfolio,
     "Invoices": Invoices,
     "Invoicing": Invoicing,
     "LEIComplianceDashboard": LEIComplianceDashboard,
@@ -453,6 +475,12 @@ export const PAGES = {
     "Products": Products,
     "PublicSupport": PublicSupport,
     "QuickPSPProvisioning": QuickPSPProvisioning,
+    "RWAPlatform": RWAPlatform,
+    "RWAProviderAssets": RWAProviderAssets,
+    "RWAProviderDashboard": RWAProviderDashboard,
+    "RWAProviderIssuers": RWAProviderIssuers,
+    "RWAProviderLogin": RWAProviderLogin,
+    "RWAWhiteLabelProvisioning": RWAWhiteLabelProvisioning,
     "RealTimeMonitor": RealTimeMonitor,
     "Reconciliation": Reconciliation,
     "Refunds": Refunds,
@@ -465,6 +493,7 @@ export const PAGES = {
     "SmartOrchestration": SmartOrchestration,
     "SmartRetry": SmartRetry,
     "StaffLogin": StaffLogin,
+    "StrigaServiceManagement": StrigaServiceManagement,
     "SubMerchants": SubMerchants,
     "Subscriptions": Subscriptions,
     "Support": Support,
@@ -485,35 +514,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "StrigaServiceManagement": StrigaServiceManagement,
-    "CryptoGatewayLogin": CryptoGatewayLogin,
-    "CryptoGatewayDashboard": CryptoGatewayDashboard,
-    "CryptoAnalytics": CryptoAnalytics,
-    "CryptoWallets": CryptoWallets,
-    "CryptoUsers": CryptoUsers,
-    "CryptoAPIKeys": CryptoAPIKeys,
-    "CryptoDocs": CryptoDocs,
-    "CryptoCompliance": CryptoCompliance,
-    "CryptoSettings": CryptoSettings,
-    "CryptoIBANs": CryptoIBANs,
-    "CryptoCards": CryptoCards,
-    "CryptoGatewayCustomers": CryptoGatewayCustomers,
-    "CryptoKYCManagement": CryptoKYCManagement,
-    "CryptoGatewayTransactions": CryptoGatewayTransactions,
-    "CryptoPortalManagement": CryptoPortalManagement,
-    "RWAPlatform": RWAPlatform,
-    "RWAWhiteLabelProvisioning": RWAWhiteLabelProvisioning,
-    "RWAProviderLogin": RWAProviderLogin,
-    "AssetIssuerLogin": AssetIssuerLogin,
-    "InvestorLogin": InvestorLogin,
-    "RWAProviderDashboard": RWAProviderDashboard,
-    "RWAProviderIssuers": RWAProviderIssuers,
-    "AssetIssuerDashboard": AssetIssuerDashboard,
-    "AssetIssuerTokenize": AssetIssuerTokenize,
-    "InvestorPortfolio": InvestorPortfolio,
-    "InvestorMarketplace": InvestorMarketplace,
-    "RWAProviderAssets": RWAProviderAssets,
-    "AssetIssuerAssets": AssetIssuerAssets,
 }
 
 export const pagesConfig = {

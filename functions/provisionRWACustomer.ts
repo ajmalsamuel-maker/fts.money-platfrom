@@ -11,10 +11,22 @@ Deno.serve(async (req) => {
         }
 
         const customerData = await req.json();
+        
+        // Hash password (simple hash for demo - use bcrypt in production)
+        const password_hash = await crypto.subtle.digest(
+            'SHA-256',
+            new TextEncoder().encode(customerData.password)
+        ).then(buf => Array.from(new Uint8Array(buf))
+            .map(b => b.toString(16).padStart(2, '0'))
+            .join(''));
+
+        // Remove plain password from data
+        const { password, ...customerDataWithoutPassword } = customerData;
 
         // Create customer record with service role
         const customer = await base44.asServiceRole.entities.RWAWhiteLabelCustomer.create({
-            ...customerData,
+            ...customerDataWithoutPassword,
+            password_hash,
             status: 'provisioning',
             provisioning_status: 'deploying_contracts',
             provisioning_log: [{

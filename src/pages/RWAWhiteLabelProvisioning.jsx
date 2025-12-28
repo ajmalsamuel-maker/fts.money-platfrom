@@ -24,6 +24,7 @@ export default function RWAWhiteLabelProvisioning() {
         lei: '',
         license_type: '',
         admin_email: '',
+        password: '',
         subscription_tier: 'professional',
         asset_types_enabled: ['real_estate', 'commodity'],
         blockchain_networks: ['polygon']
@@ -49,6 +50,7 @@ export default function RWAWhiteLabelProvisioning() {
                 lei: '',
                 license_type: '',
                 admin_email: '',
+                password: '',
                 subscription_tier: 'professional',
                 asset_types_enabled: ['real_estate', 'commodity'],
                 blockchain_networks: ['polygon']
@@ -181,6 +183,16 @@ export default function RWAWhiteLabelProvisioning() {
                                         </div>
 
                                         <div>
+                                            <Label>Admin Password *</Label>
+                                            <Input
+                                                type="password"
+                                                placeholder="Set portal login password"
+                                                value={newCustomer.password}
+                                                onChange={(e) => setNewCustomer({...newCustomer, password: e.target.value})}
+                                            />
+                                        </div>
+
+                                        <div>
                                             <Label>Subscription Tier</Label>
                                             <Select
                                                 value={newCustomer.subscription_tier}
@@ -266,7 +278,7 @@ export default function RWAWhiteLabelProvisioning() {
 
                                         <Button 
                                             onClick={handleProvision}
-                                            disabled={!newCustomer.customer_code || !newCustomer.company_name || !newCustomer.lei || !newCustomer.admin_email || provisionMutation.isPending}
+                                            disabled={!newCustomer.customer_code || !newCustomer.company_name || !newCustomer.lei || !newCustomer.admin_email || !newCustomer.password || provisionMutation.isPending}
                                             className="w-full"
                                         >
                                             {provisionMutation.isPending ? 'Provisioning...' : 'Start Provisioning'}
