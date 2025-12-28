@@ -262,6 +262,7 @@ import InvestorSettings from './pages/InvestorSettings';
 import InvestorDividends from './pages/InvestorDividends';
 import InvestorHoldings from './pages/InvestorHoldings';
 import InvestorOnboarding from './pages/InvestorOnboarding';
+import AssetIssuerDividends from './pages/AssetIssuerDividends';
 import __Layout from './Layout.jsx';
 
 
@@ -530,6 +531,7 @@ export const PAGES = {
     "InvestorDividends": InvestorDividends,
     "InvestorHoldings": InvestorHoldings,
     "InvestorOnboarding": InvestorOnboarding,
+    "AssetIssuerDividends": AssetIssuerDividends,
 }
 
 export const pagesConfig = {
