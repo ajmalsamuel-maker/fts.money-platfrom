@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,14 +11,25 @@ import { Settings, Building2, Palette, Globe } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function RWAProviderSettings() {
-    const { provider } = useRWAProviderAuth();
+    const { provider, loading } = useRWAProviderAuth();
     const queryClient = useQueryClient();
     const [formData, setFormData] = useState({
-        company_name: provider?.company_name || '',
-        portal_url: provider?.portal_url || '',
-        logo_url: provider?.logo_url || '',
-        primary_color: provider?.primary_color || '#3b82f6'
+        company_name: '',
+        portal_url: '',
+        logo_url: '',
+        primary_color: '#3b82f6'
     });
+
+    useEffect(() => {
+        if (provider) {
+            setFormData({
+                company_name: provider.company_name || '',
+                portal_url: provider.portal_url || '',
+                logo_url: provider.logo_url || '',
+                primary_color: provider.primary_color || '#3b82f6'
+            });
+        }
+    }, [provider]);
 
     const updateMutation = useMutation({
         mutationFn: async (data) => {
@@ -41,6 +52,17 @@ export default function RWAProviderSettings() {
         e.preventDefault();
         updateMutation.mutate(formData);
     };
+
+    if (loading) {
+        return (
+            <div className="flex h-screen bg-slate-50">
+                <RWAProviderSidebar currentPage="RWAProviderSettings" />
+                <div className="flex-1 flex items-center justify-center">
+                    <p className="text-slate-500">Loading settings...</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="flex h-screen bg-slate-50">
