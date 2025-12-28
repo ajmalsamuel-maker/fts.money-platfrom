@@ -261,6 +261,7 @@ import RWAProviderSettings from './pages/RWAProviderSettings';
 import InvestorSettings from './pages/InvestorSettings';
 import InvestorDividends from './pages/InvestorDividends';
 import InvestorHoldings from './pages/InvestorHoldings';
+import InvestorOnboarding from './pages/InvestorOnboarding';
 import __Layout from './Layout.jsx';
 
 
@@ -528,6 +529,7 @@ export const PAGES = {
     "InvestorSettings": InvestorSettings,
     "InvestorDividends": InvestorDividends,
     "InvestorHoldings": InvestorHoldings,
+    "InvestorOnboarding": InvestorOnboarding,
 }
 
 export const pagesConfig = {
