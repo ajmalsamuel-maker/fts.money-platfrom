@@ -242,6 +242,7 @@ import CryptoKYCManagement from './pages/CryptoKYCManagement';
 import CryptoGatewayTransactions from './pages/CryptoGatewayTransactions';
 import CryptoPortalManagement from './pages/CryptoPortalManagement';
 import RWAPlatform from './pages/RWAPlatform';
+import RWAWhiteLabelProvisioning from './pages/RWAWhiteLabelProvisioning';
 import __Layout from './Layout.jsx';
 
 
@@ -490,6 +491,7 @@ export const PAGES = {
     "CryptoGatewayTransactions": CryptoGatewayTransactions,
     "CryptoPortalManagement": CryptoPortalManagement,
     "RWAPlatform": RWAPlatform,
+    "RWAWhiteLabelProvisioning": RWAWhiteLabelProvisioning,
 }
 
 export const pagesConfig = {

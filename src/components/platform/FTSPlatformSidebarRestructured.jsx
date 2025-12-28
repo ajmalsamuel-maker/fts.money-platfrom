@@ -111,6 +111,15 @@ export default function FTSPlatformSidebarRestructured({ currentPage, userRole, 
             title: 'RWA Platform',
             defaultOpen: false,
             items: [
+                { label: 'Smart Contracts', path: 'RWAPlatform', icon: Code, description: 'View/download', priority: true },
+                { label: 'Provision Customers', path: 'RWAWhiteLabelProvisioning', icon: Rocket, description: 'White-label', priority: true }
+            ]
+        },
+        {
+            id: 'rwa-platform',
+            title: 'RWA Platform',
+            defaultOpen: false,
+            items: [
                 { label: 'Smart Contracts', path: 'RWAPlatform', icon: Code, description: 'Blockchain-native', priority: true }
             ]
         },
