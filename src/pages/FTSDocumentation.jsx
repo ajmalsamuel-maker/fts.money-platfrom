@@ -232,7 +232,7 @@ export default function FTSDocumentation() {
 
                     {/* Document Selector */}
                     <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-                        <TabsList className="bg-white p-1 rounded-lg shadow">
+                        <TabsList className="bg-white p-2 rounded-lg shadow h-auto flex-wrap justify-start">
                             {documents.map((doc) => {
                                 const Icon = doc.icon;
                                 return (
