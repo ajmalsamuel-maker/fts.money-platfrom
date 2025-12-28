@@ -1,6 +1,17 @@
 import React, { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@antml:invoke>
-<parameter name="file_path">components/ui/input.js
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { base44 } from '@/api/base44Client';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
+import { useRWAProviderAuth } from '@/components/auth/useRWAProviderAuth';
+import RWAProviderSidebar from '@/components/rwa/RWAProviderSidebar';
+import AssetIssuerOnboardingWizard from '@/components/rwa/onboarding/AssetIssuerOnboardingWizard';
+import { Plus, Building2, Mail, Edit, Key } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function RWAProviderIssuers() {
     const { provider } = useRWAProviderAuth();
@@ -85,7 +96,7 @@ export default function RWAProviderIssuers() {
                                                            <span className="text-xs font-medium text-slate-700">Issuer Code:</span>
                                                            <code className="text-xs bg-slate-100 px-2 py-0.5 rounded">{issuer.issuer_code}</code>
                                                        </div>
-                                                       <span className="text-xs text-slate-500">LEI: {issuer.lei}</span>
+                                                       <span className="text-xs text-slate-500">LEI: {issuer.lei || 'Grace Period'}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -123,7 +134,7 @@ export default function RWAProviderIssuers() {
                                     </div>
                                 ))}
                                 {issuers.length === 0 && (
-                                    <p className="text-center text-slate-500 py-8">No asset issuers yet. Click "Add Issuer" to onboard your first customer.</p>
+                                    <p className="text-center text-slate-500 py-8">No asset issuers yet. Click "Onboard Issuer" to start.</p>
                                 )}
                             </div>
                         </CardContent>
