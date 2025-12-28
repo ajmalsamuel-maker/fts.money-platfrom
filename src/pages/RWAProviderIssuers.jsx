@@ -17,6 +17,7 @@ export default function RWAProviderIssuers() {
     const queryClient = useQueryClient();
     const [showDialog, setShowDialog] = useState(false);
     const [editingIssuer, setEditingIssuer] = useState(null);
+    const [credentialsDialog, setCredentialsDialog] = useState(null);
     const [newIssuer, setNewIssuer] = useState({
         company_name: '',
         lei: '',
@@ -33,28 +34,30 @@ export default function RWAProviderIssuers() {
     const createMutation = useMutation({
         mutationFn: async (issuerData) => {
             const issuer_code = issuerData.company_name.toLowerCase().replace(/[^a-z0-9]/g, '-');
-            const tempPassword = Math.random().toString(36).slice(-8);
+            const tempPassword = Math.random().toString(36).slice(-8) + 'A1!';
             
             const created = await base44.entities.AssetIssuer.create({
                 ...issuerData,
                 provider_code: provider.provider_code,
                 issuer_code,
                 password_hash: tempPassword,
-                status: 'pending_kyb'
+                status: 'pending_kyb',
+                kyb_status: 'pending'
             });
 
             // Send welcome email with credentials
             await base44.integrations.Core.SendEmail({
                 to: issuerData.email,
-                subject: `Welcome to ${provider.company_name}`,
-                body: `Your asset issuer account has been created.\n\nIssuer Code: ${issuer_code}\nTemporary Password: ${tempPassword}\n\nLogin at: ${provider.portal_url}/AssetIssuerLogin`
+                subject: `Welcome to ${provider.company_name} - Asset Issuer Portal`,
+                body: `Your asset issuer account has been created.\n\n=== LOGIN CREDENTIALS ===\nIssuer Code: ${issuer_code}\nPassword: ${tempPassword}\n\nLogin URL: ${provider.portal_url || window.location.origin}/AssetIssuerLogin\n\nNext Steps:\n1. Complete your KYB verification\n2. Upload required compliance documents\n3. Start tokenizing your first asset\n\nNeed help? Contact ${provider.admin_email || provider.email}`
             });
 
-            return created;
+            return { ...created, tempPassword, issuer_code };
         },
-        onSuccess: () => {
+        onSuccess: (data) => {
             queryClient.invalidateQueries(['issuers']);
             setShowDialog(false);
+            setCredentialsDialog(data);
             setNewIssuer({ company_name: '', lei: '', email: '', issuer_type: 'corporation' });
         }
     });
@@ -71,17 +74,19 @@ export default function RWAProviderIssuers() {
 
     const resetPasswordMutation = useMutation({
         mutationFn: async (issuer) => {
-            const newPassword = Math.random().toString(36).slice(-8);
+            const newPassword = Math.random().toString(36).slice(-8) + 'A1!';
             await base44.entities.AssetIssuer.update(issuer.id, { password_hash: newPassword });
             
             await base44.integrations.Core.SendEmail({
                 to: issuer.email,
-                subject: 'Password Reset',
-                body: `Your new password is: ${newPassword}`
+                subject: `${provider.company_name} - Password Reset`,
+                body: `Your password has been reset.\n\n=== NEW LOGIN CREDENTIALS ===\nIssuer Code: ${issuer.issuer_code}\nNew Password: ${newPassword}\n\nLogin URL: ${provider.portal_url || window.location.origin}/AssetIssuerLogin`
             });
+
+            return { issuer, newPassword };
         },
-        onSuccess: () => {
-            alert('Password reset email sent!');
+        onSuccess: (data) => {
+            setCredentialsDialog({ ...data.issuer, tempPassword: data.newPassword });
         }
     });
 
@@ -166,22 +171,34 @@ export default function RWAProviderIssuers() {
                                                         <Mail className="h-3 w-3 text-slate-400" />
                                                         <span className="text-xs text-slate-600">{issuer.email}</span>
                                                     </div>
-                                                    <div className="flex items-center gap-2 mt-1">
-                                                        <span className="text-xs text-slate-500">Code: {issuer.issuer_code}</span>
-                                                        <span className="text-xs text-slate-500">LEI: {issuer.lei}</span>
+                                                    <div className="flex flex-col gap-1 mt-1">
+                                                       <div className="flex items-center gap-2">
+                                                           <span className="text-xs font-medium text-slate-700">Issuer Code:</span>
+                                                           <code className="text-xs bg-slate-100 px-2 py-0.5 rounded">{issuer.issuer_code}</code>
+                                                       </div>
+                                                       <span className="text-xs text-slate-500">LEI: {issuer.lei}</span>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div className="flex items-start gap-2">
                                                <div className="text-right mr-2">
-                                                   <Badge className={
-                                                       issuer.status === 'active' ? 'bg-green-100 text-green-700' :
-                                                       issuer.kyb_status === 'approved' ? 'bg-blue-100 text-blue-700' :
-                                                       'bg-yellow-100 text-yellow-700'
-                                                   }>
-                                                       {issuer.status}
-                                                   </Badge>
-                                                   <p className="text-xs text-slate-500 mt-2">Assets: {issuer.total_assets_tokenized || 0}</p>
+                                                   <div className="flex flex-col gap-1 items-end mb-2">
+                                                       <Badge className={
+                                                           issuer.status === 'active' ? 'bg-green-100 text-green-700' :
+                                                           'bg-yellow-100 text-yellow-700'
+                                                       }>
+                                                           {issuer.status}
+                                                       </Badge>
+                                                       <Badge className={
+                                                           issuer.kyb_status === 'approved' ? 'bg-green-100 text-green-700' :
+                                                           issuer.kyb_status === 'in_progress' ? 'bg-blue-100 text-blue-700' :
+                                                           issuer.kyb_status === 'rejected' ? 'bg-red-100 text-red-700' :
+                                                           'bg-orange-100 text-orange-700'
+                                                       }>
+                                                           KYB: {issuer.kyb_status}
+                                                       </Badge>
+                                                   </div>
+                                                   <p className="text-xs text-slate-500">Assets: {issuer.total_assets_tokenized || 0}</p>
                                                    <p className="text-xs text-slate-500">Value: ${((issuer.total_value || 0) / 1000000).toFixed(1)}M</p>
                                                </div>
                                                <div className="flex flex-col gap-1">
@@ -211,6 +228,13 @@ export default function RWAProviderIssuers() {
                                     <DialogTitle>Edit Issuer: {editingIssuer.company_name}</DialogTitle>
                                 </DialogHeader>
                                 <div className="space-y-4">
+                                    <div className="bg-slate-50 border rounded-lg p-3">
+                                        <div className="flex items-center gap-2 mb-1">
+                                            <span className="text-sm font-medium text-slate-700">Issuer Code:</span>
+                                            <code className="text-sm bg-slate-200 px-2 py-1 rounded">{editingIssuer.issuer_code}</code>
+                                        </div>
+                                        <p className="text-xs text-slate-500">This code is used for login and cannot be changed</p>
+                                    </div>
                                     <div>
                                         <Label>Company Name</Label>
                                         <Input
@@ -236,7 +260,13 @@ export default function RWAProviderIssuers() {
                                         <Label>Status</Label>
                                         <Select
                                             value={editingIssuer.status}
-                                            onValueChange={(value) => setEditingIssuer({...editingIssuer, status: value})}
+                                            onValueChange={(value) => {
+                                                const updates = { status: value };
+                                                if (value === 'active' && editingIssuer.kyb_status === 'pending') {
+                                                    updates.kyb_status = 'approved';
+                                                }
+                                                setEditingIssuer({...editingIssuer, ...updates});
+                                            }}
                                         >
                                             <SelectTrigger>
                                                 <SelectValue />
@@ -265,12 +295,67 @@ export default function RWAProviderIssuers() {
                                                 <SelectItem value="rejected">Rejected</SelectItem>
                                             </SelectContent>
                                         </Select>
+                                        <p className="text-xs text-slate-500 mt-1">
+                                            {editingIssuer.kyb_status === 'approved' ? '✓ KYB verification complete' : 'KYB verification required before issuer can tokenize assets'}
+                                        </p>
                                     </div>
                                     <Button 
                                         onClick={() => updateMutation.mutate({ id: editingIssuer.id, data: editingIssuer })}
                                         className="w-full"
                                     >
                                         Save Changes
+                                    </Button>
+                                </div>
+                            </DialogContent>
+                        </Dialog>
+                    )}
+
+                    {/* Credentials Dialog */}
+                    {credentialsDialog && (
+                        <Dialog open={!!credentialsDialog} onOpenChange={() => setCredentialsDialog(null)}>
+                            <DialogContent>
+                                <DialogHeader>
+                                    <DialogTitle className="flex items-center gap-2">
+                                        <Key className="h-5 w-5 text-green-600" />
+                                        Login Credentials Created
+                                    </DialogTitle>
+                                </DialogHeader>
+                                <div className="space-y-4">
+                                    <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                                        <p className="text-sm font-medium text-green-900 mb-3">
+                                            Account created for: {credentialsDialog.company_name}
+                                        </p>
+                                        <div className="space-y-3">
+                                            <div>
+                                                <Label className="text-xs text-green-700">Issuer Code (Username)</Label>
+                                                <code className="block bg-white border border-green-300 rounded px-3 py-2 text-sm font-mono">
+                                                    {credentialsDialog.issuer_code}
+                                                </code>
+                                            </div>
+                                            <div>
+                                                <Label className="text-xs text-green-700">Temporary Password</Label>
+                                                <code className="block bg-white border border-green-300 rounded px-3 py-2 text-sm font-mono">
+                                                    {credentialsDialog.tempPassword}
+                                                </code>
+                                            </div>
+                                            <div>
+                                                <Label className="text-xs text-green-700">Login URL</Label>
+                                                <code className="block bg-white border border-green-300 rounded px-3 py-2 text-xs">
+                                                    {provider.portal_url || window.location.origin}/AssetIssuerLogin
+                                                </code>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                                        <p className="text-xs text-blue-900">
+                                            ✓ Credentials have been emailed to: <strong>{credentialsDialog.email}</strong>
+                                        </p>
+                                        <p className="text-xs text-blue-700 mt-1">
+                                            The issuer must complete KYB verification before tokenizing assets.
+                                        </p>
+                                    </div>
+                                    <Button onClick={() => setCredentialsDialog(null)} className="w-full">
+                                        Close
                                     </Button>
                                 </div>
                             </DialogContent>
