@@ -243,6 +243,17 @@ import CryptoGatewayTransactions from './pages/CryptoGatewayTransactions';
 import CryptoPortalManagement from './pages/CryptoPortalManagement';
 import RWAPlatform from './pages/RWAPlatform';
 import RWAWhiteLabelProvisioning from './pages/RWAWhiteLabelProvisioning';
+import RWAProviderLogin from './pages/RWAProviderLogin';
+import AssetIssuerLogin from './pages/AssetIssuerLogin';
+import InvestorLogin from './pages/InvestorLogin';
+import RWAProviderDashboard from './pages/RWAProviderDashboard';
+import RWAProviderIssuers from './pages/RWAProviderIssuers';
+import AssetIssuerDashboard from './pages/AssetIssuerDashboard';
+import AssetIssuerTokenize from './pages/AssetIssuerTokenize';
+import InvestorPortfolio from './pages/InvestorPortfolio';
+import InvestorMarketplace from './pages/InvestorMarketplace';
+import RWAProviderAssets from './pages/RWAProviderAssets';
+import AssetIssuerAssets from './pages/AssetIssuerAssets';
 import __Layout from './Layout.jsx';
 
 
@@ -492,6 +503,17 @@ export const PAGES = {
     "CryptoPortalManagement": CryptoPortalManagement,
     "RWAPlatform": RWAPlatform,
     "RWAWhiteLabelProvisioning": RWAWhiteLabelProvisioning,
+    "RWAProviderLogin": RWAProviderLogin,
+    "AssetIssuerLogin": AssetIssuerLogin,
+    "InvestorLogin": InvestorLogin,
+    "RWAProviderDashboard": RWAProviderDashboard,
+    "RWAProviderIssuers": RWAProviderIssuers,
+    "AssetIssuerDashboard": AssetIssuerDashboard,
+    "AssetIssuerTokenize": AssetIssuerTokenize,
+    "InvestorPortfolio": InvestorPortfolio,
+    "InvestorMarketplace": InvestorMarketplace,
+    "RWAProviderAssets": RWAProviderAssets,
+    "AssetIssuerAssets": AssetIssuerAssets,
 }
 
 export const pagesConfig = {
