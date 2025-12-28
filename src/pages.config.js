@@ -254,6 +254,7 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
+import RWAProviderInvestors from './pages/RWAProviderInvestors';
 import __Layout from './Layout.jsx';
 
 
@@ -514,6 +515,7 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
+    "RWAProviderInvestors": RWAProviderInvestors,
 }
 
 export const pagesConfig = {
