@@ -36,6 +36,8 @@ export default function RWAWhiteLabelProvisioning() {
 
     const provisionMutation = useMutation({
         mutationFn: async (customerData) => {
+            console.log('Starting provisioning with data:', customerData);
+            
             // Create customer record
             const customer = await base44.asServiceRole.entities.RWAWhiteLabelCustomer.create({
                 ...customerData,
@@ -49,6 +51,8 @@ export default function RWAWhiteLabelProvisioning() {
                 }]
             });
 
+            console.log('Customer created:', customer);
+
             // In production, this would trigger actual deployment
             // For now, simulate the process
             await simulateProvisioning(customer.id);
@@ -56,6 +60,7 @@ export default function RWAWhiteLabelProvisioning() {
             return customer;
         },
         onSuccess: () => {
+            console.log('Provisioning completed successfully');
             queryClient.invalidateQueries(['rwa-customers']);
             setShowDialog(false);
             setNewCustomer({
@@ -69,6 +74,10 @@ export default function RWAWhiteLabelProvisioning() {
                 asset_types_enabled: ['real_estate', 'commodity'],
                 blockchain_networks: ['polygon']
             });
+        },
+        onError: (error) => {
+            console.error('Provisioning failed:', error);
+            alert('Provisioning failed: ' + error.message);
         }
     });
 
