@@ -258,6 +258,9 @@ import XeroIntegration from './pages/XeroIntegration';
 import AssetIssuerCompliance from './pages/AssetIssuerCompliance';
 import RWAProviderAnalytics from './pages/RWAProviderAnalytics';
 import RWAProviderSettings from './pages/RWAProviderSettings';
+import InvestorSettings from './pages/InvestorSettings';
+import InvestorDividends from './pages/InvestorDividends';
+import InvestorHoldings from './pages/InvestorHoldings';
 import __Layout from './Layout.jsx';
 
 
@@ -522,6 +525,9 @@ export const PAGES = {
     "AssetIssuerCompliance": AssetIssuerCompliance,
     "RWAProviderAnalytics": RWAProviderAnalytics,
     "RWAProviderSettings": RWAProviderSettings,
+    "InvestorSettings": InvestorSettings,
+    "InvestorDividends": InvestorDividends,
+    "InvestorHoldings": InvestorHoldings,
 }
 
 export const pagesConfig = {
