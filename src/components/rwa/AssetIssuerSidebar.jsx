@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { cn } from "@/lib/utils";
-import { BarChart3, Briefcase, Users, Plus, DollarSign, Settings, LogOut } from 'lucide-react';
+import { BarChart3, Briefcase, Users, Plus, DollarSign, Settings, LogOut, Shield } from 'lucide-react';
 
 export default function AssetIssuerSidebar({ currentPage, issuerName, issuerEmail, providerBranding }) {
     const menuItems = [
@@ -11,6 +11,7 @@ export default function AssetIssuerSidebar({ currentPage, issuerName, issuerEmai
         { label: 'My Assets', path: 'AssetIssuerAssets', icon: Briefcase },
         { label: 'Investors', path: 'AssetIssuerInvestors', icon: Users },
         { label: 'Dividends', path: 'AssetIssuerDividends', icon: DollarSign },
+        { label: 'Compliance', path: 'AssetIssuerCompliance', icon: Shield },
         { label: 'Settings', path: 'AssetIssuerSettings', icon: Settings }
     ];
 
