@@ -1,65 +1,18 @@
 import React, { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Badge } from "@/components/ui/badge";
-import { useRWAProviderAuth } from '@/components/auth/useRWAProviderAuth';
-import RWAProviderSidebar from '@/components/rwa/RWAProviderSidebar';
-import { Plus, Building2, Mail, Edit, Key } from 'lucide-react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useQuery, useMutation, useQueryClient } from '@antml:invoke>
+<parameter name="file_path">components/ui/input.js
 
 export default function RWAProviderIssuers() {
     const { provider } = useRWAProviderAuth();
     const queryClient = useQueryClient();
-    const [showDialog, setShowDialog] = useState(false);
+    const [showOnboardingWizard, setShowOnboardingWizard] = useState(false);
     const [editingIssuer, setEditingIssuer] = useState(null);
     const [credentialsDialog, setCredentialsDialog] = useState(null);
-    const [newIssuer, setNewIssuer] = useState({
-        company_name: '',
-        lei: '',
-        email: '',
-        issuer_type: 'corporation'
-    });
 
     const { data: issuers = [] } = useQuery({
         queryKey: ['issuers', provider?.provider_code],
         queryFn: () => base44.entities.AssetIssuer.filter({ provider_code: provider.provider_code }),
         enabled: !!provider
-    });
-
-    const createMutation = useMutation({
-        mutationFn: async (issuerData) => {
-            const issuer_code = issuerData.company_name.toLowerCase().replace(/[^a-z0-9]/g, '-');
-            const tempPassword = Math.random().toString(36).slice(-8) + 'A1!';
-            
-            const created = await base44.entities.AssetIssuer.create({
-                ...issuerData,
-                provider_code: provider.provider_code,
-                issuer_code,
-                password_hash: tempPassword,
-                status: 'pending_kyb',
-                kyb_status: 'pending'
-            });
-
-            // Send welcome email with credentials
-            await base44.integrations.Core.SendEmail({
-                to: issuerData.email,
-                subject: `Welcome to ${provider.company_name} - Asset Issuer Portal`,
-                body: `Your asset issuer account has been created.\n\n=== LOGIN CREDENTIALS ===\nIssuer Code: ${issuer_code}\nPassword: ${tempPassword}\n\nLogin URL: ${provider.portal_url || window.location.origin}/AssetIssuerLogin\n\nNext Steps:\n1. Complete your KYB verification\n2. Upload required compliance documents\n3. Start tokenizing your first asset\n\nNeed help? Contact ${provider.admin_email || provider.email}`
-            });
-
-            return { ...created, tempPassword, issuer_code };
-        },
-        onSuccess: (data) => {
-            queryClient.invalidateQueries(['issuers']);
-            setShowDialog(false);
-            setCredentialsDialog(data);
-            setNewIssuer({ company_name: '', lei: '', email: '', issuer_type: 'corporation' });
-        }
     });
 
     const updateMutation = useMutation({
@@ -105,54 +58,10 @@ export default function RWAProviderIssuers() {
                             <h1 className="text-3xl font-bold text-slate-900">Asset Issuers</h1>
                             <p className="text-slate-600">Companies tokenizing assets through your platform</p>
                         </div>
-                        <Dialog open={showDialog} onOpenChange={setShowDialog}>
-                            <DialogTrigger asChild>
-                                <Button className="gap-2">
-                                    <Plus className="h-4 w-4" />
-                                    Add Issuer
-                                </Button>
-                            </DialogTrigger>
-                            <DialogContent>
-                                <DialogHeader>
-                                    <DialogTitle>Onboard Asset Issuer</DialogTitle>
-                                </DialogHeader>
-                                <div className="space-y-4">
-                                    <div>
-                                        <Label>Company Name</Label>
-                                        <Input
-                                            placeholder="ACME Real Estate Fund"
-                                            value={newIssuer.company_name}
-                                            onChange={(e) => setNewIssuer({...newIssuer, company_name: e.target.value})}
-                                        />
-                                    </div>
-                                    <div>
-                                        <Label>LEI (Legal Entity Identifier)</Label>
-                                        <Input
-                                            placeholder="123456789012ABCDEFGH"
-                                            value={newIssuer.lei}
-                                            onChange={(e) => setNewIssuer({...newIssuer, lei: e.target.value})}
-                                            maxLength={20}
-                                        />
-                                    </div>
-                                    <div>
-                                        <Label>Admin Email</Label>
-                                        <Input
-                                            type="email"
-                                            placeholder="admin@acmefund.com"
-                                            value={newIssuer.email}
-                                            onChange={(e) => setNewIssuer({...newIssuer, email: e.target.value})}
-                                        />
-                                    </div>
-                                    <Button 
-                                        onClick={() => createMutation.mutate(newIssuer)}
-                                        disabled={!newIssuer.company_name || !newIssuer.email}
-                                        className="w-full"
-                                    >
-                                        Create Issuer Account
-                                    </Button>
-                                </div>
-                            </DialogContent>
-                        </Dialog>
+                        <Button className="gap-2" onClick={() => setShowOnboardingWizard(true)}>
+                            <Plus className="h-4 w-4" />
+                            Onboard Issuer
+                        </Button>
                     </div>
 
                     <Card>
@@ -361,6 +270,16 @@ export default function RWAProviderIssuers() {
                             </DialogContent>
                         </Dialog>
                     )}
+
+                    {/* Onboarding Wizard */}
+                    <AssetIssuerOnboardingWizard
+                        open={showOnboardingWizard}
+                        onClose={() => setShowOnboardingWizard(false)}
+                        providerCode={provider?.provider_code}
+                        onSuccess={() => {
+                            queryClient.invalidateQueries(['issuers']);
+                        }}
+                    />
                 </div>
             </div>
         </div>
