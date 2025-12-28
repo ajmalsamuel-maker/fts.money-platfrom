@@ -33,7 +33,11 @@ import {
     Cpu,
     HardDrive,
     Cloud,
-    GitBranch
+    GitBranch,
+    Rocket,
+    ArrowRight,
+    CheckCircle2,
+    Clock
 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
@@ -148,7 +152,27 @@ export default function FTSMoneyPlatform() {
     const { data: transactions = [] } = useQuery({
         queryKey: ['recent-transactions'],
         queryFn: () => base44.entities.Transaction.list('-created_date', 1000),
-        refetchInterval: 5000 // Refresh every 5 seconds for TPS
+        refetchInterval: 5000
+    });
+
+    const { data: isoCustomers = [] } = useQuery({
+        queryKey: ['iso-customers'],
+        queryFn: () => base44.entities.ISOGatewayCustomer.list()
+    });
+
+    const { data: orchestrationCustomers = [] } = useQuery({
+        queryKey: ['orchestration-customers'],
+        queryFn: () => base44.entities.OrchestrationCustomer.list()
+    });
+
+    const { data: cryptoCustomers = [] } = useQuery({
+        queryKey: ['crypto-customers'],
+        queryFn: () => base44.entities.CryptoGatewayCustomer.list()
+    });
+
+    const { data: rwaCustomers = [] } = useQuery({
+        queryKey: ['rwa-customers'],
+        queryFn: () => base44.entities.RWAWhiteLabelCustomer.list()
     });
     
     if (loading) {
@@ -219,6 +243,181 @@ export default function FTSMoneyPlatform() {
                 </header>
 
                 <div className="p-6">
+                    {/* Services Overview */}
+                    <div className="mb-6">
+                        <h3 className="text-sm font-semibold text-slate-900 mb-3">Platform Services</h3>
+                        <div className="grid grid-cols-5 gap-4">
+                            {/* PSP Service */}
+                            <Card className="border-2 border-blue-200 hover:border-blue-400 hover:shadow-lg transition-all group">
+                                <CardContent className="p-4">
+                                    <div className="flex items-center gap-2 mb-3">
+                                        <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
+                                            <Building2 className="h-5 w-5 text-blue-600" />
+                                        </div>
+                                        <div>
+                                            <p className="font-semibold text-slate-900 text-sm">PSP Platform</p>
+                                            <Badge variant="outline" className="text-xs">
+                                                {psps.filter(p => p.status === 'active').length} active
+                                            </Badge>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2 mb-3">
+                                        <div className="flex justify-between text-xs">
+                                            <span className="text-slate-600">Total Instances</span>
+                                            <span className="font-semibold">{psps.length}</span>
+                                        </div>
+                                        <div className="flex justify-between text-xs">
+                                            <span className="text-slate-600">Merchants</span>
+                                            <span className="font-semibold">{totalMerchants}</span>
+                                        </div>
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <Button size="sm" className="flex-1 text-xs h-7" onClick={() => navigate(createPageUrl('PSPProvisioning'))}>
+                                            Manage
+                                        </Button>
+                                        <Button size="sm" variant="outline" className="text-xs h-7" onClick={() => navigate(createPageUrl('PSPProvisioningWizard'))}>
+                                            <Plus className="h-3 w-3" />
+                                        </Button>
+                                    </div>
+                                </CardContent>
+                            </Card>
+
+                            {/* ISO Gateway */}
+                            <Card className="border-2 border-violet-200 hover:border-violet-400 hover:shadow-lg transition-all group">
+                                <CardContent className="p-4">
+                                    <div className="flex items-center gap-2 mb-3">
+                                        <div className="w-8 h-8 rounded-lg bg-violet-100 flex items-center justify-center">
+                                            <Zap className="h-5 w-5 text-violet-600" />
+                                        </div>
+                                        <div>
+                                            <p className="font-semibold text-slate-900 text-sm">ISO Gateway</p>
+                                            <Badge variant="outline" className="text-xs">
+                                                {isoCustomers.filter(c => c.status === 'active').length} active
+                                            </Badge>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2 mb-3">
+                                        <div className="flex justify-between text-xs">
+                                            <span className="text-slate-600">Customers</span>
+                                            <span className="font-semibold">{isoCustomers.length}</span>
+                                        </div>
+                                        <div className="flex justify-between text-xs">
+                                            <span className="text-slate-600">Service</span>
+                                            <span className="font-semibold text-emerald-600">Live</span>
+                                        </div>
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <Button size="sm" className="flex-1 text-xs h-7 bg-violet-600 hover:bg-violet-700" onClick={() => navigate(createPageUrl('ISOGatewayCustomers'))}>
+                                            Manage
+                                        </Button>
+                                        <Button size="sm" variant="outline" className="text-xs h-7" onClick={() => navigate(createPageUrl('ISOGatewayTestConsole'))}>
+                                            Test
+                                        </Button>
+                                    </div>
+                                </CardContent>
+                            </Card>
+
+                            {/* Orchestration */}
+                            <Card className="border-2 border-purple-200 hover:border-purple-400 hover:shadow-lg transition-all group">
+                                <CardContent className="p-4">
+                                    <div className="flex items-center gap-2 mb-3">
+                                        <div className="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center">
+                                            <GitBranch className="h-5 w-5 text-purple-600" />
+                                        </div>
+                                        <div>
+                                            <p className="font-semibold text-slate-900 text-sm">Orchestration</p>
+                                            <Badge variant="outline" className="text-xs">
+                                                {orchestrationCustomers.filter(c => c.status === 'active').length} active
+                                            </Badge>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2 mb-3">
+                                        <div className="flex justify-between text-xs">
+                                            <span className="text-slate-600">Customers</span>
+                                            <span className="font-semibold">{orchestrationCustomers.length}</span>
+                                        </div>
+                                        <div className="flex justify-between text-xs">
+                                            <span className="text-slate-600">Service</span>
+                                            <span className="font-semibold text-emerald-600">Live</span>
+                                        </div>
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <Button size="sm" className="flex-1 text-xs h-7 bg-purple-600 hover:bg-purple-700" onClick={() => navigate(createPageUrl('OrchestrationCustomers'))}>
+                                            Manage
+                                        </Button>
+                                    </div>
+                                </CardContent>
+                            </Card>
+
+                            {/* Crypto Banking */}
+                            <Card className="border-2 border-cyan-200 hover:border-cyan-400 hover:shadow-lg transition-all group">
+                                <CardContent className="p-4">
+                                    <div className="flex items-center gap-2 mb-3">
+                                        <div className="w-8 h-8 rounded-lg bg-cyan-100 flex items-center justify-center">
+                                            <Wallet className="h-5 w-5 text-cyan-600" />
+                                        </div>
+                                        <div>
+                                            <p className="font-semibold text-slate-900 text-sm">Crypto Banking</p>
+                                            <Badge variant="outline" className="text-xs">
+                                                {cryptoCustomers.filter(c => c.status === 'active').length} active
+                                            </Badge>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2 mb-3">
+                                        <div className="flex justify-between text-xs">
+                                            <span className="text-slate-600">Customers</span>
+                                            <span className="font-semibold">{cryptoCustomers.length}</span>
+                                        </div>
+                                        <div className="flex justify-between text-xs">
+                                            <span className="text-slate-600">Service</span>
+                                            <span className="font-semibold text-emerald-600">Live</span>
+                                        </div>
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <Button size="sm" className="flex-1 text-xs h-7 bg-cyan-600 hover:bg-cyan-700" onClick={() => navigate(createPageUrl('CryptoGatewayCustomers'))}>
+                                            Manage
+                                        </Button>
+                                    </div>
+                                </CardContent>
+                            </Card>
+
+                            {/* RWA Platform */}
+                            <Card className="border-2 border-emerald-200 hover:border-emerald-400 hover:shadow-lg transition-all group">
+                                <CardContent className="p-4">
+                                    <div className="flex items-center gap-2 mb-3">
+                                        <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center">
+                                            <Rocket className="h-5 w-5 text-emerald-600" />
+                                        </div>
+                                        <div>
+                                            <p className="font-semibold text-slate-900 text-sm">RWA Platform</p>
+                                            <Badge variant="outline" className="text-xs">
+                                                {rwaCustomers.filter(c => c.status === 'active').length} active
+                                            </Badge>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2 mb-3">
+                                        <div className="flex justify-between text-xs">
+                                            <span className="text-slate-600">Customers</span>
+                                            <span className="font-semibold">{rwaCustomers.length}</span>
+                                        </div>
+                                        <div className="flex justify-between text-xs">
+                                            <span className="text-slate-600">AUM</span>
+                                            <span className="font-semibold">${(rwaCustomers.reduce((sum, c) => sum + (c.total_value_locked || 0), 0) / 1000000).toFixed(1)}M</span>
+                                        </div>
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <Button size="sm" className="flex-1 text-xs h-7 bg-emerald-600 hover:bg-emerald-700" onClick={() => navigate(createPageUrl('RWAWhiteLabelProvisioning'))}>
+                                            Manage
+                                        </Button>
+                                        <Button size="sm" variant="outline" className="text-xs h-7" onClick={() => navigate(createPageUrl('RWAPlatform'))}>
+                                            Contracts
+                                        </Button>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </div>
+                    </div>
+
                     {/* Quick Actions */}
                     <div className="mb-6">
                         <h3 className="text-sm font-semibold text-slate-900 mb-3">Quick Actions</h3>
