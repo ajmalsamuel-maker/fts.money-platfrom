@@ -16,6 +16,7 @@ import OrchestrationDoc from '@/components/docs/OrchestrationDoc';
 import ArchitectureDoc from '@/components/docs/ArchitectureDoc';
 import ProductEcosystemDoc from '@/components/docs/ProductEcosystemDoc';
 import VerticalSolutionsDoc from '@/components/docs/VerticalSolutionsDoc';
+import { RWATechnicalSpec } from '@/components/docs/RWATechnicalSpec';
 import MermaidDiagram from '@/components/docs/MermaidDiagram';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -87,6 +88,13 @@ export default function FTSDocumentation() {
             icon: BookOpen,
             content: VerticalSolutionsDoc,
             description: 'Industry-specific payment solutions and implementations'
+        },
+        {
+            id: 'rwa-technical',
+            title: 'RWA Platform - Technical Spec',
+            icon: Code,
+            content: RWATechnicalSpec,
+            description: 'Real World Assets tokenization platform - complete technical specifications'
         }
     ];
 
