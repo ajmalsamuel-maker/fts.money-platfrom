@@ -14,14 +14,12 @@ const FTSControlPanelDoc = `# FTS Control Panel Documentation
 2. [Platform Architecture](#platform-architecture)
 3. [User Roles & Permissions](#user-roles--permissions)
 4. [PSP Lifecycle Management](#psp-lifecycle-management)
-5. [Crypto Banking Administration](#crypto-banking-administration)
-6. [Real World Assets (RWA) Platform](#rwa-platform-administration)
-7. [Service Catalog Administration](#service-catalog-administration)
-8. [Financial Operations](#financial-operations)
-9. [Compliance & Monitoring](#compliance--monitoring)
-10. [Infrastructure Management](#infrastructure-management)
-11. [Security & Access Control](#security--access-control)
-12. [Troubleshooting & Support](#troubleshooting--support)
+5. [Service Catalog Administration](#service-catalog-administration)
+6. [Financial Operations](#financial-operations)
+7. [Compliance & Monitoring](#compliance--monitoring)
+8. [Infrastructure Management](#infrastructure-management)
+9. [Security & Access Control](#security--access-control)
+10. [Troubleshooting & Support](#troubleshooting--support)
 
 ---
 

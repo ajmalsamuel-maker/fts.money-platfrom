@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Download, FileText, BookOpen, Code, GitBranch } from 'lucide-react';
+import { Download, FileText, BookOpen, Code, GitBranch, Wallet } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
@@ -17,6 +17,7 @@ import ArchitectureDoc from '@/components/docs/ArchitectureDoc';
 import ProductEcosystemDoc from '@/components/docs/ProductEcosystemDoc';
 import VerticalSolutionsDoc from '@/components/docs/VerticalSolutionsDoc';
 import { RWATechnicalSpec } from '@/components/docs/RWATechnicalSpec';
+import CryptoBankingDoc from '@/components/docs/CryptoBankingDoc';
 import MermaidDiagram from '@/components/docs/MermaidDiagram';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -90,8 +91,15 @@ export default function FTSDocumentation() {
             description: 'Industry-specific payment solutions and implementations'
         },
         {
+            id: 'crypto-banking',
+            title: 'Crypto Banking Service',
+            icon: Wallet,
+            content: CryptoBankingDoc,
+            description: 'Enterprise crypto banking infrastructure - wallets, IBANs, cards, compliance'
+        },
+        {
             id: 'rwa-technical',
-            title: 'RWA Platform - Technical Spec',
+            title: 'RWA Platform',
             icon: Code,
             content: RWATechnicalSpec,
             description: 'Real World Assets tokenization platform - complete technical specifications'
