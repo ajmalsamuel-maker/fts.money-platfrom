@@ -107,6 +107,14 @@ export default function FTSPlatformSidebarRestructured({ currentPage, userRole, 
             ]
         },
         {
+            id: 'rwa-platform',
+            title: 'RWA Platform',
+            defaultOpen: false,
+            items: [
+                { label: 'Smart Contracts', path: 'RWAPlatform', icon: Code, description: 'Blockchain-native', priority: true }
+            ]
+        },
+        {
             id: 'analytics',
             title: 'Analytics & Reports',
             defaultOpen: false,
