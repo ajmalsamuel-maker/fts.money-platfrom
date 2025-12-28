@@ -60,24 +60,7 @@ export default function RWAWhiteLabelProvisioning() {
         }
     });
 
-    const simulateProvisioning = async (customerId) => {
-        // Simulate provisioning stages (in production, this calls backend deployment)
-        const stages = [
-            { stage: 'deploying_contracts', message: 'Deploying smart contracts to blockchain' },
-            { stage: 'configuring_custody', message: 'Setting up Fireblocks custody' },
-            { stage: 'setting_up_portal', message: 'Configuring white-label portal' },
-            { stage: 'completed', message: 'Provisioning complete' }
-        ];
 
-        for (const stageInfo of stages) {
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            
-            await base44.asServiceRole.entities.RWAWhiteLabelCustomer.update(customerId, {
-                provisioning_status: stageInfo.stage,
-                status: stageInfo.stage === 'completed' ? 'active' : 'provisioning'
-            });
-        }
-    };
 
     const handleProvision = () => {
         provisionMutation.mutate(newCustomer);
