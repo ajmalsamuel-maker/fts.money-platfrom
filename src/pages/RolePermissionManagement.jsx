@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { usePlatformAuth, getRoleLabel } from '@/components/auth/usePlatformAuth';
-import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
+import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebarRestructured';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
