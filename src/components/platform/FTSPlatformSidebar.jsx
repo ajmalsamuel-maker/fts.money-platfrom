@@ -160,7 +160,8 @@ const menuSections = [
             { label: 'Architecture', path: 'FTSArchitectureDoc', icon: BookOpen, description: 'System design' },
             { label: 'Product Ecosystem', path: 'FTSProductEcosystemReport', icon: Package, description: 'Products & models' },
             { label: 'Vertical Solutions', path: 'FTSVerticalSolutions', icon: Building2, description: 'Industry offerings' },
-            { label: 'Advanced Tools', path: 'ModuleCatalogTest', icon: Code, description: 'Module testing' }
+            { label: 'Advanced Tools', path: 'ModuleCatalogTest', icon: Code, description: 'Module testing' },
+            { label: 'LEI Phase 1 Testing', path: 'LEIPhase1Testing', icon: TestTube2, description: 'Test LEI integration' }
         ]
     }
 ];
