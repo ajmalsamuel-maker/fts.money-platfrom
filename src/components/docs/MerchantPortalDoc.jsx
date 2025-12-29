@@ -276,8 +276,8 @@ const calculateKPIs = (transactions, settlements) => {
     fill="#8884d8"
     dataKey="value"
   >
-    {paymentMethodData.map((entry, index) => (
-      <Cell key={cell-${index}} fill={COLORS[index % COLORS.length]} />
+    {paymentMethodData.map((entry, idx) => (
+      <Cell key={\`cell-\${idx}\`} fill={COLORS[idx % COLORS.length]} />
     ))}
   </Pie>
 </PieChart>
