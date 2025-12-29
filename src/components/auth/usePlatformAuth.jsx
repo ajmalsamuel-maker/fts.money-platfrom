@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
+import { usePermissions } from './usePermissions';
 
 export const PLATFORM_ROLES = {
     SUPER_ADMIN: 'super_admin',
@@ -126,7 +127,7 @@ export function usePlatformAuth(requiredPermissions = []) {
         setPlatformUser(session);
         setLoading(false);
 
-        // Check if user has required permissions
+        // Check if user has required permissions (legacy support)
         if (requiredPermissions.length > 0) {
             const hasAllPermissions = requiredPermissions.every(permission => 
                 hasPermission(session.platform_role, permission)
@@ -138,7 +139,10 @@ export function usePlatformAuth(requiredPermissions = []) {
         }
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-    return { platformUser, loading };
+    // Get permission utilities for this user
+    const permissions = usePermissions(platformUser);
+
+    return { platformUser, loading, permissions };
 }
 
 export function hasPermission(role, permission) {

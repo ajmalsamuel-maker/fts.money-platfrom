@@ -1,44 +1,75 @@
 import React from 'react';
 import { usePermissions } from './usePermissions';
-import { Shield, Lock } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Lock } from 'lucide-react';
 
-// Component that only renders children if user has required permission
-export function PermissionGate({ permission, children, fallback = null, showLocked = false }) {
-    const { can, loading } = usePermissions();
-
-    if (loading) {
-        return null;
+/**
+ * Permission Gate Component
+ * Conditionally renders children based on user permissions
+ */
+export function PermissionGate({ 
+    children, 
+    permission, 
+    permissions,
+    requireAll = false,
+    user,
+    targetUser = null,
+    targetEntity = null,
+    fallback = null,
+    showLocked = false 
+}) {
+    const { hasPermission, hasAnyPermission, hasAllPermissions } = usePermissions(user);
+    
+    let hasAccess = false;
+    
+    if (permission) {
+        hasAccess = hasPermission(permission, targetUser, targetEntity);
+    } else if (permissions) {
+        if (requireAll) {
+            hasAccess = hasAllPermissions(permissions, targetUser, targetEntity);
+        } else {
+            hasAccess = hasAnyPermission(permissions, targetUser, targetEntity);
+        }
     }
-
-    if (!can(permission)) {
+    
+    if (!hasAccess) {
         if (showLocked) {
             return (
-                <div className="flex items-center gap-2 text-slate-400 text-sm">
-                    <Lock className="h-4 w-4" />
-                    <span>Insufficient permissions</span>
-                </div>
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <div className="relative inline-block opacity-50 cursor-not-allowed">
+                                {children}
+                                <div className="absolute inset-0 flex items-center justify-center bg-slate-900/10 rounded">
+                                    <Lock className="h-4 w-4 text-slate-600" />
+                                </div>
+                            </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>You don't have permission for this action</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
             );
         }
         return fallback;
     }
-
-    return children;
+    
+    return <>{children}</>;
 }
 
-// Full page access denied component
-export function AccessDenied() {
-    return (
-        <div className="min-h-[60vh] flex items-center justify-center">
-            <div className="text-center">
-                <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-red-100 flex items-center justify-center">
-                    <Shield className="h-10 w-10 text-red-500" />
-                </div>
-                <h1 className="text-2xl font-bold text-slate-900 mb-2">Access Denied</h1>
-                <p className="text-slate-500 max-w-md">
-                    You don't have permission to access this page. 
-                    Please contact your administrator if you believe this is an error.
-                </p>
-            </div>
-        </div>
-    );
+/**
+ * Disable fields based on permissions
+ */
+export function useFieldPermission(user, permission, targetUser = null, targetEntity = null) {
+    const { hasPermission } = usePermissions(user);
+    const canEdit = hasPermission(permission, targetUser, targetEntity);
+    
+    return {
+        disabled: !canEdit,
+        readOnly: !canEdit,
+        canEdit
+    };
 }
+
+export default PermissionGate;
