@@ -48,6 +48,7 @@ import CryptoGatewayCustomers from './pages/CryptoGatewayCustomers';
 import CryptoGatewayDashboard from './pages/CryptoGatewayDashboard';
 import CryptoGatewayLogin from './pages/CryptoGatewayLogin';
 import CryptoGatewayTransactions from './pages/CryptoGatewayTransactions';
+import CryptoGatewayUserManagement from './pages/CryptoGatewayUserManagement';
 import CryptoIBANs from './pages/CryptoIBANs';
 import CryptoKYCManagement from './pages/CryptoKYCManagement';
 import CryptoPayouts from './pages/CryptoPayouts';
@@ -188,6 +189,7 @@ import OpenBankingConfiguration from './pages/OpenBankingConfiguration';
 import OrchestrationCustomers from './pages/OrchestrationCustomers';
 import OrchestrationLogin from './pages/OrchestrationLogin';
 import OrchestrationPortal from './pages/OrchestrationPortal';
+import OrchestrationUserManagement from './pages/OrchestrationUserManagement';
 import PCICompliance from './pages/PCICompliance';
 import PSPDetails from './pages/PSPDetails';
 import PSPEmpowermentRoadmap from './pages/PSPEmpowermentRoadmap';
@@ -230,12 +232,14 @@ import RWAProviderInvestors from './pages/RWAProviderInvestors';
 import RWAProviderIssuers from './pages/RWAProviderIssuers';
 import RWAProviderLogin from './pages/RWAProviderLogin';
 import RWAProviderSettings from './pages/RWAProviderSettings';
+import RWAProviderUserManagement from './pages/RWAProviderUserManagement';
 import RWAWhiteLabelProvisioning from './pages/RWAWhiteLabelProvisioning';
 import RealTimeMonitor from './pages/RealTimeMonitor';
 import Reconciliation from './pages/Reconciliation';
 import Refunds from './pages/Refunds';
 import Reports from './pages/Reports';
 import ResourceOrchestration from './pages/ResourceOrchestration';
+import RolePermissionManagement from './pages/RolePermissionManagement';
 import SecurityManagement from './pages/SecurityManagement';
 import ServiceProviderRegistration from './pages/ServiceProviderRegistration';
 import Settings from './pages/Settings';
@@ -264,10 +268,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import OrchestrationUserManagement from './pages/OrchestrationUserManagement';
-import CryptoGatewayUserManagement from './pages/CryptoGatewayUserManagement';
-import RWAProviderUserManagement from './pages/RWAProviderUserManagement';
-import RolePermissionManagement from './pages/RolePermissionManagement';
 import __Layout from './Layout.jsx';
 
 
@@ -322,6 +322,7 @@ export const PAGES = {
     "CryptoGatewayDashboard": CryptoGatewayDashboard,
     "CryptoGatewayLogin": CryptoGatewayLogin,
     "CryptoGatewayTransactions": CryptoGatewayTransactions,
+    "CryptoGatewayUserManagement": CryptoGatewayUserManagement,
     "CryptoIBANs": CryptoIBANs,
     "CryptoKYCManagement": CryptoKYCManagement,
     "CryptoPayouts": CryptoPayouts,
@@ -462,6 +463,7 @@ export const PAGES = {
     "OrchestrationCustomers": OrchestrationCustomers,
     "OrchestrationLogin": OrchestrationLogin,
     "OrchestrationPortal": OrchestrationPortal,
+    "OrchestrationUserManagement": OrchestrationUserManagement,
     "PCICompliance": PCICompliance,
     "PSPDetails": PSPDetails,
     "PSPEmpowermentRoadmap": PSPEmpowermentRoadmap,
@@ -504,12 +506,14 @@ export const PAGES = {
     "RWAProviderIssuers": RWAProviderIssuers,
     "RWAProviderLogin": RWAProviderLogin,
     "RWAProviderSettings": RWAProviderSettings,
+    "RWAProviderUserManagement": RWAProviderUserManagement,
     "RWAWhiteLabelProvisioning": RWAWhiteLabelProvisioning,
     "RealTimeMonitor": RealTimeMonitor,
     "Reconciliation": Reconciliation,
     "Refunds": Refunds,
     "Reports": Reports,
     "ResourceOrchestration": ResourceOrchestration,
+    "RolePermissionManagement": RolePermissionManagement,
     "SecurityManagement": SecurityManagement,
     "ServiceProviderRegistration": ServiceProviderRegistration,
     "Settings": Settings,
@@ -538,10 +542,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "OrchestrationUserManagement": OrchestrationUserManagement,
-    "CryptoGatewayUserManagement": CryptoGatewayUserManagement,
-    "RWAProviderUserManagement": RWAProviderUserManagement,
-    "RolePermissionManagement": RolePermissionManagement,
 }
 
 export const pagesConfig = {

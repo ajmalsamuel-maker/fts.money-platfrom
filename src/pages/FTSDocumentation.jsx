@@ -163,16 +163,26 @@ export default function FTSDocumentation() {
                 throw new Error('Content element not found');
             }
 
-            // Capture the rendered content as canvas
+            // Scroll to top to ensure everything is visible
+            contentElement.scrollTop = 0;
+            window.scrollTo(0, 0);
+
+            // Capture the rendered content as canvas with better settings
             const canvas = await html2canvas(contentElement, {
-                scale: 1.5,
+                scale: 1,
                 useCORS: true,
                 allowTaint: true,
-                logging: false,
+                logging: true,
                 backgroundColor: '#ffffff',
-                foreignObjectRendering: true,
-                imageTimeout: 0
+                width: 800,
+                height: contentElement.scrollHeight,
+                windowWidth: 800,
+                windowHeight: contentElement.scrollHeight,
+                x: 0,
+                y: 0
             });
+
+            console.log('Canvas created:', canvas.width, 'x', canvas.height);
 
             // Create PDF
             const pdf = new jsPDF('p', 'mm', 'a4');
@@ -189,28 +199,34 @@ export default function FTSDocumentation() {
             pdf.text('FTS.Money Documentation', pageWidth / 2, 50, { align: 'center' });
             pdf.text(`Generated: ${new Date().toLocaleDateString()}`, pageWidth / 2, 60, { align: 'center' });
 
-            // Convert canvas to JPEG (more reliable than PNG)
-            const imgData = canvas.toDataURL('image/jpeg', 0.85);
+            // Convert canvas to image
+            const imgData = canvas.toDataURL('image/jpeg', 1.0);
+            console.log('Image data length:', imgData.length);
+            
+            if (imgData === 'data:,' || imgData.length < 100) {
+                throw new Error('Canvas is empty - content may not be visible');
+            }
+
             const imgWidth = pageWidth - 20;
             const imgHeight = (canvas.height * imgWidth) / canvas.width;
             
-            // Calculate how many pages we need
+            // Calculate pages needed
             const margin = 10;
-            const contentHeight = pageHeight - 20;
+            const maxHeight = pageHeight - 20;
             let heightLeft = imgHeight;
-            let position = 0;
+            let position = margin;
 
             // Add first page of content
             pdf.addPage();
-            pdf.addImage(imgData, 'JPEG', margin, margin, imgWidth, imgHeight);
-            heightLeft -= contentHeight;
+            pdf.addImage(imgData, 'JPEG', margin, position, imgWidth, imgHeight);
+            heightLeft -= maxHeight;
 
-            // Add remaining pages if content is longer than one page
+            // Add additional pages
             while (heightLeft > 0) {
-                position = heightLeft - imgHeight;
+                position = -(imgHeight - heightLeft) + margin;
                 pdf.addPage();
-                pdf.addImage(imgData, 'JPEG', margin, position + margin, imgWidth, imgHeight);
-                heightLeft -= contentHeight;
+                pdf.addImage(imgData, 'JPEG', margin, position, imgWidth, imgHeight);
+                heightLeft -= maxHeight;
             }
 
             // Add page numbers
