@@ -23,7 +23,7 @@ import { MerchantPortalDoc } from '@/components/docs/MerchantPortalDoc';
 import { VirtualTerminalDoc } from '@/components/docs/VirtualTerminalDoc';
 import MermaidDiagram from '@/components/docs/MermaidDiagram';
 import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
+import 'jspdf-autotable';
 
 export default function FTSDocumentation() {
     const { platformUser, loading } = usePlatformAuth();
@@ -141,78 +141,128 @@ export default function FTSDocumentation() {
     };
 
     const downloadPDF = async (doc) => {
-        const pdf = new jsPDF('p', 'mm', 'a4');
+        const pdf = new jsPDF('p', 'pt', 'a4');
         const pageWidth = pdf.internal.pageSize.getWidth();
         const pageHeight = pdf.internal.pageSize.getHeight();
-        
+        const margin = 40;
+        const maxWidth = pageWidth - (margin * 2);
+        let yPosition = margin;
+
         // Create loading indicator
         const loadingDiv = document.createElement('div');
         loadingDiv.style.cssText = 'position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 9999;';
         loadingDiv.innerHTML = `
             <div style="background: white; border-radius: 8px; padding: 24px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);">
                 <div style="width: 32px; height: 32px; border: 4px solid #2563eb; border-top-color: transparent; border-radius: 50%; margin: 0 auto 16px; animation: spin 1s linear infinite;"></div>
-                <p style="color: #475569; margin: 0;">Generating PDF with full formatting...</p>
+                <p style="color: #475569; margin: 0;">Generating PDF...</p>
             </div>
+            <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
         `;
         document.body.appendChild(loadingDiv);
 
         try {
             // Add title page
-            pdf.setFontSize(24);
-            pdf.text(doc.title, pageWidth / 2, 40, { align: 'center' });
-            pdf.setFontSize(12);
-            pdf.text('FTS.Money Documentation', pageWidth / 2, 50, { align: 'center' });
-            pdf.text(`Generated: ${new Date().toLocaleDateString()}`, pageWidth / 2, 60, { align: 'center' });
+            pdf.setFontSize(28);
+            pdf.setFont(undefined, 'bold');
+            pdf.text(doc.title, pageWidth / 2, 100, { align: 'center' });
             
-            // Get the rendered content element
-            const contentElement = document.querySelector('.prose');
-            if (!contentElement) {
-                throw new Error('Content element not found');
-            }
-
-            // Wait a bit for any pending renders (especially Mermaid diagrams)
-            await new Promise(resolve => setTimeout(resolve, 1000));
-
-            // Capture the rendered content as canvas
-            const canvas = await html2canvas(contentElement, {
-                scale: 1.5,
-                useCORS: true,
-                allowTaint: true,
-                logging: false,
-                backgroundColor: '#ffffff',
-                windowWidth: contentElement.scrollWidth,
-                windowHeight: contentElement.scrollHeight
-            });
-
-            const imgData = canvas.toDataURL('image/jpeg', 0.95);
-            const imgWidth = pageWidth - 20;
-            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            pdf.setFontSize(14);
+            pdf.setFont(undefined, 'normal');
+            pdf.setTextColor(100);
+            pdf.text('FTS.Money Documentation', pageWidth / 2, 130, { align: 'center' });
+            pdf.text(`Generated: ${new Date().toLocaleDateString()}`, pageWidth / 2, 150, { align: 'center' });
             
-            // Calculate how many pages we need
-            const pageContentHeight = pageHeight - 30;
-            let heightLeft = imgHeight;
-            let position = 10;
-
-            // Add first page of content
+            // Parse markdown content into lines
+            const lines = doc.content.split('\n');
             pdf.addPage();
-            pdf.addImage(imgData, 'JPEG', 10, position, imgWidth, imgHeight);
-            heightLeft -= pageContentHeight;
+            yPosition = margin;
+            pdf.setTextColor(0);
 
-            // Add remaining pages if content is longer than one page
-            while (heightLeft > 0) {
-                position = -(imgHeight - heightLeft) + 10;
-                pdf.addPage();
-                pdf.addImage(imgData, 'JPEG', 10, position, imgWidth, imgHeight);
-                heightLeft -= pageContentHeight;
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                
+                // Check if we need a new page
+                if (yPosition > pageHeight - margin) {
+                    pdf.addPage();
+                    yPosition = margin;
+                }
+
+                // Handle headers
+                if (line.startsWith('# ')) {
+                    yPosition += 20;
+                    pdf.setFontSize(22);
+                    pdf.setFont(undefined, 'bold');
+                    pdf.text(line.substring(2), margin, yPosition);
+                    yPosition += 25;
+                    pdf.setFont(undefined, 'normal');
+                } else if (line.startsWith('## ')) {
+                    yPosition += 15;
+                    pdf.setFontSize(18);
+                    pdf.setFont(undefined, 'bold');
+                    pdf.text(line.substring(3), margin, yPosition);
+                    yPosition += 20;
+                    pdf.setFont(undefined, 'normal');
+                } else if (line.startsWith('### ')) {
+                    yPosition += 12;
+                    pdf.setFontSize(14);
+                    pdf.setFont(undefined, 'bold');
+                    pdf.text(line.substring(4), margin, yPosition);
+                    yPosition += 18;
+                    pdf.setFont(undefined, 'normal');
+                } else if (line.startsWith('#### ')) {
+                    yPosition += 10;
+                    pdf.setFontSize(12);
+                    pdf.setFont(undefined, 'bold');
+                    pdf.text(line.substring(5), margin, yPosition);
+                    yPosition += 16;
+                    pdf.setFont(undefined, 'normal');
+                } else if (line.startsWith('**') && line.endsWith('**')) {
+                    pdf.setFontSize(11);
+                    pdf.setFont(undefined, 'bold');
+                    const text = line.replace(/\*\*/g, '');
+                    const splitText = pdf.splitTextToSize(text, maxWidth);
+                    pdf.text(splitText, margin, yPosition);
+                    yPosition += splitText.length * 14;
+                    pdf.setFont(undefined, 'normal');
+                } else if (line.startsWith('- ') || line.startsWith('* ')) {
+                    pdf.setFontSize(10);
+                    const text = '• ' + line.substring(2);
+                    const splitText = pdf.splitTextToSize(text, maxWidth - 20);
+                    pdf.text(splitText, margin + 15, yPosition);
+                    yPosition += splitText.length * 13;
+                } else if (line.startsWith('```')) {
+                    // Skip code blocks for now (mermaid diagrams, code samples)
+                    let endFound = false;
+                    while (i < lines.length - 1 && !endFound) {
+                        i++;
+                        if (lines[i].startsWith('```')) {
+                            endFound = true;
+                        }
+                    }
+                    yPosition += 10;
+                } else if (line.trim() === '---') {
+                    yPosition += 5;
+                    pdf.setDrawColor(200);
+                    pdf.line(margin, yPosition, pageWidth - margin, yPosition);
+                    yPosition += 15;
+                } else if (line.trim() !== '') {
+                    // Regular paragraph text
+                    pdf.setFontSize(10);
+                    const splitText = pdf.splitTextToSize(line, maxWidth);
+                    pdf.text(splitText, margin, yPosition);
+                    yPosition += splitText.length * 13 + 5;
+                } else {
+                    yPosition += 8;
+                }
             }
 
             // Add page numbers
             const totalPages = pdf.internal.pages.length - 1;
-            pdf.setTextColor(100);
+            pdf.setTextColor(150);
             for (let i = 2; i <= totalPages; i++) {
                 pdf.setPage(i);
-                pdf.setFontSize(8);
-                pdf.text(`Page ${i - 1} of ${totalPages - 1}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
+                pdf.setFontSize(9);
+                pdf.text(`Page ${i - 1} of ${totalPages - 1}`, pageWidth / 2, pageHeight - 20, { align: 'center' });
             }
 
             pdf.save(`${doc.title.replace(/\s+/g, '-').toLowerCase()}.pdf`);
