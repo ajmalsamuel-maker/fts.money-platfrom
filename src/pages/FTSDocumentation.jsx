@@ -165,22 +165,13 @@ export default function FTSDocumentation() {
 
             // Capture the rendered content as canvas
             const canvas = await html2canvas(contentElement, {
-                scale: 2,
+                scale: 1.5,
                 useCORS: true,
-                allowTaint: false,
+                allowTaint: true,
                 logging: false,
                 backgroundColor: '#ffffff',
-                width: contentElement.scrollWidth,
-                height: contentElement.scrollHeight,
-                windowWidth: contentElement.scrollWidth,
-                windowHeight: contentElement.scrollHeight,
-                onclone: (clonedDoc) => {
-                    const clonedContent = clonedDoc.querySelector('.prose');
-                    if (clonedContent) {
-                        clonedContent.style.width = contentElement.scrollWidth + 'px';
-                        clonedContent.style.display = 'block';
-                    }
-                }
+                foreignObjectRendering: true,
+                imageTimeout: 0
             });
 
             // Create PDF
@@ -198,8 +189,8 @@ export default function FTSDocumentation() {
             pdf.text('FTS.Money Documentation', pageWidth / 2, 50, { align: 'center' });
             pdf.text(`Generated: ${new Date().toLocaleDateString()}`, pageWidth / 2, 60, { align: 'center' });
 
-            // Convert canvas to image
-            const imgData = canvas.toDataURL('image/png');
+            // Convert canvas to JPEG (more reliable than PNG)
+            const imgData = canvas.toDataURL('image/jpeg', 0.85);
             const imgWidth = pageWidth - 20;
             const imgHeight = (canvas.height * imgWidth) / canvas.width;
             
@@ -211,14 +202,14 @@ export default function FTSDocumentation() {
 
             // Add first page of content
             pdf.addPage();
-            pdf.addImage(imgData, 'PNG', margin, margin, imgWidth, imgHeight);
+            pdf.addImage(imgData, 'JPEG', margin, margin, imgWidth, imgHeight);
             heightLeft -= contentHeight;
 
             // Add remaining pages if content is longer than one page
             while (heightLeft > 0) {
                 position = heightLeft - imgHeight;
                 pdf.addPage();
-                pdf.addImage(imgData, 'PNG', margin, position + margin, imgWidth, imgHeight);
+                pdf.addImage(imgData, 'JPEG', margin, position + margin, imgWidth, imgHeight);
                 heightLeft -= contentHeight;
             }
 
