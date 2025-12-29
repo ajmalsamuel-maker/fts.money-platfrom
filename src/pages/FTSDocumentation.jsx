@@ -174,9 +174,9 @@ export default function FTSDocumentation() {
                 allowTaint: true,
                 logging: true,
                 backgroundColor: '#ffffff',
-                width: 800,
+                width: 1200,
                 height: contentElement.scrollHeight,
-                windowWidth: 800,
+                windowWidth: 1200,
                 windowHeight: contentElement.scrollHeight,
                 x: 0,
                 y: 0
@@ -207,12 +207,12 @@ export default function FTSDocumentation() {
                 throw new Error('Canvas is empty - content may not be visible');
             }
 
-            const imgWidth = pageWidth - 20;
+            const imgWidth = pageWidth - 10;
             const imgHeight = (canvas.height * imgWidth) / canvas.width;
             
             // Calculate pages needed
-            const margin = 10;
-            const maxHeight = pageHeight - 20;
+            const margin = 5;
+            const maxHeight = pageHeight - 10;
             let heightLeft = imgHeight;
             let position = margin;
 
