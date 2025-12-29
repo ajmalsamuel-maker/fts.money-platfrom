@@ -4,6 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
 import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
 import { usePlatformAuth, PLATFORM_PERMISSIONS, PLATFORM_ROLES, getRoleLabel } from '@/components/auth/usePlatformAuth';
+import { useAuditLogger } from '@/components/audit/useAuditLogger';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,6 +20,7 @@ export default function PlatformUserManagement() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const { platformUser, loading } = usePlatformAuth();
+    const { logUserCreated, logUserDeleted, logRoleChange, logPasswordChange } = useAuditLogger(platformUser);
     
     const [inviteOpen, setInviteOpen] = useState(false);
     const [deleteUser, setDeleteUser] = useState(null);
@@ -55,11 +57,19 @@ export default function PlatformUserManagement() {
             }
             return response.data;
         },
-        onSuccess: () => {
+        onSuccess: (data) => {
             queryClient.invalidateQueries(['platform-users']);
             setInviteOpen(false);
             setInviteForm({ email: '', full_name: '', role: PLATFORM_ROLES.VIEWER, password: '' });
             setError('');
+            
+            // Audit log
+            logUserCreated({
+                id: data.user?.id,
+                email: inviteForm.email,
+                full_name: inviteForm.full_name,
+                role: inviteForm.role
+            });
         },
         onError: (err) => {
             setError(err.message);
@@ -72,20 +82,32 @@ export default function PlatformUserManagement() {
         },
         onSuccess: () => {
             queryClient.invalidateQueries(['platform-users']);
+            
+            // Audit log
+            if (deleteUser) {
+                logUserDeleted(deleteUser);
+            }
+            
             setDeleteUser(null);
         }
     });
 
     const updateRoleMutation = useMutation({
-        mutationFn: async ({ userId, role }) => {
+        mutationFn: async ({ userId, role, oldRole }) => {
             const user = users.find(u => u.id === userId);
             await base44.asServiceRole.entities.AuthUser.update(userId, {
                 ...user,
                 platform_role: role
             });
+            return { user, oldRole, newRole: role };
         },
-        onSuccess: () => {
+        onSuccess: (data) => {
             queryClient.invalidateQueries(['platform-users']);
+            
+            // Audit log
+            if (data.user) {
+                logRoleChange(data.user.email, data.user.id, data.oldRole, data.newRole);
+            }
         }
     });
 
@@ -101,6 +123,11 @@ export default function PlatformUserManagement() {
             return response.data;
         },
         onSuccess: () => {
+            // Audit log
+            if (resetPasswordUser) {
+                logPasswordChange(true); // changed by admin
+            }
+            
             setResetPasswordUser(null);
             setNewPassword('');
             setResetError('');
@@ -237,7 +264,7 @@ export default function PlatformUserManagement() {
                                         <div className="flex items-center gap-3">
                                             <Select
                                                 value={user.platform_role}
-                                                onValueChange={(v) => updateRoleMutation.mutate({ userId: user.id, role: v })}
+                                                onValueChange={(v) => updateRoleMutation.mutate({ userId: user.id, role: v, oldRole: user.platform_role })}
                                                 disabled={user.email === platformUser?.email}
                                             >
                                                 <SelectTrigger className="w-40">
