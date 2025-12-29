@@ -1,0 +1,111 @@
+export const RWA_ROLES = {
+    OWNER: 'owner',
+    ADMINISTRATOR: 'administrator',
+    DEVELOPER: 'developer',
+    OPERATIONS: 'operations',
+    ANALYST: 'analyst',
+    VIEWER: 'viewer'
+};
+
+export const RWA_PERMISSIONS = {
+    PROVIDER_VIEW: 'provider:view',
+    PROVIDER_UPDATE: 'provider:update',
+    ASSET_VIEW: 'asset:view',
+    ASSET_CREATE: 'asset:create',
+    ASSET_UPDATE: 'asset:update',
+    ASSET_DELETE: 'asset:delete',
+    ISSUER_VIEW: 'issuer:view',
+    ISSUER_CREATE: 'issuer:create',
+    ISSUER_UPDATE: 'issuer:update',
+    ISSUER_DELETE: 'issuer:delete',
+    INVESTOR_VIEW: 'investor:view',
+    INVESTOR_APPROVE: 'investor:approve',
+    INVESTOR_REJECT: 'investor:reject',
+    HOLDING_VIEW: 'holding:view',
+    ORDER_VIEW: 'order:view',
+    ORDER_APPROVE: 'order:approve',
+    DIVIDEND_VIEW: 'dividend:view',
+    DIVIDEND_CREATE: 'dividend:create',
+    DIVIDEND_PROCESS: 'dividend:process',
+    API_KEY_VIEW: 'api_key:view',
+    API_KEY_CREATE: 'api_key:create',
+    API_KEY_DELETE: 'api_key:delete',
+    ANALYTICS_VIEW: 'analytics:view',
+    BILLING_VIEW: 'billing:view',
+    USER_MANAGE: 'user:manage'
+};
+
+export const RWA_ROLE_PERMISSIONS = {
+    [RWA_ROLES.OWNER]: Object.values(RWA_PERMISSIONS),
+    [RWA_ROLES.ADMINISTRATOR]: [
+        RWA_PERMISSIONS.PROVIDER_VIEW,
+        RWA_PERMISSIONS.PROVIDER_UPDATE,
+        RWA_PERMISSIONS.ASSET_VIEW,
+        RWA_PERMISSIONS.ASSET_CREATE,
+        RWA_PERMISSIONS.ASSET_UPDATE,
+        RWA_PERMISSIONS.ASSET_DELETE,
+        RWA_PERMISSIONS.ISSUER_VIEW,
+        RWA_PERMISSIONS.ISSUER_CREATE,
+        RWA_PERMISSIONS.ISSUER_UPDATE,
+        RWA_PERMISSIONS.ISSUER_DELETE,
+        RWA_PERMISSIONS.INVESTOR_VIEW,
+        RWA_PERMISSIONS.INVESTOR_APPROVE,
+        RWA_PERMISSIONS.INVESTOR_REJECT,
+        RWA_PERMISSIONS.HOLDING_VIEW,
+        RWA_PERMISSIONS.ORDER_VIEW,
+        RWA_PERMISSIONS.ORDER_APPROVE,
+        RWA_PERMISSIONS.DIVIDEND_VIEW,
+        RWA_PERMISSIONS.DIVIDEND_CREATE,
+        RWA_PERMISSIONS.DIVIDEND_PROCESS,
+        RWA_PERMISSIONS.API_KEY_VIEW,
+        RWA_PERMISSIONS.API_KEY_CREATE,
+        RWA_PERMISSIONS.ANALYTICS_VIEW,
+        RWA_PERMISSIONS.BILLING_VIEW,
+        RWA_PERMISSIONS.USER_MANAGE
+    ],
+    [RWA_ROLES.DEVELOPER]: [
+        RWA_PERMISSIONS.PROVIDER_VIEW,
+        RWA_PERMISSIONS.ASSET_VIEW,
+        RWA_PERMISSIONS.ISSUER_VIEW,
+        RWA_PERMISSIONS.INVESTOR_VIEW,
+        RWA_PERMISSIONS.API_KEY_VIEW,
+        RWA_PERMISSIONS.API_KEY_CREATE,
+        RWA_PERMISSIONS.ANALYTICS_VIEW
+    ],
+    [RWA_ROLES.OPERATIONS]: [
+        RWA_PERMISSIONS.PROVIDER_VIEW,
+        RWA_PERMISSIONS.ASSET_VIEW,
+        RWA_PERMISSIONS.ISSUER_VIEW,
+        RWA_PERMISSIONS.INVESTOR_VIEW,
+        RWA_PERMISSIONS.HOLDING_VIEW,
+        RWA_PERMISSIONS.ORDER_VIEW,
+        RWA_PERMISSIONS.ANALYTICS_VIEW
+    ],
+    [RWA_ROLES.ANALYST]: [
+        RWA_PERMISSIONS.PROVIDER_VIEW,
+        RWA_PERMISSIONS.ASSET_VIEW,
+        RWA_PERMISSIONS.HOLDING_VIEW,
+        RWA_PERMISSIONS.ORDER_VIEW,
+        RWA_PERMISSIONS.ANALYTICS_VIEW,
+        RWA_PERMISSIONS.BILLING_VIEW
+    ],
+    [RWA_ROLES.VIEWER]: [
+        RWA_PERMISSIONS.PROVIDER_VIEW,
+        RWA_PERMISSIONS.ASSET_VIEW,
+        RWA_PERMISSIONS.INVESTOR_VIEW,
+        RWA_PERMISSIONS.HOLDING_VIEW,
+        RWA_PERMISSIONS.ANALYTICS_VIEW
+    ]
+};
+
+export function getRWARoleLabel(role) {
+    const labels = {
+        [RWA_ROLES.OWNER]: 'Owner',
+        [RWA_ROLES.ADMINISTRATOR]: 'Administrator',
+        [RWA_ROLES.DEVELOPER]: 'Developer',
+        [RWA_ROLES.OPERATIONS]: 'Operations',
+        [RWA_ROLES.ANALYST]: 'Analyst',
+        [RWA_ROLES.VIEWER]: 'Viewer'
+    };
+    return labels[role] || role;
+}

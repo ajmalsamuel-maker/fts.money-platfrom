@@ -1,0 +1,93 @@
+export const ORCH_ROLES = {
+    OWNER: 'owner',
+    ADMINISTRATOR: 'administrator',
+    DEVELOPER: 'developer',
+    OPERATIONS: 'operations',
+    ANALYST: 'analyst',
+    VIEWER: 'viewer'
+};
+
+export const ORCH_PERMISSIONS = {
+    CUSTOMER_VIEW: 'customer:view',
+    CUSTOMER_UPDATE: 'customer:update',
+    RULE_VIEW: 'rule:view',
+    RULE_CREATE: 'rule:create',
+    RULE_UPDATE: 'rule:update',
+    RULE_DELETE: 'rule:delete',
+    ROUTE_VIEW: 'route:view',
+    ROUTE_CREATE: 'route:create',
+    ROUTE_UPDATE: 'route:update',
+    ROUTE_DELETE: 'route:delete',
+    EXECUTION_VIEW: 'execution:view',
+    PROVIDER_VIEW: 'provider:view',
+    PROVIDER_UPDATE: 'provider:update',
+    API_KEY_VIEW: 'api_key:view',
+    API_KEY_CREATE: 'api_key:create',
+    API_KEY_DELETE: 'api_key:delete',
+    ANALYTICS_VIEW: 'analytics:view',
+    BILLING_VIEW: 'billing:view',
+    USER_MANAGE: 'user:manage'
+};
+
+export const ORCH_ROLE_PERMISSIONS = {
+    [ORCH_ROLES.OWNER]: Object.values(ORCH_PERMISSIONS),
+    [ORCH_ROLES.ADMINISTRATOR]: [
+        ORCH_PERMISSIONS.CUSTOMER_VIEW,
+        ORCH_PERMISSIONS.CUSTOMER_UPDATE,
+        ORCH_PERMISSIONS.RULE_VIEW,
+        ORCH_PERMISSIONS.RULE_CREATE,
+        ORCH_PERMISSIONS.RULE_UPDATE,
+        ORCH_PERMISSIONS.RULE_DELETE,
+        ORCH_PERMISSIONS.ROUTE_VIEW,
+        ORCH_PERMISSIONS.ROUTE_CREATE,
+        ORCH_PERMISSIONS.ROUTE_UPDATE,
+        ORCH_PERMISSIONS.ROUTE_DELETE,
+        ORCH_PERMISSIONS.EXECUTION_VIEW,
+        ORCH_PERMISSIONS.PROVIDER_VIEW,
+        ORCH_PERMISSIONS.API_KEY_VIEW,
+        ORCH_PERMISSIONS.API_KEY_CREATE,
+        ORCH_PERMISSIONS.ANALYTICS_VIEW,
+        ORCH_PERMISSIONS.BILLING_VIEW,
+        ORCH_PERMISSIONS.USER_MANAGE
+    ],
+    [ORCH_ROLES.DEVELOPER]: [
+        ORCH_PERMISSIONS.CUSTOMER_VIEW,
+        ORCH_PERMISSIONS.RULE_VIEW,
+        ORCH_PERMISSIONS.ROUTE_VIEW,
+        ORCH_PERMISSIONS.EXECUTION_VIEW,
+        ORCH_PERMISSIONS.PROVIDER_VIEW,
+        ORCH_PERMISSIONS.API_KEY_VIEW,
+        ORCH_PERMISSIONS.API_KEY_CREATE,
+        ORCH_PERMISSIONS.ANALYTICS_VIEW
+    ],
+    [ORCH_ROLES.OPERATIONS]: [
+        ORCH_PERMISSIONS.CUSTOMER_VIEW,
+        ORCH_PERMISSIONS.RULE_VIEW,
+        ORCH_PERMISSIONS.ROUTE_VIEW,
+        ORCH_PERMISSIONS.EXECUTION_VIEW,
+        ORCH_PERMISSIONS.ANALYTICS_VIEW
+    ],
+    [ORCH_ROLES.ANALYST]: [
+        ORCH_PERMISSIONS.CUSTOMER_VIEW,
+        ORCH_PERMISSIONS.EXECUTION_VIEW,
+        ORCH_PERMISSIONS.ANALYTICS_VIEW,
+        ORCH_PERMISSIONS.BILLING_VIEW
+    ],
+    [ORCH_ROLES.VIEWER]: [
+        ORCH_PERMISSIONS.CUSTOMER_VIEW,
+        ORCH_PERMISSIONS.EXECUTION_VIEW,
+        ORCH_PERMISSIONS.ANALYTICS_VIEW
+    ]
+};
+
+export function getOrchRoleLabel(role) {
+    const labels = {
+        [ORCH_ROLES.OWNER]: 'Owner',
+        [ORCH_ROLES.ADMINISTRATOR]: 'Administrator',
+        [ORCH_ROLES.DEVELOPER]: 'Developer',
+        [ORCH_ROLES.OPERATIONS]: 'Operations',
+        [ORCH_ROLES.ANALYST]: 'Analyst',
+        [ORCH_ROLES.VIEWER]: 'Viewer'
+    };
+    return labels[role] || role;
+}

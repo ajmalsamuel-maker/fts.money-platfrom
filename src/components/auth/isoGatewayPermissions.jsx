@@ -1,0 +1,93 @@
+export const ISO_ROLES = {
+    OWNER: 'owner',
+    ADMINISTRATOR: 'administrator',
+    DEVELOPER: 'developer',
+    OPERATIONS: 'operations',
+    ANALYST: 'analyst',
+    VIEWER: 'viewer'
+};
+
+export const ISO_PERMISSIONS = {
+    CUSTOMER_VIEW: 'customer:view',
+    CUSTOMER_UPDATE: 'customer:update',
+    CONNECTION_VIEW: 'connection:view',
+    CONNECTION_CREATE: 'connection:create',
+    CONNECTION_UPDATE: 'connection:update',
+    CONNECTION_DELETE: 'connection:delete',
+    MESSAGE_VIEW: 'message:view',
+    MESSAGE_SEND: 'message:send',
+    TRANSLATION_VIEW: 'translation:view',
+    TRANSLATION_UPDATE: 'translation:update',
+    ROUTING_VIEW: 'routing:view',
+    ROUTING_UPDATE: 'routing:update',
+    API_KEY_VIEW: 'api_key:view',
+    API_KEY_CREATE: 'api_key:create',
+    API_KEY_DELETE: 'api_key:delete',
+    ANALYTICS_VIEW: 'analytics:view',
+    BILLING_VIEW: 'billing:view',
+    USER_MANAGE: 'user:manage'
+};
+
+export const ISO_ROLE_PERMISSIONS = {
+    [ISO_ROLES.OWNER]: Object.values(ISO_PERMISSIONS),
+    [ISO_ROLES.ADMINISTRATOR]: [
+        ISO_PERMISSIONS.CUSTOMER_VIEW,
+        ISO_PERMISSIONS.CUSTOMER_UPDATE,
+        ISO_PERMISSIONS.CONNECTION_VIEW,
+        ISO_PERMISSIONS.CONNECTION_CREATE,
+        ISO_PERMISSIONS.CONNECTION_UPDATE,
+        ISO_PERMISSIONS.CONNECTION_DELETE,
+        ISO_PERMISSIONS.MESSAGE_VIEW,
+        ISO_PERMISSIONS.MESSAGE_SEND,
+        ISO_PERMISSIONS.TRANSLATION_VIEW,
+        ISO_PERMISSIONS.TRANSLATION_UPDATE,
+        ISO_PERMISSIONS.ROUTING_VIEW,
+        ISO_PERMISSIONS.ROUTING_UPDATE,
+        ISO_PERMISSIONS.API_KEY_VIEW,
+        ISO_PERMISSIONS.API_KEY_CREATE,
+        ISO_PERMISSIONS.ANALYTICS_VIEW,
+        ISO_PERMISSIONS.BILLING_VIEW,
+        ISO_PERMISSIONS.USER_MANAGE
+    ],
+    [ISO_ROLES.DEVELOPER]: [
+        ISO_PERMISSIONS.CUSTOMER_VIEW,
+        ISO_PERMISSIONS.CONNECTION_VIEW,
+        ISO_PERMISSIONS.MESSAGE_VIEW,
+        ISO_PERMISSIONS.MESSAGE_SEND,
+        ISO_PERMISSIONS.TRANSLATION_VIEW,
+        ISO_PERMISSIONS.ROUTING_VIEW,
+        ISO_PERMISSIONS.API_KEY_VIEW,
+        ISO_PERMISSIONS.API_KEY_CREATE,
+        ISO_PERMISSIONS.ANALYTICS_VIEW
+    ],
+    [ISO_ROLES.OPERATIONS]: [
+        ISO_PERMISSIONS.CUSTOMER_VIEW,
+        ISO_PERMISSIONS.CONNECTION_VIEW,
+        ISO_PERMISSIONS.MESSAGE_VIEW,
+        ISO_PERMISSIONS.ROUTING_VIEW,
+        ISO_PERMISSIONS.ANALYTICS_VIEW
+    ],
+    [ISO_ROLES.ANALYST]: [
+        ISO_PERMISSIONS.CUSTOMER_VIEW,
+        ISO_PERMISSIONS.MESSAGE_VIEW,
+        ISO_PERMISSIONS.ANALYTICS_VIEW,
+        ISO_PERMISSIONS.BILLING_VIEW
+    ],
+    [ISO_ROLES.VIEWER]: [
+        ISO_PERMISSIONS.CUSTOMER_VIEW,
+        ISO_PERMISSIONS.MESSAGE_VIEW,
+        ISO_PERMISSIONS.ANALYTICS_VIEW
+    ]
+};
+
+export function getISORoleLabel(role) {
+    const labels = {
+        [ISO_ROLES.OWNER]: 'Owner',
+        [ISO_ROLES.ADMINISTRATOR]: 'Administrator',
+        [ISO_ROLES.DEVELOPER]: 'Developer',
+        [ISO_ROLES.OPERATIONS]: 'Operations',
+        [ISO_ROLES.ANALYST]: 'Analyst',
+        [ISO_ROLES.VIEWER]: 'Viewer'
+    };
+    return labels[role] || role;
+}
