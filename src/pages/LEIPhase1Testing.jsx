@@ -117,28 +117,32 @@ export default function LEIPhase1Testing() {
 
         for (const { name, requiredFields } of entities) {
             try {
-                // Fetch a sample record to check schema structure
-                const records = await base44.entities[name].list('', 1);
-                
-                // Check if entity has data
-                if (records.length > 0) {
-                    const sample = records[0];
-                    const hasFields = requiredFields.some(field => field in sample);
-                    
-                    addTestResult(
-                        `${name} Schema`,
-                        hasFields,
-                        hasFields ? '✓ LEI fields present in entity' : '✗ No LEI fields found',
-                        { entity: name, sample: Object.keys(sample).filter(k => k.includes('lei') || k.includes('grace')) }
-                    );
-                } else {
-                    addTestResult(
-                        `${name} Schema`,
-                        true,
-                        'ℹ No records yet - schema assumed correct',
-                        { entity: name, requiredFields }
-                    );
+                // Read the entity schema file directly
+                const response = await fetch(`/entities/${name}.json`);
+                if (!response.ok) {
+                    throw new Error(`Schema file not found for ${name}`);
                 }
+                
+                const schema = await response.json();
+                const schemaFields = Object.keys(schema.properties || {});
+                const leiFields = schemaFields.filter(k => k.includes('lei') || k.includes('grace') || k.includes('vlei') || k.includes('credential'));
+                
+                const missingFields = requiredFields.filter(field => !schemaFields.includes(field));
+                const hasAllFields = missingFields.length === 0;
+                
+                addTestResult(
+                    `${name} Schema`,
+                    hasAllFields,
+                    hasAllFields 
+                        ? `✓ All LEI fields present (${leiFields.length} LEI-related fields)` 
+                        : `✗ Missing: ${missingFields.join(', ')}`,
+                    { 
+                        entity: name, 
+                        leiFields,
+                        missingFields,
+                        totalFields: schemaFields.length 
+                    }
+                );
             } catch (error) {
                 addTestResult(`${name} Schema`, false, error.message);
             }
