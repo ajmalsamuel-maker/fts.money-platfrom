@@ -30,7 +30,9 @@ import {
     GitBranch,
     ChevronDown,
     Rocket,
-    BarChart3
+    BarChart3,
+    Wallet,
+    Briefcase
 } from 'lucide-react';
 
 export default function CommunityPortalDashboard() {
