@@ -22,7 +22,10 @@ import {
     AlertCircle,
     XCircle,
     CheckCircle,
-    Eye
+    Eye,
+    Download,
+    Filter,
+    X
 } from 'lucide-react';
 import { format } from 'date-fns';
 
@@ -33,7 +36,10 @@ export default function PlatformAuditLogs() {
     const [categoryFilter, setCategoryFilter] = useState('all');
     const [severityFilter, setSeverityFilter] = useState('all');
     const [dateFilter, setDateFilter] = useState('7days');
+    const [statusFilter, setStatusFilter] = useState('all');
+    const [eventTypeFilter, setEventTypeFilter] = useState('');
     const [selectedLog, setSelectedLog] = useState(null);
+    const [isExporting, setIsExporting] = useState(false);
 
     const { data: logs = [], isLoading: logsLoading, refetch } = useQuery({
         queryKey: ['audit-logs', categoryFilter, severityFilter, dateFilter],
@@ -71,17 +77,104 @@ export default function PlatformAuditLogs() {
     });
 
     const filteredLogs = logs.filter(log => {
+        // Search query
         if (searchQuery) {
             const query = searchQuery.toLowerCase();
-            return (
+            const match = (
                 log.user_email?.toLowerCase().includes(query) ||
                 log.action?.toLowerCase().includes(query) ||
                 log.description?.toLowerCase().includes(query) ||
-                log.event_type?.toLowerCase().includes(query)
+                log.event_type?.toLowerCase().includes(query) ||
+                log.target_entity?.toLowerCase().includes(query) ||
+                log.ip_address?.toLowerCase().includes(query)
             );
+            if (!match) return false;
         }
+        
+        // Status filter
+        if (statusFilter !== 'all' && log.status !== statusFilter) {
+            return false;
+        }
+        
+        // Event type filter
+        if (eventTypeFilter && log.event_type !== eventTypeFilter) {
+            return false;
+        }
+        
         return true;
     });
+    
+    // Get unique event types for filter dropdown
+    const uniqueEventTypes = [...new Set(logs.map(l => l.event_type).filter(Boolean))].sort();
+    
+    // Export to CSV
+    const exportToCSV = () => {
+        setIsExporting(true);
+        
+        try {
+            const headers = [
+                'Timestamp',
+                'Event Type',
+                'User Email',
+                'User Role',
+                'Action',
+                'Category',
+                'Severity',
+                'Status',
+                'Description',
+                'Target Entity',
+                'Target ID',
+                'IP Address',
+                'Error Message'
+            ];
+            
+            const csvRows = [
+                headers.join(','),
+                ...filteredLogs.map(log => [
+                    format(new Date(log.created_date), 'yyyy-MM-dd HH:mm:ss'),
+                    log.event_type || '',
+                    log.user_email || '',
+                    log.user_role || '',
+                    log.action || '',
+                    log.category || '',
+                    log.severity || '',
+                    log.status || '',
+                    `"${(log.description || '').replace(/"/g, '""')}"`,
+                    log.target_entity || '',
+                    log.target_id || '',
+                    log.ip_address || '',
+                    `"${(log.error_message || '').replace(/"/g, '""')}"`
+                ].join(','))
+            ];
+            
+            const csvContent = csvRows.join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', `audit-logs-${format(new Date(), 'yyyy-MM-dd-HHmmss')}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } finally {
+            setIsExporting(false);
+        }
+    };
+    
+    // Clear all filters
+    const clearFilters = () => {
+        setSearchQuery('');
+        setCategoryFilter('all');
+        setSeverityFilter('all');
+        setDateFilter('7days');
+        setStatusFilter('all');
+        setEventTypeFilter('');
+    };
+    
+    const hasActiveFilters = searchQuery || categoryFilter !== 'all' || severityFilter !== 'all' || 
+                            dateFilter !== '7days' || statusFilter !== 'all' || eventTypeFilter;
 
     // Statistics
     const stats = {
@@ -133,10 +226,21 @@ export default function PlatformAuditLogs() {
                         <h2 className="text-lg font-semibold text-slate-900">Audit Logs</h2>
                         <p className="text-xs text-slate-600">Complete audit trail of all platform activities</p>
                     </div>
-                    <Button variant="outline" onClick={() => refetch()} size="sm">
-                        <RefreshCw className="h-4 w-4 mr-2" />
-                        Refresh
-                    </Button>
+                    <div className="flex items-center gap-2">
+                        <Button 
+                            variant="outline" 
+                            onClick={exportToCSV} 
+                            size="sm"
+                            disabled={isExporting || filteredLogs.length === 0}
+                        >
+                            <Download className="h-4 w-4 mr-2" />
+                            {isExporting ? 'Exporting...' : 'Export CSV'}
+                        </Button>
+                        <Button variant="outline" onClick={() => refetch()} size="sm">
+                            <RefreshCw className="h-4 w-4 mr-2" />
+                            Refresh
+                        </Button>
+                    </div>
                 </header>
 
                 <div className="p-6">
@@ -178,54 +282,99 @@ export default function PlatformAuditLogs() {
                     {/* Filters */}
                     <Card className="mb-6">
                         <CardContent className="p-4">
-                            <div className="flex items-center gap-4 flex-wrap">
-                                <div className="flex-1 min-w-[250px]">
-                                    <div className="relative">
-                                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
-                                        <Input
-                                            placeholder="Search by user, action, or description..."
-                                            value={searchQuery}
-                                            onChange={(e) => setSearchQuery(e.target.value)}
-                                            className="pl-10"
-                                        />
+                            <div className="space-y-4">
+                                <div className="flex items-center gap-4 flex-wrap">
+                                    <div className="flex-1 min-w-[250px]">
+                                        <div className="relative">
+                                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                                            <Input
+                                                placeholder="Search by user, action, description, IP, or entity..."
+                                                value={searchQuery}
+                                                onChange={(e) => setSearchQuery(e.target.value)}
+                                                className="pl-10"
+                                            />
+                                        </div>
+                                    </div>
+                                    <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                                        <SelectTrigger className="w-44">
+                                            <SelectValue placeholder="Category" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="all">All Categories</SelectItem>
+                                            <SelectItem value="authentication">Authentication</SelectItem>
+                                            <SelectItem value="authorization">Authorization</SelectItem>
+                                            <SelectItem value="user_management">User Management</SelectItem>
+                                            <SelectItem value="configuration">Configuration</SelectItem>
+                                            <SelectItem value="data_access">Data Access</SelectItem>
+                                            <SelectItem value="security">Security</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                    <Select value={severityFilter} onValueChange={setSeverityFilter}>
+                                        <SelectTrigger className="w-36">
+                                            <SelectValue placeholder="Severity" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="all">All Levels</SelectItem>
+                                            <SelectItem value="info">Info</SelectItem>
+                                            <SelectItem value="warning">Warning</SelectItem>
+                                            <SelectItem value="critical">Critical</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                    <Select value={dateFilter} onValueChange={setDateFilter}>
+                                        <SelectTrigger className="w-40">
+                                            <SelectValue placeholder="Date Range" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="24hours">Last 24 Hours</SelectItem>
+                                            <SelectItem value="7days">Last 7 Days</SelectItem>
+                                            <SelectItem value="30days">Last 30 Days</SelectItem>
+                                            <SelectItem value="all">All Time</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                
+                                {/* Additional Filters Row */}
+                                <div className="flex items-center gap-4 flex-wrap">
+                                    <Select value={statusFilter} onValueChange={setStatusFilter}>
+                                        <SelectTrigger className="w-36">
+                                            <SelectValue placeholder="Status" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="all">All Status</SelectItem>
+                                            <SelectItem value="success">Success</SelectItem>
+                                            <SelectItem value="failure">Failure</SelectItem>
+                                            <SelectItem value="pending">Pending</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                    
+                                    <Select value={eventTypeFilter} onValueChange={setEventTypeFilter}>
+                                        <SelectTrigger className="w-52">
+                                            <SelectValue placeholder="Event Type" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value={null}>All Event Types</SelectItem>
+                                            {uniqueEventTypes.map(type => (
+                                                <SelectItem key={type} value={type}>{type}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    
+                                    {hasActiveFilters && (
+                                        <Button 
+                                            variant="ghost" 
+                                            size="sm" 
+                                            onClick={clearFilters}
+                                            className="text-slate-600"
+                                        >
+                                            <X className="h-4 w-4 mr-1" />
+                                            Clear Filters
+                                        </Button>
+                                    )}
+                                    
+                                    <div className="ml-auto text-sm text-slate-600">
+                                        Showing {filteredLogs.length} of {logs.length} events
                                     </div>
                                 </div>
-                                <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                                    <SelectTrigger className="w-44">
-                                        <SelectValue placeholder="Category" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="all">All Categories</SelectItem>
-                                        <SelectItem value="authentication">Authentication</SelectItem>
-                                        <SelectItem value="authorization">Authorization</SelectItem>
-                                        <SelectItem value="user_management">User Management</SelectItem>
-                                        <SelectItem value="configuration">Configuration</SelectItem>
-                                        <SelectItem value="data_access">Data Access</SelectItem>
-                                        <SelectItem value="security">Security</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                                <Select value={severityFilter} onValueChange={setSeverityFilter}>
-                                    <SelectTrigger className="w-36">
-                                        <SelectValue placeholder="Severity" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="all">All Levels</SelectItem>
-                                        <SelectItem value="info">Info</SelectItem>
-                                        <SelectItem value="warning">Warning</SelectItem>
-                                        <SelectItem value="critical">Critical</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                                <Select value={dateFilter} onValueChange={setDateFilter}>
-                                    <SelectTrigger className="w-40">
-                                        <SelectValue placeholder="Date Range" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="24hours">Last 24 Hours</SelectItem>
-                                        <SelectItem value="7days">Last 7 Days</SelectItem>
-                                        <SelectItem value="30days">Last 30 Days</SelectItem>
-                                        <SelectItem value="all">All Time</SelectItem>
-                                    </SelectContent>
-                                </Select>
                             </div>
                         </CardContent>
                     </Card>
