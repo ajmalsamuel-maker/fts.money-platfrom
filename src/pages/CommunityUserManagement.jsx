@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Users, UserPlus, Mail, Trash2, Search, Building2, Pencil, Shield } from 'lucide-react';
 
 export default function CommunityUserManagement() {
@@ -24,7 +25,8 @@ export default function CommunityUserManagement() {
     const [inviteForm, setInviteForm] = useState({
         email: '',
         full_name: '',
-        password: ''
+        password: '',
+        community_role: 'PSP Owner'
     });
     const [editForm, setEditForm] = useState({
         full_name: '',
@@ -61,7 +63,7 @@ export default function CommunityUserManagement() {
         onSuccess: () => {
             queryClient.invalidateQueries(['community-users']);
             setInviteOpen(false);
-            setInviteForm({ email: '', full_name: '', password: '' });
+            setInviteForm({ email: '', full_name: '', password: '', community_role: 'PSP Owner' });
             setError('');
         },
         onError: (err) => {
@@ -184,6 +186,21 @@ export default function CommunityUserManagement() {
                                             placeholder="Minimum 8 characters"
                                         />
                                         <p className="text-xs text-slate-500 mt-1">User will be able to change password after first login</p>
+                                    </div>
+                                    <div>
+                                        <Label>Community Role</Label>
+                                        <Select value={inviteForm.community_role} onValueChange={(v) => setInviteForm({...inviteForm, community_role: v})}>
+                                            <SelectTrigger>
+                                                <SelectValue />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="PSP Owner">PSP Owner</SelectItem>
+                                                <SelectItem value="PSP Administrator">PSP Administrator</SelectItem>
+                                                <SelectItem value="Developer">Developer</SelectItem>
+                                                <SelectItem value="Partner">Partner</SelectItem>
+                                                <SelectItem value="Reseller">Reseller</SelectItem>
+                                            </SelectContent>
+                                        </Select>
                                     </div>
                                 </div>
                                 <DialogFooter className="mt-4">
