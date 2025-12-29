@@ -74,7 +74,6 @@ import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import { AuditLogger } from '@/components/audit/AuditLogger';
 import { usePermissions } from '@/components/auth/usePermissions';
-import { AccessDenied } from '@/components/auth/PermissionGate';
 import { ROLE_CONFIG, PERMISSIONS } from '@/components/auth/permissions';
 
 export default function UserManagement() {
@@ -243,7 +242,11 @@ export default function UserManagement() {
                 <div className={cn("transition-all duration-300", sidebarCollapsed ? "ml-20" : "ml-64")}>
                     <TopHeader onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} collapsed={sidebarCollapsed} />
                     <main className="p-6">
-                        <AccessDenied />
+                        <div className="flex flex-col items-center justify-center h-64">
+                            <Shield className="h-16 w-16 text-slate-300 mb-4" />
+                            <h3 className="text-xl font-semibold text-slate-700 mb-2">Access Denied</h3>
+                            <p className="text-slate-500">You don't have permission to view user management.</p>
+                        </div>
                     </main>
                 </div>
             </div>
