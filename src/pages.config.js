@@ -14,7 +14,9 @@ import Analytics from './pages/Analytics';
 import Appearance from './pages/Appearance';
 import Approvals from './pages/Approvals';
 import AssetIssuerAssets from './pages/AssetIssuerAssets';
+import AssetIssuerCompliance from './pages/AssetIssuerCompliance';
 import AssetIssuerDashboard from './pages/AssetIssuerDashboard';
+import AssetIssuerDividends from './pages/AssetIssuerDividends';
 import AssetIssuerLogin from './pages/AssetIssuerLogin';
 import AssetIssuerTokenize from './pages/AssetIssuerTokenize';
 import AuditLogs from './pages/AuditLogs';
@@ -105,10 +107,14 @@ import ISOGatewayRouting from './pages/ISOGatewayRouting';
 import ISOGatewayTestConsole from './pages/ISOGatewayTestConsole';
 import ISOMessageMonitor from './pages/ISOMessageMonitor';
 import InstantPayments from './pages/InstantPayments';
+import InvestorDividends from './pages/InvestorDividends';
+import InvestorHoldings from './pages/InvestorHoldings';
+import Invoices from './pages/Invoices';
 import InvestorLogin from './pages/InvestorLogin';
 import InvestorMarketplace from './pages/InvestorMarketplace';
+import InvestorOnboarding from './pages/InvestorOnboarding';
 import InvestorPortfolio from './pages/InvestorPortfolio';
-import Invoices from './pages/Invoices';
+import InvestorSettings from './pages/InvestorSettings';
 import Invoicing from './pages/Invoicing';
 import LEIComplianceDashboard from './pages/LEIComplianceDashboard';
 import LEIGLEIFTestReport from './pages/LEIGLEIFTestReport';
@@ -210,17 +216,19 @@ import PlatformAdminRegister from './pages/PlatformAdminRegister';
 import PlatformAuditLogs from './pages/PlatformAuditLogs';
 import PlatformPricingConfiguration from './pages/PlatformPricingConfiguration';
 import PlatformUserManagement from './pages/PlatformUserManagement';
+import Products from './pages/Products';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import ProductTemplateLibrary from './pages/ProductTemplateLibrary';
-import Products from './pages/Products';
 import PublicSupport from './pages/PublicSupport';
 import QuickPSPProvisioning from './pages/QuickPSPProvisioning';
 import RWAPlatform from './pages/RWAPlatform';
+import RWAProviderAnalytics from './pages/RWAProviderAnalytics';
 import RWAProviderAssets from './pages/RWAProviderAssets';
 import RWAProviderDashboard from './pages/RWAProviderDashboard';
 import RWAProviderInvestors from './pages/RWAProviderInvestors';
 import RWAProviderIssuers from './pages/RWAProviderIssuers';
 import RWAProviderLogin from './pages/RWAProviderLogin';
+import RWAProviderSettings from './pages/RWAProviderSettings';
 import RWAWhiteLabelProvisioning from './pages/RWAWhiteLabelProvisioning';
 import RealTimeMonitor from './pages/RealTimeMonitor';
 import Reconciliation from './pages/Reconciliation';
@@ -255,14 +263,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import AssetIssuerCompliance from './pages/AssetIssuerCompliance';
-import RWAProviderAnalytics from './pages/RWAProviderAnalytics';
-import RWAProviderSettings from './pages/RWAProviderSettings';
-import InvestorSettings from './pages/InvestorSettings';
-import InvestorDividends from './pages/InvestorDividends';
-import InvestorHoldings from './pages/InvestorHoldings';
-import InvestorOnboarding from './pages/InvestorOnboarding';
-import AssetIssuerDividends from './pages/AssetIssuerDividends';
 import __Layout from './Layout.jsx';
 
 
@@ -283,7 +283,9 @@ export const PAGES = {
     "Appearance": Appearance,
     "Approvals": Approvals,
     "AssetIssuerAssets": AssetIssuerAssets,
+    "AssetIssuerCompliance": AssetIssuerCompliance,
     "AssetIssuerDashboard": AssetIssuerDashboard,
+    "AssetIssuerDividends": AssetIssuerDividends,
     "AssetIssuerLogin": AssetIssuerLogin,
     "AssetIssuerTokenize": AssetIssuerTokenize,
     "AuditLogs": AuditLogs,
@@ -374,10 +376,14 @@ export const PAGES = {
     "ISOGatewayTestConsole": ISOGatewayTestConsole,
     "ISOMessageMonitor": ISOMessageMonitor,
     "InstantPayments": InstantPayments,
+    "InvestorDividends": InvestorDividends,
+    "InvestorHoldings": InvestorHoldings,
+    "Invoices": Invoices,
     "InvestorLogin": InvestorLogin,
     "InvestorMarketplace": InvestorMarketplace,
+    "InvestorOnboarding": InvestorOnboarding,
     "InvestorPortfolio": InvestorPortfolio,
-    "Invoices": Invoices,
+    "InvestorSettings": InvestorSettings,
     "Invoicing": Invoicing,
     "LEIComplianceDashboard": LEIComplianceDashboard,
     "LEIGLEIFTestReport": LEIGLEIFTestReport,
@@ -479,17 +485,19 @@ export const PAGES = {
     "PlatformAuditLogs": PlatformAuditLogs,
     "PlatformPricingConfiguration": PlatformPricingConfiguration,
     "PlatformUserManagement": PlatformUserManagement,
+    "Products": Products,
     "PrivacyPolicy": PrivacyPolicy,
     "ProductTemplateLibrary": ProductTemplateLibrary,
-    "Products": Products,
     "PublicSupport": PublicSupport,
     "QuickPSPProvisioning": QuickPSPProvisioning,
     "RWAPlatform": RWAPlatform,
+    "RWAProviderAnalytics": RWAProviderAnalytics,
     "RWAProviderAssets": RWAProviderAssets,
     "RWAProviderDashboard": RWAProviderDashboard,
     "RWAProviderInvestors": RWAProviderInvestors,
     "RWAProviderIssuers": RWAProviderIssuers,
     "RWAProviderLogin": RWAProviderLogin,
+    "RWAProviderSettings": RWAProviderSettings,
     "RWAWhiteLabelProvisioning": RWAWhiteLabelProvisioning,
     "RealTimeMonitor": RealTimeMonitor,
     "Reconciliation": Reconciliation,
@@ -524,18 +532,10 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "AssetIssuerCompliance": AssetIssuerCompliance,
-    "RWAProviderAnalytics": RWAProviderAnalytics,
-    "RWAProviderSettings": RWAProviderSettings,
-    "InvestorSettings": InvestorSettings,
-    "InvestorDividends": InvestorDividends,
-    "InvestorHoldings": InvestorHoldings,
-    "InvestorOnboarding": InvestorOnboarding,
-    "AssetIssuerDividends": AssetIssuerDividends,
 }
 
 export const pagesConfig = {
-    mainPage: "Dashboard",
+    mainPage: "AIAutomationPlatform",
     Pages: PAGES,
     Layout: __Layout,
 };

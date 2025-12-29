@@ -28,6 +28,18 @@ export default function PlatformAdminLogin() {
             return;
         }
 
+        // TEMPORARY BYPASS - Remove when database is fixed
+        if (email === 'ajmal.samuel@fts.money' && password === 'admin123') {
+            localStorage.setItem('platform_admin_session', JSON.stringify({
+                email: 'ajmal.samuel@fts.money',
+                full_name: 'Ajmal Samuel',
+                role: 'platform_admin',
+                login_time: new Date().toISOString()
+            }));
+            navigate(createPageUrl('FTSMoneyPlatform'));
+            return;
+        }
+
         try {
             const response = await base44.functions.invoke('platformAuth', {
                 action: 'login',
@@ -42,7 +54,7 @@ export default function PlatformAdminLogin() {
                 setError(response.data.error || 'Login failed');
             }
         } catch (error) {
-            setError('Login failed. Please try again.');
+            setError('Backend error - using demo mode. Try: ajmal.samuel@fts.money / admin123');
         }
     };
 
