@@ -105,6 +105,7 @@ import ISOGatewayCustomers from './pages/ISOGatewayCustomers';
 import ISOGatewayLogin from './pages/ISOGatewayLogin';
 import ISOGatewayRouting from './pages/ISOGatewayRouting';
 import ISOGatewayTestConsole from './pages/ISOGatewayTestConsole';
+import ISOGatewayUserManagement from './pages/ISOGatewayUserManagement';
 import ISOMessageMonitor from './pages/ISOMessageMonitor';
 import InstantPayments from './pages/InstantPayments';
 import InvestorDividends from './pages/InvestorDividends';
@@ -263,7 +264,10 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import ISOGatewayUserManagement from './pages/ISOGatewayUserManagement';
+import OrchestrationUserManagement from './pages/OrchestrationUserManagement';
+import CryptoGatewayUserManagement from './pages/CryptoGatewayUserManagement';
+import RWAProviderUserManagement from './pages/RWAProviderUserManagement';
+import RolePermissionManagement from './pages/RolePermissionManagement';
 import __Layout from './Layout.jsx';
 
 
@@ -375,6 +379,7 @@ export const PAGES = {
     "ISOGatewayLogin": ISOGatewayLogin,
     "ISOGatewayRouting": ISOGatewayRouting,
     "ISOGatewayTestConsole": ISOGatewayTestConsole,
+    "ISOGatewayUserManagement": ISOGatewayUserManagement,
     "ISOMessageMonitor": ISOMessageMonitor,
     "InstantPayments": InstantPayments,
     "InvestorDividends": InvestorDividends,
@@ -533,7 +538,10 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "ISOGatewayUserManagement": ISOGatewayUserManagement,
+    "OrchestrationUserManagement": OrchestrationUserManagement,
+    "CryptoGatewayUserManagement": CryptoGatewayUserManagement,
+    "RWAProviderUserManagement": RWAProviderUserManagement,
+    "RolePermissionManagement": RolePermissionManagement,
 }
 
 export const pagesConfig = {
