@@ -307,3 +307,67 @@ export const REQUIRES_APPROVAL = {
     'user:delete:any': ['platform_admin'],
     'settings:edit:critical': ['platform_admin']
 };
+
+// Legacy: Role configuration for staff sidebar (PSP portal)
+export const ROLE_CONFIG = {
+    admin: {
+        label: 'Administrator',
+        bgColor: 'bg-red-100',
+        textColor: 'text-red-700',
+        accessibleGroups: ['overview', 'transactions', 'merchants', 'connections', 'orchestration', 'terminals', 'finance', 'wholesale', 'riskCompliance', 'developers', 'system', 'resources']
+    },
+    manager: {
+        label: 'Manager',
+        bgColor: 'bg-blue-100',
+        textColor: 'text-blue-700',
+        accessibleGroups: ['overview', 'transactions', 'merchants', 'connections', 'orchestration', 'terminals', 'finance', 'wholesale', 'riskCompliance', 'developers', 'system']
+    },
+    operator: {
+        label: 'Operator',
+        bgColor: 'bg-green-100',
+        textColor: 'text-green-700',
+        accessibleGroups: ['overview', 'transactions', 'merchants', 'terminals', 'wholesale']
+    },
+    viewer: {
+        label: 'Viewer',
+        bgColor: 'bg-slate-100',
+        textColor: 'text-slate-700',
+        accessibleGroups: ['overview', 'transactions', 'merchants']
+    },
+    finance: {
+        label: 'Finance',
+        bgColor: 'bg-emerald-100',
+        textColor: 'text-emerald-700',
+        accessibleGroups: ['overview', 'transactions', 'finance', 'wholesale']
+    },
+    compliance: {
+        label: 'Compliance',
+        bgColor: 'bg-purple-100',
+        textColor: 'text-purple-700',
+        accessibleGroups: ['overview', 'transactions', 'merchants', 'riskCompliance']
+    },
+    technical: {
+        label: 'Technical',
+        bgColor: 'bg-indigo-100',
+        textColor: 'text-indigo-700',
+        accessibleGroups: ['overview', 'transactions', 'developers', 'system']
+    }
+};
+
+// Legacy: Check if a role has a specific permission (for staff sidebar)
+export function hasPermission(role, permission) {
+    // Admin has all permissions
+    if (role === 'admin') return true;
+    
+    // Define role-permission mappings
+    const rolePermissions = {
+        manager: ['VIEW_DASHBOARD', 'VIEW_ANALYTICS', 'VIEW_TRANSACTIONS', 'VIEW_SETTLEMENTS', 'VIEW_CHARGEBACKS', 'VIEW_DISPUTES', 'VIEW_MERCHANTS', 'VIEW_ONBOARDING', 'VIEW_ORCHESTRATION', 'VIEW_ROUTING', 'VIEW_TERMINALS', 'VIEW_BALANCES', 'VIEW_PAYOUTS', 'VIEW_REPORTS', 'VIEW_FRAUD_PREVENTION', 'VIEW_COMPLIANCE', 'VIEW_SETTINGS', 'VIEW_USERS', 'VIEW_APPEARANCE'],
+        operator: ['VIEW_DASHBOARD', 'VIEW_TRANSACTIONS', 'VIEW_MERCHANTS', 'VIEW_TERMINALS'],
+        viewer: ['VIEW_DASHBOARD', 'VIEW_TRANSACTIONS', 'VIEW_MERCHANTS'],
+        finance: ['VIEW_DASHBOARD', 'VIEW_ANALYTICS', 'VIEW_TRANSACTIONS', 'VIEW_SETTLEMENTS', 'VIEW_BALANCES', 'VIEW_PAYOUTS', 'VIEW_REPORTS'],
+        compliance: ['VIEW_DASHBOARD', 'VIEW_TRANSACTIONS', 'VIEW_MERCHANTS', 'VIEW_FRAUD_PREVENTION', 'VIEW_COMPLIANCE'],
+        technical: ['VIEW_DASHBOARD', 'VIEW_TRANSACTIONS', 'VIEW_SETTINGS', 'VIEW_USERS']
+    };
+    
+    return rolePermissions[role]?.includes(permission) || false;
+}
