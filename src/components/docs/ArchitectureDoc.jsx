@@ -1,9 +1,9 @@
 const ArchitectureDoc = `# FTS.Money Platform Architecture
 ## Complete Technical Infrastructure & System Design
 
-**Version:** 2.0  
+**Version:** 3.0  
 **Classification:** Internal - Technical Teams  
-**Last Updated:** December 26, 2025  
+**Last Updated:** December 29, 2025  
 **Document Owner:** FTS.Money Platform Engineering
 
 ---
@@ -13,11 +13,13 @@ const ArchitectureDoc = `# FTS.Money Platform Architecture
 1. [Executive Summary](#executive-summary)
 2. [System Architecture](#system-architecture)
 3. [Multi-Tenancy Model](#multi-tenancy-model)
-4. [Technology Stack](#technology-stack)
-5. [Infrastructure Components](#infrastructure-components)
-6. [Security Architecture](#security-architecture)
-7. [Performance & Scalability](#performance--scalability)
-8. [Disaster Recovery](#disaster-recovery)
+4. [RBAC & Access Control](#rbac-access-control)
+5. [Portal Architecture](#portal-architecture)
+6. [Technology Stack](#technology-stack)
+7. [Infrastructure Components](#infrastructure-components)
+8. [Security Architecture](#security-architecture)
+9. [Performance & Scalability](#performance--scalability)
+10. [Disaster Recovery](#disaster-recovery)
 
 ---
 
@@ -261,6 +263,274 @@ This creates a virtuous cycle: lower costs allow us to serve smaller PSPs profit
 - PCI DSS Level 1 certified infrastructure
 - GDPR-compliant data residency
 - Audit trails per tenant
+
+---
+
+## RBAC & Access Control
+
+### Multi-User Organization Architecture
+
+The platform now supports **multiple users per organization** across all services with granular role-based permissions.
+
+\`\`\`mermaid
+graph TB
+    subgraph "Organization Types"
+        A[ISO Gateway Customer]
+        B[Orchestration Customer]
+        C[Crypto Gateway Customer]
+        D[RWA Provider]
+        E[PSP Instance]
+    end
+    
+    subgraph "User Management System"
+        F[User Entities]
+        G[Authentication Service]
+        H[Permission Engine]
+        I[Session Management]
+    end
+    
+    subgraph "Six-Tier Role Hierarchy"
+        J[Owner - 100%]
+        K[Administrator - 90%]
+        L[Developer - 60%]
+        M[Operations - 50%]
+        N[Analyst - 40%]
+        O[Viewer - 20%]
+    end
+    
+    A --> F
+    B --> F
+    C --> F
+    D --> F
+    E --> F
+    
+    F --> G
+    G --> H
+    H --> I
+    
+    H --> J
+    H --> K
+    H --> L
+    H --> M
+    H --> N
+    H --> O
+    
+    style F fill:#dbeafe
+    style H fill:#fef3c7
+    style J fill:#fecaca
+\`\`\`
+
+### Role Permission System
+
+**Supported User Types:**
+
+| Service | User Entity | Management Page | Authentication |
+|---------|-------------|-----------------|----------------|
+| **ISO Gateway** | ISOGatewayUser | ISOGatewayUserManagement | functions/isoGatewayAuth |
+| **Orchestration** | OrchestrationUser | OrchestrationUserManagement | functions/orchestrationAuth |
+| **Crypto Banking** | CryptoGatewayUser | CryptoGatewayUserManagement | functions/cryptoGatewayAuth |
+| **RWA Platform** | RWAProviderUser | RWAProviderUserManagement | functions/rwaProviderAuth |
+| **PSP Staff** | AppUser (staff) | PSPUserManagement | functions/pspAuth |
+
+### Permission Architecture
+
+\`\`\`mermaid
+sequenceDiagram
+    actor User
+    participant Portal
+    participant Auth as Auth Service
+    participant PermDB as Permission DB
+    participant Resource
+    
+    User->>Portal: Request Action
+    Portal->>Auth: Validate Session
+    Auth->>PermDB: Get User Permissions
+    PermDB-->>Auth: Role + Permissions List
+    Auth->>Auth: Check Required Permission
+    
+    alt Has Permission
+        Auth-->>Portal: Authorized
+        Portal->>Resource: Execute Action
+        Resource-->>Portal: Result
+        Portal-->>User: Success
+    else No Permission
+        Auth-->>Portal: Denied
+        Portal-->>User: Access Denied (403)
+    end
+\`\`\`
+
+**Permission Components:**
+
+- **components/auth/isoGatewayPermissions.js** - ISO Gateway RBAC
+- **components/auth/orchestrationPermissions.js** - Orchestration RBAC
+- **components/auth/cryptoGatewayPermissions.js** - Crypto Banking RBAC
+- **components/auth/rwaPermissions.js** - RWA Platform RBAC
+- **components/auth/usePermissions.js** - Permission checking hook
+- **pages/RolePermissionManagement.js** - Editable permission matrix
+
+### Security Features
+
+| Feature | Implementation | Purpose |
+|---------|----------------|---------|
+| **Password Hashing** | SHA-256 + salt | Secure credential storage |
+| **Session Management** | JWT + localStorage | Stateless auth |
+| **Permission Enforcement** | Server-side + client-side | Defense in depth |
+| **Audit Logging** | All user actions logged | Compliance & forensics |
+| **Role Hierarchy** | Numerical hierarchy | Prevent privilege escalation |
+
+---
+
+## Portal Architecture
+
+### Portal Ecosystem
+
+\`\`\`mermaid
+graph TB
+    subgraph "Platform Administration"
+        A[FTS Platform Admin Portal]
+        A1[Platform User Management]
+        A2[PSP Provisioning]
+        A3[System Health]
+        A4[Revenue Dashboard]
+    end
+    
+    subgraph "PSP Operations"
+        B[PSP Portal]
+        B1[Merchant Management]
+        B2[Transaction Monitoring]
+        B3[Settlement Processing]
+        B4[Dispute Handling]
+    end
+    
+    subgraph "Merchant Self-Service"
+        C[Merchant Portal]
+        C1[Dashboard & Analytics]
+        C2[Transaction History]
+        C3[API Key Management]
+        C4[Webhook Configuration]
+    end
+    
+    subgraph "Payment Processing"
+        D[Virtual Terminal]
+        D1[Card-Not-Present]
+        D2[Recurring Payments]
+        D3[Itemized Sales]
+        D4[Split Tender]
+    end
+    
+    subgraph "Service Portals"
+        E[ISO Gateway Portal]
+        F[Orchestration Portal]
+        G[Crypto Gateway Portal]
+        H[RWA Provider Portal]
+    end
+    
+    A --> A1
+    A --> A2
+    A --> A3
+    A --> A4
+    
+    B --> B1
+    B --> B2
+    B --> B3
+    B --> B4
+    
+    C --> C1
+    C --> C2
+    C --> C3
+    C --> C4
+    
+    D --> D1
+    D --> D2
+    D --> D3
+    D --> D4
+    
+    style A fill:#e0f2fe
+    style B fill:#dbeafe
+    style C fill:#dcfce7
+    style D fill:#fef3c7
+\`\`\`
+
+### Merchant Portal Features
+
+**Core Capabilities:**
+
+1. **Real-time Dashboard**
+   - Live transaction monitoring
+   - KPI cards (volume, count, success rate)
+   - Volume trend charts
+   - Payment method breakdown
+
+2. **Transaction Management**
+   - Advanced search & filtering
+   - Export to CSV/Excel/PDF
+   - Refund processing
+   - Receipt generation
+
+3. **Settlement & Payouts**
+   - Automated settlement reports
+   - Reconciliation tools
+   - Payout scheduling
+   - Bank account management
+
+4. **Dispute Management**
+   - Chargeback tracking
+   - Evidence submission
+   - Status monitoring
+   - Representment handling
+
+5. **API Integration**
+   - Self-service API key creation
+   - Webhook configuration
+   - API documentation
+   - Test console
+
+### Virtual Terminal Architecture
+
+\`\`\`mermaid
+graph LR
+    A[VT Operator] --> B[Virtual Terminal UI]
+    B --> C{Transaction Type}
+    
+    C -->|Sale| D[Immediate Capture]
+    C -->|Auth Only| E[Hold Funds]
+    C -->|Capture| F[Complete Auth]
+    C -->|Refund| G[Return Funds]
+    C -->|Void| H[Cancel Tx]
+    C -->|Recurring| I[Schedule Billing]
+    
+    D --> J[Payment Gateway]
+    E --> J
+    F --> J
+    G --> J
+    H --> J
+    I --> J
+    
+    J --> K{3DS Required?}
+    K -->|Yes| L[Strong Auth]
+    K -->|No| M[Process]
+    
+    L --> M
+    M --> N[Transaction DB]
+    M --> O[Send Receipt]
+    
+    style B fill:#dbeafe
+    style J fill:#fef3c7
+    style N fill:#dcfce7
+\`\`\`
+
+**VT Features:**
+
+- Card-not-present (CNP) processing
+- MOTO (Mail Order/Telephone Order) support
+- Recurring payment scheduling
+- Card-on-file tokenization
+- Split tender (multiple payment methods)
+- Itemized sales with line items
+- Receipt/invoice generation
+- 3D Secure integration
+- Transaction limits (daily/per-transaction)
+- Multi-currency support
 
 ---
 

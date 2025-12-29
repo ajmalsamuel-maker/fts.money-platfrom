@@ -1,9 +1,9 @@
 const ProductEcosystemDoc = `# FTS.Money Product Ecosystem
 ## Complete Product Portfolio & Monetization Strategy
 
-**Version:** 2.0  
+**Version:** 3.0  
 **Classification:** Internal - Product & Business Teams  
-**Last Updated:** December 26, 2025  
+**Last Updated:** December 29, 2025  
 **Document Owner:** FTS.Money Product Team
 
 ---
@@ -12,10 +12,11 @@ const ProductEcosystemDoc = `# FTS.Money Product Ecosystem
 
 1. [Executive Summary](#executive-summary)
 2. [Core Products](#core-products)
-3. [Service Marketplace](#service-marketplace)
-4. [Revenue Model](#revenue-model)
-5. [Market Opportunity](#market-opportunity)
-6. [Product Roadmap](#product-roadmap)
+3. [Portal Products](#portal-products)
+4. [Service Marketplace](#service-marketplace)
+5. [Revenue Model](#revenue-model)
+6. [Market Opportunity](#market-opportunity)
+7. [Product Roadmap](#product-roadmap)
 
 ---
 
@@ -36,6 +37,8 @@ FTS.Money offers a comprehensive ecosystem of payment products and services acro
 - Multi-tenant architecture
 - Compliance infrastructure
 - Global payment processing
+- Merchant & Virtual Terminal portals
+- Multi-user RBAC system
 
 **Tier 2: Value-Added Services** (FTS-Owned)
 - Payment orchestration
@@ -43,12 +46,19 @@ FTS.Money offers a comprehensive ecosystem of payment products and services acro
 - Advanced analytics
 - Crypto gateway
 - Sub-merchant platform
+- ISO Gateway service
 
 **Tier 3: Service Marketplace** (Partner Ecosystem)
 - KYC/KYB providers
 - Payment processors
 - Compliance services
 - Developer tools
+
+**Tier 4: Portal & Access Products** (Enablement)
+- Merchant self-service portal
+- Virtual payment terminal
+- Multi-user RBAC
+- White-label customization
 
 ### Value Proposition
 
@@ -484,6 +494,219 @@ graph LR
 - Transaction: 1% of volume
 - Conversion: 0.5% fiat↔crypto
 - Annual: $24K-84K per PSP
+
+---
+
+## Portal Products
+
+### Merchant Self-Service Portal
+
+**Product Overview:**
+
+The Merchant Portal is a comprehensive self-service web application enabling merchants to manage all aspects of their payment operations without PSP intervention.
+
+\`\`\`mermaid
+graph TB
+    A[Merchant Portal] --> B[Dashboard]
+    A --> C[Transactions]
+    A --> D[Settlements]
+    A --> E[Disputes]
+    A --> F[API Keys]
+    A --> G[Settings]
+    
+    B --> B1[Real-time KPIs]
+    B --> B2[Volume Charts]
+    B --> B3[Success Rates]
+    
+    C --> C1[Advanced Search]
+    C --> C2[Export Tools]
+    C --> C3[Refund Processing]
+    
+    D --> D1[Settlement Reports]
+    D --> D2[Reconciliation]
+    D --> D3[Payout Tracking]
+    
+    E --> E1[Chargeback List]
+    E --> E2[Evidence Upload]
+    E --> E3[Status Tracking]
+    
+    F --> F1[Create Keys]
+    F --> F2[Usage Analytics]
+    F --> F3[Webhook Config]
+    
+    style A fill:#dbeafe
+    style B fill:#dcfce7
+    style C fill:#fef3c7
+\`\`\`
+
+**Key Features:**
+
+| Feature Category | Capabilities | Business Value |
+|-----------------|--------------|----------------|
+| **Dashboard** | Real-time metrics, charts, alerts | Operational visibility |
+| **Transactions** | Search, filter, export, refund | Customer service efficiency |
+| **Settlements** | Automated reports, reconciliation | Financial accuracy |
+| **Disputes** | Chargeback management, evidence submission | Win rate improvement |
+| **API Integration** | Self-service keys, webhooks, docs | Developer productivity |
+| **White-labeling** | Custom branding, domain, themes | Brand consistency |
+
+**Revenue Impact:**
+
+- **Reduces PSP support costs** by 60-70% through self-service
+- **Increases merchant satisfaction** with 24/7 access
+- **Enables merchant scaling** without linear support cost growth
+- **Differentiator** for PSP competitive positioning
+
+**Pricing Model:**
+
+- Included in all PSP tiers (Starter, Pro, Enterprise)
+- White-label customization: +$100/month
+- Custom domain: +$50/month setup, $25/month hosting
+- Advanced analytics module: +$200/month
+
+---
+
+### Virtual Payment Terminal
+
+**Product Overview:**
+
+Web-based card-not-present (CNP) payment terminal for manual transaction processing, MOTO, and recurring billing.
+
+\`\`\`mermaid
+graph TB
+    A[Virtual Terminal] --> B[Transaction Types]
+    A --> C[Payment Features]
+    A --> D[Security]
+    A --> E[Configuration]
+    
+    B --> B1[Sale]
+    B --> B2[Auth-Only]
+    B --> B3[Capture]
+    B --> B4[Refund]
+    B --> B5[Void]
+    B --> B6[Recurring]
+    
+    C --> C1[Split Tender]
+    C --> C2[Itemized Sales]
+    C --> C3[Card-on-File]
+    C --> C4[Receipt Generation]
+    
+    D --> D1[3D Secure]
+    D --> D2[CVV Verification]
+    D --> D3[Fraud Checks]
+    D --> D4[Transaction Limits]
+    
+    E --> E1[Daily Limits]
+    E --> E2[Per-Tx Limits]
+    E --> E3[User Roles]
+    E --> E4[Allowed Currencies]
+    
+    style A fill:#dbeafe
+    style B fill:#dcfce7
+    style C fill:#fef3c7
+    style D fill:#fee2e2
+\`\`\`
+
+**Use Cases:**
+
+| Use Case | Description | Market Size |
+|----------|-------------|-------------|
+| **MOTO** | Mail/telephone orders | $850B annually |
+| **Invoice Payments** | B2B invoice processing | $125B annually |
+| **Recurring Billing** | Subscriptions, installments | $650B annually |
+| **Deposit Collection** | Partial payments, reservations | $85B annually |
+
+**Technical Specifications:**
+
+\`\`\`javascript
+// VT Configuration Entity
+{
+  "merchant_id": "string",
+  "status": "active | inactive",
+  "daily_limit": 50000,
+  "per_transaction_limit": 10000,
+  "allowed_currencies": ["USD", "EUR", "GBP"],
+  "requires_cvv": true,
+  "enable_3ds": true,
+  "enable_recurring": true,
+  "enable_split_tender": true,
+  "send_receipts_email": true,
+  "allowed_roles": ["admin", "manager", "operator"]
+}
+\`\`\`
+
+**Revenue Model:**
+
+- Included free with PSP (encourages adoption)
+- Transaction fees: Standard interchange + markup
+- Premium features:
+  - Recurring billing: +$150/month
+  - Advanced invoicing: +$100/month
+  - Split tender: +$75/month
+
+**Market Opportunity:**
+
+- **TAM:** $1.7T MOTO + invoice payment volume
+- **Target:** 15% of PSP merchants enable VT
+- **Revenue:** $200-500 additional per merchant/month
+
+---
+
+### Multi-User RBAC System
+
+**Product Overview:**
+
+Comprehensive role-based access control enabling organizations to grant granular permissions to multiple team members.
+
+\`\`\`mermaid
+graph LR
+    A[Organization] --> B[Invite Users]
+    B --> C[Assign Roles]
+    C --> D[Grant Permissions]
+    
+    D --> E[Owner]
+    D --> F[Administrator]
+    D --> G[Developer]
+    D --> H[Operations]
+    D --> I[Analyst]
+    D --> J[Viewer]
+    
+    E --> K[Full Control]
+    F --> L[Management]
+    G --> M[Technical]
+    H --> N[Daily Ops]
+    I --> O[Analytics]
+    J --> P[Read Only]
+    
+    style A fill:#e0f2fe
+    style D fill:#fef3c7
+    style K fill:#dcfce7
+\`\`\`
+
+**Permission Granularity:**
+
+| Service | Permission Types | Total Permissions |
+|---------|-----------------|-------------------|
+| ISO Gateway | customer, connection, message, translation, routing, api_key, analytics, billing, user | 18 |
+| Orchestration | customer, rule, route, execution, provider, api_key, analytics, billing, user | 20 |
+| Crypto Banking | customer, wallet, transaction, kyc, iban, api_key, analytics, billing, settings, user | 19 |
+| RWA Platform | provider, asset, issuer, investor, holding, order, dividend, api_key, analytics, billing, user | 25 |
+| PSP Staff | dashboard, analytics, merchants, onboarding, orchestration, terminals, balances, payouts, reports, fraud, compliance, settings, users, appearance | 18 |
+
+**Editable Permission Matrix:**
+
+Platform admins can customize role permissions through:
+- **Page:** RolePermissionManagement
+- **Features:** Interactive checkbox matrix, service-specific tabs
+- **Storage:** Persisted per-service configuration
+- **Effect:** New logins inherit updated permissions
+
+**Revenue Impact:**
+
+- **Enables team collaboration** - larger customers have multiple users
+- **Reduces support burden** - granular access = fewer mistakes
+- **Enterprise requirement** - necessary for large organization sales
+- **Compliance benefit** - audit trail of who did what
 
 ---
 

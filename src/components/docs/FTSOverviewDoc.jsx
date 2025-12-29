@@ -1,9 +1,9 @@
 const FTSOverviewDoc = `# FTS.Money Platform Overview
 ## Complete Payment Infrastructure Ecosystem
 
-**Version:** 1.0  
+**Version:** 2.0  
 **Classification:** Public - Business & Technical  
-**Last Updated:** December 26, 2025  
+**Last Updated:** December 29, 2025  
 **Document Owner:** FTS.Money Product Team
 
 ---
@@ -15,11 +15,13 @@ const FTSOverviewDoc = `# FTS.Money Platform Overview
 3. [Market Context](#market-context)
 4. [Platform Architecture](#platform-architecture)
 5. [Core Services](#core-services)
-6. [Technology Stack](#technology-stack)
-7. [Compliance & Security](#compliance--security)
-8. [Business Model](#business-model)
-9. [Getting Started](#getting-started)
-10. [Roadmap](#roadmap)
+6. [Portal Ecosystem](#portal-ecosystem)
+7. [Multi-User RBAC](#multi-user-rbac)
+8. [Technology Stack](#technology-stack)
+9. [Compliance & Security](#compliance--security)
+10. [Business Model](#business-model)
+11. [Getting Started](#getting-started)
+12. [Roadmap](#roadmap)
 
 ---
 
@@ -1093,7 +1095,304 @@ Curated catalog of 150+ payment services, providers, and tools available for one
 
 ---
 
-## Technology Stack
+## Portal Ecosystem
+
+### Merchant Self-Service Portal
+
+\`\`\`mermaid
+graph TB
+    A[Merchant Login] --> B[Dashboard]
+    B --> C[Real-time KPIs]
+    B --> D[Transaction Search]
+    B --> E[Settlement Reports]
+    B --> F[Dispute Management]
+    B --> G[API Integration]
+    
+    C --> C1[Total Volume]
+    C --> C2[Transaction Count]
+    C --> C3[Success Rate]
+    C --> C4[Pending Settlements]
+    
+    D --> D1[Advanced Filters]
+    D --> D2[Date Range]
+    D --> D3[Export CSV/PDF]
+    D --> D4[Refund Actions]
+    
+    E --> E1[Automated Reports]
+    E --> E2[Reconciliation Tools]
+    E --> E3[Payout Tracking]
+    
+    F --> F1[Chargeback List]
+    F --> F2[Evidence Submission]
+    F --> F3[Status Updates]
+    
+    G --> G1[API Key Management]
+    G --> G2[Webhook Config]
+    G --> G3[API Documentation]
+    
+    style B fill:#dbeafe
+    style C fill:#dcfce7
+    style D fill:#fef3c7
+\`\`\`
+
+**Key Features:**
+
+1. **Real-time Dashboard**
+   - Live transaction monitoring
+   - Volume trend visualization
+   - Payment method breakdown
+   - Success rate analytics
+
+2. **Transaction Management**
+   - Advanced search with multiple filters
+   - Export to CSV, Excel, PDF
+   - One-click refund processing
+   - Automatic receipt generation
+
+3. **Settlement & Payouts**
+   - Automated settlement calculations
+   - Reconciliation tools
+   - Payout schedule tracking
+   - Bank reference tracking
+
+4. **Dispute Management**
+   - Chargeback tracking dashboard
+   - Evidence document upload
+   - Representment workflow
+   - Win/loss analytics
+
+5. **API & Developer Tools**
+   - Self-service API key creation
+   - Webhook endpoint configuration
+   - Embedded API documentation
+   - Test console for integration
+
+**White-labeling:**
+- Custom logo and branding
+- Custom domain (portal.yourcompany.com)
+- Themed interface (colors, fonts)
+- Branded email templates
+
+---
+
+### Virtual Payment Terminal
+
+\`\`\`mermaid
+graph LR
+    A[VT Dashboard] --> B[Process Sale]
+    A --> C[Process Auth]
+    A --> D[Capture Auth]
+    A --> E[Process Refund]
+    A --> F[Recurring Setup]
+    
+    B --> G[Card Entry Form]
+    C --> G
+    D --> H[Select Auth Tx]
+    E --> I[Select Original Tx]
+    F --> J[Schedule Config]
+    
+    G --> K[3DS Check]
+    K --> L[Payment Gateway]
+    H --> L
+    I --> L
+    J --> L
+    
+    L --> M[Transaction DB]
+    L --> N[Send Receipt]
+    
+    style A fill:#dbeafe
+    style G fill:#fef3c7
+    style L fill:#dcfce7
+\`\`\`
+
+**Transaction Types:**
+
+| Type | Description | Use Case | Settlement |
+|------|-------------|----------|------------|
+| **Sale** | Auth + capture immediate | Standard purchase | Same day |
+| **Auth-Only** | Hold funds, capture later | Hotel reservation | Manual capture |
+| **Capture** | Complete previous auth | Check-out after stay | On capture |
+| **Refund** | Return funds to customer | Customer service | 3-5 days |
+| **Void** | Cancel same-day transaction | Order cancellation | No settlement |
+| **Recurring** | Scheduled automatic billing | Subscriptions | Per schedule |
+
+**Advanced Features:**
+
+1. **Split Tender**
+   - Accept multiple payment methods per transaction
+   - Example: $150 on card + $50 cash
+   - Automatic reconciliation
+
+2. **Itemized Sales**
+   - Line-item detail with SKU/description
+   - Quantity, unit price, tax per item
+   - Professional invoice generation
+
+3. **Card-on-File**
+   - Securely save customer cards (PCI tokenization)
+   - Quick repeat transactions
+   - Reduced data entry errors
+
+4. **Receipt Generation**
+   - Email receipts (automatic)
+   - SMS receipts (optional)
+   - PDF for printing
+   - Custom templates
+
+**Security Controls:**
+
+| Control | Implementation | Purpose |
+|---------|----------------|---------|
+| **Transaction Limits** | Daily: $50K, Per-Tx: $10K | Fraud prevention |
+| **CVV Required** | Mandatory for CNP | PCI requirement |
+| **3D Secure** | Optional challenge | Strong auth |
+| **Role-based Access** | Admin, Manager, Operator | Internal controls |
+| **Session Timeout** | 15 minutes inactive | Security |
+| **Audit Log** | All actions logged | Compliance |
+
+**Pricing:**
+
+- **Included:** Free with PSP subscription
+- **Transaction Fees:** Standard interchange + markup
+- **Premium Add-ons:**
+  - Recurring billing module: +$150/month
+  - Advanced invoicing: +$100/month
+  - Split tender: +$75/month
+
+**Target Users:**
+
+- Retail stores taking phone orders
+- B2B companies processing invoices
+- Service businesses (hotels, rentals)
+- Subscription-based businesses
+- Any merchant needing manual card entry
+
+---
+
+## Multi-User RBAC
+
+### Role-Based Access Control System
+
+**Overview:**
+
+Comprehensive RBAC enabling multiple users per organization with granular permission control across all FTS services.
+
+\`\`\`mermaid
+graph TB
+    subgraph "Services with RBAC"
+        A[ISO Gateway]
+        B[Orchestration]
+        C[Crypto Banking]
+        D[RWA Platform]
+        E[PSP Staff Portal]
+    end
+    
+    subgraph "Role Hierarchy"
+        F[Owner - 100%]
+        G[Administrator - 90%]
+        H[Developer - 60%]
+        I[Operations - 50%]
+        J[Analyst - 40%]
+        K[Viewer - 20%]
+    end
+    
+    subgraph "Permission System"
+        L[User Management Pages]
+        M[Permission Matrix]
+        N[Auth Middleware]
+        O[Audit Logging]
+    end
+    
+    A --> L
+    B --> L
+    C --> L
+    D --> L
+    E --> L
+    
+    L --> M
+    M --> N
+    N --> O
+    
+    F -.-> M
+    G -.-> M
+    H -.-> M
+    I -.-> M
+    J -.-> M
+    K -.-> M
+    
+    style L fill:#dbeafe
+    style M fill:#fef3c7
+    style N fill:#dcfce7
+\`\`\`
+
+**Standard Role Permissions:**
+
+| Role | Power Level | Typical Permissions | Use Case |
+|------|-------------|-------------------|----------|
+| **Owner** | 100% | All permissions | CEO, Founder |
+| **Administrator** | 90% | All except owner changes | CTO, IT Manager |
+| **Developer** | 60% | API, technical config, testing | Engineers |
+| **Operations** | 50% | Daily ops, monitoring | Support team |
+| **Analyst** | 40% | Reporting, analytics only | Business analysts |
+| **Viewer** | 20% | Read-only access | Auditors, compliance |
+
+**Management Interface:**
+
+- **Location:** Platform Admin → User & Access Management
+- **Pages:**
+  - ISO Gateway User Management
+  - Orchestration User Management
+  - Crypto Banking User Management
+  - RWA Platform User Management
+  - PSP Staff User Management
+- **Features:**
+  - Invite users with email + password
+  - Assign roles
+  - Edit user details
+  - Delete users
+  - View activity logs
+
+**Editable Permission Matrix:**
+
+Platform admins can customize permissions:
+- **Page:** Role & Permission Management
+- **Tabs:** Separate configuration per service
+- **Controls:** Checkbox matrix (role × permission)
+- **Persistence:** Saved to service configuration
+- **Effect:** Applies to new login sessions
+
+**Security Features:**
+
+1. **Password Security**
+   - SHA-256 hashing with salt
+   - Unique salt per service
+   - No plain text storage
+
+2. **Session Management**
+   - Secure JWT tokens
+   - Auto-expiration
+   - Server-side validation
+
+3. **Audit Logging**
+   - All actions logged with user ID
+   - Immutable audit trail
+   - Compliance-ready reports
+
+4. **Permission Enforcement**
+   - Server-side validation (primary)
+   - Client-side checks (UX)
+   - Role hierarchy enforcement
+
+**Revenue Impact:**
+
+- **Enterprise Enabler:** Required for large org sales
+- **Reduces Churn:** Team collaboration increases stickiness
+- **Compliance Selling Point:** Auditable access control
+- **Upsell Opportunity:** Advanced RBAC features premium tier
+
+---
+
+## Service Marketplace
 
 ### Frontend Technologies
 
