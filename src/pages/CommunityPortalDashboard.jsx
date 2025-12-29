@@ -91,10 +91,6 @@ export default function CommunityPortalDashboard() {
         enabled: !!session?.email
     });
 
-    const totalServices = myPSPs.length + myISOCustomers.length + myOrchCustomers.length + myCryptoCustomers.length + myRWAProviders.length;
-    const isNewUser = totalServices === 0;
-
-    // Fetch crypto gateway customers
     const { data: myCryptoCustomers = [] } = useQuery({
         queryKey: ['my-crypto-customers', session?.email],
         queryFn: async () => {
@@ -104,7 +100,6 @@ export default function CommunityPortalDashboard() {
         enabled: !!session?.email
     });
 
-    // Fetch RWA providers
     const { data: myRWAProviders = [] } = useQuery({
         queryKey: ['my-rwa-providers', session?.email],
         queryFn: async () => {
@@ -113,6 +108,9 @@ export default function CommunityPortalDashboard() {
         },
         enabled: !!session?.email
     });
+
+    const totalServices = myPSPs.length + myISOCustomers.length + myOrchCustomers.length + myCryptoCustomers.length + myRWAProviders.length;
+    const isNewUser = totalServices === 0;
 
     const quickActions = [
         {
