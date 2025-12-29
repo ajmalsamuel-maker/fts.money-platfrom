@@ -105,16 +105,17 @@ import ISOGatewayCustomers from './pages/ISOGatewayCustomers';
 import ISOGatewayLogin from './pages/ISOGatewayLogin';
 import ISOGatewayRouting from './pages/ISOGatewayRouting';
 import ISOGatewayTestConsole from './pages/ISOGatewayTestConsole';
+import ISOGatewayUserManagement from './pages/ISOGatewayUserManagement';
 import ISOMessageMonitor from './pages/ISOMessageMonitor';
 import InstantPayments from './pages/InstantPayments';
 import InvestorDividends from './pages/InvestorDividends';
 import InvestorHoldings from './pages/InvestorHoldings';
-import Invoices from './pages/Invoices';
 import InvestorLogin from './pages/InvestorLogin';
 import InvestorMarketplace from './pages/InvestorMarketplace';
 import InvestorOnboarding from './pages/InvestorOnboarding';
 import InvestorPortfolio from './pages/InvestorPortfolio';
 import InvestorSettings from './pages/InvestorSettings';
+import Invoices from './pages/Invoices';
 import Invoicing from './pages/Invoicing';
 import LEIComplianceDashboard from './pages/LEIComplianceDashboard';
 import LEIGLEIFTestReport from './pages/LEIGLEIFTestReport';
@@ -216,9 +217,9 @@ import PlatformAdminRegister from './pages/PlatformAdminRegister';
 import PlatformAuditLogs from './pages/PlatformAuditLogs';
 import PlatformPricingConfiguration from './pages/PlatformPricingConfiguration';
 import PlatformUserManagement from './pages/PlatformUserManagement';
-import Products from './pages/Products';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import ProductTemplateLibrary from './pages/ProductTemplateLibrary';
+import Products from './pages/Products';
 import PublicSupport from './pages/PublicSupport';
 import QuickPSPProvisioning from './pages/QuickPSPProvisioning';
 import RWAPlatform from './pages/RWAPlatform';
@@ -264,7 +265,9 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import ISOGatewayUserManagement from './pages/ISOGatewayUserManagement';
+import OrchestrationUserManagement from './pages/OrchestrationUserManagement';
+import CryptoGatewayUserManagement from './pages/CryptoGatewayUserManagement';
+import RWAProviderUserManagement from './pages/RWAProviderUserManagement';
 import __Layout from './Layout.jsx';
 
 
@@ -376,16 +379,17 @@ export const PAGES = {
     "ISOGatewayLogin": ISOGatewayLogin,
     "ISOGatewayRouting": ISOGatewayRouting,
     "ISOGatewayTestConsole": ISOGatewayTestConsole,
+    "ISOGatewayUserManagement": ISOGatewayUserManagement,
     "ISOMessageMonitor": ISOMessageMonitor,
     "InstantPayments": InstantPayments,
     "InvestorDividends": InvestorDividends,
     "InvestorHoldings": InvestorHoldings,
-    "Invoices": Invoices,
     "InvestorLogin": InvestorLogin,
     "InvestorMarketplace": InvestorMarketplace,
     "InvestorOnboarding": InvestorOnboarding,
     "InvestorPortfolio": InvestorPortfolio,
     "InvestorSettings": InvestorSettings,
+    "Invoices": Invoices,
     "Invoicing": Invoicing,
     "LEIComplianceDashboard": LEIComplianceDashboard,
     "LEIGLEIFTestReport": LEIGLEIFTestReport,
@@ -487,9 +491,9 @@ export const PAGES = {
     "PlatformAuditLogs": PlatformAuditLogs,
     "PlatformPricingConfiguration": PlatformPricingConfiguration,
     "PlatformUserManagement": PlatformUserManagement,
-    "Products": Products,
     "PrivacyPolicy": PrivacyPolicy,
     "ProductTemplateLibrary": ProductTemplateLibrary,
+    "Products": Products,
     "PublicSupport": PublicSupport,
     "QuickPSPProvisioning": QuickPSPProvisioning,
     "RWAPlatform": RWAPlatform,
@@ -535,7 +539,9 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "ISOGatewayUserManagement": ISOGatewayUserManagement,
+    "OrchestrationUserManagement": OrchestrationUserManagement,
+    "CryptoGatewayUserManagement": CryptoGatewayUserManagement,
+    "RWAProviderUserManagement": RWAProviderUserManagement,
 }
 
 export const pagesConfig = {
