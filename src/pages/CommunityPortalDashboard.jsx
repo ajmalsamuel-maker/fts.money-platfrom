@@ -746,12 +746,94 @@ export default function CommunityPortalDashboard() {
                                                         <p className="font-semibold text-slate-900">{customer.company_name}</p>
                                                         <p className="text-sm text-slate-600">{customer.subscription_tier} • {customer.total_executions || 0} executions</p>
                                                     </div>
-                                                    </div>
-                                                    <div className="flex items-center gap-3">
+                                                </div>
+                                                <div className="flex items-center gap-3">
                                                     <StatusBadge status={customer.status} />
                                                     <Button 
                                                         size="sm"
                                                         onClick={() => navigate(createPageUrl('OrchestrationLogin'))}
+                                                    >
+                                                        Access
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        )}
+
+                        {/* Crypto Banking Services */}
+                        {myCryptoCustomers.length > 0 && (
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle className="flex items-center gap-2">
+                                        <Wallet className="h-5 w-5 text-cyan-600" />
+                                        My Crypto Banking Services
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="space-y-3">
+                                        {myCryptoCustomers.map((customer) => (
+                                            <div 
+                                                key={customer.id}
+                                                className="flex items-center justify-between p-4 bg-slate-50 rounded-lg border border-slate-200"
+                                            >
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-10 h-10 rounded-lg bg-cyan-100 flex items-center justify-center">
+                                                        <Wallet className="h-5 w-5 text-cyan-600" />
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-semibold text-slate-900">{customer.company_name}</p>
+                                                        <p className="text-sm text-slate-600">{customer.subscription_tier} • {customer.kyc_status || 'Pending'}</p>
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-center gap-3">
+                                                    <StatusBadge status={customer.status} />
+                                                    <Button 
+                                                        size="sm"
+                                                        onClick={() => navigate(createPageUrl('CryptoGatewayLogin'))}
+                                                    >
+                                                        Access
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        )}
+
+                        {/* RWA Platform Services */}
+                        {myRWAProviders.length > 0 && (
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle className="flex items-center gap-2">
+                                        <Briefcase className="h-5 w-5 text-amber-600" />
+                                        My RWA Tokenization Platforms
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="space-y-3">
+                                        {myRWAProviders.map((provider) => (
+                                            <div 
+                                                key={provider.id}
+                                                className="flex items-center justify-between p-4 bg-slate-50 rounded-lg border border-slate-200"
+                                            >
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center">
+                                                        <Briefcase className="h-5 w-5 text-amber-600" />
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-semibold text-slate-900">{provider.company_name}</p>
+                                                        <p className="text-sm text-slate-600">{provider.subscription_tier} • {provider.blockchain_network || 'Ethereum'}</p>
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-center gap-3">
+                                                    <StatusBadge status={provider.status} />
+                                                    <Button 
+                                                        size="sm"
+                                                        onClick={() => navigate(createPageUrl('RWAProviderLogin'))}
                                                     >
                                                         Access
                                                     </Button>
