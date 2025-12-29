@@ -27,53 +27,72 @@ import {
     Code,
     TestTube2,
     ChevronDown,
-    ChevronRight
+    ChevronRight,
+    Briefcase
 } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 const menuSections = [
     {
-        id: 'control-plane',
-        title: 'Control Plane',
+        id: 'overview',
+        title: 'Overview & Insights',
         defaultOpen: true,
         items: [
-            { label: 'Dashboard', path: 'FTSMoneyPlatform', icon: Activity, description: 'Platform overview', priority: true },
+            { label: 'Platform Dashboard', path: 'FTSMoneyPlatform', icon: Activity, description: 'Platform overview', priority: true },
             { label: 'System Health', path: 'FTSSystemHealth', icon: Activity, description: 'Real-time monitoring' },
-            { label: 'Setup Guide', path: 'FTSSetupGuide', icon: BookOpen, description: 'Quick start guide', priority: true }
+            { label: 'Revenue Dashboard', path: 'FTSRevenue', icon: BarChart3, description: 'Financial overview', priority: true },
+            { label: 'Platform Analytics', path: 'FTSAnalytics', icon: BarChart3, description: 'Cross-platform insights' },
+            { label: 'Setup Guide', path: 'FTSSetupGuide', icon: BookOpen, description: 'Quick start guide' }
         ]
     },
     {
-        id: 'customer-management',
-        title: 'Customer Management',
+        id: 'psp-operations',
+        title: 'PSP Operations',
         defaultOpen: false,
         items: [
-            { label: 'PSP Operations', path: 'PSPProvisioning', icon: Building2, description: 'Manage all PSPs', priority: true },
+            { label: 'PSP Management', path: 'PSPProvisioning', icon: Building2, description: 'Manage all PSPs', priority: true },
             { label: 'Provisioning Queue', path: 'FTSProvisioningQueue', icon: Activity, description: 'Deploy & monitor' },
-            { label: 'Platform Users', path: 'PlatformUserManagement', icon: Shield, description: 'FTS admins', priority: true },
-            { label: 'Community Users', path: 'CommunityUserManagement', icon: Users, description: 'Portal users' },
             { label: 'PSP Administrators', path: 'PSPUserManagement', icon: Users, description: 'PSP staff' },
-            { label: 'Client Accounts', path: 'FTSClients', icon: Users, description: 'Client management' },
-            { label: 'Tenants', path: 'TenantManagement', icon: Building2, description: 'Multi-tenancy', superAdminOnly: true }
+            { label: 'Resource Orchestration', path: 'ResourceOrchestration', icon: Workflow, description: 'Auto-scaling' }
         ]
     },
     {
-        id: 'financial',
-        title: 'Financial Operations',
+        id: 'crypto-gateway',
+        title: 'Crypto Banking Gateway',
         defaultOpen: false,
         items: [
-            { label: 'Revenue Dashboard', path: 'FTSRevenue', icon: BarChart3, description: 'Consolidated revenue', priority: true },
-            { label: 'Service Billing', path: 'FTSServiceBilling', icon: FileText, description: 'ISO & Orchestration', priority: true },
-            { label: 'Master Pricing', path: 'MasterPricingManagement', icon: DollarSign, description: 'All pricing control' },
-            { label: 'Platform Pricing', path: 'PlatformPricingConfiguration', icon: DollarSign, description: 'PSP tier pricing' },
-            { label: 'Accounting', path: 'XeroIntegration', icon: Zap, description: 'Xero integration' }
+            { label: 'Gateway Dashboard', path: 'CryptoGatewayDashboard', icon: CreditCard, description: 'Crypto overview', priority: true },
+            { label: 'Crypto Customers', path: 'CryptoGatewayCustomers', icon: Users, description: 'White-label clients' },
+            { label: 'Crypto Transactions', path: 'CryptoGatewayTransactions', icon: Activity, description: 'Transaction monitor' },
+            { label: 'Wallets & IBANs', path: 'CryptoWallets', icon: Wallet, description: 'Wallet management' },
+            { label: 'Compliance/KYC', path: 'CryptoCompliance', icon: Shield, description: 'KYC management' },
+            { label: 'Striga Settings', path: 'StrigaServiceManagement', icon: Settings, description: 'Integration config' }
         ]
     },
     {
-        id: 'marketplace',
-        title: 'Marketplace & Services',
+        id: 'rwa-platform',
+        title: 'RWA Tokenization Platform',
+        defaultOpen: false,
+        items: [
+            { label: 'RWA Dashboard', path: 'RWAPlatform', icon: Briefcase, description: 'RWA overview', priority: true },
+            { label: 'RWA Providers', path: 'RWAWhiteLabelProvisioning', icon: Building2, description: 'White-label customers' },
+            { label: 'Asset Issuers', path: 'RWAProviderIssuers', icon: Users, description: 'Issuer management' },
+            { label: 'Tokenized Assets', path: 'RWAProviderAssets', icon: Package, description: 'Asset catalog' },
+            { label: 'Investors', path: 'RWAProviderInvestors', icon: Users, description: 'Investor base' },
+            { label: 'RWA Analytics', path: 'RWAProviderAnalytics', icon: BarChart3, description: 'Performance metrics' }
+        ]
+    },
+    {
+        id: 'services-marketplace',
+        title: 'Services & Marketplace',
         defaultOpen: false,
         items: [
             { label: 'Service Catalog', path: 'FTSServiceManager', icon: Package, description: 'All services', priority: true },
+            { label: 'ISO Gateway', path: 'ISOGatewayCustomers', icon: Code, description: 'ISO customers', priority: true },
+            { label: 'ISO Connections', path: 'ISOGatewayConnections', icon: GitBranch, description: 'Translation routing' },
+            { label: 'ISO Test Console', path: 'ISOGatewayTestConsole', icon: TestTube2, description: 'API testing' },
+            { label: 'ISO Message Monitor', path: 'ISOMessageMonitor', icon: Activity, description: 'Real-time logs' },
+            { label: 'Orchestration', path: 'OrchestrationCustomers', icon: Workflow, description: 'Routing customers', priority: true },
             { label: 'Payment Providers', path: 'FTSProviderPool', icon: Database, description: 'Provider pool' },
             { label: 'Payout Routes', path: 'FTSPayoutRoutes', icon: Wallet, description: 'Payout methods' },
             { label: 'Service Providers', path: 'FTSServiceProviders', icon: Users, description: 'Vendors' },
@@ -81,42 +100,26 @@ const menuSections = [
         ]
     },
     {
-        id: 'infrastructure',
-        title: 'Infrastructure',
+        id: 'user-management',
+        title: 'User & Access Management',
         defaultOpen: false,
         items: [
-            { label: 'Resource Orchestration', path: 'ResourceOrchestration', icon: Activity, description: 'Auto-scaling' },
-            { label: 'API Gateway', path: 'APIGatewayConfiguration', icon: Zap, description: 'Configuration' },
-            { label: 'Domain Management', path: 'FTSDomainManagement', icon: Globe, description: 'SSL & DNS' },
-            { label: 'Integrations Hub', path: 'FTSBlockchainIntegration', icon: Globe, description: 'Blockchain, OB' }
+            { label: 'Platform Admins', path: 'PlatformUserManagement', icon: Shield, description: 'FTS administrators', priority: true },
+            { label: 'Community Users', path: 'CommunityUserManagement', icon: Users, description: 'Portal users' },
+            { label: 'Client Accounts', path: 'FTSClients', icon: Users, description: 'Client management' },
+            { label: 'Tenant Management', path: 'TenantManagement', icon: Building2, description: 'Multi-tenancy', superAdminOnly: true }
         ]
     },
     {
-        id: 'iso-gateway',
-        title: 'ISO Gateway Service',
+        id: 'financial',
+        title: 'Financial Operations',
         defaultOpen: false,
         items: [
-            { label: 'Test Console', path: 'ISOGatewayTestConsole', icon: Code, description: 'API testing', priority: true },
-            { label: 'Customers', path: 'ISOGatewayCustomers', icon: Zap, description: 'Subscribers' },
-            { label: 'Connections', path: 'ISOGatewayConnections', icon: GitBranch, description: 'Translation routing' },
-            { label: 'Message Monitor', path: 'ISOMessageMonitor', icon: Activity, description: 'Real-time logs' }
-        ]
-    },
-    {
-        id: 'orchestration',
-        title: 'Orchestration Service',
-        defaultOpen: false,
-        items: [
-            { label: 'Customers', path: 'OrchestrationCustomers', icon: GitBranch, description: 'Routing subscribers', priority: true }
-        ]
-    },
-    {
-        id: 'analytics',
-        title: 'Analytics & Reports',
-        defaultOpen: false,
-        items: [
-            { label: 'Platform Analytics', path: 'FTSAnalytics', icon: BarChart3, description: 'Cross-PSP insights' },
-            { label: 'Custom Reports', path: 'FTSReporting', icon: FileText, description: 'Report builder' }
+            { label: 'Service Billing', path: 'FTSServiceBilling', icon: FileText, description: 'ISO & Orchestration', priority: true },
+            { label: 'Master Pricing', path: 'MasterPricingManagement', icon: DollarSign, description: 'All pricing control' },
+            { label: 'Platform Pricing', path: 'PlatformPricingConfiguration', icon: DollarSign, description: 'PSP tier pricing' },
+            { label: 'Custom Reports', path: 'FTSReporting', icon: FileText, description: 'Report builder' },
+            { label: 'Accounting', path: 'XeroIntegration', icon: Zap, description: 'Xero integration' }
         ]
     },
     {
@@ -133,21 +136,24 @@ const menuSections = [
         ]
     },
     {
-        id: 'documentation',
-        title: 'Documentation',
-        collapsed: true,
+        id: 'infrastructure',
+        title: 'Infrastructure',
+        defaultOpen: false,
         items: [
-            { label: 'Architecture', path: 'FTSArchitectureDoc', icon: BookOpen, description: 'System design' },
-            { label: 'Product Ecosystem', path: 'FTSProductEcosystemReport', icon: Package, description: 'Products & models' },
-            { label: 'Vertical Solutions', path: 'FTSVerticalSolutions', icon: Building2, description: 'Industry offerings' }
+            { label: 'Domain Management', path: 'FTSDomainManagement', icon: Globe, description: 'SSL & DNS' },
+            { label: 'API Gateway', path: 'APIGatewayConfiguration', icon: Zap, description: 'Configuration' },
+            { label: 'Blockchain', path: 'FTSBlockchainIntegration', icon: Globe, description: 'Blockchain integrations' }
         ]
     },
     {
-        id: 'settings',
-        title: 'Settings',
-        collapsed: true,
+        id: 'resources',
+        title: 'Settings & Resources',
+        defaultOpen: false,
         items: [
             { label: 'Platform Config', path: 'FTSSettings', icon: Settings, description: 'System settings' },
+            { label: 'Architecture', path: 'FTSArchitectureDoc', icon: BookOpen, description: 'System design' },
+            { label: 'Product Ecosystem', path: 'FTSProductEcosystemReport', icon: Package, description: 'Products & models' },
+            { label: 'Vertical Solutions', path: 'FTSVerticalSolutions', icon: Building2, description: 'Industry offerings' },
             { label: 'Advanced Tools', path: 'ModuleCatalogTest', icon: Code, description: 'Module testing' }
         ]
     }
