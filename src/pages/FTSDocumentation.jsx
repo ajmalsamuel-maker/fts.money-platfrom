@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Download, FileText, BookOpen, Code, GitBranch, Wallet } from 'lucide-react';
+import { Download, FileText, BookOpen, Code, GitBranch, Wallet, Shield } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
@@ -18,6 +18,7 @@ import ProductEcosystemDoc from '@/components/docs/ProductEcosystemDoc';
 import VerticalSolutionsDoc from '@/components/docs/VerticalSolutionsDoc';
 import { RWATechnicalSpec } from '@/components/docs/RWATechnicalSpec';
 import CryptoBankingDoc from '@/components/docs/CryptoBankingDoc';
+import { RBACSystemDoc } from '@/components/docs/RBACSystemDoc';
 import MermaidDiagram from '@/components/docs/MermaidDiagram';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -103,6 +104,13 @@ export default function FTSDocumentation() {
             icon: Code,
             content: RWATechnicalSpec,
             description: 'Real World Assets tokenization platform - complete technical specifications'
+        },
+        {
+            id: 'rbac-system',
+            title: 'RBAC & Access Control',
+            icon: Shield,
+            content: RBACSystemDoc,
+            description: 'Role-Based Access Control system - multi-user permissions across all services'
         }
     ];
 
