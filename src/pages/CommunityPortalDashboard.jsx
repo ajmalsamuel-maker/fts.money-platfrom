@@ -29,7 +29,8 @@ import {
     Code,
     GitBranch,
     ChevronDown,
-    Rocket
+    Rocket,
+    BarChart3
 } from 'lucide-react';
 
 export default function CommunityPortalDashboard() {
