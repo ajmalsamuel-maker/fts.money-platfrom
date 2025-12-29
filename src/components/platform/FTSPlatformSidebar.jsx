@@ -49,6 +49,7 @@ const menuSections = [
         items: [
             { label: 'PSP Operations', path: 'PSPProvisioning', icon: Building2, description: 'Manage all PSPs', priority: true },
             { label: 'Provisioning Queue', path: 'FTSProvisioningQueue', icon: Activity, description: 'Deploy & monitor' },
+            { label: 'Platform Users', path: 'PlatformUserManagement', icon: Shield, description: 'FTS admins', priority: true },
             { label: 'Community Users', path: 'CommunityUserManagement', icon: Users, description: 'Portal users' },
             { label: 'PSP Administrators', path: 'PSPUserManagement', icon: Users, description: 'PSP staff' },
             { label: 'Client Accounts', path: 'FTSClients', icon: Users, description: 'Client management' },
