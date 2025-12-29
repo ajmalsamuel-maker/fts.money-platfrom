@@ -207,12 +207,12 @@ export default function FTSDocumentation() {
                 throw new Error('Canvas is empty - content may not be visible');
             }
 
-            const imgWidth = pageWidth - 10;
+            const imgWidth = pageWidth - 4;
             const imgHeight = (canvas.height * imgWidth) / canvas.width;
             
             // Calculate pages needed
-            const margin = 5;
-            const maxHeight = pageHeight - 10;
+            const margin = 2;
+            const maxHeight = pageHeight - 4;
             let heightLeft = imgHeight;
             let position = margin;
 
