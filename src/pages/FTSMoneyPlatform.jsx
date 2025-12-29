@@ -4,7 +4,7 @@ import { base44 } from '@/api/base44Client';
 import UnifiedCommandPalette from '@/components/system/UnifiedCommandPalette';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebarRestructured';
+import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
 import { usePlatformAuth, PLATFORM_PERMISSIONS, PLATFORM_ROLES, getRoleLabel } from '@/components/auth/usePlatformAuth';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";

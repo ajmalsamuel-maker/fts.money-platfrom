@@ -105,7 +105,6 @@ const menuSections = [
         defaultOpen: false,
         items: [
             { label: 'Platform Admins', path: 'PlatformUserManagement', icon: Shield, description: 'FTS administrators', priority: true },
-            { label: 'Role & Permissions', path: 'RolePermissionManagement', icon: Shield, description: 'RBAC configuration', priority: true },
             { label: 'Community Users', path: 'CommunityUserManagement', icon: Users, description: 'Portal users' },
             { label: 'Client Accounts', path: 'FTSClients', icon: Users, description: 'Client management' },
             { label: 'Tenant Management', path: 'TenantManagement', icon: Building2, description: 'Multi-tenancy', superAdminOnly: true }
