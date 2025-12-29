@@ -252,14 +252,28 @@ export default function CommunityPortalDashboard() {
                                     </div>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem onClick={() => navigate(createPageUrl('OrchestrationLogin'))}>
-                                    <GitBranch className="h-4 w-4 mr-3 text-purple-600" />
-                                    <div>
-                                        <p className="font-medium">Orchestration</p>
-                                        <p className="text-xs text-slate-600">Smart routing</p>
-                                    </div>
+                                <GitBranch className="h-4 w-4 mr-3 text-purple-600" />
+                                <div>
+                                <p className="font-medium">Orchestration</p>
+                                <p className="text-xs text-slate-600">Smart routing</p>
+                                </div>
                                 </DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
+                                <DropdownMenuItem onClick={() => navigate(createPageUrl('CryptoGatewayLogin'))}>
+                                <Wallet className="h-4 w-4 mr-3 text-cyan-600" />
+                                <div>
+                                <p className="font-medium">Crypto Banking</p>
+                                <p className="text-xs text-slate-600">Wallets & IBANs</p>
+                                </div>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => navigate(createPageUrl('RWAWhiteLabelProvisioning'))}>
+                                <Briefcase className="h-4 w-4 mr-3 text-amber-600" />
+                                <div>
+                                <p className="font-medium">RWA Platform</p>
+                                <p className="text-xs text-slate-600">Asset tokenization</p>
+                                </div>
+                                </DropdownMenuItem>
+                                </DropdownMenuContent>
+                                </DropdownMenu>
                         <Button 
                             variant="outline"
                             onClick={() => {
