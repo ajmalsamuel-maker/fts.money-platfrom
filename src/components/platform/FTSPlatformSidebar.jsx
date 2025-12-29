@@ -216,18 +216,21 @@ export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, i
                         const hasCurrentPage = section.items.some(item => item.path === currentPage);
 
                         return (
-                            <div key={section.id} className={hasCurrentPage ? 'bg-blue-50/50 -mx-2 px-2 py-1 rounded-lg' : ''}>
+                            <div key={section.id}>
                                 <button
                                     onClick={() => toggleSection(section.id)}
-                                    className="w-full flex items-center justify-between px-2 py-1 hover:bg-slate-50 rounded-lg transition-colors"
+                                    className={cn(
+                                        "w-full flex items-center justify-between px-2 py-1 rounded-lg transition-colors",
+                                        isOpen ? "bg-blue-600 text-white" : "hover:bg-slate-50"
+                                    )}
                                 >
                                     <h3 className={cn(
-                                        "text-xs font-semibold uppercase tracking-wider",
-                                        hasCurrentPage ? "text-blue-700" : "text-slate-600"
+                                        "text-xs font-semibold uppercase tracking-wider text-left",
+                                        isOpen ? "text-white" : hasCurrentPage ? "text-blue-700" : "text-slate-600"
                                     )}>
                                         {section.title}
                                     </h3>
-                                    <span className="text-xs text-slate-400">
+                                    <span className={cn("text-xs", isOpen ? "text-white" : "text-slate-400")}>
                                         {isOpen ? '▼' : '▶'}
                                     </span>
                                 </button>
