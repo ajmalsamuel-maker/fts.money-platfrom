@@ -201,26 +201,78 @@ export default function FTSSetupGuide() {
                         </CardContent>
                     </Card>
 
+                    {/* Crypto & RWA Services */}
+                    <div className="grid grid-cols-2 gap-6 mb-6">
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2">
+                                    <div className="w-10 h-10 rounded-lg bg-cyan-600 flex items-center justify-center text-white font-bold">$</div>
+                                    Crypto Banking Gateway
+                                    <Badge className="bg-cyan-100 text-cyan-700">White-label Crypto</Badge>
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="space-y-3">
+                                <div className="p-3 bg-cyan-50 rounded-lg">
+                                    <p className="font-medium text-cyan-900 mb-1">🎯 Purpose:</p>
+                                    <p className="text-sm text-cyan-800">White-label crypto banking (wallets, IBANs, cards)</p>
+                                </div>
+                                <div className="text-sm space-y-2">
+                                    <p><strong>Platform Admin:</strong> Create customer via Crypto Banking → Customers</p>
+                                    <p><strong>Customer Login:</strong> <code className="bg-slate-100 px-2 py-0.5 rounded">/CryptoGatewayLogin</code></p>
+                                    <p className="text-xs text-slate-600">Powered by Striga integration</p>
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2">
+                                    <div className="w-10 h-10 rounded-lg bg-amber-600 flex items-center justify-center text-white font-bold">R</div>
+                                    RWA Tokenization Platform
+                                    <Badge className="bg-amber-100 text-amber-700">Real-World Assets</Badge>
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="space-y-3">
+                                <div className="p-3 bg-amber-50 rounded-lg">
+                                    <p className="font-medium text-amber-900 mb-1">🎯 Purpose:</p>
+                                    <p className="text-sm text-amber-800">Tokenize and manage real-world assets on blockchain</p>
+                                </div>
+                                <div className="text-sm space-y-2">
+                                    <p><strong>Platform Admin:</strong> Create provider via RWA Platform → Providers</p>
+                                    <p><strong>Provider Login:</strong> <code className="bg-slate-100 px-2 py-0.5 rounded">/RWAProviderLogin</code></p>
+                                    <p className="text-xs text-slate-600">Asset issuers → Investors → Trading</p>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
+
                     {/* Quick Reference */}
                     <Card className="bg-gradient-to-br from-slate-50 to-slate-100">
                         <CardHeader>
                             <CardTitle>Quick Reference - Login URLs</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-3 gap-4">
                                 <div>
-                                    <p className="font-medium text-sm mb-2">Platform & Admin</p>
+                                    <p className="font-medium text-sm mb-2">Platform Admin</p>
                                     <div className="space-y-1 text-sm">
                                         <div><code className="bg-white px-2 py-1 rounded">/PlatformAdminLogin</code> - FTS Control Panel</div>
                                         <div><code className="bg-white px-2 py-1 rounded">/CommunityPortalLogin</code> - Community Portal</div>
                                     </div>
                                 </div>
                                 <div>
-                                    <p className="font-medium text-sm mb-2">Services</p>
+                                    <p className="font-medium text-sm mb-2">Core Services</p>
                                     <div className="space-y-1 text-sm">
-                                        <div><code className="bg-white px-2 py-1 rounded">/ISOGatewayLogin</code> - ISO Gateway</div>
                                         <div><code className="bg-white px-2 py-1 rounded">/PSPLogin</code> - PSP Platform</div>
+                                        <div><code className="bg-white px-2 py-1 rounded">/ISOGatewayLogin</code> - ISO Gateway</div>
                                         <div><code className="bg-white px-2 py-1 rounded">/OrchestrationLogin</code> - Orchestration</div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p className="font-medium text-sm mb-2">Advanced Services</p>
+                                    <div className="space-y-1 text-sm">
+                                        <div><code className="bg-white px-2 py-1 rounded">/CryptoGatewayLogin</code> - Crypto Banking</div>
+                                        <div><code className="bg-white px-2 py-1 rounded">/RWAProviderLogin</code> - RWA Platform</div>
                                         <div><code className="bg-white px-2 py-1 rounded">/MerchantLogin</code> - Merchant Portal</div>
                                     </div>
                                 </div>

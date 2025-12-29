@@ -14,7 +14,12 @@ import {
     Users,
     DollarSign,
     Activity,
-    BarChart3
+    BarChart3,
+    Code,
+    GitBranch,
+    Wallet,
+    Briefcase,
+    Building2
 } from 'lucide-react';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
@@ -25,6 +30,26 @@ export default function FTSAnalytics() {
     const { data: psps = [] } = useQuery({
         queryKey: ['provisioned-psps'],
         queryFn: () => base44.entities.ProvisionedPSP.list('-created_date')
+    });
+
+    const { data: isoCustomers = [] } = useQuery({
+        queryKey: ['iso-customers'],
+        queryFn: () => base44.entities.ISOGatewayCustomer.list()
+    });
+
+    const { data: orchestrationCustomers = [] } = useQuery({
+        queryKey: ['orchestration-customers'],
+        queryFn: () => base44.entities.OrchestrationCustomer.list()
+    });
+
+    const { data: cryptoCustomers = [] } = useQuery({
+        queryKey: ['crypto-customers'],
+        queryFn: () => base44.entities.CryptoGatewayCustomer.list()
+    });
+
+    const { data: rwaProviders = [] } = useQuery({
+        queryKey: ['rwa-providers'],
+        queryFn: () => base44.entities.RWAWhiteLabelCustomer.list()
     });
 
     const volumeData = [
@@ -74,16 +99,85 @@ export default function FTSAnalytics() {
                 </header>
 
                 <div className="p-6 space-y-6">
-                <div className="grid grid-cols-4 gap-4">
+                <div className="grid grid-cols-6 gap-4">
+                    <Card>
+                        <CardContent className="p-4">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-xs text-slate-600">All Services</p>
+                                    <p className="text-2xl font-bold text-blue-600">{psps.length + isoCustomers.length + orchestrationCustomers.length + cryptoCustomers.length + rwaProviders.length}</p>
+                                </div>
+                                <Activity className="h-6 w-6 text-blue-600" />
+                            </div>
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardContent className="p-4">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-xs text-slate-600">PSP</p>
+                                    <p className="text-2xl font-bold text-emerald-600">{psps.filter(p => p.status === 'active').length}</p>
+                                </div>
+                                <Building2 className="h-6 w-6 text-emerald-600" />
+                            </div>
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardContent className="p-4">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-xs text-slate-600">ISO Gateway</p>
+                                    <p className="text-2xl font-bold text-indigo-600">{isoCustomers.filter(c => c.status === 'active').length}</p>
+                                </div>
+                                <Code className="h-6 w-6 text-indigo-600" />
+                            </div>
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardContent className="p-4">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-xs text-slate-600">Orchestration</p>
+                                    <p className="text-2xl font-bold text-purple-600">{orchestrationCustomers.filter(c => c.status === 'active').length}</p>
+                                </div>
+                                <GitBranch className="h-6 w-6 text-purple-600" />
+                            </div>
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardContent className="p-4">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-xs text-slate-600">Crypto</p>
+                                    <p className="text-2xl font-bold text-cyan-600">{cryptoCustomers.filter(c => c.status === 'active').length}</p>
+                                </div>
+                                <Wallet className="h-6 w-6 text-cyan-600" />
+                            </div>
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardContent className="p-4">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-xs text-slate-600">RWA</p>
+                                    <p className="text-2xl font-bold text-amber-600">{rwaProviders.filter(p => p.status === 'active').length}</p>
+                                </div>
+                                <Briefcase className="h-6 w-6 text-amber-600" />
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
+
+                <div className="grid grid-cols-3 gap-4">
                     <Card>
                         <CardContent className="p-6">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm text-slate-600">Total Volume (6M)</p>
-                                    <p className="text-2xl font-bold text-slate-900">$24.9M</p>
+                                    <p className="text-sm text-slate-600">Platform Volume (6M)</p>
+                                    <p className="text-3xl font-bold text-slate-900">$24.9M</p>
                                     <p className="text-xs text-emerald-600 mt-1">+28% growth</p>
                                 </div>
-                                <TrendingUp className="h-8 w-8 text-emerald-600" />
+                                <TrendingUp className="h-10 w-10 text-emerald-600" />
                             </div>
                         </CardContent>
                     </Card>
@@ -92,10 +186,10 @@ export default function FTSAnalytics() {
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="text-sm text-slate-600">Total Revenue</p>
-                                    <p className="text-2xl font-bold text-slate-900">$371K</p>
+                                    <p className="text-3xl font-bold text-slate-900">$371K</p>
                                     <p className="text-xs text-emerald-600 mt-1">+32% growth</p>
                                 </div>
-                                <DollarSign className="h-8 w-8 text-blue-600" />
+                                <DollarSign className="h-10 w-10 text-blue-600" />
                             </div>
                         </CardContent>
                     </Card>
@@ -103,23 +197,11 @@ export default function FTSAnalytics() {
                         <CardContent className="p-6">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm text-slate-600">Active PSPs</p>
-                                    <p className="text-2xl font-bold text-slate-900">{psps.filter(p => p.status === 'active').length}</p>
-                                    <p className="text-xs text-slate-500 mt-1">Across all tiers</p>
+                                    <p className="text-sm text-slate-600">Total End Users</p>
+                                    <p className="text-3xl font-bold text-slate-900">{psps.reduce((sum, p) => sum + (p.total_merchants || 0), 0)}</p>
+                                    <p className="text-xs text-slate-500 mt-1">Across all services</p>
                                 </div>
-                                <Activity className="h-8 w-8 text-purple-600" />
-                            </div>
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardContent className="p-6">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-sm text-slate-600">Total Merchants</p>
-                                    <p className="text-2xl font-bold text-slate-900">{psps.reduce((sum, p) => sum + (p.total_merchants || 0), 0)}</p>
-                                    <p className="text-xs text-slate-500 mt-1">All PSPs combined</p>
-                                </div>
-                                <Users className="h-8 w-8 text-amber-600" />
+                                <Users className="h-10 w-10 text-purple-600" />
                             </div>
                         </CardContent>
                     </Card>
