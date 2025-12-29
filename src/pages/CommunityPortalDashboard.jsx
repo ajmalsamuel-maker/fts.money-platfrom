@@ -170,10 +170,10 @@ export default function CommunityPortalDashboard() {
     ];
 
     const benefits = [
-        { icon: Sparkles, text: 'White-label PSP infrastructure', color: 'text-blue-600' },
-        { icon: Globe, text: '150+ payment services & integrations', color: 'text-purple-600' },
+        { icon: Sparkles, text: 'PSP, ISO Gateway, Orchestration, Crypto & RWA', color: 'text-blue-600' },
+        { icon: Globe, text: 'Multi-protocol payment infrastructure', color: 'text-purple-600' },
         { icon: Shield, text: 'Enterprise-grade security & compliance', color: 'text-emerald-600' },
-        { icon: TrendingUp, text: 'Scalable from startup to enterprise', color: 'text-amber-600' }
+        { icon: TrendingUp, text: '150+ services • Global scale • White-label ready', color: 'text-amber-600' }
     ];
 
     if (!session) return null;
@@ -298,7 +298,7 @@ export default function CommunityPortalDashboard() {
                                         Fluid Global Payments
                                     </h1>
                                     <p className="mb-8 text-xl text-slate-700 font-medium">
-                                        Launch your payment empire in 24 hours
+                                        Complete payment infrastructure ecosystem in 24 hours
                                     </p>
                                     <div className="grid grid-cols-1 gap-3 mb-8">
                                         {benefits.map((benefit, i) => {
@@ -396,8 +396,8 @@ export default function CommunityPortalDashboard() {
                         <>
                             {/* Core Services */}
                             <div className="mb-6">
-                                <h3 className="text-2xl font-bold text-slate-900 mb-2">Core Services</h3>
-                                <p className="text-slate-600 mb-4">Launch your payment infrastructure in minutes</p>
+                                <h3 className="text-2xl font-bold text-slate-900 mb-2">Core Payment Infrastructure</h3>
+                                <p className="text-slate-600 mb-4">Choose from 5 enterprise-grade infrastructure services</p>
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                     {quickActions.filter(a => a.category === 'core').map((action, i) => {
                                         const Icon = action.icon;
@@ -426,8 +426,8 @@ export default function CommunityPortalDashboard() {
 
                             {/* Advanced Services */}
                             <div className="mb-6">
-                                <h3 className="text-2xl font-bold text-slate-900 mb-2">Advanced Services</h3>
-                                <p className="text-slate-600 mb-4">Enterprise-grade crypto banking & asset tokenization</p>
+                                <h3 className="text-2xl font-bold text-slate-900 mb-2">Digital Asset Infrastructure</h3>
+                                <p className="text-slate-600 mb-4">Crypto banking wallets, IBANs & real-world asset tokenization</p>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     {quickActions.filter(a => a.category === 'advanced').map((action, i) => {
                                         const Icon = action.icon;
@@ -462,36 +462,36 @@ export default function CommunityPortalDashboard() {
                                 <CardContent>
                                     <div className="grid md:grid-cols-2 gap-6">
                                         <div>
-                                            <h4 className="font-semibold text-slate-900 mb-3">Build & Launch</h4>
+                                            <h4 className="font-semibold text-slate-900 mb-3">Payment Infrastructure</h4>
                                             <ul className="space-y-2 text-sm text-slate-600">
                                                 <li className="flex items-center gap-2">
                                                     <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-                                                    Launch white-label PSP in 24-48 hours
+                                                    White-label PSP in 24-48 hours
                                                 </li>
                                                 <li className="flex items-center gap-2">
                                                     <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-                                                    Deploy ISO message translation gateway
+                                                    ISO 8583/20022 message translation
                                                 </li>
                                                 <li className="flex items-center gap-2">
                                                     <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-                                                    Set up smart payment routing
+                                                    Smart routing & orchestration
                                                 </li>
                                             </ul>
                                         </div>
                                         <div>
-                                            <h4 className="font-semibold text-slate-900 mb-3">Integrate & Grow</h4>
+                                            <h4 className="font-semibold text-slate-900 mb-3">Digital Assets & Growth</h4>
                                             <ul className="space-y-2 text-sm text-slate-600">
                                                 <li className="flex items-center gap-2">
                                                     <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-                                                    Access 150+ payment services
+                                                    Crypto wallets, IBANs & cards
                                                 </li>
                                                 <li className="flex items-center gap-2">
                                                     <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-                                                    Offer services to other PSPs
+                                                    Real-world asset tokenization
                                                 </li>
                                                 <li className="flex items-center gap-2">
                                                     <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-                                                    Enterprise compliance built-in
+                                                    150+ integrated services & APIs
                                                 </li>
                                             </ul>
                                         </div>

@@ -11,7 +11,7 @@ import { FTS_COLORS, FTS_LOGOS } from '@/components/community/FTSBrandColors';
 import { 
     LayoutDashboard, Building2, Globe, Users, Settings, LogOut,
     Rocket, FileText, DollarSign, ChevronDown, ChevronRight,
-    Code, GitBranch, Package, Briefcase, BarChart3
+    Code, GitBranch, Package, Briefcase, BarChart3, BookOpen, Wallet
 } from 'lucide-react';
 
 export default function CommunityPortalSidebarOptimized({ currentPage, userEmail }) {
@@ -90,6 +90,8 @@ export default function CommunityPortalSidebarOptimized({ currentPage, userEmail
                 { icon: Building2, label: 'PSP Instances', path: 'MyPSPInstances', count: myPSPs.length },
                 { icon: Code, label: 'ISO Gateway', path: 'ISOGatewayLogin', count: myISOCustomers.length },
                 { icon: GitBranch, label: 'Orchestration', path: 'OrchestrationLogin', count: myOrchCustomers.length },
+                { icon: Wallet, label: 'Crypto Banking', path: 'CryptoGatewayLogin', count: 0 },
+                { icon: Briefcase, label: 'RWA Platform', path: 'RWAWhiteLabelProvisioning', count: 0 },
                 { icon: FileText, label: 'Subscriptions', path: 'MySubscriptions', count: subscriptions.length }
             ]
         }] : []),
@@ -111,6 +113,17 @@ export default function CommunityPortalSidebarOptimized({ currentPage, userEmail
             items: [
                 { icon: Users, label: 'Become a Provider', path: 'ServiceProviderRegistration' },
                 { icon: Briefcase, label: 'My Offerings', path: 'MyWholesaleOfferings' }
+            ]
+        },
+        {
+            id: 'documentation',
+            title: 'Documentation',
+            defaultOpen: false,
+            items: [
+                { icon: BookOpen, label: 'Platform Docs', path: 'FTSDocumentation' },
+                { icon: Code, label: 'API Documentation', path: 'APIDocumentation' },
+                { icon: Building2, label: 'PSP Architecture', path: 'FTSArchitectureDoc' },
+                { icon: Package, label: 'Service Catalog', path: 'CommunityProductCatalog' }
             ]
         },
         {
