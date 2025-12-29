@@ -157,6 +157,7 @@ const menuSections = [
         defaultOpen: false,
         items: [
             { label: 'Platform Config', path: 'FTSSettings', icon: Settings, description: 'System settings' },
+            { label: 'Documentation', path: 'FTSDocumentation', icon: BookOpen, description: 'Complete platform docs', priority: true },
             { label: 'Architecture', path: 'FTSArchitectureDoc', icon: BookOpen, description: 'System design' },
             { label: 'Product Ecosystem', path: 'FTSProductEcosystemReport', icon: Package, description: 'Products & models' },
             { label: 'Vertical Solutions', path: 'FTSVerticalSolutions', icon: Building2, description: 'Industry offerings' },
