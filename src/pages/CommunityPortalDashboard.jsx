@@ -492,59 +492,75 @@ export default function CommunityPortalDashboard() {
                             {/* ACTIVE USER DASHBOARD VIEW */}
 
                     {/* Stats Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                    <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-6">
                         <Card>
                             <CardContent className="p-6">
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <p className="text-sm text-slate-600">PSP Instances</p>
-                                        <p className="text-3xl font-bold text-slate-900 mt-1">{myPSPs.length}</p>
-                                    </div>
-                                    <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
+                                <div className="flex flex-col items-center text-center">
+                                    <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center mb-2">
                                         <Building2 className="h-6 w-6 text-blue-600" />
                                     </div>
+                                    <p className="text-2xl font-bold text-slate-900">{myPSPs.length}</p>
+                                    <p className="text-xs text-slate-600">PSP</p>
                                 </div>
                             </CardContent>
                         </Card>
 
                         <Card>
                             <CardContent className="p-6">
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <p className="text-sm text-slate-600">ISO Gateway</p>
-                                        <p className="text-3xl font-bold text-slate-900 mt-1">{myISOCustomers.length}</p>
-                                    </div>
-                                    <div className="w-12 h-12 rounded-xl bg-indigo-100 flex items-center justify-center">
+                                <div className="flex flex-col items-center text-center">
+                                    <div className="w-12 h-12 rounded-xl bg-indigo-100 flex items-center justify-center mb-2">
                                         <Code className="h-6 w-6 text-indigo-600" />
                                     </div>
+                                    <p className="text-2xl font-bold text-slate-900">{myISOCustomers.length}</p>
+                                    <p className="text-xs text-slate-600">ISO Gateway</p>
                                 </div>
                             </CardContent>
                         </Card>
 
                         <Card>
                             <CardContent className="p-6">
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <p className="text-sm text-slate-600">Orchestration</p>
-                                        <p className="text-3xl font-bold text-slate-900 mt-1">{myOrchCustomers.length}</p>
-                                    </div>
-                                    <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center">
+                                <div className="flex flex-col items-center text-center">
+                                    <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center mb-2">
                                         <GitBranch className="h-6 w-6 text-purple-600" />
                                     </div>
+                                    <p className="text-2xl font-bold text-slate-900">{myOrchCustomers.length}</p>
+                                    <p className="text-xs text-slate-600">Orchestration</p>
                                 </div>
                             </CardContent>
                         </Card>
 
                         <Card>
                             <CardContent className="p-6">
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <p className="text-sm text-slate-600">Marketplace</p>
-                                        <p className="text-3xl font-bold text-slate-900 mt-1">{services.length}</p>
+                                <div className="flex flex-col items-center text-center">
+                                    <div className="w-12 h-12 rounded-xl bg-cyan-100 flex items-center justify-center mb-2">
+                                        <Wallet className="h-6 w-6 text-cyan-600" />
                                     </div>
-                                    <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center">
+                                    <p className="text-2xl font-bold text-slate-900">{myCryptoCustomers.length}</p>
+                                    <p className="text-xs text-slate-600">Crypto Banking</p>
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        <Card>
+                            <CardContent className="p-6">
+                                <div className="flex flex-col items-center text-center">
+                                    <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center mb-2">
+                                        <Briefcase className="h-6 w-6 text-amber-600" />
+                                    </div>
+                                    <p className="text-2xl font-bold text-slate-900">{myRWAProviders.length}</p>
+                                    <p className="text-xs text-slate-600">RWA Platform</p>
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        <Card>
+                            <CardContent className="p-6">
+                                <div className="flex flex-col items-center text-center">
+                                    <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center mb-2">
                                         <Globe className="h-6 w-6 text-emerald-600" />
                                     </div>
+                                    <p className="text-2xl font-bold text-slate-900">{services.length}</p>
+                                    <p className="text-xs text-slate-600">Services</p>
                                 </div>
                             </CardContent>
                         </Card>
