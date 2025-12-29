@@ -51,7 +51,6 @@ import {
     RefreshCw
 } from 'lucide-react';
 import { usePermissions } from '@/components/auth/usePermissions';
-import { AccessDenied } from '@/components/auth/PermissionGate';
 
 const categoryIcons = {
     authentication: Lock,
@@ -159,7 +158,13 @@ export default function AuditLogs() {
                 <Sidebar collapsed={sidebarCollapsed} currentPage="AuditLogs" />
                 <div className={cn("transition-all duration-300", sidebarCollapsed ? "ml-20" : "ml-64")}>
                     <TopHeader onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} collapsed={sidebarCollapsed} />
-                    <main className="p-6"><AccessDenied /></main>
+                    <main className="p-6">
+                        <div className="flex flex-col items-center justify-center h-64">
+                            <Shield className="h-16 w-16 text-slate-300 mb-4" />
+                            <h3 className="text-xl font-semibold text-slate-700 mb-2">Access Denied</h3>
+                            <p className="text-slate-500">You don't have permission to view audit logs.</p>
+                        </div>
+                    </main>
                 </div>
             </div>
         );
