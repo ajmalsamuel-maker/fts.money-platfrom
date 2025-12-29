@@ -129,7 +129,8 @@ const menuSections = [
         items: [
             { label: 'LEI/vLEI Dashboard', path: 'LEIComplianceDashboard', icon: Shield, description: 'Credentials', priority: true },
             { label: 'Compliance Testing', path: 'FTSComplianceTesting', icon: TestTube2, description: 'Validation' },
-            { label: 'Audit Logs', path: 'EnhancedAuditLogs', icon: FileText, description: 'All logs' },
+            { label: 'Platform Audit Logs', path: 'PlatformAuditLogs', icon: FileText, description: 'Complete audit trail', priority: true },
+            { label: 'Access Logs', path: 'EnhancedAuditLogs', icon: FileText, description: 'Access analytics' },
             { label: 'Policy Management', path: 'FTSCompliance', icon: Shield, description: 'Policies' },
             { label: 'Workflows', path: 'WorkflowManagement', icon: GitBranch, description: 'ISO processes' },
             { label: 'Data Retention', path: 'DataRetentionManagement', icon: Database, description: 'GDPR' }
