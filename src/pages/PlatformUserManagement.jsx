@@ -3,8 +3,10 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
 import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
-import { usePlatformAuth, PLATFORM_PERMISSIONS, PLATFORM_ROLES, getRoleLabel } from '@/components/auth/usePlatformAuth';
+import { usePlatformAuth, PLATFORM_ROLES, getRoleLabel } from '@/components/auth/usePlatformAuth';
 import { useAuditLogger } from '@/components/audit/useAuditLogger';
+import { usePermissions } from '@/components/auth/usePermissions';
+import { PermissionGate } from '@/components/auth/PermissionGate';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,6 +23,7 @@ export default function PlatformUserManagement() {
     const queryClient = useQueryClient();
     const { platformUser, loading } = usePlatformAuth();
     const { logUserCreated, logUserDeleted, logRoleChange, logPasswordChange } = useAuditLogger(platformUser);
+    const { canEditUser, canDeleteUser, canChangeUserRole, hasPermission, PERMISSIONS } = usePermissions(platformUser);
     
     const [inviteOpen, setInviteOpen] = useState(false);
     const [deleteUser, setDeleteUser] = useState(null);
@@ -172,13 +175,17 @@ export default function PlatformUserManagement() {
                                 {getRoleLabel(platformUser?.platform_role)}
                             </Badge>
                         </div>
-                        <Dialog open={inviteOpen} onOpenChange={setInviteOpen}>
-                            <DialogTrigger asChild>
-                                <Button className="gap-2 bg-blue-600 hover:bg-blue-700">
-                                    <UserPlus className="h-4 w-4" />
-                                    Invite User
-                                </Button>
-                            </DialogTrigger>
+                        <PermissionGate
+                            user={platformUser}
+                            permission={PERMISSIONS.USER_CREATE}
+                        >
+                            <Dialog open={inviteOpen} onOpenChange={setInviteOpen}>
+                                <DialogTrigger asChild>
+                                    <Button className="gap-2 bg-blue-600 hover:bg-blue-700">
+                                        <UserPlus className="h-4 w-4" />
+                                        Invite User
+                                    </Button>
+                                </DialogTrigger>
                         <DialogContent>
                             <DialogHeader>
                                 <DialogTitle>Invite New Platform User</DialogTitle>
@@ -236,9 +243,10 @@ export default function PlatformUserManagement() {
                                 </Button>
                             </div>
                         </DialogContent>
-                        </Dialog>
-                    </div>
-                </header>
+                            </Dialog>
+                        </PermissionGate>
+                        </div>
+                        </header>
 
                 <div className="p-6">
                     <Card className="bg-white border-slate-200">
@@ -264,16 +272,27 @@ export default function PlatformUserManagement() {
                                         <div className="flex items-center gap-3">
                                             <Select
                                                 value={user.platform_role}
-                                                onValueChange={(v) => updateRoleMutation.mutate({ userId: user.id, role: v, oldRole: user.platform_role })}
-                                                disabled={user.email === platformUser?.email}
+                                                onValueChange={(v) => {
+                                                    if (!canChangeUserRole(user, v)) {
+                                                        alert('You cannot change this user to that role');
+                                                        return;
+                                                    }
+                                                    updateRoleMutation.mutate({ userId: user.id, role: v, oldRole: user.platform_role });
+                                                }}
+                                                disabled={!canEditUser(user) || user.email === platformUser?.email}
                                             >
                                                 <SelectTrigger className="w-40">
                                                     <SelectValue />
                                                 </SelectTrigger>
                                                 <SelectContent>
-                                                    <SelectItem value={PLATFORM_ROLES.SUPER_ADMIN}>Super Admin</SelectItem>
-                                                    <SelectItem value={PLATFORM_ROLES.PLATFORM_ADMIN}>Platform Admin</SelectItem>
+                                                    <SelectItem value={PLATFORM_ROLES.SUPER_ADMIN} disabled={!canChangeUserRole(user, PLATFORM_ROLES.SUPER_ADMIN)}>
+                                                        Super Admin
+                                                    </SelectItem>
+                                                    <SelectItem value={PLATFORM_ROLES.PLATFORM_ADMIN} disabled={!canChangeUserRole(user, PLATFORM_ROLES.PLATFORM_ADMIN)}>
+                                                        Platform Admin
+                                                    </SelectItem>
                                                     <SelectItem value={PLATFORM_ROLES.OPERATIONS}>Operations</SelectItem>
+                                                    <SelectItem value={PLATFORM_ROLES.FINANCE_MANAGER}>Finance Manager</SelectItem>
                                                     <SelectItem value={PLATFORM_ROLES.FINANCE}>Finance</SelectItem>
                                                     <SelectItem value={PLATFORM_ROLES.SUPPORT}>Support</SelectItem>
                                                     <SelectItem value={PLATFORM_ROLES.VIEWER}>Viewer</SelectItem>
@@ -286,21 +305,28 @@ export default function PlatformUserManagement() {
                                             }>
                                                 {getRoleLabel(user.platform_role)}
                                             </Badge>
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                onClick={() => setResetPasswordUser(user)}
-                                                className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-                                                title="Reset Password"
+                                            <PermissionGate
+                                                user={platformUser}
+                                                permission={PERMISSIONS.USER_RESET_PASSWORD_ANY}
+                                                targetUser={user}
                                             >
-                                                <Key className="h-4 w-4" />
-                                            </Button>
-                                            {user.email !== platformUser?.email && (
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    onClick={() => setResetPasswordUser(user)}
+                                                    className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                                                    title="Reset Password"
+                                                >
+                                                    <Key className="h-4 w-4" />
+                                                </Button>
+                                            </PermissionGate>
+                                            {canDeleteUser(user) && (
                                                 <Button
                                                     variant="ghost"
                                                     size="icon"
                                                     onClick={() => setDeleteUser(user)}
                                                     className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                                    title="Delete User"
                                                 >
                                                     <Trash2 className="h-4 w-4" />
                                                 </Button>
