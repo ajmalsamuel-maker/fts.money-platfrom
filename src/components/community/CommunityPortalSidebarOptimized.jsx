@@ -11,7 +11,7 @@ import { FTS_COLORS, FTS_LOGOS } from '@/components/community/FTSBrandColors';
 import { 
     LayoutDashboard, Building2, Globe, Users, Settings, LogOut,
     Rocket, FileText, DollarSign, ChevronDown, ChevronRight,
-    Code, GitBranch, Package, Briefcase
+    Code, GitBranch, Package, Briefcase, BarChart3
 } from 'lucide-react';
 
 export default function CommunityPortalSidebarOptimized({ currentPage, userEmail }) {
