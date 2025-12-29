@@ -3,7 +3,7 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
 Deno.serve(async (req) => {
     try {
         const base44 = createClientFromRequest(req);
-        const { action, email, password, full_name } = await req.json();
+        const { action, email, password, full_name, community_role } = await req.json();
 
         // Simple hash function
         const hashPassword = async (password) => {
@@ -36,12 +36,16 @@ Deno.serve(async (req) => {
                 // Hash password
                 const hashedPassword = await hashPassword(password);
 
+                // Validate role
+                const validRoles = ['psp_owner', 'psp_administrator', 'developer', 'partner', 'reseller', 'operations', 'analyst'];
+                const role = community_role && validRoles.includes(community_role) ? community_role : 'psp_owner';
+
                 // Create community user
                 const user = await base44.asServiceRole.entities.AuthUser.create({
                     email,
                     full_name: full_name || email.split('@')[0],
                     password_hash: hashedPassword,
-                    community_role: 'psp_owner',
+                    community_role: role,
                     account_type: 'community'
                 });
 
