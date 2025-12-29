@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Users, UserPlus, Mail, Trash2, Search, Building2 } from 'lucide-react';
+import { Users, UserPlus, Mail, Trash2, Search, Building2, Pencil, Shield } from 'lucide-react';
 
 export default function CommunityUserManagement() {
     const queryClient = useQueryClient();
@@ -19,11 +19,17 @@ export default function CommunityUserManagement() {
     
     const [inviteOpen, setInviteOpen] = useState(false);
     const [deleteUser, setDeleteUser] = useState(null);
+    const [editUser, setEditUser] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [inviteForm, setInviteForm] = useState({
         email: '',
         full_name: '',
         password: ''
+    });
+    const [editForm, setEditForm] = useState({
+        full_name: '',
+        email: '',
+        community_role: ''
     });
     const [error, setError] = useState('');
 
@@ -70,6 +76,20 @@ export default function CommunityUserManagement() {
         onSuccess: () => {
             queryClient.invalidateQueries(['community-users']);
             setDeleteUser(null);
+        }
+    });
+
+    const updateMutation = useMutation({
+        mutationFn: async ({ userId, updates }) => {
+            await base44.asServiceRole.entities.AuthUser.update(userId, updates);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries(['community-users']);
+            setEditUser(null);
+            setError('');
+        },
+        onError: (err) => {
+            setError(err.message);
         }
     });
 
@@ -244,7 +264,26 @@ export default function CommunityUserManagement() {
                                                     <Button
                                                         variant="ghost"
                                                         size="icon"
-                                                        onClick={() => setDeleteUser(user)}
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            setEditUser(user);
+                                                            setEditForm({
+                                                                full_name: user.full_name,
+                                                                email: user.email,
+                                                                community_role: user.community_role || 'PSP Owner'
+                                                            });
+                                                        }}
+                                                        className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                                                    >
+                                                        <Pencil className="h-4 w-4" />
+                                                    </Button>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            setDeleteUser(user);
+                                                        }}
                                                         className="text-red-600 hover:text-red-700 hover:bg-red-50"
                                                     >
                                                         <Trash2 className="h-4 w-4" />
@@ -259,6 +298,72 @@ export default function CommunityUserManagement() {
                     </Card>
                 </div>
             </div>
+
+            <Dialog open={!!editUser} onOpenChange={() => setEditUser(null)}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2">
+                            <Pencil className="h-5 w-5 text-blue-600" />
+                            Edit Community User
+                        </DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4 mt-4">
+                        {error && (
+                            <Alert variant="destructive">
+                                <AlertDescription>{error}</AlertDescription>
+                            </Alert>
+                        )}
+                        <div>
+                            <Label>Full Name</Label>
+                            <Input
+                                value={editForm.full_name}
+                                onChange={(e) => setEditForm({...editForm, full_name: e.target.value})}
+                                placeholder="John Doe"
+                            />
+                        </div>
+                        <div>
+                            <Label>Email Address</Label>
+                            <Input
+                                type="email"
+                                value={editForm.email}
+                                onChange={(e) => setEditForm({...editForm, email: e.target.value})}
+                                placeholder="john@company.com"
+                            />
+                        </div>
+                        <div>
+                            <Label>Community Role</Label>
+                            <Input
+                                value={editForm.community_role}
+                                onChange={(e) => setEditForm({...editForm, community_role: e.target.value})}
+                                placeholder="PSP Owner"
+                            />
+                        </div>
+                    </div>
+                    <DialogFooter className="mt-4">
+                        <Button variant="outline" onClick={() => setEditUser(null)}>Cancel</Button>
+                        <Button 
+                            onClick={() => {
+                                if (!editForm.email || !editForm.full_name) {
+                                    setError('Please fill in all required fields');
+                                    return;
+                                }
+                                updateMutation.mutate({
+                                    userId: editUser.id,
+                                    updates: {
+                                        full_name: editForm.full_name,
+                                        email: editForm.email,
+                                        community_role: editForm.community_role
+                                    }
+                                });
+                            }}
+                            disabled={updateMutation.isPending}
+                            className="bg-blue-600 hover:bg-blue-700"
+                        >
+                            {updateMutation.isPending ? 'Updating...' : 'Update User'}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
 
             <AlertDialog open={!!deleteUser} onOpenChange={() => setDeleteUser(null)}>
                 <AlertDialogContent>
