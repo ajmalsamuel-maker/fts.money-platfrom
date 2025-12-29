@@ -19,6 +19,8 @@ import VerticalSolutionsDoc from '@/components/docs/VerticalSolutionsDoc';
 import { RWATechnicalSpec } from '@/components/docs/RWATechnicalSpec';
 import CryptoBankingDoc from '@/components/docs/CryptoBankingDoc';
 import { RBACSystemDoc } from '@/components/docs/RBACSystemDoc';
+import { MerchantPortalDoc } from '@/components/docs/MerchantPortalDoc';
+import { VirtualTerminalDoc } from '@/components/docs/VirtualTerminalDoc';
 import MermaidDiagram from '@/components/docs/MermaidDiagram';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -111,6 +113,20 @@ export default function FTSDocumentation() {
             icon: Shield,
             content: RBACSystemDoc,
             description: 'Role-Based Access Control system - multi-user permissions across all services'
+        },
+        {
+            id: 'merchant-portal',
+            title: 'Merchant Portal',
+            icon: FileText,
+            content: MerchantPortalDoc,
+            description: 'Self-service merchant portal - transactions, settlements, disputes, and analytics'
+        },
+        {
+            id: 'virtual-terminal',
+            title: 'Virtual Payment Terminal',
+            icon: Code,
+            content: VirtualTerminalDoc,
+            description: 'Web-based payment terminal - MOTO, recurring, and card-not-present processing'
         }
     ];
 
