@@ -106,6 +106,11 @@ const menuSections = [
         items: [
             { label: 'Platform Admins', path: 'PlatformUserManagement', icon: Shield, description: 'FTS administrators', priority: true },
             { label: 'Community Users', path: 'CommunityUserManagement', icon: Users, description: 'Portal users' },
+            { label: 'ISO Gateway Users', path: 'ISOGatewayUserManagement', icon: Code, description: 'ISO RBAC' },
+            { label: 'Orchestration Users', path: 'OrchestrationUserManagement', icon: GitBranch, description: 'Orch RBAC' },
+            { label: 'Crypto Banking Users', path: 'CryptoGatewayUserManagement', icon: Wallet, description: 'Crypto RBAC' },
+            { label: 'RWA Platform Users', path: 'RWAProviderUserManagement', icon: Briefcase, description: 'RWA RBAC' },
+            { label: 'Role & Permissions', path: 'RolePermissionManagement', icon: Shield, description: 'Edit matrix', priority: true },
             { label: 'Client Accounts', path: 'FTSClients', icon: Users, description: 'Client management' },
             { label: 'Tenant Management', path: 'TenantManagement', icon: Building2, description: 'Multi-tenancy', superAdminOnly: true }
         ]
