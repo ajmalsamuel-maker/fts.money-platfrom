@@ -4,7 +4,7 @@ import { base44 } from '@/api/base44Client';
 import UnifiedCommandPalette from '@/components/system/UnifiedCommandPalette';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import FTSPlatformSidebarRestructured from '@/components/platform/FTSPlatformSidebarRestructured';
+import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
 import { usePlatformAuth, PLATFORM_PERMISSIONS, PLATFORM_ROLES, getRoleLabel } from '@/components/auth/usePlatformAuth';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -204,7 +204,7 @@ export default function FTSMoneyPlatform() {
 
     return (
         <div className="flex h-screen bg-slate-50">
-            <FTSPlatformSidebarRestructured 
+            <FTSPlatformSidebar 
                 currentPage="FTSMoneyPlatform" 
                 userRole={getRoleLabel(platformUser?.platform_role)} 
                 userEmail={platformUser?.email}
