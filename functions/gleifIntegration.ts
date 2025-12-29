@@ -74,15 +74,16 @@ async function verifyLEI(lei) {
         
         // Check LEI status
         const registration = leiData.attributes.registration;
-        const isActive = registration.status === 'ISSUED' && 
-                        registration.managementStatus === 'ACTIVE';
+        const entity = leiData.attributes.entity;
+        const isActive = registration.status === 'ISSUED';
 
         return Response.json({
             valid: isActive,
             lei: leiData.id,
-            legal_name: leiData.attributes.entity.legalName.name,
-            jurisdiction: leiData.attributes.entity.legalAddress.country,
+            legal_name: entity.legalName.name,
+            jurisdiction: entity.legalAddress.country,
             status: registration.status,
+            management_status: registration.managementStatus,
             registration_date: registration.initialRegistrationDate,
             last_updated: registration.lastUpdateDate,
             next_renewal: registration.nextRenewalDate,
