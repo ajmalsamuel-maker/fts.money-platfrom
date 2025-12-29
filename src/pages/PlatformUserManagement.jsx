@@ -13,7 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Users, UserPlus, Shield, Mail, Trash2, Ban, CheckCircle } from 'lucide-react';
+import { Users, UserPlus, Shield, Mail, Trash2, Ban, CheckCircle, Key } from 'lucide-react';
 
 export default function PlatformUserManagement() {
     const navigate = useNavigate();
@@ -22,6 +22,8 @@ export default function PlatformUserManagement() {
     
     const [inviteOpen, setInviteOpen] = useState(false);
     const [deleteUser, setDeleteUser] = useState(null);
+    const [resetPasswordUser, setResetPasswordUser] = useState(null);
+    const [newPassword, setNewPassword] = useState('');
     const [inviteForm, setInviteForm] = useState({
         email: '',
         full_name: '',
@@ -29,6 +31,7 @@ export default function PlatformUserManagement() {
         password: ''
     });
     const [error, setError] = useState('');
+    const [resetError, setResetError] = useState('');
 
     const { data: users = [], isLoading: usersLoading } = useQuery({
         queryKey: ['platform-users'],
@@ -83,6 +86,27 @@ export default function PlatformUserManagement() {
         },
         onSuccess: () => {
             queryClient.invalidateQueries(['platform-users']);
+        }
+    });
+
+    const resetPasswordMutation = useMutation({
+        mutationFn: async ({ email, password }) => {
+            const response = await base44.functions.invoke('resetPlatformPassword', {
+                email,
+                new_password: password
+            });
+            if (!response.data.success) {
+                throw new Error(response.data.error || 'Failed to reset password');
+            }
+            return response.data;
+        },
+        onSuccess: () => {
+            setResetPasswordUser(null);
+            setNewPassword('');
+            setResetError('');
+        },
+        onError: (err) => {
+            setResetError(err.message);
         }
     });
 
@@ -235,6 +259,15 @@ export default function PlatformUserManagement() {
                                             }>
                                                 {getRoleLabel(user.platform_role)}
                                             </Badge>
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                onClick={() => setResetPasswordUser(user)}
+                                                className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                                                title="Reset Password"
+                                            >
+                                                <Key className="h-4 w-4" />
+                                            </Button>
                                             {user.email !== platformUser?.email && (
                                                 <Button
                                                     variant="ghost"
@@ -273,6 +306,66 @@ export default function PlatformUserManagement() {
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
+
+            <Dialog open={!!resetPasswordUser} onOpenChange={() => {
+                setResetPasswordUser(null);
+                setNewPassword('');
+                setResetError('');
+            }}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Reset Password</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4 mt-4">
+                        <p className="text-sm text-slate-600">
+                            Resetting password for <strong>{resetPasswordUser?.full_name}</strong> ({resetPasswordUser?.email})
+                        </p>
+                        {resetError && (
+                            <Alert variant="destructive">
+                                <AlertDescription>{resetError}</AlertDescription>
+                            </Alert>
+                        )}
+                        <div>
+                            <Label>New Password</Label>
+                            <Input
+                                type="password"
+                                value={newPassword}
+                                onChange={(e) => setNewPassword(e.target.value)}
+                                placeholder="Enter new password (min 8 characters)"
+                            />
+                        </div>
+                        <div className="flex gap-2">
+                            <Button 
+                                variant="outline" 
+                                onClick={() => {
+                                    setResetPasswordUser(null);
+                                    setNewPassword('');
+                                    setResetError('');
+                                }}
+                                className="flex-1"
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                onClick={() => {
+                                    if (newPassword.length < 8) {
+                                        setResetError('Password must be at least 8 characters');
+                                        return;
+                                    }
+                                    resetPasswordMutation.mutate({ 
+                                        email: resetPasswordUser.email, 
+                                        password: newPassword 
+                                    });
+                                }}
+                                disabled={resetPasswordMutation.isPending}
+                                className="flex-1 bg-blue-600 hover:bg-blue-700"
+                            >
+                                {resetPasswordMutation.isPending ? 'Resetting...' : 'Reset Password'}
+                            </Button>
+                        </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }
