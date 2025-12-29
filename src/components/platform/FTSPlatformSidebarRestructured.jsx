@@ -36,6 +36,11 @@ export default function FTSPlatformSidebarRestructured({ currentPage, userRole, 
                 { label: 'Provisioning Queue', path: 'FTSProvisioningQueue', icon: Activity, description: 'Deploy status' },
                 { label: 'Community Users', path: 'CommunityUserManagement', icon: Users, description: 'Portal users' },
                 { label: 'PSP Staff', path: 'PSPUserManagement', icon: Users, description: 'PSP admin' },
+                { label: 'ISO Gateway Users', path: 'ISOGatewayUserManagement', icon: Code, description: 'ISO RBAC' },
+                { label: 'Orchestration Users', path: 'OrchestrationUserManagement', icon: GitBranch, description: 'Orch RBAC' },
+                { label: 'Crypto Banking Users', path: 'CryptoGatewayUserManagement', icon: Wallet, description: 'Crypto RBAC' },
+                { label: 'RWA Platform Users', path: 'RWAProviderUserManagement', icon: Rocket, description: 'RWA RBAC' },
+                { label: 'Role & Permissions', path: 'RolePermissionManagement', icon: Shield, description: 'Edit matrix', priority: true },
                 { label: 'Client Accounts', path: 'FTSClients', icon: Users, description: 'Customers' },
                 { label: 'Tenants', path: 'TenantManagement', icon: Building2, description: 'Multi-tenancy', superAdminOnly: true }
             ]
@@ -82,6 +87,7 @@ export default function FTSPlatformSidebarRestructured({ currentPage, userRole, 
             items: [
                 { label: 'Overview', path: 'StrigaServiceManagement', icon: BarChart3, description: 'Dashboard', priority: true },
                 { label: 'Customers', path: 'CryptoGatewayCustomers', icon: Users, description: 'All customers', priority: true },
+                { label: 'User Management', path: 'CryptoGatewayUserManagement', icon: Users, description: 'RBAC' },
                 { label: 'KYC/KYB Verification', path: 'CryptoKYCManagement', icon: Shield, description: 'Compliance' },
                 { label: 'Transactions', path: 'CryptoGatewayTransactions', icon: Activity, description: 'All txns' },
                 { label: 'Portal Management', path: 'CryptoPortalManagement', icon: Settings, description: 'Customize' }
@@ -94,6 +100,7 @@ export default function FTSPlatformSidebarRestructured({ currentPage, userRole, 
             items: [
                 { label: 'Test Console', path: 'ISOGatewayTestConsole', icon: Code, description: 'API test', priority: true },
                 { label: 'Customers', path: 'ISOGatewayCustomers', icon: Zap, description: 'Subscribers' },
+                { label: 'User Management', path: 'ISOGatewayUserManagement', icon: Users, description: 'RBAC' },
                 { label: 'Connections', path: 'ISOGatewayConnections', icon: GitBranch, description: 'Routing' },
                 { label: 'Message Monitor', path: 'ISOMessageMonitor', icon: Activity, description: 'Logs' }
             ]
@@ -103,7 +110,8 @@ export default function FTSPlatformSidebarRestructured({ currentPage, userRole, 
             title: 'Orchestration Service',
             defaultOpen: false,
             items: [
-                { label: 'Customers', path: 'OrchestrationCustomers', icon: GitBranch, description: 'Subscribers', priority: true }
+                { label: 'Customers', path: 'OrchestrationCustomers', icon: GitBranch, description: 'Subscribers', priority: true },
+                { label: 'User Management', path: 'OrchestrationUserManagement', icon: Users, description: 'RBAC' }
             ]
         },
         {
@@ -112,7 +120,8 @@ export default function FTSPlatformSidebarRestructured({ currentPage, userRole, 
             defaultOpen: false,
             items: [
                 { label: 'Smart Contracts', path: 'RWAPlatform', icon: Code, description: 'View/download', priority: true },
-                { label: 'Provision Customers', path: 'RWAWhiteLabelProvisioning', icon: Rocket, description: 'White-label', priority: true }
+                { label: 'Provision Customers', path: 'RWAWhiteLabelProvisioning', icon: Rocket, description: 'White-label', priority: true },
+                { label: 'User Management', path: 'RWAProviderUserManagement', icon: Users, description: 'RBAC' }
             ]
         },
         {
