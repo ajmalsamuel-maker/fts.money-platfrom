@@ -38,6 +38,21 @@ Deno.serve(async (req) => {
                 password_hash: hashedPassword
             });
             updates.push(updated);
+            
+            // Audit password reset
+            await base44.asServiceRole.entities.AuditLog.create({
+                event_type: 'password_reset',
+                category: 'authentication',
+                severity: 'warning',
+                user_id: user.id,
+                user_email: user.email,
+                user_role: user.platform_role,
+                target_entity: 'AuthUser',
+                target_id: user.id,
+                action: 'reset_password',
+                description: `Password reset for platform user ${user.email} by administrator`,
+                retention_period: '3_years'
+            });
         }
 
         return Response.json({
