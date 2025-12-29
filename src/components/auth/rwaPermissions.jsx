@@ -1,0 +1,185 @@
+/**
+ * RWA Platform RBAC - Permission Registry
+ */
+
+export const RWA_PERMISSIONS = {
+    // Provider Management
+    PROVIDER_READ: 'provider:read',
+    PROVIDER_UPDATE: 'provider:update',
+    PROVIDER_BILLING: 'provider:billing',
+    
+    // Asset Management
+    ASSET_CREATE: 'asset:create',
+    ASSET_UPDATE: 'asset:update',
+    ASSET_DELETE: 'asset:delete',
+    ASSET_VIEW: 'asset:view',
+    ASSET_TOKENIZE: 'asset:tokenize',
+    
+    // Issuer Management
+    ISSUER_CREATE: 'issuer:create',
+    ISSUER_UPDATE: 'issuer:update',
+    ISSUER_DELETE: 'issuer:delete',
+    ISSUER_VIEW: 'issuer:view',
+    
+    // Investor Management
+    INVESTOR_VIEW: 'investor:view',
+    INVESTOR_APPROVE: 'investor:approve',
+    INVESTOR_KYC: 'investor:kyc',
+    
+    // Holdings & Transactions
+    HOLDING_VIEW: 'holding:view',
+    TRANSACTION_VIEW: 'transaction:view',
+    TRANSACTION_EXPORT: 'transaction:export',
+    
+    // Dividends
+    DIVIDEND_CREATE: 'dividend:create',
+    DIVIDEND_APPROVE: 'dividend:approve',
+    DIVIDEND_VIEW: 'dividend:view',
+    
+    // Compliance
+    COMPLIANCE_VIEW: 'compliance:view',
+    COMPLIANCE_MANAGE: 'compliance:manage',
+    
+    // API Access
+    API_KEYS_MANAGE: 'api:keys_manage',
+    API_DOCS_VIEW: 'api:docs_view',
+    
+    // User Management
+    USER_INVITE: 'user:invite',
+    USER_MANAGE: 'user:manage',
+    USER_DELETE: 'user:delete',
+    
+    // Analytics
+    ANALYTICS_VIEW: 'analytics:view',
+    ANALYTICS_EXPORT: 'analytics:export'
+};
+
+export const RWA_ROLES = {
+    OWNER: 'owner',
+    ADMINISTRATOR: 'administrator',
+    COMPLIANCE_OFFICER: 'compliance_officer',
+    ASSET_MANAGER: 'asset_manager',
+    DEVELOPER: 'developer',
+    ANALYST: 'analyst',
+    VIEWER: 'viewer'
+};
+
+export const RWA_ROLE_PERMISSIONS = {
+    [RWA_ROLES.OWNER]: Object.values(RWA_PERMISSIONS),
+    
+    [RWA_ROLES.ADMINISTRATOR]: [
+        RWA_PERMISSIONS.PROVIDER_READ,
+        RWA_PERMISSIONS.PROVIDER_UPDATE,
+        RWA_PERMISSIONS.ASSET_CREATE,
+        RWA_PERMISSIONS.ASSET_UPDATE,
+        RWA_PERMISSIONS.ASSET_DELETE,
+        RWA_PERMISSIONS.ASSET_VIEW,
+        RWA_PERMISSIONS.ASSET_TOKENIZE,
+        RWA_PERMISSIONS.ISSUER_CREATE,
+        RWA_PERMISSIONS.ISSUER_UPDATE,
+        RWA_PERMISSIONS.ISSUER_DELETE,
+        RWA_PERMISSIONS.ISSUER_VIEW,
+        RWA_PERMISSIONS.INVESTOR_VIEW,
+        RWA_PERMISSIONS.INVESTOR_APPROVE,
+        RWA_PERMISSIONS.INVESTOR_KYC,
+        RWA_PERMISSIONS.HOLDING_VIEW,
+        RWA_PERMISSIONS.TRANSACTION_VIEW,
+        RWA_PERMISSIONS.TRANSACTION_EXPORT,
+        RWA_PERMISSIONS.DIVIDEND_CREATE,
+        RWA_PERMISSIONS.DIVIDEND_APPROVE,
+        RWA_PERMISSIONS.DIVIDEND_VIEW,
+        RWA_PERMISSIONS.COMPLIANCE_VIEW,
+        RWA_PERMISSIONS.COMPLIANCE_MANAGE,
+        RWA_PERMISSIONS.API_KEYS_MANAGE,
+        RWA_PERMISSIONS.API_DOCS_VIEW,
+        RWA_PERMISSIONS.USER_INVITE,
+        RWA_PERMISSIONS.USER_MANAGE,
+        RWA_PERMISSIONS.ANALYTICS_VIEW,
+        RWA_PERMISSIONS.ANALYTICS_EXPORT
+    ],
+    
+    [RWA_ROLES.COMPLIANCE_OFFICER]: [
+        RWA_PERMISSIONS.PROVIDER_READ,
+        RWA_PERMISSIONS.ISSUER_VIEW,
+        RWA_PERMISSIONS.INVESTOR_VIEW,
+        RWA_PERMISSIONS.INVESTOR_APPROVE,
+        RWA_PERMISSIONS.INVESTOR_KYC,
+        RWA_PERMISSIONS.HOLDING_VIEW,
+        RWA_PERMISSIONS.TRANSACTION_VIEW,
+        RWA_PERMISSIONS.TRANSACTION_EXPORT,
+        RWA_PERMISSIONS.COMPLIANCE_VIEW,
+        RWA_PERMISSIONS.COMPLIANCE_MANAGE,
+        RWA_PERMISSIONS.ANALYTICS_VIEW
+    ],
+    
+    [RWA_ROLES.ASSET_MANAGER]: [
+        RWA_PERMISSIONS.PROVIDER_READ,
+        RWA_PERMISSIONS.ASSET_CREATE,
+        RWA_PERMISSIONS.ASSET_UPDATE,
+        RWA_PERMISSIONS.ASSET_VIEW,
+        RWA_PERMISSIONS.ASSET_TOKENIZE,
+        RWA_PERMISSIONS.ISSUER_VIEW,
+        RWA_PERMISSIONS.INVESTOR_VIEW,
+        RWA_PERMISSIONS.HOLDING_VIEW,
+        RWA_PERMISSIONS.TRANSACTION_VIEW,
+        RWA_PERMISSIONS.DIVIDEND_CREATE,
+        RWA_PERMISSIONS.DIVIDEND_VIEW,
+        RWA_PERMISSIONS.ANALYTICS_VIEW
+    ],
+    
+    [RWA_ROLES.DEVELOPER]: [
+        RWA_PERMISSIONS.PROVIDER_READ,
+        RWA_PERMISSIONS.ASSET_VIEW,
+        RWA_PERMISSIONS.TRANSACTION_VIEW,
+        RWA_PERMISSIONS.API_KEYS_MANAGE,
+        RWA_PERMISSIONS.API_DOCS_VIEW
+    ],
+    
+    [RWA_ROLES.ANALYST]: [
+        RWA_PERMISSIONS.PROVIDER_READ,
+        RWA_PERMISSIONS.ASSET_VIEW,
+        RWA_PERMISSIONS.INVESTOR_VIEW,
+        RWA_PERMISSIONS.HOLDING_VIEW,
+        RWA_PERMISSIONS.TRANSACTION_VIEW,
+        RWA_PERMISSIONS.DIVIDEND_VIEW,
+        RWA_PERMISSIONS.ANALYTICS_VIEW,
+        RWA_PERMISSIONS.ANALYTICS_EXPORT
+    ],
+    
+    [RWA_ROLES.VIEWER]: [
+        RWA_PERMISSIONS.PROVIDER_READ,
+        RWA_PERMISSIONS.ASSET_VIEW,
+        RWA_PERMISSIONS.ISSUER_VIEW,
+        RWA_PERMISSIONS.INVESTOR_VIEW,
+        RWA_PERMISSIONS.HOLDING_VIEW,
+        RWA_PERMISSIONS.TRANSACTION_VIEW,
+        RWA_PERMISSIONS.ANALYTICS_VIEW
+    ]
+};
+
+export const RWA_ROLE_HIERARCHY = {
+    [RWA_ROLES.OWNER]: 100,
+    [RWA_ROLES.ADMINISTRATOR]: 80,
+    [RWA_ROLES.COMPLIANCE_OFFICER]: 70,
+    [RWA_ROLES.ASSET_MANAGER]: 65,
+    [RWA_ROLES.DEVELOPER]: 60,
+    [RWA_ROLES.ANALYST]: 40,
+    [RWA_ROLES.VIEWER]: 20
+};
+
+export function hasRWAPermission(role, permission) {
+    return (RWA_ROLE_PERMISSIONS[role] || []).includes(permission);
+}
+
+export function getRWARoleLabel(role) {
+    const labels = {
+        [RWA_ROLES.OWNER]: 'Owner',
+        [RWA_ROLES.ADMINISTRATOR]: 'Administrator',
+        [RWA_ROLES.COMPLIANCE_OFFICER]: 'Compliance Officer',
+        [RWA_ROLES.ASSET_MANAGER]: 'Asset Manager',
+        [RWA_ROLES.DEVELOPER]: 'Developer',
+        [RWA_ROLES.ANALYST]: 'Analyst',
+        [RWA_ROLES.VIEWER]: 'Viewer'
+    };
+    return labels[role] || role;
+}
