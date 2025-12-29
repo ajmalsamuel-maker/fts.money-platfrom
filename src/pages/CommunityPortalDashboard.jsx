@@ -91,7 +91,7 @@ export default function CommunityPortalDashboard() {
         enabled: !!session?.email
     });
 
-    const totalServices = myPSPs.length + myISOCustomers.length + myOrchCustomers.length;
+    const totalServices = myPSPs.length + myISOCustomers.length + myOrchCustomers.length + myCryptoCustomers.length + myRWAProviders.length;
     const isNewUser = totalServices === 0;
 
     // Fetch crypto gateway customers
