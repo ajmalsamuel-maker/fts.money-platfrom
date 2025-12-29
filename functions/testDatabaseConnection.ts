@@ -1,4 +1,5 @@
-import { Client } from 'npm:pg@8.11.3';
+import pg from 'npm:pg@8.11.3';
+const { Client } = pg;
 
 Deno.serve(async (req) => {
     try {
