@@ -44,7 +44,7 @@ FTS.Money offers a comprehensive ecosystem of payment products and services acro
 - Payment orchestration
 - AI fraud detection
 - Advanced analytics
-- Crypto gateway
+- Crypto Banking Service
 - Sub-merchant platform
 - ISO Gateway service
 
@@ -211,7 +211,7 @@ graph LR
 - Average $1,500/month
 - **Annual: $3.6M**
 
-### 3. Crypto Gateway Service
+### 3. Crypto Banking Service
 
 **What It Solves:**
 
@@ -227,11 +227,11 @@ Most exchanges and DeFi platforms either:
 
 **How We Solve It:**
 
-FTS.Money Crypto Gateway provides **turnkey crypto banking infrastructure** white-labeled as our proprietary technology:
+FTS.Money Crypto Banking Service provides **turnkey crypto banking infrastructure** white-labeled as our proprietary technology:
 
 \`\`\`mermaid
 graph LR
-    A[Customer] --> B[FTS.Money<br/>Crypto Gateway]
+    A[Customer] --> B[FTS.Money<br/>Crypto Banking Service]
     B --> C[Multi-Chain Wallets]
     B --> D[Virtual IBANs]
     B --> E[Card Issuing]
@@ -289,7 +289,7 @@ graph LR
 \`\`\`mermaid
 sequenceDiagram
     participant Customer
-    participant CryptoGateway as FTS.Money<br/>Crypto Gateway
+    participant CryptoGateway as FTS.Money<br/>Crypto Banking Service
     participant Striga as Infrastructure<br/>(Striga/Lightspark)
     participant Banks as Banking Rails
     participant Chains as Blockchains
@@ -323,7 +323,7 @@ sequenceDiagram
    - Revenue share model
 
 2. **Standalone Portal** (Direct Sales)
-   - Dedicated Crypto Gateway Portal
+   - Dedicated Crypto Banking Service Portal
    - Direct login for exchanges/DeFi
    - Independent billing
    - Full self-service
@@ -362,7 +362,7 @@ Usage Fees (passed through + markup):
 - Validate integration and workflows
 
 **Phase 2 (Q2 2026):**
-- Launch standalone Crypto Gateway Portal
+- Launch standalone Crypto Banking Service Portal
 - Direct sales to exchanges (target: 10 customers)
 - Build self-service onboarding
 
@@ -373,7 +373,7 @@ Usage Fees (passed through + markup):
 
 **Competitive Advantage:**
 
-| Feature | FTS.Money Crypto Gateway | Competitors |
+| Feature | FTS.Money Crypto Banking Service | Competitors |
 |---------|--------------------------|-------------|
 | Full EU Compliance | ✅ VASP + MiCA | ❌ Limited |
 | Fiat Integration | ✅ IBANs + Cards | ❌ Crypto only |
@@ -1134,7 +1134,7 @@ Annual Recurring Revenue: $3,178,860
 |---------|-------------|------------|-----------------|
 | Orchestration | $500 | 0.05% per txn | $36,000 |
 | AI Fraud Suite | $1,000 | $0.10 per check | $36,000 |
-| Crypto Gateway | $2,000 | 1% per crypto txn | $84,000 |
+| Crypto Banking Service | $2,000 | 1% per crypto txn | $84,000 |
 | Analytics | $750 | - | $9,000 |
 | Sub-Merchant | $1,500 | 0.5% per split | $58,000 |
 | Developer API | $300 | Usage tiers | $6,000 |
@@ -1329,7 +1329,7 @@ Focus: Solidify existing products and increase adoption.
 | Product | Status | Priority | Revenue Impact | Notes |
 |---------|--------|----------|----------------|-------|
 | AI Fraud Suite | 📋 Planned | High | $1M ARR | ML-powered risk scoring |
-| Crypto Gateway Scale | 🔨 Active | Medium | $1.8M ARR | Target 20 total customers |
+| Crypto Banking Service Scale | 🔨 Active | Medium | $1.8M ARR | Target 20 total customers |
 | Advanced Analytics v2 | 📋 Planned | Medium | $500K ARR | Predictive models |
 | Sub-Merchant Platform | 📋 Planned | High | $850K ARR | Marketplace facilitator |
 | RWA Platform Scale | 🔨 Active | Medium | $600K ARR | Target 10 providers |
