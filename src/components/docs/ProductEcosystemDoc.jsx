@@ -87,6 +87,57 @@ mindmap
 
 ## Core Products
 
+### Product Portfolio Overview
+
+\`\`\`mermaid
+graph TB
+    subgraph "Infrastructure Layer"
+        A[PSP Provisioning]
+        B[Multi-Tenant Architecture]
+        C[Cloud Infrastructure]
+    end
+    
+    subgraph "Core Services"
+        D[ISO Gateway]
+        E[Payment Orchestration]
+        F[Crypto Banking Gateway]
+        G[RWA Platform]
+    end
+    
+    subgraph "Portal Products"
+        H[Community Portal]
+        I[Merchant Portal]
+        J[Virtual Terminal]
+        K[Multi-User RBAC]
+    end
+    
+    subgraph "Value-Added Services"
+        L[AI Fraud Detection]
+        M[Sub-Merchant Platform]
+        N[Advanced Analytics]
+        O[Service Marketplace]
+    end
+    
+    A --> D
+    A --> E
+    A --> F
+    A --> G
+    A --> H
+    A --> I
+    A --> J
+    A --> K
+    A --> L
+    A --> M
+    A --> N
+    A --> O
+    
+    style A fill:#e0f2fe
+    style H fill:#dbeafe
+    style L fill:#dcfce7
+\`\`\`
+
+---
+
 ### 1. PSP Provisioning Service
 
 This is our flagship product - the foundation everything else builds on. PSP Provisioning is like "AWS for payment processing" - click a few buttons, wait 24-48 hours, and you have a fully functional payment service provider with all the bells and whistles.
@@ -339,7 +390,92 @@ Usage Fees (passed through + markup):
 
 ---
 
-### 4. Payment Orchestration Service
+### 4. Community Portal (Self-Service Marketplace)
+
+**What It Is:**
+
+The Community Portal is a self-service marketplace where businesses can browse, subscribe to, and manage payment infrastructure services without sales calls or lengthy procurement processes.
+
+**Target Users:**
+- PSP operators managing their instances
+- Fintech companies exploring payment services
+- ISOs researching integration options
+- Payment service providers comparing offerings
+
+**Architecture:**
+
+\`\`\`mermaid
+graph TB
+    A[Community Portal] --> B[Service Catalog]
+    A --> C[My PSP Instances]
+    A --> D[My Subscriptions]
+    A --> E[Billing & Usage]
+    A --> F[Account Settings]
+    
+    B --> B1[ISO Gateway]
+    B --> B2[Orchestration]
+    B --> B3[Crypto Banking]
+    B --> B4[RWA Platform]
+    B --> B5[Marketplace Services]
+    
+    C --> C1[Provision New PSP]
+    C --> C2[Manage Existing]
+    C --> C3[View Analytics]
+    
+    D --> D1[Active Services]
+    D --> D2[Usage Metrics]
+    D --> D3[Add Services]
+    
+    E --> E1[Invoices]
+    E --> E2[Payment Methods]
+    E --> E3[Usage Reports]
+    
+    style A fill:#dbeafe
+    style B fill:#fef3c7
+    style C fill:#dcfce7
+\`\`\`
+
+**Key Features:**
+
+1. **Service Discovery**
+   - Browse 150+ payment services
+   - Filter by category, region, pricing
+   - Compare features side-by-side
+   - Read reviews and case studies
+
+2. **One-Click Activation**
+   - Subscribe to services instantly
+   - Automatic provisioning
+   - Pre-configured integrations
+   - No manual setup required
+
+3. **PSP Self-Provisioning**
+   - Configure PSP tier and features
+   - Select regions and currencies
+   - Customize branding
+   - Launch in 24-48 hours
+
+4. **Unified Billing**
+   - Single invoice for all services
+   - Usage-based pricing visibility
+   - Payment method management
+   - Export for accounting
+
+**Revenue Model:**
+- Free to browse and explore
+- Pay-as-you-go subscriptions
+- No long-term contracts
+- Cancel anytime
+
+**Pricing:**
+- Platform access: Free
+- PSP provisioning: $499-$4,999/month
+- Service subscriptions: Variable per service
+- Marketplace commission: 15-20% (hidden from users)
+
+---
+
+### 5. Payment Orchestration Service
 
 Modern PSPs face a critical challenge: relying on a single payment processor creates massive risk. If that processor goes down, you're dead in the water. If their fees increase, you have no negotiating power. If their success rates drop, your revenue suffers.
 
@@ -444,15 +580,184 @@ graph TB
 - Per Check: $0.10
 - Annual: $12K-36K per PSP
 
-### 6. Sub-Merchant Platform
+### 6. RWA Tokenization Platform
 
-Cryptocurrency represents a massive opportunity in payments, but integration is notoriously complex. Each blockchain has different protocols, wallet formats, and security requirements. Regulatory compliance (AML/CFT) is strict and constantly evolving. Custody is a nightmare - lose the private keys and the funds are gone forever.
+**What It Is:**
 
-Most PSPs want to offer crypto payments but lack the expertise and resources to build it safely. They're afraid of security risks, regulatory scrutiny, and technical complexity. This leaves a huge gap in the market.
+A white-label platform for tokenizing real-world assets on blockchain, enabling fractional ownership, automated compliance, and secondary market trading.
 
-Our Crypto Gateway Service provides turnkey cryptocurrency payment acceptance across 6+ major blockchains. We handle all the complexity: blockchain node management, wallet generation, transaction monitoring, exchange integration for automatic fiat conversion, and compliance screening via Chainalysis.
+**Architecture:**
 
-Merchants get a simple API that looks just like accepting a credit card, but behind the scenes we're managing multi-signature wallets, monitoring mempool congestion, optimizing gas fees, and ensuring regulatory compliance. For PSPs, this opens up the growing crypto-native market (420M users globally) without the technical headaches.
+\`\`\`mermaid
+graph TB
+    subgraph "RWA Platform Services"
+        A[Provider Dashboard]
+        B[Asset Tokenization]
+        C[Issuer Management]
+        D[Investor Portal]
+        E[Compliance Engine]
+    end
+    
+    subgraph "Asset Types"
+        F[Real Estate]
+        G[Private Equity]
+        H[Commodities]
+        I[Art & Collectibles]
+        J[Revenue Streams]
+    end
+    
+    subgraph "Blockchain Layer"
+        K[Smart Contracts]
+        L[Token Standards]
+        M[Trading Platform]
+        N[Dividend Distribution]
+    end
+    
+    A --> B
+    B --> K
+    C --> K
+    D --> M
+    E --> K
+    
+    F --> B
+    G --> B
+    H --> B
+    I --> B
+    J --> B
+    
+    K --> L
+    L --> M
+    M --> N
+    
+    style A fill:#dbeafe
+    style B fill:#fef3c7
+    style K fill:#dcfce7
+\`\`\`
+
+**Key Features:**
+
+1. **Asset Tokenization**
+   - Smart contract deployment
+   - ERC-1400 security tokens
+   - Automated compliance rules
+   - Fractional ownership
+
+2. **Issuer Onboarding**
+   - KYB verification
+   - Document collection
+   - Asset valuation
+   - Regulatory filings
+
+3. **Investor Management**
+   - KYC/AML screening
+   - Accreditation verification
+   - Investment limits
+   - Portfolio tracking
+
+4. **Secondary Trading**
+   - Peer-to-peer marketplace
+   - Order matching engine
+   - Settlement automation
+   - Price discovery
+
+5. **Dividend Distribution**
+   - Automated payment calculations
+   - Blockchain-based distribution
+   - Tax reporting
+   - Reinvestment options
+
+**Target Markets:**
+- Real estate tokenization platforms
+- Private equity funds
+- Commodities trading platforms
+- Art investment platforms
+
+**Pricing:**
+- Platform license: $5,000/month
+- Per-asset tokenization: $2,500
+- Transaction fees: 0.5% of trades
+- Annual: $60K-200K per provider
+
+**Revenue Projection:**
+- Year 1: 10 providers = $600K ARR
+- Year 2: 30 providers = $1.8M ARR
+- Year 3: 75 providers = $4.5M ARR
+
+---
+
+### 7. Sub-Merchant Platform
+
+**What It Is:**
+
+Payment facilitation platform enabling marketplaces and platforms to onboard and manage sub-merchants with automated compliance, split payments, and settlement.
+
+**Architecture:**
+
+\`\`\`mermaid
+graph LR
+    A[Platform/Marketplace] --> B[FTS Sub-Merchant]
+    B --> C[Sub-Merchant Onboarding]
+    B --> D[Split Payment Processing]
+    B --> E[Settlement Distribution]
+    
+    C --> F[Automated KYB]
+    C --> G[Risk Assessment]
+    C --> H[Underwriting]
+    
+    D --> I[Master Merchant]
+    D --> J[Commission Split]
+    D --> K[Sub-Merchant Payout]
+    
+    E --> L[Auto-Settlement]
+    E --> M[Multi-Currency]
+    E --> N[Schedule Config]
+    
+    style B fill:#dbeafe
+    style D fill:#fef3c7
+    style E fill:#dcfce7
+\`\`\`
+
+**Use Cases:**
+
+| Industry | Example | Payment Flow |
+|----------|---------|--------------|
+| **E-commerce Marketplace** | Etsy, Amazon | Platform takes commission, pays sellers |
+| **Ride-sharing** | Uber, Lyft | Customer pays platform, splits to driver |
+| **Food Delivery** | DoorDash, UberEats | Split between restaurant + driver + platform |
+| **Freelance Platforms** | Upwork, Fiverr | Escrow + release on milestone |
+| **SaaS Platforms** | Shopify | Merchant processes, platform takes fee |
+
+**Key Features:**
+
+1. **Automated Onboarding**
+   - Self-service KYB forms
+   - Document upload
+   - Risk-based decisioning
+   - Instant or manual approval
+
+2. **Split Payment Logic**
+   - Configurable split rules
+   - Percentage or fixed amounts
+   - Multi-party splits (3+ recipients)
+   - Automatic calculation
+
+3. **Settlement Management**
+   - Sub-merchant balances
+   - Configurable payout schedules
+   - Rolling reserves for risk
+   - Automated reconciliation
+
+4. **Compliance**
+   - Automated KYB screening
+   - Ongoing monitoring
+   - Sanctioned party checks
+   - Transaction limits per sub-merchant
+
+**Pricing:**
+- Platform fee: $1,500/month
+- Per sub-merchant: $10/month
+- Transaction fee: 0.5% of volume
+- Annual: $18K-100K depending on scale
 
 **What It Does:**
 Multi-chain cryptocurrency payments, custody integration, compliance
@@ -874,24 +1179,51 @@ FTS revenue share (25%): $81M/year
 
 **Year 1 (10 PSPs):**
 - Platform subscriptions: $600K
-- Services: $1M
-- Marketplace: $48K
+- FTS-owned services: $1M
+  - ISO Gateway: $180K
+  - Orchestration: $250K
+  - Crypto Banking: $200K
+  - RWA Platform: $60K
+  - AI Fraud: $150K
+  - Sub-Merchant: $160K
+- Portal products: $120K
+  - Merchant Portal premium: $60K
+  - Virtual Terminal add-ons: $60K
+- Marketplace commissions: $48K
 - Revenue share: $8M
-- **Total: $9.6M**
+- **Total: $9.8M**
 
 **Year 3 (50 PSPs):**
 - Platform subscriptions: $3.2M
-- Services: $5M
-- Marketplace: $240K
+- FTS-owned services: $6.5M
+  - ISO Gateway: $900K
+  - Orchestration: $1.5M
+  - Crypto Banking: $1.8M
+  - RWA Platform: $450K
+  - AI Fraud: $1M
+  - Sub-Merchant: $850K
+- Portal products: $850K
+  - Merchant Portal premium: $450K
+  - Virtual Terminal add-ons: $400K
+- Marketplace commissions: $240K
 - Revenue share: $40M
-- **Total: $48.4M**
+- **Total: $50.8M**
 
 **Year 5 (150 PSPs):**
 - Platform subscriptions: $9.5M
-- Services: $15M
-- Marketplace: $720K
+- FTS-owned services: $21M
+  - ISO Gateway: $3.6M
+  - Orchestration: $5M
+  - Crypto Banking: $6M
+  - RWA Platform: $2M
+  - AI Fraud: $3.2M
+  - Sub-Merchant: $1.2M
+- Portal products: $2.8M
+  - Merchant Portal premium: $1.5M
+  - Virtual Terminal add-ons: $1.3M
+- Marketplace commissions: $720K
 - Revenue share: $120M
-- **Total: $145.2M**
+- **Total: $154M**
 
 ---
 
@@ -959,29 +1291,48 @@ Our differentiation comes from being the only platform that combines full PSP pr
 
 ## Product Roadmap
 
-### Q1 2026 - Foundation
+### Current Status (December 2025)
 
-Our product roadmap balances three competing priorities: customer demand, technical feasibility, and revenue impact. We've learned that the best product strategies focus on depth over breadth - it's better to have one product that solves a problem completely than five products that partially solve five problems.
+**Production Ready:**
 
-The roadmap is organized into quarterly themes that build on each other. Q1 focuses on getting our foundation solid - PSP provisioning, ISO Gateway, and Orchestration must be rock-solid before we layer on additional services. Q2 expands into adjacent problems like fraud and crypto. Q3 and Q4 tackle more advanced use cases.
+| Product | Status | Customers | Annual Revenue | Notes |
+|---------|--------|-----------|----------------|-------|
+| PSP Provisioning | ✅ Live | 12 | $600K | 3 tiers operational |
+| ISO Gateway | ✅ Live | 8 | $180K | 3 active customers |
+| Orchestration | ✅ Live | 10 | $250K | High adoption rate |
+| Crypto Banking Gateway | ✅ Live | 5 | $150K | Striga integration |
+| RWA Platform | ✅ Live | 3 | $180K | Beta customers |
+| Community Portal | ✅ Live | 25 users | - | Self-service enabled |
+| Merchant Portal | ✅ Live | All PSPs | Included | White-label ready |
+| Virtual Terminal | ✅ Live | All PSPs | Included | MOTO + recurring |
+| Multi-User RBAC | ✅ Live | All services | - | 6-tier hierarchy |
+| Service Marketplace | 🔨 Beta | - | $50K | 20 services live |
 
-Each product on the roadmap has been validated through customer interviews and market analysis. We're not building features in search of problems - we're solving problems customers are actively experiencing and willing to pay to solve.
+**Total Current ARR:** $1.41M (12 PSPs)
+
+---
+
+### Q1 2026 - Foundation Enhancement
+
+Focus: Solidify existing products and increase adoption.
 
 | Product | Status | Priority | Revenue Impact |
 |---------|--------|----------|----------------|
-| PSP Provisioning | ✅ Live | Critical | $3M ARR |
-| ISO Gateway | ✅ Live | High | $3.6M ARR |
-| Orchestration | ✅ Live | High | $5M ARR |
-| Service Marketplace | 🔨 In Progress | Critical | $500K ARR |
+| PSP Provisioning Scale | 🔨 In Progress | Critical | Target: $3M ARR (30 PSPs) |
+| ISO Gateway Expansion | 📋 Planned | High | Target: $900K ARR (25 customers) |
+| Orchestration v2 | 📋 Planned | High | Target: $1.5M ARR (40 customers) |
+| Service Marketplace Growth | 🔨 In Progress | Critical | Target: $240K ARR (50 services) |
+| RBAC Enhancement | 📋 Planned | Medium | SSO integration, audit improvements |
 
-### Q2 2026 - Expansion
+### Q2 2026 - Service Expansion
 
-| Product | Status | Priority | Revenue Impact |
-|---------|--------|----------|----------------|
-| AI Fraud Suite | 📋 Planned | High | $3.6M ARR |
-| Crypto Gateway | 📋 Planned | Medium | $3.4M ARR |
-| Advanced Analytics | 📋 Planned | Medium | $900K ARR |
-| Sub-Merchant Platform | 📋 Planned | High | $1.2M ARR |
+| Product | Status | Priority | Revenue Impact | Notes |
+|---------|--------|----------|----------------|-------|
+| AI Fraud Suite | 📋 Planned | High | $1M ARR | ML-powered risk scoring |
+| Crypto Gateway Scale | 🔨 Active | Medium | $1.8M ARR | Target 20 total customers |
+| Advanced Analytics v2 | 📋 Planned | Medium | $500K ARR | Predictive models |
+| Sub-Merchant Platform | 📋 Planned | High | $850K ARR | Marketplace facilitator |
+| RWA Platform Scale | 🔨 Active | Medium | $600K ARR | Target 10 providers |
 
 ### Q3 2026 - Advanced Services
 
@@ -1000,6 +1351,29 @@ Each product on the roadmap has been validated through customer interviews and m
 | Vertical Solutions | 📋 Planned | Medium | $8M ARR |
 | PSP-to-PSP Marketplace | 📋 Planned | Medium | $3M ARR |
 | White-label Mobile Apps | 📋 Planned | Medium | $2M ARR |
+
+---
+
+## Complete Product Summary
+
+### All Products at a Glance
+
+| # | Product | Type | Status | Pricing | Target ARR (Y3) |
+|---|---------|------|--------|---------|-----------------|
+| 1 | **PSP Provisioning** | Infrastructure | ✅ Live | $499-$4,999/mo | $3.2M |
+| 2 | **ISO Gateway** | Core Service | ✅ Live | $499-$2,499/mo + usage | $3.6M |
+| 3 | **Crypto Banking Gateway** | Core Service | ✅ Live | $2,500/mo + usage | $6M |
+| 4 | **RWA Platform** | Core Service | ✅ Live | $5,000/mo + fees | $4.5M |
+| 5 | **Community Portal** | Portal | ✅ Live | Free (drives subscriptions) | - |
+| 6 | **Payment Orchestration** | Value Service | ✅ Live | $299-$1,999/mo + usage | $5M |
+| 7 | **Merchant Portal** | Portal | ✅ Live | Included + premium | $450K |
+| 8 | **Virtual Terminal** | Portal | ✅ Live | Included + add-ons | $400K |
+| 9 | **Multi-User RBAC** | Platform Feature | ✅ Live | Included | - |
+| 10 | **Service Marketplace** | Marketplace | 🔨 Beta | Commission (15-20%) | $720K |
+| 11 | **AI Fraud Suite** | Value Service | 📋 Planned | $1,000/mo + usage | $3.2M |
+| 12 | **Sub-Merchant Platform** | Value Service | 📋 Planned | $1,500/mo + fees | $1.2M |
+| 13 | **Advanced Analytics** | Value Service | 📋 Planned | $500-$3,500/mo | $1.8M |
+| | | | | **Total** | **$30M+** |
 
 ---
 
