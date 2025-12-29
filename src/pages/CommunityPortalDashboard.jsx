@@ -92,38 +92,80 @@ export default function CommunityPortalDashboard() {
     const totalServices = myPSPs.length + myISOCustomers.length + myOrchCustomers.length;
     const isNewUser = totalServices === 0;
 
+    // Fetch crypto gateway customers
+    const { data: myCryptoCustomers = [] } = useQuery({
+        queryKey: ['my-crypto-customers', session?.email],
+        queryFn: async () => {
+            const all = await base44.entities.CryptoGatewayCustomer.list('-created_date');
+            return all.filter(c => c.contact_email === session?.email);
+        },
+        enabled: !!session?.email
+    });
+
+    // Fetch RWA providers
+    const { data: myRWAProviders = [] } = useQuery({
+        queryKey: ['my-rwa-providers', session?.email],
+        queryFn: async () => {
+            const all = await base44.entities.RWAProvider.list('-created_date');
+            return all.filter(c => c.contact_email === session?.email);
+        },
+        enabled: !!session?.email
+    });
+
     const quickActions = [
         {
             icon: Building2,
-            title: 'Launch PSP Instance',
+            title: 'PSP Instance',
             description: 'Full payment processing platform',
             path: 'CommunityPSPProvisioning',
             color: 'bg-blue-50 text-blue-700 border-blue-200',
-            badge: myPSPs.length > 0 ? `${myPSPs.length} Active` : 'New'
+            badge: myPSPs.length > 0 ? `${myPSPs.length} Active` : 'Launch',
+            category: 'core'
         },
         {
             icon: Code,
-            title: 'ISO Gateway Service',
-            description: 'Message translation & enrichment',
+            title: 'ISO Gateway',
+            description: 'ISO 8583/20022 message translation',
             path: 'ISOGatewayLogin',
             color: 'bg-indigo-50 text-indigo-700 border-indigo-200',
-            badge: myISOCustomers.length > 0 ? `${myISOCustomers.length} Active` : 'New'
+            badge: myISOCustomers.length > 0 ? `${myISOCustomers.length} Active` : 'Launch',
+            category: 'core'
         },
         {
             icon: GitBranch,
-            title: 'Orchestration Service',
-            description: 'Smart payment routing',
+            title: 'Orchestration',
+            description: 'Smart payment routing & optimization',
             path: 'OrchestrationLogin',
             color: 'bg-purple-50 text-purple-700 border-purple-200',
-            badge: myOrchCustomers.length > 0 ? `${myOrchCustomers.length} Active` : 'New'
+            badge: myOrchCustomers.length > 0 ? `${myOrchCustomers.length} Active` : 'Launch',
+            category: 'core'
+        },
+        {
+            icon: Wallet,
+            title: 'Crypto Banking',
+            description: 'Multi-chain wallets, IBANs & cards',
+            path: 'CryptoGatewayLogin',
+            color: 'bg-cyan-50 text-cyan-700 border-cyan-200',
+            badge: myCryptoCustomers.length > 0 ? `${myCryptoCustomers.length} Active` : 'Launch',
+            category: 'advanced'
+        },
+        {
+            icon: Briefcase,
+            title: 'RWA Platform',
+            description: 'Tokenize real-world assets',
+            path: 'RWAWhiteLabelProvisioning',
+            color: 'bg-amber-50 text-amber-700 border-amber-200',
+            badge: myRWAProviders.length > 0 ? `${myRWAProviders.length} Active` : 'Coming Q1 2026',
+            category: 'advanced'
         },
         {
             icon: Globe,
-            title: 'Browse Marketplace',
-            description: '150+ payment services',
+            title: 'Service Marketplace',
+            description: '150+ pre-integrated services',
             path: 'CommunityMarketplace',
             color: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-            badge: 'Explore'
+            badge: 'Explore',
+            category: 'marketplace'
         }
     ];
 

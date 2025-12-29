@@ -120,6 +120,7 @@ import Invoices from './pages/Invoices';
 import Invoicing from './pages/Invoicing';
 import LEIComplianceDashboard from './pages/LEIComplianceDashboard';
 import LEIGLEIFTestReport from './pages/LEIGLEIFTestReport';
+import LEIPhase1Testing from './pages/LEIPhase1Testing';
 import LaunchServices from './pages/LaunchServices';
 import MIDPricingConfiguration from './pages/MIDPricingConfiguration';
 import MIDRouting from './pages/MIDRouting';
@@ -268,7 +269,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import LEIPhase1Testing from './pages/LEIPhase1Testing';
 import __Layout from './Layout.jsx';
 
 
@@ -395,6 +395,7 @@ export const PAGES = {
     "Invoicing": Invoicing,
     "LEIComplianceDashboard": LEIComplianceDashboard,
     "LEIGLEIFTestReport": LEIGLEIFTestReport,
+    "LEIPhase1Testing": LEIPhase1Testing,
     "LaunchServices": LaunchServices,
     "MIDPricingConfiguration": MIDPricingConfiguration,
     "MIDRouting": MIDRouting,
@@ -543,7 +544,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "LEIPhase1Testing": LEIPhase1Testing,
 }
 
 export const pagesConfig = {
