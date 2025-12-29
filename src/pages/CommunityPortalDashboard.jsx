@@ -382,11 +382,12 @@ export default function CommunityPortalDashboard() {
                     {/* NEW USER ONBOARDING VIEW */}
                     {isNewUser ? (
                         <>
-                            {/* Service Comparison Cards */}
+                            {/* Core Services */}
                             <div className="mb-6">
-                                <h3 className="text-2xl font-bold text-slate-900 mb-4">Choose Your First Service</h3>
+                                <h3 className="text-2xl font-bold text-slate-900 mb-2">Core Services</h3>
+                                <p className="text-slate-600 mb-4">Launch your payment infrastructure in minutes</p>
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                    {quickActions.slice(0, 3).map((action, i) => {
+                                    {quickActions.filter(a => a.category === 'core').map((action, i) => {
                                         const Icon = action.icon;
                                         return (
                                             <Card key={i} className="hover:shadow-xl transition-all border-2 hover:border-blue-300">
@@ -394,6 +395,7 @@ export default function CommunityPortalDashboard() {
                                                     <div className={cn("w-14 h-14 rounded-xl mb-4 flex items-center justify-center", action.color)}>
                                                         <Icon className="h-7 w-7" />
                                                     </div>
+                                                    <Badge className="mb-2 bg-blue-100 text-blue-700">{action.badge}</Badge>
                                                     <h4 className="font-bold text-lg mb-2">{action.title}</h4>
                                                     <p className="text-sm text-slate-600 mb-4">{action.description}</p>
                                                     <Button 
@@ -401,6 +403,36 @@ export default function CommunityPortalDashboard() {
                                                         className="w-full bg-gradient-to-r from-blue-600 to-cyan-500"
                                                     >
                                                         Get Started
+                                                        <ArrowRight className="ml-2 h-4 w-4" />
+                                                    </Button>
+                                                </CardContent>
+                                            </Card>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+
+                            {/* Advanced Services */}
+                            <div className="mb-6">
+                                <h3 className="text-2xl font-bold text-slate-900 mb-2">Advanced Services</h3>
+                                <p className="text-slate-600 mb-4">Enterprise-grade crypto banking & asset tokenization</p>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    {quickActions.filter(a => a.category === 'advanced').map((action, i) => {
+                                        const Icon = action.icon;
+                                        return (
+                                            <Card key={i} className="hover:shadow-xl transition-all border-2 hover:border-cyan-300">
+                                                <CardContent className="p-6">
+                                                    <div className={cn("w-14 h-14 rounded-xl mb-4 flex items-center justify-center", action.color)}>
+                                                        <Icon className="h-7 w-7" />
+                                                    </div>
+                                                    <Badge className="mb-2">{action.badge}</Badge>
+                                                    <h4 className="font-bold text-lg mb-2">{action.title}</h4>
+                                                    <p className="text-sm text-slate-600 mb-4">{action.description}</p>
+                                                    <Button 
+                                                        onClick={() => navigate(createPageUrl(action.path))}
+                                                        className="w-full bg-gradient-to-r from-cyan-600 to-blue-500"
+                                                    >
+                                                        Learn More
                                                         <ArrowRight className="ml-2 h-4 w-4" />
                                                     </Button>
                                                 </CardContent>
