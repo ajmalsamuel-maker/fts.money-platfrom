@@ -23,19 +23,22 @@ export default function LEIVerificationWidget({ entityType, entityId, currentLEI
         }
 
         setVerifying(true);
+        setVerificationResult(null);
         try {
-            const { data } = await base44.functions.invoke('gleifIntegration', {
+            const response = await base44.functions.invoke('gleifIntegration', {
                 action: 'verify_lei',
                 lei: lei.toUpperCase()
             });
 
-            setVerificationResult(data);
+            console.log('Verification response:', response);
+            setVerificationResult(response.data);
             
-            if (data.valid && onLEIVerified) {
-                onLEIVerified(data);
+            if (response.data?.valid && onLEIVerified) {
+                onLEIVerified(response.data);
             }
         } catch (error) {
-            setVerificationResult({ valid: false, error: error.message });
+            console.error('Verification error:', error);
+            setVerificationResult({ valid: false, error: error.message || 'Failed to verify LEI' });
         } finally {
             setVerifying(false);
         }
