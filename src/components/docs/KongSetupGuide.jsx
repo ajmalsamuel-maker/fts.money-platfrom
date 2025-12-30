@@ -403,6 +403,41 @@ curl -i http://YOUR_DROPLET_IP:8000/api/v1/psp \\
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <div>
+                        <h4 className="font-semibold text-sm mb-2">Error: "Couldn't connect to server" on port 8001</h4>
+                        <p className="text-xs text-slate-600 mb-2">Kong Admin API not responding</p>
+                        <pre className="bg-slate-900 text-slate-100 p-3 rounded-lg text-xs overflow-x-auto">
+            {`# Check if Kong is running
+            docker ps | grep kong
+
+            # If not running, start it
+            cd /opt/kong
+            docker compose up -d kong
+
+            # Check Kong logs
+            docker compose logs -f kong
+
+            # Verify Kong is healthy
+            docker compose ps
+            curl -i http://localhost:8001/status
+
+            # If firewall issue, allow port
+            ufw allow 8001/tcp`}
+                        </pre>
+                    </div>
+
+                    <div>
+                        <h4 className="font-semibold text-sm mb-2">Error: Double "https://" in URL</h4>
+                        <p className="text-xs text-slate-600 mb-2"><strong>Wrong:</strong> <code className="bg-slate-100 px-1 rounded">https://https://txn.netxhub.tech</code></p>
+                        <p className="text-xs text-slate-600 mb-2"><strong>Correct:</strong> <code className="bg-slate-100 px-1 rounded">https://txn.netxhub.tech</code></p>
+                        <pre className="bg-slate-900 text-slate-100 p-3 rounded-lg text-xs overflow-x-auto">
+            {`# Correct format
+            curl -i -X POST http://YOUR_DROPLET_IP:8001/services \\
+            --data "name=psp-service" \\
+            --data "url=https://txn.netxhub.tech"`}
+                        </pre>
+                    </div>
+
+                    <div>
                         <h4 className="font-semibold text-sm mb-2">Error: 'ContainerConfig' KeyError</h4>
                         <p className="text-xs text-slate-600 mb-2">If you get this error when running migrations:</p>
                         <pre className="bg-slate-900 text-slate-100 p-3 rounded-lg text-xs overflow-x-auto mb-2">
