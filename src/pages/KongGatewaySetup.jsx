@@ -4,7 +4,7 @@ import KongSetupGuide from '@/components/docs/KongSetupGuide';
 import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
 
 export default function KongGatewaySetup() {
-    const { session, loading } = usePlatformAuth();
+    const { session, loading } = usePlatformAuth(['platform_admin', 'platform_operator', 'super_admin']);
 
     if (loading) {
         return (
@@ -14,7 +14,13 @@ export default function KongGatewaySetup() {
         );
     }
 
-    if (!session) return null;
+    if (!session) {
+        return (
+            <div className="flex items-center justify-center h-screen">
+                <p className="text-slate-600">Loading...</p>
+            </div>
+        );
+    }
 
     return (
         <div className="flex h-screen bg-slate-50">
