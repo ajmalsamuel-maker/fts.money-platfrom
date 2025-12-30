@@ -146,6 +146,7 @@ const menuSections = [
         title: 'Infrastructure',
         defaultOpen: false,
         items: [
+            { label: 'Kong Gateway Setup', path: 'KongGatewaySetup', icon: Zap, description: 'Deploy Kong on DigitalOcean', priority: true },
             { label: 'Domain Management', path: 'FTSDomainManagement', icon: Globe, description: 'SSL & DNS' },
             { label: 'API Gateway', path: 'APIGatewayConfiguration', icon: Zap, description: 'Configuration' },
             { label: 'Blockchain', path: 'FTSBlockchainIntegration', icon: Globe, description: 'Blockchain integrations' }
