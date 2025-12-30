@@ -292,9 +292,9 @@ docker-compose logs kong`}
                                 <h4 className="font-semibold mb-2">Register your services in Kong:</h4>
                                         <Alert className="mb-3">
                                             <AlertDescription className="text-xs">
-                                                <strong>YOUR_BASE44_APP_URL:</strong> This is your Base44 app's function endpoint.<br/>
-                                                Format: <code className="bg-slate-100 px-1 rounded">https://your-app-name.base44.app</code><br/>
-                                                Find it in your Base44 dashboard under Settings → App URL
+                                                <strong>YOUR_BASE44_APP_URL:</strong> Use your FTS Platform's current URL.<br/>
+                                                Example: If you're accessing FTS at <code className="bg-slate-100 px-1 rounded">https://yourapp.base44.app</code>, use that.<br/>
+                                                Kong will proxy requests to your Base44 backend functions through this URL.
                                             </AlertDescription>
                                         </Alert>
                                         <pre className="bg-slate-900 text-slate-100 p-3 rounded-lg text-xs overflow-x-auto">
