@@ -1,10 +1,23 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
 import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
 import KongSetupGuide from '@/components/docs/KongSetupGuide';
-import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
 
 export default function KongGatewaySetup() {
-    const { session, loading } = usePlatformAuth(['platform_admin', 'platform_operator', 'super_admin']);
+    const navigate = useNavigate();
+    const [session, setSession] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const sessionData = localStorage.getItem('platform_admin_session');
+        if (!sessionData) {
+            navigate(createPageUrl('PlatformAdminLogin'));
+            return;
+        }
+        setSession(JSON.parse(sessionData));
+        setLoading(false);
+    }, [navigate]);
 
     if (loading) {
         return (
@@ -14,13 +27,7 @@ export default function KongGatewaySetup() {
         );
     }
 
-    if (!session) {
-        return (
-            <div className="flex items-center justify-center h-screen">
-                <p className="text-slate-600">Loading...</p>
-            </div>
-        );
-    }
+    if (!session) return null;
 
     return (
         <div className="flex h-screen bg-slate-50">
