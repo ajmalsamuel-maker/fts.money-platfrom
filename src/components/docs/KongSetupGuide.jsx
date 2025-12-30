@@ -320,19 +320,81 @@ curl -i -X POST http://YOUR_DROPLET_IP:8001/services/psp-service/plugins \\
 # Add API key authentication
 curl -i -X POST http://YOUR_DROPLET_IP:8001/services/psp-service/plugins \\
   --data "name=key-auth" \\
-  --data "config.key_names[]=apikey"`}
-                                </pre>
-                            </div>
+  --data "config.key_names[]=apikey"
 
-                            <div>
-                                <h4 className="font-semibold mb-2">Repeat for other services:</h4>
-                                <ul className="space-y-1 text-sm">
-                                    <li>• ISO Gateway Service</li>
-                                    <li>• Orchestration Service</li>
-                                    <li>• Crypto Banking Service</li>
-                                    <li>• RWA Platform Service</li>
-                                </ul>
-                            </div>
+# ISO Gateway Service
+curl -i -X POST http://YOUR_DROPLET_IP:8001/services \\
+  --data "name=iso-gateway-service" \\
+  --data "url=https://abc123.base44.app"
+
+curl -i -X POST http://YOUR_DROPLET_IP:8001/services/iso-gateway-service/routes \\
+  --data "paths[]=/api/v1/iso" \\
+  --data "strip_path=false"
+
+curl -i -X POST http://YOUR_DROPLET_IP:8001/services/iso-gateway-service/plugins \\
+  --data "name=rate-limiting" \\
+  --data "config.minute=2000" \\
+  --data "config.hour=100000"
+
+curl -i -X POST http://YOUR_DROPLET_IP:8001/services/iso-gateway-service/plugins \\
+  --data "name=key-auth" \\
+  --data "config.key_names[]=apikey"
+
+# Orchestration Service
+curl -i -X POST http://YOUR_DROPLET_IP:8001/services \\
+  --data "name=orchestration-service" \\
+  --data "url=https://abc123.base44.app"
+
+curl -i -X POST http://YOUR_DROPLET_IP:8001/services/orchestration-service/routes \\
+  --data "paths[]=/api/v1/orchestration" \\
+  --data "strip_path=false"
+
+curl -i -X POST http://YOUR_DROPLET_IP:8001/services/orchestration-service/plugins \\
+  --data "name=rate-limiting" \\
+  --data "config.minute=1500" \\
+  --data "config.hour=75000"
+
+curl -i -X POST http://YOUR_DROPLET_IP:8001/services/orchestration-service/plugins \\
+  --data "name=key-auth" \\
+  --data "config.key_names[]=apikey"
+
+# Crypto Banking Service
+curl -i -X POST http://YOUR_DROPLET_IP:8001/services \\
+  --data "name=crypto-banking-service" \\
+  --data "url=https://abc123.base44.app"
+
+curl -i -X POST http://YOUR_DROPLET_IP:8001/services/crypto-banking-service/routes \\
+  --data "paths[]=/api/v1/crypto" \\
+  --data "strip_path=false"
+
+curl -i -X POST http://YOUR_DROPLET_IP:8001/services/crypto-banking-service/plugins \\
+  --data "name=rate-limiting" \\
+  --data "config.minute=500" \\
+  --data "config.hour=25000"
+
+curl -i -X POST http://YOUR_DROPLET_IP:8001/services/crypto-banking-service/plugins \\
+  --data "name=key-auth" \\
+  --data "config.key_names[]=apikey"
+
+# RWA Platform Service
+curl -i -X POST http://YOUR_DROPLET_IP:8001/services \\
+  --data "name=rwa-platform-service" \\
+  --data "url=https://abc123.base44.app"
+
+curl -i -X POST http://YOUR_DROPLET_IP:8001/services/rwa-platform-service/routes \\
+  --data "paths[]=/api/v1/rwa" \\
+  --data "strip_path=false"
+
+curl -i -X POST http://YOUR_DROPLET_IP:8001/services/rwa-platform-service/plugins \\
+  --data "name=rate-limiting" \\
+  --data "config.minute=1000" \\
+  --data "config.hour=50000"
+
+curl -i -X POST http://YOUR_DROPLET_IP:8001/services/rwa-platform-service/plugins \\
+  --data "name=key-auth" \\
+  --data "config.key_names[]=apikey"`}
+                                      </pre>
+                                  </div>
 
                             <Alert>
                                 <AlertDescription className="text-xs">
