@@ -290,11 +290,18 @@ docker-compose logs kong`}
                         <CardContent className="space-y-4">
                             <div>
                                 <h4 className="font-semibold mb-2">Register your services in Kong:</h4>
-                                <pre className="bg-slate-900 text-slate-100 p-3 rounded-lg text-xs overflow-x-auto">
-{`# PSP Service
-curl -i -X POST http://YOUR_DROPLET_IP:8001/services \\
-  --data "name=psp-service" \\
-  --data "url=https://YOUR_BASE44_APP_URL"
+                                        <Alert className="mb-3">
+                                            <AlertDescription className="text-xs">
+                                                <strong>YOUR_BASE44_APP_URL:</strong> This is your Base44 app's function endpoint.<br/>
+                                                Format: <code className="bg-slate-100 px-1 rounded">https://your-app-name.base44.app</code><br/>
+                                                Find it in your Base44 dashboard under Settings → App URL
+                                            </AlertDescription>
+                                        </Alert>
+                                        <pre className="bg-slate-900 text-slate-100 p-3 rounded-lg text-xs overflow-x-auto">
+                                {`# PSP Service
+                                curl -i -X POST http://YOUR_DROPLET_IP:8001/services \\
+                                --data "name=psp-service" \\
+                                --data "url=https://your-app-name.base44.app"
 
 # Create route
 curl -i -X POST http://YOUR_DROPLET_IP:8001/services/psp-service/routes \\
