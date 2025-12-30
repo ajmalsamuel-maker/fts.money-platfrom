@@ -385,6 +385,64 @@ curl -i http://YOUR_DROPLET_IP:8000/api/v1/psp \\
                 </TabsContent>
             </Tabs>
 
+            <Card className="border-red-200 bg-red-50">
+                <CardHeader>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                        <span className="text-red-600">⚠️</span> Troubleshooting
+                    </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <div>
+                        <h4 className="font-semibold text-sm mb-2">Error: 'ContainerConfig' KeyError</h4>
+                        <p className="text-xs text-slate-600 mb-2">If you get this error when running migrations:</p>
+                        <pre className="bg-slate-900 text-slate-100 p-3 rounded-lg text-xs overflow-x-auto mb-2">
+            {`KeyError: 'ContainerConfig'`}
+                        </pre>
+                        <p className="text-xs text-slate-600 mb-2"><strong>Solution:</strong> Clean up old containers and use Docker Compose V2</p>
+                        <pre className="bg-slate-900 text-slate-100 p-3 rounded-lg text-xs overflow-x-auto">
+            {`# Stop and remove all containers
+            cd /opt/kong
+            docker-compose down -v
+
+            # Remove dangling images
+            docker system prune -a
+
+            # Use Docker Compose V2 (without hyphen)
+            docker compose up kong-migrations
+            docker compose up -d kong
+
+            # OR update docker-compose V1
+            pip install --upgrade docker-compose`}
+                        </pre>
+                    </div>
+
+                    <div>
+                        <h4 className="font-semibold text-sm mb-2">Database Connection Failed</h4>
+                        <pre className="bg-slate-900 text-slate-100 p-3 rounded-lg text-xs overflow-x-auto">
+            {`# Verify database is accessible
+            psql "postgresql://doadmin:PASSWORD@HOST:25060/kong?sslmode=require"
+
+            # Check Trusted Sources in DigitalOcean database settings
+            # Add your Droplet's IP address`}
+                        </pre>
+                    </div>
+
+                    <div>
+                        <h4 className="font-semibold text-sm mb-2">Kong Not Starting</h4>
+                        <pre className="bg-slate-900 text-slate-100 p-3 rounded-lg text-xs overflow-x-auto">
+            {`# Check logs
+            docker compose logs kong
+
+            # Restart Kong
+            docker compose restart kong
+
+            # Verify port availability
+            netstat -tuln | grep 8001`}
+                        </pre>
+                    </div>
+                </CardContent>
+            </Card>
+
             <Card className="border-blue-200 bg-blue-50">
                 <CardHeader>
                     <CardTitle className="text-lg">Next Steps</CardTitle>
