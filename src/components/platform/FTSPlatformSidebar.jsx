@@ -146,8 +146,9 @@ const menuSections = [
         title: 'Infrastructure',
         defaultOpen: false,
         items: [
+            { label: 'Kong Gateway Setup', path: 'KongGatewaySetup', icon: Zap, description: 'Deploy API Gateway', priority: true },
             { label: 'Domain Management', path: 'FTSDomainManagement', icon: Globe, description: 'SSL & DNS' },
-            { label: 'API Gateway', path: 'APIGatewayConfiguration', icon: Zap, description: 'Configuration' },
+            { label: 'API Gateway Config', path: 'APIGatewayConfiguration', icon: Zap, description: 'Gateway settings' },
             { label: 'Blockchain', path: 'FTSBlockchainIntegration', icon: Globe, description: 'Blockchain integrations' }
         ]
     },
@@ -157,7 +158,6 @@ const menuSections = [
         defaultOpen: false,
         items: [
             { label: 'Documentation Hub', path: 'FTSDocumentation', icon: BookOpen, description: 'Complete platform docs', priority: true },
-            { label: 'Kong Gateway Setup', path: 'KongGatewaySetup', icon: Zap, description: 'Deploy API Gateway', priority: true },
             { label: 'Architecture Docs', path: 'FTSArchitectureDoc', icon: BookOpen, description: 'System design' }
         ]
     },
