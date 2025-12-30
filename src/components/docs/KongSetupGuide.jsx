@@ -290,18 +290,21 @@ docker-compose logs kong`}
                         <CardContent className="space-y-4">
                             <div>
                                 <h4 className="font-semibold mb-2">Register your services in Kong:</h4>
-                                        <Alert className="mb-3">
+                                        <Alert className="mb-3 bg-yellow-50 border-yellow-200">
                                             <AlertDescription className="text-xs">
-                                                <strong>YOUR_BASE44_APP_URL:</strong> Use your FTS Platform's current URL.<br/>
-                                                Example: If you're accessing FTS at <code className="bg-slate-100 px-1 rounded">https://yourapp.base44.app</code>, use that.<br/>
-                                                Kong will proxy requests to your Base44 backend functions through this URL.
+                                                <strong>Finding Your App URL:</strong><br/>
+                                                • NOT the builder URL (app.base44.com)<br/>
+                                                • Look for your deployed app URL in the Base44 preview/iframe<br/>
+                                                • Format: <code className="bg-slate-100 px-1 rounded">https://[unique-id].base44.app</code><br/>
+                                                • Or check browser DevTools → Network tab → any API call → see the domain<br/>
+                                                • Use ONLY the base domain, no paths (e.g., <code className="bg-slate-100 px-1 rounded">https://abc123.base44.app</code>)
                                             </AlertDescription>
                                         </Alert>
                                         <pre className="bg-slate-900 text-slate-100 p-3 rounded-lg text-xs overflow-x-auto">
-                                {`# PSP Service
+                                {`# PSP Service Example
                                 curl -i -X POST http://YOUR_DROPLET_IP:8001/services \\
                                 --data "name=psp-service" \\
-                                --data "url=https://your-app-name.base44.app"
+                                --data "url=https://abc123.base44.app"
 
 # Create route
 curl -i -X POST http://YOUR_DROPLET_IP:8001/services/psp-service/routes \\
