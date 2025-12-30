@@ -146,7 +146,6 @@ const menuSections = [
         title: 'Infrastructure',
         defaultOpen: false,
         items: [
-            { label: 'Kong Gateway Setup', path: 'KongGatewaySetup', icon: Zap, description: 'Deploy Kong on DigitalOcean', priority: true },
             { label: 'Domain Management', path: 'FTSDomainManagement', icon: Globe, description: 'SSL & DNS' },
             { label: 'API Gateway', path: 'APIGatewayConfiguration', icon: Zap, description: 'Configuration' },
             { label: 'Blockchain', path: 'FTSBlockchainIntegration', icon: Globe, description: 'Blockchain integrations' }
@@ -157,7 +156,9 @@ const menuSections = [
         title: 'Documentation',
         defaultOpen: false,
         items: [
-            { label: 'Documentation Hub', path: 'FTSDocumentation', icon: BookOpen, description: 'Complete platform docs', priority: true }
+            { label: 'Documentation Hub', path: 'FTSDocumentation', icon: BookOpen, description: 'Complete platform docs', priority: true },
+            { label: 'Kong Gateway Setup', path: 'KongGatewaySetup', icon: Zap, description: 'Deploy API Gateway', priority: true },
+            { label: 'Architecture Docs', path: 'FTSArchitectureDoc', icon: BookOpen, description: 'System design' }
         ]
     },
     {
@@ -166,7 +167,6 @@ const menuSections = [
         defaultOpen: false,
         items: [
             { label: 'Platform Config', path: 'FTSSettings', icon: Settings, description: 'System settings' },
-            { label: 'Architecture', path: 'FTSArchitectureDoc', icon: BookOpen, description: 'System design' },
             { label: 'Product Ecosystem', path: 'FTSProductEcosystemReport', icon: Package, description: 'Products & models' },
             { label: 'Vertical Solutions', path: 'FTSVerticalSolutions', icon: Building2, description: 'Industry offerings' },
             { label: 'Advanced Tools', path: 'ModuleCatalogTest', icon: Code, description: 'Module testing' },
