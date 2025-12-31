@@ -147,6 +147,7 @@ const menuSections = [
         defaultOpen: false,
         items: [
             { label: 'Kong Gateway Setup', path: 'KongGatewaySetup', icon: Zap, description: 'Deploy API Gateway', priority: true },
+            { label: 'Kong API Keys', path: 'KongAPIKeyManagement', icon: Key, description: 'Multi-tenant API keys', priority: true },
             { label: 'Kong API Integration', path: 'KongAPIIntegrationGuide', icon: Code, description: 'External API docs', priority: true },
             { label: 'Domain Management', path: 'FTSDomainManagement', icon: Globe, description: 'SSL & DNS' },
             { label: 'API Gateway Config', path: 'APIGatewayConfiguration', icon: Zap, description: 'Gateway settings' },
