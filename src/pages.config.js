@@ -118,6 +118,7 @@ import InvestorPortfolio from './pages/InvestorPortfolio';
 import InvestorSettings from './pages/InvestorSettings';
 import Invoices from './pages/Invoices';
 import Invoicing from './pages/Invoicing';
+import KongGatewaySetup from './pages/KongGatewaySetup';
 import LEIComplianceDashboard from './pages/LEIComplianceDashboard';
 import LEIGLEIFTestReport from './pages/LEIGLEIFTestReport';
 import LEIPhase1Testing from './pages/LEIPhase1Testing';
@@ -215,6 +216,7 @@ import PaymentOrchestration from './pages/PaymentOrchestration';
 import PaymentProviders from './pages/PaymentProviders';
 import PayoutOrchestration from './pages/PayoutOrchestration';
 import Payouts from './pages/Payouts';
+import Products from './pages/Products';
 import PlatformAdminLogin from './pages/PlatformAdminLogin';
 import PlatformAdminRegister from './pages/PlatformAdminRegister';
 import PlatformAuditLogs from './pages/PlatformAuditLogs';
@@ -222,7 +224,6 @@ import PlatformPricingConfiguration from './pages/PlatformPricingConfiguration';
 import PlatformUserManagement from './pages/PlatformUserManagement';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import ProductTemplateLibrary from './pages/ProductTemplateLibrary';
-import Products from './pages/Products';
 import PublicSupport from './pages/PublicSupport';
 import QuickPSPProvisioning from './pages/QuickPSPProvisioning';
 import RWAPlatform from './pages/RWAPlatform';
@@ -269,7 +270,7 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import KongGatewaySetup from './pages/KongGatewaySetup';
+import KongAPIIntegrationGuide from './pages/KongAPIIntegrationGuide';
 import __Layout from './Layout.jsx';
 
 
@@ -394,6 +395,7 @@ export const PAGES = {
     "InvestorSettings": InvestorSettings,
     "Invoices": Invoices,
     "Invoicing": Invoicing,
+    "KongGatewaySetup": KongGatewaySetup,
     "LEIComplianceDashboard": LEIComplianceDashboard,
     "LEIGLEIFTestReport": LEIGLEIFTestReport,
     "LEIPhase1Testing": LEIPhase1Testing,
@@ -491,6 +493,7 @@ export const PAGES = {
     "PaymentProviders": PaymentProviders,
     "PayoutOrchestration": PayoutOrchestration,
     "Payouts": Payouts,
+    "Products": Products,
     "PlatformAdminLogin": PlatformAdminLogin,
     "PlatformAdminRegister": PlatformAdminRegister,
     "PlatformAuditLogs": PlatformAuditLogs,
@@ -498,7 +501,6 @@ export const PAGES = {
     "PlatformUserManagement": PlatformUserManagement,
     "PrivacyPolicy": PrivacyPolicy,
     "ProductTemplateLibrary": ProductTemplateLibrary,
-    "Products": Products,
     "PublicSupport": PublicSupport,
     "QuickPSPProvisioning": QuickPSPProvisioning,
     "RWAPlatform": RWAPlatform,
@@ -545,7 +547,7 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "KongGatewaySetup": KongGatewaySetup,
+    "KongAPIIntegrationGuide": KongAPIIntegrationGuide,
 }
 
 export const pagesConfig = {
