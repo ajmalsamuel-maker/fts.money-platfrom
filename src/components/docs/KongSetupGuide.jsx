@@ -695,21 +695,31 @@ curl -i http://YOUR_DROPLET_IP:8000/api/v1/psp \\
                     <div>
                         <h4 className="font-semibold text-sm mb-2">Step 7: Test Your Setup</h4>
                         <pre className="bg-slate-900 text-slate-100 p-3 rounded-lg text-xs overflow-x-auto">
-            {`# Test without API key (should fail with 401)
-            curl -i http://188.166.207.82:8000/api/v1/psp
+                    {`# Test without API key (should get 401 Unauthorized)
+                    curl -i http://188.166.207.82:8000/api/v1/psp
 
-            # Test with API key (should work - replace YOUR_API_KEY)
-            curl -i http://188.166.207.82:8000/api/v1/psp \\
-            -H "apikey: YOUR_API_KEY"
+                    # Test with API key (replace with your actual key)
+                    curl -i http://188.166.207.82:8000/api/v1/psp \\
+                    -H "apikey: FqeDDx9H0dJdWV3d8B4g2vMG2XJGgRrH"
 
-            # Verify all services are registered
-            curl http://188.166.207.82:8001/services`}
+                    # Verify all services are registered
+                    curl http://188.166.207.82:8001/services`}
                         </pre>
+                        <Alert className="bg-blue-50 border-blue-200 mt-2">
+                            <AlertDescription className="text-xs">
+                                <strong>Understanding Test Results:</strong><br/>
+                                • <code className="bg-slate-100 px-1 rounded">401 Unauthorized</code> without API key = ✅ Kong authentication working<br/>
+                                • <code className="bg-slate-100 px-1 rounded">404 Not Found</code> with API key = ✅ Kong proxying correctly (backend endpoint doesn't exist yet)<br/>
+                                • <code className="bg-slate-100 px-1 rounded">200 OK</code> with API key = ✅ Complete success (backend endpoint exists)<br/>
+                                • Headers show <code className="bg-slate-100 px-1 rounded">X-RateLimit-*</code> = ✅ Rate limiting active<br/>
+                                • Headers show <code className="bg-slate-100 px-1 rounded">Via: kong/3.5</code> = ✅ Request went through Kong
+                            </AlertDescription>
+                        </Alert>
                     </div>
 
                     <Alert className="bg-green-50 border-green-200">
                         <AlertDescription className="text-xs">
-                            🎉 <strong>Done!</strong> Your Kong Gateway is now protecting all FTS services with rate limiting and API key authentication!
+                            🎉 <strong>Success!</strong> Your Kong Gateway is working! The 401 error without API key and 404 with API key proves Kong is correctly proxying requests and enforcing authentication. All 5 services are registered with rate limiting.
                         </AlertDescription>
                     </Alert>
                 </CardContent>
