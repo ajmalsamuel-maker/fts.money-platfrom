@@ -676,13 +676,20 @@ curl -i http://YOUR_DROPLET_IP:8000/api/v1/psp \\
                     <div>
                         <h4 className="font-semibold text-sm mb-2">Step 6: Create Consumer & Generate API Key</h4>
                         <pre className="bg-slate-900 text-slate-100 p-3 rounded-lg text-xs overflow-x-auto">
-            {`# Create a test consumer
-            curl -i -X POST http://188.166.207.82:8001/consumers \\
-            --data "username=test-client"
+                    {`# Create a test consumer
+                    curl -i -X POST http://188.166.207.82:8001/consumers \\
+                    --data "username=test-client"
 
-            # Generate API key (save the "key" value from response!)
-            curl -i -X POST http://188.166.207.82:8001/consumers/test-client/key-auth`}
+                    # Generate API key
+                    curl -i -X POST http://188.166.207.82:8001/consumers/test-client/key-auth`}
                         </pre>
+                        <Alert className="bg-yellow-50 border-yellow-200 mt-2">
+                            <AlertDescription className="text-xs">
+                                <strong>Save the API Key!</strong> In the JSON response, look for the <code className="bg-slate-100 px-1 rounded">"key"</code> field.<br/>
+                                Example: <code className="bg-slate-100 px-1 rounded">{`{"key":"FqeDDx9H0dJdWV3d8B4g2vMG2XJGgRrH",...}`}</code><br/>
+                                Your API key is the value: <code className="bg-slate-100 px-1 rounded">FqeDDx9H0dJdWV3d8B4g2vMG2XJGgRrH</code>
+                            </AlertDescription>
+                        </Alert>
                     </div>
 
                     <div>
