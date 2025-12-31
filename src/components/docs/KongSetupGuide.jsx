@@ -725,30 +725,107 @@ curl -i http://YOUR_DROPLET_IP:8000/api/v1/psp \\
                 </CardContent>
             </Card>
 
-            <Card className="border-blue-200 bg-blue-50">
+            <Card className="border-purple-200 bg-purple-50">
                 <CardHeader>
-                    <CardTitle className="text-lg">Future Enhancements</CardTitle>
+                    <CardTitle className="text-lg">📋 What's Next? Production Readiness</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-2 text-sm">
-                    <div className="flex items-center gap-2">
-                        <Badge className="bg-blue-600">1</Badge>
-                        <span>Setup SSL/TLS certificates (Let's Encrypt)</span>
+                <CardContent className="space-y-4">
+                    <div>
+                        <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
+                            <Badge className="bg-purple-600">STEP 1</Badge>
+                            Update Base44 Backend Functions
+                        </h4>
+                        <p className="text-xs text-slate-600 mb-2">Update your backend functions to use Kong endpoints instead of direct Base44 URLs:</p>
+                        <pre className="bg-slate-900 text-slate-100 p-3 rounded-lg text-xs overflow-x-auto">
+            {`// Example: Update PSP function to use Kong
+            const response = await fetch('http://188.166.207.82:8000/api/v1/psp/merchants', {
+            method: 'POST',
+            headers: {
+            'apikey': 'FqeDDx9H0dJdWV3d8B4g2vMG2XJGgRrH',
+            'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+            });`}
+                        </pre>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <Badge className="bg-blue-600">2</Badge>
-                        <span>Configure custom domain (api.fts.money)</span>
+
+                    <div>
+                        <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
+                            <Badge className="bg-purple-600">STEP 2</Badge>
+                            Create API Key Management UI
+                        </h4>
+                        <p className="text-xs text-slate-600">Build a page for customers to generate/manage their API keys via Kong Admin API</p>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <Badge className="bg-blue-600">3</Badge>
-                        <span>Add monitoring (Prometheus + Grafana)</span>
+
+                    <div>
+                        <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
+                            <Badge className="bg-purple-600">STEP 3</Badge>
+                            Setup Custom Domain & SSL
+                        </h4>
+                        <p className="text-xs text-slate-600 mb-2">Point api.fts.money → 188.166.207.82 and install Let's Encrypt SSL</p>
+                        <pre className="bg-slate-900 text-slate-100 p-3 rounded-lg text-xs overflow-x-auto">
+            {`# Install Certbot
+            apt install certbot python3-certbot-nginx -y
+
+            # Get SSL certificate
+            certbot certonly --standalone -d api.fts.money
+
+            # Update Kong docker-compose.yml to mount certificates
+            # Then access via: https://api.fts.money:8443/api/v1/psp`}
+                        </pre>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <Badge className="bg-blue-600">4</Badge>
-                        <span>Update Base44 functions to use Kong endpoints</span>
+
+                    <div>
+                        <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
+                            <Badge className="bg-purple-600">STEP 4</Badge>
+                            Add Monitoring
+                        </h4>
+                        <p className="text-xs text-slate-600">Install Prometheus + Grafana for Kong metrics and alerting</p>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <Badge className="bg-blue-600">5</Badge>
-                        <span>Create API key management UI for clients</span>
+
+                    <div>
+                        <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
+                            <Badge className="bg-purple-600">STEP 5</Badge>
+                            Production Hardening
+                        </h4>
+                        <ul className="text-xs text-slate-600 space-y-1">
+                            <li>• Enable Kong Manager RBAC</li>
+                            <li>• Setup automated backups of PostgreSQL</li>
+                            <li>• Configure firewall rules (allow only 8000, 8443)</li>
+                            <li>• Add health check endpoints</li>
+                            <li>• Setup log aggregation (ELK stack)</li>
+                        </ul>
+                    </div>
+                </CardContent>
+            </Card>
+
+            <Card className="border-cyan-200 bg-cyan-50">
+                <CardHeader>
+                    <CardTitle className="text-lg">🎯 Kong Gateway in FTS Control Panel</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                    <Alert className="bg-green-50 border-green-200">
+                        <AlertDescription className="text-xs">
+                            ✅ <strong>Already Available!</strong> This Kong Gateway Setup page is accessible from the FTS Platform Control Panel under <strong>Infrastructure → Kong Gateway Setup</strong>
+                        </AlertDescription>
+                    </Alert>
+
+                    <div>
+                        <h4 className="font-semibold text-sm mb-2">Quick Access Path:</h4>
+                        <ol className="text-xs text-slate-600 space-y-1">
+                            <li>1. Login to Platform Admin (ajmal.samuel@fts.money)</li>
+                            <li>2. Navigate to: <strong>Infrastructure</strong> section in sidebar</li>
+                            <li>3. Click: <strong>Kong Gateway Setup</strong></li>
+                        </ol>
+                    </div>
+
+                    <div>
+                        <h4 className="font-semibold text-sm mb-2">Your Kong Endpoints:</h4>
+                        <div className="bg-white p-2 rounded border border-cyan-200">
+                            <p className="text-xs mb-1"><strong>Gateway Proxy:</strong> http://188.166.207.82:8000</p>
+                            <p className="text-xs mb-1"><strong>Admin API:</strong> http://188.166.207.82:8001</p>
+                            <p className="text-xs"><strong>Kong Manager:</strong> http://188.166.207.82:8002</p>
+                        </div>
                     </div>
                 </CardContent>
             </Card>
