@@ -550,9 +550,167 @@ curl -i http://YOUR_DROPLET_IP:8000/api/v1/psp \\
                 </CardContent>
             </Card>
 
+            <Card className="border-green-200 bg-green-50">
+                <CardHeader>
+                    <CardTitle className="text-lg flex items-center gap-2">
+                        <span className="text-green-600">✅</span> Kong is Running! Next: Register Your Services
+                    </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <Alert className="bg-yellow-50 border-yellow-200">
+                        <AlertDescription className="text-xs">
+                            <strong>Before you start:</strong> Replace <code className="bg-slate-100 px-1 rounded">188.166.207.82</code> with your actual droplet IP and <code className="bg-slate-100 px-1 rounded">https://txn.netxhub.tech</code> with your Base44 app URL.
+                        </AlertDescription>
+                    </Alert>
+
+                    <div>
+                        <h4 className="font-semibold text-sm mb-2">Step 1: Register PSP Service</h4>
+                        <pre className="bg-slate-900 text-slate-100 p-3 rounded-lg text-xs overflow-x-auto">
+            {`curl -i -X POST http://188.166.207.82:8001/services \\
+            --data "name=psp-service" \\
+            --data "url=https://txn.netxhub.tech"
+
+            curl -i -X POST http://188.166.207.82:8001/services/psp-service/routes \\
+            --data "paths[]=/api/v1/psp" \\
+            --data "strip_path=false"
+
+            curl -i -X POST http://188.166.207.82:8001/services/psp-service/plugins \\
+            --data "name=rate-limiting" \\
+            --data "config.minute=1000" \\
+            --data "config.hour=50000"
+
+            curl -i -X POST http://188.166.207.82:8001/services/psp-service/plugins \\
+            --data "name=key-auth" \\
+            --data "config.key_names[]=apikey"`}
+                        </pre>
+                    </div>
+
+                    <div>
+                        <h4 className="font-semibold text-sm mb-2">Step 2: Register ISO Gateway Service</h4>
+                        <pre className="bg-slate-900 text-slate-100 p-3 rounded-lg text-xs overflow-x-auto">
+            {`curl -i -X POST http://188.166.207.82:8001/services \\
+            --data "name=iso-gateway-service" \\
+            --data "url=https://txn.netxhub.tech"
+
+            curl -i -X POST http://188.166.207.82:8001/services/iso-gateway-service/routes \\
+            --data "paths[]=/api/v1/iso" \\
+            --data "strip_path=false"
+
+            curl -i -X POST http://188.166.207.82:8001/services/iso-gateway-service/plugins \\
+            --data "name=rate-limiting" \\
+            --data "config.minute=2000" \\
+            --data "config.hour=100000"
+
+            curl -i -X POST http://188.166.207.82:8001/services/iso-gateway-service/plugins \\
+            --data "name=key-auth" \\
+            --data "config.key_names[]=apikey"`}
+                        </pre>
+                    </div>
+
+                    <div>
+                        <h4 className="font-semibold text-sm mb-2">Step 3: Register Orchestration Service</h4>
+                        <pre className="bg-slate-900 text-slate-100 p-3 rounded-lg text-xs overflow-x-auto">
+            {`curl -i -X POST http://188.166.207.82:8001/services \\
+            --data "name=orchestration-service" \\
+            --data "url=https://txn.netxhub.tech"
+
+            curl -i -X POST http://188.166.207.82:8001/services/orchestration-service/routes \\
+            --data "paths[]=/api/v1/orchestration" \\
+            --data "strip_path=false"
+
+            curl -i -X POST http://188.166.207.82:8001/services/orchestration-service/plugins \\
+            --data "name=rate-limiting" \\
+            --data "config.minute=1500" \\
+            --data "config.hour=75000"
+
+            curl -i -X POST http://188.166.207.82:8001/services/orchestration-service/plugins \\
+            --data "name=key-auth" \\
+            --data "config.key_names[]=apikey"`}
+                        </pre>
+                    </div>
+
+                    <div>
+                        <h4 className="font-semibold text-sm mb-2">Step 4: Register Crypto Banking Service</h4>
+                        <pre className="bg-slate-900 text-slate-100 p-3 rounded-lg text-xs overflow-x-auto">
+            {`curl -i -X POST http://188.166.207.82:8001/services \\
+            --data "name=crypto-banking-service" \\
+            --data "url=https://txn.netxhub.tech"
+
+            curl -i -X POST http://188.166.207.82:8001/services/crypto-banking-service/routes \\
+            --data "paths[]=/api/v1/crypto" \\
+            --data "strip_path=false"
+
+            curl -i -X POST http://188.166.207.82:8001/services/crypto-banking-service/plugins \\
+            --data "name=rate-limiting" \\
+            --data "config.minute=500" \\
+            --data "config.hour=25000"
+
+            curl -i -X POST http://188.166.207.82:8001/services/crypto-banking-service/plugins \\
+            --data "name=key-auth" \\
+            --data "config.key_names[]=apikey"`}
+                        </pre>
+                    </div>
+
+                    <div>
+                        <h4 className="font-semibold text-sm mb-2">Step 5: Register RWA Platform Service</h4>
+                        <pre className="bg-slate-900 text-slate-100 p-3 rounded-lg text-xs overflow-x-auto">
+            {`curl -i -X POST http://188.166.207.82:8001/services \\
+            --data "name=rwa-platform-service" \\
+            --data "url=https://txn.netxhub.tech"
+
+            curl -i -X POST http://188.166.207.82:8001/services/rwa-platform-service/routes \\
+            --data "paths[]=/api/v1/rwa" \\
+            --data "strip_path=false"
+
+            curl -i -X POST http://188.166.207.82:8001/services/rwa-platform-service/plugins \\
+            --data "name=rate-limiting" \\
+            --data "config.minute=1000" \\
+            --data "config.hour=50000"
+
+            curl -i -X POST http://188.166.207.82:8001/services/rwa-platform-service/plugins \\
+            --data "name=key-auth" \\
+            --data "config.key_names[]=apikey"`}
+                        </pre>
+                    </div>
+
+                    <div>
+                        <h4 className="font-semibold text-sm mb-2">Step 6: Create Consumer & Generate API Key</h4>
+                        <pre className="bg-slate-900 text-slate-100 p-3 rounded-lg text-xs overflow-x-auto">
+            {`# Create a test consumer
+            curl -i -X POST http://188.166.207.82:8001/consumers \\
+            --data "username=test-client"
+
+            # Generate API key (save the "key" value from response!)
+            curl -i -X POST http://188.166.207.82:8001/consumers/test-client/key-auth`}
+                        </pre>
+                    </div>
+
+                    <div>
+                        <h4 className="font-semibold text-sm mb-2">Step 7: Test Your Setup</h4>
+                        <pre className="bg-slate-900 text-slate-100 p-3 rounded-lg text-xs overflow-x-auto">
+            {`# Test without API key (should fail with 401)
+            curl -i http://188.166.207.82:8000/api/v1/psp
+
+            # Test with API key (should work - replace YOUR_API_KEY)
+            curl -i http://188.166.207.82:8000/api/v1/psp \\
+            -H "apikey: YOUR_API_KEY"
+
+            # Verify all services are registered
+            curl http://188.166.207.82:8001/services`}
+                        </pre>
+                    </div>
+
+                    <Alert className="bg-green-50 border-green-200">
+                        <AlertDescription className="text-xs">
+                            🎉 <strong>Done!</strong> Your Kong Gateway is now protecting all FTS services with rate limiting and API key authentication!
+                        </AlertDescription>
+                    </Alert>
+                </CardContent>
+            </Card>
+
             <Card className="border-blue-200 bg-blue-50">
                 <CardHeader>
-                    <CardTitle className="text-lg">Next Steps</CardTitle>
+                    <CardTitle className="text-lg">Future Enhancements</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2 text-sm">
                     <div className="flex items-center gap-2">
