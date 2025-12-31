@@ -28,7 +28,8 @@ import {
     TestTube2,
     ChevronDown,
     ChevronRight,
-    Briefcase
+    Briefcase,
+    Key
 } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
