@@ -147,7 +147,7 @@ export default function PSPInstanceConfig() {
 
     const updateMutation = useMutation({
         mutationFn: async (data) => {
-            console.log('Saving config:', data);
+            console.log('💾 Saving config:', data);
             // Map config structure back to PSP entity fields
             const pspUpdateData = {
                 branding: data.branding,
@@ -159,15 +159,18 @@ export default function PSPInstanceConfig() {
                 enabled_payout_methods: data.enabled_payout_methods,
                 enabled_services: data.enabled_services
             };
-            console.log('Saving to database:', pspUpdateData);
+            console.log('💾 Sending to database:', pspUpdateData);
             const result = await base44.entities.ProvisionedPSP.update(pspId, pspUpdateData);
-            console.log('Save result:', result);
+            console.log('✅ Save successful:', result);
             return result;
         },
         onSuccess: async (updatedPSP) => {
-            console.log('Update successful, refetching...');
+            console.log('✅ Update successful, refetching data...');
+            toast.success('PSP configuration saved successfully');
+            
             await queryClient.invalidateQueries(['psp-config']);
             await queryClient.invalidateQueries(['provisioned-psps']);
+            await queryClient.invalidateQueries(['psp-subscriptions']);
             
             // Log audit action
             const session = JSON.parse(localStorage.getItem('platform_admin_session') || '{}');
@@ -181,6 +184,10 @@ export default function PSPInstanceConfig() {
                     user_role: session.platform_role || 'platform_admin'
                 });
             }
+        },
+        onError: (error) => {
+            console.error('❌ Save failed:', error);
+            toast.error(`Failed to save: ${error.message}`);
         }
     });
 
