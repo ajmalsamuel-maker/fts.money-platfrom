@@ -163,17 +163,28 @@ export default function PSPInstanceConfig() {
 
     const updateMutation = useMutation({
         mutationFn: async (data) => {
+            // Permission check - only platform admins can modify PSP config
+            if (!platformUser?.email) {
+                throw new Error('Unauthorized: No active session');
+            }
+            
+            const allowedRoles = ['super_admin', 'platform_admin', 'operations'];
+            if (!allowedRoles.includes(platformUser?.platform_role)) {
+                throw new Error('Unauthorized: Insufficient permissions to modify PSP configuration');
+            }
+            
             console.log('💾 Saving config:', data);
-            // Map config structure back to PSP entity fields
+            // Ensure arrays are properly formatted (not stringified)
             const pspUpdateData = {
                 branding: data.branding,
                 transaction_fees: data.transaction_fees,
                 currency: data.region_settings?.default_currency,
                 timezone: data.region_settings?.timezone,
                 country: data.region_settings?.region,
-                enabled_payment_methods: data.enabled_payment_methods,
-                enabled_payout_methods: data.enabled_payout_methods,
-                enabled_services: data.enabled_services
+                // Ensure these are arrays, not strings
+                enabled_payment_methods: Array.isArray(data.enabled_payment_methods) ? data.enabled_payment_methods : [],
+                enabled_payout_methods: Array.isArray(data.enabled_payout_methods) ? data.enabled_payout_methods : [],
+                enabled_services: Array.isArray(data.enabled_services) ? data.enabled_services : []
             };
             console.log('💾 Sending to database:', {
                 enabled_payment_methods: pspUpdateData.enabled_payment_methods,
@@ -181,7 +192,9 @@ export default function PSPInstanceConfig() {
                 enabled_payout_methods: pspUpdateData.enabled_payout_methods,
                 enabled_payout_methods_length: pspUpdateData.enabled_payout_methods?.length,
                 enabled_services: pspUpdateData.enabled_services,
-                enabled_services_length: pspUpdateData.enabled_services?.length
+                enabled_services_length: pspUpdateData.enabled_services?.length,
+                user: platformUser?.email,
+                role: platformUser?.platform_role
             });
             const result = await base44.entities.ProvisionedPSP.update(pspId, pspUpdateData);
             console.log('✅ Save successful:', result);
@@ -224,6 +237,12 @@ export default function PSPInstanceConfig() {
     });
 
     const handleSave = () => {
+        console.log('🔒 Save triggered by user:', platformUser?.email, 'Role:', platformUser?.platform_role);
+        console.log('🔒 Current config to save:', {
+            enabled_payment_methods: config.enabled_payment_methods,
+            enabled_payout_methods: config.enabled_payout_methods,
+            enabled_services: config.enabled_services
+        });
         updateMutation.mutate(config);
     };
 
