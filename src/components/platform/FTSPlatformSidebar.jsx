@@ -89,6 +89,7 @@ const menuSections = [
         defaultOpen: false,
         items: [
             { label: 'Service Catalog', path: 'FTSServiceManager', icon: Package, description: 'All services', priority: true },
+            { label: 'Payment Providers', path: 'PaymentProviderManagement', icon: CreditCard, description: 'Provider setup & pricing', priority: true },
             { label: 'ISO Gateway', path: 'ISOGatewayCustomers', icon: Code, description: 'ISO customers', priority: true },
             { label: 'ISO Connections', path: 'ISOGatewayConnections', icon: GitBranch, description: 'Translation routing' },
             { label: 'ISO Test Console', path: 'ISOGatewayTestConsole', icon: TestTube2, description: 'API testing' },
