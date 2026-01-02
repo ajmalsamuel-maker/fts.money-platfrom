@@ -65,8 +65,14 @@ export default function GlobalStandardsRegistry() {
             icon: Globe,
             items: [
                 { name: 'mpay24', description: 'Payment Method Logos', status: 'active', url: 'https://github.com/mpay24/payment-logos' },
+                { name: 'Brandfetch', description: 'Brand Logos & Assets API', status: 'active', url: 'https://docs.brandfetch.com/' },
+                { name: 'Clearbit Logo API', description: 'Company Logos', status: 'active', url: 'https://clearbit.com/logo' },
                 { name: 'CryptoLogos.cc', description: 'Cryptocurrency Logos', status: 'active', url: 'https://cryptologos.cc' },
-                { name: 'Clearbit', description: 'Company Logos', status: 'active', url: 'https://clearbit.com' }
+                { name: 'Logo.dev', description: 'Instant Company Logos', status: 'active', url: 'https://img.logo.dev' },
+                { name: 'Logoipsum', description: 'Placeholder Logos', status: 'active', url: 'https://logoipsum.com' },
+                { name: 'VectorLogoZone', description: 'SVG Logo Collection', status: 'active', url: 'https://www.vectorlogo.zone' },
+                { name: 'Worldvectorlogo', description: 'Vector Logo Database', status: 'active', url: 'https://worldvectorlogo.com' },
+                { name: 'LogoSearch', description: 'Logo Search Engine', status: 'active', url: 'https://logosear.ch/search' }
             ]
         },
         {
