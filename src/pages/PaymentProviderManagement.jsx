@@ -16,6 +16,7 @@ import { Plus, Edit, Eye, EyeOff, DollarSign, Settings, CreditCard, Globe, Check
 import { toast } from 'sonner';
 import { cn } from "@/lib/utils";
 import { getPaymentMethodLogo, getPaymentMethodDisplayName } from '@/components/utils/paymentLogos';
+import PaymentMethodSelector from '@/components/providers/PaymentMethodSelector';
 
 export default function PaymentProviderManagement() {
     const [platformUser] = useState(() => JSON.parse(localStorage.getItem('platform_admin_session') || '{}'));
@@ -42,6 +43,7 @@ export default function PaymentProviderManagement() {
     });
     
     const [searchingLogo, setSearchingLogo] = useState(false);
+    const [showMethodSelector, setShowMethodSelector] = useState(false);
 
     const { data: providers = [] } = useQuery({
         queryKey: ['payment-providers'],
