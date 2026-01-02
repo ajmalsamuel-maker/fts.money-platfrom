@@ -271,7 +271,7 @@ export default function PSPInstanceConfig() {
                     <TabsContent value="services">
                         <Card className="bg-white border-slate-200">
                             <CardHeader>
-                                <CardTitle>NetXHub Services</CardTitle>
+                                <CardTitle>FTS.Money Services</CardTitle>
                                 <CardDescription>Enable or disable services for this PSP instance based on tier and commercial agreements</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-6">
