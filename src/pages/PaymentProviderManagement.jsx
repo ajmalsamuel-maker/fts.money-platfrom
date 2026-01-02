@@ -357,34 +357,55 @@ export default function PaymentProviderManagement() {
                                     </TabsContent>
 
                                     <TabsContent value="methods" className="space-y-4">
-                                        <div className="space-y-3">
-                                            <Label>Select Supported Payment Methods</Label>
-                                            <div className="grid grid-cols-2 gap-2">
-                                                {allPaymentMethods.map(method => {
-                                                    const isEnabled = providerForm.supported_methods.includes(method);
-                                                    const logoUrl = getPaymentMethodLogo(method);
-                                                    return (
-                                                        <div
-                                                            key={method}
-                                                            onClick={() => togglePaymentMethod(method)}
-                                                            className={cn(
-                                                                "flex items-center gap-3 p-3 border-2 rounded-lg cursor-pointer transition-all",
-                                                                isEnabled ? "border-blue-500 bg-blue-50" : "border-slate-200 hover:border-blue-300"
-                                                            )}
-                                                        >
-                                                            <div className="w-12 h-8 rounded flex items-center justify-center bg-white border border-slate-200">
-                                                                {logoUrl ? (
-                                                                    <img src={logoUrl} alt={method} className="max-w-full max-h-full object-contain" />
-                                                                ) : (
-                                                                    <CreditCard className="h-4 w-4 text-slate-400" />
-                                                                )}
-                                                            </div>
-                                                            <span className="text-sm font-medium flex-1">{getPaymentMethodDisplayName(method)}</span>
-                                                            {isEnabled && <Check className="h-4 w-4 text-blue-600" />}
-                                                        </div>
-                                                    );
-                                                })}
+                                        <div className="space-y-4">
+                                            <div className="flex items-center justify-between">
+                                                <Label>Supported Payment Methods</Label>
+                                                <Button
+                                                    type="button"
+                                                    variant="outline"
+                                                    size="sm"
+                                                    onClick={() => setShowMethodSelector(true)}
+                                                >
+                                                    <Globe className="h-4 w-4 mr-2" />
+                                                    Browse Global Methods ({providerForm.supported_methods.length} selected)
+                                                </Button>
                                             </div>
+                                            
+                                            {providerForm.supported_methods.length > 0 ? (
+                                                <div className="flex flex-wrap gap-2">
+                                                    {providerForm.supported_methods.map(methodId => (
+                                                        <Badge
+                                                            key={methodId}
+                                                            variant="outline"
+                                                            className="flex items-center gap-2 px-3 py-1.5"
+                                                        >
+                                                            {getPaymentMethodLogo(methodId) && (
+                                                                <img src={getPaymentMethodLogo(methodId)} alt={methodId} className="h-4 w-6 object-contain" />
+                                                            )}
+                                                            {getPaymentMethodDisplayName(methodId)}
+                                                            <button
+                                                                onClick={() => togglePaymentMethod(methodId)}
+                                                                className="ml-1 hover:text-red-600"
+                                                            >
+                                                                ×
+                                                            </button>
+                                                        </Badge>
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                <div className="text-center py-8 border-2 border-dashed border-slate-200 rounded-lg">
+                                                    <Globe className="h-8 w-8 mx-auto text-slate-400 mb-2" />
+                                                    <p className="text-sm text-slate-600 mb-2">No payment methods selected</p>
+                                                    <Button
+                                                        type="button"
+                                                        variant="outline"
+                                                        size="sm"
+                                                        onClick={() => setShowMethodSelector(true)}
+                                                    >
+                                                        Select Methods
+                                                    </Button>
+                                                </div>
+                                            )}
                                         </div>
                                     </TabsContent>
 
@@ -483,6 +504,14 @@ export default function PaymentProviderManagement() {
                         </Dialog>
                     </div>
                 </div>
+
+                {/* Payment Method Selector Modal */}
+                <PaymentMethodSelector
+                    open={showMethodSelector}
+                    onOpenChange={setShowMethodSelector}
+                    selectedMethods={providerForm.supported_methods}
+                    onSelectionChange={(methods) => setProviderForm({...providerForm, supported_methods: methods})}
+                />
 
                 {/* Providers List */}
                 <div className="p-6">
