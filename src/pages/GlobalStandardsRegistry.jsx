@@ -6,7 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CreditCard } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { RefreshCw, CheckCircle, XCircle, Globe, Shield, CreditCard, Database, Search } from 'lucide-react';
 import { toast } from 'sonner';
