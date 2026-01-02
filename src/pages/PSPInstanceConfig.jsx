@@ -214,11 +214,16 @@ export default function PSPInstanceConfig() {
                 enabled_services: updatedPSP.enabled_services
             });
             
-            alert('✅ PSP configuration saved successfully! Check console for details.');
-            
+            // Invalidate all related queries
             await queryClient.invalidateQueries(['psp-config']);
             await queryClient.invalidateQueries(['provisioned-psps']);
             await queryClient.invalidateQueries(['psp-subscriptions']);
+            await queryClient.invalidateQueries(['psp-instance']);
+            
+            // Force immediate refetch
+            await refetch();
+            
+            toast.success('PSP configuration saved successfully!');
             
             // Log audit action (skip if it fails)
             try {
