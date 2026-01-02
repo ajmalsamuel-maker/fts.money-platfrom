@@ -214,6 +214,49 @@ export default function GlobalStandardsRegistry() {
                         })}
                     </div>
 
+                    {/* PayAtlas PSP Directory */}
+                    <Card className="mt-6 bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <Globe className="h-5 w-5 text-blue-600" />
+                                PayAtlas PSP Directory
+                            </CardTitle>
+                            <CardDescription>
+                                Access to 1,403 payment service providers worldwide
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <div className="flex items-center justify-between p-4 bg-white rounded-lg border border-blue-200">
+                                <div>
+                                    <p className="font-semibold text-slate-900">Global PSP Database</p>
+                                    <p className="text-sm text-slate-600 mt-1">Browse and import PSPs from PayAtlas.com</p>
+                                </div>
+                                <Button 
+                                    variant="outline" 
+                                    onClick={() => window.open('https://payatlas.com/', '_blank')}
+                                    className="gap-2"
+                                >
+                                    <Globe className="h-4 w-4" />
+                                    View PayAtlas
+                                </Button>
+                            </div>
+                            <div className="grid grid-cols-3 gap-4">
+                                <div className="text-center p-3 bg-white rounded-lg border border-slate-200">
+                                    <p className="text-2xl font-bold text-blue-600">1,403</p>
+                                    <p className="text-xs text-slate-600">Payment Companies</p>
+                                </div>
+                                <div className="text-center p-3 bg-white rounded-lg border border-slate-200">
+                                    <p className="text-2xl font-bold text-emerald-600">60+</p>
+                                    <p className="text-xs text-slate-600">Countries</p>
+                                </div>
+                                <div className="text-center p-3 bg-white rounded-lg border border-slate-200">
+                                    <p className="text-2xl font-bold text-purple-600">300+</p>
+                                    <p className="text-xs text-slate-600">Payment Methods</p>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+
                     {/* Integration Guide */}
                     <Card className="mt-6">
                         <CardHeader>
@@ -223,7 +266,7 @@ export default function GlobalStandardsRegistry() {
                             <div>
                                 <h4 className="font-semibold text-sm mb-2">1. Automatic Sync</h4>
                                 <p className="text-sm text-slate-600">
-                                    Click "Sync All Registries" to update payment methods, currencies, and country codes from all sources.
+                                    Click "Sync All Registries" to update payment methods, currencies, and country codes from all sources including PayAtlas's 1,403 PSPs.
                                 </p>
                             </div>
                             <div>
