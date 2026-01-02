@@ -15,7 +15,7 @@ import { Switch } from "@/components/ui/switch";
 import { Plus, Edit, Eye, EyeOff, DollarSign, Settings, CreditCard, Globe, Check } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from "@/lib/utils";
-import { getPaymentMethodLogo, getPaymentMethodDisplayName } from '@/components/utils/paymentLogos';
+import { getPaymentMethodLogo, getPaymentMethodDisplayName, getPaymentMethodLogoAsync } from '@/components/utils/paymentLogos';
 import PaymentMethodSelector from '@/components/providers/PaymentMethodSelector';
 
 export default function PaymentProviderManagement() {
@@ -44,6 +44,7 @@ export default function PaymentProviderManagement() {
     
     const [searchingLogo, setSearchingLogo] = useState(false);
     const [showMethodSelector, setShowMethodSelector] = useState(false);
+    const [methodLogos, setMethodLogos] = useState({});
 
     const { data: providers = [] } = useQuery({
         queryKey: ['payment-providers'],
@@ -148,7 +149,7 @@ export default function PaymentProviderManagement() {
         
         setSearchingLogo(true);
         try {
-            const response = await base44.functions.invoke('searchProviderLogo', {
+            const response = await base44.functions.invoke('fetchDynamicLogo', {
                 providerName: providerForm.name
             });
             
@@ -164,6 +165,27 @@ export default function PaymentProviderManagement() {
             setSearchingLogo(false);
         }
     };
+
+    // Fetch dynamic logos for payment methods
+    React.useEffect(() => {
+        const fetchMethodLogos = async () => {
+            const methods = providerForm.supported_methods;
+            const logoPromises = methods.map(async (method) => {
+                const logo = await getPaymentMethodLogoAsync(method);
+                return { method, logo };
+            });
+            const results = await Promise.all(logoPromises);
+            const logosMap = results.reduce((acc, { method, logo }) => {
+                if (logo) acc[method] = logo;
+                return acc;
+            }, {});
+            setMethodLogos(logosMap);
+        };
+        
+        if (providerForm.supported_methods.length > 0) {
+            fetchMethodLogos();
+        }
+    }, [providerForm.supported_methods]);
 
     const handleSave = () => {
         if (editingProvider) {
@@ -396,8 +418,8 @@ export default function PaymentProviderManagement() {
                                                             variant="outline"
                                                             className="flex items-center gap-2 px-3 py-1.5"
                                                         >
-                                                            {getPaymentMethodLogo(methodId) && (
-                                                                <img src={getPaymentMethodLogo(methodId)} alt={methodId} className="h-4 w-6 object-contain" />
+                                                            {(getPaymentMethodLogo(methodId) || methodLogos[methodId]) && (
+                                                                <img src={getPaymentMethodLogo(methodId) || methodLogos[methodId]} alt={methodId} className="h-4 w-6 object-contain" />
                                                             )}
                                                             {getPaymentMethodDisplayName(methodId)}
                                                             <button
@@ -442,8 +464,8 @@ export default function PaymentProviderManagement() {
                                                         <CardHeader>
                                                             <CardTitle className="text-sm flex items-center gap-2">
                                                                 <div className="w-10 h-6 rounded flex items-center justify-center bg-white border">
-                                                                    {getPaymentMethodLogo(method) ? (
-                                                                        <img src={getPaymentMethodLogo(method)} alt={method} className="max-w-full max-h-full" />
+                                                                    {(getPaymentMethodLogo(method) || methodLogos[method]) ? (
+                                                                        <img src={getPaymentMethodLogo(method) || methodLogos[method]} alt={method} className="max-w-full max-h-full" />
                                                                     ) : (
                                                                         <CreditCard className="h-3 w-3" />
                                                                     )}

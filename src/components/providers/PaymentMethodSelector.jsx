@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -8,11 +8,13 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Globe, Search, Check } from 'lucide-react';
 import { GLOBAL_PAYMENT_METHODS, PAYMENT_CATEGORIES } from '@/components/utils/globalPaymentMethods';
+import { getPaymentMethodLogoAsync } from '@/components/utils/paymentLogos';
 
 export default function PaymentMethodSelector({ selectedMethods = [], onSelectionChange, open, onOpenChange }) {
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedRegion, setSelectedRegion] = useState(null);
     const [selectedCountry, setSelectedCountry] = useState(null);
+    const [methodLogos, setMethodLogos] = useState({});
 
     const toggleMethod = (methodId) => {
         const newSelection = selectedMethods.includes(methodId)
@@ -21,9 +23,41 @@ export default function PaymentMethodSelector({ selectedMethods = [], onSelectio
         onSelectionChange(newSelection);
     };
 
+    // Fetch dynamic logos for methods without static logos
+    useEffect(() => {
+        if (!open) return;
+        
+        const fetchLogos = async () => {
+            const allMethods = [
+                ...GLOBAL_PAYMENT_METHODS.global,
+                ...Object.values(GLOBAL_PAYMENT_METHODS.regions).flatMap(r => [
+                    ...r.regional,
+                    ...Object.values(r.countries).flat()
+                ])
+            ];
+
+            const logosToFetch = allMethods.filter(m => !m.logo);
+            const logoPromises = logosToFetch.map(async (method) => {
+                const logoUrl = await getPaymentMethodLogoAsync(method.id);
+                return { id: method.id, logo: logoUrl };
+            });
+
+            const results = await Promise.all(logoPromises);
+            const logosMap = results.reduce((acc, { id, logo }) => {
+                if (logo) acc[id] = logo;
+                return acc;
+            }, {});
+
+            setMethodLogos(logosMap);
+        };
+
+        fetchLogos();
+    }, [open]);
+
     const renderMethodItem = (method) => {
         const isSelected = selectedMethods.includes(method.id);
         const category = PAYMENT_CATEGORIES[method.category];
+        const logoUrl = method.logo || methodLogos[method.id];
         
         return (
             <div
@@ -35,8 +69,8 @@ export default function PaymentMethodSelector({ selectedMethods = [], onSelectio
             >
                 <div className="flex items-center gap-3">
                     <Checkbox checked={isSelected} />
-                    {method.logo && (
-                        <img src={method.logo} alt={method.name} className="h-6 w-10 object-contain" />
+                    {logoUrl && (
+                        <img src={logoUrl} alt={method.name} className="h-6 w-10 object-contain" />
                     )}
                     <div>
                         <p className="font-medium text-sm">{method.name}</p>

@@ -97,6 +97,7 @@ import FTSVerticalSolutions from './pages/FTSVerticalSolutions';
 import FeeTypeManagement from './pages/FeeTypeManagement';
 import FraudMonitoring from './pages/FraudMonitoring';
 import FraudPrevention from './pages/FraudPrevention';
+import GlobalStandardsRegistry from './pages/GlobalStandardsRegistry';
 import ISOConfiguration from './pages/ISOConfiguration';
 import ISOCustomerRouting from './pages/ISOCustomerRouting';
 import ISOGatewayConnections from './pages/ISOGatewayConnections';
@@ -214,8 +215,8 @@ import PaymentGateways from './pages/PaymentGateways';
 import PaymentLinks from './pages/PaymentLinks';
 import PaymentMethods from './pages/PaymentMethods';
 import PaymentOrchestration from './pages/PaymentOrchestration';
-import PaymentProviderManagement from './pages/PaymentProviderManagement';
 import PaymentProviders from './pages/PaymentProviders';
+import PaymentProviderManagement from './pages/PaymentProviderManagement';
 import PayoutOrchestration from './pages/PayoutOrchestration';
 import Payouts from './pages/Payouts';
 import PlatformAdminLogin from './pages/PlatformAdminLogin';
@@ -272,7 +273,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import GlobalStandardsRegistry from './pages/GlobalStandardsRegistry';
 import __Layout from './Layout.jsx';
 
 
@@ -376,6 +376,7 @@ export const PAGES = {
     "FeeTypeManagement": FeeTypeManagement,
     "FraudMonitoring": FraudMonitoring,
     "FraudPrevention": FraudPrevention,
+    "GlobalStandardsRegistry": GlobalStandardsRegistry,
     "ISOConfiguration": ISOConfiguration,
     "ISOCustomerRouting": ISOCustomerRouting,
     "ISOGatewayConnections": ISOGatewayConnections,
@@ -493,8 +494,8 @@ export const PAGES = {
     "PaymentLinks": PaymentLinks,
     "PaymentMethods": PaymentMethods,
     "PaymentOrchestration": PaymentOrchestration,
-    "PaymentProviderManagement": PaymentProviderManagement,
     "PaymentProviders": PaymentProviders,
+    "PaymentProviderManagement": PaymentProviderManagement,
     "PayoutOrchestration": PayoutOrchestration,
     "Payouts": Payouts,
     "PlatformAdminLogin": PlatformAdminLogin,
@@ -551,7 +552,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "GlobalStandardsRegistry": GlobalStandardsRegistry,
 }
 
 export const pagesConfig = {

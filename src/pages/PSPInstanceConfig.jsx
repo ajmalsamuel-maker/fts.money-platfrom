@@ -31,7 +31,7 @@ import { logAuditAction } from '@/components/platform/AuditLogger';
 import { cn } from "@/lib/utils";
 import { PLATFORM_ROLES, getRoleLabel } from '@/components/auth/usePlatformAuth';
 import { ISO4217_CURRENCIES, getCurrencySymbol } from '@/components/utils/iso4217';
-import { getPaymentMethodLogo, getPaymentMethodDisplayName } from '@/components/utils/paymentLogos';
+import { getPaymentMethodLogo, getPaymentMethodDisplayName, getPaymentMethodLogoAsync } from '@/components/utils/paymentLogos';
 
 export default function PSPInstanceConfig() {
     const navigate = useNavigate();
@@ -102,6 +102,7 @@ export default function PSPInstanceConfig() {
         enabled_payout_methods: [],
         enabled_services: []
     });
+    const [methodLogos, setMethodLogos] = useState({});
 
     // Populate config when PSP data loads - map from provisioning fields
     React.useEffect(() => {
@@ -163,6 +164,27 @@ export default function PSPInstanceConfig() {
             setConfig(newConfig);
         }
     }, [psp, subscriptions]);
+
+    // Fetch dynamic logos for enabled payment/payout methods
+    React.useEffect(() => {
+        const fetchLogos = async () => {
+            const allMethods = [...(config.enabled_payment_methods || []), ...(config.enabled_payout_methods || [])];
+            const logoPromises = allMethods.map(async (method) => {
+                const logo = await getPaymentMethodLogoAsync(method);
+                return { method, logo };
+            });
+            const results = await Promise.all(logoPromises);
+            const logosMap = results.reduce((acc, { method, logo }) => {
+                if (logo) acc[method] = logo;
+                return acc;
+            }, {});
+            setMethodLogos(logosMap);
+        };
+
+        if (config.enabled_payment_methods?.length > 0 || config.enabled_payout_methods?.length > 0) {
+            fetchLogos();
+        }
+    }, [config.enabled_payment_methods, config.enabled_payout_methods]);
 
     const updateMutation = useMutation({
         mutationFn: async (data) => {
@@ -657,7 +679,7 @@ export default function PSPInstanceConfig() {
                                         {['visa', 'mastercard', 'amex', 'discover', 'unionpay', 'diners_club', 'jcb', 'alipay', 'wechat', 'apple_pay', 'google_pay', 'paypal', 'ach', 'sepa', 'faster_payments', 'bitcoin', 'ethereum', 'usdt', 'usdc', 'bitcoin_cash', 'litecoin', 'ideal', 'sofort', 'giropay', 'bancontact', 'multibanco', 'p24', 'eps', 'sezzle', 'afterpay'].map((method) => {
                                             const isEnabled = config.enabled_payment_methods?.includes(method);
                                             const displayName = getPaymentMethodDisplayName(method);
-                                            const logoUrl = getPaymentMethodLogo(method);
+                                            const logoUrl = getPaymentMethodLogo(method) || methodLogos[method];
                                             return (
                                                 <div 
                                                     key={method} 
@@ -720,7 +742,7 @@ export default function PSPInstanceConfig() {
                                     ['sepa', 'wire', 'visa_debit', 'mastercard_debit', 'cash_app', 'venmo', 'paypal', 'ethereum', 'usdt', 'usdc', 'bitcoin', 'real_time_payments', 'push_to_card'].map((method) => {
                                         const isEnabled = config.enabled_payout_methods?.includes(method);
                                         const displayName = getPaymentMethodDisplayName(method);
-                                        const logoUrl = getPaymentMethodLogo(method);
+                                        const logoUrl = getPaymentMethodLogo(method) || methodLogos[method];
                                         return (
                                             <div key={method} className={cn(
                                                 "flex items-center justify-between p-4 border-2 rounded-lg transition-all",
