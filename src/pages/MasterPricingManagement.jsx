@@ -89,6 +89,13 @@ export default function MasterPricingManagement() {
         queryFn: () => base44.entities.PaymentProvider.list()
     });
 
+    // Extract unique payment methods from providers
+    const paymentMethods = [
+        'visa', 'mastercard', 'amex', 'discover', 'jcb', 'diners_club', 'unionpay',
+        'bank_transfer', 'atm_transfer', 'alipay', 'wechat', 'paypal',
+        'mobile_money', 'crypto', 'e_wallet', 'cash', 'other'
+    ];
+
     const { data: feeTemplates = [] } = useQuery({
         queryKey: ['fee-templates'],
         queryFn: () => base44.entities.FeeType.list()
@@ -832,15 +839,37 @@ export default function MasterPricingManagement() {
                                                         </div>
                                                         <div>
                                                             <Label className="text-xs">Payment Method</Label>
-                                                            <Input
-                                                                placeholder="e.g., Bank Transfer"
+                                                            <Select
                                                                 value={tier.payment_method || ''}
-                                                                onChange={(e) => {
+                                                                onValueChange={(value) => {
                                                                     const newTiers = [...formData.buy_rate_tiers];
-                                                                    newTiers[idx].payment_method = e.target.value;
+                                                                    newTiers[idx].payment_method = value;
                                                                     setFormData({ ...formData, buy_rate_tiers: newTiers });
                                                                 }}
-                                                            />
+                                                            >
+                                                                <SelectTrigger>
+                                                                    <SelectValue placeholder="Select method" />
+                                                                </SelectTrigger>
+                                                                <SelectContent>
+                                                                    {paymentMethods.map(method => (
+                                                                        <SelectItem key={method} value={method}>
+                                                                            {method.replace(/_/g, ' ').toUpperCase()}
+                                                                        </SelectItem>
+                                                                    ))}
+                                                                </SelectContent>
+                                                            </Select>
+                                                            {tier.payment_method === 'other' && (
+                                                                <Input
+                                                                    placeholder="Enter custom method"
+                                                                    className="mt-2"
+                                                                    value={tier.payment_method_custom || ''}
+                                                                    onChange={(e) => {
+                                                                        const newTiers = [...formData.buy_rate_tiers];
+                                                                        newTiers[idx].payment_method_custom = e.target.value;
+                                                                        setFormData({ ...formData, buy_rate_tiers: newTiers });
+                                                                    }}
+                                                                />
+                                                            )}
                                                         </div>
                                                         <div>
                                                             <Label className="text-xs">Currency</Label>
@@ -971,15 +1000,37 @@ export default function MasterPricingManagement() {
                                                         </div>
                                                         <div>
                                                             <Label className="text-xs">Payment Method</Label>
-                                                            <Input
-                                                                placeholder="e.g., Bank Transfer"
+                                                            <Select
                                                                 value={tier.payment_method || ''}
-                                                                onChange={(e) => {
+                                                                onValueChange={(value) => {
                                                                     const newTiers = [...formData.sell_rate_tiers];
-                                                                    newTiers[idx].payment_method = e.target.value;
+                                                                    newTiers[idx].payment_method = value;
                                                                     setFormData({ ...formData, sell_rate_tiers: newTiers });
                                                                 }}
-                                                            />
+                                                            >
+                                                                <SelectTrigger>
+                                                                    <SelectValue placeholder="Select method" />
+                                                                </SelectTrigger>
+                                                                <SelectContent>
+                                                                    {paymentMethods.map(method => (
+                                                                        <SelectItem key={method} value={method}>
+                                                                            {method.replace(/_/g, ' ').toUpperCase()}
+                                                                        </SelectItem>
+                                                                    ))}
+                                                                </SelectContent>
+                                                            </Select>
+                                                            {tier.payment_method === 'other' && (
+                                                                <Input
+                                                                    placeholder="Enter custom method"
+                                                                    className="mt-2"
+                                                                    value={tier.payment_method_custom || ''}
+                                                                    onChange={(e) => {
+                                                                        const newTiers = [...formData.sell_rate_tiers];
+                                                                        newTiers[idx].payment_method_custom = e.target.value;
+                                                                        setFormData({ ...formData, sell_rate_tiers: newTiers });
+                                                                    }}
+                                                                />
+                                                            )}
                                                         </div>
                                                         <div>
                                                             <Label className="text-xs">Currency</Label>
