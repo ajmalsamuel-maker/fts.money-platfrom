@@ -49,7 +49,9 @@ export default function PSPInstanceManagement() {
             console.log('Found PSP:', found);
             return found;
         },
-        enabled: !!pspId
+        enabled: !!pspId,
+        staleTime: 0,
+        cacheTime: 0
     });
 
     const { data: logs = [], isLoading: logsLoading } = useQuery({
@@ -285,6 +287,25 @@ export default function PSPInstanceManagement() {
                                     <div>
                                         <dt className="text-slate-600">License Type</dt>
                                         <dd className="font-medium">{psp.license_type}</dd>
+                                    </div>
+                                    <div>
+                                        <dt className="text-slate-600">Enabled Payment Methods</dt>
+                                        <dd className="font-medium">{Array.isArray(psp.enabled_payment_methods) ? psp.enabled_payment_methods.length : 0}</dd>
+                                    </div>
+                                    <div>
+                                        <dt className="text-slate-600">Enabled Payout Methods</dt>
+                                        <dd className="font-medium">{Array.isArray(psp.enabled_payout_methods) ? psp.enabled_payout_methods.length : 0}</dd>
+                                    </div>
+                                    <div>
+                                        <dt className="text-slate-600">Enabled Services</dt>
+                                        <dd className="font-medium">{Array.isArray(psp.enabled_services) ? psp.enabled_services.length : 0}</dd>
+                                    </div>
+                                    <div>
+                                        <dt className="text-slate-600">Primary Color</dt>
+                                        <dd className="flex items-center gap-2">
+                                            <div className="w-4 h-4 rounded" style={{ backgroundColor: psp.branding?.primary_color || '#3b82f6' }} />
+                                            <span className="font-medium">{psp.branding?.primary_color || '#3b82f6'}</span>
+                                        </dd>
                                     </div>
                                 </dl>
                             </CardContent>
