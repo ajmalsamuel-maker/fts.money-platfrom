@@ -217,6 +217,14 @@ export default function PaymentProviderManagement() {
                         <div>
                             <h1 className="text-2xl font-bold text-slate-900">Payment Provider Management</h1>
                             <p className="text-sm text-slate-600 mt-1">Configure payment providers and auto-populate Master Pricing</p>
+                            <div className="flex gap-2 mt-2">
+                                <Badge variant="outline" className="text-xs">Stripe API ✓</Badge>
+                                <Badge variant="outline" className="text-xs">Adyen Catalog ✓</Badge>
+                                <Badge variant="outline" className="text-xs">W3C API ✓</Badge>
+                                <Badge variant="outline" className="text-xs">EMVCo ✓</Badge>
+                                <Badge variant="outline" className="text-xs">SWIFT ✓</Badge>
+                                <Badge variant="outline" className="text-xs">ISO Standards ✓</Badge>
+                            </div>
                         </div>
                         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                             <DialogTrigger asChild>
