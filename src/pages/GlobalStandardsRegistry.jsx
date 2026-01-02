@@ -18,6 +18,10 @@ export default function GlobalStandardsRegistry() {
     const [loadingPSPs, setLoadingPSPs] = useState(false);
     const [pspCatalog, setPspCatalog] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
+    const [stripeData, setStripeData] = useState(null);
+    const [adyenData, setAdyenData] = useState(null);
+    const [showStripe, setShowStripe] = useState(false);
+    const [showAdyen, setShowAdyen] = useState(false);
 
     const standards = [
         {
@@ -100,6 +104,50 @@ export default function GlobalStandardsRegistry() {
         psp.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (psp.countries && psp.countries.toLowerCase().includes(searchTerm.toLowerCase()))
     );
+
+    const loadStripeData = async () => {
+        try {
+            const response = await base44.functions.invoke('stripePaymentMethodsSync', {});
+            if (response.data.success) {
+                setStripeData(response.data);
+                toast.success(`Loaded ${response.data.count} Stripe payment methods`);
+            }
+        } catch (error) {
+            toast.error(`Failed to load Stripe: ${error.message}`);
+        }
+    };
+
+    const loadAdyenData = async () => {
+        try {
+            const response = await base44.functions.invoke('adyenPaymentMethodsSync', {});
+            if (response.data.success) {
+                setAdyenData(response.data);
+                toast.success(`Loaded ${response.data.count} Adyen payment methods`);
+            }
+        } catch (error) {
+            toast.error(`Failed to load Adyen: ${error.message}`);
+        }
+    };
+
+    const groupByCategory = (methods) => {
+        const grouped = {};
+        methods?.forEach(m => {
+            const cat = m.category || 'other';
+            if (!grouped[cat]) grouped[cat] = [];
+            grouped[cat].push(m);
+        });
+        return grouped;
+    };
+
+    const categoryNames = {
+        card_network: 'Card Networks',
+        wallet: 'Digital Wallets',
+        bank_transfer: 'Bank Transfers',
+        bnpl: 'Buy Now Pay Later',
+        apm: 'Alternative Methods',
+        cash_voucher: 'Cash & Vouchers',
+        mobile_money: 'Mobile Money'
+    };
 
     return (
         <div className="flex h-screen bg-slate-50">
@@ -267,11 +315,19 @@ export default function GlobalStandardsRegistry() {
                                     </Button>
                                     <Button 
                                         variant="outline" 
-                                        onClick={() => window.open('https://payatlas.com/', '_blank')}
-                                        className="gap-2"
+                                        onClick={loadStripeData}
+                                        className="gap-2 bg-blue-600 text-white hover:bg-blue-700 hover:text-white"
                                     >
-                                        <Globe className="h-4 w-4" />
-                                        View PayAtlas
+                                        <CreditCard className="h-4 w-4" />
+                                        Load Stripe Methods
+                                    </Button>
+                                    <Button 
+                                        variant="outline" 
+                                        onClick={loadAdyenData}
+                                        className="gap-2 bg-green-600 text-white hover:bg-green-700 hover:text-white"
+                                    >
+                                        <CreditCard className="h-4 w-4" />
+                                        Load Adyen Methods
                                     </Button>
                                 </div>
                             </div>
@@ -351,6 +407,140 @@ export default function GlobalStandardsRegistry() {
                             )}
                         </CardContent>
                     </Card>
+
+                    {/* Stripe Payment Methods */}
+                    {stripeData && (
+                        <Card className="mt-6 border-blue-200">
+                            <CardHeader>
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <CardTitle className="flex items-center gap-2">
+                                            <CreditCard className="h-5 w-5 text-blue-600" />
+                                            Stripe Payment Methods Catalog
+                                        </CardTitle>
+                                        <p className="text-sm text-slate-600 mt-1">
+                                            {stripeData.count} methods • Last updated: {new Date(stripeData.last_updated).toLocaleDateString()}
+                                        </p>
+                                    </div>
+                                    <Button variant="outline" size="sm" onClick={() => setShowStripe(!showStripe)}>
+                                        {showStripe ? 'Hide' : 'Show'} Details
+                                    </Button>
+                                </div>
+                            </CardHeader>
+                            {showStripe && (
+                                <CardContent>
+                                    <Tabs defaultValue="all">
+                                        <TabsList className="mb-4">
+                                            <TabsTrigger value="all">All ({stripeData.methods.length})</TabsTrigger>
+                                            {Object.entries(groupByCategory(stripeData.methods)).map(([cat, items]) => (
+                                                <TabsTrigger key={cat} value={cat}>
+                                                    {categoryNames[cat] || cat} ({items.length})
+                                                </TabsTrigger>
+                                            ))}
+                                        </TabsList>
+                                        <TabsContent value="all" className="space-y-2">
+                                            {stripeData.methods.map(m => (
+                                                <div key={m.id} className="flex items-center justify-between p-3 border rounded-lg hover:bg-slate-50">
+                                                    <div>
+                                                        <p className="font-medium">{m.name}</p>
+                                                        <p className="text-xs text-slate-600">ID: {m.id}</p>
+                                                    </div>
+                                                    <div className="flex gap-2">
+                                                        <Badge variant="outline">{categoryNames[m.category] || m.category}</Badge>
+                                                        <Badge className="bg-blue-100 text-blue-800">
+                                                            {m.countries?.includes('GLOBAL') ? 'Global' : m.countries?.join(', ')}
+                                                        </Badge>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </TabsContent>
+                                        {Object.entries(groupByCategory(stripeData.methods)).map(([cat, items]) => (
+                                            <TabsContent key={cat} value={cat} className="space-y-2">
+                                                {items.map(m => (
+                                                    <div key={m.id} className="flex items-center justify-between p-3 border rounded-lg hover:bg-slate-50">
+                                                        <div>
+                                                            <p className="font-medium">{m.name}</p>
+                                                            <p className="text-xs text-slate-600">ID: {m.id}</p>
+                                                        </div>
+                                                        <Badge className="bg-blue-100 text-blue-800">
+                                                            {m.countries?.join(', ')}
+                                                        </Badge>
+                                                    </div>
+                                                ))}
+                                            </TabsContent>
+                                        ))}
+                                    </Tabs>
+                                </CardContent>
+                            )}
+                        </Card>
+                    )}
+
+                    {/* Adyen Payment Methods */}
+                    {adyenData && (
+                        <Card className="mt-6 border-green-200">
+                            <CardHeader>
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <CardTitle className="flex items-center gap-2">
+                                            <CreditCard className="h-5 w-5 text-green-600" />
+                                            Adyen Payment Methods Catalog
+                                        </CardTitle>
+                                        <p className="text-sm text-slate-600 mt-1">
+                                            {adyenData.count} methods • Last updated: {new Date(adyenData.last_updated).toLocaleDateString()}
+                                        </p>
+                                    </div>
+                                    <Button variant="outline" size="sm" onClick={() => setShowAdyen(!showAdyen)}>
+                                        {showAdyen ? 'Hide' : 'Show'} Details
+                                    </Button>
+                                </div>
+                            </CardHeader>
+                            {showAdyen && (
+                                <CardContent>
+                                    <Tabs defaultValue="all">
+                                        <TabsList className="mb-4">
+                                            <TabsTrigger value="all">All ({adyenData.methods.length})</TabsTrigger>
+                                            {Object.entries(groupByCategory(adyenData.methods)).map(([cat, items]) => (
+                                                <TabsTrigger key={cat} value={cat}>
+                                                    {categoryNames[cat] || cat} ({items.length})
+                                                </TabsTrigger>
+                                            ))}
+                                        </TabsList>
+                                        <TabsContent value="all" className="space-y-2">
+                                            {adyenData.methods.map(m => (
+                                                <div key={m.id} className="flex items-center justify-between p-3 border rounded-lg hover:bg-slate-50">
+                                                    <div>
+                                                        <p className="font-medium">{m.name}</p>
+                                                        <p className="text-xs text-slate-600">ID: {m.id}</p>
+                                                    </div>
+                                                    <div className="flex gap-2">
+                                                        <Badge variant="outline">{categoryNames[m.category] || m.category}</Badge>
+                                                        <Badge className="bg-green-100 text-green-800">
+                                                            {m.countries?.includes('GLOBAL') ? 'Global' : m.countries?.join(', ')}
+                                                        </Badge>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </TabsContent>
+                                        {Object.entries(groupByCategory(adyenData.methods)).map(([cat, items]) => (
+                                            <TabsContent key={cat} value={cat} className="space-y-2">
+                                                {items.map(m => (
+                                                    <div key={m.id} className="flex items-center justify-between p-3 border rounded-lg hover:bg-slate-50">
+                                                        <div>
+                                                            <p className="font-medium">{m.name}</p>
+                                                            <p className="text-xs text-slate-600">ID: {m.id}</p>
+                                                        </div>
+                                                        <Badge className="bg-green-100 text-green-800">
+                                                            {m.countries?.join(', ')}
+                                                        </Badge>
+                                                    </div>
+                                                ))}
+                                            </TabsContent>
+                                        ))}
+                                    </Tabs>
+                                </CardContent>
+                            )}
+                        </Card>
+                    )}
 
                     {/* Integration Guide */}
                     <Card className="mt-6">
