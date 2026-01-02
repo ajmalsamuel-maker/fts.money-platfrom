@@ -7,8 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
-import { RefreshCw, CheckCircle, XCircle, Globe, Shield, CreditCard, Database, Search } from 'lucide-react';
+import { RefreshCw, CheckCircle, XCircle, Globe, Shield, CreditCard, Database, Search, FileText } from 'lucide-react';
 import { toast } from 'sonner';
+import { getAllEInvoiceStandards } from '@/components/utils/eInvoicingStandards';
 
 export default function GlobalStandardsRegistry() {
     const [platformUser] = useState(() => JSON.parse(localStorage.getItem('platform_admin_session') || '{}'));
@@ -21,6 +22,8 @@ export default function GlobalStandardsRegistry() {
     const [adyenData, setAdyenData] = useState(null);
     const [showStripe, setShowStripe] = useState(false);
     const [showAdyen, setShowAdyen] = useState(false);
+
+    const eInvoiceStandards = getAllEInvoiceStandards();
 
     const standards = [
         {
@@ -65,6 +68,18 @@ export default function GlobalStandardsRegistry() {
                 { name: 'CryptoLogos.cc', description: 'Cryptocurrency Logos', status: 'active', url: 'https://cryptologos.cc' },
                 { name: 'Clearbit', description: 'Company Logos', status: 'active', url: 'https://clearbit.com' }
             ]
+        },
+        {
+            category: 'E-Invoicing Standards',
+            icon: FileText,
+            items: eInvoiceStandards.map(standard => ({
+                name: standard.name,
+                description: `${standard.region} - ${standard.format}`,
+                status: 'active',
+                path: 'components/utils/eInvoicingStandards',
+                mandatory: standard.mandatory,
+                countries: standard.countries?.length || 0
+            }))
         }
     ];
 
@@ -188,8 +203,8 @@ export default function GlobalStandardsRegistry() {
                                     <Shield className="h-8 w-8 text-blue-600" />
                                 </div>
                             </CardContent>
-                        </Card>
-                        <Card>
+                            </Card>
+                            <Card>
                             <CardContent className="p-6">
                                 <div className="flex items-center justify-between">
                                     <div>
@@ -199,29 +214,29 @@ export default function GlobalStandardsRegistry() {
                                     <CreditCard className="h-8 w-8 text-emerald-600" />
                                 </div>
                             </CardContent>
-                        </Card>
-                        <Card>
+                            </Card>
+                            <Card>
                             <CardContent className="p-6">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-sm text-slate-600">Registries</p>
-                                        <p className="text-2xl font-bold text-slate-900">2</p>
+                                        <p className="text-sm text-slate-600">E-Invoicing</p>
+                                        <p className="text-2xl font-bold text-slate-900">{eInvoiceStandards.length}</p>
                                     </div>
-                                    <Database className="h-8 w-8 text-purple-600" />
+                                    <FileText className="h-8 w-8 text-orange-600" />
                                 </div>
                             </CardContent>
-                        </Card>
-                        <Card>
+                            </Card>
+                            <Card>
                             <CardContent className="p-6">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-sm text-slate-600">Total Sources</p>
-                                        <p className="text-2xl font-bold text-slate-900">19</p>
+                                        <p className="text-sm text-slate-600">Total Standards</p>
+                                        <p className="text-2xl font-bold text-slate-900">{8 + 6 + eInvoiceStandards.length + 2}</p>
                                     </div>
                                     <Globe className="h-8 w-8 text-indigo-600" />
                                 </div>
                             </CardContent>
-                        </Card>
+                            </Card>
                     </div>
 
                     {/* Standards List */}
@@ -255,9 +270,12 @@ export default function GlobalStandardsRegistry() {
                                                         <div>
                                                             <p className="font-medium text-slate-900">{item.name}</p>
                                                             <p className="text-sm text-slate-600">{item.description}</p>
+                                                            {item.countries > 0 && (
+                                                                <p className="text-xs text-slate-500 mt-1">{item.countries} countries</p>
+                                                            )}
                                                         </div>
-                                                    </div>
-                                                    <div className="flex items-center gap-3">
+                                                        </div>
+                                                        <div className="flex items-center gap-3">
                                                         {item.path && (
                                                             <code className="text-xs bg-white px-2 py-1 rounded border border-slate-200">
                                                                 {item.path}
@@ -272,6 +290,11 @@ export default function GlobalStandardsRegistry() {
                                                             >
                                                                 View Source →
                                                             </a>
+                                                        )}
+                                                        {item.mandatory && (
+                                                            <Badge className="bg-red-100 text-red-700 mr-2">
+                                                                Mandatory
+                                                            </Badge>
                                                         )}
                                                         <Badge className={item.status === 'active' ? 'bg-emerald-600' : 'bg-slate-400'}>
                                                             {item.status}
