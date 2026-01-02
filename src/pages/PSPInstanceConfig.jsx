@@ -143,10 +143,17 @@ export default function PSPInstanceConfig() {
                 psp_id: psp.id,
                 raw_data: {
                     enabled_payment_methods: psp.enabled_payment_methods,
+                    enabled_payment_methods_type: typeof psp.enabled_payment_methods,
                     enabled_payout_methods: psp.enabled_payout_methods,
-                    enabled_services: psp.enabled_services
+                    enabled_payout_methods_type: typeof psp.enabled_payout_methods,
+                    enabled_services: psp.enabled_services,
+                    enabled_services_type: typeof psp.enabled_services
                 },
-                parsed_config: newConfig,
+                parsed_config: {
+                    enabled_payment_methods: newConfig.enabled_payment_methods,
+                    enabled_payout_methods: newConfig.enabled_payout_methods,
+                    enabled_services: newConfig.enabled_services
+                },
                 subscriptions_count: subscriptions.length
             });
             
@@ -168,35 +175,51 @@ export default function PSPInstanceConfig() {
                 enabled_payout_methods: data.enabled_payout_methods,
                 enabled_services: data.enabled_services
             };
-            console.log('💾 Sending to database:', pspUpdateData);
+            console.log('💾 Sending to database:', {
+                enabled_payment_methods: pspUpdateData.enabled_payment_methods,
+                enabled_payment_methods_length: pspUpdateData.enabled_payment_methods?.length,
+                enabled_payout_methods: pspUpdateData.enabled_payout_methods,
+                enabled_payout_methods_length: pspUpdateData.enabled_payout_methods?.length,
+                enabled_services: pspUpdateData.enabled_services,
+                enabled_services_length: pspUpdateData.enabled_services?.length
+            });
             const result = await base44.entities.ProvisionedPSP.update(pspId, pspUpdateData);
             console.log('✅ Save successful:', result);
             return result;
         },
         onSuccess: async (updatedPSP) => {
-            console.log('✅ Update successful, refetching data...');
-            toast.success('PSP configuration saved successfully');
+            console.log('✅ Update successful, returned PSP:', {
+                enabled_payment_methods: updatedPSP.enabled_payment_methods,
+                enabled_payout_methods: updatedPSP.enabled_payout_methods,
+                enabled_services: updatedPSP.enabled_services
+            });
+            
+            alert('✅ PSP configuration saved successfully! Check console for details.');
             
             await queryClient.invalidateQueries(['psp-config']);
             await queryClient.invalidateQueries(['provisioned-psps']);
             await queryClient.invalidateQueries(['psp-subscriptions']);
             
-            // Log audit action
-            const session = JSON.parse(localStorage.getItem('platform_admin_session') || '{}');
-            if (session.email) {
-                await logAuditAction({
-                    psp_id: pspId,
-                    psp_code: psp?.psp_code,
-                    action: 'configuration_changed',
-                    field_changed: 'PSP Configuration',
-                    user_email: session.email,
-                    user_role: session.platform_role || 'platform_admin'
-                });
+            // Log audit action (skip if it fails)
+            try {
+                const session = JSON.parse(localStorage.getItem('platform_admin_session') || '{}');
+                if (session.email) {
+                    await logAuditAction({
+                        psp_id: pspId,
+                        psp_code: psp?.psp_code,
+                        action: 'configuration_changed',
+                        field_changed: 'PSP Configuration',
+                        user_email: session.email,
+                        user_role: session.platform_role || 'platform_admin'
+                    });
+                }
+            } catch (auditError) {
+                console.warn('Audit logging failed, but save was successful:', auditError);
             }
         },
         onError: (error) => {
             console.error('❌ Save failed:', error);
-            toast.error(`Failed to save: ${error.message}`);
+            alert(`❌ Failed to save: ${error.message}`);
         }
     });
 
