@@ -43,18 +43,26 @@ export default function PSPInstanceConfig() {
     
     const platformUser = JSON.parse(localStorage.getItem('platform_admin_session') || '{}');
 
-    const { data: psp, isLoading } = useQuery({
+    const { data: psp, isLoading, refetch } = useQuery({
         queryKey: ['psp-config', pspId],
         queryFn: async () => {
             console.log('📥 Fetching PSP data for ID:', pspId);
             const psps = await base44.entities.ProvisionedPSP.list();
             const foundPsp = psps.find(p => p.id === pspId);
-            console.log('📥 Found PSP:', foundPsp);
+            console.log('📥 Found PSP with saved config:', {
+                id: foundPsp?.id,
+                enabled_payment_methods: foundPsp?.enabled_payment_methods,
+                enabled_payout_methods: foundPsp?.enabled_payout_methods,
+                enabled_services: foundPsp?.enabled_services,
+                branding: foundPsp?.branding
+            });
             return foundPsp;
         },
         enabled: !!pspId,
-        staleTime: 0, // Always fetch fresh data
-        cacheTime: 0 // Don't cache
+        staleTime: 0,
+        cacheTime: 0,
+        refetchOnMount: 'always',
+        refetchOnWindowFocus: true
     });
 
     const { data: paymentProviders = [] } = useQuery({
@@ -98,6 +106,8 @@ export default function PSPInstanceConfig() {
     // Populate config when PSP data loads - map from provisioning fields
     React.useEffect(() => {
         if (psp) {
+            console.log('🔄 PSP data changed, reloading config...');
+            
             // Ensure arrays are properly parsed if they're stored as strings
             const parseArray = (val) => {
                 if (!val) return [];
@@ -138,23 +148,16 @@ export default function PSPInstanceConfig() {
                 enabled_services: [...new Set([...parseArray(psp.enabled_services), ...subscribedServiceIds])]
             };
             
-            console.log('🔍 Loading PSP config from database:', {
+            console.log('✅ Config loaded from database:', {
                 psp_code: psp.psp_code,
                 psp_id: psp.id,
-                raw_data: {
-                    enabled_payment_methods: psp.enabled_payment_methods,
-                    enabled_payment_methods_type: typeof psp.enabled_payment_methods,
-                    enabled_payout_methods: psp.enabled_payout_methods,
-                    enabled_payout_methods_type: typeof psp.enabled_payout_methods,
-                    enabled_services: psp.enabled_services,
-                    enabled_services_type: typeof psp.enabled_services
-                },
-                parsed_config: {
-                    enabled_payment_methods: newConfig.enabled_payment_methods,
-                    enabled_payout_methods: newConfig.enabled_payout_methods,
-                    enabled_services: newConfig.enabled_services
-                },
-                subscriptions_count: subscriptions.length
+                branding: newConfig.branding,
+                enabled_payment_methods_count: newConfig.enabled_payment_methods.length,
+                enabled_payout_methods_count: newConfig.enabled_payout_methods.length,
+                enabled_services_count: newConfig.enabled_services.length,
+                payment_methods: newConfig.enabled_payment_methods,
+                payout_methods: newConfig.enabled_payout_methods,
+                services: newConfig.enabled_services
             });
             
             setConfig(newConfig);
