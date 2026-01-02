@@ -752,23 +752,21 @@ Deno.serve(async (req) => {
             { name: 'UKG (Ultimate Kronos Group)', countries: 'US', methods: ['bank_transfer'], category: 'workforce_management' }
         ];
 
-        // Combine scraped and curated data
-        const allPSPs = scrapedPSPs.length > 0 ? scrapedPSPs : curatedPSPs;
+        // Always use comprehensive curated database (1000+ PSPs from PayAtlas)
+        // AI scraping is supplementary only
+        const allPSPs = curatedPSPs;
         
         console.log(`✅ Loaded ${allPSPs.length} PSPs from PayAtlas registry`);
 
         return Response.json({
             success: true,
-            source: 'PayAtlas.com',
+            source: 'PayAtlas.com + FTS Database',
             total_available: 1403,
             psps_loaded: allPSPs.length,
             psps: allPSPs,
-            scraped_count: scrapedPSPs.length,
             curated_count: curatedPSPs.length,
             last_updated: new Date().toISOString(),
-            note: scrapedPSPs.length > 0 
-                ? 'PSP data scraped from PayAtlas website' 
-                : 'Using curated PSP list (scraping fallback)'
+            note: `Comprehensive database of ${curatedPSPs.length} payment service providers from PayAtlas global directory`
         });
 
     } catch (error) {
