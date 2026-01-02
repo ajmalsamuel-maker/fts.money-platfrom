@@ -799,54 +799,115 @@ export default function MasterPricingManagement() {
                                 {formData.buy_rate_type === 'tiered' && (
                                     <div className="mb-4">
                                         <Label className="mb-2 block">Buy Rate Tiers</Label>
-                                        <div className="space-y-2">
+                                        <div className="space-y-3">
                                             {(formData.buy_rate_tiers || []).map((tier, idx) => (
-                                                <div key={idx} className="flex gap-2 items-center">
-                                                    <Input
-                                                        type="number"
-                                                        placeholder="Min Volume"
-                                                        value={tier.volume_min}
-                                                        onChange={(e) => {
-                                                            const newTiers = [...formData.buy_rate_tiers];
-                                                            newTiers[idx].volume_min = parseFloat(e.target.value);
-                                                            setFormData({ ...formData, buy_rate_tiers: newTiers });
-                                                        }}
-                                                        className="flex-1"
-                                                    />
-                                                    <Input
-                                                        type="number"
-                                                        placeholder="Max Volume"
-                                                        value={tier.volume_max}
-                                                        onChange={(e) => {
-                                                            const newTiers = [...formData.buy_rate_tiers];
-                                                            newTiers[idx].volume_max = parseFloat(e.target.value);
-                                                            setFormData({ ...formData, buy_rate_tiers: newTiers });
-                                                        }}
-                                                        className="flex-1"
-                                                    />
-                                                    <Input
-                                                        type="number"
-                                                        step="0.01"
-                                                        placeholder="Rate %"
-                                                        value={tier.rate}
-                                                        onChange={(e) => {
-                                                            const newTiers = [...formData.buy_rate_tiers];
-                                                            newTiers[idx].rate = parseFloat(e.target.value);
-                                                            setFormData({ ...formData, buy_rate_tiers: newTiers });
-                                                        }}
-                                                        className="flex-1"
-                                                    />
-                                                    <Button
-                                                        type="button"
-                                                        size="sm"
-                                                        variant="outline"
-                                                        onClick={() => {
-                                                            const newTiers = formData.buy_rate_tiers.filter((_, i) => i !== idx);
-                                                            setFormData({ ...formData, buy_rate_tiers: newTiers });
-                                                        }}
-                                                    >
-                                                        <Trash2 className="h-3 w-3" />
-                                                    </Button>
+                                                <div key={idx} className="p-4 border border-slate-200 rounded-lg space-y-3">
+                                                    <div className="flex items-center justify-between">
+                                                        <Label className="font-semibold">Tier {idx + 1}</Label>
+                                                        <Button
+                                                            type="button"
+                                                            size="sm"
+                                                            variant="outline"
+                                                            onClick={() => {
+                                                                const newTiers = formData.buy_rate_tiers.filter((_, i) => i !== idx);
+                                                                setFormData({ ...formData, buy_rate_tiers: newTiers });
+                                                            }}
+                                                            className="text-red-600"
+                                                        >
+                                                            <Trash2 className="h-3 w-3" />
+                                                        </Button>
+                                                    </div>
+                                                    <div className="grid grid-cols-2 gap-2">
+                                                        <div>
+                                                            <Label className="text-xs">Tier Label</Label>
+                                                            <Input
+                                                                placeholder="e.g., Up to 2 million"
+                                                                value={tier.tier_label || ''}
+                                                                onChange={(e) => {
+                                                                    const newTiers = [...formData.buy_rate_tiers];
+                                                                    newTiers[idx].tier_label = e.target.value;
+                                                                    setFormData({ ...formData, buy_rate_tiers: newTiers });
+                                                                }}
+                                                            />
+                                                        </div>
+                                                        <div>
+                                                            <Label className="text-xs">Payment Method</Label>
+                                                            <Input
+                                                                placeholder="e.g., Bank Transfer"
+                                                                value={tier.payment_method || ''}
+                                                                onChange={(e) => {
+                                                                    const newTiers = [...formData.buy_rate_tiers];
+                                                                    newTiers[idx].payment_method = e.target.value;
+                                                                    setFormData({ ...formData, buy_rate_tiers: newTiers });
+                                                                }}
+                                                            />
+                                                        </div>
+                                                        <div>
+                                                            <Label className="text-xs">Currency</Label>
+                                                            <Input
+                                                                placeholder="USD"
+                                                                value={tier.currency || ''}
+                                                                onChange={(e) => {
+                                                                    const newTiers = [...formData.buy_rate_tiers];
+                                                                    newTiers[idx].currency = e.target.value;
+                                                                    setFormData({ ...formData, buy_rate_tiers: newTiers });
+                                                                }}
+                                                            />
+                                                        </div>
+                                                        <div>
+                                                            <Label className="text-xs">Fixed Fee</Label>
+                                                            <Input
+                                                                type="number"
+                                                                step="0.01"
+                                                                placeholder="0.00"
+                                                                value={tier.fixed_fee || ''}
+                                                                onChange={(e) => {
+                                                                    const newTiers = [...formData.buy_rate_tiers];
+                                                                    newTiers[idx].fixed_fee = parseFloat(e.target.value) || 0;
+                                                                    setFormData({ ...formData, buy_rate_tiers: newTiers });
+                                                                }}
+                                                            />
+                                                        </div>
+                                                        <div>
+                                                            <Label className="text-xs">Rate (%)</Label>
+                                                            <Input
+                                                                type="number"
+                                                                step="0.01"
+                                                                placeholder="0.00"
+                                                                value={tier.rate_percentage || ''}
+                                                                onChange={(e) => {
+                                                                    const newTiers = [...formData.buy_rate_tiers];
+                                                                    newTiers[idx].rate_percentage = parseFloat(e.target.value) || 0;
+                                                                    setFormData({ ...formData, buy_rate_tiers: newTiers });
+                                                                }}
+                                                            />
+                                                        </div>
+                                                        <div>
+                                                            <Label className="text-xs">Volume Range</Label>
+                                                            <div className="flex gap-1">
+                                                                <Input
+                                                                    type="number"
+                                                                    placeholder="Min"
+                                                                    value={tier.volume_min || ''}
+                                                                    onChange={(e) => {
+                                                                        const newTiers = [...formData.buy_rate_tiers];
+                                                                        newTiers[idx].volume_min = parseFloat(e.target.value) || 0;
+                                                                        setFormData({ ...formData, buy_rate_tiers: newTiers });
+                                                                    }}
+                                                                />
+                                                                <Input
+                                                                    type="number"
+                                                                    placeholder="Max"
+                                                                    value={tier.volume_max || ''}
+                                                                    onChange={(e) => {
+                                                                        const newTiers = [...formData.buy_rate_tiers];
+                                                                        newTiers[idx].volume_max = parseFloat(e.target.value) || 0;
+                                                                        setFormData({ ...formData, buy_rate_tiers: newTiers });
+                                                                    }}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             ))}
                                             <Button
@@ -854,7 +915,15 @@ export default function MasterPricingManagement() {
                                                 size="sm"
                                                 variant="outline"
                                                 onClick={() => {
-                                                    const newTiers = [...(formData.buy_rate_tiers || []), { volume_min: 0, volume_max: 0, rate: 0 }];
+                                                    const newTiers = [...(formData.buy_rate_tiers || []), { 
+                                                        tier_label: '', 
+                                                        payment_method: '', 
+                                                        currency: 'USD',
+                                                        fixed_fee: 0,
+                                                        rate_percentage: 0,
+                                                        volume_min: 0, 
+                                                        volume_max: 0 
+                                                    }];
                                                     setFormData({ ...formData, buy_rate_tiers: newTiers });
                                                 }}
                                                 className="w-full"
@@ -869,54 +938,115 @@ export default function MasterPricingManagement() {
                                 {formData.sell_rate_type === 'tiered' && (
                                     <div>
                                         <Label className="mb-2 block">Sell Rate Tiers</Label>
-                                        <div className="space-y-2">
+                                        <div className="space-y-3">
                                             {(formData.sell_rate_tiers || []).map((tier, idx) => (
-                                                <div key={idx} className="flex gap-2 items-center">
-                                                    <Input
-                                                        type="number"
-                                                        placeholder="Min Volume"
-                                                        value={tier.volume_min}
-                                                        onChange={(e) => {
-                                                            const newTiers = [...formData.sell_rate_tiers];
-                                                            newTiers[idx].volume_min = parseFloat(e.target.value);
-                                                            setFormData({ ...formData, sell_rate_tiers: newTiers });
-                                                        }}
-                                                        className="flex-1"
-                                                    />
-                                                    <Input
-                                                        type="number"
-                                                        placeholder="Max Volume"
-                                                        value={tier.volume_max}
-                                                        onChange={(e) => {
-                                                            const newTiers = [...formData.sell_rate_tiers];
-                                                            newTiers[idx].volume_max = parseFloat(e.target.value);
-                                                            setFormData({ ...formData, sell_rate_tiers: newTiers });
-                                                        }}
-                                                        className="flex-1"
-                                                    />
-                                                    <Input
-                                                        type="number"
-                                                        step="0.01"
-                                                        placeholder="Rate %"
-                                                        value={tier.rate}
-                                                        onChange={(e) => {
-                                                            const newTiers = [...formData.sell_rate_tiers];
-                                                            newTiers[idx].rate = parseFloat(e.target.value);
-                                                            setFormData({ ...formData, sell_rate_tiers: newTiers });
-                                                        }}
-                                                        className="flex-1"
-                                                    />
-                                                    <Button
-                                                        type="button"
-                                                        size="sm"
-                                                        variant="outline"
-                                                        onClick={() => {
-                                                            const newTiers = formData.sell_rate_tiers.filter((_, i) => i !== idx);
-                                                            setFormData({ ...formData, sell_rate_tiers: newTiers });
-                                                        }}
-                                                    >
-                                                        <Trash2 className="h-3 w-3" />
-                                                    </Button>
+                                                <div key={idx} className="p-4 border border-slate-200 rounded-lg space-y-3">
+                                                    <div className="flex items-center justify-between">
+                                                        <Label className="font-semibold">Tier {idx + 1}</Label>
+                                                        <Button
+                                                            type="button"
+                                                            size="sm"
+                                                            variant="outline"
+                                                            onClick={() => {
+                                                                const newTiers = formData.sell_rate_tiers.filter((_, i) => i !== idx);
+                                                                setFormData({ ...formData, sell_rate_tiers: newTiers });
+                                                            }}
+                                                            className="text-red-600"
+                                                        >
+                                                            <Trash2 className="h-3 w-3" />
+                                                        </Button>
+                                                    </div>
+                                                    <div className="grid grid-cols-2 gap-2">
+                                                        <div>
+                                                            <Label className="text-xs">Tier Label</Label>
+                                                            <Input
+                                                                placeholder="e.g., 2-10 million"
+                                                                value={tier.tier_label || ''}
+                                                                onChange={(e) => {
+                                                                    const newTiers = [...formData.sell_rate_tiers];
+                                                                    newTiers[idx].tier_label = e.target.value;
+                                                                    setFormData({ ...formData, sell_rate_tiers: newTiers });
+                                                                }}
+                                                            />
+                                                        </div>
+                                                        <div>
+                                                            <Label className="text-xs">Payment Method</Label>
+                                                            <Input
+                                                                placeholder="e.g., Bank Transfer"
+                                                                value={tier.payment_method || ''}
+                                                                onChange={(e) => {
+                                                                    const newTiers = [...formData.sell_rate_tiers];
+                                                                    newTiers[idx].payment_method = e.target.value;
+                                                                    setFormData({ ...formData, sell_rate_tiers: newTiers });
+                                                                }}
+                                                            />
+                                                        </div>
+                                                        <div>
+                                                            <Label className="text-xs">Currency</Label>
+                                                            <Input
+                                                                placeholder="USD"
+                                                                value={tier.currency || ''}
+                                                                onChange={(e) => {
+                                                                    const newTiers = [...formData.sell_rate_tiers];
+                                                                    newTiers[idx].currency = e.target.value;
+                                                                    setFormData({ ...formData, sell_rate_tiers: newTiers });
+                                                                }}
+                                                            />
+                                                        </div>
+                                                        <div>
+                                                            <Label className="text-xs">Fixed Fee</Label>
+                                                            <Input
+                                                                type="number"
+                                                                step="0.01"
+                                                                placeholder="0.00"
+                                                                value={tier.fixed_fee || ''}
+                                                                onChange={(e) => {
+                                                                    const newTiers = [...formData.sell_rate_tiers];
+                                                                    newTiers[idx].fixed_fee = parseFloat(e.target.value) || 0;
+                                                                    setFormData({ ...formData, sell_rate_tiers: newTiers });
+                                                                }}
+                                                            />
+                                                        </div>
+                                                        <div>
+                                                            <Label className="text-xs">Rate (%)</Label>
+                                                            <Input
+                                                                type="number"
+                                                                step="0.01"
+                                                                placeholder="0.00"
+                                                                value={tier.rate_percentage || ''}
+                                                                onChange={(e) => {
+                                                                    const newTiers = [...formData.sell_rate_tiers];
+                                                                    newTiers[idx].rate_percentage = parseFloat(e.target.value) || 0;
+                                                                    setFormData({ ...formData, sell_rate_tiers: newTiers });
+                                                                }}
+                                                            />
+                                                        </div>
+                                                        <div>
+                                                            <Label className="text-xs">Volume Range</Label>
+                                                            <div className="flex gap-1">
+                                                                <Input
+                                                                    type="number"
+                                                                    placeholder="Min"
+                                                                    value={tier.volume_min || ''}
+                                                                    onChange={(e) => {
+                                                                        const newTiers = [...formData.sell_rate_tiers];
+                                                                        newTiers[idx].volume_min = parseFloat(e.target.value) || 0;
+                                                                        setFormData({ ...formData, sell_rate_tiers: newTiers });
+                                                                    }}
+                                                                />
+                                                                <Input
+                                                                    type="number"
+                                                                    placeholder="Max"
+                                                                    value={tier.volume_max || ''}
+                                                                    onChange={(e) => {
+                                                                        const newTiers = [...formData.sell_rate_tiers];
+                                                                        newTiers[idx].volume_max = parseFloat(e.target.value) || 0;
+                                                                        setFormData({ ...formData, sell_rate_tiers: newTiers });
+                                                                    }}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             ))}
                                             <Button
@@ -924,7 +1054,15 @@ export default function MasterPricingManagement() {
                                                 size="sm"
                                                 variant="outline"
                                                 onClick={() => {
-                                                    const newTiers = [...(formData.sell_rate_tiers || []), { volume_min: 0, volume_max: 0, rate: 0 }];
+                                                    const newTiers = [...(formData.sell_rate_tiers || []), { 
+                                                        tier_label: '', 
+                                                        payment_method: '', 
+                                                        currency: 'USD',
+                                                        fixed_fee: 0,
+                                                        rate_percentage: 0,
+                                                        volume_min: 0, 
+                                                        volume_max: 0 
+                                                    }];
                                                     setFormData({ ...formData, sell_rate_tiers: newTiers });
                                                 }}
                                                 className="w-full"
@@ -937,6 +1075,121 @@ export default function MasterPricingManagement() {
                                 )}
                             </div>
                         )}
+
+                        {/* Hybrid Model Configuration */}
+                        {formData.buy_rate_type === 'hybrid' && (
+                            <div className="border-t pt-4">
+                                <h4 className="font-semibold text-sm mb-3">Hybrid Model Configuration</h4>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <Label>Country</Label>
+                                        <Input
+                                            placeholder="e.g., Argentina, Bolivia"
+                                            value={formData.hybrid_model?.country || ''}
+                                            onChange={(e) => setFormData({
+                                                ...formData,
+                                                hybrid_model: { ...formData.hybrid_model, country: e.target.value }
+                                            })}
+                                        />
+                                    </div>
+                                    <div>
+                                        <Label>Payment Method</Label>
+                                        <Input
+                                            placeholder="e.g., Bank Transfer, Mobile Money"
+                                            value={formData.hybrid_model?.payment_method || ''}
+                                            onChange={(e) => setFormData({
+                                                ...formData,
+                                                hybrid_model: { ...formData.hybrid_model, payment_method: e.target.value }
+                                            })}
+                                        />
+                                    </div>
+                                    <div>
+                                        <Label>Account Currency</Label>
+                                        <Input
+                                            placeholder="e.g., USD, EUR"
+                                            value={formData.hybrid_model?.account_currency || ''}
+                                            onChange={(e) => setFormData({
+                                                ...formData,
+                                                hybrid_model: { ...formData.hybrid_model, account_currency: e.target.value }
+                                            })}
+                                        />
+                                    </div>
+                                    <div>
+                                        <Label>Rate (with currency note)</Label>
+                                        <Input
+                                            placeholder="e.g., 0.35 USD"
+                                            value={formData.hybrid_model?.rate || ''}
+                                            onChange={(e) => setFormData({
+                                                ...formData,
+                                                hybrid_model: { ...formData.hybrid_model, rate: e.target.value }
+                                            })}
+                                        />
+                                    </div>
+                                    <div>
+                                        <Label>Local Tax</Label>
+                                        <Input
+                                            placeholder="e.g., IMP DEB & CRED 1.2%"
+                                            value={formData.hybrid_model?.local_tax || ''}
+                                            onChange={(e) => setFormData({
+                                                ...formData,
+                                                hybrid_model: { ...formData.hybrid_model, local_tax: e.target.value }
+                                            })}
+                                        />
+                                    </div>
+                                    <div>
+                                        <Label>FX Spread (%)</Label>
+                                        <Input
+                                            type="number"
+                                            step="0.01"
+                                            placeholder="0.80"
+                                            value={formData.hybrid_model?.fx_spread_percentage || ''}
+                                            onChange={(e) => setFormData({
+                                                ...formData,
+                                                hybrid_model: { ...formData.hybrid_model, fx_spread_percentage: parseFloat(e.target.value) }
+                                            })}
+                                        />
+                                    </div>
+                                    <div>
+                                        <Label>Payout Currency</Label>
+                                        <Input
+                                            placeholder="e.g., ARS, BOB, BRL"
+                                            value={formData.hybrid_model?.payout_currency || ''}
+                                            onChange={(e) => setFormData({
+                                                ...formData,
+                                                hybrid_model: { ...formData.hybrid_model, payout_currency: e.target.value }
+                                            })}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Volume Commitments */}
+                        <div className="border-t pt-4">
+                            <h4 className="font-semibold text-slate-900 mb-3">Volume Commitments</h4>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <Label>Monthly Volume Commitment</Label>
+                                    <Input
+                                        type="number"
+                                        step="0.01"
+                                        placeholder="e.g., 10000000 (USD 10M)"
+                                        value={formData.monthly_volume_commitment || ''}
+                                        onChange={(e) => setFormData({ ...formData, monthly_volume_commitment: parseFloat(e.target.value) })}
+                                    />
+                                </div>
+                                <div>
+                                    <Label>Minimum Monthly Commitment</Label>
+                                    <Input
+                                        type="number"
+                                        step="0.01"
+                                        placeholder="e.g., 5000 (USD 5K)"
+                                        value={formData.minimum_monthly_commitment || ''}
+                                        onChange={(e) => setFormData({ ...formData, minimum_monthly_commitment: parseFloat(e.target.value) })}
+                                    />
+                                </div>
+                            </div>
+                        </div>
 
                         <div className="border-t pt-4">
                             <h4 className="font-semibold text-slate-900 mb-3">Limits</h4>
