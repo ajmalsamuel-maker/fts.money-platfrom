@@ -168,9 +168,13 @@ export default function PSPInstanceConfig() {
                 throw new Error('Unauthorized: No active session');
             }
             
-            const allowedRoles = ['super_admin', 'platform_admin', 'operations'];
-            if (!allowedRoles.includes(platformUser?.platform_role)) {
-                throw new Error('Unauthorized: Insufficient permissions to modify PSP configuration');
+            console.log('🔐 Permission check - User session:', platformUser);
+            
+            const allowedRoles = ['super_admin', 'platform_admin', 'operations', 'admin'];
+            const userRole = platformUser?.platform_role || platformUser?.role;
+            
+            if (!allowedRoles.includes(userRole)) {
+                throw new Error(`Unauthorized: Role "${userRole}" cannot modify PSP configuration. Allowed roles: ${allowedRoles.join(', ')}`);
             }
             
             console.log('💾 Saving config:', data);
