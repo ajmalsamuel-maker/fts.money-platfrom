@@ -26,6 +26,7 @@ import {
     Check,
     X
 } from 'lucide-react';
+import { toast } from 'sonner';
 import { logAuditAction } from '@/components/platform/AuditLogger';
 import { cn } from "@/lib/utils";
 import { PLATFORM_ROLES, getRoleLabel } from '@/components/auth/usePlatformAuth';
@@ -45,10 +46,15 @@ export default function PSPInstanceConfig() {
     const { data: psp, isLoading } = useQuery({
         queryKey: ['psp-config', pspId],
         queryFn: async () => {
+            console.log('📥 Fetching PSP data for ID:', pspId);
             const psps = await base44.entities.ProvisionedPSP.list();
-            return psps.find(p => p.id === pspId);
+            const foundPsp = psps.find(p => p.id === pspId);
+            console.log('📥 Found PSP:', foundPsp);
+            return foundPsp;
         },
-        enabled: !!pspId
+        enabled: !!pspId,
+        staleTime: 0, // Always fetch fresh data
+        cacheTime: 0 // Don't cache
     });
 
     const { data: paymentProviders = [] } = useQuery({
@@ -134,11 +140,14 @@ export default function PSPInstanceConfig() {
             
             console.log('🔍 Loading PSP config from database:', {
                 psp_code: psp.psp_code,
-                enabled_services_from_db: psp.enabled_services,
-                subscriptions_count: subscriptions.length,
-                subscribed_service_ids: subscribedServiceIds,
-                final_enabled_services: newConfig.enabled_services,
-                all_subscriptions: subscriptions
+                psp_id: psp.id,
+                raw_data: {
+                    enabled_payment_methods: psp.enabled_payment_methods,
+                    enabled_payout_methods: psp.enabled_payout_methods,
+                    enabled_services: psp.enabled_services
+                },
+                parsed_config: newConfig,
+                subscriptions_count: subscriptions.length
             });
             
             setConfig(newConfig);
