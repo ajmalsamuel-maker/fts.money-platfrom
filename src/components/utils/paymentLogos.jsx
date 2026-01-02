@@ -1,5 +1,10 @@
 // Central Repository for Payment Method & Payout Method Logos
 // Used globally across Community Portal, FTS Platform, PSP Portal, Merchant Portal, and Virtual Terminal
+// 
+// Now supports dynamic fetching from multiple sources:
+// - Clearbit, Logo.dev, VectorLogoZone, Google Favicons
+
+import { fetchProviderLogo, getCachedLogo } from './dynamicLogoFetcher';
 
 export const PAYMENT_METHOD_LOGOS = {
     // Card Networks - Using mpay24 logos for cards that exist, fallback for others
@@ -110,3 +115,20 @@ export const getAllPaymentMethodsWithLogos = () => {
         logoUrl: PAYMENT_METHOD_LOGOS[method]
     }));
 };
+
+/**
+ * Fetch logo dynamically if not in static map
+ */
+export const getPaymentMethodLogoAsync = async (method) => {
+    // Try static first
+    const staticLogo = getPaymentMethodLogo(method);
+    if (staticLogo) return staticLogo;
+
+    // Fallback to dynamic fetch with caching
+    return await getCachedLogo(method);
+};
+
+/**
+ * Export dynamic fetchers for direct use
+ */
+export { fetchProviderLogo, getCachedLogo } from './dynamicLogoFetcher';
