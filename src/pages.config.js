@@ -83,7 +83,6 @@ import FTSFinancialRegistries from './pages/FTSFinancialRegistries';
 import FTSMoneyPlatform from './pages/FTSMoneyPlatform';
 import FTSPayoutRoutes from './pages/FTSPayoutRoutes';
 import FTSProductEcosystemReport from './pages/FTSProductEcosystemReport';
-import FTSProviderPool from './pages/FTSProviderPool';
 import FTSProvisioningQueue from './pages/FTSProvisioningQueue';
 import FTSReporting from './pages/FTSReporting';
 import FTSRevenue from './pages/FTSRevenue';
@@ -216,6 +215,7 @@ import PaymentLinks from './pages/PaymentLinks';
 import PaymentMethods from './pages/PaymentMethods';
 import PaymentOrchestration from './pages/PaymentOrchestration';
 import PaymentProviders from './pages/PaymentProviders';
+import PaymentProviderManagement from './pages/PaymentProviderManagement';
 import PayoutOrchestration from './pages/PayoutOrchestration';
 import Payouts from './pages/Payouts';
 import PlatformAdminLogin from './pages/PlatformAdminLogin';
@@ -272,7 +272,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import PaymentProviderManagement from './pages/PaymentProviderManagement';
 import __Layout from './Layout.jsx';
 
 
@@ -362,7 +361,6 @@ export const PAGES = {
     "FTSMoneyPlatform": FTSMoneyPlatform,
     "FTSPayoutRoutes": FTSPayoutRoutes,
     "FTSProductEcosystemReport": FTSProductEcosystemReport,
-    "FTSProviderPool": FTSProviderPool,
     "FTSProvisioningQueue": FTSProvisioningQueue,
     "FTSReporting": FTSReporting,
     "FTSRevenue": FTSRevenue,
@@ -495,6 +493,7 @@ export const PAGES = {
     "PaymentMethods": PaymentMethods,
     "PaymentOrchestration": PaymentOrchestration,
     "PaymentProviders": PaymentProviders,
+    "PaymentProviderManagement": PaymentProviderManagement,
     "PayoutOrchestration": PayoutOrchestration,
     "Payouts": Payouts,
     "PlatformAdminLogin": PlatformAdminLogin,
@@ -551,7 +550,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "PaymentProviderManagement": PaymentProviderManagement,
 }
 
 export const pagesConfig = {

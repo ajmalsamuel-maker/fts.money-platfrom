@@ -95,7 +95,6 @@ const menuSections = [
             { label: 'ISO Test Console', path: 'ISOGatewayTestConsole', icon: TestTube2, description: 'API testing' },
             { label: 'ISO Message Monitor', path: 'ISOMessageMonitor', icon: Activity, description: 'Real-time logs' },
             { label: 'Orchestration', path: 'OrchestrationCustomers', icon: Workflow, description: 'Routing customers', priority: true },
-            { label: 'Payment Providers', path: 'FTSProviderPool', icon: Database, description: 'Provider pool' },
             { label: 'Payout Routes', path: 'FTSPayoutRoutes', icon: Wallet, description: 'Payout methods' },
             { label: 'Service Providers', path: 'FTSServiceProviders', icon: Users, description: 'Vendors' },
             { label: 'Wholesale Marketplace', path: 'PSPWholesaleMarketplace', icon: Building2, description: 'PSP-to-PSP' }
