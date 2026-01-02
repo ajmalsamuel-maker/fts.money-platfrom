@@ -2,13 +2,9 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 /**
  * PayAtlas PSP Directory Sync
- * Scrapes https://payatlas.com/ for payment service provider information
+ * Fetches payment service provider data from PayAtlas.com (1403+ companies)
  * 
- * PayAtlas lists major PSPs worldwide with details on:
- * - Company info
- * - Supported countries
- * - Payment methods
- * - Integration types
+ * Note: PayAtlas is a JS-rendered site, so we use AI-powered web search to extract data
  */
 
 Deno.serve(async (req) => {
@@ -20,48 +16,44 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'Unauthorized' }, { status: 403 });
         }
 
-        console.log('🔍 Fetching PSP data from PayAtlas...');
+        console.log('🔍 Fetching PSP data from PayAtlas using AI web search...');
 
-        // Fetch PayAtlas API or website
-        // PayAtlas has 1403+ payment companies
-        const response = await fetch('https://payatlas.com/', {
-            headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        // Use AI with internet access to fetch PayAtlas data
+        const aiResponse = await base44.integrations.Core.InvokeLLM({
+            prompt: `Go to https://payatlas.com/ and extract a comprehensive list of payment service providers (PSPs). 
+            PayAtlas has 1403 payment companies. Extract as many as possible with the following details:
+            - Company name
+            - Region/countries they operate in
+            - Category (gateway, acquirer, wallet, etc)
+            - Payment methods supported (if visible)
+            
+            Return a JSON array with this structure:
+            [{"name": "Company Name", "countries": "Region", "category": "type", "methods": ["method1", "method2"]}]
+            
+            Focus on getting a diverse global list including companies from North America, Europe, Asia, Latin America, Africa, and Middle East.`,
+            add_context_from_internet: true,
+            response_json_schema: {
+                type: "object",
+                properties: {
+                    psps: {
+                        type: "array",
+                        items: {
+                            type: "object",
+                            properties: {
+                                name: { type: "string" },
+                                countries: { type: "string" },
+                                category: { type: "string" },
+                                methods: { type: "array", items: { type: "string" } }
+                            }
+                        }
+                    },
+                    total_found: { type: "number" }
+                }
             }
         });
 
-        if (!response.ok) {
-            throw new Error(`PayAtlas fetch failed: ${response.status}`);
-        }
-
-        const html = await response.text();
-
-        // Parse HTML to extract PSP listings
-        // PayAtlas structure: company cards with name, region, methods
-        // This is a simplified parser - can be enhanced with more sophisticated scraping
-        const pspRegex = /<div[^>]*class="[^"]*company-card[^"]*"[^>]*>([\s\S]*?)<\/div>/gi;
-        const nameRegex = /<h3[^>]*>(.*?)<\/h3>/i;
-        const regionRegex = /region[^>]*>(.*?)</i;
-        
-        const scrapedPSPs = [];
-        let match;
-        
-        // Try to extract from HTML (fallback to curated list if scraping fails)
-        while ((match = pspRegex.exec(html)) !== null) {
-            const cardHtml = match[1];
-            const nameMatch = nameRegex.exec(cardHtml);
-            const regionMatch = regionRegex.exec(cardHtml);
-            
-            if (nameMatch) {
-                scrapedPSPs.push({
-                    name: nameMatch[1].trim(),
-                    region: regionMatch ? regionMatch[1].trim() : 'Global',
-                    source: 'payatlas_scrape'
-                });
-            }
-        }
-
-        console.log(`📊 Scraped ${scrapedPSPs.length} PSPs from PayAtlas`);
+        const scrapedPSPs = aiResponse?.psps || [];
+        console.log(`📊 AI extracted ${scrapedPSPs.length} PSPs from PayAtlas`);
 
         // Curated list of major PSPs (used as fallback or supplement)
         const curatedPSPs = [
