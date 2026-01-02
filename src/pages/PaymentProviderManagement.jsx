@@ -29,6 +29,7 @@ export default function PaymentProviderManagement() {
         name: '',
         provider_type: 'gateway',
         logo_url: '',
+        merchant_id: '',
         api_base_url: '',
         api_key: '',
         api_secret: '',
@@ -39,6 +40,8 @@ export default function PaymentProviderManagement() {
         status: 'active',
         pricing: {} // { method: { percentage: X, fixed: Y } }
     });
+    
+    const [searchingLogo, setSearchingLogo] = useState(false);
 
     const { data: providers = [] } = useQuery({
         queryKey: ['payment-providers'],
@@ -57,6 +60,7 @@ export default function PaymentProviderManagement() {
                 name: data.name,
                 type: data.provider_type,
                 logo_url: data.logo_url,
+                merchant_id: data.merchant_id,
                 api_base_url: data.api_base_url,
                 api_key: data.api_key,
                 api_secret: data.api_secret,
@@ -120,6 +124,7 @@ export default function PaymentProviderManagement() {
             name: '',
             provider_type: 'gateway',
             logo_url: '',
+            merchant_id: '',
             api_base_url: '',
             api_key: '',
             api_secret: '',
@@ -131,6 +136,31 @@ export default function PaymentProviderManagement() {
             pricing: {}
         });
         setEditingProvider(null);
+    };
+    
+    const handleAutoFindLogo = async () => {
+        if (!providerForm.name) {
+            toast.error('Enter provider name first');
+            return;
+        }
+        
+        setSearchingLogo(true);
+        try {
+            const response = await base44.functions.invoke('searchProviderLogo', {
+                providerName: providerForm.name
+            });
+            
+            if (response.data?.logo_url) {
+                setProviderForm({...providerForm, logo_url: response.data.logo_url});
+                toast.success('Logo found!');
+            } else {
+                toast.error('No logo found. Please enter manually.');
+            }
+        } catch (error) {
+            toast.error('Failed to search for logo');
+        } finally {
+            setSearchingLogo(false);
+        }
     };
 
     const handleSave = () => {
@@ -238,11 +268,22 @@ export default function PaymentProviderManagement() {
                                             </div>
                                             <div className="col-span-2">
                                                 <Label>Logo URL</Label>
-                                                <Input
-                                                    value={providerForm.logo_url}
-                                                    onChange={(e) => setProviderForm({...providerForm, logo_url: e.target.value})}
-                                                    placeholder="https://..."
-                                                />
+                                                <div className="flex gap-2">
+                                                    <Input
+                                                        value={providerForm.logo_url}
+                                                        onChange={(e) => setProviderForm({...providerForm, logo_url: e.target.value})}
+                                                        placeholder="https://..."
+                                                        className="flex-1"
+                                                    />
+                                                    <Button
+                                                        type="button"
+                                                        variant="outline"
+                                                        onClick={handleAutoFindLogo}
+                                                        disabled={searchingLogo || !providerForm.name}
+                                                    >
+                                                        {searchingLogo ? 'Searching...' : '🔍 Auto-find'}
+                                                    </Button>
+                                                </div>
                                             </div>
                                             <div className="col-span-2">
                                                 <Label>Notes</Label>
@@ -257,6 +298,15 @@ export default function PaymentProviderManagement() {
 
                                     <TabsContent value="api" className="space-y-4">
                                         <div className="space-y-4">
+                                            <div>
+                                                <Label>Merchant ID / Bank MID</Label>
+                                                <Input
+                                                    value={providerForm.merchant_id}
+                                                    onChange={(e) => setProviderForm({...providerForm, merchant_id: e.target.value})}
+                                                    placeholder="MID assigned by provider"
+                                                />
+                                                <p className="text-xs text-slate-500 mt-1">The Merchant ID or Bank MID provided by this payment provider</p>
+                                            </div>
                                             <div>
                                                 <Label>API Base URL *</Label>
                                                 <Input
@@ -473,6 +523,7 @@ export default function PaymentProviderManagement() {
                                                         name: provider.name,
                                                         provider_type: provider.type,
                                                         logo_url: provider.logo_url || '',
+                                                        merchant_id: provider.merchant_id || '',
                                                         api_base_url: provider.api_base_url || '',
                                                         api_key: provider.api_key || '',
                                                         api_secret: provider.api_secret || '',
