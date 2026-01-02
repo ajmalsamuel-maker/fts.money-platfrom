@@ -259,12 +259,21 @@ export default function PaymentProviderManagement() {
                                                     <SelectTrigger>
                                                         <SelectValue />
                                                     </SelectTrigger>
-                                                    <SelectContent>
+                                                    <SelectContent className="max-h-[300px]">
                                                         <SelectItem value="gateway">Payment Gateway</SelectItem>
-                                                        <SelectItem value="acquirer">Acquirer</SelectItem>
-                                                        <SelectItem value="wallet">Digital Wallet</SelectItem>
-                                                        <SelectItem value="crypto">Crypto Exchange</SelectItem>
+                                                        <SelectItem value="acquirer">Acquirer/Processor</SelectItem>
+                                                        <SelectItem value="card_network">Card Network</SelectItem>
                                                         <SelectItem value="bank">Bank/PSP</SelectItem>
+                                                        <SelectItem value="wallet">Digital Wallet Provider</SelectItem>
+                                                        <SelectItem value="regional_wallet">Regional Wallet</SelectItem>
+                                                        <SelectItem value="bank_transfer">Bank Transfer Provider</SelectItem>
+                                                        <SelectItem value="fps">Fast Payment System</SelectItem>
+                                                        <SelectItem value="crypto">Crypto Exchange</SelectItem>
+                                                        <SelectItem value="bnpl">Buy Now Pay Later</SelectItem>
+                                                        <SelectItem value="apm">Alternative Payment Method</SelectItem>
+                                                        <SelectItem value="mobile_money">Mobile Money Provider</SelectItem>
+                                                        <SelectItem value="cash_voucher">Cash/Voucher Provider</SelectItem>
+                                                        <SelectItem value="qr_code">QR Code Payment</SelectItem>
                                                     </SelectContent>
                                                 </Select>
                                             </div>
