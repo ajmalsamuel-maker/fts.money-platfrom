@@ -6,13 +6,17 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { RefreshCw, CheckCircle, XCircle, Globe, Shield, CreditCard, Database } from 'lucide-react';
+import { Input } from "@/components/ui/input";
+import { RefreshCw, CheckCircle, XCircle, Globe, Shield, CreditCard, Database, Search } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function GlobalStandardsRegistry() {
     const [platformUser] = useState(() => JSON.parse(localStorage.getItem('platform_admin_session') || '{}'));
     const queryClient = useQueryClient();
     const [syncing, setSyncing] = useState(false);
+    const [loadingPSPs, setLoadingPSPs] = useState(false);
+    const [pspCatalog, setPspCatalog] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
 
     const standards = [
         {
@@ -75,6 +79,26 @@ export default function GlobalStandardsRegistry() {
             setSyncing(false);
         }
     };
+
+    const loadPayAtlasCatalog = async () => {
+        setLoadingPSPs(true);
+        try {
+            const response = await base44.functions.invoke('payatlasSync', {});
+            if (response.data.success) {
+                setPspCatalog(response.data.psps || []);
+                toast.success(`Loaded ${response.data.psps_loaded} PSPs from PayAtlas!`);
+            }
+        } catch (error) {
+            toast.error(`Failed to load PayAtlas: ${error.message}`);
+        } finally {
+            setLoadingPSPs(false);
+        }
+    };
+
+    const filteredPSPs = pspCatalog.filter(psp => 
+        psp.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (psp.countries && psp.countries.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
 
     return (
         <div className="flex h-screen bg-slate-50">
@@ -231,14 +255,24 @@ export default function GlobalStandardsRegistry() {
                                     <p className="font-semibold text-slate-900">Global PSP Database</p>
                                     <p className="text-sm text-slate-600 mt-1">Browse and import PSPs from PayAtlas.com</p>
                                 </div>
-                                <Button 
-                                    variant="outline" 
-                                    onClick={() => window.open('https://payatlas.com/', '_blank')}
-                                    className="gap-2"
-                                >
-                                    <Globe className="h-4 w-4" />
-                                    View PayAtlas
-                                </Button>
+                                <div className="flex gap-2">
+                                    <Button 
+                                        onClick={loadPayAtlasCatalog}
+                                        disabled={loadingPSPs}
+                                        className="gap-2"
+                                    >
+                                        <Database className="h-4 w-4" />
+                                        {loadingPSPs ? 'Loading...' : 'Load PSP Catalog'}
+                                    </Button>
+                                    <Button 
+                                        variant="outline" 
+                                        onClick={() => window.open('https://payatlas.com/', '_blank')}
+                                        className="gap-2"
+                                    >
+                                        <Globe className="h-4 w-4" />
+                                        View PayAtlas
+                                    </Button>
+                                </div>
                             </div>
                             <div className="grid grid-cols-3 gap-4">
                                 <div className="text-center p-3 bg-white rounded-lg border border-slate-200">
@@ -254,6 +288,66 @@ export default function GlobalStandardsRegistry() {
                                     <p className="text-xs text-slate-600">Payment Methods</p>
                                 </div>
                             </div>
+
+                            {pspCatalog.length > 0 && (
+                                <div className="bg-white rounded-lg border border-slate-200 p-4 space-y-4">
+                                    <div className="flex items-center gap-3">
+                                        <div className="relative flex-1">
+                                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                                            <Input
+                                                placeholder="Search PSPs by name or region..."
+                                                value={searchTerm}
+                                                onChange={(e) => setSearchTerm(e.target.value)}
+                                                className="pl-10"
+                                            />
+                                        </div>
+                                        <Badge variant="outline" className="text-sm">
+                                            {filteredPSPs.length} PSPs
+                                        </Badge>
+                                    </div>
+
+                                    <div className="max-h-96 overflow-y-auto space-y-2">
+                                        {filteredPSPs.map((psp, idx) => (
+                                            <div 
+                                                key={idx}
+                                                className="flex items-center justify-between p-3 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors"
+                                            >
+                                                <div className="flex-1">
+                                                    <p className="font-medium text-slate-900">{psp.name}</p>
+                                                    <div className="flex items-center gap-3 mt-1">
+                                                        {psp.countries && (
+                                                            <p className="text-xs text-slate-600">
+                                                                <Globe className="inline h-3 w-3 mr-1" />
+                                                                {psp.countries}
+                                                            </p>
+                                                        )}
+                                                        {psp.category && (
+                                                            <Badge variant="outline" className="text-xs">
+                                                                {psp.category}
+                                                            </Badge>
+                                                        )}
+                                                        {psp.methods && psp.methods.length > 0 && (
+                                                            <p className="text-xs text-slate-500">
+                                                                {psp.methods.length} methods
+                                                            </p>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                                <Button 
+                                                    size="sm" 
+                                                    variant="outline"
+                                                    onClick={() => {
+                                                        // Pre-fill payment provider form
+                                                        toast.success(`${psp.name} ready to add`);
+                                                    }}
+                                                >
+                                                    Add to Providers
+                                                </Button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
                         </CardContent>
                     </Card>
 
