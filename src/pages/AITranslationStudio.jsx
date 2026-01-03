@@ -103,11 +103,16 @@ export default function AITranslationStudio() {
             return response.data;
         },
         onSuccess: (data) => {
-            toast.success(`✅ Generated translations for ${data.languagesCompleted} languages!`);
+            console.log('Translation response:', data);
+            const langCount = data?.languagesCompleted || Object.keys(data?.translations || {}).length;
+            toast.success(`✅ Generated translations for ${langCount} languages!`);
             setGeneratedResults(data);
+            setGenerationProgress(100);
         },
         onError: (error) => {
+            console.error('Translation error:', error);
             toast.error(`Translation failed: ${error.message}`);
+            setGenerationProgress(0);
         }
     });
 
