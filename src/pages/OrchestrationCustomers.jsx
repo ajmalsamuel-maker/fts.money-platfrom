@@ -10,8 +10,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { GitBranch, Plus, Search, TrendingUp, Activity, Zap } from 'lucide-react';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function OrchestrationCustomers() {
+    const { t } = useI18n();
     const [searchQuery, setSearchQuery] = useState('');
     const [showCreateDialog, setShowCreateDialog] = useState(false);
     const [newCustomer, setNewCustomer] = useState({
@@ -99,22 +101,22 @@ export default function OrchestrationCustomers() {
             <div className="flex-1 overflow-auto">
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
                     <div>
-                        <h2 className="text-lg font-semibold text-slate-900">Orchestration Customers</h2>
-                        <p className="text-xs text-slate-600">Manage standalone orchestration service subscriptions</p>
+                        <h2 className="text-lg font-semibold text-slate-900">{t('orchestration:customers.title')}</h2>
+                        <p className="text-xs text-slate-600">{t('orchestration:customers.subtitle')}</p>
                     </div>
                     <LanguageSwitcher variant="select" showLabel={true} />
                 </header>
                 <div className="p-8">
                     <div className="flex justify-between items-center mb-6">
                         <div>
-                            <h1 className="text-2xl font-bold text-gray-900">Customer Accounts</h1>
+                            <h1 className="text-2xl font-bold text-gray-900">{t('orchestration:customers.customerAccounts')}</h1>
                         </div>
                         
                         <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
                             <DialogTrigger asChild>
                                 <Button className="bg-blue-600 hover:bg-blue-700">
                                     <Plus className="h-4 w-4 mr-2" />
-                                    Add Customer
+                                    {t('orchestration:customers.addCustomer')}
                                 </Button>
                             </DialogTrigger>
                             <DialogContent className="max-w-2xl">

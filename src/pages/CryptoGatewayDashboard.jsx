@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { FTS_COLORS, FTS_LOGOS } from '@/components/community/FTSBrandColors';
 import StrigaDisclaimer from '@/components/crypto/StrigaDisclaimer';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
+import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 import { 
     Wallet, TrendingUp, Users, Activity, Bitcoin, 
     ArrowUpRight, ArrowDownRight, Zap, AlertCircle,
@@ -18,6 +20,7 @@ import {
 import { LineChart, Line, BarChart, Bar, PieChart as RePieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 export default function CryptoGatewayDashboard() {
+    const { t } = useI18n();
     const [session, setSession] = useState(() => {
         const stored = localStorage.getItem('crypto_gateway_session');
         if (!stored) {
@@ -141,9 +144,10 @@ export default function CryptoGatewayDashboard() {
             <div className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 flex-shrink-0">
                 <img src={FTS_LOGOS.primary} alt="FTS.Money" className="h-8" />
                 <div className="flex items-center gap-3">
+                    <LanguageSwitcher variant="select" showLabel={true} />
                     <div className="text-right">
                         <p className="text-sm font-medium text-slate-900">{session.user.email}</p>
-                        <p className="text-xs text-slate-500">Crypto Banking</p>
+                        <p className="text-xs text-slate-500">{t('crypto:dashboard.cryptoBanking')}</p>
                     </div>
                     <button
                         onClick={() => {
@@ -153,7 +157,7 @@ export default function CryptoGatewayDashboard() {
                         className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 transition-colors"
                     >
                         <LogOut className="h-4 w-4" />
-                        Logout
+                        {t('common:actions.logout')}
                     </button>
                 </div>
             </div>
@@ -165,8 +169,8 @@ export default function CryptoGatewayDashboard() {
                 {/* Dashboard Content */}
                 <div className="flex-1 overflow-auto p-8">
                     <div className="mb-6">
-                        <h1 className="text-3xl font-bold text-slate-900">Dashboard</h1>
-                        <p className="text-slate-600 mt-1">Welcome back, {session.user.company_name || session.user.email}</p>
+                        <h1 className="text-3xl font-bold text-slate-900">{t('crypto:dashboard.title')}</h1>
+                        <p className="text-slate-600 mt-1">{t('crypto:dashboard.welcomeBack')}, {session.user.company_name || session.user.email}</p>
                     </div>
 
                 <div className="space-y-6">

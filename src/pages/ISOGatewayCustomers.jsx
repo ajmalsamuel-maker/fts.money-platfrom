@@ -11,8 +11,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Building2, Plus, Search, TrendingUp, Activity, AlertCircle, Pencil, Shield, GitBranch } from 'lucide-react';
 import OrchestrationRuleBuilder from '@/components/orchestration/OrchestrationRuleBuilder';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function ISOGatewayCustomers() {
+    const { t } = useI18n();
     const [searchQuery, setSearchQuery] = useState('');
     const [showCreateDialog, setShowCreateDialog] = useState(false);
     const [showEditDialog, setShowEditDialog] = useState(false);
@@ -113,22 +115,22 @@ export default function ISOGatewayCustomers() {
             <div className="flex-1 overflow-auto">
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
                     <div>
-                        <h2 className="text-lg font-semibold text-slate-900">ISO Gateway Customers</h2>
-                        <p className="text-xs text-slate-600">Manage customer subscriptions and usage</p>
+                        <h2 className="text-lg font-semibold text-slate-900">{t('iso:customers.title')}</h2>
+                        <p className="text-xs text-slate-600">{t('iso:customers.subtitle')}</p>
                     </div>
                     <LanguageSwitcher variant="select" showLabel={true} />
                 </header>
                 <div className="p-8">
                     <div className="flex justify-between items-center mb-6">
                         <div>
-                            <h1 className="text-2xl font-bold text-gray-900">Customer Accounts</h1>
+                            <h1 className="text-2xl font-bold text-gray-900">{t('iso:customers.customerAccounts')}</h1>
                         </div>
                         
                         <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
                             <DialogTrigger asChild>
                                 <Button className="bg-blue-600 hover:bg-blue-700">
                                     <Plus className="h-4 w-4 mr-2" />
-                                    Add Customer
+                                    {t('iso:customers.addCustomer')}
                                 </Button>
                             </DialogTrigger>
                             <DialogContent className="max-w-2xl">
