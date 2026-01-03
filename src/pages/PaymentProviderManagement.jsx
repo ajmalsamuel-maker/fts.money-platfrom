@@ -240,20 +240,8 @@ export default function PaymentProviderManagement() {
                         <h2 className="text-lg font-semibold text-slate-900">Payment Provider Management</h2>
                         <p className="text-xs text-slate-600">Configure payment providers and auto-populate Master Pricing</p>
                     </div>
-                    <LanguageSwitcher variant="select" showLabel={true} />
-                </header>
-                <div className="px-6 py-4">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <div className="flex gap-2 mt-2">
-                                <Badge variant="outline" className="text-xs">Stripe API ✓</Badge>
-                                <Badge variant="outline" className="text-xs">Adyen Catalog ✓</Badge>
-                                <Badge variant="outline" className="text-xs">W3C API ✓</Badge>
-                                <Badge variant="outline" className="text-xs">EMVCo ✓</Badge>
-                                <Badge variant="outline" className="text-xs">SWIFT ✓</Badge>
-                                <Badge variant="outline" className="text-xs">ISO Standards ✓</Badge>
-                            </div>
-                        </div>
+                    <div className="flex items-center gap-3">
+                        <LanguageSwitcher variant="select" showLabel={true} />
                         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                             <DialogTrigger asChild>
                                 <Button className="gap-2" onClick={resetForm}>
@@ -548,8 +536,7 @@ export default function PaymentProviderManagement() {
                             </DialogContent>
                         </Dialog>
                     </div>
-                </div>
-                </div>
+                </header>
 
                 {/* Payment Method Selector Modal */}
                 <PaymentMethodSelector
