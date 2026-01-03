@@ -1,6 +1,7 @@
 /**
  * Enhanced Language Provider with Multi-Tenant Support
  * Enterprise-grade i18n for FTS.Money Platform
+ * @version 1.1.0
  */
 
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
