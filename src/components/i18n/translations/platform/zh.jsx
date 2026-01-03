@@ -1,3 +1,4 @@
+// Platform translations - Chinese
 export default {
   "dashboard": {
     "title": "控制面板仪表板",

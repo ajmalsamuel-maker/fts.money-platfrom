@@ -1,3 +1,4 @@
+// Platform translations - German
 export default {
   "dashboard": {
     "title": "Kontrollzentrum Dashboard",
