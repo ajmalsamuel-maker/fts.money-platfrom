@@ -99,7 +99,7 @@ export default function ComplianceFooter() {
                             className="h-6 opacity-80"
                         />
                         <span className="text-slate-600">
-                            © {new Date().getFullYear()} FTS.Money
+                            © {new Date().getFullYear()} FTS.Money - Enterprise Payment Infrastructure
                         </span>
                     </div>
                     <div className="flex items-center gap-3 text-slate-500">
