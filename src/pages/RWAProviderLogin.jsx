@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { FTS_LOGOS } from '@/components/community/FTSBrandColors';
+import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 
 export default function RWAProviderLogin() {
     const navigate = useNavigate();
@@ -35,10 +36,15 @@ export default function RWAProviderLogin() {
     return (
         <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 flex items-center justify-center p-4">
             <Card className="w-full max-w-md">
-                <CardHeader className="text-center">
-                    <img src={FTS_LOGOS.primary} alt="FTS.Money" className="h-10 mx-auto mb-4" />
-                    <CardTitle className="text-2xl">RWA Provider Portal</CardTitle>
-                    <p className="text-sm text-slate-600 mt-2">Licensed tokenization platform</p>
+                <CardHeader>
+                    <div className="flex items-start justify-between mb-4">
+                        <div className="text-center flex-1">
+                            <img src={FTS_LOGOS.primary} alt="FTS.Money" className="h-10 mx-auto mb-4" />
+                            <CardTitle className="text-2xl">RWA Provider Portal</CardTitle>
+                            <p className="text-sm text-slate-600 mt-2">Licensed tokenization platform</p>
+                        </div>
+                        <LanguageSwitcher variant="compact" showLabel={false} />
+                    </div>
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={handleLogin} className="space-y-4">

@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { GitBranch, Zap } from 'lucide-react';
+import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 
 export default function OrchestrationLogin() {
     const [email, setEmail] = useState('');
@@ -47,14 +48,19 @@ export default function OrchestrationLogin() {
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-6">
             <Card className="w-full max-w-md shadow-xl">
-                <CardHeader className="text-center space-y-3">
-                    <div className="mx-auto w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center">
-                        <GitBranch className="h-8 w-8 text-white" />
+                <CardHeader className="space-y-3">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                            <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center">
+                                <GitBranch className="h-8 w-8 text-white" />
+                            </div>
+                            <div>
+                                <CardTitle className="text-2xl font-bold">Orchestration Service</CardTitle>
+                                <p className="text-sm text-slate-600">Sign in to manage your routing rules</p>
+                            </div>
+                        </div>
+                        <LanguageSwitcher variant="compact" showLabel={false} />
                     </div>
-                    <CardTitle className="text-2xl font-bold">Orchestration Service</CardTitle>
-                    <p className="text-sm text-slate-600">
-                        Sign in to manage your routing rules
-                    </p>
                 </CardHeader>
 
                 <CardContent>

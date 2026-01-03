@@ -11,6 +11,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Sparkles, Building2, Users, Globe, ArrowRight } from 'lucide-react';
 import { FTS_COLORS, FTS_GRADIENTS, FTS_LOGOS } from '@/components/community/FTSBrandColors';
 import ComplianceFooter from '@/components/community/ComplianceFooter';
+import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 
 export default function CommunityPortalLogin() {
     const navigate = useNavigate();
@@ -96,7 +97,10 @@ export default function CommunityPortalLogin() {
                         {/* Login Card */}
                         <Card className="bg-white/95 backdrop-blur border-slate-200 shadow-xl">
                             <CardHeader>
-                                <CardTitle>Sign In</CardTitle>
+                                <div className="flex items-center justify-between mb-2">
+                                    <CardTitle>Sign In</CardTitle>
+                                    <LanguageSwitcher variant="compact" showLabel={false} />
+                                </div>
                             </CardHeader>
                             <CardContent>
                                 <form onSubmit={handleLogin} className="space-y-4">

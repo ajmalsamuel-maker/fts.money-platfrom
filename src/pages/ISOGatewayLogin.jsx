@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Zap } from 'lucide-react';
+import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 
 export default function ISOGatewayLogin() {
     const [email, setEmail] = useState('');
@@ -50,14 +51,17 @@ export default function ISOGatewayLogin() {
         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center p-4">
             <Card className="w-full max-w-md shadow-xl">
                 <CardHeader>
-                    <div className="flex items-center justify-center gap-3 mb-4">
-                        <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center">
-                            <Zap className="h-6 w-6 text-white" />
+                    <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-3">
+                            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center">
+                                <Zap className="h-6 w-6 text-white" />
+                            </div>
+                            <div>
+                                <CardTitle className="text-2xl">ISO Gateway</CardTitle>
+                                <p className="text-sm text-slate-600">by FTS.Money</p>
+                            </div>
                         </div>
-                        <div>
-                            <CardTitle className="text-2xl">ISO Gateway</CardTitle>
-                            <p className="text-sm text-slate-600">by FTS.Money</p>
-                        </div>
+                        <LanguageSwitcher variant="compact" showLabel={false} />
                     </div>
                 </CardHeader>
                 <CardContent>

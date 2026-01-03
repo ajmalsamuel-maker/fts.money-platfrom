@@ -8,6 +8,7 @@ import { FTS_COLORS, FTS_GRADIENTS, FTS_LOGOS } from '@/components/community/FTS
 import StrigaDisclaimer from '@/components/crypto/StrigaDisclaimer';
 import { Wallet, ArrowRight } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 
 export default function CryptoGatewayLogin() {
     const [credentials, setCredentials] = useState({ email: '', password: '' });
@@ -78,10 +79,13 @@ export default function CryptoGatewayLogin() {
 
                 <Card className="bg-white/95 backdrop-blur border-slate-200 shadow-xl">
                     <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                            <Wallet className="h-5 w-5 text-blue-600" />
-                            Banking Portal Login
-                        </CardTitle>
+                        <div className="flex items-center justify-between mb-4">
+                            <CardTitle className="flex items-center gap-2">
+                                <Wallet className="h-5 w-5 text-blue-600" />
+                                Banking Portal Login
+                            </CardTitle>
+                            <LanguageSwitcher variant="compact" showLabel={false} />
+                        </div>
                     </CardHeader>
                     <CardContent>
                         <form onSubmit={handleLogin} className="space-y-4">

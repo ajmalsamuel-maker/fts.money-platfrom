@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { FTS_COLORS, FTS_GRADIENTS, FTS_LOGOS } from '@/components/community/FTSBrandColors';
 import { Shield, Lock, ArrowRight } from 'lucide-react';
 import { PLATFORM_ROLES, getRoleLabel } from '@/components/auth/usePlatformAuth';
+import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 
 export default function PlatformAdminLogin() {
     const navigate = useNavigate();
@@ -96,10 +97,13 @@ export default function PlatformAdminLogin() {
 
                 <Card className="bg-white/95 backdrop-blur border-slate-200 shadow-xl">
                     <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                            <Shield className="h-5 w-5 text-blue-600" />
-                            Platform Admin Login
-                        </CardTitle>
+                        <div className="flex items-center justify-between mb-4">
+                            <CardTitle className="flex items-center gap-2">
+                                <Shield className="h-5 w-5 text-blue-600" />
+                                Platform Admin Login
+                            </CardTitle>
+                            <LanguageSwitcher variant="compact" showLabel={false} />
+                        </div>
                     </CardHeader>
                     <CardContent>
                         <form onSubmit={handleLogin} className="space-y-4">
