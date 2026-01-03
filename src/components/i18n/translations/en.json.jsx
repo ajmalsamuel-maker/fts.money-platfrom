@@ -13,7 +13,8 @@ json
     "pciCompliance": "PCI Compliance",
     "checkoutComponents": "Checkout Components",
     "pspProvisioning": "PSP Provisioning",
-    "wholesale": "Wholesale",
-    "wholesaleBrowse": "Browse Marketplace",
-    "myOfferings": "My Offerings"
+    "documentation": "Documentation",
+    "platformArchitecture": "Platform Architecture",
+    "productEcosystem": "Product Ecosystem",
+    "verticalSolutions": "Vertical Solutions"
 }
