@@ -41,6 +41,8 @@ import {
     COMPLIANCE_LANGUAGE_REQUIREMENTS
 } from '@/components/i18n/GlobalLanguageStandard';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
+import TranslationFileManager from '@/components/i18n/TranslationFileManager';
+import TranslationEditor from '@/components/i18n/TranslationEditor';
 
 export default function PlatformLanguageManagement() {
     const [platformUser] = useState(() => JSON.parse(localStorage.getItem('platform_admin_session') || '{}'));
@@ -370,6 +372,8 @@ export default function PlatformLanguageManagement() {
                             <TabsTrigger value="overview">Language Overview</TabsTrigger>
                             <TabsTrigger value="psp">Service Configuration</TabsTrigger>
                             <TabsTrigger value="translations">Translation Status</TabsTrigger>
+                            <TabsTrigger value="editor">Translation Editor</TabsTrigger>
+                            <TabsTrigger value="files">Import/Export</TabsTrigger>
                             <TabsTrigger value="compliance">Compliance</TabsTrigger>
                         </TabsList>
 
@@ -821,6 +825,39 @@ export default function PlatformLanguageManagement() {
                                     </div>
                                 </CardContent>
                             </Card>
+                        </TabsContent>
+
+                        {/* Translation Editor Tab */}
+                        <TabsContent value="editor">
+                            <TranslationEditor 
+                                onTranslate={async (text, sourceLang, targetLang, callback) => {
+                                    try {
+                                        const response = await base44.functions.invoke('translateText', {
+                                            text,
+                                            sourceLang,
+                                            targetLang,
+                                            provider: 'deepl'
+                                        });
+                                        if (response.data.success) {
+                                            callback(response.data.translatedText);
+                                        } else {
+                                            toast.error('Translation failed');
+                                        }
+                                    } catch (error) {
+                                        toast.error(`Translation error: ${error.message}`);
+                                    }
+                                }}
+                            />
+                        </TabsContent>
+
+                        {/* Import/Export Tab */}
+                        <TabsContent value="files">
+                            <TranslationFileManager 
+                                onImportSuccess={(language, namespace, translations) => {
+                                    console.log('Imported:', { language, namespace, translations });
+                                    queryClient.invalidateQueries(['translations']);
+                                }}
+                            />
                         </TabsContent>
 
                         {/* Compliance Tab */}
