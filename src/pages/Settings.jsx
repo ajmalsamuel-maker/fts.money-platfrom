@@ -45,9 +45,11 @@ import { ROLE_CONFIG } from '@/components/auth/permissions';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function Settings() {
     const navigate = useNavigate();
+    const { t } = useI18n();
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const queryClient = useQueryClient();
     const [userPspCode, setUserPspCode] = useState(null);

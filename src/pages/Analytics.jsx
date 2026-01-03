@@ -48,6 +48,7 @@ import {
     Brain,
     Coins
 } from 'lucide-react';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 const generateTimeSeriesData = (days) => {
     const data = [];
@@ -86,6 +87,7 @@ const hourlyData = Array.from({ length: 24 }, (_, i) => ({
 }));
 
 export default function Analytics() {
+    const { t } = useI18n();
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const [period, setPeriod] = useState('30d');
     const [merchantFilter, setMerchantFilter] = useState('all');

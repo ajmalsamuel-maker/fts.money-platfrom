@@ -57,6 +57,7 @@ import TransactionDetailsDialog from '@/components/transaction/TransactionDetail
 import ISOComplianceBadge from '@/components/transaction/ISOComplianceBadge';
 import { validateCurrency, validateCountry } from '@/components/utils/isoValidator';
 import AdvancedSearchPanel from '@/components/transaction/AdvancedSearchPanel';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 const statusConfig = {
     approved: { label: 'Approved', className: 'bg-emerald-100 text-emerald-700 border-emerald-200' },
@@ -78,6 +79,7 @@ const typeConfig = {
 };
 
 export default function Transactions() {
+    const { t } = useI18n();
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');

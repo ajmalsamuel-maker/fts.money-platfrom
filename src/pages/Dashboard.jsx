@@ -42,7 +42,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { useTranslation } from '@/components/i18n/LanguageContext';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 
@@ -52,7 +52,7 @@ export default function Dashboard() {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const [helpOpen, setHelpOpen] = useState(false);
     const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
-    const { t, language } = useTranslation();
+    const { t, language } = useI18n();
 
     // Get current PSP session - CRITICAL: Each PSP must be completely isolated
     const [userPspCode, setUserPspCode] = useState(null);

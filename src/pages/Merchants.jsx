@@ -67,6 +67,7 @@ import { toast } from 'sonner';
 import MerchantOnboardingDialog from '@/components/merchants/MerchantOnboardingDialog';
 import MerchantDetailsView from '@/components/merchants/MerchantDetailsView';
 import { generateUniqueMerchantCode } from '@/components/merchants/MerchantCodeGenerator';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 const statusConfig = {
     active: { label: 'Active', className: 'bg-emerald-100 text-emerald-700 border-emerald-200' },
@@ -82,6 +83,7 @@ const riskConfig = {
 };
 
 export default function Merchants() {
+    const { t } = useI18n();
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');

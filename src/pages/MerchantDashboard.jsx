@@ -44,10 +44,11 @@ import SettlementCalendar from '@/components/merchant/SettlementCalendar';
 import CustomerInsights from '@/components/merchant/CustomerInsights';
 import ComplianceDashboard from '@/components/merchant/ComplianceDashboard';
 import TransactionDetailsDialog from '@/components/transaction/TransactionDetailsDialog';
-
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function MerchantDashboard() {
     const { user, loading, isAuthenticated, logout } = useMerchantAuth();
+    const { t } = useI18n();
     const navigate = useNavigate();
     const [selectedMID, setSelectedMID] = useState('');
     const [searchQuery, setSearchQuery] = useState('');

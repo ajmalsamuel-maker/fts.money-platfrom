@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function PSPLogin() {
+    const { t } = useI18n();
     const [pspCode, setPspCode] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');

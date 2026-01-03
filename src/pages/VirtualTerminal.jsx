@@ -15,9 +15,11 @@ import { validateCurrency } from '@/components/utils/isoValidator';
 import ISOComplianceBadge from '@/components/transaction/ISOComplianceBadge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CryptoPaymentForm from '@/components/terminal/CryptoPaymentForm';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function VirtualTerminal() {
     const { user, loading, logout } = useVTAuth();
+    const { t } = useI18n();
     const [processing, setProcessing] = useState(false);
     const [resultDialogOpen, setResultDialogOpen] = useState(false);
     const [transactionResult, setTransactionResult] = useState(null);
