@@ -25,7 +25,7 @@ export default function ComplianceFooter() {
                         <img 
                             src="https://www.w3.org/WAI/WCAG21/wcag2.1AA-blue-v.svg" 
                             alt="WCAG 2.1 Level AA"
-                            className="h-10 opacity-80 group-hover:opacity-100 transition-opacity"
+                            className="h-16 opacity-80 group-hover:opacity-100 transition-opacity"
                         />
                     </a>
 
@@ -40,7 +40,7 @@ export default function ComplianceFooter() {
                         <img 
                             src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6931510c4507988f66a42ca8/47f4a9106_PCI-L1.jpg" 
                             alt="PCI DSS Level 1 Certified"
-                            className="h-10 opacity-80 group-hover:opacity-100 transition-opacity"
+                            className="h-16 opacity-80 group-hover:opacity-100 transition-opacity"
                         />
                     </a>
 
@@ -55,7 +55,7 @@ export default function ComplianceFooter() {
                         <img 
                             src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6931510c4507988f66a42ca8/01a7ae610_GLEIF-new.png" 
                             alt="GLEIF Partner"
-                            className="h-10 opacity-80 group-hover:opacity-100 transition-opacity"
+                            className="h-16 opacity-80 group-hover:opacity-100 transition-opacity"
                         />
                     </a>
 
@@ -70,7 +70,7 @@ export default function ComplianceFooter() {
                         <img 
                             src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6931510c4507988f66a42ca8/2e449a989_SOC.png" 
                             alt="SOC 2 Type II Compliant"
-                            className="h-10 opacity-80 group-hover:opacity-100 transition-opacity"
+                            className="h-16 opacity-80 group-hover:opacity-100 transition-opacity"
                         />
                     </a>
                 </div>
