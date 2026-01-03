@@ -1,5 +1,5 @@
 
-// Common translations - Chinese
+// Common translations - Chinese (v1.1)
 export default {
   "actions": {
     "save": "保存",

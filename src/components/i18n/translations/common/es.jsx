@@ -1,5 +1,5 @@
 
-// Common translations - Spanish
+// Common translations - Spanish (v1.1)
 export default {
   "actions": {
     "save": "Guardar",

@@ -1,4 +1,5 @@
 
+// Common translations - French (v1.1)
 export default {
   "actions": {
     "save": "Enregistrer",
