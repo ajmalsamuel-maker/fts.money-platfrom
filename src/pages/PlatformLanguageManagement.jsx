@@ -26,9 +26,13 @@ import {
     Download,
     Settings,
     Shield,
-    FileText
+    FileText,
+    Building2,
+    Code,
+    Workflow,
+    Wallet,
+    Briefcase
 } from 'lucide-react';
-import { toast } from 'sonner';
 import { 
     SUPPORTED_LANGUAGES, 
     FINANCIAL_SERVICES_LANGUAGES,
@@ -295,7 +299,7 @@ export default function PlatformLanguageManagement() {
                     <Tabs value={activeTab} onValueChange={setActiveTab}>
                         <TabsList className="bg-white border border-slate-200 mb-6">
                             <TabsTrigger value="overview">Language Overview</TabsTrigger>
-                            <TabsTrigger value="psp">PSP Configuration</TabsTrigger>
+                            <TabsTrigger value="psp">Service Configuration</TabsTrigger>
                             <TabsTrigger value="translations">Translation Status</TabsTrigger>
                             <TabsTrigger value="compliance">Compliance</TabsTrigger>
                         </TabsList>
