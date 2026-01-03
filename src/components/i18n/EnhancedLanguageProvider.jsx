@@ -68,8 +68,37 @@ export function EnhancedLanguageProvider({ children, tenantType = 'platform', te
         },
         platform: {
             en: { 
-                dashboard: { title: "Control Panel Dashboard", subtitle: "Unified management for all PSP instances and global configurations" },
+                dashboard: { 
+                    title: "Control Panel Dashboard", 
+                    subtitle: "Unified management for all PSP instances and global configurations",
+                    welcomeBack: "Welcome back",
+                    loggedInAs: "Logged in as",
+                    search: "Search",
+                    loading: "Loading...",
+                    noData: "No data available"
+                },
                 pages: {
+                  dashboard: {
+                    title: "Control Panel Dashboard",
+                    subtitle: "Unified management for all PSP instances and global configurations",
+                    acrossAllPSPs: "Across all PSPs",
+                    simulationMode: "Simulation Mode",
+                    inProviderPool: "In provider pool",
+                    availableMethods: "Available methods",
+                    active: "active",
+                    mom: "MoM",
+                    template: "Template",
+                    suspend: "Suspend",
+                    activate: "Activate",
+                    delete: "Delete",
+                    protectedTemplate: "Protected template - cannot be deleted",
+                    suspendConfirm: "Suspend",
+                    activateConfirm: "Activate",
+                    deleteConfirm: "Delete",
+                    statusChangeSubmitted: "Status change request submitted for approval",
+                    deletionSubmitted: "Deletion request submitted for approval",
+                    contracts: "Contracts"
+                  },
                   analytics: {
                     title: "Platform Analytics",
                     subtitle: "Comprehensive performance metrics and insights",
