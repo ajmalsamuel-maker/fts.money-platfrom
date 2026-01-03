@@ -150,9 +150,12 @@ export default function PlatformLanguageManagement() {
                     console.log('Current Crypto entity:', current);
                     const { id, created_date, updated_date, created_by_id, is_sample, ...entityData } = current;
                     // Ensure customer_code is present (fallback to customer_id if missing)
-                    if (!entityData.customer_code) {
+                    if (!entityData.customer_code && !current.customer_code) {
                         entityData.customer_code = current.customer_id || 'crypto_customer';
+                    } else if (!entityData.customer_code) {
+                        entityData.customer_code = current.customer_code;
                     }
+                    console.log('Crypto entity data being sent:', { ...entityData, ...updateData });
                     result = await base44.entities.CryptoGatewayCustomer.update(serviceId, {
                         ...entityData,
                         ...updateData
@@ -165,9 +168,12 @@ export default function PlatformLanguageManagement() {
                     console.log('Current RWA entity:', current);
                     const { id, created_date, updated_date, created_by_id, is_sample, ...entityData } = current;
                     // Ensure provider_code is present (RWA uses provider_code instead)
-                    if (!entityData.provider_code) {
-                        entityData.provider_code = current.provider_code || 'rwa_provider';
+                    if (!entityData.provider_code && !current.provider_code) {
+                        entityData.provider_code = 'rwa_provider_' + current.id?.substring(0, 8);
+                    } else if (!entityData.provider_code) {
+                        entityData.provider_code = current.provider_code;
                     }
+                    console.log('RWA entity data being sent:', { ...entityData, ...updateData });
                     result = await base44.entities.RWAProvider.update(serviceId, {
                         ...entityData,
                         ...updateData
