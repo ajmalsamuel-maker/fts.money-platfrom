@@ -96,8 +96,8 @@ export default function PlatformAdminLogin() {
                 </div>
 
                 <Card className="bg-white/95 backdrop-blur border-slate-200 shadow-xl">
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
+                    <CardHeader className="text-center">
+                        <CardTitle className="flex items-center justify-center gap-2">
                             <Shield className="h-5 w-5 text-blue-600" />
                             Platform Admin Login
                         </CardTitle>
