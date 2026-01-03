@@ -118,6 +118,11 @@ export default function PlatformLanguageManagement() {
                     console.log('Current ISO entity:', current);
                     // Remove system fields that shouldn't be updated
                     const { id, created_date, updated_date, created_by_id, is_sample, ...entityData } = current;
+                    // Ensure customer_code is present (fallback to customer_id if missing)
+                    if (!entityData.customer_code) {
+                        entityData.customer_code = current.customer_id || 'iso_customer';
+                    }
+                    console.log('Entity data being sent:', entityData);
                     result = await base44.entities.ISOGatewayCustomer.update(serviceId, {
                         ...entityData,
                         ...updateData
@@ -129,6 +134,10 @@ export default function PlatformLanguageManagement() {
                     const current = orchList.find(c => c.id === serviceId);
                     console.log('Current Orch entity:', current);
                     const { id, created_date, updated_date, created_by_id, is_sample, ...entityData } = current;
+                    // Ensure customer_code is present (fallback to customer_id if missing)
+                    if (!entityData.customer_code) {
+                        entityData.customer_code = current.customer_id || 'orch_customer';
+                    }
                     result = await base44.entities.OrchestrationCustomer.update(serviceId, {
                         ...entityData,
                         ...updateData
@@ -140,6 +149,10 @@ export default function PlatformLanguageManagement() {
                     const current = cryptoList.find(c => c.id === serviceId);
                     console.log('Current Crypto entity:', current);
                     const { id, created_date, updated_date, created_by_id, is_sample, ...entityData } = current;
+                    // Ensure customer_code is present (fallback to customer_id if missing)
+                    if (!entityData.customer_code) {
+                        entityData.customer_code = current.customer_id || 'crypto_customer';
+                    }
                     result = await base44.entities.CryptoGatewayCustomer.update(serviceId, {
                         ...entityData,
                         ...updateData
@@ -151,6 +164,10 @@ export default function PlatformLanguageManagement() {
                     const current = rwaList.find(p => p.id === serviceId);
                     console.log('Current RWA entity:', current);
                     const { id, created_date, updated_date, created_by_id, is_sample, ...entityData } = current;
+                    // Ensure provider_code is present (RWA uses provider_code instead)
+                    if (!entityData.provider_code) {
+                        entityData.provider_code = current.provider_code || 'rwa_provider';
+                    }
                     result = await base44.entities.RWAProvider.update(serviceId, {
                         ...entityData,
                         ...updateData
