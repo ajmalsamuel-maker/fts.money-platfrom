@@ -130,7 +130,11 @@ export default function FTSMoneyPlatform() {
     const navigate = useNavigate();
     const { platformUser, loading } = usePlatformAuth();
     const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
-    const { t } = useI18n();
+    const { t, language } = useI18n();
+    
+    // Debug: Check current language
+    console.log('Current language:', language);
+    console.log('Dashboard title:', t('platform:dashboard.title'));
 
     const { data: psps = [] } = useQuery({
         queryKey: ['provisioned-psps'],
