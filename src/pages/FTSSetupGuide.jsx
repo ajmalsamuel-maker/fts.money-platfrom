@@ -18,11 +18,11 @@ export default function FTSSetupGuide() {
                     </div>
                     <LanguageSwitcher variant="select" showLabel={true} />
                 </header>
+
                 <div className="p-8 max-w-5xl">
                     <h1 className="text-3xl font-bold text-gray-900 mb-2">FTS.Money Setup Guide</h1>
                     <p className="text-gray-600 mb-8">Complete guide to accessing and configuring all services</p>
 
-                    {/* Platform Admin Access */}
                     <Card className="mb-6">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
@@ -46,7 +46,6 @@ export default function FTSSetupGuide() {
                         </CardContent>
                     </Card>
 
-                    {/* ISO Gateway Service */}
                     <Card className="mb-6">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
@@ -99,7 +98,6 @@ export default function FTSSetupGuide() {
                         </CardContent>
                     </Card>
 
-                    {/* PSP Service */}
                     <Card className="mb-6">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
@@ -157,7 +155,6 @@ export default function FTSSetupGuide() {
                         </CardContent>
                     </Card>
 
-                    {/* Orchestration Service */}
                     <Card className="mb-6">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
@@ -209,7 +206,6 @@ export default function FTSSetupGuide() {
                         </CardContent>
                     </Card>
 
-                    {/* Crypto & RWA Services */}
                     <div className="grid grid-cols-2 gap-6 mb-6">
                         <Card>
                             <CardHeader>
@@ -254,7 +250,6 @@ export default function FTSSetupGuide() {
                         </Card>
                     </div>
 
-                    {/* Quick Reference */}
                     <Card className="bg-gradient-to-br from-slate-50 to-slate-100">
                         <CardHeader>
                             <CardTitle>Quick Reference - Login URLs</CardTitle>
@@ -287,7 +282,6 @@ export default function FTSSetupGuide() {
                             </div>
                         </CardContent>
                     </Card>
-                </div>
                 </div>
             </div>
         </div>
