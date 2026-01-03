@@ -1,4 +1,4 @@
-// Platform translations - English
+// Platform translations - English (v1.0)
 export default {
   "dashboard": {
     "title": "Control Panel Dashboard",
