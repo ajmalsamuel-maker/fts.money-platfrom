@@ -1,3 +1,5 @@
+
+// Common translations - German
 export default {
   "actions": {
     "save": "Speichern",

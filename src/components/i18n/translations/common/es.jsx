@@ -1,3 +1,5 @@
+
+// Common translations - Spanish
 export default {
   "actions": {
     "save": "Guardar",

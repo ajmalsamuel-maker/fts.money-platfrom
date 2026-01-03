@@ -1,3 +1,5 @@
+
+// Common translations - Chinese
 export default {
   "actions": {
     "save": "保存",
