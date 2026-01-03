@@ -3,6 +3,7 @@ import { EnhancedLanguageProvider } from '@/components/i18n/EnhancedLanguageProv
 import { AccessibilityProvider } from '@/components/accessibility/AccessibilityProvider';
 import { SkipNavigation } from '@/components/accessibility/AccessibleComponents';
 import FintechNewsTicker from '@/components/dashboard/FintechNewsTicker';
+import ComplianceFooter from '@/components/compliance/ComplianceFooter';
 
 export default function Layout({ children }) {
     // Check if this is a staff session - bypass Base44 auth
@@ -25,11 +26,12 @@ export default function Layout({ children }) {
             <AccessibilityProvider>
                 <EnhancedLanguageProvider tenantType="platform">
                     <SkipNavigation targetId="main-content" />
-                    <div className="min-h-screen bg-slate-50">
+                    <div className="min-h-screen bg-slate-50 flex flex-col">
                         <FintechNewsTicker />
-                        <main id="main-content">
+                        <main id="main-content" className="flex-1">
                             {children}
                         </main>
+                        <ComplianceFooter />
                     </div>
                 </EnhancedLanguageProvider>
             </AccessibilityProvider>
@@ -40,11 +42,12 @@ export default function Layout({ children }) {
         <AccessibilityProvider>
             <EnhancedLanguageProvider tenantType="platform">
                 <SkipNavigation targetId="main-content" />
-                <div className="min-h-screen bg-slate-50">
+                <div className="min-h-screen bg-slate-50 flex flex-col">
                     <FintechNewsTicker />
-                    <main id="main-content">
+                    <main id="main-content" className="flex-1">
                         {children}
                     </main>
+                    <ComplianceFooter />
                 </div>
             </EnhancedLanguageProvider>
         </AccessibilityProvider>
