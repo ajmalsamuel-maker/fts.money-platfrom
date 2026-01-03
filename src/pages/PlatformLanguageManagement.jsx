@@ -175,8 +175,19 @@ export default function PlatformLanguageManagement() {
     };
 
     const handleSaveLanguageConfig = () => {
+        // Get the correct ID field based on service type
+        let serviceId;
+        if (selectedServiceType === 'psp') {
+            serviceId = selectedPSP.id;
+        } else if (selectedServiceType === 'rwa') {
+            serviceId = selectedPSP.id; // RWAProvider uses id
+        } else {
+            // ISO, Orchestration, Crypto all use id
+            serviceId = selectedPSP.id;
+        }
+        
         updateLanguagesMutation.mutate({
-            serviceId: selectedPSP.id,
+            serviceId,
             serviceType: selectedServiceType,
             languageConfig: pspLanguageConfig
         });
