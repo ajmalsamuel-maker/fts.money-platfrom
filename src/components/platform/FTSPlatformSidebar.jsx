@@ -32,6 +32,7 @@ import {
     Key
 } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 const menuSections = [
     {
@@ -181,6 +182,7 @@ const menuSections = [
 ];
 
 export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, isSuperAdmin }) {
+    const { t } = useI18n();
     const [openSections, setOpenSections] = React.useState(
         menuSections.filter(s => s.defaultOpen).map(s => s.id)
     );
@@ -249,7 +251,7 @@ export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, i
                                         "text-xs font-semibold uppercase tracking-wider text-left",
                                         isOpen ? "text-white" : hasCurrentPage ? "text-blue-700" : "text-slate-600"
                                     )}>
-                                        {section.title}
+                                        {t(`sidebar.${section.id}`)}
                                     </h3>
                                     <span className={cn("text-xs", isOpen ? "text-white" : "text-slate-400")}>
                                         {isOpen ? '▼' : '▶'}

@@ -39,18 +39,208 @@ export function EnhancedLanguageProvider({ children, tenantType = 'platform', te
     // Embedded translations
     const allTranslations = useMemo(() => ({
         common: {
-            en: { actions: { save: "Save", cancel: "Cancel", delete: "Delete", edit: "Edit", add: "Add", search: "Search" }, status: { active: "Active", inactive: "Inactive", pending: "Pending" } },
-            fr: { actions: { save: "Enregistrer", cancel: "Annuler", delete: "Supprimer", edit: "Modifier", add: "Ajouter", search: "Rechercher" }, status: { active: "Actif", inactive: "Inactif", pending: "En attente" } },
-            es: { actions: { save: "Guardar", cancel: "Cancelar", delete: "Eliminar", edit: "Editar", add: "Agregar", search: "Buscar" }, status: { active: "Activo", inactive: "Inactivo", pending: "Pendiente" } },
-            de: { actions: { save: "Speichern", cancel: "Abbrechen", delete: "Löschen", edit: "Bearbeiten", add: "Hinzufügen", search: "Suchen" }, status: { active: "Aktiv", inactive: "Inaktiv", pending: "Ausstehend" } },
-            zh: { actions: { save: "保存", cancel: "取消", delete: "删除", edit: "编辑", add: "添加", search: "搜索" }, status: { active: "活跃", inactive: "不活跃", pending: "待处理" } }
+            en: { 
+                actions: { save: "Save", cancel: "Cancel", delete: "Delete", edit: "Edit", add: "Add", search: "Search", manage: "Manage", test: "Test" }, 
+                status: { active: "Active", inactive: "Inactive", pending: "Pending", live: "Live" },
+                labels: { customers: "Customers", service: "Service", instances: "Instances", merchants: "Merchants", total: "Total", revenue: "Revenue", volume: "Volume" }
+            },
+            fr: { 
+                actions: { save: "Enregistrer", cancel: "Annuler", delete: "Supprimer", edit: "Modifier", add: "Ajouter", search: "Rechercher", manage: "Gérer", test: "Tester" }, 
+                status: { active: "Actif", inactive: "Inactif", pending: "En attente", live: "En direct" },
+                labels: { customers: "Clients", service: "Service", instances: "Instances", merchants: "Marchands", total: "Total", revenue: "Revenus", volume: "Volume" }
+            },
+            es: { 
+                actions: { save: "Guardar", cancel: "Cancelar", delete: "Eliminar", edit: "Editar", add: "Agregar", search: "Buscar", manage: "Gestionar", test: "Probar" }, 
+                status: { active: "Activo", inactive: "Inactivo", pending: "Pendiente", live: "En vivo" },
+                labels: { customers: "Clientes", service: "Servicio", instances: "Instancias", merchants: "Comerciantes", total: "Total", revenue: "Ingresos", volume: "Volumen" }
+            },
+            de: { 
+                actions: { save: "Speichern", cancel: "Abbrechen", delete: "Löschen", edit: "Bearbeiten", add: "Hinzufügen", search: "Suchen", manage: "Verwalten", test: "Testen" }, 
+                status: { active: "Aktiv", inactive: "Inaktiv", pending: "Ausstehend", live: "Live" },
+                labels: { customers: "Kunden", service: "Dienst", instances: "Instanzen", merchants: "Händler", total: "Gesamt", revenue: "Umsatz", volume: "Volumen" }
+            },
+            zh: { 
+                actions: { save: "保存", cancel: "取消", delete: "删除", edit: "编辑", add: "添加", search: "搜索", manage: "管理", test: "测试" }, 
+                status: { active: "活跃", inactive: "不活跃", pending: "待处理", live: "在线" },
+                labels: { customers: "客户", service: "服务", instances: "实例", merchants: "商户", total: "总计", revenue: "收入", volume: "交易量" }
+            }
         },
         platform: {
-            en: { dashboard: { title: "Control Panel Dashboard", subtitle: "Unified management for all PSP instances and global configurations" }, services: { title: "Platform Services" } },
-            fr: { dashboard: { title: "Tableau de bord du panneau de contrôle", subtitle: "Gestion unifiée de toutes les instances PSP et des configurations globales" }, services: { title: "Services de plateforme" } },
-            es: { dashboard: { title: "Panel de control", subtitle: "Gestión unificada de todas las instancias PSP y configuraciones globales" }, services: { title: "Servicios de plataforma" } },
-            de: { dashboard: { title: "Kontrollzentrum Dashboard", subtitle: "Einheitliche Verwaltung aller PSP-Instanzen und globalen Konfigurationen" }, services: { title: "Plattformdienste" } },
-            zh: { dashboard: { title: "控制面板仪表板", subtitle: "统一管理所有PSP实例和全局配置" }, services: { title: "平台服务" } }
+            en: { 
+                dashboard: { title: "Control Panel Dashboard", subtitle: "Unified management for all PSP instances and global configurations" }, 
+                services: { 
+                    title: "Platform Services",
+                    psp: "PSP Platform",
+                    iso: "ISO Gateway",
+                    orchestration: "Orchestration",
+                    crypto: "Crypto Banking",
+                    rwa: "RWA Platform"
+                },
+                quickActions: "Quick Actions",
+                performance: "Platform Performance & Resources",
+                activePSPs: "Active PSP Instances",
+                addService: "Add Service",
+                stats: {
+                    pspInstances: "PSP Instances",
+                    totalMerchants: "Total Merchants",
+                    paymentProviders: "Payment Providers",
+                    payoutRoutes: "Payout Routes",
+                    platformRevenue: "Platform Revenue"
+                },
+                sidebar: {
+                    overview: "Overview & Insights",
+                    pspOperations: "PSP Operations",
+                    cryptoGateway: "Crypto Banking Gateway",
+                    rwaPlatform: "RWA Tokenization Platform",
+                    servicesMarketplace: "Services & Marketplace",
+                    userManagement: "User & Access Management",
+                    financial: "Financial Operations",
+                    compliance: "Compliance & Security",
+                    infrastructure: "Infrastructure",
+                    documentation: "Documentation",
+                    resources: "Settings & Resources"
+                }
+            },
+            fr: { 
+                dashboard: { title: "Tableau de bord du panneau de contrôle", subtitle: "Gestion unifiée de toutes les instances PSP et des configurations globales" }, 
+                services: { 
+                    title: "Services de plateforme",
+                    psp: "Plateforme PSP",
+                    iso: "Passerelle ISO",
+                    orchestration: "Orchestration",
+                    crypto: "Banque crypto",
+                    rwa: "Plateforme RWA"
+                },
+                quickActions: "Actions rapides",
+                performance: "Performances et ressources de la plateforme",
+                activePSPs: "Instances PSP actives",
+                addService: "Ajouter un service",
+                stats: {
+                    pspInstances: "Instances PSP",
+                    totalMerchants: "Total marchands",
+                    paymentProviders: "Fournisseurs de paiement",
+                    payoutRoutes: "Routes de paiement",
+                    platformRevenue: "Revenus de la plateforme"
+                },
+                sidebar: {
+                    overview: "Aperçu et informations",
+                    pspOperations: "Opérations PSP",
+                    cryptoGateway: "Passerelle bancaire crypto",
+                    rwaPlatform: "Plateforme de tokenisation RWA",
+                    servicesMarketplace: "Services et marché",
+                    userManagement: "Gestion des utilisateurs et accès",
+                    financial: "Opérations financières",
+                    compliance: "Conformité et sécurité",
+                    infrastructure: "Infrastructure",
+                    documentation: "Documentation",
+                    resources: "Paramètres et ressources"
+                }
+            },
+            es: { 
+                dashboard: { title: "Panel de control", subtitle: "Gestión unificada de todas las instancias PSP y configuraciones globales" }, 
+                services: { 
+                    title: "Servicios de plataforma",
+                    psp: "Plataforma PSP",
+                    iso: "Puerta de enlace ISO",
+                    orchestration: "Orquestación",
+                    crypto: "Banca cripto",
+                    rwa: "Plataforma RWA"
+                },
+                quickActions: "Acciones rápidas",
+                performance: "Rendimiento y recursos de la plataforma",
+                activePSPs: "Instancias PSP activas",
+                addService: "Agregar servicio",
+                stats: {
+                    pspInstances: "Instancias PSP",
+                    totalMerchants: "Total comerciantes",
+                    paymentProviders: "Proveedores de pago",
+                    payoutRoutes: "Rutas de pago",
+                    platformRevenue: "Ingresos de plataforma"
+                },
+                sidebar: {
+                    overview: "Resumen e información",
+                    pspOperations: "Operaciones PSP",
+                    cryptoGateway: "Puerta de enlace bancaria cripto",
+                    rwaPlatform: "Plataforma de tokenización RWA",
+                    servicesMarketplace: "Servicios y mercado",
+                    userManagement: "Gestión de usuarios y acceso",
+                    financial: "Operaciones financieras",
+                    compliance: "Cumplimiento y seguridad",
+                    infrastructure: "Infraestructura",
+                    documentation: "Documentación",
+                    resources: "Configuración y recursos"
+                }
+            },
+            de: { 
+                dashboard: { title: "Kontrollzentrum Dashboard", subtitle: "Einheitliche Verwaltung aller PSP-Instanzen und globalen Konfigurationen" }, 
+                services: { 
+                    title: "Plattformdienste",
+                    psp: "PSP-Plattform",
+                    iso: "ISO-Gateway",
+                    orchestration: "Orchestrierung",
+                    crypto: "Krypto-Banking",
+                    rwa: "RWA-Plattform"
+                },
+                quickActions: "Schnellaktionen",
+                performance: "Plattformleistung und Ressourcen",
+                activePSPs: "Aktive PSP-Instanzen",
+                addService: "Dienst hinzufügen",
+                stats: {
+                    pspInstances: "PSP-Instanzen",
+                    totalMerchants: "Händler gesamt",
+                    paymentProviders: "Zahlungsanbieter",
+                    payoutRoutes: "Auszahlungsrouten",
+                    platformRevenue: "Plattformumsatz"
+                },
+                sidebar: {
+                    overview: "Übersicht und Einblicke",
+                    pspOperations: "PSP-Betrieb",
+                    cryptoGateway: "Krypto-Banking-Gateway",
+                    rwaPlatform: "RWA-Tokenisierungsplattform",
+                    servicesMarketplace: "Dienste und Marktplatz",
+                    userManagement: "Benutzer- und Zugriffsverwaltung",
+                    financial: "Finanzoperationen",
+                    compliance: "Compliance und Sicherheit",
+                    infrastructure: "Infrastruktur",
+                    documentation: "Dokumentation",
+                    resources: "Einstellungen und Ressourcen"
+                }
+            },
+            zh: { 
+                dashboard: { title: "控制面板仪表板", subtitle: "统一管理所有PSP实例和全局配置" }, 
+                services: { 
+                    title: "平台服务",
+                    psp: "PSP平台",
+                    iso: "ISO网关",
+                    orchestration: "编排",
+                    crypto: "加密银行",
+                    rwa: "RWA平台"
+                },
+                quickActions: "快速操作",
+                performance: "平台性能和资源",
+                activePSPs: "活跃PSP实例",
+                addService: "添加服务",
+                stats: {
+                    pspInstances: "PSP实例",
+                    totalMerchants: "总商户",
+                    paymentProviders: "支付提供商",
+                    payoutRoutes: "支付路由",
+                    platformRevenue: "平台收入"
+                },
+                sidebar: {
+                    overview: "概览和洞察",
+                    pspOperations: "PSP操作",
+                    cryptoGateway: "加密银行网关",
+                    rwaPlatform: "RWA代币化平台",
+                    servicesMarketplace: "服务和市场",
+                    userManagement: "用户和访问管理",
+                    financial: "财务操作",
+                    compliance: "合规和安全",
+                    infrastructure: "基础设施",
+                    documentation: "文档",
+                    resources: "设置和资源"
+                }
+            }
         }
     }), []);
 

@@ -253,7 +253,7 @@ export default function FTSMoneyPlatform() {
                 <div className="p-6">
                     {/* Services Overview */}
                     <div className="mb-6">
-                        <h3 className="text-sm font-semibold text-slate-900 mb-3">{t('platform:services.title')}</h3>
+                        <h3 className="text-sm font-semibold text-slate-900 mb-3">{t('services.title')}</h3>
                         <div className="grid grid-cols-5 gap-4">
                             {/* PSP Service */}
                             <Card className="border-2 border-blue-200 hover:border-blue-400 hover:shadow-lg transition-all group">
@@ -263,7 +263,7 @@ export default function FTSMoneyPlatform() {
                                             <Building2 className="h-5 w-5 text-blue-600" />
                                         </div>
                                         <div>
-                                            <p className="font-semibold text-slate-900 text-sm">PSP Platform</p>
+                                            <p className="font-semibold text-slate-900 text-sm">{t('services.psp')}</p>
                                             <Badge variant="outline" className="text-xs">
                                                 {psps.filter(p => p.status === 'active').length} active
                                             </Badge>
@@ -271,17 +271,17 @@ export default function FTSMoneyPlatform() {
                                     </div>
                                     <div className="space-y-2 mb-3">
                                         <div className="flex justify-between text-xs">
-                                            <span className="text-slate-600">Total Instances</span>
+                                            <span className="text-slate-600">{t('common:labels.total')} {t('common:labels.instances')}</span>
                                             <span className="font-semibold">{psps.length}</span>
                                         </div>
                                         <div className="flex justify-between text-xs">
-                                            <span className="text-slate-600">Merchants</span>
+                                            <span className="text-slate-600">{t('common:labels.merchants')}</span>
                                             <span className="font-semibold">{totalMerchants}</span>
                                         </div>
                                     </div>
                                     <div className="flex gap-2">
                                         <Button size="sm" className="flex-1 text-xs h-7" onClick={() => navigate(createPageUrl('PSPProvisioning'))}>
-                                            Manage
+                                            {t('common:actions.manage')}
                                         </Button>
                                         <Button size="sm" variant="outline" className="text-xs h-7" onClick={() => navigate(createPageUrl('PSPProvisioningWizard'))}>
                                             <Plus className="h-3 w-3" />
@@ -298,7 +298,7 @@ export default function FTSMoneyPlatform() {
                                             <Zap className="h-5 w-5 text-violet-600" />
                                         </div>
                                         <div>
-                                            <p className="font-semibold text-slate-900 text-sm">ISO Gateway</p>
+                                            <p className="font-semibold text-slate-900 text-sm">{t('services.iso')}</p>
                                             <Badge variant="outline" className="text-xs">
                                                 {isoCustomers.filter(c => c.status === 'active').length} active
                                             </Badge>
@@ -306,20 +306,20 @@ export default function FTSMoneyPlatform() {
                                     </div>
                                     <div className="space-y-2 mb-3">
                                         <div className="flex justify-between text-xs">
-                                            <span className="text-slate-600">Customers</span>
+                                            <span className="text-slate-600">{t('common:labels.customers')}</span>
                                             <span className="font-semibold">{isoCustomers.length}</span>
                                         </div>
                                         <div className="flex justify-between text-xs">
-                                            <span className="text-slate-600">Service</span>
-                                            <span className="font-semibold text-emerald-600">Live</span>
+                                            <span className="text-slate-600">{t('common:labels.service')}</span>
+                                            <span className="font-semibold text-emerald-600">{t('common:status.live')}</span>
                                         </div>
                                     </div>
                                     <div className="flex gap-2">
                                         <Button size="sm" className="flex-1 text-xs h-7 bg-violet-600 hover:bg-violet-700" onClick={() => navigate(createPageUrl('ISOGatewayCustomers'))}>
-                                            Manage
+                                            {t('common:actions.manage')}
                                         </Button>
                                         <Button size="sm" variant="outline" className="text-xs h-7" onClick={() => navigate(createPageUrl('ISOGatewayTestConsole'))}>
-                                            Test
+                                            {t('common:actions.test')}
                                         </Button>
                                     </div>
                                 </CardContent>
@@ -333,7 +333,7 @@ export default function FTSMoneyPlatform() {
                                             <GitBranch className="h-5 w-5 text-purple-600" />
                                         </div>
                                         <div>
-                                            <p className="font-semibold text-slate-900 text-sm">Orchestration</p>
+                                            <p className="font-semibold text-slate-900 text-sm">{t('services.orchestration')}</p>
                                             <Badge variant="outline" className="text-xs">
                                                 {orchestrationCustomers.filter(c => c.status === 'active').length} active
                                             </Badge>
@@ -365,7 +365,7 @@ export default function FTSMoneyPlatform() {
                                             <Wallet className="h-5 w-5 text-cyan-600" />
                                         </div>
                                         <div>
-                                            <p className="font-semibold text-slate-900 text-sm">Crypto Banking</p>
+                                            <p className="font-semibold text-slate-900 text-sm">{t('services.crypto')}</p>
                                             <Badge variant="outline" className="text-xs">
                                                 {cryptoCustomers.filter(c => c.status === 'active').length} active
                                             </Badge>
@@ -397,7 +397,7 @@ export default function FTSMoneyPlatform() {
                                             <Rocket className="h-5 w-5 text-emerald-600" />
                                         </div>
                                         <div>
-                                            <p className="font-semibold text-slate-900 text-sm">RWA Platform</p>
+                                            <p className="font-semibold text-slate-900 text-sm">{t('services.rwa')}</p>
                                             <Badge variant="outline" className="text-xs">
                                                 {rwaCustomers.filter(c => c.status === 'active').length} active
                                             </Badge>
@@ -428,7 +428,7 @@ export default function FTSMoneyPlatform() {
 
                     {/* Quick Actions */}
                     <div className="mb-6">
-                        <h3 className="text-sm font-semibold text-slate-900 mb-3">Quick Actions</h3>
+                        <h3 className="text-sm font-semibold text-slate-900 mb-3">{t('quickActions')}</h3>
                         <div className="grid grid-cols-7 gap-3">
                             {quickActions.map((action) => {
                                 const Icon = action.icon;
@@ -452,7 +452,7 @@ export default function FTSMoneyPlatform() {
                     {/* Platform Performance Metrics */}
                     <div className="mb-6">
                         <div className="flex items-center justify-between mb-3">
-                            <h3 className="text-sm font-semibold text-slate-900">Platform Performance & Resources</h3>
+                            <h3 className="text-sm font-semibold text-slate-900">{t('performance')}</h3>
                             <Badge className="bg-amber-100 text-amber-700 border-amber-300">
                                 <Sparkles className="h-3 w-3 mr-1" />
                                 Simulation Mode
@@ -506,7 +506,7 @@ export default function FTSMoneyPlatform() {
                             <CardContent className="p-6">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-sm text-slate-600">PSP Instances</p>
+                                        <p className="text-sm text-slate-600">{t('stats.pspInstances')}</p>
                                         <p className="text-3xl font-bold text-slate-900 mt-1">{psps.length}</p>
                                         <p className="text-xs text-emerald-600 mt-1">{activePSPs} active</p>
                                     </div>
@@ -520,7 +520,7 @@ export default function FTSMoneyPlatform() {
                             <CardContent className="p-6">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-sm text-slate-600">Total Merchants</p>
+                                        <p className="text-sm text-slate-600">{t('stats.totalMerchants')}</p>
                                         <p className="text-3xl font-bold text-slate-900 mt-1">{totalMerchants.toLocaleString()}</p>
                                         <p className="text-xs text-slate-500 mt-1">Across all PSPs</p>
                                     </div>
@@ -534,7 +534,7 @@ export default function FTSMoneyPlatform() {
                             <CardContent className="p-6">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-sm text-slate-600">Payment Providers</p>
+                                        <p className="text-sm text-slate-600">{t('stats.paymentProviders')}</p>
                                         <p className="text-3xl font-bold text-slate-900 mt-1">{providers.length}</p>
                                         <p className="text-xs text-slate-500 mt-1">In provider pool</p>
                                     </div>
@@ -548,7 +548,7 @@ export default function FTSMoneyPlatform() {
                             <CardContent className="p-6">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-sm text-slate-600">Payout Routes</p>
+                                        <p className="text-sm text-slate-600">{t('stats.payoutRoutes')}</p>
                                         <p className="text-3xl font-bold text-slate-900 mt-1">{routes.length}</p>
                                         <p className="text-xs text-slate-500 mt-1">Available methods</p>
                                     </div>
@@ -562,7 +562,7 @@ export default function FTSMoneyPlatform() {
                             <CardContent className="p-6">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-sm text-slate-600">Platform Revenue</p>
+                                        <p className="text-sm text-slate-600">{t('stats.platformRevenue')}</p>
                                         <p className="text-3xl font-bold text-slate-900 mt-1">${(totalRevenue / 1000).toFixed(0)}k</p>
                                         <p className="text-xs text-emerald-600 mt-1">+15.3% MoM</p>
                                     </div>
@@ -576,7 +576,7 @@ export default function FTSMoneyPlatform() {
 
                     {/* PSP Cards Grid */}
                     <div>
-                        <h3 className="text-lg font-semibold text-slate-900 mb-4">Active PSP Instances</h3>
+                        <h3 className="text-lg font-semibold text-slate-900 mb-4">{t('activePSPs')}</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             {psps.map((psp) => {
                                 const isTemplate = psp.is_template;
