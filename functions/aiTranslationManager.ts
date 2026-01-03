@@ -218,7 +218,9 @@ Return the complete translated object maintaining exact structure.`;
                 }
             });
 
-            results[targetLang] = translated;
+            // Normalize response (sometimes LLM wraps in "response" key)
+            const normalizedData = translated.response || translated;
+            results[targetLang] = normalizedData;
         } catch (error) {
             errors.push({ language: targetLang, error: error.message });
         }
