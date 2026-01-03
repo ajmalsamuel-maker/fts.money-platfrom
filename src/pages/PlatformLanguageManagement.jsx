@@ -112,22 +112,51 @@ export default function PlatformLanguageManagement() {
                         branding: { ...(psp?.branding || {}), ...updateData }
                     });
                     break;
-                case 'iso':
-                    // Only update language fields
-                    result = await base44.entities.ISOGatewayCustomer.update(serviceId, updateData);
+                case 'iso': {
+                    const isoList = await base44.entities.ISOGatewayCustomer.list();
+                    const current = isoList.find(c => c.id === serviceId);
+                    console.log('Current ISO entity:', current);
+                    // Remove system fields that shouldn't be updated
+                    const { id, created_date, updated_date, created_by_id, is_sample, ...entityData } = current;
+                    result = await base44.entities.ISOGatewayCustomer.update(serviceId, {
+                        ...entityData,
+                        ...updateData
+                    });
                     break;
-                case 'orchestration':
-                    // Only update language fields
-                    result = await base44.entities.OrchestrationCustomer.update(serviceId, updateData);
+                }
+                case 'orchestration': {
+                    const orchList = await base44.entities.OrchestrationCustomer.list();
+                    const current = orchList.find(c => c.id === serviceId);
+                    console.log('Current Orch entity:', current);
+                    const { id, created_date, updated_date, created_by_id, is_sample, ...entityData } = current;
+                    result = await base44.entities.OrchestrationCustomer.update(serviceId, {
+                        ...entityData,
+                        ...updateData
+                    });
                     break;
-                case 'crypto':
-                    // Only update language fields
-                    result = await base44.entities.CryptoGatewayCustomer.update(serviceId, updateData);
+                }
+                case 'crypto': {
+                    const cryptoList = await base44.entities.CryptoGatewayCustomer.list();
+                    const current = cryptoList.find(c => c.id === serviceId);
+                    console.log('Current Crypto entity:', current);
+                    const { id, created_date, updated_date, created_by_id, is_sample, ...entityData } = current;
+                    result = await base44.entities.CryptoGatewayCustomer.update(serviceId, {
+                        ...entityData,
+                        ...updateData
+                    });
                     break;
-                case 'rwa':
-                    // Only update language fields
-                    result = await base44.entities.RWAProvider.update(serviceId, updateData);
+                }
+                case 'rwa': {
+                    const rwaList = await base44.entities.RWAProvider.list();
+                    const current = rwaList.find(p => p.id === serviceId);
+                    console.log('Current RWA entity:', current);
+                    const { id, created_date, updated_date, created_by_id, is_sample, ...entityData } = current;
+                    result = await base44.entities.RWAProvider.update(serviceId, {
+                        ...entityData,
+                        ...updateData
+                    });
                     break;
+                }
                 default:
                     throw new Error('Unknown service type');
             }
