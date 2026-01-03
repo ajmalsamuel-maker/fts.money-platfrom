@@ -46,18 +46,18 @@ export function EnhancedLanguageProvider({ children, tenantType = 'platform', te
                 // Static imports for better bundler compatibility
                 const translationModules = {
                     common: {
-                        en: () => import('./translations/common/en.json'),
-                        fr: () => import('./translations/common/fr.json'),
-                        es: () => import('./translations/common/es.json'),
-                        de: () => import('./translations/common/de.json'),
-                        zh: () => import('./translations/common/zh.json')
+                        en: () => import('./translations/common/en.js'),
+                        fr: () => import('./translations/common/fr.js'),
+                        es: () => import('./translations/common/es.js'),
+                        de: () => import('./translations/common/de.js'),
+                        zh: () => import('./translations/common/zh.js')
                     },
                     platform: {
-                        en: () => import('./translations/platform/en.json'),
-                        fr: () => import('./translations/platform/fr.json'),
-                        es: () => import('./translations/platform/es.json'),
-                        de: () => import('./translations/platform/de.json'),
-                        zh: () => import('./translations/platform/zh.json')
+                        en: () => import('./translations/platform/en.js'),
+                        fr: () => import('./translations/platform/fr.js'),
+                        es: () => import('./translations/platform/es.js'),
+                        de: () => import('./translations/platform/de.js'),
+                        zh: () => import('./translations/platform/zh.js')
                     }
                 };
                 
