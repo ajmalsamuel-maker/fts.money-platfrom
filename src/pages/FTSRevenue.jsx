@@ -52,7 +52,7 @@ export default function FTSRevenue() {
     const totalRevenue = pspRevenue + isoRevenue + orchestrationRevenue + cryptoRevenue + rwaRevenue;
 
     if (loading) {
-        return <div className="flex items-center justify-center h-screen">Loading...</div>;
+        return <div className="flex items-center justify-center h-screen">{t('common:labels.loading')}</div>;
     }
 
     return (
@@ -73,7 +73,7 @@ export default function FTSRevenue() {
                     <div className="flex items-center gap-4">
                         <LanguageSwitcher variant="select" showLabel={true} />
                         <div className="text-right">
-                            <p className="text-xs text-slate-600">Logged in as</p>
+                            <p className="text-xs text-slate-600">{t('common:labels.loggedInAs')}</p>
                             <p className="text-sm font-medium text-slate-900">{platformUser?.email}</p>
                             <Badge className="mt-1 bg-blue-600 text-white text-xs">
                                 {getRoleLabel(platformUser?.platform_role)}
