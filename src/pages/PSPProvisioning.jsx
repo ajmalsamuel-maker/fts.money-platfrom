@@ -98,14 +98,14 @@ export default function PSPProvisioning() {
                         {workflowCompliance && (
                             <Badge className={workflowCompliance.compliant ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}>
                                 <Shield className="h-3 w-3 mr-1" />
-                                {workflowCompliance.compliant ? 'ISO Compliant' : 'Compliance Issue'}
+                                {workflowCompliance.compliant ? t('platform:pages.pspProvisioning.isoCompliant') : t('platform:pages.pspProvisioning.complianceIssue')}
                             </Badge>
                         )}
                     </div>
                     <div className="flex items-center gap-3">
                         <LanguageSwitcher variant="select" showLabel={true} />
                         <div className="text-right mr-2">
-                            <p className="text-xs text-slate-600">Logged in as</p>
+                            <p className="text-xs text-slate-600">{t('platform:pages.pspProvisioning.loggedInAs')}</p>
                             <p className="text-sm font-medium text-slate-900">{platformUser?.email}</p>
                             <Badge className="mt-1 bg-blue-600 text-white text-xs">
                                 {getRoleLabel(platformUser?.platform_role)}
@@ -139,9 +139,9 @@ export default function PSPProvisioning() {
                         <CardContent className="p-6">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm text-slate-600">Total PSPs</p>
+                                    <p className="text-sm text-slate-600">{t('platform:pages.pspProvisioning.totalPSPs')}</p>
                                     <p className="text-3xl font-bold text-slate-900 mt-1">{psps.length}</p>
-                                    <p className="text-xs text-emerald-600 mt-1">{activePSPs} active</p>
+                                    <p className="text-xs text-emerald-600 mt-1">{activePSPs} {t('platform:pages.pspProvisioning.active')}</p>
                                 </div>
                                 <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
                                     <Building2 className="h-6 w-6 text-blue-600" />
@@ -153,9 +153,9 @@ export default function PSPProvisioning() {
                         <CardContent className="p-6">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm text-slate-600">Total Merchants</p>
+                                    <p className="text-sm text-slate-600">{t('platform:pages.pspProvisioning.totalMerchants')}</p>
                                     <p className="text-3xl font-bold text-slate-900 mt-1">{totalMerchants.toLocaleString()}</p>
-                                    <p className="text-xs text-slate-500 mt-1">Across all PSPs</p>
+                                    <p className="text-xs text-slate-500 mt-1">{t('platform:pages.pspProvisioning.acrossAllPSPs')}</p>
                                 </div>
                                 <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center">
                                     <Users className="h-6 w-6 text-purple-600" />
@@ -167,9 +167,9 @@ export default function PSPProvisioning() {
                         <CardContent className="p-6">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm text-slate-600">Monthly Volume</p>
+                                    <p className="text-sm text-slate-600">{t('platform:pages.pspProvisioning.monthlyVolume')}</p>
                                     <p className="text-3xl font-bold text-slate-900 mt-1">${(totalVolume / 1000000).toFixed(1)}M</p>
-                                    <p className="text-xs text-emerald-600 mt-1">+12.5% vs last month</p>
+                                    <p className="text-xs text-emerald-600 mt-1">+12.5% {t('platform:pages.pspProvisioning.vsLastMonth')}</p>
                                 </div>
                                 <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center">
                                     <TrendingUp className="h-6 w-6 text-emerald-600" />
@@ -181,9 +181,9 @@ export default function PSPProvisioning() {
                         <CardContent className="p-6">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm text-slate-600">Monthly Revenue</p>
+                                    <p className="text-sm text-slate-600">{t('platform:pages.pspProvisioning.monthlyRevenue')}</p>
                                     <p className="text-3xl font-bold text-slate-900 mt-1">${(totalRevenue / 1000).toFixed(0)}k</p>
-                                    <p className="text-xs text-slate-500 mt-1">FTS.Money earnings</p>
+                                    <p className="text-xs text-slate-500 mt-1">{t('platform:pages.pspProvisioning.ftsEarnings')}</p>
                                 </div>
                                 <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center">
                                     <DollarSign className="h-6 w-6 text-amber-600" />
@@ -196,7 +196,7 @@ export default function PSPProvisioning() {
                 {/* PSP Table */}
                 <Card className="bg-white border-slate-200">
                     <CardHeader>
-                        <CardTitle>All PSP Instances</CardTitle>
+                        <CardTitle>{t('platform:pages.pspProvisioning.allInstances')}</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="space-y-3">
@@ -224,11 +224,11 @@ export default function PSPProvisioning() {
                                         </div>
                                         <div className="flex items-center gap-6">
                                             <div className="text-right">
-                                                <p className="text-xs text-slate-500">Merchants</p>
+                                                <p className="text-xs text-slate-500">{t('platform:pages.pspProvisioning.merchants')}</p>
                                                 <p className="font-semibold">{psp.total_merchants || 0}</p>
                                             </div>
                                             <div className="text-right">
-                                                <p className="text-xs text-slate-500">Volume</p>
+                                                <p className="text-xs text-slate-500">{t('platform:pages.pspProvisioning.volume')}</p>
                                                 <p className="font-semibold">${((psp.monthly_volume || 0) / 1000000).toFixed(1)}M</p>
                                             </div>
                                             <Badge className={cn(
@@ -244,7 +244,7 @@ export default function PSPProvisioning() {
                                                     variant="outline"
                                                     onClick={() => navigate(createPageUrl('PSPInstanceManagement') + `?id=${psp.id}`)}
                                                 >
-                                                    Manage
+                                                    {t('platform:pages.pspProvisioning.manage')}
                                                 </Button>
                                                 <DropdownMenu>
                                                     <DropdownMenuTrigger asChild>
@@ -255,11 +255,11 @@ export default function PSPProvisioning() {
                                                     <DropdownMenuContent align="end">
                                                         <DropdownMenuItem onClick={() => navigate(createPageUrl('PSPInstanceConfig') + `?id=${psp.id}`)}>
                                                             <Settings className="h-4 w-4 mr-2" />
-                                                            Configure
+                                                            {t('platform:pages.pspProvisioning.configure')}
                                                         </DropdownMenuItem>
                                                         <DropdownMenuItem onClick={() => navigate(createPageUrl('PSPInstanceManagement') + `?id=${psp.id}`)}>
                                                             <Activity className="h-4 w-4 mr-2" />
-                                                            View Logs
+                                                            {t('platform:pages.pspProvisioning.viewLogs')}
                                                         </DropdownMenuItem>
                                                     </DropdownMenuContent>
                                                 </DropdownMenu>
@@ -273,7 +273,7 @@ export default function PSPProvisioning() {
                                 <div className="text-center py-12">
                                     <Building2 className="h-12 w-12 text-slate-400 mx-auto mb-3" />
                                     <p className="text-slate-600 mb-4">
-                                        {search ? 'No PSPs match your search' : 'No PSPs provisioned yet'}
+                                        {search ? t('platform:pages.pspProvisioning.noMatches') : t('platform:pages.pspProvisioning.noPSPs')}
                                     </p>
                                     {!search && (
                                         <Button 
@@ -281,7 +281,7 @@ export default function PSPProvisioning() {
                                             className="bg-blue-600 hover:bg-blue-700"
                                         >
                                             <Plus className="h-4 w-4 mr-2" />
-                                            Provision Your First PSP
+                                            {t('platform:pages.pspProvisioning.provisionFirst')}
                                         </Button>
                                     )}
                                 </div>
