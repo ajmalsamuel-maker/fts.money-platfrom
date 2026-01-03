@@ -123,6 +123,20 @@ export default function AITranslationStudio() {
         }
     };
 
+    const handleCodebaseScan = async () => {
+        toast.loading('Scanning codebase for translation coverage...');
+        try {
+            const response = await base44.functions.invoke('aiTranslationManager', {
+                action: 'scanCodebase'
+            });
+            toast.dismiss();
+            toast.success(`Scan complete! Found ${response.data.totalStrings || 0} translatable strings`);
+        } catch (error) {
+            toast.dismiss();
+            toast.error('Scan failed: ' + error.message);
+        }
+    };
+
     const translatedLanguages = SUPPORTED_LANGUAGES.filter(l => 
         ['en', 'es', 'fr', 'de', 'zh'].includes(l.code)
     );
@@ -398,7 +412,11 @@ export default function AITranslationStudio() {
                                             Translation key coverage per page
                                         </li>
                                     </ul>
-                                    <Button className="w-full" variant="outline">
+                                    <Button 
+                                        onClick={handleCodebaseScan}
+                                        className="w-full" 
+                                        variant="outline"
+                                    >
                                         <Zap className="h-4 w-4 mr-2" />
                                         Run Full Codebase Scan
                                     </Button>
