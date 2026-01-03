@@ -608,7 +608,55 @@ export function EnhancedLanguageProvider({ children, tenantType = 'platform', te
                 }
             },
             zh: { 
-                dashboard: { title: "控制面板仪表板", subtitle: "统一管理所有PSP实例和全局配置" }, 
+                dashboard: { title: "控制面板仪表板", subtitle: "统一管理所有PSP实例和全局配置" },
+                pages: {
+                  analytics: {
+                    title: "平台分析",
+                    subtitle: "全面的性能指标和洞察",
+                    allServices: "所有服务",
+                    volumeTrend: "交易量趋势",
+                    platformVolume: "平台交易量（6个月）",
+                    growth: "增长",
+                    totalRevenue: "总收入",
+                    totalEndUsers: "总终端用户",
+                    acrossServices: "跨所有服务"
+                  },
+                  revenue: {
+                    title: "收入管理",
+                    subtitle: "跟踪所有PSP的收入分成和账单",
+                    totalMonthly: "月总收入",
+                    allServices: "所有服务",
+                    annualRunRate: "年运行率",
+                    projected: "预计",
+                    activeCustomers: "活跃客户",
+                    allPlatforms: "所有平台",
+                    vsLastMonth: "与上月相比",
+                    revenueByService: "按服务类型的收入",
+                    topPSPCustomers: "顶级PSP客户"
+                  },
+                  systemHealth: {
+                    title: "系统健康监控",
+                    subtitle: "实时平台状态和指标",
+                    systemHealthy: "系统健康",
+                    totalServices: "总服务",
+                    infrastructureStatus: "基础设施状态",
+                    compute: "计算",
+                    database: "数据库",
+                    storage: "存储",
+                    healthy: "健康",
+                    operational: "正常运行",
+                    online: "在线"
+                  },
+                  pspProvisioning: {
+                    title: "PSP实例",
+                    subtitle: "管理白标PSP基础设施",
+                    provisionNew: "配置新PSP",
+                    searchPlaceholder: "按PSP名称或代码搜索...",
+                    allInstances: "所有PSP实例",
+                    noPSPs: "尚未配置PSP",
+                    isoCompliant: "ISO合规"
+                  }
+                },
                 services: { 
                     title: "平台服务",
                     psp: "PSP平台",
