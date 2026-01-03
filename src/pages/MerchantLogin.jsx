@@ -83,7 +83,7 @@ export default function MerchantLogin() {
         <div className="min-h-screen flex flex-col relative overflow-hidden bg-white">
             {/* Language Selector - Top Right Corner */}
             <div className="absolute top-4 right-6 z-20">
-                <LanguageSwitcher variant="compact" showLabel={false} />
+                <LanguageSwitcher variant="select" showLabel={false} />
             </div>
 
             {/* Main Content */}

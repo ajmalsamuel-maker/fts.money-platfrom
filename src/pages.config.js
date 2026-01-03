@@ -1,6 +1,7 @@
 import AIAutomationPlatform from './pages/AIAutomationPlatform';
 import AIDisputeResolution from './pages/AIDisputeResolution';
 import AIMerchantInsights from './pages/AIMerchantInsights';
+import AITranslationStudio from './pages/AITranslationStudio';
 import APIDocumentation from './pages/APIDocumentation';
 import APIGateway from './pages/APIGateway';
 import APIGatewayConfiguration from './pages/APIGatewayConfiguration';
@@ -107,8 +108,8 @@ import ISOGatewayLogin from './pages/ISOGatewayLogin';
 import ISOGatewayRouting from './pages/ISOGatewayRouting';
 import ISOGatewayTestConsole from './pages/ISOGatewayTestConsole';
 import ISOGatewayUserManagement from './pages/ISOGatewayUserManagement';
-import ISOMessageMonitor from './pages/ISOMessageMonitor';
 import InstantPayments from './pages/InstantPayments';
+import ISOMessageMonitor from './pages/ISOMessageMonitor';
 import InvestorDividends from './pages/InvestorDividends';
 import InvestorHoldings from './pages/InvestorHoldings';
 import InvestorLogin from './pages/InvestorLogin';
@@ -215,8 +216,8 @@ import PaymentGateways from './pages/PaymentGateways';
 import PaymentLinks from './pages/PaymentLinks';
 import PaymentMethods from './pages/PaymentMethods';
 import PaymentOrchestration from './pages/PaymentOrchestration';
-import PaymentProviders from './pages/PaymentProviders';
 import PaymentProviderManagement from './pages/PaymentProviderManagement';
+import PaymentProviders from './pages/PaymentProviders';
 import PayoutOrchestration from './pages/PayoutOrchestration';
 import Payouts from './pages/Payouts';
 import PlatformAdminLogin from './pages/PlatformAdminLogin';
@@ -274,7 +275,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import AITranslationStudio from './pages/AITranslationStudio';
 import __Layout from './Layout.jsx';
 
 
@@ -282,6 +282,7 @@ export const PAGES = {
     "AIAutomationPlatform": AIAutomationPlatform,
     "AIDisputeResolution": AIDisputeResolution,
     "AIMerchantInsights": AIMerchantInsights,
+    "AITranslationStudio": AITranslationStudio,
     "APIDocumentation": APIDocumentation,
     "APIGateway": APIGateway,
     "APIGatewayConfiguration": APIGatewayConfiguration,
@@ -388,8 +389,8 @@ export const PAGES = {
     "ISOGatewayRouting": ISOGatewayRouting,
     "ISOGatewayTestConsole": ISOGatewayTestConsole,
     "ISOGatewayUserManagement": ISOGatewayUserManagement,
-    "ISOMessageMonitor": ISOMessageMonitor,
     "InstantPayments": InstantPayments,
+    "ISOMessageMonitor": ISOMessageMonitor,
     "InvestorDividends": InvestorDividends,
     "InvestorHoldings": InvestorHoldings,
     "InvestorLogin": InvestorLogin,
@@ -496,8 +497,8 @@ export const PAGES = {
     "PaymentLinks": PaymentLinks,
     "PaymentMethods": PaymentMethods,
     "PaymentOrchestration": PaymentOrchestration,
-    "PaymentProviders": PaymentProviders,
     "PaymentProviderManagement": PaymentProviderManagement,
+    "PaymentProviders": PaymentProviders,
     "PayoutOrchestration": PayoutOrchestration,
     "Payouts": Payouts,
     "PlatformAdminLogin": PlatformAdminLogin,
@@ -555,7 +556,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "AITranslationStudio": AITranslationStudio,
 }
 
 export const pagesConfig = {

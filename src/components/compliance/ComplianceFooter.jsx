@@ -128,20 +128,8 @@ export function MinimalComplianceFooter() {
     return (
         <footer className="py-4 bg-transparent">
             <div className="max-w-7xl mx-auto px-6">
-                <div className="flex flex-wrap justify-center items-center gap-3 text-xs text-slate-500">
-                    <div className="flex items-center gap-1.5">
-                        <Shield className="h-3 w-3 text-emerald-600" />
-                        <span>PCI DSS L1</span>
-                    </div>
-                    <span>•</span>
-                    <span>SOC 2 Type II</span>
-                    <span>•</span>
-                    <div className="flex items-center gap-1.5">
-                        <Lock className="h-3 w-3" />
-                        <span>256-bit encryption</span>
-                    </div>
-                    <span>•</span>
-                    <span>GLEIF LEI Partner</span>
+                <div className="text-center text-xs text-slate-500">
+                    © {new Date().getFullYear()} FTS.Money - Enterprise Payment Infrastructure
                 </div>
             </div>
         </footer>
