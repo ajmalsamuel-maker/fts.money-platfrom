@@ -188,7 +188,7 @@ export default function FTSMoneyPlatform() {
     });
     
     if (loading) {
-        return <div className="flex items-center justify-center h-screen">Loading...</div>;
+        return <div className="flex items-center justify-center h-screen">{t('common:labels.loading')}</div>;
     }
 
     const totalVolume = psps.reduce((sum, p) => sum + (Number(p.monthly_volume) || 0), 0);

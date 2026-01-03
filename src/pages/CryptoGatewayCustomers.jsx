@@ -12,8 +12,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Users, Plus, Search, Building2, CheckCircle2, AlertCircle, Clock, TrendingUp, Shield, Activity } from 'lucide-react';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function CryptoGatewayCustomers() {
+    const { t } = useI18n();
     const { platformUser, loading: authLoading } = usePlatformAuth();
     const [searchTerm, setSearchTerm] = useState('');
     const [createDialogOpen, setCreateDialogOpen] = useState(false);
@@ -104,8 +106,8 @@ export default function CryptoGatewayCustomers() {
             <div className="flex-1 overflow-auto">
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
                     <div>
-                        <h2 className="text-lg font-semibold text-slate-900">Crypto Banking Customers</h2>
-                        <p className="text-xs text-slate-600">Manage customer accounts and KYB/KYC status</p>
+                        <h2 className="text-lg font-semibold text-slate-900">{t('crypto:customers.title')}</h2>
+                        <p className="text-xs text-slate-600">{t('crypto:customers.subtitle')}</p>
                     </div>
                     <LanguageSwitcher variant="select" showLabel={true} />
                 </header>

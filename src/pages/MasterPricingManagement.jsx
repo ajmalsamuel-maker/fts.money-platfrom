@@ -31,6 +31,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 const categories = [
     { value: 'payment_rail', label: 'Payment Rails' },
@@ -60,6 +61,7 @@ const categories = [
 ];
 
 export default function MasterPricingManagement() {
+    const { t } = useI18n();
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const { platformUser, loading } = usePlatformAuth();
@@ -292,8 +294,8 @@ export default function MasterPricingManagement() {
             <div className="flex-1 overflow-auto">
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
                     <div>
-                        <h2 className="text-lg font-semibold text-slate-900">Master Pricing Management</h2>
-                        <p className="text-xs text-slate-600">Comprehensive pricing control & reconciliation</p>
+                        <h2 className="text-lg font-semibold text-slate-900">{t('platform:pages.masterPricing.title')}</h2>
+                        <p className="text-xs text-slate-600">{t('platform:pages.masterPricing.subtitle')}</p>
                     </div>
                     <div className="flex items-center gap-3">
                         <LanguageSwitcher variant="select" showLabel={true} />

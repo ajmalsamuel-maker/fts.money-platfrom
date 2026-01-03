@@ -9,8 +9,10 @@ import { Shield, AlertTriangle, CheckCircle2, Clock, TrendingUp, Building2, Stor
 import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
 import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function LEIComplianceDashboard() {
+    const { t } = useI18n();
     const queryClient = useQueryClient();
     const { platformUser } = usePlatformAuth();
 
@@ -53,8 +55,8 @@ export default function LEIComplianceDashboard() {
             <div className="flex-1 overflow-auto">
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
                     <div>
-                        <h2 className="text-lg font-semibold text-slate-900">LEI/vLEI Compliance Monitor</h2>
-                        <p className="text-xs text-slate-600">Global Legal Entity Identifier compliance tracking</p>
+                        <h2 className="text-lg font-semibold text-slate-900">{t('platform:pages.leiCompliance.title')}</h2>
+                        <p className="text-xs text-slate-600">{t('platform:pages.leiCompliance.subtitle')}</p>
                     </div>
                     <LanguageSwitcher variant="select" showLabel={true} />
                 </header>
