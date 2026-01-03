@@ -1,0 +1,10 @@
+{
+  "loading": "Chargement...",
+  "save": "Enregistrer",
+  "cancel": "Annuler",
+  "delete": "Supprimer",
+  "edit": "Modifier",
+  "search": "Rechercher",
+  "close": "Fermer",
+  "submit": "Soumettre"
+}
