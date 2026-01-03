@@ -476,36 +476,36 @@ export default function FTSMoneyPlatform() {
                                         <Activity className="h-6 w-6 opacity-80" />
                                         <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
                                     </div>
-                                    <p className="text-xs text-emerald-100 mb-1">Platform TPS</p>
+                                    <p className="text-xs text-emerald-100 mb-1">{t('platform:performanceCards.platformTPS')}</p>
                                     <p className="text-2xl font-bold">{tps}</p>
-                                    <p className="text-xs text-emerald-100 mt-1">Transactions/sec</p>
+                                    <p className="text-xs text-emerald-100 mt-1">{t('platform:performanceCards.transactionsPerSec')}</p>
                                 </CardContent>
                             </Card>
 
                             <Card className="bg-gradient-to-br from-blue-500 to-blue-600 text-white">
                                 <CardContent className="p-4">
                                     <Cloud className="h-6 w-6 opacity-80 mb-1" />
-                                    <p className="text-xs text-blue-100 mb-1">Cloud Instances</p>
+                                    <p className="text-xs text-blue-100 mb-1">{t('platform:performanceCards.cloudInstances')}</p>
                                     <p className="text-2xl font-bold">{cloudStats.totalInstances}</p>
-                                    <p className="text-xs text-blue-100 mt-1">{cloudStats.activeRegions.size} regions</p>
+                                    <p className="text-xs text-blue-100 mt-1">{cloudStats.activeRegions.size} {t('platform:performanceCards.regions')}</p>
                                 </CardContent>
                             </Card>
 
                             <Card className="bg-gradient-to-br from-purple-500 to-purple-600 text-white">
                                 <CardContent className="p-4">
                                     <Cpu className="h-6 w-6 opacity-80 mb-1" />
-                                    <p className="text-xs text-purple-100 mb-1">CPU Cores</p>
+                                    <p className="text-xs text-purple-100 mb-1">{t('platform:performanceCards.cpuCores')}</p>
                                     <p className="text-2xl font-bold">{cloudStats.totalCPU}</p>
-                                    <p className="text-xs text-purple-100 mt-1">{cloudStats.totalMemory} GB RAM</p>
+                                    <p className="text-xs text-purple-100 mt-1">{cloudStats.totalMemory} {t('platform:performanceCards.ram')}</p>
                                 </CardContent>
                             </Card>
 
                             <Card className="bg-gradient-to-br from-amber-500 to-amber-600 text-white">
                                 <CardContent className="p-4">
                                     <HardDrive className="h-6 w-6 opacity-80 mb-1" />
-                                    <p className="text-xs text-amber-100 mb-1">Storage</p>
+                                    <p className="text-xs text-amber-100 mb-1">{t('platform:performanceCards.storage')}</p>
                                     <p className="text-2xl font-bold">{(cloudStats.totalStorage / 1024).toFixed(1)}</p>
-                                    <p className="text-xs text-amber-100 mt-1">TB allocated</p>
+                                    <p className="text-xs text-amber-100 mt-1">{t('platform:performanceCards.tbAllocated')}</p>
                                 </CardContent>
                             </Card>
                         </div>

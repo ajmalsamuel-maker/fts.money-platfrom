@@ -108,6 +108,16 @@ export function EnhancedLanguageProvider({ children, tenantType = 'platform', te
                     setupGuide: "Setup Guide",
                     setupGuideDesc: "Quick start guide"
                 },
+                performanceCards: {
+                    platformTPS: "Platform TPS",
+                    transactionsPerSec: "Transactions/sec",
+                    cloudInstances: "Cloud Instances",
+                    regions: "regions",
+                    cpuCores: "CPU Cores",
+                    ram: "GB RAM",
+                    storage: "Storage",
+                    tbAllocated: "TB allocated"
+                },
                 sidebar: {
                     "overview": "Overview & Insights",
                     "psp-operations": "PSP Operations",
@@ -163,6 +173,16 @@ export function EnhancedLanguageProvider({ children, tenantType = 'platform', te
                     platformAnalyticsDesc: "Informations multi-plateformes",
                     setupGuide: "Guide de configuration",
                     setupGuideDesc: "Guide de démarrage rapide"
+                },
+                performanceCards: {
+                    platformTPS: "TPS plateforme",
+                    transactionsPerSec: "Transactions/sec",
+                    cloudInstances: "Instances cloud",
+                    regions: "régions",
+                    cpuCores: "Cœurs CPU",
+                    ram: "Go RAM",
+                    storage: "Stockage",
+                    tbAllocated: "To alloués"
                 },
                 sidebar: {
                     "overview": "Aperçu et informations",
@@ -220,6 +240,16 @@ export function EnhancedLanguageProvider({ children, tenantType = 'platform', te
                     setupGuide: "Guía de configuración",
                     setupGuideDesc: "Guía de inicio rápido"
                 },
+                performanceCards: {
+                    platformTPS: "TPS plataforma",
+                    transactionsPerSec: "Transacciones/seg",
+                    cloudInstances: "Instancias cloud",
+                    regions: "regiones",
+                    cpuCores: "Núcleos CPU",
+                    ram: "GB RAM",
+                    storage: "Almacenamiento",
+                    tbAllocated: "TB asignados"
+                },
                 sidebar: {
                     "overview": "Resumen e información",
                     "psp-operations": "Operaciones PSP",
@@ -276,6 +306,16 @@ export function EnhancedLanguageProvider({ children, tenantType = 'platform', te
                     setupGuide: "Einrichtungsanleitung",
                     setupGuideDesc: "Schnellstartanleitung"
                 },
+                performanceCards: {
+                    platformTPS: "Plattform-TPS",
+                    transactionsPerSec: "Transaktionen/Sek",
+                    cloudInstances: "Cloud-Instanzen",
+                    regions: "Regionen",
+                    cpuCores: "CPU-Kerne",
+                    ram: "GB RAM",
+                    storage: "Speicher",
+                    tbAllocated: "TB zugewiesen"
+                },
                 sidebar: {
                     "overview": "Übersicht und Einblicke",
                     "psp-operations": "PSP-Betrieb",
@@ -331,6 +371,16 @@ export function EnhancedLanguageProvider({ children, tenantType = 'platform', te
                     platformAnalyticsDesc: "跨平台洞察",
                     setupGuide: "设置指南",
                     setupGuideDesc: "快速入门指南"
+                },
+                performanceCards: {
+                    platformTPS: "平台TPS",
+                    transactionsPerSec: "交易/秒",
+                    cloudInstances: "云实例",
+                    regions: "地区",
+                    cpuCores: "CPU核心",
+                    ram: "GB内存",
+                    storage: "存储",
+                    tbAllocated: "TB已分配"
                 },
                 sidebar: {
                     "overview": "概览和洞察",
