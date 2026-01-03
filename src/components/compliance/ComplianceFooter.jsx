@@ -128,34 +128,6 @@ export function MinimalComplianceFooter() {
     return (
         <footer className="relative z-20 bg-white py-4">
             <div className="max-w-7xl mx-auto px-6">
-                {/* Certification Logos Row */}
-                <div className="flex flex-wrap justify-center items-center gap-3 mb-3">
-                    {/* PCI DSS Logo */}
-                    <img 
-                        src="https://listings.pcisecuritystandards.org/assets/images/pci_dss_logo.png"
-                        alt="PCI DSS Level 1"
-                        className="h-7 opacity-90"
-                        onError={(e) => {
-                            e.target.outerHTML = '<div class="flex items-center gap-1.5 px-2 py-1 bg-emerald-50 border border-emerald-200 rounded"><svg class="h-4 w-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg><span class="text-[10px] font-bold text-emerald-700">PCI DSS L1</span></div>';
-                        }}
-                    />
-
-                    {/* GLEIF Logo */}
-                    <img 
-                        src="https://www.gleif.org/images/logo.png"
-                        alt="GLEIF Partner"
-                        className="h-7 opacity-90"
-                        onError={(e) => {
-                            e.target.outerHTML = '<div class="flex items-center gap-1.5 px-2 py-1 bg-indigo-50 border border-indigo-200 rounded"><svg class="h-4 w-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><span class="text-[10px] font-bold text-indigo-700">GLEIF</span></div>';
-                        }}
-                    />
-
-                    {/* SOC 2 Badge */}
-                    <div className="px-2 py-1 bg-blue-50 border border-blue-200 rounded">
-                        <span className="text-[10px] font-bold text-blue-700">SOC 2 Type II</span>
-                    </div>
-                </div>
-
                 {/* Compliance Text Line */}
                 <div className="flex flex-wrap justify-center items-center gap-3 text-xs text-slate-600 mb-3">
                     <span className="flex items-center gap-1.5">
