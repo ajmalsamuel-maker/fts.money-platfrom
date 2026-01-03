@@ -43,6 +43,8 @@ import {
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 import TranslationFileManager from '@/components/i18n/TranslationFileManager';
 import TranslationEditor from '@/components/i18n/TranslationEditor';
+import LanguageInheritanceDiagram from '@/components/i18n/LanguageInheritanceDiagram';
+import ISOComplianceReport from '@/components/i18n/ISOComplianceReport';
 
 export default function PlatformLanguageManagement() {
     const [platformUser] = useState(() => JSON.parse(localStorage.getItem('platform_admin_session') || '{}'));
@@ -371,9 +373,11 @@ export default function PlatformLanguageManagement() {
                         <TabsList className="bg-white border border-slate-200 mb-6">
                             <TabsTrigger value="overview">Language Overview</TabsTrigger>
                             <TabsTrigger value="psp">Service Configuration</TabsTrigger>
+                            <TabsTrigger value="architecture">Inheritance Model</TabsTrigger>
                             <TabsTrigger value="translations">Translation Status</TabsTrigger>
                             <TabsTrigger value="editor">Translation Editor</TabsTrigger>
                             <TabsTrigger value="files">Import/Export</TabsTrigger>
+                            <TabsTrigger value="standards">ISO Standards</TabsTrigger>
                             <TabsTrigger value="compliance">Compliance</TabsTrigger>
                         </TabsList>
 
@@ -464,7 +468,12 @@ export default function PlatformLanguageManagement() {
                                                     <div key={psp.id} className="p-4 border border-slate-200 rounded-lg hover:border-blue-300 transition-colors">
                                                         <div className="flex items-center justify-between mb-3">
                                                             <div>
-                                                                <h3 className="font-semibold">{getServiceName(psp, 'psp')}</h3>
+                                                                <div className="flex items-center gap-2">
+                                                                    <h3 className="font-semibold">{getServiceName(psp, 'psp')}</h3>
+                                                                    <Badge variant="outline" className="text-[9px] bg-blue-50 text-blue-700">
+                                                                        🔗 Inherited by Merchants & VPT
+                                                                    </Badge>
+                                                                </div>
                                                                 <p className="text-xs text-slate-600">Code: {getServiceCode(psp, 'psp')} • Region: {psp.country}</p>
                                                             </div>
                                                             <Button 
@@ -512,7 +521,12 @@ export default function PlatformLanguageManagement() {
                                                     <div key={customer.id} className="p-4 border border-slate-200 rounded-lg hover:border-blue-300 transition-colors">
                                                         <div className="flex items-center justify-between mb-3">
                                                             <div>
-                                                                <h3 className="font-semibold">{getServiceName(customer, 'iso')}</h3>
+                                                                <div className="flex items-center gap-2">
+                                                                    <h3 className="font-semibold">{getServiceName(customer, 'iso')}</h3>
+                                                                    <Badge variant="outline" className="text-[9px] bg-indigo-50 text-indigo-700">
+                                                                        🔗 Inherited by Customer Users
+                                                                    </Badge>
+                                                                </div>
                                                                 <p className="text-xs text-slate-600">Code: {getServiceCode(customer, 'iso')}</p>
                                                             </div>
                                                             <Button 
@@ -560,7 +574,12 @@ export default function PlatformLanguageManagement() {
                                                     <div key={customer.id} className="p-4 border border-slate-200 rounded-lg hover:border-blue-300 transition-colors">
                                                         <div className="flex items-center justify-between mb-3">
                                                             <div>
-                                                                <h3 className="font-semibold">{getServiceName(customer, 'orchestration')}</h3>
+                                                                <div className="flex items-center gap-2">
+                                                                    <h3 className="font-semibold">{getServiceName(customer, 'orchestration')}</h3>
+                                                                    <Badge variant="outline" className="text-[9px] bg-violet-50 text-violet-700">
+                                                                        🔗 Inherited by Customer Users
+                                                                    </Badge>
+                                                                </div>
                                                                 <p className="text-xs text-slate-600">Code: {getServiceCode(customer, 'orchestration')}</p>
                                                             </div>
                                                             <Button 
@@ -608,7 +627,12 @@ export default function PlatformLanguageManagement() {
                                                     <div key={customer.id} className="p-4 border border-slate-200 rounded-lg hover:border-blue-300 transition-colors">
                                                         <div className="flex items-center justify-between mb-3">
                                                             <div>
-                                                                <h3 className="font-semibold">{getServiceName(customer, 'crypto')}</h3>
+                                                                <div className="flex items-center gap-2">
+                                                                    <h3 className="font-semibold">{getServiceName(customer, 'crypto')}</h3>
+                                                                    <Badge variant="outline" className="text-[9px] bg-amber-50 text-amber-700">
+                                                                        🔗 Inherited by Customer Users
+                                                                    </Badge>
+                                                                </div>
                                                                 <p className="text-xs text-slate-600">Code: {getServiceCode(customer, 'crypto')}</p>
                                                             </div>
                                                             <Button 
@@ -656,7 +680,12 @@ export default function PlatformLanguageManagement() {
                                                     <div key={provider.id} className="p-4 border border-slate-200 rounded-lg hover:border-blue-300 transition-colors">
                                                         <div className="flex items-center justify-between mb-3">
                                                             <div>
-                                                                <h3 className="font-semibold">{getServiceName(provider, 'rwa')}</h3>
+                                                                <div className="flex items-center gap-2">
+                                                                    <h3 className="font-semibold">{getServiceName(provider, 'rwa')}</h3>
+                                                                    <Badge variant="outline" className="text-[9px] bg-rose-50 text-rose-700">
+                                                                        🔗 Inherited by Issuers & Investors
+                                                                    </Badge>
+                                                                </div>
                                                                 <p className="text-xs text-slate-600">Code: {getServiceCode(provider, 'rwa')}</p>
                                                             </div>
                                                             <Button 
@@ -788,6 +817,11 @@ export default function PlatformLanguageManagement() {
                             </DialogContent>
                         </Dialog>
 
+                        {/* Language Inheritance Architecture Tab */}
+                        <TabsContent value="architecture">
+                            <LanguageInheritanceDiagram />
+                        </TabsContent>
+
                         {/* Translation Status Tab */}
                         <TabsContent value="translations">
                             <Card>
@@ -848,6 +882,11 @@ export default function PlatformLanguageManagement() {
                                     }
                                 }}
                             />
+                        </TabsContent>
+
+                        {/* ISO Standards Compliance Tab */}
+                        <TabsContent value="standards">
+                            <ISOComplianceReport />
                         </TabsContent>
 
                         {/* Import/Export Tab */}
