@@ -47,12 +47,13 @@ export function EnhancedLanguageProvider({ children, tenantType = 'platform', te
                 for (const ns of namespaces) {
                     try {
                         // Dynamic import based on namespace and language
-                        const module = await import(`./translations/${ns}/${language}.json`);
+                        const module = await import(`@/components/i18n/translations/${ns}/${language}.json`);
                         loadedTranslations[ns] = module.default;
+                        console.log(`✓ Loaded ${ns}/${language}.json:`, module.default);
                     } catch (error) {
                         console.warn(`Translation not found: ${ns}/${language}.json, falling back to English`);
                         try {
-                            const fallback = await import(`./translations/${ns}/en.json`);
+                            const fallback = await import(`@/components/i18n/translations/${ns}/en.json`);
                             loadedTranslations[ns] = fallback.default;
                         } catch {
                             console.error(`No fallback translation for namespace: ${ns}`);
