@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 import { 
     Building2, 
     Plus, 
@@ -129,6 +130,7 @@ export default function FTSMoneyPlatform() {
     const navigate = useNavigate();
     const { platformUser, loading } = usePlatformAuth();
     const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
+    const { t } = useI18n();
 
     const { data: psps = [] } = useQuery({
         queryKey: ['provisioned-psps'],
@@ -222,8 +224,8 @@ export default function FTSMoneyPlatform() {
                 {/* Header */}
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10" style={{ height: '64px' }}>
                     <div>
-                        <h2 className="text-lg font-semibold text-slate-900">Control Panel Dashboard</h2>
-                        <p className="text-xs text-slate-600">Unified management for all PSP instances and global configurations</p>
+                        <h2 className="text-lg font-semibold text-slate-900">{t('platform.dashboard.title', 'Control Panel Dashboard')}</h2>
+                        <p className="text-xs text-slate-600">{t('platform.dashboard.subtitle', 'Unified management for all PSP instances and global configurations')}</p>
                     </div>
                     <div className="flex items-center gap-3">
                         <LanguageSwitcher variant="select" showLabel={false} />
@@ -247,7 +249,7 @@ export default function FTSMoneyPlatform() {
                 <div className="p-6">
                     {/* Services Overview */}
                     <div className="mb-6">
-                        <h3 className="text-sm font-semibold text-slate-900 mb-3">Platform Services</h3>
+                        <h3 className="text-sm font-semibold text-slate-900 mb-3">{t('platform.services.title', 'Platform Services')}</h3>
                         <div className="grid grid-cols-5 gap-4">
                             {/* PSP Service */}
                             <Card className="border-2 border-blue-200 hover:border-blue-400 hover:shadow-lg transition-all group">
