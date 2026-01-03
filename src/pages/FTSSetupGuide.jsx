@@ -288,6 +288,7 @@ export default function FTSSetupGuide() {
                         </CardContent>
                     </Card>
                 </div>
+                </div>
             </div>
         </div>
     );
