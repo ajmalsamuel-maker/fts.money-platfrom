@@ -12,6 +12,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
 import FTSPlatformSidebarRestructured from '@/components/platform/FTSPlatformSidebarRestructured';
 import { Plus, Rocket, AlertCircle, CheckCircle2, Clock, Building2, Edit } from 'lucide-react';
+import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 
 export default function RWAWhiteLabelProvisioning() {
     const { platformUser } = usePlatformAuth();
@@ -116,13 +117,19 @@ export default function RWAWhiteLabelProvisioning() {
             />
 
             <div className="flex-1 overflow-auto">
+                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
+                    <div>
+                        <h2 className="text-lg font-semibold text-slate-900">RWA White-Label Provisioning</h2>
+                        <p className="text-xs text-slate-600">Deploy tokenization platforms for licensed financial institutions</p>
+                    </div>
+                    <LanguageSwitcher variant="select" showLabel={true} />
+                </header>
                 <div className="p-6">
                     {/* Header */}
                     <div className="mb-6">
                         <div className="flex items-center justify-between">
                             <div>
-                                <h1 className="text-3xl font-bold text-slate-900 mb-2">RWA White-Label Provisioning</h1>
-                                <p className="text-slate-600">Deploy tokenization platforms for licensed financial institutions</p>
+                                <h1 className="text-2xl font-bold text-slate-900 mb-2">RWA Customers</h1>
                             </div>
                             <Dialog open={showDialog} onOpenChange={setShowDialog}>
                                 <DialogTrigger asChild>
