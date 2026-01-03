@@ -122,32 +122,26 @@ export default function ComplianceFooter() {
 }
 
 /**
- * Minimal version for login pages - displays in white space above wave
+ * Minimal version for login pages
  */
 export function MinimalComplianceFooter() {
     return (
-        <footer className="relative z-20 bg-white py-4">
+        <footer className="py-4 bg-transparent">
             <div className="max-w-7xl mx-auto px-6">
-                {/* Compliance Text Line */}
-                <div className="flex flex-wrap justify-center items-center gap-3 text-xs text-slate-600 mb-3">
-                    <span className="flex items-center gap-1.5">
-                        <Shield className="h-3 w-3 text-emerald-600" />
-                        <span className="font-medium">PCI DSS L1</span>
-                    </span>
-                    <span>•</span>
-                    <span className="font-medium">SOC 2 Type II</span>
-                    <span>•</span>
+                <div className="flex flex-wrap justify-center items-center gap-3 text-xs text-slate-500">
                     <div className="flex items-center gap-1.5">
-                        <Lock className="h-3 w-3 text-blue-600" />
-                        <span className="font-medium">256-bit Encryption</span>
+                        <Shield className="h-3 w-3 text-emerald-600" />
+                        <span>PCI DSS L1</span>
                     </div>
                     <span>•</span>
-                    <span className="font-medium">GLEIF LEI Partner</span>
-                </div>
-
-                {/* Copyright */}
-                <div className="text-center text-xs text-slate-500">
-                    © {new Date().getFullYear()} FTS.Money - Enterprise Payment Infrastructure
+                    <span>SOC 2 Type II</span>
+                    <span>•</span>
+                    <div className="flex items-center gap-1.5">
+                        <Lock className="h-3 w-3" />
+                        <span>256-bit encryption</span>
+                    </div>
+                    <span>•</span>
+                    <span>GLEIF LEI Partner</span>
                 </div>
             </div>
         </footer>
