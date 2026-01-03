@@ -153,6 +153,7 @@ export default function FTSSettings() {
                         <TabsTrigger value="notifications" className="gap-2">
                             <Bell className="h-4 w-4" />
                             {t('platform:pages.settings.notifications')}
+                        </TabsTrigger>
                     </TabsList>
 
                     <TabsContent value="general">
