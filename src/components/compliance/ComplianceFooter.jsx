@@ -59,24 +59,20 @@ export default function ComplianceFooter() {
                         />
                     </a>
 
-                    {/* SOC 2 Type II */}
-                    <div 
-                        className="group relative px-3 py-2 bg-white border border-slate-200 rounded-lg hover:border-blue-500 hover:shadow-sm transition-all"
-                        title="SOC 2 Type II Certified"
+                    {/* SOC 2 Type II - Official Logo */}
+                    <a 
+                        href="https://www.aicpa.org/interestareas/frc/assuranceadvisoryservices/sorhome" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="group relative"
+                        title="SOC 2 Type II Compliant"
                     >
-                        <div className="flex items-center gap-2">
-                            <div className="w-5 h-5 flex items-center justify-center">
-                                <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5">
-                                    <circle cx="12" cy="12" r="10" fill="#3B82F6"/>
-                                    <path d="M16 9l-5 5-3-3" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                                </svg>
-                            </div>
-                            <div className="text-left">
-                                <div className="text-xs font-bold text-slate-900 leading-tight">SOC 2</div>
-                                <div className="text-[10px] text-slate-600 leading-tight">Type II</div>
-                            </div>
-                        </div>
-                    </div>
+                        <img 
+                            src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6931510c4507988f66a42ca8/2e449a989_SOC.png" 
+                            alt="SOC 2 Type II Compliant"
+                            className="h-10 opacity-80 group-hover:opacity-100 transition-opacity"
+                        />
+                    </a>
                 </div>
 
                 {/* Compact ISO Standards */}
