@@ -7,9 +7,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from 'lucide-react';
 import OrchestrationRuleBuilder from '@/components/orchestration/OrchestrationRuleBuilder';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function ISOGatewayRouting() {
     const { platformUser } = usePlatformAuth();
+    const { t } = useI18n();
     const urlParams = new URLSearchParams(window.location.search);
     const customerId = urlParams.get('customer_id');
 

@@ -11,9 +11,11 @@ import {
     Wallet, CreditCard, ArrowLeftRight, Building2, Users, 
     TrendingUp, AlertCircle, CheckCircle2, Clock, ExternalLink 
 } from 'lucide-react';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function StrigaServiceManagement() {
     const { platformUser, loading: authLoading } = usePlatformAuth();
+    const { t } = useI18n();
     const [selectedTab, setSelectedTab] = useState('overview');
 
     // Fetch Crypto Gateway subscriptions

@@ -13,9 +13,11 @@ import AssetIssuerOnboardingWizard from '@/components/rwa/onboarding/AssetIssuer
 import IssuerAuditTrail from '@/components/rwa/IssuerAuditTrail';
 import { Plus, Building2, Mail, Edit, Key, History } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function RWAProviderIssuers() {
     const { provider } = useRWAProviderAuth();
+    const { t } = useI18n();
     const queryClient = useQueryClient();
     const [showOnboardingWizard, setShowOnboardingWizard] = useState(false);
     const [editingIssuer, setEditingIssuer] = useState(null);

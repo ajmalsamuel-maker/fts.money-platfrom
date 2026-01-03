@@ -6,9 +6,11 @@ import { Badge } from "@/components/ui/badge";
 import { useRWAProviderAuth } from '@/components/auth/useRWAProviderAuth';
 import RWAProviderSidebar from '@/components/rwa/RWAProviderSidebar';
 import { Coins, ExternalLink } from 'lucide-react';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function RWAProviderAssets() {
     const { provider } = useRWAProviderAuth();
+    const { t } = useI18n();
 
     const { data: assets = [] } = useQuery({
         queryKey: ['all-assets', provider?.provider_code],

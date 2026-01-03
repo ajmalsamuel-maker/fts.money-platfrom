@@ -9,8 +9,10 @@ import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { GitBranch, Activity, TrendingUp, Zap, LogOut, Settings, Key, Webhook, Bell, Plus, Copy, Trash2, Eye, EyeOff } from 'lucide-react';
 import OrchestrationRuleBuilder from '@/components/orchestration/OrchestrationRuleBuilder';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function OrchestrationPortal() {
+    const { t } = useI18n();
     const [customerId, setCustomerId] = useState(null);
     const [showSettings, setShowSettings] = useState(false);
     const [settingsTab, setSettingsTab] = useState('api_keys');

@@ -23,6 +23,7 @@ import { useWorkflowRBAC } from '@/components/workflow/useWorkflowRBAC';
 import { WORKFLOW_PERMISSIONS } from '@/components/workflow/WorkflowRBAC';
 import { WorkflowAuditLogger } from '@/components/workflow/WorkflowAuditLogger';
 import WorkflowUsersManagement from '@/components/workflow/WorkflowUsersManagement';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 const isoStandards = [
     { 
@@ -70,6 +71,7 @@ export default function WorkflowManagement() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const { platformUser, loading } = usePlatformAuth();
+    const { t } = useI18n();
     const { can, roleLabel, workflowRole } = useWorkflowRBAC(platformUser);
     const [activeTab, setActiveTab] = useState('dashboard');
     const [showCreateDialog, setShowCreateDialog] = useState(false);
@@ -183,9 +185,9 @@ export default function WorkflowManagement() {
             <div className="flex-1 overflow-auto">
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
                     <div>
-                        <h2 className="text-lg font-semibold text-slate-900">Workflow & Compliance Management</h2>
+                        <h2 className="text-lg font-semibold text-slate-900">{t('platform:subMenuItems.workflows')}</h2>
                         <div className="flex items-center gap-3">
-                            <p className="text-xs text-slate-600">ISO/IEC standards compliance tracking</p>
+                            <p className="text-xs text-slate-600">{t('platform:subMenuItems.workflowsDesc')}</p>
                             <Badge variant="outline" className="text-xs">
                                 <Shield className="h-3 w-3 mr-1" />
                                 {roleLabel}

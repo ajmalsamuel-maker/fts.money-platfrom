@@ -15,11 +15,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Building2, Plus, Users, DollarSign, Settings, ExternalLink, Search } from 'lucide-react';
 import { cn } from "@/lib/utils";
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function TenantManagement() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const { platformUser, loading } = usePlatformAuth();
+    const { t } = useI18n();
     
     const [createOpen, setCreateOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
@@ -110,8 +112,8 @@ export default function TenantManagement() {
             <div className="flex-1 overflow-auto">
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
                     <div>
-                        <h2 className="text-lg font-semibold text-slate-900">Tenant Management</h2>
-                        <p className="text-xs text-slate-600">Manage client organizations and their configurations</p>
+                        <h2 className="text-lg font-semibold text-slate-900">{t('platform:subMenuItems.tenantManagement')}</h2>
+                        <p className="text-xs text-slate-600">{t('platform:subMenuItems.tenantManagementDesc')}</p>
                     </div>
                     <div className="flex items-center gap-3">
                         <div className="text-right mr-2">

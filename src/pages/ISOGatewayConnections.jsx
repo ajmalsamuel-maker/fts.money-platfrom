@@ -10,8 +10,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { ArrowRight, Plus, Zap, CheckCircle, XCircle, Clock } from 'lucide-react';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function ISOGatewayConnections() {
+    const { t } = useI18n();
     const [showCreateDialog, setShowCreateDialog] = useState(false);
     const [newConnection, setNewConnection] = useState({
         connection_name: '',
@@ -69,8 +71,8 @@ export default function ISOGatewayConnections() {
             <div className="flex-1 overflow-auto p-8">
                 <div className="flex justify-between items-center mb-6">
                     <div>
-                        <h1 className="text-3xl font-bold text-gray-900">ISO Gateway Connections</h1>
-                        <p className="text-gray-600 mt-1">Configure real-time translation routing</p>
+                        <h1 className="text-3xl font-bold text-gray-900">{t('platform:subMenuItems.isoConnections')}</h1>
+                        <p className="text-gray-600 mt-1">{t('platform:subMenuItems.isoConnectionsDesc')}</p>
                     </div>
                     
                     <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>

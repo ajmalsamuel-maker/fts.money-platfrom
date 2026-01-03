@@ -7,8 +7,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Search, ArrowRight, CheckCircle, XCircle, Clock, Activity } from 'lucide-react';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function ISOMessageMonitor() {
+    const { t } = useI18n();
     const [searchQuery, setSearchQuery] = useState('');
 
     const { data: messages = [] } = useQuery({
@@ -58,8 +60,8 @@ export default function ISOMessageMonitor() {
             
             <div className="flex-1 overflow-auto p-8">
                 <div className="mb-6">
-                    <h1 className="text-3xl font-bold text-gray-900">Real-Time Message Monitor</h1>
-                    <p className="text-gray-600 mt-1">Live view of ISO message translations</p>
+                    <h1 className="text-3xl font-bold text-gray-900">{t('platform:subMenuItems.isoMessageMonitor')}</h1>
+                    <p className="text-gray-600 mt-1">{t('platform:subMenuItems.isoMessageMonitorDesc')}</p>
                 </div>
 
                 {/* Stats Cards */}

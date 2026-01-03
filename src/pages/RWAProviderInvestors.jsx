@@ -7,9 +7,11 @@ import { Badge } from "@/components/ui/badge";
 import { useRWAProviderAuth } from '@/components/auth/useRWAProviderAuth';
 import RWAProviderSidebar from '@/components/rwa/RWAProviderSidebar';
 import { Search, Users, CheckCircle2, AlertCircle, Shield, Mail } from 'lucide-react';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function RWAProviderInvestors() {
     const { provider, loading } = useRWAProviderAuth();
+    const { t } = useI18n();
     const [searchTerm, setSearchTerm] = React.useState('');
 
     const { data: investors = [] } = useQuery({

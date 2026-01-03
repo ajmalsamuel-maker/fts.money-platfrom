@@ -29,6 +29,7 @@ import {
     Shield
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 const statusConfig = {
     pending: { label: 'Pending', color: 'bg-slate-100 text-slate-700', icon: Clock },
@@ -42,6 +43,7 @@ const statusConfig = {
 export default function FTSServiceProviders() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
+    const { t } = useI18n();
     const [search, setSearch] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
     const [dialogOpen, setDialogOpen] = useState(false);
@@ -172,8 +174,8 @@ export default function FTSServiceProviders() {
                 {/* Header */}
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
                     <div>
-                        <h2 className="text-lg font-semibold text-slate-900">Service Providers</h2>
-                        <p className="text-xs text-slate-600">Manage third-party service provider integrations</p>
+                        <h2 className="text-lg font-semibold text-slate-900">{t('platform:subMenuItems.serviceProviders')}</h2>
+                        <p className="text-xs text-slate-600">{t('platform:subMenuItems.serviceProvidersDesc')}</p>
                     </div>
                     <Dialog open={dialogOpen} onOpenChange={(open) => {
                         setDialogOpen(open);

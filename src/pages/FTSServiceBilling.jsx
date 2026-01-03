@@ -9,8 +9,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { DollarSign, Code, GitBranch, FileText, TrendingUp } from 'lucide-react';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function FTSServiceBilling() {
+    const { t } = useI18n();
     const [selectedService, setSelectedService] = useState(null);
     const [showPricingDialog, setShowPricingDialog] = useState(false);
 

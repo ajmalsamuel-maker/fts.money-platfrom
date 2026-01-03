@@ -31,10 +31,12 @@ import {
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { hasPlatformPermission, PLATFORM_PERMISSIONS } from '@/components/platform/PlatformRBAC';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function PSPInstanceManagement() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
+    const { t } = useI18n();
     const urlParams = new URLSearchParams(window.location.search);
     const pspId = urlParams.get('id');
     const [activeTab, setActiveTab] = useState('overview');

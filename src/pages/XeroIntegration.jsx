@@ -23,9 +23,11 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { format, subDays } from 'date-fns';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function XeroIntegration() {
     const queryClient = useQueryClient();
+    const { t } = useI18n();
     const [selectedTransactions, setSelectedTransactions] = useState([]);
     const [dateFrom, setDateFrom] = useState(format(subDays(new Date(), 30), 'yyyy-MM-dd'));
     const [dateTo, setDateTo] = useState(format(new Date(), 'yyyy-MM-dd'));

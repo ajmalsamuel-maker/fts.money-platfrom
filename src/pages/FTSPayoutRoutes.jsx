@@ -40,10 +40,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { getPaymentMethodLogo, getPaymentMethodDisplayName } from '@/components/utils/paymentLogos';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function FTSPayoutRoutes() {
     const queryClient = useQueryClient();
     const { platformUser, loading } = usePlatformAuth();
+    const { t } = useI18n();
     const [showDialog, setShowDialog] = useState(false);
     const [editingRoute, setEditingRoute] = useState(null);
     const [activeTab, setActiveTab] = useState('pool');
@@ -151,8 +153,8 @@ export default function FTSPayoutRoutes() {
             <div className="flex-1 overflow-auto">
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
                     <div>
-                        <h2 className="text-lg font-semibold text-slate-900">Payout Route Pool</h2>
-                        <p className="text-xs text-slate-600">Global payout methods available for PSP assignment</p>
+                        <h2 className="text-lg font-semibold text-slate-900">{t('platform:subMenuItems.payoutRoutes')}</h2>
+                        <p className="text-xs text-slate-600">{t('platform:subMenuItems.payoutRoutesDesc')}</p>
                     </div>
                     <div className="flex items-center gap-3">
                         <div className="text-right mr-2">

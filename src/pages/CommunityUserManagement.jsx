@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
 import { usePlatformAuth, PLATFORM_ROLES, getRoleLabel } from '@/components/auth/usePlatformAuth';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,6 +18,7 @@ import { Users, UserPlus, Mail, Trash2, Search, Building2, Pencil, Shield } from
 export default function CommunityUserManagement() {
     const queryClient = useQueryClient();
     const { platformUser, loading } = usePlatformAuth();
+    const { t } = useI18n();
     
     const [inviteOpen, setInviteOpen] = useState(false);
     const [deleteUser, setDeleteUser] = useState(null);
@@ -132,8 +134,8 @@ export default function CommunityUserManagement() {
             <div className="flex-1 overflow-auto">
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
                     <div>
-                        <h2 className="text-lg font-semibold text-slate-900">Community Portal Users</h2>
-                        <p className="text-xs text-slate-600">Manage users who can create and manage PSP instances</p>
+                        <h2 className="text-lg font-semibold text-slate-900">{t('platform:subMenuItems.communityUsers')}</h2>
+                        <p className="text-xs text-slate-600">{t('platform:subMenuItems.communityUsersDesc')}</p>
                     </div>
                     <div className="flex items-center gap-3">
                         <div className="text-right mr-2">

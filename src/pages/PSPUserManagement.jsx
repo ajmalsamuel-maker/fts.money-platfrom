@@ -14,11 +14,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Badge } from "@/components/ui/badge";
 import { Users, Plus, Edit, Trash2, Mail, Shield, ArrowLeft, Lock, KeyRound } from 'lucide-react';
 import { Switch } from "@/components/ui/switch";
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function PSPUserManagement() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const { platformUser, loading } = usePlatformAuth();
+    const { t } = useI18n();
     const [selectedPSP, setSelectedPSP] = useState('all');
     const [dialogOpen, setDialogOpen] = useState(false);
     const [editingUser, setEditingUser] = useState(null);
@@ -168,8 +170,8 @@ export default function PSPUserManagement() {
                             <ArrowLeft className="h-4 w-4" />
                         </Button>
                         <div>
-                            <h2 className="text-lg font-semibold text-slate-900">PSP User Management</h2>
-                            <p className="text-xs text-slate-600">Manage users for PSP instances</p>
+                            <h2 className="text-lg font-semibold text-slate-900">{t('platform:subMenuItems.pspAdministrators')}</h2>
+                            <p className="text-xs text-slate-600">{t('platform:subMenuItems.pspAdministratorsDesc')}</p>
                         </div>
                     </div>
                     <div className="flex items-center gap-3">

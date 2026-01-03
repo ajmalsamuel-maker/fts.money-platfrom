@@ -5,9 +5,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useRWAProviderAuth } from '@/components/auth/useRWAProviderAuth';
 import RWAProviderSidebar from '@/components/rwa/RWAProviderSidebar';
 import { Building2, Coins, Users, DollarSign, TrendingUp, Activity } from 'lucide-react';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function RWAProviderDashboard() {
     const { provider, loading } = useRWAProviderAuth();
+    const { t } = useI18n();
 
     const { data: issuers = [] } = useQuery({
         queryKey: ['issuers', provider?.provider_code],

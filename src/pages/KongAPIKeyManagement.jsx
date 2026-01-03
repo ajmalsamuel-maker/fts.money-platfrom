@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Key, Plus, Copy, CheckCircle2, Trash2, Shield, AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 const SERVICE_TYPES = {
     iso_gateway: { label: 'ISO Gateway', color: 'bg-blue-100 text-blue-800' },
@@ -26,6 +27,7 @@ const SERVICE_TYPES = {
 export default function KongAPIKeyManagement() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
+    const { t } = useI18n();
     const [session, setSession] = useState(null);
     const [loading, setLoading] = useState(true);
     const [showCreateDialog, setShowCreateDialog] = useState(false);
@@ -159,8 +161,8 @@ export default function KongAPIKeyManagement() {
             <div className="flex-1 overflow-auto">
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
                     <div>
-                        <h2 className="text-lg font-semibold text-slate-900">Kong API Key Management</h2>
-                        <p className="text-xs text-slate-600">Multi-tenant API key provisioning & management</p>
+                        <h2 className="text-lg font-semibold text-slate-900">{t('platform:subMenuItems.kongAPIKeys')}</h2>
+                        <p className="text-xs text-slate-600">{t('platform:subMenuItems.kongAPIKeysDesc')}</p>
                     </div>
                     <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
                         <DialogTrigger asChild>

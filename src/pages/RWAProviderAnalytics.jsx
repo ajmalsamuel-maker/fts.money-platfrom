@@ -8,9 +8,11 @@ import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, L
 import { BarChart3, TrendingUp, Users, Building2, DollarSign, Activity, Zap, Target, Award } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function RWAProviderAnalytics() {
     const { provider } = useRWAProviderAuth();
+    const { t } = useI18n();
 
     const { data: issuers = [] } = useQuery({
         queryKey: ['issuers', provider?.provider_code],

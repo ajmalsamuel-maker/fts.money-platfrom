@@ -9,9 +9,11 @@ import { useRWAProviderAuth } from '@/components/auth/useRWAProviderAuth';
 import RWAProviderSidebar from '@/components/rwa/RWAProviderSidebar';
 import { Settings, Building2, Palette, Globe } from 'lucide-react';
 import { toast } from 'sonner';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function RWAProviderSettings() {
     const { provider, loading } = useRWAProviderAuth();
+    const { t } = useI18n();
     const queryClient = useQueryClient();
     const [formData, setFormData] = useState({
         company_name: '',

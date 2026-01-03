@@ -35,11 +35,13 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { CLOUD_PROVIDERS, FILTER_OPTIONS, getTierLabel, getTierColor } from '@/components/platform/GlobalCloudProviders';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function ResourceOrchestration() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const { platformUser, loading } = usePlatformAuth();
+    const { t } = useI18n();
     const [activeTab, setActiveTab] = useState('pools');
     const [showDialog, setShowDialog] = useState(false);
     const [dialogType, setDialogType] = useState('');
@@ -249,8 +251,8 @@ export default function ResourceOrchestration() {
             <div className="flex-1 overflow-auto">
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
                     <div>
-                        <h2 className="text-lg font-semibold text-slate-900">Resource Orchestration</h2>
-                        <p className="text-xs text-slate-600">Infrastructure management & capacity planning</p>
+                        <h2 className="text-lg font-semibold text-slate-900">{t('platform:subMenuItems.resourceOrchestration')}</h2>
+                        <p className="text-xs text-slate-600">{t('platform:subMenuItems.resourceOrchestrationDesc')}</p>
                     </div>
                 </header>
 

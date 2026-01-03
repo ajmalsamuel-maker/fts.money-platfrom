@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
 import KongSetupGuide from '@/components/docs/KongSetupGuide';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function KongGatewaySetup() {
     const navigate = useNavigate();
+    const { t } = useI18n();
     const [session, setSession] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -42,8 +44,8 @@ export default function KongGatewaySetup() {
                 {/* Header */}
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
                     <div>
-                        <h2 className="text-lg font-semibold text-slate-900">Kong Gateway Setup</h2>
-                        <p className="text-xs text-slate-600">Deploy API Gateway on DigitalOcean</p>
+                        <h2 className="text-lg font-semibold text-slate-900">{t('platform:subMenuItems.kongGatewaySetup')}</h2>
+                        <p className="text-xs text-slate-600">{t('platform:subMenuItems.kongGatewaySetupDesc')}</p>
                     </div>
                 </header>
 
