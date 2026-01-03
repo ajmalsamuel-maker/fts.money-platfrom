@@ -1,7 +1,7 @@
 /**
  * Enhanced Language Provider with Multi-Tenant Support
  * Enterprise-grade i18n for FTS.Money Platform
- * @version 1.1.0
+ * @version 1.2.0 - Dynamic translation loading for all portals
  */
 
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
@@ -662,23 +662,53 @@ export function EnhancedLanguageProvider({ children, tenantType = 'platform', te
         }
     }), []);
 
+    // Dynamically load external translations
+    const loadExternalTranslations = async (lang, ns) => {
+        try {
+            const module = await import(`./translations/${ns}/${lang}`);
+            return module.default || {};
+        } catch {
+            // Fallback to English
+            try {
+                const module = await import(`./translations/${ns}/en`);
+                return module.default || {};
+            } catch {
+                return {};
+            }
+        }
+    };
+
     // Load translations based on language
     useEffect(() => {
-        setLoading(true);
-        const loadedTranslations = {};
-        
-        namespaces.forEach(ns => {
-            if (allTranslations[ns] && allTranslations[ns][language]) {
-                loadedTranslations[ns] = allTranslations[ns][language];
-            } else if (allTranslations[ns] && allTranslations[ns]['en']) {
-                loadedTranslations[ns] = allTranslations[ns]['en'];
-            } else {
-                loadedTranslations[ns] = {};
-            }
-        });
+        const loadAllTranslations = async () => {
+            setLoading(true);
+            const loadedTranslations = {};
+            const externalNamespaces = ['psp', 'merchant', 'crypto', 'iso', 'orchestration', 'rwa'];
+            
+            // Load embedded translations first
+            namespaces.forEach(ns => {
+                if (allTranslations[ns] && allTranslations[ns][language]) {
+                    loadedTranslations[ns] = allTranslations[ns][language];
+                } else if (allTranslations[ns] && allTranslations[ns]['en']) {
+                    loadedTranslations[ns] = allTranslations[ns]['en'];
+                } else {
+                    loadedTranslations[ns] = {};
+                }
+            });
 
-        setTranslations(loadedTranslations);
-        setLoading(false);
+            // Load external portal translations
+            for (const ns of externalNamespaces) {
+                const externalTrans = await loadExternalTranslations(language, ns);
+                if (Object.keys(externalTrans).length > 0) {
+                    loadedTranslations[ns] = externalTrans;
+                }
+            }
+
+            setTranslations(loadedTranslations);
+            setLoading(false);
+        };
+
+        loadAllTranslations();
     }, [language, namespaces, allTranslations]);
 
     // Persist language preference
