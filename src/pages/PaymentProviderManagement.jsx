@@ -40,7 +40,7 @@ export default function PaymentProviderManagement() {
         supported_currencies: ['USD', 'EUR', 'GBP'],
         supported_regions: ['US', 'EU', 'APAC'],
         status: 'active',
-        pricing: {} // { method: { percentage: X, fixed: Y } }
+        pricing: {}
     });
     
     const [searchingLogo, setSearchingLogo] = useState(false);
@@ -59,7 +59,6 @@ export default function PaymentProviderManagement() {
 
     const createProviderMutation = useMutation({
         mutationFn: async (data) => {
-            // Create payment provider
             const provider = await base44.entities.PaymentProvider.create({
                 name: data.name,
                 type: data.provider_type,
@@ -75,7 +74,6 @@ export default function PaymentProviderManagement() {
                 notes: data.notes
             });
 
-            // Auto-create Master Pricing entries for each supported payment method
             const pricingPromises = data.supported_methods.map(method => {
                 const methodPricing = data.pricing[method] || {};
                 return base44.entities.MasterPricing.create({
@@ -167,7 +165,6 @@ export default function PaymentProviderManagement() {
         }
     };
 
-    // Fetch dynamic logos for payment methods
     React.useEffect(() => {
         const fetchMethodLogos = async () => {
             const methods = providerForm.supported_methods;
@@ -234,7 +231,6 @@ export default function PaymentProviderManagement() {
             />
 
             <div className="flex-1 overflow-auto">
-                {/* Header */}
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
                     <div>
                         <h2 className="text-lg font-semibold text-slate-900">Payment Provider Management</h2>
@@ -537,7 +533,6 @@ export default function PaymentProviderManagement() {
                     </DialogContent>
                 </Dialog>
 
-                {/* Payment Method Selector Modal */}
                 <PaymentMethodSelector
                     open={showMethodSelector}
                     onOpenChange={setShowMethodSelector}
@@ -545,7 +540,6 @@ export default function PaymentProviderManagement() {
                     onSelectionChange={(methods) => setProviderForm({...providerForm, supported_methods: methods})}
                 />
 
-                {/* Providers List */}
                 <div className="p-6">
                     <div className="grid gap-4">
                         {providers.map(provider => (
