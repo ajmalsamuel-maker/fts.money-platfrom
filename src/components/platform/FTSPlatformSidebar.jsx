@@ -171,6 +171,7 @@ const menuSections = [
         defaultOpen: false,
         items: [
             { label: 'Platform Config', path: 'FTSSettings', icon: Settings, description: 'System settings' },
+            { label: 'Multilingual System', path: 'PlatformLanguageManagement', icon: Globe, description: 'i18n management', priority: true },
             { label: 'Product Ecosystem', path: 'FTSProductEcosystemReport', icon: Package, description: 'Products & models' },
             { label: 'Vertical Solutions', path: 'FTSVerticalSolutions', icon: Building2, description: 'Industry offerings' },
             { label: 'Advanced Tools', path: 'ModuleCatalogTest', icon: Code, description: 'Module testing' },
