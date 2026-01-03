@@ -25,7 +25,7 @@ export default function ComplianceFooter() {
                         <img 
                             src="https://www.w3.org/WAI/WCAG21/wcag2.1AA-blue-v.svg" 
                             alt="WCAG 2.1 Level AA"
-                            className="h-14 opacity-80 group-hover:opacity-100 transition-opacity"
+                            className="h-12 opacity-80 group-hover:opacity-100 transition-opacity"
                         />
                     </a>
 
