@@ -121,9 +121,7 @@ export function MinimalComplianceFooter() {
     return (
         <footer className="py-4 bg-transparent">
             <div className="max-w-7xl mx-auto px-6">
-                <div className="text-center text-xs text-slate-500">
-                    © {new Date().getFullYear()} FTS.Money - Enterprise Payment Infrastructure
-                </div>
+                {/* Empty minimal footer - just spacing */}
             </div>
         </footer>
     );
