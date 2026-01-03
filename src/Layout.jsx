@@ -1,5 +1,5 @@
 import React from 'react';
-import { LanguageProvider } from '@/components/i18n/LanguageContext';
+import { EnhancedLanguageProvider } from '@/components/i18n/EnhancedLanguageProvider';
 import FintechNewsTicker from '@/components/dashboard/FintechNewsTicker';
 
 export default function Layout({ children }) {
@@ -20,21 +20,21 @@ export default function Layout({ children }) {
     // For custom auth sessions, skip Base44's AuthContext entirely
     if (isStaffSession) {
         return (
-            <LanguageProvider>
+            <EnhancedLanguageProvider tenantType="platform">
                 <div className="min-h-screen bg-slate-50">
                     <FintechNewsTicker />
                     {children}
                 </div>
-            </LanguageProvider>
+            </EnhancedLanguageProvider>
         );
     }
 
     return (
-        <LanguageProvider>
+        <EnhancedLanguageProvider tenantType="platform">
             <div className="min-h-screen bg-slate-50">
                 <FintechNewsTicker />
                 {children}
             </div>
-        </LanguageProvider>
+        </EnhancedLanguageProvider>
     );
 }
