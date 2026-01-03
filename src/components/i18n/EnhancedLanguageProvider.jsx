@@ -308,7 +308,55 @@ export function EnhancedLanguageProvider({ children, tenantType = 'platform', te
                 }
             },
             fr: { 
-                dashboard: { title: "Tableau de bord du panneau de contrôle", subtitle: "Gestion unifiée de toutes les instances PSP et des configurations globales" }, 
+                dashboard: { title: "Tableau de bord du panneau de contrôle", subtitle: "Gestion unifiée de toutes les instances PSP et des configurations globales" },
+                pages: {
+                  analytics: {
+                    title: "Analytique de la plateforme",
+                    subtitle: "Métriques de performance complètes et informations",
+                    allServices: "Tous les services",
+                    volumeTrend: "Tendance du volume de transactions",
+                    platformVolume: "Volume de la plateforme (6M)",
+                    growth: "croissance",
+                    totalRevenue: "Revenus totaux",
+                    totalEndUsers: "Utilisateurs finaux totaux",
+                    acrossServices: "Dans tous les services"
+                  },
+                  revenue: {
+                    title: "Gestion des revenus",
+                    subtitle: "Suivre les revenus et la facturation de tous les PSP",
+                    totalMonthly: "Revenus mensuels totaux",
+                    allServices: "Tous les services",
+                    annualRunRate: "Taux annuel",
+                    projected: "Projeté",
+                    activeCustomers: "Clients actifs",
+                    allPlatforms: "Toutes les plateformes",
+                    vsLastMonth: "vs mois dernier",
+                    revenueByService: "Revenus par type de service",
+                    topPSPCustomers: "Principaux clients PSP"
+                  },
+                  systemHealth: {
+                    title: "Moniteur de santé du système",
+                    subtitle: "État de la plateforme en temps réel et métriques",
+                    systemHealthy: "Système en bonne santé",
+                    totalServices: "Services totaux",
+                    infrastructureStatus: "État de l'infrastructure",
+                    compute: "Calcul",
+                    database: "Base de données",
+                    storage: "Stockage",
+                    healthy: "Sain",
+                    operational: "Opérationnel",
+                    online: "En ligne"
+                  },
+                  pspProvisioning: {
+                    title: "Instances PSP",
+                    subtitle: "Gérer l'infrastructure PSP en marque blanche",
+                    provisionNew: "Provisionner un nouveau PSP",
+                    searchPlaceholder: "Rechercher par nom ou code PSP...",
+                    allInstances: "Toutes les instances PSP",
+                    noPSPs: "Aucun PSP provisionné pour le moment",
+                    isoCompliant: "Conforme ISO"
+                  }
+                },
                 services: { 
                     title: "Services de plateforme",
                     psp: "Plateforme PSP",
@@ -408,7 +456,55 @@ export function EnhancedLanguageProvider({ children, tenantType = 'platform', te
                 }
             },
             es: { 
-                dashboard: { title: "Panel de control", subtitle: "Gestión unificada de todas las instancias PSP y configuraciones globales" }, 
+                dashboard: { title: "Panel de control", subtitle: "Gestión unificada de todas las instancias PSP y configuraciones globales" },
+                pages: {
+                  analytics: {
+                    title: "Analítica de plataforma",
+                    subtitle: "Métricas de rendimiento completas e información",
+                    allServices: "Todos los servicios",
+                    volumeTrend: "Tendencia de volumen de transacciones",
+                    platformVolume: "Volumen de plataforma (6M)",
+                    growth: "crecimiento",
+                    totalRevenue: "Ingresos totales",
+                    totalEndUsers: "Usuarios finales totales",
+                    acrossServices: "En todos los servicios"
+                  },
+                  revenue: {
+                    title: "Gestión de ingresos",
+                    subtitle: "Seguimiento de ingresos y facturación de todos los PSP",
+                    totalMonthly: "Ingresos mensuales totales",
+                    allServices: "Todos los servicios",
+                    annualRunRate: "Tasa anual",
+                    projected: "Proyectado",
+                    activeCustomers: "Clientes activos",
+                    allPlatforms: "Todas las plataformas",
+                    vsLastMonth: "vs mes pasado",
+                    revenueByService: "Ingresos por tipo de servicio",
+                    topPSPCustomers: "Principales clientes PSP"
+                  },
+                  systemHealth: {
+                    title: "Monitor de salud del sistema",
+                    subtitle: "Estado de plataforma en tiempo real y métricas",
+                    systemHealthy: "Sistema saludable",
+                    totalServices: "Servicios totales",
+                    infrastructureStatus: "Estado de infraestructura",
+                    compute: "Computación",
+                    database: "Base de datos",
+                    storage: "Almacenamiento",
+                    healthy: "Saludable",
+                    operational: "Operacional",
+                    online: "En línea"
+                  },
+                  pspProvisioning: {
+                    title: "Instancias PSP",
+                    subtitle: "Gestionar infraestructura PSP de marca blanca",
+                    provisionNew: "Aprovisionar nuevo PSP",
+                    searchPlaceholder: "Buscar por nombre o código PSP...",
+                    allInstances: "Todas las instancias PSP",
+                    noPSPs: "Aún no hay PSP aprovisionados",
+                    isoCompliant: "Conforme ISO"
+                  }
+                },
                 services: { 
                     title: "Servicios de plataforma",
                     psp: "Plataforma PSP",
@@ -508,7 +604,55 @@ export function EnhancedLanguageProvider({ children, tenantType = 'platform', te
                 }
             },
             de: { 
-                dashboard: { title: "Kontrollzentrum Dashboard", subtitle: "Einheitliche Verwaltung aller PSP-Instanzen und globalen Konfigurationen" }, 
+                dashboard: { title: "Kontrollzentrum Dashboard", subtitle: "Einheitliche Verwaltung aller PSP-Instanzen und globalen Konfigurationen" },
+                pages: {
+                  analytics: {
+                    title: "Plattform-Analytik",
+                    subtitle: "Umfassende Leistungsmetriken und Einblicke",
+                    allServices: "Alle Dienste",
+                    volumeTrend: "Transaktionsvolumen-Trend",
+                    platformVolume: "Plattformvolumen (6M)",
+                    growth: "Wachstum",
+                    totalRevenue: "Gesamtumsatz",
+                    totalEndUsers: "Gesamte Endbenutzer",
+                    acrossServices: "Über alle Dienste"
+                  },
+                  revenue: {
+                    title: "Umsatzverwaltung",
+                    subtitle: "Umsatzbeteiligung und Abrechnung aller PSPs verfolgen",
+                    totalMonthly: "Monatlicher Gesamtumsatz",
+                    allServices: "Alle Dienste",
+                    annualRunRate: "Jährliche Laufrate",
+                    projected: "Prognostiziert",
+                    activeCustomers: "Aktive Kunden",
+                    allPlatforms: "Alle Plattformen",
+                    vsLastMonth: "vs letzter Monat",
+                    revenueByService: "Umsatz nach Diensttyp",
+                    topPSPCustomers: "Top-PSP-Kunden"
+                  },
+                  systemHealth: {
+                    title: "Systemzustandsmonitor",
+                    subtitle: "Echtzeit-Plattformstatus und Metriken",
+                    systemHealthy: "System gesund",
+                    totalServices: "Dienste gesamt",
+                    infrastructureStatus: "Infrastrukturstatus",
+                    compute: "Berechnung",
+                    database: "Datenbank",
+                    storage: "Speicher",
+                    healthy: "Gesund",
+                    operational: "Betriebsbereit",
+                    online: "Online"
+                  },
+                  pspProvisioning: {
+                    title: "PSP-Instanzen",
+                    subtitle: "White-Label-PSP-Infrastruktur verwalten",
+                    provisionNew: "Neuen PSP bereitstellen",
+                    searchPlaceholder: "Nach PSP-Name oder Code suchen...",
+                    allInstances: "Alle PSP-Instanzen",
+                    noPSPs: "Noch keine PSPs bereitgestellt",
+                    isoCompliant: "ISO-konform"
+                  }
+                },
                 services: { 
                     title: "Plattformdienste",
                     psp: "PSP-Plattform",
