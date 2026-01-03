@@ -30,18 +30,19 @@ export default function ComplianceFooter() {
                     </a>
 
                     {/* PCI DSS Level 1 - Official Logo */}
-                    <div 
-                        className="group relative px-3 py-2 bg-white border border-slate-200 rounded-lg hover:border-emerald-500 hover:shadow-sm transition-all"
-                        title="PCI DSS Level 1 Service Provider"
+                    <a 
+                        href="https://www.pcisecuritystandards.org/" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="group relative"
+                        title="PCI DSS Level 1 Service Provider Certified"
                     >
-                        <div className="flex items-center gap-2">
-                            <Shield className="h-5 w-5 text-emerald-600" />
-                            <div className="text-left">
-                                <div className="text-xs font-bold text-slate-900 leading-tight">PCI DSS</div>
-                                <div className="text-[10px] text-slate-600 leading-tight">Level 1</div>
-                            </div>
-                        </div>
-                    </div>
+                        <img 
+                            src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6931510c4507988f66a42ca8/47f4a9106_PCI-L1.jpg" 
+                            alt="PCI DSS Level 1 Certified"
+                            className="h-10 opacity-80 group-hover:opacity-100 transition-opacity"
+                        />
+                    </a>
 
                     {/* GLEIF Partner - Official Badge */}
                     <div 
