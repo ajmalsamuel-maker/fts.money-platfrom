@@ -113,40 +113,20 @@ export default function PlatformLanguageManagement() {
                     });
                     break;
                 case 'iso':
-                    // Fetch current entity and merge
-                    const isoCustomers = await base44.entities.ISOGatewayCustomer.list();
-                    const isoCustomer = isoCustomers.find(c => c.id === serviceId);
-                    result = await base44.entities.ISOGatewayCustomer.update(serviceId, {
-                        ...isoCustomer,
-                        ...updateData
-                    });
+                    // Only update language fields
+                    result = await base44.entities.ISOGatewayCustomer.update(serviceId, updateData);
                     break;
                 case 'orchestration':
-                    // Fetch current entity and merge
-                    const orchCustomers = await base44.entities.OrchestrationCustomer.list();
-                    const orchCustomer = orchCustomers.find(c => c.id === serviceId);
-                    result = await base44.entities.OrchestrationCustomer.update(serviceId, {
-                        ...orchCustomer,
-                        ...updateData
-                    });
+                    // Only update language fields
+                    result = await base44.entities.OrchestrationCustomer.update(serviceId, updateData);
                     break;
                 case 'crypto':
-                    // Fetch current entity and merge
-                    const cryptoCustomers = await base44.entities.CryptoGatewayCustomer.list();
-                    const cryptoCustomer = cryptoCustomers.find(c => c.id === serviceId);
-                    result = await base44.entities.CryptoGatewayCustomer.update(serviceId, {
-                        ...cryptoCustomer,
-                        ...updateData
-                    });
+                    // Only update language fields
+                    result = await base44.entities.CryptoGatewayCustomer.update(serviceId, updateData);
                     break;
                 case 'rwa':
-                    // Fetch current entity and merge
-                    const rwaProviders = await base44.entities.RWAProvider.list();
-                    const rwaProvider = rwaProviders.find(p => p.id === serviceId);
-                    result = await base44.entities.RWAProvider.update(serviceId, {
-                        ...rwaProvider,
-                        ...updateData
-                    });
+                    // Only update language fields
+                    result = await base44.entities.RWAProvider.update(serviceId, updateData);
                     break;
                 default:
                     throw new Error('Unknown service type');
