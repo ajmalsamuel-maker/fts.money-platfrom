@@ -45,6 +45,8 @@ import TranslationFileManager from '@/components/i18n/TranslationFileManager';
 import TranslationEditor from '@/components/i18n/TranslationEditor';
 import LanguageInheritanceDiagram from '@/components/i18n/LanguageInheritanceDiagram';
 import ISOComplianceReport from '@/components/i18n/ISOComplianceReport';
+import WCAGComplianceDashboard from '@/components/accessibility/WCAGComplianceDashboard';
+import AccessibilitySettings from '@/components/accessibility/AccessibilitySettings';
 
 export default function PlatformLanguageManagement() {
     const [platformUser] = useState(() => JSON.parse(localStorage.getItem('platform_admin_session') || '{}'));
@@ -378,6 +380,7 @@ export default function PlatformLanguageManagement() {
                             <TabsTrigger value="editor">Translation Editor</TabsTrigger>
                             <TabsTrigger value="files">Import/Export</TabsTrigger>
                             <TabsTrigger value="standards">ISO Standards</TabsTrigger>
+                            <TabsTrigger value="accessibility">Accessibility</TabsTrigger>
                             <TabsTrigger value="compliance">Compliance</TabsTrigger>
                         </TabsList>
 
@@ -887,6 +890,14 @@ export default function PlatformLanguageManagement() {
                         {/* ISO Standards Compliance Tab */}
                         <TabsContent value="standards">
                             <ISOComplianceReport />
+                        </TabsContent>
+
+                        {/* Accessibility Tab */}
+                        <TabsContent value="accessibility">
+                            <div className="space-y-6">
+                                <WCAGComplianceDashboard />
+                                <AccessibilitySettings />
+                            </div>
                         </TabsContent>
 
                         {/* Import/Export Tab */}

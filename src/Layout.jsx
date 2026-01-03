@@ -1,5 +1,7 @@
 import React from 'react';
 import { EnhancedLanguageProvider } from '@/components/i18n/EnhancedLanguageProvider';
+import { AccessibilityProvider } from '@/components/accessibility/AccessibilityProvider';
+import { SkipNavigation } from '@/components/accessibility/AccessibleComponents';
 import FintechNewsTicker from '@/components/dashboard/FintechNewsTicker';
 
 export default function Layout({ children }) {
@@ -20,21 +22,31 @@ export default function Layout({ children }) {
     // For custom auth sessions, skip Base44's AuthContext entirely
     if (isStaffSession) {
         return (
-            <EnhancedLanguageProvider tenantType="platform">
-                <div className="min-h-screen bg-slate-50">
-                    <FintechNewsTicker />
-                    {children}
-                </div>
-            </EnhancedLanguageProvider>
+            <AccessibilityProvider>
+                <EnhancedLanguageProvider tenantType="platform">
+                    <SkipNavigation targetId="main-content" />
+                    <div className="min-h-screen bg-slate-50">
+                        <FintechNewsTicker />
+                        <main id="main-content">
+                            {children}
+                        </main>
+                    </div>
+                </EnhancedLanguageProvider>
+            </AccessibilityProvider>
         );
     }
 
     return (
-        <EnhancedLanguageProvider tenantType="platform">
-            <div className="min-h-screen bg-slate-50">
-                <FintechNewsTicker />
-                {children}
-            </div>
-        </EnhancedLanguageProvider>
+        <AccessibilityProvider>
+            <EnhancedLanguageProvider tenantType="platform">
+                <SkipNavigation targetId="main-content" />
+                <div className="min-h-screen bg-slate-50">
+                    <FintechNewsTicker />
+                    <main id="main-content">
+                        {children}
+                    </main>
+                </div>
+            </EnhancedLanguageProvider>
+        </AccessibilityProvider>
     );
 }
