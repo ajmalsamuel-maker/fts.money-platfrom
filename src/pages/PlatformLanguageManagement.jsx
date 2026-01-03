@@ -144,12 +144,28 @@ export default function PlatformLanguageManagement() {
                     });
                     break;
                 }
-                case 'crypto':
-                    result = await base44.entities.CryptoGatewayCustomer.update(serviceId, updateData);
+                case 'crypto': {
+                    const cryptoList = await base44.entities.CryptoGatewayCustomer.list();
+                    const current = cryptoList.find(c => c.id === serviceId);
+                    result = await base44.entities.CryptoGatewayCustomer.update(serviceId, {
+                        customer_code: current.customer_code || 'crypto_default',
+                        company_name: current.company_name,
+                        contact_email: current.contact_email || current.email,
+                        ...updateData
+                    });
                     break;
-                case 'rwa':
-                    result = await base44.entities.RWAProvider.update(serviceId, updateData);
+                }
+                case 'rwa': {
+                    const rwaList = await base44.entities.RWAProvider.list();
+                    const current = rwaList.find(p => p.id === serviceId);
+                    result = await base44.entities.RWAProvider.update(serviceId, {
+                        provider_code: current.provider_code,
+                        company_name: current.company_name,
+                        contact_email: current.contact_email || 'noreply@fts.money',
+                        ...updateData
+                    });
                     break;
+                }
                 default:
                     throw new Error('Unknown service type');
             }
