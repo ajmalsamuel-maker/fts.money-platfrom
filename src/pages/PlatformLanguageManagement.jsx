@@ -106,23 +106,47 @@ export default function PlatformLanguageManagement() {
             switch (serviceType) {
                 case 'psp':
                     // Fetch current PSP to get latest branding
-                    const currentPSP = await base44.entities.ProvisionedPSP.list();
-                    const psp = currentPSP.find(p => p.id === serviceId);
+                    const currentPSPs = await base44.entities.ProvisionedPSP.list();
+                    const psp = currentPSPs.find(p => p.id === serviceId);
                     result = await base44.entities.ProvisionedPSP.update(serviceId, {
                         branding: { ...(psp?.branding || {}), ...updateData }
                     });
                     break;
                 case 'iso':
-                    result = await base44.entities.ISOGatewayCustomer.update(serviceId, updateData);
+                    // Fetch current entity and merge
+                    const isoCustomers = await base44.entities.ISOGatewayCustomer.list();
+                    const isoCustomer = isoCustomers.find(c => c.id === serviceId);
+                    result = await base44.entities.ISOGatewayCustomer.update(serviceId, {
+                        ...isoCustomer,
+                        ...updateData
+                    });
                     break;
                 case 'orchestration':
-                    result = await base44.entities.OrchestrationCustomer.update(serviceId, updateData);
+                    // Fetch current entity and merge
+                    const orchCustomers = await base44.entities.OrchestrationCustomer.list();
+                    const orchCustomer = orchCustomers.find(c => c.id === serviceId);
+                    result = await base44.entities.OrchestrationCustomer.update(serviceId, {
+                        ...orchCustomer,
+                        ...updateData
+                    });
                     break;
                 case 'crypto':
-                    result = await base44.entities.CryptoGatewayCustomer.update(serviceId, updateData);
+                    // Fetch current entity and merge
+                    const cryptoCustomers = await base44.entities.CryptoGatewayCustomer.list();
+                    const cryptoCustomer = cryptoCustomers.find(c => c.id === serviceId);
+                    result = await base44.entities.CryptoGatewayCustomer.update(serviceId, {
+                        ...cryptoCustomer,
+                        ...updateData
+                    });
                     break;
                 case 'rwa':
-                    result = await base44.entities.RWAProvider.update(serviceId, updateData);
+                    // Fetch current entity and merge
+                    const rwaProviders = await base44.entities.RWAProvider.list();
+                    const rwaProvider = rwaProviders.find(p => p.id === serviceId);
+                    result = await base44.entities.RWAProvider.update(serviceId, {
+                        ...rwaProvider,
+                        ...updateData
+                    });
                     break;
                 default:
                     throw new Error('Unknown service type');
