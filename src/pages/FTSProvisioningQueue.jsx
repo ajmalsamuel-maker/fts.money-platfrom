@@ -5,7 +5,6 @@ import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
 import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
 import MissingInfoDialog from '@/components/provisioning/MissingInfoDialog';
 import AdminUserDialog from '@/components/provisioning/AdminUserDialog';
-import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
