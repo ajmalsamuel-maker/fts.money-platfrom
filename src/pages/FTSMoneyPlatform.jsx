@@ -232,7 +232,7 @@ export default function FTSMoneyPlatform() {
                         <p className="text-xs text-slate-600">{t('platform:dashboard.subtitle')}</p>
                     </div>
                     <div className="flex items-center gap-3">
-                        <LanguageSwitcher variant="select" showLabel={false} />
+                        <LanguageSwitcher variant="select" showLabel={true} />
                         <Button 
                             variant="outline" 
                             size="sm"
