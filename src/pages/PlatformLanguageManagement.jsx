@@ -16,6 +16,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { toast } from 'sonner';
 import { 
     Globe, 
     Languages, 
@@ -43,6 +44,7 @@ export default function PlatformLanguageManagement() {
     const [activeTab, setActiveTab] = useState('overview');
     const [selectedPSP, setSelectedPSP] = useState(null);
     const [configDialogOpen, setConfigDialogOpen] = useState(false);
+    const [selectedServiceType, setSelectedServiceType] = useState(null);
     const [pspLanguageConfig, setPspLanguageConfig] = useState({
         enabled_languages: ['en'],
         default_language: 'en'
@@ -51,6 +53,26 @@ export default function PlatformLanguageManagement() {
     const { data: psps = [] } = useQuery({
         queryKey: ['provisioned-psps'],
         queryFn: () => base44.entities.ProvisionedPSP.list()
+    });
+
+    const { data: isoCustomers = [] } = useQuery({
+        queryKey: ['iso-customers'],
+        queryFn: () => base44.entities.ISOGatewayCustomer.list()
+    });
+
+    const { data: orchestrationCustomers = [] } = useQuery({
+        queryKey: ['orchestration-customers'],
+        queryFn: () => base44.entities.OrchestrationCustomer.list()
+    });
+
+    const { data: cryptoCustomers = [] } = useQuery({
+        queryKey: ['crypto-customers'],
+        queryFn: () => base44.entities.CryptoGatewayCustomer.list()
+    });
+
+    const { data: rwaProviders = [] } = useQuery({
+        queryKey: ['rwa-providers'],
+        queryFn: () => base44.entities.RWAProvider.list()
     });
 
     // Mock translation status - would come from database
@@ -67,18 +89,36 @@ export default function PlatformLanguageManagement() {
         return 'bg-slate-600';
     };
 
-    const updatePSPLanguagesMutation = useMutation({
-        mutationFn: async ({ pspId, languageConfig }) => {
-            return await base44.entities.ProvisionedPSP.update(pspId, {
-                branding: {
-                    ...(selectedPSP?.branding || {}),
-                    enabled_languages: languageConfig.enabled_languages,
-                    default_language: languageConfig.default_language
-                }
-            });
+    const updateLanguagesMutation = useMutation({
+        mutationFn: async ({ serviceId, serviceType, languageConfig }) => {
+            const updateData = {
+                enabled_languages: languageConfig.enabled_languages,
+                default_language: languageConfig.default_language
+            };
+
+            switch (serviceType) {
+                case 'psp':
+                    return await base44.entities.ProvisionedPSP.update(serviceId, {
+                        branding: { ...(selectedPSP?.branding || {}), ...updateData }
+                    });
+                case 'iso':
+                    return await base44.entities.ISOGatewayCustomer.update(serviceId, updateData);
+                case 'orchestration':
+                    return await base44.entities.OrchestrationCustomer.update(serviceId, updateData);
+                case 'crypto':
+                    return await base44.entities.CryptoGatewayCustomer.update(serviceId, updateData);
+                case 'rwa':
+                    return await base44.entities.RWAProvider.update(serviceId, updateData);
+                default:
+                    throw new Error('Unknown service type');
+            }
         },
         onSuccess: () => {
             queryClient.invalidateQueries(['provisioned-psps']);
+            queryClient.invalidateQueries(['iso-customers']);
+            queryClient.invalidateQueries(['orchestration-customers']);
+            queryClient.invalidateQueries(['crypto-customers']);
+            queryClient.invalidateQueries(['rwa-providers']);
             setConfigDialogOpen(false);
             toast.success('Language configuration saved!');
         },
@@ -87,11 +127,24 @@ export default function PlatformLanguageManagement() {
         }
     });
 
-    const openLanguageConfig = (psp) => {
-        setSelectedPSP(psp);
+    const openLanguageConfig = (service, serviceType) => {
+        setSelectedPSP(service);
+        setSelectedServiceType(serviceType);
+        
+        let enabledLangs = ['en'];
+        let defaultLang = 'en';
+        
+        if (serviceType === 'psp') {
+            enabledLangs = service.branding?.enabled_languages || ['en'];
+            defaultLang = service.branding?.default_language || 'en';
+        } else {
+            enabledLangs = service.enabled_languages || ['en'];
+            defaultLang = service.default_language || 'en';
+        }
+        
         setPspLanguageConfig({
-            enabled_languages: psp.branding?.enabled_languages || ['en'],
-            default_language: psp.branding?.default_language || 'en'
+            enabled_languages: enabledLangs,
+            default_language: defaultLang
         });
         setConfigDialogOpen(true);
     };
@@ -118,10 +171,47 @@ export default function PlatformLanguageManagement() {
     };
 
     const handleSaveLanguageConfig = () => {
-        updatePSPLanguagesMutation.mutate({
-            pspId: selectedPSP.id,
+        updateLanguagesMutation.mutate({
+            serviceId: selectedPSP.id,
+            serviceType: selectedServiceType,
             languageConfig: pspLanguageConfig
         });
+    };
+
+    const getServiceName = (service, type) => {
+        switch (type) {
+            case 'psp': return service.psp_name;
+            case 'iso': return service.company_name;
+            case 'orchestration': return service.company_name;
+            case 'crypto': return service.company_name;
+            case 'rwa': return service.company_name;
+            default: return 'Unknown';
+        }
+    };
+
+    const getServiceCode = (service, type) => {
+        switch (type) {
+            case 'psp': return service.psp_code;
+            case 'iso': return service.customer_code;
+            case 'orchestration': return service.customer_code;
+            case 'crypto': return service.customer_code;
+            case 'rwa': return service.provider_code;
+            default: return '';
+        }
+    };
+
+    const getEnabledLanguages = (service, type) => {
+        if (type === 'psp') {
+            return service.branding?.enabled_languages || ['en'];
+        }
+        return service.enabled_languages || ['en'];
+    };
+
+    const getDefaultLanguage = (service, type) => {
+        if (type === 'psp') {
+            return service.branding?.default_language || 'en';
+        }
+        return service.default_language || 'en';
     };
 
     return (
@@ -276,51 +366,249 @@ export default function PlatformLanguageManagement() {
                             </div>
                         </TabsContent>
 
-                        {/* PSP Configuration Tab */}
+                        {/* Service Configuration Tab */}
                         <TabsContent value="psp">
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle>PSP Instance Language Configuration</CardTitle>
-                                    <CardDescription>Enable/disable languages for each PSP instance</CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="space-y-4">
-                                        {psps.map(psp => {
-                                            const enabledLangs = psp.branding?.enabled_languages || ['en'];
-                                            const defaultLang = psp.branding?.default_language || 'en';
-                                            return (
-                                                <div key={psp.id} className="p-4 border border-slate-200 rounded-lg">
-                                                    <div className="flex items-center justify-between mb-3">
-                                                        <div>
-                                                            <h3 className="font-semibold">{psp.psp_name}</h3>
-                                                            <p className="text-xs text-slate-600">Code: {psp.psp_code} • Region: {psp.country}</p>
+                            <div className="space-y-6">
+                                {/* PSP Services */}
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle className="flex items-center gap-2">
+                                            <Building2 className="h-5 w-5" />
+                                            PSP Instances
+                                        </CardTitle>
+                                        <CardDescription>Configure languages for Payment Service Providers</CardDescription>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="space-y-3">
+                                            {psps.map(psp => {
+                                                const enabledLangs = getEnabledLanguages(psp, 'psp');
+                                                const defaultLang = getDefaultLanguage(psp, 'psp');
+                                                return (
+                                                    <div key={psp.id} className="p-4 border border-slate-200 rounded-lg hover:border-blue-300 transition-colors">
+                                                        <div className="flex items-center justify-between mb-3">
+                                                            <div>
+                                                                <h3 className="font-semibold">{getServiceName(psp, 'psp')}</h3>
+                                                                <p className="text-xs text-slate-600">Code: {getServiceCode(psp, 'psp')} • Region: {psp.country}</p>
+                                                            </div>
+                                                            <Button 
+                                                                variant="outline" 
+                                                                size="sm"
+                                                                onClick={() => openLanguageConfig(psp, 'psp')}
+                                                            >
+                                                                Configure
+                                                            </Button>
                                                         </div>
-                                                        <Button 
-                                                            variant="outline" 
-                                                            size="sm"
-                                                            onClick={() => openLanguageConfig(psp)}
-                                                        >
-                                                            Configure Languages
-                                                        </Button>
+                                                        <div className="flex gap-2 flex-wrap">
+                                                            {enabledLangs.map(code => {
+                                                                const lang = SUPPORTED_LANGUAGES.find(l => l.code === code);
+                                                                return (
+                                                                    <Badge key={code} variant="outline" className="gap-1">
+                                                                        <span>{lang?.flag}</span>
+                                                                        <span>{lang?.nativeName}</span>
+                                                                        {code === defaultLang && <span className="text-emerald-600">✓</span>}
+                                                                    </Badge>
+                                                                );
+                                                            })}
+                                                        </div>
                                                     </div>
-                                                    <div className="flex gap-2 flex-wrap">
-                                                        {enabledLangs.map(code => {
-                                                            const lang = SUPPORTED_LANGUAGES.find(l => l.code === code);
-                                                            return (
-                                                                <Badge key={code} variant="outline" className="gap-1">
-                                                                    <span>{lang?.flag}</span>
-                                                                    <span>{lang?.nativeName}</span>
-                                                                    {code === defaultLang && <span className="text-emerald-600">✓</span>}
-                                                                </Badge>
-                                                            );
-                                                        })}
+                                                );
+                                            })}
+                                        </div>
+                                    </CardContent>
+                                </Card>
+
+                                {/* ISO Gateway Customers */}
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle className="flex items-center gap-2">
+                                            <Code className="h-5 w-5" />
+                                            ISO Gateway Customers
+                                        </CardTitle>
+                                        <CardDescription>Configure languages for ISO Gateway clients</CardDescription>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="space-y-3">
+                                            {isoCustomers.map(customer => {
+                                                const enabledLangs = getEnabledLanguages(customer, 'iso');
+                                                const defaultLang = getDefaultLanguage(customer, 'iso');
+                                                return (
+                                                    <div key={customer.id} className="p-4 border border-slate-200 rounded-lg hover:border-blue-300 transition-colors">
+                                                        <div className="flex items-center justify-between mb-3">
+                                                            <div>
+                                                                <h3 className="font-semibold">{getServiceName(customer, 'iso')}</h3>
+                                                                <p className="text-xs text-slate-600">Code: {getServiceCode(customer, 'iso')}</p>
+                                                            </div>
+                                                            <Button 
+                                                                variant="outline" 
+                                                                size="sm"
+                                                                onClick={() => openLanguageConfig(customer, 'iso')}
+                                                            >
+                                                                Configure
+                                                            </Button>
+                                                        </div>
+                                                        <div className="flex gap-2 flex-wrap">
+                                                            {enabledLangs.map(code => {
+                                                                const lang = SUPPORTED_LANGUAGES.find(l => l.code === code);
+                                                                return (
+                                                                    <Badge key={code} variant="outline" className="gap-1">
+                                                                        <span>{lang?.flag}</span>
+                                                                        <span>{lang?.nativeName}</span>
+                                                                        {code === defaultLang && <span className="text-emerald-600">✓</span>}
+                                                                    </Badge>
+                                                                );
+                                                            })}
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                </CardContent>
-                            </Card>
+                                                );
+                                            })}
+                                        </div>
+                                    </CardContent>
+                                </Card>
+
+                                {/* Orchestration Customers */}
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle className="flex items-center gap-2">
+                                            <Workflow className="h-5 w-5" />
+                                            Orchestration Customers
+                                        </CardTitle>
+                                        <CardDescription>Configure languages for Orchestration clients</CardDescription>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="space-y-3">
+                                            {orchestrationCustomers.map(customer => {
+                                                const enabledLangs = getEnabledLanguages(customer, 'orchestration');
+                                                const defaultLang = getDefaultLanguage(customer, 'orchestration');
+                                                return (
+                                                    <div key={customer.id} className="p-4 border border-slate-200 rounded-lg hover:border-blue-300 transition-colors">
+                                                        <div className="flex items-center justify-between mb-3">
+                                                            <div>
+                                                                <h3 className="font-semibold">{getServiceName(customer, 'orchestration')}</h3>
+                                                                <p className="text-xs text-slate-600">Code: {getServiceCode(customer, 'orchestration')}</p>
+                                                            </div>
+                                                            <Button 
+                                                                variant="outline" 
+                                                                size="sm"
+                                                                onClick={() => openLanguageConfig(customer, 'orchestration')}
+                                                            >
+                                                                Configure
+                                                            </Button>
+                                                        </div>
+                                                        <div className="flex gap-2 flex-wrap">
+                                                            {enabledLangs.map(code => {
+                                                                const lang = SUPPORTED_LANGUAGES.find(l => l.code === code);
+                                                                return (
+                                                                    <Badge key={code} variant="outline" className="gap-1">
+                                                                        <span>{lang?.flag}</span>
+                                                                        <span>{lang?.nativeName}</span>
+                                                                        {code === defaultLang && <span className="text-emerald-600">✓</span>}
+                                                                    </Badge>
+                                                                );
+                                                            })}
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </CardContent>
+                                </Card>
+
+                                {/* Crypto Gateway Customers */}
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle className="flex items-center gap-2">
+                                            <Wallet className="h-5 w-5" />
+                                            Crypto Banking Customers
+                                        </CardTitle>
+                                        <CardDescription>Configure languages for Crypto Gateway clients</CardDescription>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="space-y-3">
+                                            {cryptoCustomers.map(customer => {
+                                                const enabledLangs = getEnabledLanguages(customer, 'crypto');
+                                                const defaultLang = getDefaultLanguage(customer, 'crypto');
+                                                return (
+                                                    <div key={customer.id} className="p-4 border border-slate-200 rounded-lg hover:border-blue-300 transition-colors">
+                                                        <div className="flex items-center justify-between mb-3">
+                                                            <div>
+                                                                <h3 className="font-semibold">{getServiceName(customer, 'crypto')}</h3>
+                                                                <p className="text-xs text-slate-600">Code: {getServiceCode(customer, 'crypto')}</p>
+                                                            </div>
+                                                            <Button 
+                                                                variant="outline" 
+                                                                size="sm"
+                                                                onClick={() => openLanguageConfig(customer, 'crypto')}
+                                                            >
+                                                                Configure
+                                                            </Button>
+                                                        </div>
+                                                        <div className="flex gap-2 flex-wrap">
+                                                            {enabledLangs.map(code => {
+                                                                const lang = SUPPORTED_LANGUAGES.find(l => l.code === code);
+                                                                return (
+                                                                    <Badge key={code} variant="outline" className="gap-1">
+                                                                        <span>{lang?.flag}</span>
+                                                                        <span>{lang?.nativeName}</span>
+                                                                        {code === defaultLang && <span className="text-emerald-600">✓</span>}
+                                                                    </Badge>
+                                                                );
+                                                            })}
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </CardContent>
+                                </Card>
+
+                                {/* RWA Providers */}
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle className="flex items-center gap-2">
+                                            <Briefcase className="h-5 w-5" />
+                                            RWA Platform Providers
+                                        </CardTitle>
+                                        <CardDescription>Configure languages for RWA tokenization providers</CardDescription>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="space-y-3">
+                                            {rwaProviders.map(provider => {
+                                                const enabledLangs = getEnabledLanguages(provider, 'rwa');
+                                                const defaultLang = getDefaultLanguage(provider, 'rwa');
+                                                return (
+                                                    <div key={provider.id} className="p-4 border border-slate-200 rounded-lg hover:border-blue-300 transition-colors">
+                                                        <div className="flex items-center justify-between mb-3">
+                                                            <div>
+                                                                <h3 className="font-semibold">{getServiceName(provider, 'rwa')}</h3>
+                                                                <p className="text-xs text-slate-600">Code: {getServiceCode(provider, 'rwa')}</p>
+                                                            </div>
+                                                            <Button 
+                                                                variant="outline" 
+                                                                size="sm"
+                                                                onClick={() => openLanguageConfig(provider, 'rwa')}
+                                                            >
+                                                                Configure
+                                                            </Button>
+                                                        </div>
+                                                        <div className="flex gap-2 flex-wrap">
+                                                            {enabledLangs.map(code => {
+                                                                const lang = SUPPORTED_LANGUAGES.find(l => l.code === code);
+                                                                return (
+                                                                    <Badge key={code} variant="outline" className="gap-1">
+                                                                        <span>{lang?.flag}</span>
+                                                                        <span>{lang?.nativeName}</span>
+                                                                        {code === defaultLang && <span className="text-emerald-600">✓</span>}
+                                                                    </Badge>
+                                                                );
+                                                            })}
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </div>
                         </TabsContent>
 
                         {/* Language Configuration Dialog */}
@@ -328,7 +616,7 @@ export default function PlatformLanguageManagement() {
                             <DialogContent className="max-w-4xl max-h-[80vh]">
                                 <DialogHeader>
                                     <DialogTitle>
-                                        Configure Languages - {selectedPSP?.psp_name}
+                                        Configure Languages - {selectedPSP && getServiceName(selectedPSP, selectedServiceType)}
                                     </DialogTitle>
                                 </DialogHeader>
 
@@ -414,9 +702,9 @@ export default function PlatformLanguageManagement() {
                                         </Button>
                                         <Button 
                                             onClick={handleSaveLanguageConfig}
-                                            disabled={updatePSPLanguagesMutation.isPending}
+                                            disabled={updateLanguagesMutation.isPending}
                                         >
-                                            {updatePSPLanguagesMutation.isPending ? 'Saving...' : 'Save Configuration'}
+                                            {updateLanguagesMutation.isPending ? 'Saving...' : 'Save Configuration'}
                                         </Button>
                                     </div>
                                 </div>
