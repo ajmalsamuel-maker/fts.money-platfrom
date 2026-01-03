@@ -95,7 +95,7 @@ export default function FTSAnalytics() {
                     <div className="flex items-center gap-4">
                         <LanguageSwitcher variant="select" showLabel={true} />
                         <div className="text-right">
-                            <p className="text-xs text-slate-600">Logged in as</p>
+                            <p className="text-xs text-slate-600">{t('platform:dashboard.loggedInAs')}</p>
                             <p className="text-sm font-medium text-slate-900">{platformUser?.email}</p>
                             <Badge className="mt-1 bg-blue-600 text-white text-xs">
                                 {getRoleLabel(platformUser?.platform_role)}
@@ -179,9 +179,9 @@ export default function FTSAnalytics() {
                         <CardContent className="p-6">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm text-slate-600">Platform Volume (6M)</p>
+                                    <p className="text-sm text-slate-600">{t('platform:pages.analytics.platformVolume')}</p>
                                     <p className="text-3xl font-bold text-slate-900">$24.9M</p>
-                                    <p className="text-xs text-emerald-600 mt-1">+28% growth</p>
+                                    <p className="text-xs text-emerald-600 mt-1">+28% {t('common:labels.growth')}</p>
                                 </div>
                                 <TrendingUp className="h-10 w-10 text-emerald-600" />
                             </div>
@@ -191,9 +191,9 @@ export default function FTSAnalytics() {
                         <CardContent className="p-6">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm text-slate-600">Total Revenue</p>
+                                    <p className="text-sm text-slate-600">{t('platform:pages.analytics.totalRevenue')}</p>
                                     <p className="text-3xl font-bold text-slate-900">$371K</p>
-                                    <p className="text-xs text-emerald-600 mt-1">+32% growth</p>
+                                    <p className="text-xs text-emerald-600 mt-1">+32% {t('common:labels.growth')}</p>
                                 </div>
                                 <DollarSign className="h-10 w-10 text-blue-600" />
                             </div>
@@ -203,9 +203,9 @@ export default function FTSAnalytics() {
                         <CardContent className="p-6">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm text-slate-600">Total End Users</p>
+                                    <p className="text-sm text-slate-600">{t('platform:pages.analytics.totalEndUsers')}</p>
                                     <p className="text-3xl font-bold text-slate-900">{psps.reduce((sum, p) => sum + (p.total_merchants || 0), 0)}</p>
-                                    <p className="text-xs text-slate-500 mt-1">Across all services</p>
+                                    <p className="text-xs text-slate-500 mt-1">{t('platform:pages.analytics.acrossAllServices')}</p>
                                 </div>
                                 <Users className="h-10 w-10 text-purple-600" />
                             </div>
@@ -216,7 +216,7 @@ export default function FTSAnalytics() {
                 <div className="grid grid-cols-2 gap-6">
                     <Card>
                         <CardHeader>
-                            <CardTitle>Transaction Volume Trend</CardTitle>
+                            <CardTitle>{t('platform:pages.analytics.volumeTrend')}</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <ResponsiveContainer width="100%" height={300}>
@@ -233,7 +233,7 @@ export default function FTSAnalytics() {
 
                     <Card>
                         <CardHeader>
-                            <CardTitle>Platform Revenue</CardTitle>
+                            <CardTitle>{t('platform:pages.analytics.platformRevenue')}</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <ResponsiveContainer width="100%" height={300}>

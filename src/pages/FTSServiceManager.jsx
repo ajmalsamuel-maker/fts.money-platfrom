@@ -324,7 +324,7 @@ Make the response detailed, authoritative, and include the most recent informati
                             className="gap-2"
                         >
                             <Heart className={`h-4 w-4 ${runningHealthChecks ? 'animate-pulse' : ''}`} />
-                            {runningHealthChecks ? 'Checking...' : 'Run Health Checks'}
+                            {runningHealthChecks ? t('common:status.checking') : t('platform:pages.serviceManager.runHealthChecks')}
                         </Button>
                         <Button 
                             onClick={() => handleGenerateDocs()}
@@ -333,14 +333,14 @@ Make the response detailed, authoritative, and include the most recent informati
                             className="gap-2"
                         >
                             <FileText className={`h-4 w-4 ${generatingDocs ? 'animate-spin' : ''}`} />
-                            {generatingDocs ? 'Generating...' : 'Generate Docs'}
+                            {generatingDocs ? t('common:status.generating') : t('platform:pages.serviceManager.generateDocs')}
                         </Button>
                         <Button 
                             onClick={() => { setEditingService(null); setShowServiceEditor(true); }}
                             className="gap-2 bg-blue-600"
                         >
                             <Plus className="h-4 w-4" />
-                            New Service
+                            {t('platform:pages.serviceManager.newService')}
                         </Button>
                         <Button 
                             onClick={() => seedMutation.mutate()}
@@ -349,7 +349,7 @@ Make the response detailed, authoritative, and include the most recent informati
                             className="gap-2"
                         >
                             <RefreshCw className={`h-4 w-4 ${seedMutation.isPending ? 'animate-spin' : ''}`} />
-                            Import NetXHub
+                            {t('platform:pages.serviceManager.importNetXHub')}
                         </Button>
                     </div>
                 </header>
@@ -357,10 +357,10 @@ Make the response detailed, authoritative, and include the most recent informati
                 <div className="p-6">
                     <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                         <TabsList>
-                            <TabsTrigger value="catalog">Service Catalog</TabsTrigger>
-                            <TabsTrigger value="pricing">Pricing Matrix</TabsTrigger>
-                            <TabsTrigger value="health">Health & Monitoring</TabsTrigger>
-                            <TabsTrigger value="cache">Cache Management</TabsTrigger>
+                            <TabsTrigger value="catalog">{t('platform:pages.serviceManager.serviceCatalog')}</TabsTrigger>
+                            <TabsTrigger value="pricing">{t('platform:pages.serviceManager.pricingMatrix')}</TabsTrigger>
+                            <TabsTrigger value="health">{t('platform:pages.serviceManager.healthMonitoring')}</TabsTrigger>
+                            <TabsTrigger value="cache">{t('platform:pages.serviceManager.cacheManagement')}</TabsTrigger>
                         </TabsList>
 
                         <TabsContent value="catalog" className="space-y-6">
@@ -370,7 +370,7 @@ Make the response detailed, authoritative, and include the most recent informati
                             <CardContent className="p-6">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-sm text-slate-600">Total Services</p>
+                                        <p className="text-sm text-slate-600">{t('platform:pages.serviceManager.totalServices')}</p>
                                         <p className="text-3xl font-bold text-slate-900 mt-1">{services.length}</p>
                                     </div>
                                     <Package className="h-8 w-8 text-blue-600" />
@@ -381,7 +381,7 @@ Make the response detailed, authoritative, and include the most recent informati
                             <CardContent className="p-6">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-sm text-slate-600">Categories</p>
+                                        <p className="text-sm text-slate-600">{t('platform:pages.serviceManager.categories')}</p>
                                         <p className="text-3xl font-bold text-slate-900 mt-1">{Object.keys(servicesByCategory).length}</p>
                                     </div>
                                     <CheckCircle className="h-8 w-8 text-emerald-600" />

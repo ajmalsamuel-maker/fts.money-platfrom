@@ -523,7 +523,7 @@ FTS.Money Platform Team
                     </div>
                     <div className="flex items-center gap-3">
                         <Badge variant="outline" className="bg-blue-50 text-blue-700">
-                            {provisioningPSPs.length} Pending
+                        {provisioningPSPs.length} {t('common:status.pending')}
                         </Badge>
                         <LanguageSwitcher variant="select" showLabel={true} />
                     </div>
@@ -533,13 +533,13 @@ FTS.Money Platform Team
                     <Tabs defaultValue="approvals">
                         <TabsList>
                             <TabsTrigger value="approvals">
-                                Pending Approvals ({approvalRequests.length})
+                                {t('platform:pages.provisioningQueue.pendingApprovals')} ({approvalRequests.length})
                             </TabsTrigger>
                             <TabsTrigger value="queue">
-                                Provisioning Queue ({provisioningPSPs.length})
+                                {t('platform:pages.provisioningQueue.provisioningQueue')} ({provisioningPSPs.length})
                             </TabsTrigger>
                             <TabsTrigger value="recent">
-                                Recently Activated ({activePSPs.length})
+                                {t('platform:pages.provisioningQueue.recentlyActivated')} ({activePSPs.length})
                             </TabsTrigger>
                         </TabsList>
 
@@ -548,8 +548,8 @@ FTS.Money Platform Team
                                 <Card>
                                     <CardContent className="text-center py-12">
                                         <CheckCircle2 className="h-16 w-16 text-emerald-500 mx-auto mb-4" />
-                                        <h3 className="text-lg font-semibold text-slate-900 mb-2">No Pending Approvals</h3>
-                                        <p className="text-slate-600">All requests have been reviewed</p>
+                                        <h3 className="text-lg font-semibold text-slate-900 mb-2">{t('platform:pages.provisioningQueue.noPendingApprovals')}</h3>
+                                        <p className="text-slate-600">{t('platform:pages.provisioningQueue.allReviewed')}</p>
                                     </CardContent>
                                 </Card>
                             ) : (
@@ -592,9 +592,9 @@ FTS.Money Platform Team
                                             )}
 
                                             <div>
-                                                <label className="text-sm font-medium mb-2 block">Review Comments</label>
+                                                <label className="text-sm font-medium mb-2 block">{t('platform:pages.provisioningQueue.reviewComments')}</label>
                                                 <Textarea
-                                                    placeholder="Add comments about this approval decision..."
+                                                    placeholder={t('platform:pages.provisioningQueue.addComments')}
                                                     value={reviewComments}
                                                     onChange={(e) => setReviewComments(e.target.value)}
                                                     className="h-20"
@@ -608,7 +608,7 @@ FTS.Money Platform Team
                                                     className="bg-emerald-600 hover:bg-emerald-700 text-white"
                                                 >
                                                     <CheckCircle2 className="h-4 w-4 mr-2" />
-                                                    Approve
+                                                    {t('common:actions.approve')}
                                                 </Button>
                                                 <Button
                                                     variant="outline"
@@ -617,7 +617,7 @@ FTS.Money Platform Team
                                                     className="text-red-600 hover:bg-red-50"
                                                 >
                                                     <XCircle className="h-4 w-4 mr-2" />
-                                                    Reject
+                                                    {t('common:actions.reject')}
                                                 </Button>
                                             </div>
                                         </CardContent>
@@ -631,8 +631,8 @@ FTS.Money Platform Team
                                 <Card>
                                     <CardContent className="text-center py-12">
                                         <CheckCircle2 className="h-16 w-16 text-emerald-500 mx-auto mb-4" />
-                                        <h3 className="text-lg font-semibold text-slate-900 mb-2">All Caught Up!</h3>
-                                        <p className="text-slate-600">No PSPs pending provisioning</p>
+                                        <h3 className="text-lg font-semibold text-slate-900 mb-2">{t('platform:pages.provisioningQueue.allCaughtUp')}</h3>
+                                        <p className="text-slate-600">{t('platform:pages.provisioningQueue.noPSPsPending')}</p>
                                     </CardContent>
                                 </Card>
                             ) : (
@@ -675,7 +675,7 @@ FTS.Money Platform Team
                                             <CardContent className="space-y-4">
                                                 <div>
                                                     <div className="flex items-center justify-between mb-2">
-                                                        <span className="text-sm text-slate-600">Overall Progress</span>
+                                                        <span className="text-sm text-slate-600">{t('platform:pages.provisioningQueue.overallProgress')}</span>
                                                         <span className="text-sm font-semibold">{progress}%</span>
                                                     </div>
                                                     <Progress value={progress} className="h-2" />
@@ -741,28 +741,28 @@ FTS.Money Platform Team
                                                                                    ) : stepValidationResults[`${psp.id}-${step.id}`] === 'success' ? (
                                                                                        <>
                                                                                            <CheckCircle2 className="h-4 w-4 mr-1" />
-                                                                                           Valid
-                                                                                       </>
-                                                                                   ) : stepValidationResults[`${psp.id}-${step.id}`] === 'failed' ? (
-                                                                                       <>
-                                                                                           <XCircle className="h-4 w-4 mr-1" />
-                                                                                           Failed
-                                                                                       </>
-                                                                                   ) : (
-                                                                                       'Check'
-                                                                                   )}
-                                                                               </Button>
-                                                                               <Button
-                                                                                   size="sm"
-                                                                                   onClick={() => handleExecuteStep(psp.id, step.id)}
-                                                                                   disabled={isExecuting || isValidating}
-                                                                                   className="bg-blue-600 hover:bg-blue-700 text-white"
-                                                                               >
-                                                                                   {isExecuting ? (
-                                                                                       <Loader2 className="h-4 w-4 animate-spin" />
-                                                                                   ) : (
-                                                                                       'Execute'
-                                                                                   )}
+                                                                                               {t('common:status.valid')}
+                                                                                           </>
+                                                                                           ) : stepValidationResults[`${psp.id}-${step.id}`] === 'failed' ? (
+                                                                                           <>
+                                                                                               <XCircle className="h-4 w-4 mr-1" />
+                                                                                               {t('common:status.failed')}
+                                                                                           </>
+                                                                                           ) : (
+                                                                                           t('common:actions.check')
+                                                                                           )}
+                                                                                           </Button>
+                                                                                           <Button
+                                                                                           size="sm"
+                                                                                           onClick={() => handleExecuteStep(psp.id, step.id)}
+                                                                                           disabled={isExecuting || isValidating}
+                                                                                           className="bg-blue-600 hover:bg-blue-700 text-white"
+                                                                                           >
+                                                                                           {isExecuting ? (
+                                                                                           <Loader2 className="h-4 w-4 animate-spin" />
+                                                                                           ) : (
+                                                                                           t('common:actions.execute')
+                                                                                           )}
                                                                                </Button>
                                                                            </>
                                                                        )}
@@ -797,7 +797,7 @@ FTS.Money Platform Team
                                                         className="bg-emerald-600 hover:bg-emerald-700 text-white"
                                                     >
                                                         <CheckCircle2 className="h-4 w-4 mr-2" />
-                                                        Activate PSP
+                                                        {t('platform:pages.provisioningQueue.activatePSP')}
                                                     </Button>
                                                     <Button
                                                         variant="outline"
@@ -807,7 +807,7 @@ FTS.Money Platform Team
                                                         })}
                                                     >
                                                         <XCircle className="h-4 w-4 mr-2" />
-                                                        Cancel
+                                                        {t('common:actions.cancel')}
                                                     </Button>
                                                 </div>
                                             </CardContent>

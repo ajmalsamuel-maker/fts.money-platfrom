@@ -79,14 +79,14 @@ export default function FTSClients() {
                         <div className="relative w-64">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                             <Input
-                                placeholder="Search clients..."
+                                placeholder={t('platform:pages.clients.searchClients')}
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                                 className="pl-10"
                             />
                         </div>
                         <div className="text-right">
-                            <p className="text-xs text-slate-600">Logged in as</p>
+                            <p className="text-xs text-slate-600">{t('platform:dashboard.loggedInAs')}</p>
                             <p className="text-sm font-medium text-slate-900">{platformUser?.email}</p>
                             <Badge className="mt-1 bg-blue-600 text-white text-xs">
                                 {getRoleLabel(platformUser?.platform_role)}
@@ -169,7 +169,7 @@ export default function FTSClients() {
                                                     className="gap-2"
                                                 >
                                                     <Pencil className="h-4 w-4" />
-                                                    Edit
+                                                    {t('common:actions.edit')}
                                                 </Button>
                                                 <Button
                                                     variant="outline"
@@ -178,7 +178,7 @@ export default function FTSClients() {
                                                     className="gap-2"
                                                 >
                                                     <Shield className="h-4 w-4" />
-                                                    Manage
+                                                    {t('common:actions.manage')}
                                                 </Button>
                                             </div>
                                         </div>
@@ -195,7 +195,7 @@ export default function FTSClients() {
                     <DialogHeader>
                         <DialogTitle className="flex items-center gap-2">
                             <Pencil className="h-5 w-5 text-blue-600" />
-                            Edit Client Account
+                            {t('platform:pages.clients.editClientAccount')}
                         </DialogTitle>
                     </DialogHeader>
                     <div className="space-y-4 mt-4">
