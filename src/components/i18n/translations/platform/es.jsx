@@ -1,4 +1,4 @@
-// Platform translations - Spanish
+// Platform translations - Spanish (v1.1)
 export default {
   "dashboard": {
     "title": "Panel de control",

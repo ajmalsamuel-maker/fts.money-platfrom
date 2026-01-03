@@ -1,5 +1,5 @@
 
-// Common translations - English
+// Common translations - English (v1.1)
 export default {
   "actions": {
     "save": "Save",

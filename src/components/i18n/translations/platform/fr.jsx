@@ -1,4 +1,4 @@
-// Platform translations - French
+// Platform translations - French (v1.1)
 export default {
   "dashboard": {
     "title": "Tableau de bord du panneau de contrôle",
