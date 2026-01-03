@@ -52,10 +52,10 @@ const menuSections = [
         title: 'PSP Operations',
         defaultOpen: false,
         items: [
-            { label: 'PSP Management', path: 'PSPProvisioning', icon: Building2, description: 'Manage all PSPs', priority: true },
-            { label: 'Provisioning Queue', path: 'FTSProvisioningQueue', icon: Activity, description: 'Deploy & monitor' },
-            { label: 'PSP Administrators', path: 'PSPUserManagement', icon: Users, description: 'PSP staff' },
-            { label: 'Resource Orchestration', path: 'ResourceOrchestration', icon: Workflow, description: 'Auto-scaling' }
+            { labelKey: 'pspManagement', descKey: 'pspManagementDesc', path: 'PSPProvisioning', icon: Building2, priority: true },
+            { labelKey: 'provisioningQueue', descKey: 'provisioningQueueDesc', path: 'FTSProvisioningQueue', icon: Activity },
+            { labelKey: 'pspAdministrators', descKey: 'pspAdministratorsDesc', path: 'PSPUserManagement', icon: Users },
+            { labelKey: 'resourceOrchestration', descKey: 'resourceOrchestrationDesc', path: 'ResourceOrchestration', icon: Workflow }
         ]
     },
     {
@@ -63,12 +63,12 @@ const menuSections = [
         title: 'Crypto Banking Gateway',
         defaultOpen: false,
         items: [
-            { label: 'Gateway Dashboard', path: 'CryptoGatewayDashboard', icon: CreditCard, description: 'Crypto overview', priority: true },
-            { label: 'Crypto Customers', path: 'CryptoGatewayCustomers', icon: Users, description: 'White-label clients' },
-            { label: 'Crypto Transactions', path: 'CryptoGatewayTransactions', icon: Activity, description: 'Transaction monitor' },
-            { label: 'Wallets & IBANs', path: 'CryptoWallets', icon: Wallet, description: 'Wallet management' },
-            { label: 'Compliance/KYC', path: 'CryptoCompliance', icon: Shield, description: 'KYC management' },
-            { label: 'Striga Settings', path: 'StrigaServiceManagement', icon: Settings, description: 'Integration config' }
+            { labelKey: 'gatewayDashboard', descKey: 'gatewayDashboardDesc', path: 'CryptoGatewayDashboard', icon: CreditCard, priority: true },
+            { labelKey: 'cryptoCustomers', descKey: 'cryptoCustomersDesc', path: 'CryptoGatewayCustomers', icon: Users },
+            { labelKey: 'cryptoTransactions', descKey: 'cryptoTransactionsDesc', path: 'CryptoGatewayTransactions', icon: Activity },
+            { labelKey: 'walletsIBANs', descKey: 'walletsIBANsDesc', path: 'CryptoWallets', icon: Wallet },
+            { labelKey: 'complianceKYC', descKey: 'complianceKYCDesc', path: 'CryptoCompliance', icon: Shield },
+            { labelKey: 'strigaSettings', descKey: 'strigaSettingsDesc', path: 'StrigaServiceManagement', icon: Settings }
         ]
     },
     {
@@ -76,12 +76,12 @@ const menuSections = [
         title: 'RWA Tokenization Platform',
         defaultOpen: false,
         items: [
-            { label: 'RWA Dashboard', path: 'RWAPlatform', icon: Briefcase, description: 'RWA overview', priority: true },
-            { label: 'RWA Providers', path: 'RWAWhiteLabelProvisioning', icon: Building2, description: 'White-label customers' },
-            { label: 'Asset Issuers', path: 'RWAProviderIssuers', icon: Users, description: 'Issuer management' },
-            { label: 'Tokenized Assets', path: 'RWAProviderAssets', icon: Package, description: 'Asset catalog' },
-            { label: 'Investors', path: 'RWAProviderInvestors', icon: Users, description: 'Investor base' },
-            { label: 'RWA Analytics', path: 'RWAProviderAnalytics', icon: BarChart3, description: 'Performance metrics' }
+            { labelKey: 'rwaDashboard', descKey: 'rwaDashboardDesc', path: 'RWAPlatform', icon: Briefcase, priority: true },
+            { labelKey: 'rwaProviders', descKey: 'rwaProvidersDesc', path: 'RWAWhiteLabelProvisioning', icon: Building2 },
+            { labelKey: 'assetIssuers', descKey: 'assetIssuersDesc', path: 'RWAProviderIssuers', icon: Users },
+            { labelKey: 'tokenizedAssets', descKey: 'tokenizedAssetsDesc', path: 'RWAProviderAssets', icon: Package },
+            { labelKey: 'investors', descKey: 'investorsDesc', path: 'RWAProviderInvestors', icon: Users },
+            { labelKey: 'rwaAnalytics', descKey: 'rwaAnalyticsDesc', path: 'RWAProviderAnalytics', icon: BarChart3 }
         ]
     },
     {
@@ -278,14 +278,14 @@ export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, i
                                                     <div className="flex-1 min-w-0">
                                                         <div className="flex items-center gap-2">
                                                             <span className="text-sm font-medium truncate">
-                                                                {item.labelKey ? t(`platform:menuItems.${item.labelKey}`) : item.label}
+                                                                {item.labelKey ? t(`platform:${item.labelKey in (allTranslations.platform.en.menuItems || {}) ? 'menuItems' : 'subMenuItems'}.${item.labelKey}`) : item.label}
                                                             </span>
                                                             {item.priority && <span className="text-xs">⭐</span>}
                                                             {item.superAdminOnly && <Badge className="text-[9px] px-1 py-0 bg-red-100 text-red-700 border-red-300">ADMIN</Badge>}
                                                         </div>
                                                         {(item.descKey || item.description) && (
                                                             <p className="text-xs text-slate-500 truncate">
-                                                                {item.descKey ? t(`platform:menuItems.${item.descKey}`) : item.description}
+                                                                {item.descKey ? t(`platform:${item.descKey in (allTranslations.platform.en.menuItems || {}) ? 'menuItems' : 'subMenuItems'}.${item.descKey}`) : item.description}
                                                             </p>
                                                         )}
                                                     </div>
