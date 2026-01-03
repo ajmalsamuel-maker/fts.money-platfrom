@@ -160,11 +160,11 @@ export default function AITranslationStudio() {
     };
 
     const translatedLanguages = SUPPORTED_LANGUAGES.filter(l => 
-        ['en', 'es', 'fr', 'de', 'zh'].includes(l.code)
+        ['en', 'es', 'fr', 'de', 'zh', 'ar', 'ja', 'ko', 'pt', 'pt-BR', 'ru', 'it', 'zh-TW', 'nl', 'pl', 'tr', 'hi', 'id', 'th', 'vi', 'he', 'sv', 'no', 'da', 'fi'].includes(l.code)
     );
     
     const missingLanguages = SUPPORTED_LANGUAGES.filter(l => 
-        !['en', 'es', 'fr', 'de', 'zh'].includes(l.code)
+        !['en', 'es', 'fr', 'de', 'zh', 'ar', 'ja', 'ko', 'pt', 'pt-BR', 'ru', 'it', 'zh-TW', 'nl', 'pl', 'tr', 'hi', 'id', 'th', 'vi', 'he', 'sv', 'no', 'da', 'fi'].includes(l.code)
     );
 
     return (
