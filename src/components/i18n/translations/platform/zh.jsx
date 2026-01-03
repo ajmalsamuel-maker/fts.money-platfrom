@@ -1,4 +1,4 @@
-// Platform translations - Chinese (v1.1.1)
+// Platform translations - Chinese (v2.0.0 - Complete coverage)
 export default {
   "dashboard": {
     "title": "控制面板仪表板",
@@ -61,10 +61,7 @@ export default {
       "title": "系统健康监控",
       "subtitle": "实时平台状态和指标",
       "systemHealthy": "系统健康",
-      "systemWarning": "系统警告",
-      "systemDegraded": "系统降级",
       "totalServices": "总服务",
-      "pspInstances": "PSP实例",
       "infrastructureStatus": "基础设施状态",
       "compute": "计算",
       "database": "数据库",
@@ -77,18 +74,38 @@ export default {
       "title": "PSP实例",
       "subtitle": "管理白标PSP基础设施",
       "provisionNew": "配置新PSP",
-      "totalPSPs": "总PSP",
-      "totalMerchants": "总商户",
-      "monthlyVolume": "月交易量",
-      "monthlyRevenue": "月收入",
-      "ftsEarnings": "FTS.Money收益",
       "searchPlaceholder": "按PSP名称或代码搜索...",
       "allInstances": "所有PSP实例",
       "noPSPs": "尚未配置PSP",
-      "noMatches": "没有PSP匹配您的搜索",
-      "provisionFirst": "配置您的第一个PSP",
-      "isoCompliant": "ISO合规",
-      "complianceIssue": "合规问题"
+      "isoCompliant": "ISO合规"
+    },
+    "setupGuide": {
+      "title": "FTS.Money设置指南",
+      "subtitle": "访问和配置所有服务的完整指南"
+    },
+    "serviceManager": {
+      "title": "FTS.Money服务目录",
+      "subtitle": "从NetXHub开发平台导入的服务，用于PSP客户配置"
+    },
+    "paymentProviders": {
+      "title": "支付提供商管理",
+      "subtitle": "配置支付提供商并自动填充主定价"
+    },
+    "platformUsers": {
+      "title": "用户管理",
+      "subtitle": "管理平台管理员及其权限"
+    },
+    "provisioningQueue": {
+      "title": "PSP配置队列",
+      "subtitle": "管理基础设施部署"
+    },
+    "rwaProvisioning": {
+      "title": "RWA白标配置",
+      "subtitle": "为持牌金融机构部署代币化平台"
+    },
+    "rwaPlatform": {
+      "title": "RWA平台",
+      "subtitle": "通用代币化基础设施 - 区块链原生，Base44可选"
     }
   },
   "subMenuItems": {

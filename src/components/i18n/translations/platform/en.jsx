@@ -1,4 +1,4 @@
-// Platform translations - English (v1.1.1)
+// Platform translations - English (v2.0.0 - Complete coverage)
 export default {
   "dashboard": {
     "title": "Control Panel Dashboard",
@@ -61,10 +61,7 @@ export default {
       "title": "System Health Monitor",
       "subtitle": "Real-time platform status and metrics",
       "systemHealthy": "System healthy",
-      "systemWarning": "System warning",
-      "systemDegraded": "System degraded",
       "totalServices": "Total Services",
-      "pspInstances": "PSP Instances",
       "infrastructureStatus": "Infrastructure Status",
       "compute": "Compute",
       "database": "Database",
@@ -77,18 +74,38 @@ export default {
       "title": "PSP Instances",
       "subtitle": "Manage white-label PSP infrastructure",
       "provisionNew": "Provision New PSP",
-      "totalPSPs": "Total PSPs",
-      "totalMerchants": "Total Merchants",
-      "monthlyVolume": "Monthly Volume",
-      "monthlyRevenue": "Monthly Revenue",
-      "ftsEarnings": "FTS.Money earnings",
       "searchPlaceholder": "Search by PSP name or code...",
       "allInstances": "All PSP Instances",
       "noPSPs": "No PSPs provisioned yet",
-      "noMatches": "No PSPs match your search",
-      "provisionFirst": "Provision Your First PSP",
-      "isoCompliant": "ISO Compliant",
-      "complianceIssue": "Compliance Issue"
+      "isoCompliant": "ISO Compliant"
+    },
+    "setupGuide": {
+      "title": "FTS.Money Setup Guide",
+      "subtitle": "Complete guide to accessing and configuring all services"
+    },
+    "serviceManager": {
+      "title": "FTS.Money Service Catalog",
+      "subtitle": "Services seeded from NetXHub development platform for provisioning to PSP customers"
+    },
+    "paymentProviders": {
+      "title": "Payment Provider Management",
+      "subtitle": "Configure payment providers and auto-populate Master Pricing"
+    },
+    "platformUsers": {
+      "title": "User Management",
+      "subtitle": "Manage platform administrators and their permissions"
+    },
+    "provisioningQueue": {
+      "title": "PSP Provisioning Queue",
+      "subtitle": "Manage infrastructure deployment"
+    },
+    "rwaProvisioning": {
+      "title": "RWA White-Label Provisioning",
+      "subtitle": "Deploy tokenization platforms for licensed financial institutions"
+    },
+    "rwaPlatform": {
+      "title": "RWA Platform",
+      "subtitle": "Universal tokenization infrastructure - blockchain native, Base44 optional"
     }
   },
   "subMenuItems": {
