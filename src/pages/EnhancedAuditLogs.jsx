@@ -25,9 +25,11 @@ import {
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function EnhancedAuditLogs() {
     const { platformUser, loading } = usePlatformAuth();
+    const { t } = useI18n();
     const queryClient = useQueryClient();
     
     const [searchQuery, setSearchQuery] = useState('');
@@ -128,8 +130,8 @@ export default function EnhancedAuditLogs() {
             <div className="flex-1 overflow-auto p-6">
                 <div className="max-w-7xl mx-auto">
                     <div className="mb-6">
-                        <h1 className="text-2xl font-bold text-slate-900 mb-2">Audit Logs & Security Analytics</h1>
-                        <p className="text-slate-600">AI-powered anomaly detection and access pattern analysis</p>
+                        <h1 className="text-2xl font-bold text-slate-900 mb-2">{t('platform:subMenuItems.accessLogs')}</h1>
+                        <p className="text-slate-600">{t('platform:subMenuItems.accessLogsDesc')}</p>
                     </div>
 
                     <Tabs defaultValue="dashboard" className="space-y-6">

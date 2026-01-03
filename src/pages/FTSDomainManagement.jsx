@@ -23,11 +23,13 @@ import {
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function FTSDomainManagement() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const { platformUser, loading } = usePlatformAuth();
+    const { t } = useI18n();
     const [searchQuery, setSearchQuery] = useState('');
     const [activeTab, setActiveTab] = useState('domains');
 
@@ -122,8 +124,8 @@ export default function FTSDomainManagement() {
             <div className="flex-1 overflow-auto">
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
                     <div>
-                        <h2 className="text-lg font-semibold text-slate-900">Domain & SSL Management</h2>
-                        <p className="text-xs text-slate-600">Manage domains and SSL certificates for all PSP instances</p>
+                        <h2 className="text-lg font-semibold text-slate-900">{t('platform:subMenuItems.domainManagement')}</h2>
+                        <p className="text-xs text-slate-600">{t('platform:subMenuItems.domainManagementDesc')}</p>
                     </div>
                     <div className="flex items-center gap-3">
                         <div className="relative">

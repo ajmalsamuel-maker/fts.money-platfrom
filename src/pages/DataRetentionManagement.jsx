@@ -18,9 +18,11 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function DataRetentionManagement() {
     const { platformUser, loading } = usePlatformAuth();
+    const { t } = useI18n();
     const queryClient = useQueryClient();
     const [showDryRun, setShowDryRun] = useState(true);
 
@@ -76,8 +78,8 @@ export default function DataRetentionManagement() {
             <div className="flex-1 overflow-auto p-6">
                 <div className="max-w-7xl mx-auto">
                     <div className="mb-6">
-                        <h1 className="text-2xl font-bold text-slate-900 mb-2">Data Retention Management</h1>
-                        <p className="text-slate-600">Automated data lifecycle management and archival</p>
+                        <h1 className="text-2xl font-bold text-slate-900 mb-2">{t('platform:subMenuItems.dataRetention')}</h1>
+                        <p className="text-slate-600">{t('platform:subMenuItems.dataRetentionDesc')}</p>
                     </div>
 
                     {/* Control Panel */}

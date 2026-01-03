@@ -27,11 +27,13 @@ import {
 import { format } from 'date-fns';
 import { AreaChart, Area, BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { toast } from 'sonner';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 const COLORS = ['#3b82f6', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#6366f1'];
 
 export default function FTSReporting() {
     const { platformUser, loading } = usePlatformAuth();
+    const { t } = useI18n();
     const [dateRange, setDateRange] = useState({ from: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), to: new Date() });
     const [reportType, setReportType] = useState('overview');
     const [isGenerating, setIsGenerating] = useState(false);
@@ -184,8 +186,8 @@ export default function FTSReporting() {
             <div className="flex-1 overflow-auto">
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
                     <div>
-                        <h2 className="text-lg font-semibold text-slate-900">Reports & Analytics</h2>
-                        <p className="text-xs text-slate-600">Comprehensive platform insights and data exports</p>
+                        <h2 className="text-lg font-semibold text-slate-900">{t('platform:subMenuItems.customReports')}</h2>
+                        <p className="text-xs text-slate-600">{t('platform:subMenuItems.customReportsDesc')}</p>
                     </div>
                     <div className="flex items-center gap-3">
                         <Popover>

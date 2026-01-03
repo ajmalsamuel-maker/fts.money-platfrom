@@ -5,8 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Wallet, Plus, Bitcoin } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function CryptoWallets() {
+    const { t } = useI18n();
     const [session] = useState(() => {
         const stored = localStorage.getItem('crypto_gateway_session');
         if (!stored) {

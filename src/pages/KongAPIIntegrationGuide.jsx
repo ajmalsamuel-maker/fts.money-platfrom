@@ -7,9 +7,11 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Code, Key, Zap, Shield, Globe, Book } from 'lucide-react';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function KongAPIIntegrationGuide() {
     const navigate = useNavigate();
+    const { t } = useI18n();
     const [session, setSession] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -45,8 +47,8 @@ export default function KongAPIIntegrationGuide() {
             <div className="flex-1 overflow-auto">
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
                     <div>
-                        <h2 className="text-lg font-semibold text-slate-900">Kong API Integration Guide</h2>
-                        <p className="text-xs text-slate-600">External API integration through Kong Gateway</p>
+                        <h2 className="text-lg font-semibold text-slate-900">{t('platform:subMenuItems.kongAPIIntegration')}</h2>
+                        <p className="text-xs text-slate-600">{t('platform:subMenuItems.kongAPIIntegrationDesc')}</p>
                     </div>
                 </header>
 

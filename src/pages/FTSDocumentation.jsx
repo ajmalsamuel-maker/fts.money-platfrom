@@ -24,9 +24,11 @@ import { VirtualTerminalDoc } from '@/components/docs/VirtualTerminalDoc';
 import MermaidDiagram from '@/components/docs/MermaidDiagram';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function FTSDocumentation() {
     const { platformUser, loading } = usePlatformAuth();
+    const { t } = useI18n();
     const [activeTab, setActiveTab] = useState('overview');
 
     const documents = [
@@ -273,8 +275,8 @@ export default function FTSDocumentation() {
                 <div className="p-6">
                     {/* Header */}
                     <div className="mb-6">
-                        <h1 className="text-3xl font-bold text-slate-900 mb-2">Documentation</h1>
-                        <p className="text-slate-600">Comprehensive guides for the entire FTS.Money ecosystem</p>
+                        <h1 className="text-3xl font-bold text-slate-900 mb-2">{t('platform:subMenuItems.documentationHub')}</h1>
+                        <p className="text-slate-600">{t('platform:subMenuItems.documentationHubDesc')}</p>
                     </div>
 
                     {/* Document Selector */}

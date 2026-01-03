@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Shield, Check } from 'lucide-react';
 import { cn } from "@/lib/utils";
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 const complianceTemplates = {
     global: {
@@ -49,6 +50,7 @@ const complianceTemplates = {
 };
 
 export default function FTSCompliance() {
+    const { t } = useI18n();
     return (
         <div className="flex h-screen bg-slate-50">
             <FTSPlatformSidebar currentPage="FTSCompliance" userRole="Platform Operator" />

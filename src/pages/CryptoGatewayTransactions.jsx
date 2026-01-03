@@ -7,9 +7,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Activity, Search, TrendingUp, DollarSign, Bitcoin } from 'lucide-react';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function CryptoGatewayTransactions() {
     const { platformUser, loading: authLoading } = usePlatformAuth();
+    const { t } = useI18n();
     const [searchTerm, setSearchTerm] = useState('');
 
     const { data: transactions = [], isLoading } = useQuery({
@@ -56,8 +58,8 @@ export default function CryptoGatewayTransactions() {
             <div className="flex-1 overflow-auto">
                 <div className="p-8">
                     <div className="mb-6">
-                        <h1 className="text-3xl font-bold text-slate-900">Crypto Transactions</h1>
-                        <p className="text-slate-600 mt-1">All crypto banking transactions across customers</p>
+                        <h1 className="text-3xl font-bold text-slate-900">{t('platform:subMenuItems.cryptoTransactions')}</h1>
+                        <p className="text-slate-600 mt-1">{t('platform:subMenuItems.cryptoTransactionsDesc')}</p>
                     </div>
 
                     {/* Stats */}

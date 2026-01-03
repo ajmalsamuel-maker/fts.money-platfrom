@@ -8,9 +8,11 @@ import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
 import FTSPlatformSidebarRestructured from '@/components/platform/FTSPlatformSidebarRestructured';
 import MermaidDiagram from '@/components/docs/MermaidDiagram';
 import ProductEcosystemDoc from '@/components/docs/ProductEcosystemDoc';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function FTSProductEcosystemReport() {
     const { platformUser, loading } = usePlatformAuth();
+    const { t } = useI18n();
 
     const downloadMarkdown = () => {
         const element = document.createElement('a');

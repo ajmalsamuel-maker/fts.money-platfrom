@@ -26,6 +26,7 @@ import {
     TrendingUp
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 const testCategories = [
     {
@@ -69,6 +70,7 @@ const severityConfig = {
 export default function FTSComplianceTesting() {
     const navigate = useNavigate();
     const { platformUser } = usePlatformAuth();
+    const { t } = useI18n();
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [testResults, setTestResults] = useState(null);
     const [expandedTest, setExpandedTest] = useState(null);
@@ -135,8 +137,8 @@ export default function FTSComplianceTesting() {
             <div className="flex-1 overflow-auto">
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
                     <div>
-                        <h2 className="text-lg font-semibold text-slate-900">Compliance Testing & Validation</h2>
-                        <p className="text-xs text-slate-600">Multi-tenant isolation, security audit, and global standards compliance</p>
+                        <h2 className="text-lg font-semibold text-slate-900">{t('platform:subMenuItems.complianceTesting')}</h2>
+                        <p className="text-xs text-slate-600">{t('platform:subMenuItems.complianceTestingDesc')}</p>
                     </div>
                     <div className="flex items-center gap-3">
                         <Button

@@ -39,6 +39,7 @@ import RatePoliciesTab from '@/components/api/RatePoliciesTab';
 import UsageAnalyticsTab from '@/components/api/UsageAnalyticsTab';
 import { toast } from 'sonner';
 import { cn } from "@/lib/utils";
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 const API_GATEWAY_PROVIDERS = [
     { 
@@ -140,6 +141,7 @@ const KONG_PLUGINS = [
 export default function APIGatewayConfiguration() {
     const queryClient = useQueryClient();
     const { platformUser, loading } = usePlatformAuth();
+    const { t } = useI18n();
     const [activeTab, setActiveTab] = useState('overview');
     const [selectedProviders, setSelectedProviders] = useState(['kong']);
     const [kongConfig, setKongConfig] = useState({
@@ -241,8 +243,8 @@ export default function APIGatewayConfiguration() {
             <div className="flex-1 overflow-auto">
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
                     <div>
-                        <h2 className="text-lg font-semibold text-slate-900">API Gateway & Orchestration</h2>
-                        <p className="text-xs text-slate-600">Kong Gateway + Custom Payment Orchestration Layer</p>
+                        <h2 className="text-lg font-semibold text-slate-900">{t('platform:subMenuItems.apiGatewayConfig')}</h2>
+                        <p className="text-xs text-slate-600">{t('platform:subMenuItems.apiGatewayConfigDesc')}</p>
                     </div>
                 </header>
 

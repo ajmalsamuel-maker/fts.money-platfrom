@@ -12,6 +12,7 @@ import { ORCH_ROLES, ORCH_PERMISSIONS, ORCH_ROLE_PERMISSIONS, getOrchRoleLabel }
 import { CRYPTO_ROLES, CRYPTO_PERMISSIONS, CRYPTO_ROLE_PERMISSIONS, getCryptoRoleLabel } from '@/components/auth/cryptoGatewayPermissions';
 import { RWA_ROLES, RWA_PERMISSIONS, RWA_ROLE_PERMISSIONS, getRWARoleLabel } from '@/components/auth/rwaPermissions';
 import { toast } from 'sonner';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 const PSP_STAFF_ROLES = {
     ADMIN: 'admin',
@@ -126,6 +127,7 @@ function PermissionMatrix({ roles, permissions, rolePermissions, getRoleLabel, s
 
 export default function RolePermissionManagement() {
     const { platformUser, loading } = usePlatformAuth();
+    const { t } = useI18n();
     const [editMode, setEditMode] = useState(false);
     const [hasChanges, setHasChanges] = useState(false);
     
@@ -170,8 +172,8 @@ export default function RolePermissionManagement() {
             <div className="flex-1 overflow-auto">
                 <header className="h-16 bg-white border-b flex items-center justify-between px-6">
                     <div>
-                        <h2 className="text-lg font-semibold">Role & Permission Management</h2>
-                        <p className="text-xs text-slate-600">View and manage RBAC permissions across all services</p>
+                        <h2 className="text-lg font-semibold">{t('platform:subMenuItems.rolePermissions')}</h2>
+                        <p className="text-xs text-slate-600">{t('platform:subMenuItems.rolePermissionsDesc')}</p>
                     </div>
                     <div className="flex items-center gap-3">
                         {hasChanges && <Badge className="bg-amber-100 text-amber-700">Unsaved Changes</Badge>}

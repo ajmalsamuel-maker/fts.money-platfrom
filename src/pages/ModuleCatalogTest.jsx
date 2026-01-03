@@ -19,9 +19,11 @@ import {
   Shield,
   Zap
 } from 'lucide-react';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function ModuleCatalogTest() {
   const { user } = usePlatformAuth();
+  const { t } = useI18n();
   const [selectedModules, setSelectedModules] = useState([
     'core_dashboard',
     'core_transactions',

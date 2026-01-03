@@ -3,8 +3,10 @@ import CryptoGatewaySidebar from '@/components/crypto/CryptoGatewaySidebar';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Shield, CheckCircle } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function CryptoCompliance() {
+    const { t } = useI18n();
     const [session] = useState(() => {
         const stored = localStorage.getItem('crypto_gateway_session');
         if (!stored) {

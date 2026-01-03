@@ -11,10 +11,12 @@ import { ArrowLeft, Save, Settings, Shield, Bell, FileCheck } from 'lucide-react
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function FTSSettings() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
+    const { t } = useI18n();
     const [settings, setSettings] = useState({
         platform_name: 'FTS.Money',
         support_email: 'support@fts.money',

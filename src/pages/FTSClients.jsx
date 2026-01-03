@@ -15,11 +15,13 @@ import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
 import { usePlatformAuth, PLATFORM_ROLES, getRoleLabel } from '@/components/auth/usePlatformAuth';
 import { ArrowLeft, Search, Building2, Mail, Phone, Globe, Pencil, Shield } from 'lucide-react';
 import { cn } from "@/lib/utils";
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function FTSClients() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const { platformUser, loading } = usePlatformAuth();
+    const { t } = useI18n();
     const [search, setSearch] = React.useState('');
     const [editClient, setEditClient] = React.useState(null);
     const [editForm, setEditForm] = React.useState({
@@ -70,8 +72,8 @@ export default function FTSClients() {
             <div className="flex-1 overflow-auto">
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
                     <div>
-                        <h2 className="text-lg font-semibold text-slate-900">Client Management</h2>
-                        <p className="text-xs text-slate-600">Manage PSP clients and their configurations</p>
+                        <h2 className="text-lg font-semibold text-slate-900">{t('platform:subMenuItems.clientAccounts')}</h2>
+                        <p className="text-xs text-slate-600">{t('platform:subMenuItems.clientAccountsDesc')}</p>
                     </div>
                     <div className="flex items-center gap-3">
                         <div className="relative w-64">

@@ -55,6 +55,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 // ISO 4217-compliant crypto currencies + emerging standards
 const cryptoCurrencies = [
@@ -96,6 +97,7 @@ const complianceStandards = [
 export default function FTSBlockchainIntegration() {
     const queryClient = useQueryClient();
     const { platformUser, loading } = usePlatformAuth();
+    const { t } = useI18n();
     const [activeTab, setActiveTab] = useState('networks');
     const [showDialog, setShowDialog] = useState(false);
     const [editingConnector, setEditingConnector] = useState(null);
@@ -220,8 +222,8 @@ export default function FTSBlockchainIntegration() {
             <div className="flex-1 overflow-auto">
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
                     <div>
-                        <h2 className="text-lg font-semibold text-slate-900">Blockchain Integration</h2>
-                        <p className="text-xs text-slate-600">Crypto payment rails with ISO 24165 & FATF compliance</p>
+                        <h2 className="text-lg font-semibold text-slate-900">{t('platform:subMenuItems.blockchain')}</h2>
+                        <p className="text-xs text-slate-600">{t('platform:subMenuItems.blockchainDesc')}</p>
                     </div>
                     <div className="flex items-center gap-3">
                         <div className="text-right mr-2">
