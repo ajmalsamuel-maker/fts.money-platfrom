@@ -10,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 import { 
     Building2, 
     Plus, 
@@ -225,6 +226,7 @@ export default function FTSMoneyPlatform() {
                         <p className="text-xs text-slate-600">Unified management for all PSP instances and global configurations</p>
                     </div>
                     <div className="flex items-center gap-3">
+                        <LanguageSwitcher variant="select" showLabel={false} />
                         <Button 
                             variant="outline" 
                             size="sm"
