@@ -50,19 +50,26 @@ export default function LanguageSwitcher({ variant = 'select', showLabel = true 
 
     if (variant === 'compact') {
         return (
-            <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                    const currentIndex = supportedLanguages.findIndex(l => l.code === language);
-                    const nextIndex = (currentIndex + 1) % supportedLanguages.length;
-                    setLanguage(supportedLanguages[nextIndex].code);
-                }}
-                className="gap-2"
-            >
-                <span>{currentLanguage?.flag}</span>
-                <span className="text-xs">{currentLanguage?.code.toUpperCase()}</span>
-            </Button>
+            <Select value={language} onValueChange={setLanguage}>
+                <SelectTrigger className="w-[140px] bg-white/90 backdrop-blur border-slate-200 shadow-sm">
+                    <SelectValue>
+                        <div className="flex items-center gap-2">
+                            <span>{currentLanguage?.flag}</span>
+                            <span className="text-xs font-medium">{currentLanguage?.code.toUpperCase()}</span>
+                        </div>
+                    </SelectValue>
+                </SelectTrigger>
+                <SelectContent className="max-h-[400px]">
+                    {supportedLanguages.map((lang) => (
+                        <SelectItem key={lang.code} value={lang.code}>
+                            <div className="flex items-center gap-2">
+                                <span>{lang.flag}</span>
+                                <span className="text-sm">{lang.nativeName}</span>
+                            </div>
+                        </SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
         );
     }
 
