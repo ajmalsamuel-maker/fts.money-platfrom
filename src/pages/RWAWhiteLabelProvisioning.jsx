@@ -13,9 +13,11 @@ import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
 import FTSPlatformSidebarRestructured from '@/components/platform/FTSPlatformSidebarRestructured';
 import { Plus, Rocket, AlertCircle, CheckCircle2, Clock, Building2, Edit } from 'lucide-react';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function RWAWhiteLabelProvisioning() {
     const { platformUser } = usePlatformAuth();
+    const { t } = useI18n();
     const queryClient = useQueryClient();
     const [showDialog, setShowDialog] = useState(false);
     const [editingCustomer, setEditingCustomer] = useState(null);
@@ -119,8 +121,8 @@ export default function RWAWhiteLabelProvisioning() {
             <div className="flex-1 overflow-auto">
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
                     <div>
-                        <h2 className="text-lg font-semibold text-slate-900">RWA White-Label Provisioning</h2>
-                        <p className="text-xs text-slate-600">Deploy tokenization platforms for licensed financial institutions</p>
+                        <h2 className="text-lg font-semibold text-slate-900">{t('platform:pages.rwaProvisioning.title')}</h2>
+                        <p className="text-xs text-slate-600">{t('platform:pages.rwaProvisioning.subtitle')}</p>
                     </div>
                     <LanguageSwitcher variant="select" showLabel={true} />
                 </header>

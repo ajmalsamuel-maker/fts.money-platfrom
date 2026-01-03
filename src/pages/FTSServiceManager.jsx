@@ -17,6 +17,7 @@ import { toast } from 'sonner';
 import { AuditLogger } from '@/components/platform/EnhancedAuditLogger';
 import ServiceEditor from '@/components/services/ServiceEditor';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 const categoryIcons = {
     payment_rail: CreditCard,
@@ -33,6 +34,7 @@ export default function FTSServiceManager() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const { platformUser, loading } = usePlatformAuth();
+    const { t } = useI18n();
     const [editedPrices, setEditedPrices] = useState({});
     const [activeTab, setActiveTab] = useState('catalog');
     const [selectedService, setSelectedService] = useState(null);
@@ -310,8 +312,8 @@ Make the response detailed, authoritative, and include the most recent informati
             <div className="flex-1 overflow-auto">
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
                     <div>
-                        <h2 className="text-lg font-semibold text-slate-900">FTS.Money Service Catalog</h2>
-                        <p className="text-xs text-slate-600">Services seeded from NetXHub development platform for provisioning to PSP customers</p>
+                        <h2 className="text-lg font-semibold text-slate-900">{t('platform:pages.serviceManager.title')}</h2>
+                        <p className="text-xs text-slate-600">{t('platform:pages.serviceManager.subtitle')}</p>
                     </div>
                     <div className="flex items-center gap-3">
                         <LanguageSwitcher variant="select" showLabel={true} />

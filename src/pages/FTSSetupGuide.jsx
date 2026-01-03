@@ -4,8 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { GitBranch, Building2, Code, ArrowRight } from 'lucide-react';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function FTSSetupGuide() {
+    const { t } = useI18n();
     return (
         <div className="flex h-screen bg-gray-50">
             <FTSPlatformSidebar currentPage="FTSSetupGuide" />
@@ -13,8 +15,8 @@ export default function FTSSetupGuide() {
             <div className="flex-1 overflow-auto">
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
                     <div>
-                        <h2 className="text-lg font-semibold text-slate-900">FTS.Money Setup Guide</h2>
-                        <p className="text-xs text-slate-600">Complete guide to accessing and configuring all services</p>
+                        <h2 className="text-lg font-semibold text-slate-900">{t('platform:pages.setupGuide.title')}</h2>
+                        <p className="text-xs text-slate-600">{t('platform:pages.setupGuide.subtitle')}</p>
                     </div>
                     <LanguageSwitcher variant="select" showLabel={true} />
                 </header>

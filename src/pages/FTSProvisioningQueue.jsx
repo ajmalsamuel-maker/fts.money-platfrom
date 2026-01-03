@@ -17,6 +17,8 @@ import {
     Server, CheckCircle2, Loader2, AlertCircle, Database, 
     Key, Globe, Shield, Play, XCircle, UserCheck, Trash2, Power
 } from 'lucide-react';
+import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 const provisioningSteps = [
     { id: 'database', name: 'Database Instance', icon: Database, weight: 25 },
@@ -29,6 +31,7 @@ const provisioningSteps = [
 export default function FTSProvisioningQueue() {
     const queryClient = useQueryClient();
     const { platformUser, loading } = usePlatformAuth();
+    const { t } = useI18n();
     const [selectedPSP, setSelectedPSP] = useState(null);
     const [reviewComments, setReviewComments] = useState('');
 
@@ -515,12 +518,15 @@ FTS.Money Platform Team
             <div className="flex-1 overflow-auto">
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
                     <div>
-                        <h2 className="text-lg font-semibold text-slate-900">PSP Provisioning Queue</h2>
-                        <p className="text-xs text-slate-600">Manage infrastructure deployment</p>
+                        <h2 className="text-lg font-semibold text-slate-900">{t('platform:pages.provisioningQueue.title')}</h2>
+                        <p className="text-xs text-slate-600">{t('platform:pages.provisioningQueue.subtitle')}</p>
                     </div>
-                    <Badge variant="outline" className="bg-blue-50 text-blue-700">
-                        {provisioningPSPs.length} Pending
-                    </Badge>
+                    <div className="flex items-center gap-3">
+                        <Badge variant="outline" className="bg-blue-50 text-blue-700">
+                            {provisioningPSPs.length} Pending
+                        </Badge>
+                        <LanguageSwitcher variant="select" showLabel={true} />
+                    </div>
                 </header>
 
                 <div className="p-6 space-y-6">

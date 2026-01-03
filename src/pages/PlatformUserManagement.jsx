@@ -18,11 +18,13 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Users, UserPlus, Shield, Mail, Trash2, Ban, CheckCircle, Key } from 'lucide-react';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function PlatformUserManagement() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const { platformUser, loading } = usePlatformAuth();
+    const { t } = useI18n();
     const { logUserCreated, logUserDeleted, logRoleChange, logPasswordChange } = useAuditLogger(platformUser);
     const { canEditUser, canDeleteUser, canChangeUserRole, hasPermission, PERMISSIONS } = usePermissions(platformUser);
     
@@ -165,8 +167,8 @@ export default function PlatformUserManagement() {
             <div className="flex-1 overflow-auto">
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
                     <div>
-                        <h2 className="text-lg font-semibold text-slate-900">User Management</h2>
-                        <p className="text-xs text-slate-600">Manage platform administrators and their permissions</p>
+                        <h2 className="text-lg font-semibold text-slate-900">{t('platform:pages.platformUsers.title')}</h2>
+                        <p className="text-xs text-slate-600">{t('platform:pages.platformUsers.subtitle')}</p>
                     </div>
                     <div className="flex items-center gap-3">
                         <LanguageSwitcher variant="select" showLabel={true} />

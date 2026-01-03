@@ -8,9 +8,11 @@ import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
 import FTSPlatformSidebarRestructured from '@/components/platform/FTSPlatformSidebarRestructured';
 import RWA_CONTRACTS from '@/components/docs/RWAContractsComplete';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function RWAPlatform() {
     const { platformUser } = usePlatformAuth();
+    const { t } = useI18n();
     const [selectedContract, setSelectedContract] = useState('RWASecurityToken');
 
     const contracts = [
@@ -45,8 +47,8 @@ export default function RWAPlatform() {
             <div className="flex-1 overflow-auto">
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
                     <div>
-                        <h2 className="text-lg font-semibold text-slate-900">RWA Platform</h2>
-                        <p className="text-xs text-slate-600">Universal tokenization infrastructure - blockchain native, Base44 optional</p>
+                        <h2 className="text-lg font-semibold text-slate-900">{t('platform:pages.rwaPlatform.title')}</h2>
+                        <p className="text-xs text-slate-600">{t('platform:pages.rwaPlatform.subtitle')}</p>
                     </div>
                     <LanguageSwitcher variant="select" showLabel={true} />
                 </header>
