@@ -68,7 +68,55 @@ export function EnhancedLanguageProvider({ children, tenantType = 'platform', te
         },
         platform: {
             en: { 
-                dashboard: { title: "Control Panel Dashboard", subtitle: "Unified management for all PSP instances and global configurations" }, 
+                dashboard: { title: "Control Panel Dashboard", subtitle: "Unified management for all PSP instances and global configurations" },
+                pages: {
+                  analytics: {
+                    title: "Platform Analytics",
+                    subtitle: "Comprehensive performance metrics and insights",
+                    allServices: "All Services",
+                    volumeTrend: "Transaction Volume Trend",
+                    platformVolume: "Platform Volume (6M)",
+                    growth: "growth",
+                    totalRevenue: "Total Revenue",
+                    totalEndUsers: "Total End Users",
+                    acrossServices: "Across all services"
+                  },
+                  revenue: {
+                    title: "Revenue Management",
+                    subtitle: "Track revenue share and billing across all PSPs",
+                    totalMonthly: "Total Monthly Revenue",
+                    allServices: "All services",
+                    annualRunRate: "Annual Run Rate",
+                    projected: "Projected",
+                    activeCustomers: "Active Customers",
+                    allPlatforms: "All platforms",
+                    vsLastMonth: "vs last month",
+                    revenueByService: "Revenue by Service Type",
+                    topPSPCustomers: "Top PSP Customers"
+                  },
+                  systemHealth: {
+                    title: "System Health Monitor",
+                    subtitle: "Real-time platform status and metrics",
+                    systemHealthy: "System healthy",
+                    totalServices: "Total Services",
+                    infrastructureStatus: "Infrastructure Status",
+                    compute: "Compute",
+                    database: "Database",
+                    storage: "Storage",
+                    healthy: "Healthy",
+                    operational: "Operational",
+                    online: "Online"
+                  },
+                  pspProvisioning: {
+                    title: "PSP Instances",
+                    subtitle: "Manage white-label PSP infrastructure",
+                    provisionNew: "Provision New PSP",
+                    searchPlaceholder: "Search by PSP name or code...",
+                    allInstances: "All PSP Instances",
+                    noPSPs: "No PSPs provisioned yet",
+                    isoCompliant: "ISO Compliant"
+                  }
+                }, 
                 services: { 
                     title: "Platform Services",
                     psp: "PSP Platform",
