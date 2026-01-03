@@ -1,7 +1,7 @@
 /**
  * Enhanced Language Provider with Multi-Tenant Support
  * Enterprise-grade i18n for FTS.Money Platform
- * @version 1.2.0 - Dynamic translation loading for all portals
+ * @version 2.0.0 - Complete translation coverage for all platform pages
  */
 
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
@@ -115,6 +115,34 @@ export function EnhancedLanguageProvider({ children, tenantType = 'platform', te
                     allInstances: "All PSP Instances",
                     noPSPs: "No PSPs provisioned yet",
                     isoCompliant: "ISO Compliant"
+                  },
+                  setupGuide: {
+                    title: "FTS.Money Setup Guide",
+                    subtitle: "Complete guide to accessing and configuring all services"
+                  },
+                  serviceManager: {
+                    title: "FTS.Money Service Catalog",
+                    subtitle: "Services seeded from NetXHub development platform for provisioning to PSP customers"
+                  },
+                  paymentProviders: {
+                    title: "Payment Provider Management",
+                    subtitle: "Configure payment providers and auto-populate Master Pricing"
+                  },
+                  platformUsers: {
+                    title: "User Management",
+                    subtitle: "Manage platform administrators and their permissions"
+                  },
+                  provisioningQueue: {
+                    title: "PSP Provisioning Queue",
+                    subtitle: "Manage infrastructure deployment"
+                  },
+                  rwaProvisioning: {
+                    title: "RWA White-Label Provisioning",
+                    subtitle: "Deploy tokenization platforms for licensed financial institutions"
+                  },
+                  rwaPlatform: {
+                    title: "RWA Platform",
+                    subtitle: "Universal tokenization infrastructure - blockchain native, Base44 optional"
                   }
                 }, 
                 services: { 
