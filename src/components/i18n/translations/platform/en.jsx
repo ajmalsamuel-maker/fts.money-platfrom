@@ -32,6 +32,65 @@ export default {
     "setupGuide": "Setup Guide",
     "setupGuideDesc": "Quick start guide"
   },
+  "pages": {
+    "analytics": {
+      "title": "Platform Analytics",
+      "subtitle": "Comprehensive performance metrics and insights",
+      "allServices": "All Services",
+      "volumeTrend": "Transaction Volume Trend",
+      "platformVolume": "Platform Volume (6M)",
+      "growth": "growth",
+      "totalRevenue": "Total Revenue",
+      "totalEndUsers": "Total End Users",
+      "acrossServices": "Across all services"
+    },
+    "revenue": {
+      "title": "Revenue Management",
+      "subtitle": "Track revenue share and billing across all PSPs",
+      "totalMonthly": "Total Monthly Revenue",
+      "allServices": "All services",
+      "annualRunRate": "Annual Run Rate",
+      "projected": "Projected",
+      "activeCustomers": "Active Customers",
+      "allPlatforms": "All platforms",
+      "vsLastMonth": "vs last month",
+      "revenueByService": "Revenue by Service Type",
+      "topPSPCustomers": "Top PSP Customers"
+    },
+    "systemHealth": {
+      "title": "System Health Monitor",
+      "subtitle": "Real-time platform status and metrics",
+      "systemHealthy": "System healthy",
+      "systemWarning": "System warning",
+      "systemDegraded": "System degraded",
+      "totalServices": "Total Services",
+      "pspInstances": "PSP Instances",
+      "infrastructureStatus": "Infrastructure Status",
+      "compute": "Compute",
+      "database": "Database",
+      "storage": "Storage",
+      "healthy": "Healthy",
+      "operational": "Operational",
+      "online": "Online"
+    },
+    "pspProvisioning": {
+      "title": "PSP Instances",
+      "subtitle": "Manage white-label PSP infrastructure",
+      "provisionNew": "Provision New PSP",
+      "totalPSPs": "Total PSPs",
+      "totalMerchants": "Total Merchants",
+      "monthlyVolume": "Monthly Volume",
+      "monthlyRevenue": "Monthly Revenue",
+      "ftsEarnings": "FTS.Money earnings",
+      "searchPlaceholder": "Search by PSP name or code...",
+      "allInstances": "All PSP Instances",
+      "noPSPs": "No PSPs provisioned yet",
+      "noMatches": "No PSPs match your search",
+      "provisionFirst": "Provision Your First PSP",
+      "isoCompliant": "ISO Compliant",
+      "complianceIssue": "Compliance Issue"
+    }
+  },
   "subMenuItems": {
     "pspManagement": "PSP Management",
     "pspManagementDesc": "Manage PSP instances",

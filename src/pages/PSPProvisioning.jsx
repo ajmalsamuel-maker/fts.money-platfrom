@@ -34,11 +34,13 @@ import {
     MoreVertical
 } from 'lucide-react';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function PSPProvisioning() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const { platformUser, loading } = usePlatformAuth();
+    const { t } = useI18n();
     const [search, setSearch] = useState('');
     const [workflowCompliance, setWorkflowCompliance] = useState(null);
 
@@ -90,8 +92,8 @@ export default function PSPProvisioning() {
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
                     <div className="flex items-center gap-3">
                         <div>
-                            <h2 className="text-lg font-semibold text-slate-900">PSP Instances</h2>
-                            <p className="text-xs text-slate-600">Manage white-label PSP infrastructure</p>
+                            <h2 className="text-lg font-semibold text-slate-900">{t('platform:pages.pspProvisioning.title')}</h2>
+                            <p className="text-xs text-slate-600">{t('platform:pages.pspProvisioning.subtitle')}</p>
                         </div>
                         {workflowCompliance && (
                             <Badge className={workflowCompliance.compliant ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}>
@@ -114,7 +116,7 @@ export default function PSPProvisioning() {
                             className="gap-2 bg-blue-600 hover:bg-blue-700"
                         >
                             <Plus className="h-5 w-5" />
-                            Provision New PSP
+                            {t('platform:pages.pspProvisioning.provisionNew')}
                         </Button>
                     </div>
                 </header>
@@ -124,7 +126,7 @@ export default function PSPProvisioning() {
                         <div className="relative">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                             <Input
-                                placeholder="Search by PSP name or code..."
+                                placeholder={t('platform:pages.pspProvisioning.searchPlaceholder')}
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                                 className="pl-10"

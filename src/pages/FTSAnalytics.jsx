@@ -23,10 +23,12 @@ import {
 } from 'lucide-react';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function FTSAnalytics() {
     const navigate = useNavigate();
     const { platformUser, loading } = usePlatformAuth();
+    const { t } = useI18n();
     
     const { data: psps = [] } = useQuery({
         queryKey: ['provisioned-psps'],
@@ -87,8 +89,8 @@ export default function FTSAnalytics() {
             <div className="flex-1 overflow-auto">
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
                     <div>
-                        <h2 className="text-lg font-semibold text-slate-900">Platform Analytics</h2>
-                        <p className="text-xs text-slate-600">Comprehensive performance metrics and insights</p>
+                        <h2 className="text-lg font-semibold text-slate-900">{t('platform:pages.analytics.title')}</h2>
+                        <p className="text-xs text-slate-600">{t('platform:pages.analytics.subtitle')}</p>
                     </div>
                     <div className="flex items-center gap-4">
                         <LanguageSwitcher variant="select" showLabel={true} />
@@ -108,7 +110,7 @@ export default function FTSAnalytics() {
                         <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-xs text-slate-600">All Services</p>
+                                    <p className="text-xs text-slate-600">{t('platform:pages.analytics.allServices')}</p>
                                     <p className="text-2xl font-bold text-blue-600">{psps.length + isoCustomers.length + orchestrationCustomers.length + cryptoCustomers.length + rwaProviders.length}</p>
                                 </div>
                                 <Activity className="h-6 w-6 text-blue-600" />

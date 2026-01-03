@@ -8,9 +8,11 @@ import { Badge } from "@/components/ui/badge";
 import { Activity, CheckCircle2, AlertTriangle, XCircle, Cpu, HardDrive, Database, Code, GitBranch, Wallet, Briefcase } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function FTSSystemHealth() {
     const { platformUser } = usePlatformAuth();
+    const { t } = useI18n();
 
     const { data: psps = [] } = useQuery({
         queryKey: ['provisioned-psps'],
@@ -66,8 +68,8 @@ export default function FTSSystemHealth() {
             <div className="flex-1 overflow-auto">
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10" style={{ height: '64px' }}>
                     <div>
-                        <h2 className="text-lg font-semibold text-slate-900">System Health Monitor</h2>
-                        <p className="text-xs text-slate-600">Real-time platform status and metrics</p>
+                        <h2 className="text-lg font-semibold text-slate-900">{t('platform:pages.systemHealth.title')}</h2>
+                        <p className="text-xs text-slate-600">{t('platform:pages.systemHealth.subtitle')}</p>
                     </div>
                     <div className="flex items-center gap-3">
                         <LanguageSwitcher variant="select" showLabel={true} />

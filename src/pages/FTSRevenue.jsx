@@ -11,10 +11,12 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ArrowLeft, DollarSign, TrendingUp, Calendar, Code, GitBranch, Wallet, Briefcase } from 'lucide-react';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function FTSRevenue() {
     const navigate = useNavigate();
     const { platformUser, loading } = usePlatformAuth();
+    const { t } = useI18n();
     
     const { data: psps = [] } = useQuery({
         queryKey: ['provisioned-psps'],
@@ -65,8 +67,8 @@ export default function FTSRevenue() {
             <div className="flex-1 overflow-auto">
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
                     <div>
-                        <h2 className="text-lg font-semibold text-slate-900">Revenue Management</h2>
-                        <p className="text-xs text-slate-600">Track revenue share and billing across all PSPs</p>
+                        <h2 className="text-lg font-semibold text-slate-900">{t('platform:pages.revenue.title')}</h2>
+                        <p className="text-xs text-slate-600">{t('platform:pages.revenue.subtitle')}</p>
                     </div>
                     <div className="flex items-center gap-4">
                         <LanguageSwitcher variant="select" showLabel={true} />
