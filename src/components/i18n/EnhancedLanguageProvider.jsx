@@ -43,22 +43,45 @@ export function EnhancedLanguageProvider({ children, tenantType = 'platform', te
             try {
                 const loadedTranslations = {};
                 
+                // Static imports for better bundler compatibility
+                const translationModules = {
+                    common: {
+                        en: () => import('./translations/common/en.json'),
+                        fr: () => import('./translations/common/fr.json'),
+                        es: () => import('./translations/common/es.json'),
+                        de: () => import('./translations/common/de.json'),
+                        zh: () => import('./translations/common/zh.json')
+                    },
+                    platform: {
+                        en: () => import('./translations/platform/en.json'),
+                        fr: () => import('./translations/platform/fr.json'),
+                        es: () => import('./translations/platform/es.json'),
+                        de: () => import('./translations/platform/de.json'),
+                        zh: () => import('./translations/platform/zh.json')
+                    }
+                };
+                
                 // Load all required namespaces
                 for (const ns of namespaces) {
                     try {
-                        // Dynamic import based on namespace and language
-                        const module = await import(`@/components/i18n/translations/${ns}/${language}.json`);
-                        loadedTranslations[ns] = module.default;
-                        console.log(`✓ Loaded ${ns}/${language}.json:`, module.default);
-                    } catch (error) {
-                        console.warn(`Translation not found: ${ns}/${language}.json, falling back to English`);
-                        try {
-                            const fallback = await import(`@/components/i18n/translations/${ns}/en.json`);
-                            loadedTranslations[ns] = fallback.default;
-                        } catch {
-                            console.error(`No fallback translation for namespace: ${ns}`);
-                            loadedTranslations[ns] = {};
+                        const nsModules = translationModules[ns];
+                        if (nsModules && nsModules[language]) {
+                            const module = await nsModules[language]();
+                            loadedTranslations[ns] = module.default;
+                            console.log(`✓ Loaded ${ns}/${language}.json:`, module.default);
+                        } else {
+                            console.warn(`Translation not found: ${ns}/${language}.json, falling back to English`);
+                            if (nsModules && nsModules['en']) {
+                                const fallback = await nsModules['en']();
+                                loadedTranslations[ns] = fallback.default;
+                            } else {
+                                console.error(`No fallback translation for namespace: ${ns}`);
+                                loadedTranslations[ns] = {};
+                            }
                         }
+                    } catch (error) {
+                        console.error(`Error loading translation ${ns}/${language}:`, error);
+                        loadedTranslations[ns] = {};
                     }
                 }
 
