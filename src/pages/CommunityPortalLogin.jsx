@@ -99,7 +99,7 @@ export default function CommunityPortalLogin() {
                             <CardHeader>
                                 <div className="flex items-center justify-between mb-2">
                                     <CardTitle>Sign In</CardTitle>
-                                    <LanguageSwitcher variant="compact" showLabel={false} />
+                                    <LanguageSwitcher variant="select" showLabel={false} />
                                 </div>
                             </CardHeader>
                             <CardContent>

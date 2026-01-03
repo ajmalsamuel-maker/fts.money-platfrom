@@ -84,7 +84,7 @@ export default function CryptoGatewayLogin() {
                                 <Wallet className="h-5 w-5 text-blue-600" />
                                 Banking Portal Login
                             </CardTitle>
-                            <LanguageSwitcher variant="compact" showLabel={false} />
+                            <LanguageSwitcher variant="select" showLabel={false} />
                         </div>
                     </CardHeader>
                     <CardContent>

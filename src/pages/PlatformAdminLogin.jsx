@@ -102,7 +102,7 @@ export default function PlatformAdminLogin() {
                                 <Shield className="h-5 w-5 text-blue-600" />
                                 Platform Admin Login
                             </CardTitle>
-                            <LanguageSwitcher variant="compact" showLabel={false} />
+                            <LanguageSwitcher variant="select" showLabel={false} />
                         </div>
                     </CardHeader>
                     <CardContent>

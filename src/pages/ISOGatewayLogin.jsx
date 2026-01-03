@@ -61,7 +61,7 @@ export default function ISOGatewayLogin() {
                                 <p className="text-sm text-slate-600">by FTS.Money</p>
                             </div>
                         </div>
-                        <LanguageSwitcher variant="compact" showLabel={false} />
+                        <LanguageSwitcher variant="select" showLabel={false} />
                     </div>
                 </CardHeader>
                 <CardContent>

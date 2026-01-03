@@ -43,7 +43,7 @@ export default function RWAProviderLogin() {
                             <CardTitle className="text-2xl">RWA Provider Portal</CardTitle>
                             <p className="text-sm text-slate-600 mt-2">Licensed tokenization platform</p>
                         </div>
-                        <LanguageSwitcher variant="compact" showLabel={false} />
+                        <LanguageSwitcher variant="select" showLabel={false} />
                     </div>
                 </CardHeader>
                 <CardContent>

@@ -59,7 +59,7 @@ export default function OrchestrationLogin() {
                                 <p className="text-sm text-slate-600">Sign in to manage your routing rules</p>
                             </div>
                         </div>
-                        <LanguageSwitcher variant="compact" showLabel={false} />
+                        <LanguageSwitcher variant="select" showLabel={false} />
                     </div>
                 </CardHeader>
 
