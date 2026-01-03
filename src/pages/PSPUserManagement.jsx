@@ -176,7 +176,7 @@ export default function PSPUserManagement() {
                     </div>
                     <div className="flex items-center gap-3">
                         <div className="text-right mr-2">
-                            <p className="text-xs text-slate-600">Logged in as</p>
+                            <p className="text-xs text-slate-600">{t('platform:dashboard.loggedInAs')}</p>
                             <p className="text-sm font-medium text-slate-900">{platformUser?.email}</p>
                             <Badge className="mt-1 bg-blue-600 text-white text-xs">
                                 {getRoleLabel(platformUser?.platform_role)}
@@ -184,7 +184,7 @@ export default function PSPUserManagement() {
                         </div>
                         <Button onClick={() => setDialogOpen(true)} className="gap-2 bg-blue-600 hover:bg-blue-700">
                             <Plus className="h-4 w-4" />
-                            Add User
+                            {t('platform:pages.pspUsers.addUser')}
                         </Button>
                     </div>
                 </header>
@@ -193,15 +193,15 @@ export default function PSPUserManagement() {
 
                 <Card className="mb-6">
                     <CardHeader>
-                        <CardTitle className="text-sm">Filter by PSP</CardTitle>
+                        <CardTitle className="text-sm">{t('platform:pages.pspUsers.filterByPSP')}</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <Select value={selectedPSP} onValueChange={setSelectedPSP}>
                             <SelectTrigger>
-                                <SelectValue placeholder="All PSPs" />
+                                <SelectValue placeholder={t('platform:pages.pspUsers.allPSPs')} />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="all">All PSPs</SelectItem>
+                                <SelectItem value="all">{t('platform:pages.pspUsers.allPSPs')}</SelectItem>
                                 {psps.map(psp => (
                                     <SelectItem key={psp.psp_code} value={psp.psp_code}>
                                         {psp.psp_name} ({psp.psp_code})
@@ -214,13 +214,13 @@ export default function PSPUserManagement() {
 
                 <Card>
                     <CardHeader>
-                        <CardTitle>Users ({users.length})</CardTitle>
+                        <CardTitle>{t('platform:pages.pspUsers.users')} ({users.length})</CardTitle>
                     </CardHeader>
                     <CardContent>
                         {isLoading ? (
-                            <p className="text-center py-4 text-slate-600">Loading...</p>
+                            <p className="text-center py-4 text-slate-600">{t('common:labels.loading')}</p>
                         ) : users.length === 0 ? (
-                            <p className="text-center py-4 text-slate-600">No users found</p>
+                            <p className="text-center py-4 text-slate-600">{t('platform:pages.pspUsers.noUsers')}</p>
                         ) : (
                             <div className="space-y-3">
                                 {users.map(user => (
@@ -282,11 +282,11 @@ export default function PSPUserManagement() {
                 }}>
                     <DialogContent>
                         <DialogHeader>
-                            <DialogTitle>{editingUser ? 'Edit User' : 'Add New User'}</DialogTitle>
+                            <DialogTitle>{editingUser ? t('platform:pages.pspUsers.editUser') : t('platform:pages.pspUsers.addNewUser')}</DialogTitle>
                         </DialogHeader>
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <div>
-                                <Label>Email</Label>
+                                <Label>{t('common:labels.email')}</Label>
                                 <Input
                                     type="email"
                                     value={formData.email}
@@ -296,7 +296,7 @@ export default function PSPUserManagement() {
                                 />
                             </div>
                             <div>
-                                <Label>Full Name</Label>
+                                <Label>{t('common:labels.fullName')}</Label>
                                 <Input
                                     value={formData.full_name}
                                     onChange={(e) => setFormData({...formData, full_name: e.target.value})}
@@ -304,10 +304,10 @@ export default function PSPUserManagement() {
                                 />
                             </div>
                             <div>
-                                <Label>PSP Code *</Label>
+                                <Label>{t('platform:pages.pspUsers.pspCode')} *</Label>
                                 <Select value={formData.psp_code} onValueChange={(value) => setFormData({...formData, psp_code: value})} required>
                                     <SelectTrigger>
-                                        <SelectValue placeholder="Select PSP" />
+                                        <SelectValue placeholder={t('platform:pages.pspUsers.selectPSP')} />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {psps.map(psp => (
@@ -319,15 +319,15 @@ export default function PSPUserManagement() {
                                 </Select>
                             </div>
                             <div>
-                                <Label>Role</Label>
+                                <Label>{t('common:labels.role')}</Label>
                                 <Select value={formData.role} onValueChange={(value) => setFormData({...formData, role: value})}>
                                     <SelectTrigger>
                                         <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="user">User</SelectItem>
-                                        <SelectItem value="admin">Admin</SelectItem>
-                                        <SelectItem value="staff">Staff</SelectItem>
+                                        <SelectItem value="user">{t('common:roles.user')}</SelectItem>
+                                        <SelectItem value="admin">{t('common:roles.admin')}</SelectItem>
+                                        <SelectItem value="staff">{t('common:roles.staff')}</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
@@ -335,19 +335,19 @@ export default function PSPUserManagement() {
                                 <div>
                                     <Label className="flex items-center gap-2">
                                         <Lock className="h-4 w-4" />
-                                        New Password (leave blank to keep current)
+                                        {t('platform:pages.pspUsers.newPassword')}
                                     </Label>
                                     <Input
                                         type="password"
                                         value={formData.password}
                                         onChange={(e) => setFormData({...formData, password: e.target.value})}
-                                        placeholder="Enter new password or leave blank"
+                                        placeholder={t('platform:pages.pspUsers.enterNewPassword')}
                                     />
                                 </div>
                             )}
                             {!editingUser && (
                                 <div>
-                                    <Label>Default Password</Label>
+                                    <Label>{t('platform:pages.pspUsers.defaultPassword')}</Label>
                                     <Input
                                         type="password"
                                         value={formData.password}
@@ -356,14 +356,14 @@ export default function PSPUserManagement() {
                                 </div>
                             )}
                             <div>
-                                <Label>Status</Label>
+                                <Label>{t('common:labels.status')}</Label>
                                 <Select value={formData.status} onValueChange={(value) => setFormData({...formData, status: value})}>
                                     <SelectTrigger>
                                         <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="active">Active</SelectItem>
-                                        <SelectItem value="inactive">Inactive</SelectItem>
+                                        <SelectItem value="active">{t('common:status.active')}</SelectItem>
+                                        <SelectItem value="inactive">{t('common:status.inactive')}</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
@@ -371,8 +371,8 @@ export default function PSPUserManagement() {
                                 <div className="flex items-center gap-3">
                                     <KeyRound className="h-5 w-5 text-slate-600" />
                                     <div>
-                                        <Label className="text-sm font-medium">Two-Factor Authentication</Label>
-                                        <p className="text-xs text-slate-500">Require 2FA for this user</p>
+                                        <Label className="text-sm font-medium">{t('platform:pages.pspUsers.twoFactorAuth')}</Label>
+                                        <p className="text-xs text-slate-500">{t('platform:pages.pspUsers.require2FA')}</p>
                                     </div>
                                 </div>
                                 <Switch
@@ -381,7 +381,7 @@ export default function PSPUserManagement() {
                                 />
                             </div>
                             <Button type="submit" className="w-full" disabled={!formData.psp_code || createMutation.isPending || updateMutation.isPending}>
-                                {editingUser ? 'Update User' : 'Create User'}
+                                {editingUser ? t('platform:pages.pspUsers.updateUser') : t('platform:pages.pspUsers.createUser')}
                             </Button>
                         </form>
                     </DialogContent>

@@ -187,12 +187,12 @@ export default function PlatformUserManagement() {
                                 <DialogTrigger asChild>
                                     <Button className="gap-2 bg-blue-600 hover:bg-blue-700">
                                         <UserPlus className="h-4 w-4" />
-                                        Invite User
+                                        {t('platform:pages.platformUsers.inviteUser')}
                                     </Button>
                                 </DialogTrigger>
                         <DialogContent>
                             <DialogHeader>
-                                <DialogTitle>Invite New Platform User</DialogTitle>
+                                <DialogTitle>{t('platform:pages.platformUsers.inviteNewUser')}</DialogTitle>
                             </DialogHeader>
                             <div className="space-y-4 mt-4">
                                 {error && (
@@ -201,7 +201,7 @@ export default function PlatformUserManagement() {
                                     </Alert>
                                 )}
                                 <div>
-                                    <Label>Full Name</Label>
+                                    <Label>{t('common:labels.fullName')}</Label>
                                     <Input
                                         value={inviteForm.full_name}
                                         onChange={(e) => setInviteForm({...inviteForm, full_name: e.target.value})}
@@ -209,7 +209,7 @@ export default function PlatformUserManagement() {
                                     />
                                 </div>
                                 <div>
-                                    <Label>Email Address</Label>
+                                    <Label>{t('common:labels.email')}</Label>
                                     <Input
                                         type="email"
                                         value={inviteForm.email}
@@ -218,16 +218,16 @@ export default function PlatformUserManagement() {
                                     />
                                 </div>
                                 <div>
-                                    <Label>Temporary Password</Label>
+                                    <Label>{t('platform:pages.platformUsers.tempPassword')}</Label>
                                     <Input
                                         type="password"
                                         value={inviteForm.password}
                                         onChange={(e) => setInviteForm({...inviteForm, password: e.target.value})}
-                                        placeholder="Minimum 8 characters"
+                                        placeholder={t('platform:pages.platformUsers.minCharacters')}
                                     />
                                 </div>
                                 <div>
-                                    <Label>Role</Label>
+                                    <Label>{t('common:labels.role')}</Label>
                                     <Select value={inviteForm.role} onValueChange={(v) => setInviteForm({...inviteForm, role: v})}>
                                         <SelectTrigger>
                                             <SelectValue />
@@ -243,7 +243,7 @@ export default function PlatformUserManagement() {
                                     </Select>
                                 </div>
                                 <Button onClick={handleInvite} disabled={inviteMutation.isPending} className="w-full">
-                                    {inviteMutation.isPending ? 'Creating...' : 'Create User'}
+                                    {inviteMutation.isPending ? t('common:status.creating') : t('platform:pages.platformUsers.createUser')}
                                 </Button>
                             </div>
                         </DialogContent>
@@ -257,7 +257,7 @@ export default function PlatformUserManagement() {
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
                                 <Users className="h-5 w-5" />
-                                Platform Users ({users.length})
+                                {t('platform:pages.platformUsers.platformUsers')} ({users.length})
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
@@ -347,18 +347,18 @@ export default function PlatformUserManagement() {
             <AlertDialog open={!!deleteUser} onOpenChange={() => setDeleteUser(null)}>
                 <AlertDialogContent>
                     <AlertDialogHeader>
-                        <AlertDialogTitle>Delete User</AlertDialogTitle>
+                        <AlertDialogTitle>{t('platform:pages.platformUsers.deleteUser')}</AlertDialogTitle>
                         <AlertDialogDescription>
-                            Are you sure you want to delete {deleteUser?.full_name}? This action cannot be undone.
+                            {t('platform:pages.platformUsers.confirmDelete', { name: deleteUser?.full_name })}
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogCancel>{t('common:actions.cancel')}</AlertDialogCancel>
                         <AlertDialogAction
                             onClick={() => deleteMutation.mutate(deleteUser.id)}
                             className="bg-red-600 hover:bg-red-700"
                         >
-                            Delete
+                            {t('common:actions.delete')}
                         </AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
@@ -371,11 +371,11 @@ export default function PlatformUserManagement() {
             }}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Reset Password</DialogTitle>
+                        <DialogTitle>{t('platform:pages.platformUsers.resetPassword')}</DialogTitle>
                     </DialogHeader>
                     <div className="space-y-4 mt-4">
                         <p className="text-sm text-slate-600">
-                            Resetting password for <strong>{resetPasswordUser?.full_name}</strong> ({resetPasswordUser?.email})
+                            {t('platform:pages.platformUsers.resettingPasswordFor')} <strong>{resetPasswordUser?.full_name}</strong> ({resetPasswordUser?.email})
                         </p>
                         {resetError && (
                             <Alert variant="destructive">
@@ -383,12 +383,12 @@ export default function PlatformUserManagement() {
                             </Alert>
                         )}
                         <div>
-                            <Label>New Password</Label>
+                            <Label>{t('platform:pages.platformUsers.newPassword')}</Label>
                             <Input
                                 type="password"
                                 value={newPassword}
                                 onChange={(e) => setNewPassword(e.target.value)}
-                                placeholder="Enter new password (min 8 characters)"
+                                placeholder={t('platform:pages.platformUsers.enterNewPassword')}
                             />
                         </div>
                         <div className="flex gap-2">
@@ -401,7 +401,7 @@ export default function PlatformUserManagement() {
                                 }}
                                 className="flex-1"
                             >
-                                Cancel
+                                {t('common:actions.cancel')}
                             </Button>
                             <Button
                                 onClick={() => {
@@ -417,7 +417,7 @@ export default function PlatformUserManagement() {
                                 disabled={resetPasswordMutation.isPending}
                                 className="flex-1 bg-blue-600 hover:bg-blue-700"
                             >
-                                {resetPasswordMutation.isPending ? 'Resetting...' : 'Reset Password'}
+                                {resetPasswordMutation.isPending ? t('common:status.resetting') : t('platform:pages.platformUsers.resetPasswordBtn')}
                             </Button>
                         </div>
                     </div>

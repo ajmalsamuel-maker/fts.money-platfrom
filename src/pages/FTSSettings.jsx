@@ -120,16 +120,16 @@ export default function FTSSettings() {
                         className="mb-3"
                     >
                         <ArrowLeft className="h-4 w-4 mr-2" />
-                        Back to Platform
+                        {t('platform:pages.settings.backToPlatform')}
                     </Button>
                     <div className="flex items-center justify-between">
                         <div>
-                            <h1 className="text-2xl font-bold text-slate-900">Platform Settings</h1>
-                            <p className="text-sm text-slate-600">Configure global platform settings and preferences</p>
+                            <h1 className="text-2xl font-bold text-slate-900">{t('platform:pages.settings.title')}</h1>
+                            <p className="text-sm text-slate-600">{t('platform:pages.settings.subtitle')}</p>
                         </div>
                         <Button className="bg-blue-600 hover:bg-blue-700 gap-2">
                             <Save className="h-4 w-4" />
-                            Save Changes
+                            {t('common:actions.saveChanges')}
                         </Button>
                     </div>
                 </div>
@@ -140,31 +140,30 @@ export default function FTSSettings() {
                     <TabsList className="mb-6">
                         <TabsTrigger value="general" className="gap-2">
                             <Settings className="h-4 w-4" />
-                            General
+                            {t('platform:pages.settings.general')}
                         </TabsTrigger>
                         <TabsTrigger value="lei" className="gap-2">
                             <FileCheck className="h-4 w-4" />
-                            Platform LEI/vLEI
+                            {t('platform:pages.settings.platformLEI')}
                         </TabsTrigger>
                         <TabsTrigger value="security" className="gap-2">
                             <Shield className="h-4 w-4" />
-                            Security
+                            {t('platform:pages.settings.security')}
                         </TabsTrigger>
                         <TabsTrigger value="notifications" className="gap-2">
                             <Bell className="h-4 w-4" />
-                            Notifications
-                        </TabsTrigger>
+                            {t('platform:pages.settings.notifications')}
                     </TabsList>
 
                     <TabsContent value="general">
                         <Card>
                             <CardHeader>
-                                <CardTitle>General Settings</CardTitle>
-                                <CardDescription>Configure basic platform settings</CardDescription>
+                                <CardTitle>{t('platform:pages.settings.generalSettings')}</CardTitle>
+                                <CardDescription>{t('platform:pages.settings.generalDesc')}</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-6">
                                 <div>
-                                    <Label>Platform Name</Label>
+                                    <Label>{t('platform:pages.settings.platformName')}</Label>
                                     <Input
                                         value={settings.platform_name}
                                         onChange={(e) => setSettings({...settings, platform_name: e.target.value})}

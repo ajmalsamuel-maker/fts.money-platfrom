@@ -88,9 +88,9 @@ export default function FTSRevenue() {
                         <CardContent className="p-6">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm text-slate-600">Total Monthly Revenue</p>
+                                    <p className="text-sm text-slate-600">{t('platform:pages.revenue.totalMonthlyRevenue')}</p>
                                     <p className="text-3xl font-bold text-slate-900">${(totalRevenue / 1000).toFixed(0)}K</p>
-                                    <p className="text-xs text-emerald-600 mt-1">All services</p>
+                                    <p className="text-xs text-emerald-600 mt-1">{t('platform:pages.revenue.allServices')}</p>
                                 </div>
                                 <DollarSign className="h-10 w-10 text-blue-600" />
                             </div>
@@ -100,9 +100,9 @@ export default function FTSRevenue() {
                         <CardContent className="p-6">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm text-slate-600">Annual Run Rate</p>
+                                    <p className="text-sm text-slate-600">{t('platform:pages.revenue.annualRunRate')}</p>
                                     <p className="text-3xl font-bold text-slate-900">${((totalRevenue * 12) / 1000000).toFixed(1)}M</p>
-                                    <p className="text-xs text-slate-500 mt-1">Projected</p>
+                                    <p className="text-xs text-slate-500 mt-1">{t('platform:pages.revenue.projected')}</p>
                                 </div>
                                 <TrendingUp className="h-10 w-10 text-emerald-600" />
                             </div>
@@ -112,9 +112,9 @@ export default function FTSRevenue() {
                         <CardContent className="p-6">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm text-slate-600">Active Customers</p>
+                                    <p className="text-sm text-slate-600">{t('platform:pages.revenue.activeCustomers')}</p>
                                     <p className="text-3xl font-bold text-slate-900">{psps.length + isoCustomers.length + orchestrationCustomers.length + cryptoCustomers.length + rwaProviders.length}</p>
-                                    <p className="text-xs text-slate-500 mt-1">All platforms</p>
+                                    <p className="text-xs text-slate-500 mt-1">{t('platform:pages.revenue.allPlatforms')}</p>
                                 </div>
                                 <Calendar className="h-10 w-10 text-purple-600" />
                             </div>
@@ -124,9 +124,9 @@ export default function FTSRevenue() {
                         <CardContent className="p-6">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm text-slate-600">Growth</p>
+                                    <p className="text-sm text-slate-600">{t('common:labels.growth')}</p>
                                     <p className="text-3xl font-bold text-emerald-600">+28%</p>
-                                    <p className="text-xs text-slate-500 mt-1">vs last month</p>
+                                    <p className="text-xs text-slate-500 mt-1">{t('platform:pages.revenue.vsLastMonth')}</p>
                                 </div>
                                 <TrendingUp className="h-10 w-10 text-emerald-600" />
                             </div>
@@ -205,16 +205,16 @@ export default function FTSRevenue() {
                 <div className="grid grid-cols-2 gap-6">
                     <Card>
                         <CardHeader>
-                            <CardTitle>Revenue by Service Type</CardTitle>
+                            <CardTitle>{t('platform:pages.revenue.revenueByService')}</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <Table>
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead>Service</TableHead>
-                                        <TableHead>Customers</TableHead>
-                                        <TableHead className="text-right">Monthly Revenue</TableHead>
-                                        <TableHead className="text-right">% of Total</TableHead>
+                                        <TableHead>{t('common:labels.service')}</TableHead>
+                                        <TableHead>{t('common:labels.customers')}</TableHead>
+                                        <TableHead className="text-right">{t('platform:pages.revenue.monthlyRevenue')}</TableHead>
+                                        <TableHead className="text-right">{t('platform:pages.revenue.percentTotal')}</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -255,15 +255,15 @@ export default function FTSRevenue() {
 
                     <Card>
                         <CardHeader>
-                            <CardTitle>Top PSP Customers</CardTitle>
+                            <CardTitle>{t('platform:pages.revenue.topPSPCustomers')}</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <Table>
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead>PSP Name</TableHead>
-                                        <TableHead>Tier</TableHead>
-                                        <TableHead className="text-right">Monthly Revenue</TableHead>
+                                        <TableHead>{t('common:labels.pspName')}</TableHead>
+                                        <TableHead>{t('common:labels.tier')}</TableHead>
+                                        <TableHead className="text-right">{t('platform:pages.revenue.monthlyRevenue')}</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
