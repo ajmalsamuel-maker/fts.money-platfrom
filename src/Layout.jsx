@@ -1,3 +1,7 @@
+/**
+ * Main Layout Component
+ * @version 1.2.0
+ */
 import React from 'react';
 import { EnhancedLanguageProvider } from '@/components/i18n/EnhancedLanguageProvider';
 import { AccessibilityProvider } from '@/components/accessibility/AccessibilityProvider';
