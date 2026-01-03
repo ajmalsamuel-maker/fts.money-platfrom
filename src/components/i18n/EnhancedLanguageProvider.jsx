@@ -358,6 +358,8 @@ export function EnhancedLanguageProvider({ children, tenantType = 'platform', te
                     platformConfigDesc: "System settings",
                     multilingualSystem: "Multilingual System",
                     multilingualSystemDesc: "i18n management",
+                    aiTranslationStudio: "AI Translation Studio",
+                    aiTranslationStudioDesc: "Auto-generate translations",
                     productEcosystem: "Product Ecosystem",
                     productEcosystemDesc: "Products & models",
                     verticalSolutions: "Vertical Solutions",

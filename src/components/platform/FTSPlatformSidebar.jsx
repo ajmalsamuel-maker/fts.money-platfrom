@@ -173,6 +173,7 @@ const menuSections = [
         items: [
             { labelKey: 'platformConfig', descKey: 'platformConfigDesc', path: 'FTSSettings', icon: Settings },
             { labelKey: 'multilingualSystem', descKey: 'multilingualSystemDesc', path: 'PlatformLanguageManagement', icon: Globe, priority: true },
+            { labelKey: 'aiTranslationStudio', descKey: 'aiTranslationStudioDesc', path: 'AITranslationStudio', icon: Sparkles, priority: true },
             { labelKey: 'productEcosystem', descKey: 'productEcosystemDesc', path: 'FTSProductEcosystemReport', icon: Package },
             { labelKey: 'verticalSolutions', descKey: 'verticalSolutionsDesc', path: 'FTSVerticalSolutions', icon: Building2 },
             { labelKey: 'advancedTools', descKey: 'advancedToolsDesc', path: 'ModuleCatalogTest', icon: Code },
