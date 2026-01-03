@@ -89,17 +89,17 @@ const menuSections = [
         title: 'Services & Marketplace',
         defaultOpen: false,
         items: [
-            { label: 'Service Catalog', path: 'FTSServiceManager', icon: Package, description: 'All services', priority: true },
-            { label: 'Payment Providers', path: 'PaymentProviderManagement', icon: CreditCard, description: 'Provider setup & pricing', priority: true },
-            { label: 'Global Standards Registry', path: 'GlobalStandardsRegistry', icon: Globe, description: 'ISO, EMVCo, SWIFT', priority: true },
-            { label: 'ISO Gateway', path: 'ISOGatewayCustomers', icon: Code, description: 'ISO customers', priority: true },
-            { label: 'ISO Connections', path: 'ISOGatewayConnections', icon: GitBranch, description: 'Translation routing' },
-            { label: 'ISO Test Console', path: 'ISOGatewayTestConsole', icon: TestTube2, description: 'API testing' },
-            { label: 'ISO Message Monitor', path: 'ISOMessageMonitor', icon: Activity, description: 'Real-time logs' },
-            { label: 'Orchestration', path: 'OrchestrationCustomers', icon: Workflow, description: 'Routing customers', priority: true },
-            { label: 'Payout Routes', path: 'FTSPayoutRoutes', icon: Wallet, description: 'Payout methods' },
-            { label: 'Service Providers', path: 'FTSServiceProviders', icon: Users, description: 'Vendors' },
-            { label: 'Wholesale Marketplace', path: 'PSPWholesaleMarketplace', icon: Building2, description: 'PSP-to-PSP' }
+            { labelKey: 'serviceCatalog', descKey: 'serviceCatalogDesc', path: 'FTSServiceManager', icon: Package, priority: true },
+            { labelKey: 'paymentProviders', descKey: 'paymentProvidersDesc', path: 'PaymentProviderManagement', icon: CreditCard, priority: true },
+            { labelKey: 'globalStandards', descKey: 'globalStandardsDesc', path: 'GlobalStandardsRegistry', icon: Globe, priority: true },
+            { labelKey: 'isoGateway', descKey: 'isoGatewayDesc', path: 'ISOGatewayCustomers', icon: Code, priority: true },
+            { labelKey: 'isoConnections', descKey: 'isoConnectionsDesc', path: 'ISOGatewayConnections', icon: GitBranch },
+            { labelKey: 'isoTestConsole', descKey: 'isoTestConsoleDesc', path: 'ISOGatewayTestConsole', icon: TestTube2 },
+            { labelKey: 'isoMessageMonitor', descKey: 'isoMessageMonitorDesc', path: 'ISOMessageMonitor', icon: Activity },
+            { labelKey: 'orchestration', descKey: 'orchestrationDesc', path: 'OrchestrationCustomers', icon: Workflow, priority: true },
+            { labelKey: 'payoutRoutes', descKey: 'payoutRoutesDesc', path: 'FTSPayoutRoutes', icon: Wallet },
+            { labelKey: 'serviceProviders', descKey: 'serviceProvidersDesc', path: 'FTSServiceProviders', icon: Users },
+            { labelKey: 'wholesaleMarketplace', descKey: 'wholesaleMarketplaceDesc', path: 'PSPWholesaleMarketplace', icon: Building2 }
         ]
     },
     {
@@ -107,15 +107,15 @@ const menuSections = [
         title: 'User & Access Management',
         defaultOpen: false,
         items: [
-            { label: 'Platform Admins', path: 'PlatformUserManagement', icon: Shield, description: 'FTS administrators', priority: true },
-            { label: 'Community Users', path: 'CommunityUserManagement', icon: Users, description: 'Portal users' },
-            { label: 'ISO Gateway Users', path: 'ISOGatewayUserManagement', icon: Code, description: 'ISO RBAC' },
-            { label: 'Orchestration Users', path: 'OrchestrationUserManagement', icon: GitBranch, description: 'Orch RBAC' },
-            { label: 'Crypto Banking Users', path: 'CryptoGatewayUserManagement', icon: Wallet, description: 'Crypto RBAC' },
-            { label: 'RWA Platform Users', path: 'RWAProviderUserManagement', icon: Briefcase, description: 'RWA RBAC' },
-            { label: 'Role & Permissions', path: 'RolePermissionManagement', icon: Shield, description: 'Edit matrix', priority: true },
-            { label: 'Client Accounts', path: 'FTSClients', icon: Users, description: 'Client management' },
-            { label: 'Tenant Management', path: 'TenantManagement', icon: Building2, description: 'Multi-tenancy', superAdminOnly: true }
+            { labelKey: 'platformAdmins', descKey: 'platformAdminsDesc', path: 'PlatformUserManagement', icon: Shield, priority: true },
+            { labelKey: 'communityUsers', descKey: 'communityUsersDesc', path: 'CommunityUserManagement', icon: Users },
+            { labelKey: 'isoGatewayUsers', descKey: 'isoGatewayUsersDesc', path: 'ISOGatewayUserManagement', icon: Code },
+            { labelKey: 'orchestrationUsers', descKey: 'orchestrationUsersDesc', path: 'OrchestrationUserManagement', icon: GitBranch },
+            { labelKey: 'cryptoBankingUsers', descKey: 'cryptoBankingUsersDesc', path: 'CryptoGatewayUserManagement', icon: Wallet },
+            { labelKey: 'rwaPlatformUsers', descKey: 'rwaPlatformUsersDesc', path: 'RWAProviderUserManagement', icon: Briefcase },
+            { labelKey: 'rolePermissions', descKey: 'rolePermissionsDesc', path: 'RolePermissionManagement', icon: Shield, priority: true },
+            { labelKey: 'clientAccounts', descKey: 'clientAccountsDesc', path: 'FTSClients', icon: Users },
+            { labelKey: 'tenantManagement', descKey: 'tenantManagementDesc', path: 'TenantManagement', icon: Building2, superAdminOnly: true }
         ]
     },
     {
@@ -123,11 +123,11 @@ const menuSections = [
         title: 'Financial Operations',
         defaultOpen: false,
         items: [
-            { label: 'Service Billing', path: 'FTSServiceBilling', icon: FileText, description: 'ISO & Orchestration', priority: true },
-            { label: 'Master Pricing', path: 'MasterPricingManagement', icon: DollarSign, description: 'All pricing control' },
-            { label: 'Platform Pricing', path: 'PlatformPricingConfiguration', icon: DollarSign, description: 'PSP tier pricing' },
-            { label: 'Custom Reports', path: 'FTSReporting', icon: FileText, description: 'Report builder' },
-            { label: 'Accounting', path: 'XeroIntegration', icon: Zap, description: 'Xero integration' }
+            { labelKey: 'serviceBilling', descKey: 'serviceBillingDesc', path: 'FTSServiceBilling', icon: FileText, priority: true },
+            { labelKey: 'masterPricing', descKey: 'masterPricingDesc', path: 'MasterPricingManagement', icon: DollarSign },
+            { labelKey: 'platformPricing', descKey: 'platformPricingDesc', path: 'PlatformPricingConfiguration', icon: DollarSign },
+            { labelKey: 'customReports', descKey: 'customReportsDesc', path: 'FTSReporting', icon: FileText },
+            { labelKey: 'accounting', descKey: 'accountingDesc', path: 'XeroIntegration', icon: Zap }
         ]
     },
     {
@@ -135,13 +135,13 @@ const menuSections = [
         title: 'Compliance & Security',
         defaultOpen: false,
         items: [
-            { label: 'LEI/vLEI Dashboard', path: 'LEIComplianceDashboard', icon: Shield, description: 'Credentials', priority: true },
-            { label: 'Compliance Testing', path: 'FTSComplianceTesting', icon: TestTube2, description: 'Validation' },
-            { label: 'Platform Audit Logs', path: 'PlatformAuditLogs', icon: FileText, description: 'Complete audit trail', priority: true },
-            { label: 'Access Logs', path: 'EnhancedAuditLogs', icon: FileText, description: 'Access analytics' },
-            { label: 'Policy Management', path: 'FTSCompliance', icon: Shield, description: 'Policies' },
-            { label: 'Workflows', path: 'WorkflowManagement', icon: GitBranch, description: 'ISO processes' },
-            { label: 'Data Retention', path: 'DataRetentionManagement', icon: Database, description: 'GDPR' }
+            { labelKey: 'leiDashboard', descKey: 'leiDashboardDesc', path: 'LEIComplianceDashboard', icon: Shield, priority: true },
+            { labelKey: 'complianceTesting', descKey: 'complianceTestingDesc', path: 'FTSComplianceTesting', icon: TestTube2 },
+            { labelKey: 'platformAuditLogs', descKey: 'platformAuditLogsDesc', path: 'PlatformAuditLogs', icon: FileText, priority: true },
+            { labelKey: 'accessLogs', descKey: 'accessLogsDesc', path: 'EnhancedAuditLogs', icon: FileText },
+            { labelKey: 'policyManagement', descKey: 'policyManagementDesc', path: 'FTSCompliance', icon: Shield },
+            { labelKey: 'workflows', descKey: 'workflowsDesc', path: 'WorkflowManagement', icon: GitBranch },
+            { labelKey: 'dataRetention', descKey: 'dataRetentionDesc', path: 'DataRetentionManagement', icon: Database }
         ]
     },
     {
@@ -149,12 +149,12 @@ const menuSections = [
         title: 'Infrastructure',
         defaultOpen: false,
         items: [
-            { label: 'Kong Gateway Setup', path: 'KongGatewaySetup', icon: Zap, description: 'Deploy API Gateway', priority: true },
-            { label: 'Kong API Keys', path: 'KongAPIKeyManagement', icon: Key, description: 'Multi-tenant API keys', priority: true },
-            { label: 'Kong API Integration', path: 'KongAPIIntegrationGuide', icon: Code, description: 'External API docs', priority: true },
-            { label: 'Domain Management', path: 'FTSDomainManagement', icon: Globe, description: 'SSL & DNS' },
-            { label: 'API Gateway Config', path: 'APIGatewayConfiguration', icon: Zap, description: 'Gateway settings' },
-            { label: 'Blockchain', path: 'FTSBlockchainIntegration', icon: Globe, description: 'Blockchain integrations' }
+            { labelKey: 'kongGatewaySetup', descKey: 'kongGatewaySetupDesc', path: 'KongGatewaySetup', icon: Zap, priority: true },
+            { labelKey: 'kongAPIKeys', descKey: 'kongAPIKeysDesc', path: 'KongAPIKeyManagement', icon: Key, priority: true },
+            { labelKey: 'kongAPIIntegration', descKey: 'kongAPIIntegrationDesc', path: 'KongAPIIntegrationGuide', icon: Code, priority: true },
+            { labelKey: 'domainManagement', descKey: 'domainManagementDesc', path: 'FTSDomainManagement', icon: Globe },
+            { labelKey: 'apiGatewayConfig', descKey: 'apiGatewayConfigDesc', path: 'APIGatewayConfiguration', icon: Zap },
+            { labelKey: 'blockchain', descKey: 'blockchainDesc', path: 'FTSBlockchainIntegration', icon: Globe }
         ]
     },
     {
@@ -162,8 +162,8 @@ const menuSections = [
         title: 'Documentation',
         defaultOpen: false,
         items: [
-            { label: 'Documentation Hub', path: 'FTSDocumentation', icon: BookOpen, description: 'Complete platform docs', priority: true },
-            { label: 'Architecture Docs', path: 'FTSArchitectureDoc', icon: BookOpen, description: 'System design' }
+            { labelKey: 'documentationHub', descKey: 'documentationHubDesc', path: 'FTSDocumentation', icon: BookOpen, priority: true },
+            { labelKey: 'architectureDocs', descKey: 'architectureDocsDesc', path: 'FTSArchitectureDoc', icon: BookOpen }
         ]
     },
     {
@@ -171,12 +171,12 @@ const menuSections = [
         title: 'Settings & Resources',
         defaultOpen: false,
         items: [
-            { label: 'Platform Config', path: 'FTSSettings', icon: Settings, description: 'System settings' },
-            { label: 'Multilingual System', path: 'PlatformLanguageManagement', icon: Globe, description: 'i18n management', priority: true },
-            { label: 'Product Ecosystem', path: 'FTSProductEcosystemReport', icon: Package, description: 'Products & models' },
-            { label: 'Vertical Solutions', path: 'FTSVerticalSolutions', icon: Building2, description: 'Industry offerings' },
-            { label: 'Advanced Tools', path: 'ModuleCatalogTest', icon: Code, description: 'Module testing' },
-            { label: 'LEI Phase 1 Testing', path: 'LEIPhase1Testing', icon: TestTube2, description: 'Test LEI integration' }
+            { labelKey: 'platformConfig', descKey: 'platformConfigDesc', path: 'FTSSettings', icon: Settings },
+            { labelKey: 'multilingualSystem', descKey: 'multilingualSystemDesc', path: 'PlatformLanguageManagement', icon: Globe, priority: true },
+            { labelKey: 'productEcosystem', descKey: 'productEcosystemDesc', path: 'FTSProductEcosystemReport', icon: Package },
+            { labelKey: 'verticalSolutions', descKey: 'verticalSolutionsDesc', path: 'FTSVerticalSolutions', icon: Building2 },
+            { labelKey: 'advancedTools', descKey: 'advancedToolsDesc', path: 'ModuleCatalogTest', icon: Code },
+            { labelKey: 'leiPhase1Testing', descKey: 'leiPhase1TestingDesc', path: 'LEIPhase1Testing', icon: TestTube2 }
         ]
     }
 ];
