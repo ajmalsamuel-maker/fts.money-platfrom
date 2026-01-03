@@ -95,29 +95,44 @@ export default function PlatformLanguageManagement() {
 
     const updateLanguagesMutation = useMutation({
         mutationFn: async ({ serviceId, serviceType, languageConfig }) => {
+            console.log('Saving language config:', { serviceId, serviceType, languageConfig });
+            
             const updateData = {
                 enabled_languages: languageConfig.enabled_languages,
                 default_language: languageConfig.default_language
             };
 
+            let result;
             switch (serviceType) {
                 case 'psp':
-                    return await base44.entities.ProvisionedPSP.update(serviceId, {
-                        branding: { ...(selectedPSP?.branding || {}), ...updateData }
+                    // Fetch current PSP to get latest branding
+                    const currentPSP = await base44.entities.ProvisionedPSP.list();
+                    const psp = currentPSP.find(p => p.id === serviceId);
+                    result = await base44.entities.ProvisionedPSP.update(serviceId, {
+                        branding: { ...(psp?.branding || {}), ...updateData }
                     });
+                    break;
                 case 'iso':
-                    return await base44.entities.ISOGatewayCustomer.update(serviceId, updateData);
+                    result = await base44.entities.ISOGatewayCustomer.update(serviceId, updateData);
+                    break;
                 case 'orchestration':
-                    return await base44.entities.OrchestrationCustomer.update(serviceId, updateData);
+                    result = await base44.entities.OrchestrationCustomer.update(serviceId, updateData);
+                    break;
                 case 'crypto':
-                    return await base44.entities.CryptoGatewayCustomer.update(serviceId, updateData);
+                    result = await base44.entities.CryptoGatewayCustomer.update(serviceId, updateData);
+                    break;
                 case 'rwa':
-                    return await base44.entities.RWAProvider.update(serviceId, updateData);
+                    result = await base44.entities.RWAProvider.update(serviceId, updateData);
+                    break;
                 default:
                     throw new Error('Unknown service type');
             }
+            
+            console.log('Update result:', result);
+            return result;
         },
-        onSuccess: () => {
+        onSuccess: (data, variables) => {
+            console.log('Save successful:', data);
             queryClient.invalidateQueries(['provisioned-psps']);
             queryClient.invalidateQueries(['iso-customers']);
             queryClient.invalidateQueries(['orchestration-customers']);
@@ -127,6 +142,7 @@ export default function PlatformLanguageManagement() {
             toast.success('Language configuration saved!');
         },
         onError: (error) => {
+            console.error('Save failed:', error);
             toast.error(`Failed to save: ${error.message}`);
         }
     });
