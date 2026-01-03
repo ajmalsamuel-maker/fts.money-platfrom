@@ -1,9 +1,9 @@
 {
   "dashboard": {
-    "title": "Kontrollzentrum",
-    "subtitle": "Einheitliche Verwaltung für alle PSP-Instanzen und globale Konfigurationen"
+    "title": "Kontrollzentrum Dashboard",
+    "subtitle": "Einheitliche Verwaltung aller PSP-Instanzen und globalen Konfigurationen"
   },
   "services": {
-    "title": "Plattform-Dienste"
+    "title": "Plattformdienste"
   }
 }

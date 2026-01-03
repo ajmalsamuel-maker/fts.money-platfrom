@@ -1,10 +1,15 @@
 {
-  "loading": "Cargando...",
-  "save": "Guardar",
-  "cancel": "Cancelar",
-  "delete": "Eliminar",
-  "edit": "Editar",
-  "search": "Buscar",
-  "close": "Cerrar",
-  "submit": "Enviar"
+  "actions": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "add": "Agregar",
+    "search": "Buscar"
+  },
+  "status": {
+    "active": "Activo",
+    "inactive": "Inactivo",
+    "pending": "Pendiente"
+  }
 }

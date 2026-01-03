@@ -1,9 +1,9 @@
 {
   "dashboard": {
-    "title": "Panel de Control",
-    "subtitle": "Gestión unificada para todas las instancias PSP y configuraciones globales"
+    "title": "Panel de control",
+    "subtitle": "Gestión unificada de todas las instancias PSP y configuraciones globales"
   },
   "services": {
-    "title": "Servicios de Plataforma"
+    "title": "Servicios de plataforma"
   }
 }
