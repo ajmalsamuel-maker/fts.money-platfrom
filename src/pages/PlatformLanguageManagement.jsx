@@ -144,42 +144,12 @@ export default function PlatformLanguageManagement() {
                     });
                     break;
                 }
-                case 'crypto': {
-                    const cryptoList = await base44.entities.CryptoGatewayCustomer.list();
-                    const current = cryptoList.find(c => c.id === serviceId);
-                    console.log('Current Crypto entity:', current);
-                    const { id, created_date, updated_date, created_by_id, is_sample, ...entityData } = current;
-                    // Ensure customer_code is present (fallback to customer_id if missing)
-                    if (!entityData.customer_code && !current.customer_code) {
-                        entityData.customer_code = current.customer_id || 'crypto_customer';
-                    } else if (!entityData.customer_code) {
-                        entityData.customer_code = current.customer_code;
-                    }
-                    console.log('Crypto entity data being sent:', { ...entityData, ...updateData });
-                    result = await base44.entities.CryptoGatewayCustomer.update(serviceId, {
-                        ...entityData,
-                        ...updateData
-                    });
+                case 'crypto':
+                    result = await base44.entities.CryptoGatewayCustomer.update(serviceId, updateData);
                     break;
-                }
-                case 'rwa': {
-                    const rwaList = await base44.entities.RWAProvider.list();
-                    const current = rwaList.find(p => p.id === serviceId);
-                    console.log('Current RWA entity:', current);
-                    const { id, created_date, updated_date, created_by_id, is_sample, ...entityData } = current;
-                    // Ensure provider_code is present (RWA uses provider_code instead)
-                    if (!entityData.provider_code && !current.provider_code) {
-                        entityData.provider_code = 'rwa_provider_' + current.id?.substring(0, 8);
-                    } else if (!entityData.provider_code) {
-                        entityData.provider_code = current.provider_code;
-                    }
-                    console.log('RWA entity data being sent:', { ...entityData, ...updateData });
-                    result = await base44.entities.RWAProvider.update(serviceId, {
-                        ...entityData,
-                        ...updateData
-                    });
+                case 'rwa':
+                    result = await base44.entities.RWAProvider.update(serviceId, updateData);
                     break;
-                }
                 default:
                     throw new Error('Unknown service type');
             }
