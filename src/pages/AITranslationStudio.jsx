@@ -49,6 +49,8 @@ export default function AITranslationStudio() {
     const [selectedTier, setSelectedTier] = useState('all');
     const [generationProgress, setGenerationProgress] = useState(0);
     const [generatedResults, setGeneratedResults] = useState(null);
+    const [scanResults, setScanResults] = useState(null);
+    const [isScanning, setIsScanning] = useState(false);
 
     const namespaces = ['common', 'platform', 'psp', 'merchant', 'crypto', 'iso', 'orchestration', 'rwa'];
 
@@ -145,17 +147,22 @@ export default function AITranslationStudio() {
     };
 
     const handleCodebaseScan = async () => {
-        toast.loading('Scanning codebase for translation coverage...');
+        setIsScanning(true);
+        setScanResults(null);
+        const loadingToast = toast.loading('Scanning codebase for translation coverage...');
         try {
             const response = await base44.functions.invoke('aiTranslationManager', {
                 action: 'scanTranslatableStrings',
                 namespace: selectedNamespace
             });
-            toast.dismiss();
+            toast.dismiss(loadingToast);
+            setScanResults(response.data);
             toast.success(`Scan complete! Found ${response.data.totalKeys || 0} translatable keys`);
         } catch (error) {
-            toast.dismiss();
+            toast.dismiss(loadingToast);
             toast.error('Scan failed: ' + error.message);
+        } finally {
+            setIsScanning(false);
         }
     };
 
@@ -465,12 +472,77 @@ export default function AITranslationStudio() {
                                     </ul>
                                     <Button 
                                         onClick={handleCodebaseScan}
+                                        disabled={isScanning}
                                         className="w-full" 
                                         variant="outline"
                                     >
                                         <Zap className="h-4 w-4 mr-2" />
-                                        Run Full Codebase Scan
+                                        {isScanning ? 'Scanning...' : 'Run Full Codebase Scan'}
                                     </Button>
+
+                                    {scanResults && (
+                                        <div className="mt-6 space-y-4">
+                                            <Alert className="bg-blue-50 border-blue-200">
+                                                <FileText className="h-4 w-4 text-blue-600" />
+                                                <AlertDescription className="text-blue-900">
+                                                    <strong>Scan Results for "{selectedNamespace}" namespace</strong>
+                                                    <div className="mt-3 space-y-2 text-sm">
+                                                        <div className="flex justify-between">
+                                                            <span>Total translation keys:</span>
+                                                            <span className="font-bold">{scanResults.totalKeys || 0}</span>
+                                                        </div>
+                                                        <div className="flex justify-between">
+                                                            <span>Languages with translations:</span>
+                                                            <span className="font-bold">{scanResults.languagesWithTranslations || 0}</span>
+                                                        </div>
+                                                        <div className="flex justify-between">
+                                                            <span>Languages missing translations:</span>
+                                                            <span className="font-bold text-amber-600">{scanResults.languagesMissing || 0}</span>
+                                                        </div>
+                                                    </div>
+                                                </AlertDescription>
+                                            </Alert>
+
+                                            {scanResults.missingLanguages && scanResults.missingLanguages.length > 0 && (
+                                                <Card>
+                                                    <CardHeader>
+                                                        <CardTitle className="text-base">Missing Translations</CardTitle>
+                                                    </CardHeader>
+                                                    <CardContent>
+                                                        <div className="flex flex-wrap gap-2">
+                                                            {scanResults.missingLanguages.map(lang => (
+                                                                <Badge key={lang} variant="outline" className="bg-amber-50 text-amber-700 border-amber-300">
+                                                                    {lang}
+                                                                </Badge>
+                                                            ))}
+                                                        </div>
+                                                    </CardContent>
+                                                </Card>
+                                            )}
+
+                                            {scanResults.translationKeys && scanResults.translationKeys.length > 0 && (
+                                                <Card>
+                                                    <CardHeader>
+                                                        <CardTitle className="text-base">Translation Keys Found</CardTitle>
+                                                    </CardHeader>
+                                                    <CardContent>
+                                                        <div className="max-h-64 overflow-y-auto space-y-1">
+                                                            {scanResults.translationKeys.slice(0, 50).map((key, idx) => (
+                                                                <div key={idx} className="text-xs font-mono bg-slate-50 px-2 py-1 rounded">
+                                                                    {key}
+                                                                </div>
+                                                            ))}
+                                                            {scanResults.translationKeys.length > 50 && (
+                                                                <p className="text-xs text-slate-600 pt-2">
+                                                                    ...and {scanResults.translationKeys.length - 50} more keys
+                                                                </p>
+                                                            )}
+                                                        </div>
+                                                    </CardContent>
+                                                </Card>
+                                            )}
+                                        </div>
+                                    )}
                                 </CardContent>
                             </Card>
                         </TabsContent>
