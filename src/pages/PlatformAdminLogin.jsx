@@ -12,6 +12,7 @@ import { FTS_COLORS, FTS_GRADIENTS, FTS_LOGOS } from '@/components/community/FTS
 import { Shield, Lock, ArrowRight } from 'lucide-react';
 import { PLATFORM_ROLES, getRoleLabel } from '@/components/auth/usePlatformAuth';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
+import { MinimalComplianceFooter } from '@/components/compliance/ComplianceFooter';
 
 export default function PlatformAdminLogin() {
     const navigate = useNavigate();
@@ -60,7 +61,14 @@ export default function PlatformAdminLogin() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden bg-white">
+        <div className="min-h-screen flex flex-col relative overflow-hidden bg-white">
+            {/* Language Selector - Top Right Corner (Best Practice) */}
+            <div className="absolute top-4 right-6 z-20">
+                <LanguageSwitcher variant="compact" showLabel={false} />
+            </div>
+
+            {/* Main Content */}
+            <div className="flex-1 flex items-center justify-center p-6">
             {/* FTS.Money Wave Background - Bottom */}
             <div className="absolute bottom-0 left-0 right-0 h-1/3">
                 <svg className="absolute bottom-0 w-full h-full" viewBox="0 0 1440 320" preserveAspectRatio="none">
@@ -104,9 +112,6 @@ export default function PlatformAdminLogin() {
                     </CardHeader>
                     <CardContent>
                         <form onSubmit={handleLogin} className="space-y-4">
-                            <div className="flex justify-center mb-4">
-                                <LanguageSwitcher variant="select" showLabel={false} />
-                            </div>
                             
                             <div>
                                 <Label>Email Address</Label>
@@ -161,10 +166,11 @@ export default function PlatformAdminLogin() {
                         </CardContent>
                         </Card>
 
-                        <p className="text-center text-slate-600 text-sm mt-6" style={{ fontFamily: 'Montserrat, sans-serif' }}>
-                        © 2025 FTS.Money - Fluid global payments
-                        </p>
                         </div>
+                        </div>
+
+                        {/* Minimal Footer */}
+                        <MinimalComplianceFooter />
                         </div>
                         );
                         }
