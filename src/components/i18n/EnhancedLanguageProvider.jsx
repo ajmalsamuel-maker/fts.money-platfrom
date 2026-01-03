@@ -88,17 +88,17 @@ export function EnhancedLanguageProvider({ children, tenantType = 'platform', te
                     platformRevenue: "Platform Revenue"
                 },
                 sidebar: {
-                    overview: "Overview & Insights",
-                    pspOperations: "PSP Operations",
-                    cryptoGateway: "Crypto Banking Gateway",
-                    rwaPlatform: "RWA Tokenization Platform",
-                    servicesMarketplace: "Services & Marketplace",
-                    userManagement: "User & Access Management",
-                    financial: "Financial Operations",
-                    compliance: "Compliance & Security",
-                    infrastructure: "Infrastructure",
-                    documentation: "Documentation",
-                    resources: "Settings & Resources"
+                    "overview": "Overview & Insights",
+                    "psp-operations": "PSP Operations",
+                    "crypto-gateway": "Crypto Banking Gateway",
+                    "rwa-platform": "RWA Tokenization Platform",
+                    "services-marketplace": "Services & Marketplace",
+                    "user-management": "User & Access Management",
+                    "financial": "Financial Operations",
+                    "compliance": "Compliance & Security",
+                    "infrastructure": "Infrastructure",
+                    "documentation": "Documentation",
+                    "resources": "Settings & Resources"
                 }
             },
             fr: { 
@@ -123,17 +123,17 @@ export function EnhancedLanguageProvider({ children, tenantType = 'platform', te
                     platformRevenue: "Revenus de la plateforme"
                 },
                 sidebar: {
-                    overview: "Aperçu et informations",
-                    pspOperations: "Opérations PSP",
-                    cryptoGateway: "Passerelle bancaire crypto",
-                    rwaPlatform: "Plateforme de tokenisation RWA",
-                    servicesMarketplace: "Services et marché",
-                    userManagement: "Gestion des utilisateurs et accès",
-                    financial: "Opérations financières",
-                    compliance: "Conformité et sécurité",
-                    infrastructure: "Infrastructure",
-                    documentation: "Documentation",
-                    resources: "Paramètres et ressources"
+                    "overview": "Aperçu et informations",
+                    "psp-operations": "Opérations PSP",
+                    "crypto-gateway": "Passerelle bancaire crypto",
+                    "rwa-platform": "Plateforme de tokenisation RWA",
+                    "services-marketplace": "Services et marché",
+                    "user-management": "Gestion des utilisateurs et accès",
+                    "financial": "Opérations financières",
+                    "compliance": "Conformité et sécurité",
+                    "infrastructure": "Infrastructure",
+                    "documentation": "Documentation",
+                    "resources": "Paramètres et ressources"
                 }
             },
             es: { 
@@ -158,17 +158,17 @@ export function EnhancedLanguageProvider({ children, tenantType = 'platform', te
                     platformRevenue: "Ingresos de plataforma"
                 },
                 sidebar: {
-                    overview: "Resumen e información",
-                    pspOperations: "Operaciones PSP",
-                    cryptoGateway: "Puerta de enlace bancaria cripto",
-                    rwaPlatform: "Plataforma de tokenización RWA",
-                    servicesMarketplace: "Servicios y mercado",
-                    userManagement: "Gestión de usuarios y acceso",
-                    financial: "Operaciones financieras",
-                    compliance: "Cumplimiento y seguridad",
-                    infrastructure: "Infraestructura",
-                    documentation: "Documentación",
-                    resources: "Configuración y recursos"
+                    "overview": "Resumen e información",
+                    "psp-operations": "Operaciones PSP",
+                    "crypto-gateway": "Puerta de enlace bancaria cripto",
+                    "rwa-platform": "Plataforma de tokenización RWA",
+                    "services-marketplace": "Servicios y mercado",
+                    "user-management": "Gestión de usuarios y acceso",
+                    "financial": "Operaciones financieras",
+                    "compliance": "Cumplimiento y seguridad",
+                    "infrastructure": "Infraestructura",
+                    "documentation": "Documentación",
+                    "resources": "Configuración y recursos"
                 }
             },
             de: { 
@@ -193,17 +193,17 @@ export function EnhancedLanguageProvider({ children, tenantType = 'platform', te
                     platformRevenue: "Plattformumsatz"
                 },
                 sidebar: {
-                    overview: "Übersicht und Einblicke",
-                    pspOperations: "PSP-Betrieb",
-                    cryptoGateway: "Krypto-Banking-Gateway",
-                    rwaPlatform: "RWA-Tokenisierungsplattform",
-                    servicesMarketplace: "Dienste und Marktplatz",
-                    userManagement: "Benutzer- und Zugriffsverwaltung",
-                    financial: "Finanzoperationen",
-                    compliance: "Compliance und Sicherheit",
-                    infrastructure: "Infrastruktur",
-                    documentation: "Dokumentation",
-                    resources: "Einstellungen und Ressourcen"
+                    "overview": "Übersicht und Einblicke",
+                    "psp-operations": "PSP-Betrieb",
+                    "crypto-gateway": "Krypto-Banking-Gateway",
+                    "rwa-platform": "RWA-Tokenisierungsplattform",
+                    "services-marketplace": "Dienste und Marktplatz",
+                    "user-management": "Benutzer- und Zugriffsverwaltung",
+                    "financial": "Finanzoperationen",
+                    "compliance": "Compliance und Sicherheit",
+                    "infrastructure": "Infrastruktur",
+                    "documentation": "Dokumentation",
+                    "resources": "Einstellungen und Ressourcen"
                 }
             },
             zh: { 
@@ -228,17 +228,17 @@ export function EnhancedLanguageProvider({ children, tenantType = 'platform', te
                     platformRevenue: "平台收入"
                 },
                 sidebar: {
-                    overview: "概览和洞察",
-                    pspOperations: "PSP操作",
-                    cryptoGateway: "加密银行网关",
-                    rwaPlatform: "RWA代币化平台",
-                    servicesMarketplace: "服务和市场",
-                    userManagement: "用户和访问管理",
-                    financial: "财务操作",
-                    compliance: "合规和安全",
-                    infrastructure: "基础设施",
-                    documentation: "文档",
-                    resources: "设置和资源"
+                    "overview": "概览和洞察",
+                    "psp-operations": "PSP操作",
+                    "crypto-gateway": "加密银行网关",
+                    "rwa-platform": "RWA代币化平台",
+                    "services-marketplace": "服务和市场",
+                    "user-management": "用户和访问管理",
+                    "financial": "财务操作",
+                    "compliance": "合规和安全",
+                    "infrastructure": "基础设施",
+                    "documentation": "文档",
+                    "resources": "设置和资源"
                 }
             }
         }
