@@ -127,10 +127,11 @@ export default function AITranslationStudio() {
         toast.loading('Scanning codebase for translation coverage...');
         try {
             const response = await base44.functions.invoke('aiTranslationManager', {
-                action: 'scanCodebase'
+                action: 'scanTranslatableStrings',
+                namespace: selectedNamespace
             });
             toast.dismiss();
-            toast.success(`Scan complete! Found ${response.data.totalStrings || 0} translatable strings`);
+            toast.success(`Scan complete! Found ${response.data.totalKeys || 0} translatable keys`);
         } catch (error) {
             toast.dismiss();
             toast.error('Scan failed: ' + error.message);
