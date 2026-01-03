@@ -44,24 +44,20 @@ export default function ComplianceFooter() {
                         />
                     </a>
 
-                    {/* GLEIF Partner - Official Badge */}
-                    <div 
-                        className="group relative px-3 py-2 bg-white border border-slate-200 rounded-lg hover:border-indigo-500 hover:shadow-sm transition-all"
+                    {/* GLEIF Partner - Official Logo */}
+                    <a 
+                        href="https://www.gleif.org/" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="group relative"
                         title="GLEIF LEI/vLEI Partner"
                     >
-                        <div className="flex items-center gap-2">
-                            <div className="w-5 h-5 flex items-center justify-center">
-                                <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5">
-                                    <path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z" fill="#4F46E5"/>
-                                    <path d="M10 17l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" fill="white"/>
-                                </svg>
-                            </div>
-                            <div className="text-left">
-                                <div className="text-xs font-bold text-slate-900 leading-tight">GLEIF</div>
-                                <div className="text-[10px] text-slate-600 leading-tight">LEI Partner</div>
-                            </div>
-                        </div>
-                    </div>
+                        <img 
+                            src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6931510c4507988f66a42ca8/01a7ae610_GLEIF-new.png" 
+                            alt="GLEIF Partner"
+                            className="h-10 opacity-80 group-hover:opacity-100 transition-opacity"
+                        />
+                    </a>
 
                     {/* SOC 2 Type II */}
                     <div 
