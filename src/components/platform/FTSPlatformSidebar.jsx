@@ -40,11 +40,11 @@ const menuSections = [
         title: 'Overview & Insights',
         defaultOpen: true,
         items: [
-            { label: 'Platform Dashboard', path: 'FTSMoneyPlatform', icon: Activity, description: 'Platform overview', priority: true },
-            { label: 'System Health', path: 'FTSSystemHealth', icon: Activity, description: 'Real-time monitoring' },
-            { label: 'Revenue Dashboard', path: 'FTSRevenue', icon: BarChart3, description: 'Financial overview', priority: true },
-            { label: 'Platform Analytics', path: 'FTSAnalytics', icon: BarChart3, description: 'Cross-platform insights' },
-            { label: 'Setup Guide', path: 'FTSSetupGuide', icon: BookOpen, description: 'Quick start guide' }
+            { labelKey: 'platformDashboard', descKey: 'platformDashboardDesc', path: 'FTSMoneyPlatform', icon: Activity, priority: true },
+            { labelKey: 'systemHealth', descKey: 'systemHealthDesc', path: 'FTSSystemHealth', icon: Activity },
+            { labelKey: 'revenueDashboard', descKey: 'revenueDashboardDesc', path: 'FTSRevenue', icon: BarChart3, priority: true },
+            { labelKey: 'platformAnalytics', descKey: 'platformAnalyticsDesc', path: 'FTSAnalytics', icon: BarChart3 },
+            { labelKey: 'setupGuide', descKey: 'setupGuideDesc', path: 'FTSSetupGuide', icon: BookOpen }
         ]
     },
     {

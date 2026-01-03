@@ -117,13 +117,13 @@ function AddServiceButton({ navigate }) {
 }
 
 const quickActions = [
-    { icon: Building2, label: 'PSP Instances', path: 'PSPProvisioning', color: 'bg-blue-50 text-blue-700 border-blue-200' },
-    { icon: Zap, label: 'ISO Gateway', path: 'ISOGatewayTestConsole', color: 'bg-violet-50 text-violet-700 border-violet-200' },
-    { icon: Package, label: 'Service Catalog', path: 'FTSServiceManager', color: 'bg-indigo-50 text-indigo-700 border-indigo-200' },
-    { icon: Database, label: 'Provider Pool', path: 'FTSProviderPool', color: 'bg-purple-50 text-purple-700 border-purple-200' },
-    { icon: Wallet, label: 'Payout Routes', path: 'FTSPayoutRoutes', color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
-    { icon: BarChart3, label: 'Analytics', path: 'FTSAnalytics', color: 'bg-cyan-50 text-cyan-700 border-cyan-200' },
-    { icon: DollarSign, label: 'Revenue', path: 'FTSRevenue', color: 'bg-pink-50 text-pink-700 border-pink-200' }
+    { icon: Building2, labelKey: 'pspInstances', path: 'PSPProvisioning', color: 'bg-blue-50 text-blue-700 border-blue-200' },
+    { icon: Zap, labelKey: 'isoGateway', path: 'ISOGatewayTestConsole', color: 'bg-violet-50 text-violet-700 border-violet-200' },
+    { icon: Package, labelKey: 'serviceCatalog', path: 'FTSServiceManager', color: 'bg-indigo-50 text-indigo-700 border-indigo-200' },
+    { icon: Database, labelKey: 'providerPool', path: 'FTSProviderPool', color: 'bg-purple-50 text-purple-700 border-purple-200' },
+    { icon: Wallet, labelKey: 'payoutRoutes', path: 'FTSPayoutRoutes', color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+    { icon: BarChart3, labelKey: 'analytics', path: 'FTSAnalytics', color: 'bg-cyan-50 text-cyan-700 border-cyan-200' },
+    { icon: DollarSign, labelKey: 'revenue', path: 'FTSRevenue', color: 'bg-pink-50 text-pink-700 border-pink-200' }
 ];
 
 export default function FTSMoneyPlatform() {
@@ -453,7 +453,7 @@ export default function FTSMoneyPlatform() {
                                         )}
                                     >
                                         <Icon className="h-6 w-6 mb-2" />
-                                        <p className="text-sm font-medium">{action.label}</p>
+                                        <p className="text-sm font-medium">{t(`platform:quickActionItems.${action.labelKey}`)}</p>
                                     </button>
                                 );
                             })}

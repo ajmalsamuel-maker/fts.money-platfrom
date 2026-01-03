@@ -87,6 +87,27 @@ export function EnhancedLanguageProvider({ children, tenantType = 'platform', te
                     payoutRoutes: "Payout Routes",
                     platformRevenue: "Platform Revenue"
                 },
+                quickActionItems: {
+                    pspInstances: "PSP Instances",
+                    isoGateway: "ISO Gateway",
+                    serviceCatalog: "Service Catalog",
+                    providerPool: "Provider Pool",
+                    payoutRoutes: "Payout Routes",
+                    analytics: "Analytics",
+                    revenue: "Revenue"
+                },
+                menuItems: {
+                    platformDashboard: "Platform Dashboard",
+                    platformDashboardDesc: "Platform overview",
+                    systemHealth: "System Health",
+                    systemHealthDesc: "Real-time monitoring",
+                    revenueDashboard: "Revenue Dashboard",
+                    revenueDashboardDesc: "Financial overview",
+                    platformAnalytics: "Platform Analytics",
+                    platformAnalyticsDesc: "Cross-platform insights",
+                    setupGuide: "Setup Guide",
+                    setupGuideDesc: "Quick start guide"
+                },
                 sidebar: {
                     "overview": "Overview & Insights",
                     "psp-operations": "PSP Operations",
@@ -121,6 +142,27 @@ export function EnhancedLanguageProvider({ children, tenantType = 'platform', te
                     paymentProviders: "Fournisseurs de paiement",
                     payoutRoutes: "Routes de paiement",
                     platformRevenue: "Revenus de la plateforme"
+                },
+                quickActionItems: {
+                    pspInstances: "Instances PSP",
+                    isoGateway: "Passerelle ISO",
+                    serviceCatalog: "Catalogue de services",
+                    providerPool: "Pool de fournisseurs",
+                    payoutRoutes: "Routes de paiement",
+                    analytics: "Analytique",
+                    revenue: "Revenus"
+                },
+                menuItems: {
+                    platformDashboard: "Tableau de bord plateforme",
+                    platformDashboardDesc: "Aperçu de la plateforme",
+                    systemHealth: "État du système",
+                    systemHealthDesc: "Surveillance en temps réel",
+                    revenueDashboard: "Tableau de bord des revenus",
+                    revenueDashboardDesc: "Aperçu financier",
+                    platformAnalytics: "Analytique plateforme",
+                    platformAnalyticsDesc: "Informations multi-plateformes",
+                    setupGuide: "Guide de configuration",
+                    setupGuideDesc: "Guide de démarrage rapide"
                 },
                 sidebar: {
                     "overview": "Aperçu et informations",
@@ -157,6 +199,27 @@ export function EnhancedLanguageProvider({ children, tenantType = 'platform', te
                     payoutRoutes: "Rutas de pago",
                     platformRevenue: "Ingresos de plataforma"
                 },
+                quickActionItems: {
+                    pspInstances: "Instancias PSP",
+                    isoGateway: "Puerta de enlace ISO",
+                    serviceCatalog: "Catálogo de servicios",
+                    providerPool: "Pool de proveedores",
+                    payoutRoutes: "Rutas de pago",
+                    analytics: "Analítica",
+                    revenue: "Ingresos"
+                },
+                menuItems: {
+                    platformDashboard: "Panel de plataforma",
+                    platformDashboardDesc: "Resumen de plataforma",
+                    systemHealth: "Estado del sistema",
+                    systemHealthDesc: "Monitoreo en tiempo real",
+                    revenueDashboard: "Panel de ingresos",
+                    revenueDashboardDesc: "Resumen financiero",
+                    platformAnalytics: "Analítica de plataforma",
+                    platformAnalyticsDesc: "Información multiplataforma",
+                    setupGuide: "Guía de configuración",
+                    setupGuideDesc: "Guía de inicio rápido"
+                },
                 sidebar: {
                     "overview": "Resumen e información",
                     "psp-operations": "Operaciones PSP",
@@ -192,6 +255,27 @@ export function EnhancedLanguageProvider({ children, tenantType = 'platform', te
                     payoutRoutes: "Auszahlungsrouten",
                     platformRevenue: "Plattformumsatz"
                 },
+                quickActionItems: {
+                    pspInstances: "PSP-Instanzen",
+                    isoGateway: "ISO-Gateway",
+                    serviceCatalog: "Dienstkatalog",
+                    providerPool: "Anbieter-Pool",
+                    payoutRoutes: "Auszahlungsrouten",
+                    analytics: "Analytics",
+                    revenue: "Umsatz"
+                },
+                menuItems: {
+                    platformDashboard: "Plattform-Dashboard",
+                    platformDashboardDesc: "Plattformübersicht",
+                    systemHealth: "Systemzustand",
+                    systemHealthDesc: "Echtzeitüberwachung",
+                    revenueDashboard: "Umsatz-Dashboard",
+                    revenueDashboardDesc: "Finanzübersicht",
+                    platformAnalytics: "Plattform-Analytics",
+                    platformAnalyticsDesc: "Plattformübergreifende Einblicke",
+                    setupGuide: "Einrichtungsanleitung",
+                    setupGuideDesc: "Schnellstartanleitung"
+                },
                 sidebar: {
                     "overview": "Übersicht und Einblicke",
                     "psp-operations": "PSP-Betrieb",
@@ -226,6 +310,27 @@ export function EnhancedLanguageProvider({ children, tenantType = 'platform', te
                     paymentProviders: "支付提供商",
                     payoutRoutes: "支付路由",
                     platformRevenue: "平台收入"
+                },
+                quickActionItems: {
+                    pspInstances: "PSP实例",
+                    isoGateway: "ISO网关",
+                    serviceCatalog: "服务目录",
+                    providerPool: "提供商池",
+                    payoutRoutes: "支付路由",
+                    analytics: "分析",
+                    revenue: "收入"
+                },
+                menuItems: {
+                    platformDashboard: "平台仪表板",
+                    platformDashboardDesc: "平台概览",
+                    systemHealth: "系统健康",
+                    systemHealthDesc: "实时监控",
+                    revenueDashboard: "收入仪表板",
+                    revenueDashboardDesc: "财务概览",
+                    platformAnalytics: "平台分析",
+                    platformAnalyticsDesc: "跨平台洞察",
+                    setupGuide: "设置指南",
+                    setupGuideDesc: "快速入门指南"
                 },
                 sidebar: {
                     "overview": "概览和洞察",
