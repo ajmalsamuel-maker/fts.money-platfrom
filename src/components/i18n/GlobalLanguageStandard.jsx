@@ -1,5 +1,6 @@
 /**
  * FTS.Money Global Multilingual Standard
+ * @version 1.1.2
  * 
  * Enterprise-grade internationalization (i18n) system for all portals and services
  * Based on:
