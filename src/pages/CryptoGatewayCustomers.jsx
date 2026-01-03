@@ -11,6 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Users, Plus, Search, Building2, CheckCircle2, AlertCircle, Clock, TrendingUp, Shield, Activity } from 'lucide-react';
+import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 
 export default function CryptoGatewayCustomers() {
     const { platformUser, loading: authLoading } = usePlatformAuth();
@@ -101,12 +102,18 @@ export default function CryptoGatewayCustomers() {
             />
             
             <div className="flex-1 overflow-auto">
+                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
+                    <div>
+                        <h2 className="text-lg font-semibold text-slate-900">Crypto Banking Customers</h2>
+                        <p className="text-xs text-slate-600">Manage customer accounts and KYB/KYC status</p>
+                    </div>
+                    <LanguageSwitcher variant="select" showLabel={true} />
+                </header>
                 <div className="p-8">
                     {/* Header */}
                     <div className="flex items-center justify-between mb-6">
                         <div>
-                            <h1 className="text-3xl font-bold text-slate-900">Crypto Banking Customers</h1>
-                            <p className="text-slate-600 mt-1">Manage customer accounts and KYB/KYC status</p>
+                            <h1 className="text-2xl font-bold text-slate-900">Customer Accounts</h1>
                         </div>
                         <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
                             <DialogTrigger asChild>

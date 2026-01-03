@@ -33,6 +33,7 @@ import {
     Settings,
     MoreVertical
 } from 'lucide-react';
+import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 
 export default function PSPProvisioning() {
     const navigate = useNavigate();
@@ -100,6 +101,7 @@ export default function PSPProvisioning() {
                         )}
                     </div>
                     <div className="flex items-center gap-3">
+                        <LanguageSwitcher variant="select" showLabel={true} />
                         <div className="text-right mr-2">
                             <p className="text-xs text-slate-600">Logged in as</p>
                             <p className="text-sm font-medium text-slate-900">{platformUser?.email}</p>

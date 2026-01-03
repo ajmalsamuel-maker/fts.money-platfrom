@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { GitBranch, Plus, Search, TrendingUp, Activity, Zap } from 'lucide-react';
+import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 
 export default function OrchestrationCustomers() {
     const [searchQuery, setSearchQuery] = useState('');
@@ -96,11 +97,17 @@ export default function OrchestrationCustomers() {
             <FTSPlatformSidebar currentPage="OrchestrationCustomers" />
             
             <div className="flex-1 overflow-auto">
+                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
+                    <div>
+                        <h2 className="text-lg font-semibold text-slate-900">Orchestration Customers</h2>
+                        <p className="text-xs text-slate-600">Manage standalone orchestration service subscriptions</p>
+                    </div>
+                    <LanguageSwitcher variant="select" showLabel={true} />
+                </header>
                 <div className="p-8">
                     <div className="flex justify-between items-center mb-6">
                         <div>
-                            <h1 className="text-3xl font-bold text-gray-900">Orchestration Customers</h1>
-                            <p className="text-gray-600 mt-1">Manage standalone orchestration service subscriptions</p>
+                            <h1 className="text-2xl font-bold text-gray-900">Customer Accounts</h1>
                         </div>
                         
                         <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>

@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Building2, Plus, Search, TrendingUp, Activity, AlertCircle, Pencil, Shield, GitBranch } from 'lucide-react';
 import OrchestrationRuleBuilder from '@/components/orchestration/OrchestrationRuleBuilder';
+import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 
 export default function ISOGatewayCustomers() {
     const [searchQuery, setSearchQuery] = useState('');
@@ -110,11 +111,17 @@ export default function ISOGatewayCustomers() {
             <FTSPlatformSidebar currentPage="ISOGatewayCustomers" />
             
             <div className="flex-1 overflow-auto">
+                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
+                    <div>
+                        <h2 className="text-lg font-semibold text-slate-900">ISO Gateway Customers</h2>
+                        <p className="text-xs text-slate-600">Manage customer subscriptions and usage</p>
+                    </div>
+                    <LanguageSwitcher variant="select" showLabel={true} />
+                </header>
                 <div className="p-8">
                     <div className="flex justify-between items-center mb-6">
                         <div>
-                            <h1 className="text-3xl font-bold text-gray-900">ISO Gateway Customers</h1>
-                            <p className="text-gray-600 mt-1">Manage customer subscriptions and usage</p>
+                            <h1 className="text-2xl font-bold text-gray-900">Customer Accounts</h1>
                         </div>
                         
                         <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
