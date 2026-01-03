@@ -228,8 +228,8 @@ export default function FTSMoneyPlatform() {
                 {/* Header */}
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10" style={{ height: '64px' }}>
                     <div>
-                        <h2 className="text-lg font-semibold text-slate-900">{t('platform:dashboard.title')}</h2>
-                        <p className="text-xs text-slate-600">{t('platform:dashboard.subtitle')}</p>
+                        <h2 className="text-lg font-semibold text-slate-900">{t('dashboard.title')}</h2>
+                        <p className="text-xs text-slate-600">{t('dashboard.subtitle')}</p>
                     </div>
                     <div className="flex items-center gap-3">
                         <LanguageSwitcher variant="select" showLabel={true} />
@@ -246,7 +246,13 @@ export default function FTSMoneyPlatform() {
                             <p className="text-xs text-slate-600">Logged in as</p>
                             <p className="text-sm font-medium text-slate-900">{platformUser?.email}</p>
                         </div>
-                        <AddServiceButton navigate={navigate} />
+                        <Button 
+                            onClick={() => navigate(createPageUrl('PSPProvisioningWizard'))}
+                            className="gap-2 bg-blue-600 hover:bg-blue-700"
+                        >
+                            <Plus className="h-4 w-4" />
+                            {t('addService')}
+                        </Button>
                     </div>
                 </header>
 
@@ -341,17 +347,17 @@ export default function FTSMoneyPlatform() {
                                     </div>
                                     <div className="space-y-2 mb-3">
                                         <div className="flex justify-between text-xs">
-                                            <span className="text-slate-600">Customers</span>
+                                            <span className="text-slate-600">{t('common:labels.customers')}</span>
                                             <span className="font-semibold">{orchestrationCustomers.length}</span>
                                         </div>
                                         <div className="flex justify-between text-xs">
-                                            <span className="text-slate-600">Service</span>
-                                            <span className="font-semibold text-emerald-600">Live</span>
+                                            <span className="text-slate-600">{t('common:labels.service')}</span>
+                                            <span className="font-semibold text-emerald-600">{t('common:status.live')}</span>
                                         </div>
                                     </div>
                                     <div className="flex gap-2">
                                         <Button size="sm" className="flex-1 text-xs h-7 bg-purple-600 hover:bg-purple-700" onClick={() => navigate(createPageUrl('OrchestrationCustomers'))}>
-                                            Manage
+                                            {t('common:actions.manage')}
                                         </Button>
                                     </div>
                                 </CardContent>
@@ -373,17 +379,17 @@ export default function FTSMoneyPlatform() {
                                     </div>
                                     <div className="space-y-2 mb-3">
                                         <div className="flex justify-between text-xs">
-                                            <span className="text-slate-600">Customers</span>
+                                            <span className="text-slate-600">{t('common:labels.customers')}</span>
                                             <span className="font-semibold">{cryptoCustomers.length}</span>
                                         </div>
                                         <div className="flex justify-between text-xs">
-                                            <span className="text-slate-600">Service</span>
-                                            <span className="font-semibold text-emerald-600">Live</span>
+                                            <span className="text-slate-600">{t('common:labels.service')}</span>
+                                            <span className="font-semibold text-emerald-600">{t('common:status.live')}</span>
                                         </div>
                                     </div>
                                     <div className="flex gap-2">
                                         <Button size="sm" className="flex-1 text-xs h-7 bg-cyan-600 hover:bg-cyan-700" onClick={() => navigate(createPageUrl('CryptoGatewayCustomers'))}>
-                                            Manage
+                                            {t('common:actions.manage')}
                                         </Button>
                                     </div>
                                 </CardContent>
@@ -405,7 +411,7 @@ export default function FTSMoneyPlatform() {
                                     </div>
                                     <div className="space-y-2 mb-3">
                                         <div className="flex justify-between text-xs">
-                                            <span className="text-slate-600">Customers</span>
+                                            <span className="text-slate-600">{t('common:labels.customers')}</span>
                                             <span className="font-semibold">{rwaCustomers.length}</span>
                                         </div>
                                         <div className="flex justify-between text-xs">
@@ -415,7 +421,7 @@ export default function FTSMoneyPlatform() {
                                     </div>
                                     <div className="flex gap-2">
                                         <Button size="sm" className="flex-1 text-xs h-7 bg-emerald-600 hover:bg-emerald-700" onClick={() => navigate(createPageUrl('RWAWhiteLabelProvisioning'))}>
-                                            Manage
+                                            {t('common:actions.manage')}
                                         </Button>
                                         <Button size="sm" variant="outline" className="text-xs h-7" onClick={() => navigate(createPageUrl('RWAPlatform'))}>
                                             Contracts
@@ -619,11 +625,11 @@ export default function FTSMoneyPlatform() {
                                             
                                             <div className="grid grid-cols-2 gap-2 text-sm mb-3">
                                                 <div>
-                                                    <p className="text-slate-500 text-xs">Merchants</p>
+                                                    <p className="text-slate-500 text-xs">{t('common:labels.merchants')}</p>
                                                     <p className="text-slate-900 font-semibold">{psp.total_merchants || 0}</p>
                                                 </div>
                                                 <div>
-                                                    <p className="text-slate-500 text-xs">Volume</p>
+                                                    <p className="text-slate-500 text-xs">{t('common:labels.volume')}</p>
                                                     <p className="text-slate-900 font-semibold">${((psp.monthly_volume || 0) / 1000000).toFixed(1)}M</p>
                                                 </div>
                                             </div>
