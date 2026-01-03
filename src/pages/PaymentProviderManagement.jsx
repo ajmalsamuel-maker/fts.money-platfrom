@@ -17,6 +17,7 @@ import { toast } from 'sonner';
 import { cn } from "@/lib/utils";
 import { getPaymentMethodLogo, getPaymentMethodDisplayName, getPaymentMethodLogoAsync } from '@/components/utils/paymentLogos';
 import PaymentMethodSelector from '@/components/providers/PaymentMethodSelector';
+import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 
 export default function PaymentProviderManagement() {
     const [platformUser] = useState(() => JSON.parse(localStorage.getItem('platform_admin_session') || '{}'));
@@ -234,11 +235,16 @@ export default function PaymentProviderManagement() {
 
             <div className="flex-1 overflow-auto">
                 {/* Header */}
-                <div className="bg-white border-b border-slate-200 px-6 py-4">
+                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
+                    <div>
+                        <h2 className="text-lg font-semibold text-slate-900">Payment Provider Management</h2>
+                        <p className="text-xs text-slate-600">Configure payment providers and auto-populate Master Pricing</p>
+                    </div>
+                    <LanguageSwitcher variant="select" showLabel={true} />
+                </header>
+                <div className="px-6 py-4">
                     <div className="flex items-center justify-between">
                         <div>
-                            <h1 className="text-2xl font-bold text-slate-900">Payment Provider Management</h1>
-                            <p className="text-sm text-slate-600 mt-1">Configure payment providers and auto-populate Master Pricing</p>
                             <div className="flex gap-2 mt-2">
                                 <Badge variant="outline" className="text-xs">Stripe API ✓</Badge>
                                 <Badge variant="outline" className="text-xs">Adyen Catalog ✓</Badge>
@@ -542,6 +548,7 @@ export default function PaymentProviderManagement() {
                             </DialogContent>
                         </Dialog>
                     </div>
+                </div>
                 </div>
 
                 {/* Payment Method Selector Modal */}

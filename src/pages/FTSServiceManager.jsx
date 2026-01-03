@@ -16,6 +16,7 @@ import ReactMarkdown from 'react-markdown';
 import { toast } from 'sonner';
 import { AuditLogger } from '@/components/platform/EnhancedAuditLogger';
 import ServiceEditor from '@/components/services/ServiceEditor';
+import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 
 const categoryIcons = {
     payment_rail: CreditCard,
@@ -313,6 +314,7 @@ Make the response detailed, authoritative, and include the most recent informati
                         <p className="text-xs text-slate-600">Services seeded from NetXHub development platform for provisioning to PSP customers</p>
                     </div>
                     <div className="flex items-center gap-3">
+                        <LanguageSwitcher variant="select" showLabel={true} />
                         <Button 
                             onClick={() => handleRunHealthChecks()}
                             disabled={runningHealthChecks}

@@ -17,6 +17,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Users, UserPlus, Shield, Mail, Trash2, Ban, CheckCircle, Key } from 'lucide-react';
+import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 
 export default function PlatformUserManagement() {
     const navigate = useNavigate();
@@ -168,6 +169,7 @@ export default function PlatformUserManagement() {
                         <p className="text-xs text-slate-600">Manage platform administrators and their permissions</p>
                     </div>
                     <div className="flex items-center gap-3">
+                        <LanguageSwitcher variant="select" showLabel={true} />
                         <div className="text-right mr-2">
                             <p className="text-xs text-slate-600">Logged in as</p>
                             <p className="text-sm font-medium text-slate-900">{platformUser?.email}</p>

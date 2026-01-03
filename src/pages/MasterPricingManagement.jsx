@@ -30,6 +30,7 @@ import {
     RefreshCw
 } from 'lucide-react';
 import { toast } from 'sonner';
+import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 
 const categories = [
     { value: 'payment_rail', label: 'Payment Rails' },
@@ -295,6 +296,7 @@ export default function MasterPricingManagement() {
                         <p className="text-xs text-slate-600">Comprehensive pricing control & reconciliation</p>
                     </div>
                     <div className="flex items-center gap-3">
+                        <LanguageSwitcher variant="select" showLabel={true} />
                         <Button variant="outline" className="gap-2">
                             <Download className="h-4 w-4" />
                             Export to Xero

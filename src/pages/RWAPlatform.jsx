@@ -7,6 +7,7 @@ import { Code, Rocket, FileText, Terminal, Download } from 'lucide-react';
 import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
 import FTSPlatformSidebarRestructured from '@/components/platform/FTSPlatformSidebarRestructured';
 import RWA_CONTRACTS from '@/components/docs/RWAContractsComplete';
+import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 
 export default function RWAPlatform() {
     const { platformUser } = usePlatformAuth();
@@ -42,13 +43,19 @@ export default function RWAPlatform() {
             />
 
             <div className="flex-1 overflow-auto">
+                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
+                    <div>
+                        <h2 className="text-lg font-semibold text-slate-900">RWA Platform</h2>
+                        <p className="text-xs text-slate-600">Universal tokenization infrastructure - blockchain native, Base44 optional</p>
+                    </div>
+                    <LanguageSwitcher variant="select" showLabel={true} />
+                </header>
                 <div className="p-6">
                     {/* Header */}
                     <div className="mb-6">
                         <div className="flex items-center justify-between">
                             <div>
-                                <h1 className="text-3xl font-bold text-slate-900 mb-2">RWA Platform</h1>
-                                <p className="text-slate-600">Universal tokenization infrastructure - blockchain native, Base44 optional</p>
+                                <h1 className="text-2xl font-bold text-slate-900 mb-2">Smart Contracts</h1>
                             </div>
                             <Button onClick={downloadAllContracts} className="gap-2">
                                 <Download className="h-4 w-4" />

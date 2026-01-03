@@ -8,6 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { Shield, AlertTriangle, CheckCircle2, Clock, TrendingUp, Building2, Store, RefreshCw } from 'lucide-react';
 import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
 import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
+import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 
 export default function LEIComplianceDashboard() {
     const queryClient = useQueryClient();
@@ -49,13 +50,19 @@ export default function LEIComplianceDashboard() {
         <div className="flex h-screen bg-slate-50">
             <FTSPlatformSidebar currentPage="LEIComplianceDashboard" userEmail={platformUser?.email} userRole={platformUser?.platform_role} />
             
-            <div className="flex-1 overflow-auto p-6">
-                <div className="max-w-7xl mx-auto space-y-6">
+            <div className="flex-1 overflow-auto">
+                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
+                    <div>
+                        <h2 className="text-lg font-semibold text-slate-900">LEI/vLEI Compliance Monitor</h2>
+                        <p className="text-xs text-slate-600">Global Legal Entity Identifier compliance tracking</p>
+                    </div>
+                    <LanguageSwitcher variant="select" showLabel={true} />
+                </header>
+                <div className="p-6 max-w-7xl mx-auto space-y-6">
                     {/* Header */}
                     <div className="flex items-center justify-between">
                         <div>
-                            <h1 className="text-3xl font-bold text-slate-900">LEI/vLEI Compliance Monitor</h1>
-                            <p className="text-slate-600 mt-1">Global Legal Entity Identifier compliance tracking</p>
+                            <h1 className="text-2xl font-bold text-slate-900">Compliance Dashboard</h1>
                         </div>
                         <Button
                             onClick={() => runComplianceCheck.mutate()}
