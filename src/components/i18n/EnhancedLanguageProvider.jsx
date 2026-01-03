@@ -383,6 +383,34 @@ export function EnhancedLanguageProvider({ children, tenantType = 'platform', te
                     allInstances: "Toutes les instances PSP",
                     noPSPs: "Aucun PSP provisionné pour le moment",
                     isoCompliant: "Conforme ISO"
+                  },
+                  setupGuide: {
+                    title: "Guide de configuration FTS.Money",
+                    subtitle: "Guide complet pour accéder et configurer tous les services"
+                  },
+                  serviceManager: {
+                    title: "Catalogue de services FTS.Money",
+                    subtitle: "Services ensemencés depuis la plateforme de développement NetXHub pour l'approvisionnement des clients PSP"
+                  },
+                  paymentProviders: {
+                    title: "Gestion des fournisseurs de paiement",
+                    subtitle: "Configurer les fournisseurs de paiement et remplir automatiquement la tarification principale"
+                  },
+                  platformUsers: {
+                    title: "Gestion des utilisateurs",
+                    subtitle: "Gérer les administrateurs de plateforme et leurs autorisations"
+                  },
+                  provisioningQueue: {
+                    title: "File de provisionnement PSP",
+                    subtitle: "Gérer le déploiement de l'infrastructure"
+                  },
+                  rwaProvisioning: {
+                    title: "Provisionnement en marque blanche RWA",
+                    subtitle: "Déployer des plateformes de tokenisation pour les institutions financières agréées"
+                  },
+                  rwaPlatform: {
+                    title: "Plateforme RWA",
+                    subtitle: "Infrastructure de tokenisation universelle - blockchain native, Base44 en option"
                   }
                 },
                 services: { 
@@ -531,6 +559,34 @@ export function EnhancedLanguageProvider({ children, tenantType = 'platform', te
                     allInstances: "Todas las instancias PSP",
                     noPSPs: "Aún no hay PSP aprovisionados",
                     isoCompliant: "Conforme ISO"
+                  },
+                  setupGuide: {
+                    title: "Guía de configuración FTS.Money",
+                    subtitle: "Guía completa para acceder y configurar todos los servicios"
+                  },
+                  serviceManager: {
+                    title: "Catálogo de servicios FTS.Money",
+                    subtitle: "Servicios importados de la plataforma de desarrollo NetXHub para el aprovisionamiento de clientes PSP"
+                  },
+                  paymentProviders: {
+                    title: "Gestión de proveedores de pago",
+                    subtitle: "Configurar proveedores de pago y completar automáticamente precios maestros"
+                  },
+                  platformUsers: {
+                    title: "Gestión de usuarios",
+                    subtitle: "Administrar administradores de plataforma y sus permisos"
+                  },
+                  provisioningQueue: {
+                    title: "Cola de aprovisionamiento PSP",
+                    subtitle: "Gestionar implementación de infraestructura"
+                  },
+                  rwaProvisioning: {
+                    title: "Aprovisionamiento de marca blanca RWA",
+                    subtitle: "Implementar plataformas de tokenización para instituciones financieras autorizadas"
+                  },
+                  rwaPlatform: {
+                    title: "Plataforma RWA",
+                    subtitle: "Infraestructura de tokenización universal - blockchain nativa, Base44 opcional"
                   }
                 },
                 services: { 
@@ -679,6 +735,34 @@ export function EnhancedLanguageProvider({ children, tenantType = 'platform', te
                     allInstances: "Alle PSP-Instanzen",
                     noPSPs: "Noch keine PSPs bereitgestellt",
                     isoCompliant: "ISO-konform"
+                  },
+                  setupGuide: {
+                    title: "FTS.Money Einrichtungsanleitung",
+                    subtitle: "Vollständiger Leitfaden zum Zugriff und zur Konfiguration aller Dienste"
+                  },
+                  serviceManager: {
+                    title: "FTS.Money Dienstkatalog",
+                    subtitle: "Von der NetXHub-Entwicklungsplattform eingespeiste Dienste zur Bereitstellung für PSP-Kunden"
+                  },
+                  paymentProviders: {
+                    title: "Zahlungsanbieter-Verwaltung",
+                    subtitle: "Zahlungsanbieter konfigurieren und Master-Preise automatisch ausfüllen"
+                  },
+                  platformUsers: {
+                    title: "Benutzerverwaltung",
+                    subtitle: "Plattform-Administratoren und deren Berechtigungen verwalten"
+                  },
+                  provisioningQueue: {
+                    title: "PSP-Bereitstellungswarteschlange",
+                    subtitle: "Infrastrukturbereitstellung verwalten"
+                  },
+                  rwaProvisioning: {
+                    title: "RWA White-Label-Bereitstellung",
+                    subtitle: "Tokenisierungsplattformen für lizenzierte Finanzinstitute bereitstellen"
+                  },
+                  rwaPlatform: {
+                    title: "RWA-Plattform",
+                    subtitle: "Universelle Tokenisierungsinfrastruktur - blockchain-nativ, Base44 optional"
                   }
                 },
                 services: { 
@@ -827,6 +911,34 @@ export function EnhancedLanguageProvider({ children, tenantType = 'platform', te
                     allInstances: "所有PSP实例",
                     noPSPs: "尚未配置PSP",
                     isoCompliant: "ISO合规"
+                  },
+                  setupGuide: {
+                    title: "FTS.Money设置指南",
+                    subtitle: "访问和配置所有服务的完整指南"
+                  },
+                  serviceManager: {
+                    title: "FTS.Money服务目录",
+                    subtitle: "从NetXHub开发平台导入的服务，用于PSP客户配置"
+                  },
+                  paymentProviders: {
+                    title: "支付提供商管理",
+                    subtitle: "配置支付提供商并自动填充主定价"
+                  },
+                  platformUsers: {
+                    title: "用户管理",
+                    subtitle: "管理平台管理员及其权限"
+                  },
+                  provisioningQueue: {
+                    title: "PSP配置队列",
+                    subtitle: "管理基础设施部署"
+                  },
+                  rwaProvisioning: {
+                    title: "RWA白标配置",
+                    subtitle: "为持牌金融机构部署代币化平台"
+                  },
+                  rwaPlatform: {
+                    title: "RWA平台",
+                    subtitle: "通用代币化基础设施 - 区块链原生，Base44可选"
                   }
                 },
                 services: { 
