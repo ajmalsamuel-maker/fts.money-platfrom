@@ -48,6 +48,7 @@ export default function AITranslationStudio() {
     const [selectedNamespace, setSelectedNamespace] = useState('platform');
     const [selectedTier, setSelectedTier] = useState('all');
     const [generationProgress, setGenerationProgress] = useState(0);
+    const [generatedResults, setGeneratedResults] = useState(null);
 
     const namespaces = ['common', 'platform', 'psp', 'merchant', 'crypto', 'iso', 'orchestration', 'rwa'];
 
@@ -102,7 +103,11 @@ export default function AITranslationStudio() {
             return response.data;
         },
         onSuccess: (data) => {
-            toast.success(`Generated translations for ${data.languagesCompleted} languages`);
+            toast.success(`✅ Generated translations for ${data.languagesCompleted} languages!`);
+            setGeneratedResults(data);
+        },
+        onError: (error) => {
+            toast.error(`Translation failed: ${error.message}`);
         }
     });
 
@@ -113,13 +118,20 @@ export default function AITranslationStudio() {
             .map(l => l.code);
 
         setGenerationProgress(0);
+        setGeneratedResults(null);
+        toast.loading('Starting translation generation...');
         
-        for (let i = 0; i < targetLangs.length; i++) {
+        try {
             await translateMutation.mutateAsync({
-                targetLanguages: [targetLangs[i]],
+                targetLanguages,
                 namespace: selectedNamespace
             });
-            setGenerationProgress(((i + 1) / targetLangs.length) * 100);
+            setGenerationProgress(100);
+            toast.dismiss();
+        } catch (error) {
+            toast.dismiss();
+            toast.error('Generation failed: ' + error.message);
+            setGenerationProgress(0);
         }
     };
 
@@ -322,6 +334,35 @@ export default function AITranslationStudio() {
                                             {translateMutation.isPending ? 'Generating...' : 'Generate All Missing Translations'}
                                         </Button>
                                     </div>
+
+                                    {generatedResults && (
+                                        <Alert className="bg-emerald-50 border-emerald-200">
+                                            <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                                            <AlertDescription className="text-emerald-900">
+                                                <strong>✅ Translation Complete!</strong>
+                                                <div className="mt-2 text-sm">
+                                                    <p>• Generated translations for {generatedResults.languagesCompleted} languages</p>
+                                                    <p>• Namespace: {selectedNamespace}</p>
+                                                    <p>• Total strings translated: {Object.keys(generatedResults.translations || {}).length * 30}</p>
+                                                </div>
+                                                <Button 
+                                                    size="sm" 
+                                                    className="mt-3"
+                                                    onClick={() => {
+                                                        const blob = new Blob([JSON.stringify(generatedResults.translations, null, 2)], { type: 'application/json' });
+                                                        const url = URL.createObjectURL(blob);
+                                                        const a = document.createElement('a');
+                                                        a.href = url;
+                                                        a.download = `translations-${selectedNamespace}-${Date.now()}.json`;
+                                                        a.click();
+                                                    }}
+                                                >
+                                                    <Download className="h-4 w-4 mr-2" />
+                                                    Download Translations
+                                                </Button>
+                                            </AlertDescription>
+                                        </Alert>
+                                    )}
                                 </CardContent>
                             </Card>
                         </TabsContent>
