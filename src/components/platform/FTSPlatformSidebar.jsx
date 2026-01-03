@@ -278,14 +278,14 @@ export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, i
                                                     <div className="flex-1 min-w-0">
                                                         <div className="flex items-center gap-2">
                                                             <span className="text-sm font-medium truncate">
-                                                                {item.labelKey ? t(`platform:${item.labelKey in (allTranslations.platform.en.menuItems || {}) ? 'menuItems' : 'subMenuItems'}.${item.labelKey}`) : item.label}
+                                                                {item.labelKey ? (section.id === 'overview' ? t(`platform:menuItems.${item.labelKey}`) : t(`platform:subMenuItems.${item.labelKey}`)) : item.label}
                                                             </span>
                                                             {item.priority && <span className="text-xs">⭐</span>}
                                                             {item.superAdminOnly && <Badge className="text-[9px] px-1 py-0 bg-red-100 text-red-700 border-red-300">ADMIN</Badge>}
                                                         </div>
                                                         {(item.descKey || item.description) && (
                                                             <p className="text-xs text-slate-500 truncate">
-                                                                {item.descKey ? t(`platform:${item.descKey in (allTranslations.platform.en.menuItems || {}) ? 'menuItems' : 'subMenuItems'}.${item.descKey}`) : item.description}
+                                                                {item.descKey ? (section.id === 'overview' ? t(`platform:menuItems.${item.descKey}`) : t(`platform:subMenuItems.${item.descKey}`)) : item.description}
                                                             </p>
                                                         )}
                                                     </div>
