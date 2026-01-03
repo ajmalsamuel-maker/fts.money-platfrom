@@ -251,7 +251,289 @@ export default function PaymentProviderManagement() {
 
                 <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                     <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-...
+                        <DialogHeader>
+                            <DialogTitle>
+                                {editingProvider ? 'Edit Payment Provider' : 'Add New Payment Provider'}
+                            </DialogTitle>
+                        </DialogHeader>
+
+                        <Tabs defaultValue="basic">
+                            <TabsList className="grid w-full grid-cols-4">
+                                <TabsTrigger value="basic">Basic Info</TabsTrigger>
+                                <TabsTrigger value="api">API Config</TabsTrigger>
+                                <TabsTrigger value="methods">Payment Methods</TabsTrigger>
+                                <TabsTrigger value="pricing">Provider Pricing</TabsTrigger>
+                            </TabsList>
+
+                            <TabsContent value="basic" className="space-y-4">
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <Label>Provider Name *</Label>
+                                        <Input
+                                            value={providerForm.name}
+                                            onChange={(e) => setProviderForm({...providerForm, name: e.target.value})}
+                                            placeholder="Stripe, PayPal, Adyen..."
+                                        />
+                                    </div>
+                                    <div>
+                                        <Label>Provider Type</Label>
+                                        <Select 
+                                            value={providerForm.provider_type}
+                                            onValueChange={(v) => setProviderForm({...providerForm, provider_type: v})}
+                                        >
+                                            <SelectTrigger>
+                                                <SelectValue />
+                                            </SelectTrigger>
+                                            <SelectContent className="max-h-[300px]">
+                                                <SelectItem value="gateway">Payment Gateway</SelectItem>
+                                                <SelectItem value="acquirer">Acquirer/Processor</SelectItem>
+                                                <SelectItem value="card_network">Card Network</SelectItem>
+                                                <SelectItem value="bank">Bank/PSP</SelectItem>
+                                                <SelectItem value="wallet">Digital Wallet Provider</SelectItem>
+                                                <SelectItem value="regional_wallet">Regional Wallet</SelectItem>
+                                                <SelectItem value="bank_transfer">Bank Transfer Provider</SelectItem>
+                                                <SelectItem value="fps">Fast Payment System</SelectItem>
+                                                <SelectItem value="crypto">Crypto Exchange</SelectItem>
+                                                <SelectItem value="bnpl">Buy Now Pay Later</SelectItem>
+                                                <SelectItem value="apm">Alternative Payment Method</SelectItem>
+                                                <SelectItem value="mobile_money">Mobile Money Provider</SelectItem>
+                                                <SelectItem value="cash_voucher">Cash/Voucher Provider</SelectItem>
+                                                <SelectItem value="qr_code">QR Code Payment</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    <div className="col-span-2">
+                                        <Label>Logo URL</Label>
+                                        <div className="flex gap-2">
+                                            <Input
+                                                value={providerForm.logo_url}
+                                                onChange={(e) => setProviderForm({...providerForm, logo_url: e.target.value})}
+                                                placeholder="https://..."
+                                                className="flex-1"
+                                            />
+                                            <Button
+                                                type="button"
+                                                variant="outline"
+                                                onClick={handleAutoFindLogo}
+                                                disabled={searchingLogo || !providerForm.name}
+                                            >
+                                                {searchingLogo ? 'Searching...' : '🔍 Auto-find'}
+                                            </Button>
+                                        </div>
+                                    </div>
+                                    <div className="col-span-2">
+                                        <Label>Notes</Label>
+                                        <Textarea
+                                            value={providerForm.notes || ''}
+                                            onChange={(e) => setProviderForm({...providerForm, notes: e.target.value})}
+                                            placeholder="Additional information..."
+                                        />
+                                    </div>
+                                </div>
+                            </TabsContent>
+
+                            <TabsContent value="api" className="space-y-4">
+                                <div className="space-y-4">
+                                    <div>
+                                        <Label>Merchant ID / Bank MID</Label>
+                                        <Input
+                                            value={providerForm.merchant_id}
+                                            onChange={(e) => setProviderForm({...providerForm, merchant_id: e.target.value})}
+                                            placeholder="MID assigned by provider"
+                                        />
+                                        <p className="text-xs text-slate-500 mt-1">The Merchant ID or Bank MID provided by this payment provider</p>
+                                    </div>
+                                    <div>
+                                        <Label>API Base URL *</Label>
+                                        <Input
+                                            value={providerForm.api_base_url}
+                                            onChange={(e) => setProviderForm({...providerForm, api_base_url: e.target.value})}
+                                            placeholder="https://api.provider.com/v1"
+                                        />
+                                    </div>
+                                    <div>
+                                        <Label>API Key *</Label>
+                                        <div className="flex gap-2">
+                                            <Input
+                                                type={showApiKey ? 'text' : 'password'}
+                                                value={providerForm.api_key}
+                                                onChange={(e) => setProviderForm({...providerForm, api_key: e.target.value})}
+                                                placeholder="pk_live_..."
+                                            />
+                                            <Button
+                                                type="button"
+                                                variant="outline"
+                                                size="icon"
+                                                onClick={() => setShowApiKey(!showApiKey)}
+                                            >
+                                                {showApiKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                            </Button>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <Label>API Secret</Label>
+                                        <Input
+                                            type="password"
+                                            value={providerForm.api_secret}
+                                            onChange={(e) => setProviderForm({...providerForm, api_secret: e.target.value})}
+                                            placeholder="sk_live_..."
+                                        />
+                                    </div>
+                                    <div>
+                                        <Label>Webhook URL</Label>
+                                        <Input
+                                            value={providerForm.webhook_url}
+                                            onChange={(e) => setProviderForm({...providerForm, webhook_url: e.target.value})}
+                                            placeholder="https://your-platform.com/webhooks/provider"
+                                        />
+                                    </div>
+                                </div>
+                            </TabsContent>
+
+                            <TabsContent value="methods" className="space-y-4">
+                                <div className="space-y-4">
+                                    <div className="flex items-center justify-between">
+                                        <Label>Supported Payment Methods</Label>
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() => setShowMethodSelector(true)}
+                                        >
+                                            <Globe className="h-4 w-4 mr-2" />
+                                            Browse Global Methods ({providerForm.supported_methods.length} selected)
+                                        </Button>
+                                    </div>
+                                    
+                                    {providerForm.supported_methods.length > 0 ? (
+                                        <div className="flex flex-wrap gap-2">
+                                            {providerForm.supported_methods.map(methodId => (
+                                                <Badge
+                                                    key={methodId}
+                                                    variant="outline"
+                                                    className="flex items-center gap-2 px-3 py-1.5"
+                                                >
+                                                    {(getPaymentMethodLogo(methodId) || methodLogos[methodId]) && (
+                                                        <img src={getPaymentMethodLogo(methodId) || methodLogos[methodId]} alt={methodId} className="h-4 w-6 object-contain" />
+                                                    )}
+                                                    {getPaymentMethodDisplayName(methodId)}
+                                                    <button
+                                                        onClick={() => togglePaymentMethod(methodId)}
+                                                        className="ml-1 hover:text-red-600"
+                                                    >
+                                                        ×
+                                                    </button>
+                                                </Badge>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div className="text-center py-8 border-2 border-dashed border-slate-200 rounded-lg">
+                                            <Globe className="h-8 w-8 mx-auto text-slate-400 mb-2" />
+                                            <p className="text-sm text-slate-600 mb-2">No payment methods selected</p>
+                                            <Button
+                                                type="button"
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => setShowMethodSelector(true)}
+                                            >
+                                                Select Methods
+                                            </Button>
+                                        </div>
+                                    )}
+                                </div>
+                            </TabsContent>
+
+                            <TabsContent value="pricing" className="space-y-4">
+                                <div className="space-y-4">
+                                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                                        <p className="text-sm text-blue-800">
+                                            <strong>Buy Rates:</strong> What the provider charges you<br />
+                                            <strong>Sell Rates:</strong> FTS.Money markup (auto-calculated, can be adjusted in Master Pricing)
+                                        </p>
+                                    </div>
+                                    {providerForm.supported_methods.length === 0 ? (
+                                        <p className="text-center text-slate-500 py-8">Select payment methods first</p>
+                                    ) : (
+                                        providerForm.supported_methods.map(method => (
+                                            <Card key={method}>
+                                                <CardHeader>
+                                                    <CardTitle className="text-sm flex items-center gap-2">
+                                                        <div className="w-10 h-6 rounded flex items-center justify-center bg-white border">
+                                                            {(getPaymentMethodLogo(method) || methodLogos[method]) ? (
+                                                                <img src={getPaymentMethodLogo(method) || methodLogos[method]} alt={method} className="max-w-full max-h-full" />
+                                                            ) : (
+                                                                <CreditCard className="h-3 w-3" />
+                                                            )}
+                                                        </div>
+                                                        {getPaymentMethodDisplayName(method)}
+                                                    </CardTitle>
+                                                </CardHeader>
+                                                <CardContent className="space-y-3">
+                                                    <div className="grid grid-cols-2 gap-3">
+                                                        <div>
+                                                            <Label className="text-xs">Buy Rate Type</Label>
+                                                            <Select
+                                                                value={providerForm.pricing[method]?.buy_rate_type || 'percentage'}
+                                                                onValueChange={(v) => updateMethodPricing(method, 'buy_rate_type', v)}
+                                                            >
+                                                                <SelectTrigger className="h-8">
+                                                                    <SelectValue />
+                                                                </SelectTrigger>
+                                                                <SelectContent>
+                                                                    <SelectItem value="percentage">Percentage</SelectItem>
+                                                                    <SelectItem value="fixed">Fixed</SelectItem>
+                                                                    <SelectItem value="hybrid">Hybrid</SelectItem>
+                                                                </SelectContent>
+                                                            </Select>
+                                                        </div>
+                                                        <div>
+                                                            <Label className="text-xs">Buy Rate %</Label>
+                                                            <Input
+                                                                type="number"
+                                                                step="0.01"
+                                                                value={providerForm.pricing[method]?.buy_rate_percentage || ''}
+                                                                onChange={(e) => updateMethodPricing(method, 'buy_rate_percentage', e.target.value)}
+                                                                placeholder="2.9"
+                                                                className="h-8"
+                                                            />
+                                                        </div>
+                                                        <div>
+                                                            <Label className="text-xs">Buy Fixed Fee (USD)</Label>
+                                                            <Input
+                                                                type="number"
+                                                                step="0.01"
+                                                                value={providerForm.pricing[method]?.buy_rate_fixed || ''}
+                                                                onChange={(e) => updateMethodPricing(method, 'buy_rate_fixed', e.target.value)}
+                                                                placeholder="0.30"
+                                                                className="h-8"
+                                                            />
+                                                        </div>
+                                                        <div>
+                                                            <Label className="text-xs">Suggested Sell Rate %</Label>
+                                                            <Input
+                                                                type="number"
+                                                                step="0.01"
+                                                                value={providerForm.pricing[method]?.sell_rate_percentage || ''}
+                                                                onChange={(e) => updateMethodPricing(method, 'sell_rate_percentage', e.target.value)}
+                                                                placeholder="3.4"
+                                                                className="h-8"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </CardContent>
+                                            </Card>
+                                        ))
+                                    )}
+                                </div>
+                            </TabsContent>
+                        </Tabs>
+
+                        <div className="flex justify-end gap-3 pt-4 border-t">
+                            <Button variant="outline" onClick={() => setDialogOpen(false)}>Cancel</Button>
+                            <Button onClick={handleSave} disabled={createProviderMutation.isPending}>
+                                {createProviderMutation.isPending ? 'Saving...' : 'Save Provider'}
+                            </Button>
+                        </div>
                     </DialogContent>
                 </Dialog>
 
