@@ -122,21 +122,25 @@ export default function AITranslationStudio() {
             .filter(l => selectedTier === 'all' || l.tier === parseInt(selectedTier))
             .map(l => l.code);
 
-        setGenerationProgress(0);
+        if (targetLangs.length === 0) {
+            toast.error('No languages selected');
+            return;
+        }
+
+        setGenerationProgress(10);
         setGeneratedResults(null);
-        toast.loading('Starting translation generation...');
+        const loadingToast = toast.loading(`Translating to ${targetLangs.length} languages...`);
         
         try {
-            await translateMutation.mutateAsync({
-                targetLanguages,
+            const result = await translateMutation.mutateAsync({
+                targetLanguages: targetLangs,
                 namespace: selectedNamespace
             });
-            setGenerationProgress(100);
-            toast.dismiss();
+            toast.dismiss(loadingToast);
+            console.log('Generation complete:', result);
         } catch (error) {
-            toast.dismiss();
-            toast.error('Generation failed: ' + error.message);
-            setGenerationProgress(0);
+            toast.dismiss(loadingToast);
+            console.error('Generation error:', error);
         }
     };
 
