@@ -12,9 +12,11 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { Building2, Code, GitBranch, Package, ArrowRight, Plus } from 'lucide-react';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function MyAllServices() {
     const navigate = useNavigate();
+    const { t } = useI18n();
     const [session, setSession] = useState(null);
 
     useEffect(() => {

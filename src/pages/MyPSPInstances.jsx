@@ -20,9 +20,11 @@ import {
     DollarSign,
     Sparkles
 } from 'lucide-react';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function MyPSPInstances() {
     const navigate = useNavigate();
+    const { t } = useI18n();
     const [session, setSession] = useState(null);
 
     useEffect(() => {

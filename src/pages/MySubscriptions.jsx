@@ -12,9 +12,11 @@ import {
     Sparkles, CheckCircle2, Clock, XCircle, Zap, TrendingUp, DollarSign, Calendar
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function MySubscriptions() {
     const navigate = useNavigate();
+    const { t } = useI18n();
     const queryClient = useQueryClient();
     const [session, setSession] = useState(null);
 

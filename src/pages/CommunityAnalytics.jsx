@@ -9,9 +9,11 @@ import ComplianceFooter from '@/components/community/ComplianceFooter';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
 import { TrendingUp, DollarSign, Activity, Package } from 'lucide-react';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function CommunityAnalytics() {
     const navigate = useNavigate();
+    const { t } = useI18n();
     const [session, setSession] = useState(null);
 
     useEffect(() => {

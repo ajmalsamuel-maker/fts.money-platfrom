@@ -2,9 +2,11 @@ import React from 'react';
 import CommunityProductCatalogComponent from '@/components/docs/CommunityProductCatalog';
 import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
 import { usePlatformAuth, PLATFORM_ROLES, getRoleLabel } from '@/components/auth/usePlatformAuth';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function CommunityProductCatalogPage() {
     const { platformUser, loading } = usePlatformAuth();
+    const { t } = useI18n();
 
     if (loading) {
         return <div className="flex items-center justify-center h-screen">Loading...</div>;

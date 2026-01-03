@@ -10,9 +10,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Building2, Code, GitBranch, ArrowRight, CheckCircle2, Zap } from 'lucide-react';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function LaunchServices() {
     const navigate = useNavigate();
+    const { t } = useI18n();
     const [session, setSession] = useState(null);
 
     useEffect(() => {

@@ -20,9 +20,11 @@ import {
     AlertCircle
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function CommunityBilling() {
     const navigate = useNavigate();
+    const { t } = useI18n();
     const [session, setSession] = useState(null);
 
     useEffect(() => {

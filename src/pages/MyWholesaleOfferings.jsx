@@ -13,8 +13,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Badge } from "@/components/ui/badge";
 import { Plus, Edit, Trash2, DollarSign, Users, TrendingUp } from 'lucide-react';
 import { toast } from 'sonner';
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function MyWholesaleOfferings() {
+    const { t } = useI18n();
     const queryClient = useQueryClient();
     const [showDialog, setShowDialog] = useState(false);
     const [editingOffering, setEditingOffering] = useState(null);

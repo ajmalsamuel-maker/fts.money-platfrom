@@ -23,6 +23,7 @@ import {
     Send
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 const statusConfig = {
     pending: { label: 'Pending', color: 'bg-amber-100 text-amber-700', icon: Clock },
@@ -33,6 +34,7 @@ const statusConfig = {
 
 export default function MyServiceRequests() {
     const navigate = useNavigate();
+    const { t } = useI18n();
     const queryClient = useQueryClient();
     const session = JSON.parse(localStorage.getItem('community_portal_session') || '{}');
     

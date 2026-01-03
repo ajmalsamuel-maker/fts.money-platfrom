@@ -13,9 +13,11 @@ import {
     User, Mail, Phone, Building2, MapPin, Lock, CheckCircle2, Bell, Globe
 } from 'lucide-react';
 import { Switch } from "@/components/ui/switch";
+import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function CommunityAccountSettings() {
     const navigate = useNavigate();
+    const { t } = useI18n();
     const [session, setSession] = useState(null);
     const [profileData, setProfileData] = useState({
         full_name: '',
