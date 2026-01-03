@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ArrowLeft, DollarSign, TrendingUp, Calendar, Code, GitBranch, Wallet, Briefcase } from 'lucide-react';
+import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 
 export default function FTSRevenue() {
     const navigate = useNavigate();
@@ -67,12 +68,15 @@ export default function FTSRevenue() {
                         <h2 className="text-lg font-semibold text-slate-900">Revenue Management</h2>
                         <p className="text-xs text-slate-600">Track revenue share and billing across all PSPs</p>
                     </div>
-                    <div className="text-right">
-                        <p className="text-xs text-slate-600">Logged in as</p>
-                        <p className="text-sm font-medium text-slate-900">{platformUser?.email}</p>
-                        <Badge className="mt-1 bg-blue-600 text-white text-xs">
-                            {getRoleLabel(platformUser?.platform_role)}
-                        </Badge>
+                    <div className="flex items-center gap-4">
+                        <LanguageSwitcher variant="select" showLabel={true} />
+                        <div className="text-right">
+                            <p className="text-xs text-slate-600">Logged in as</p>
+                            <p className="text-sm font-medium text-slate-900">{platformUser?.email}</p>
+                            <Badge className="mt-1 bg-blue-600 text-white text-xs">
+                                {getRoleLabel(platformUser?.platform_role)}
+                            </Badge>
+                        </div>
                     </div>
                 </header>
 

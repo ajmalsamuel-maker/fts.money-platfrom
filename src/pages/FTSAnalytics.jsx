@@ -22,6 +22,7 @@ import {
     Building2
 } from 'lucide-react';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 
 export default function FTSAnalytics() {
     const navigate = useNavigate();
@@ -89,12 +90,15 @@ export default function FTSAnalytics() {
                         <h2 className="text-lg font-semibold text-slate-900">Platform Analytics</h2>
                         <p className="text-xs text-slate-600">Comprehensive performance metrics and insights</p>
                     </div>
-                    <div className="text-right">
-                        <p className="text-xs text-slate-600">Logged in as</p>
-                        <p className="text-sm font-medium text-slate-900">{platformUser?.email}</p>
-                        <Badge className="mt-1 bg-blue-600 text-white text-xs">
-                            {getRoleLabel(platformUser?.platform_role)}
-                        </Badge>
+                    <div className="flex items-center gap-4">
+                        <LanguageSwitcher variant="select" showLabel={true} />
+                        <div className="text-right">
+                            <p className="text-xs text-slate-600">Logged in as</p>
+                            <p className="text-sm font-medium text-slate-900">{platformUser?.email}</p>
+                            <Badge className="mt-1 bg-blue-600 text-white text-xs">
+                                {getRoleLabel(platformUser?.platform_role)}
+                            </Badge>
+                        </div>
                     </div>
                 </header>
 

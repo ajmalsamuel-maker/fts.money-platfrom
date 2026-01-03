@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Activity, CheckCircle2, AlertTriangle, XCircle, Cpu, HardDrive, Database, Code, GitBranch, Wallet, Briefcase } from 'lucide-react';
 import { cn } from "@/lib/utils";
+import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 
 export default function FTSSystemHealth() {
     const { platformUser } = usePlatformAuth();
@@ -68,16 +69,19 @@ export default function FTSSystemHealth() {
                         <h2 className="text-lg font-semibold text-slate-900">System Health Monitor</h2>
                         <p className="text-xs text-slate-600">Real-time platform status and metrics</p>
                     </div>
-                    <Badge className={cn(
-                        systemStatus === 'healthy' ? 'bg-emerald-100 text-emerald-700' :
-                        systemStatus === 'warning' ? 'bg-amber-100 text-amber-700' :
-                        'bg-red-100 text-red-700'
-                    )}>
-                        {systemStatus === 'healthy' && <CheckCircle2 className="h-3 w-3 mr-1" />}
-                        {systemStatus === 'warning' && <AlertTriangle className="h-3 w-3 mr-1" />}
-                        {systemStatus === 'degraded' && <XCircle className="h-3 w-3 mr-1" />}
-                        System {systemStatus}
-                    </Badge>
+                    <div className="flex items-center gap-3">
+                        <LanguageSwitcher variant="select" showLabel={true} />
+                        <Badge className={cn(
+                            systemStatus === 'healthy' ? 'bg-emerald-100 text-emerald-700' :
+                            systemStatus === 'warning' ? 'bg-amber-100 text-amber-700' :
+                            'bg-red-100 text-red-700'
+                        )}>
+                            {systemStatus === 'healthy' && <CheckCircle2 className="h-3 w-3 mr-1" />}
+                            {systemStatus === 'warning' && <AlertTriangle className="h-3 w-3 mr-1" />}
+                            {systemStatus === 'degraded' && <XCircle className="h-3 w-3 mr-1" />}
+                            System {systemStatus}
+                        </Badge>
+                    </div>
                 </header>
 
                 <div className="p-6">

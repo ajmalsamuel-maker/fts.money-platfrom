@@ -3,6 +3,7 @@ import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { GitBranch, Building2, Code, ArrowRight } from 'lucide-react';
+import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 
 export default function FTSSetupGuide() {
     return (
@@ -10,6 +11,13 @@ export default function FTSSetupGuide() {
             <FTSPlatformSidebar currentPage="FTSSetupGuide" />
             
             <div className="flex-1 overflow-auto">
+                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
+                    <div>
+                        <h2 className="text-lg font-semibold text-slate-900">FTS.Money Setup Guide</h2>
+                        <p className="text-xs text-slate-600">Complete guide to accessing and configuring all services</p>
+                    </div>
+                    <LanguageSwitcher variant="select" showLabel={true} />
+                </header>
                 <div className="p-8 max-w-5xl">
                     <h1 className="text-3xl font-bold text-gray-900 mb-2">FTS.Money Setup Guide</h1>
                     <p className="text-gray-600 mb-8">Complete guide to accessing and configuring all services</p>
