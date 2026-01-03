@@ -244,11 +244,11 @@ export default function FTSMoneyPlatform() {
                             onClick={() => setCommandPaletteOpen(true)}
                             className="gap-2 text-slate-600"
                         >
-                            <span className="text-xs">Search</span>
+                            <span className="text-xs">{t('platform:dashboard.search')}</span>
                             <Badge variant="secondary" className="text-xs">⌘K</Badge>
                         </Button>
                         <div className="text-right mr-2">
-                            <p className="text-xs text-slate-600">Logged in as</p>
+                            <p className="text-xs text-slate-600">{t('platform:dashboard.loggedInAs')}</p>
                             <p className="text-sm font-medium text-slate-900">{platformUser?.email}</p>
                         </div>
                         <Button 
@@ -276,7 +276,7 @@ export default function FTSMoneyPlatform() {
                                         <div>
                                             <p className="font-semibold text-slate-900 text-sm">{t('platform:services.psp')}</p>
                                             <Badge variant="outline" className="text-xs">
-                                                {psps.filter(p => p.status === 'active').length} active
+                                                {psps.filter(p => p.status === 'active').length} {t('platform:dashboard.active')}
                                             </Badge>
                                         </div>
                                     </div>
@@ -311,7 +311,7 @@ export default function FTSMoneyPlatform() {
                                         <div>
                                             <p className="font-semibold text-slate-900 text-sm">{t('platform:services.iso')}</p>
                                             <Badge variant="outline" className="text-xs">
-                                                {isoCustomers.filter(c => c.status === 'active').length} active
+                                                {isoCustomers.filter(c => c.status === 'active').length} {t('platform:dashboard.active')}
                                             </Badge>
                                         </div>
                                     </div>
@@ -346,7 +346,7 @@ export default function FTSMoneyPlatform() {
                                         <div>
                                             <p className="font-semibold text-slate-900 text-sm">{t('platform:services.orchestration')}</p>
                                             <Badge variant="outline" className="text-xs">
-                                                {orchestrationCustomers.filter(c => c.status === 'active').length} active
+                                                {orchestrationCustomers.filter(c => c.status === 'active').length} {t('platform:dashboard.active')}
                                             </Badge>
                                         </div>
                                     </div>
@@ -378,7 +378,7 @@ export default function FTSMoneyPlatform() {
                                         <div>
                                             <p className="font-semibold text-slate-900 text-sm">{t('platform:services.crypto')}</p>
                                             <Badge variant="outline" className="text-xs">
-                                                {cryptoCustomers.filter(c => c.status === 'active').length} active
+                                                {cryptoCustomers.filter(c => c.status === 'active').length} {t('platform:dashboard.active')}
                                             </Badge>
                                         </div>
                                     </div>
@@ -410,7 +410,7 @@ export default function FTSMoneyPlatform() {
                                         <div>
                                             <p className="font-semibold text-slate-900 text-sm">{t('platform:services.rwa')}</p>
                                             <Badge variant="outline" className="text-xs">
-                                                {rwaCustomers.filter(c => c.status === 'active').length} active
+                                                {rwaCustomers.filter(c => c.status === 'active').length} {t('platform:dashboard.active')}
                                             </Badge>
                                         </div>
                                     </div>
@@ -429,7 +429,7 @@ export default function FTSMoneyPlatform() {
                                             {t('common:actions.manage')}
                                         </Button>
                                         <Button size="sm" variant="outline" className="text-xs h-7" onClick={() => navigate(createPageUrl('RWAPlatform'))}>
-                                            Contracts
+                                            {t('platform:pages.dashboard.contracts')}
                                         </Button>
                                     </div>
                                 </CardContent>
@@ -466,7 +466,7 @@ export default function FTSMoneyPlatform() {
                             <h3 className="text-sm font-semibold text-slate-900">{t('platform:performance')}</h3>
                             <Badge className="bg-amber-100 text-amber-700 border-amber-300">
                                 <Sparkles className="h-3 w-3 mr-1" />
-                                Simulation Mode
+                                {t('platform:pages.dashboard.simulationMode')}
                             </Badge>
                         </div>
                         <div className="grid grid-cols-4 gap-4">
@@ -519,7 +519,7 @@ export default function FTSMoneyPlatform() {
                                     <div>
                                         <p className="text-sm text-slate-600">{t('platform:stats.pspInstances')}</p>
                                         <p className="text-3xl font-bold text-slate-900 mt-1">{psps.length}</p>
-                                        <p className="text-xs text-emerald-600 mt-1">{activePSPs} active</p>
+                                        <p className="text-xs text-emerald-600 mt-1">{activePSPs} {t('platform:dashboard.active')}</p>
                                     </div>
                                     <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
                                         <Building2 className="h-6 w-6 text-blue-600" />
@@ -533,7 +533,7 @@ export default function FTSMoneyPlatform() {
                                     <div>
                                         <p className="text-sm text-slate-600">{t('platform:stats.totalMerchants')}</p>
                                         <p className="text-3xl font-bold text-slate-900 mt-1">{totalMerchants.toLocaleString()}</p>
-                                        <p className="text-xs text-slate-500 mt-1">Across all PSPs</p>
+                                        <p className="text-xs text-slate-500 mt-1">{t('platform:pages.dashboard.acrossAllPSPs')}</p>
                                     </div>
                                     <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center">
                                         <Users className="h-6 w-6 text-purple-600" />
@@ -547,7 +547,7 @@ export default function FTSMoneyPlatform() {
                                     <div>
                                         <p className="text-sm text-slate-600">{t('platform:stats.paymentProviders')}</p>
                                         <p className="text-3xl font-bold text-slate-900 mt-1">{providers.length}</p>
-                                        <p className="text-xs text-slate-500 mt-1">In provider pool</p>
+                                        <p className="text-xs text-slate-500 mt-1">{t('platform:pages.dashboard.inProviderPool')}</p>
                                     </div>
                                     <div className="w-12 h-12 rounded-xl bg-cyan-100 flex items-center justify-center">
                                         <Database className="h-6 w-6 text-cyan-600" />
@@ -561,7 +561,7 @@ export default function FTSMoneyPlatform() {
                                     <div>
                                         <p className="text-sm text-slate-600">{t('platform:stats.payoutRoutes')}</p>
                                         <p className="text-3xl font-bold text-slate-900 mt-1">{routes.length}</p>
-                                        <p className="text-xs text-slate-500 mt-1">Available methods</p>
+                                        <p className="text-xs text-slate-500 mt-1">{t('platform:pages.dashboard.availableMethods')}</p>
                                     </div>
                                     <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center">
                                         <Wallet className="h-6 w-6 text-emerald-600" />
@@ -575,7 +575,7 @@ export default function FTSMoneyPlatform() {
                                     <div>
                                         <p className="text-sm text-slate-600">{t('platform:stats.platformRevenue')}</p>
                                         <p className="text-3xl font-bold text-slate-900 mt-1">${(totalRevenue / 1000).toFixed(0)}k</p>
-                                        <p className="text-xs text-emerald-600 mt-1">+15.3% MoM</p>
+                                        <p className="text-xs text-emerald-600 mt-1">+15.3% {t('platform:pages.dashboard.mom')}</p>
                                     </div>
                                     <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center">
                                         <DollarSign className="h-6 w-6 text-amber-600" />
@@ -605,7 +605,7 @@ export default function FTSMoneyPlatform() {
                                                 <div className="absolute top-2 right-2">
                                                     <Badge className="bg-amber-100 text-amber-700 border-amber-300 gap-1">
                                                         <Star className="h-3 w-3" />
-                                                        Template
+                                                        {t('platform:pages.dashboard.template')}
                                                     </Badge>
                                                 </div>
                                             )}
@@ -664,7 +664,7 @@ export default function FTSMoneyPlatform() {
                                                             }
                                                         }}
                                                     >
-                                                        {psp.status === 'active' ? '⏸ Suspend' : '▶ Activate'}
+                                                        {psp.status === 'active' ? `⏸ ${t('platform:pages.dashboard.suspend')}` : `▶ ${t('platform:pages.dashboard.activate')}`}
                                                     </Button>
                                                     <Button
                                                         variant="ghost"
@@ -687,14 +687,14 @@ export default function FTSMoneyPlatform() {
                                                         }}
                                                     >
                                                         <Trash2 className="h-4 w-4 mr-2" />
-                                                        Delete
+                                                        {t('platform:pages.dashboard.delete')}
                                                     </Button>
                                                 </div>
                                             )}
                                             
                                             {isTemplate && (
                                                 <div className="text-xs text-amber-700 text-center pt-2 border-t border-amber-200">
-                                                    Protected template - cannot be deleted
+                                                    {t('platform:pages.dashboard.protectedTemplate')}
                                                 </div>
                                             )}
                                         </CardContent>
@@ -705,10 +705,10 @@ export default function FTSMoneyPlatform() {
                             {psps.length === 0 && (
                                 <div className="col-span-3 text-center py-12">
                                     <Building2 className="h-12 w-12 text-slate-400 mx-auto mb-3" />
-                                    <p className="text-slate-600 mb-4">No PSPs provisioned yet</p>
+                                    <p className="text-slate-600 mb-4">{t('platform:pages.pspProvisioning.noPSPs')}</p>
                                     <Button onClick={() => navigate(createPageUrl('PSPProvisioningWizard'))} className="bg-blue-600 hover:bg-blue-700">
                                         <Plus className="h-4 w-4 mr-2" />
-                                        Provision Your First PSP
+                                        {t('platform:pages.pspProvisioning.provisionFirst')}
                                     </Button>
                                 </div>
                             )}
