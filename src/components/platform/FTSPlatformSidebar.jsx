@@ -250,9 +250,9 @@ export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, i
                                     <h3 className={cn(
                                         "text-xs font-semibold uppercase tracking-wider text-left",
                                         isOpen ? "text-white" : hasCurrentPage ? "text-blue-700" : "text-slate-600"
-                                    )}>
-                                        {t(`sidebar.${section.id}`)}
-                                    </h3>
+                                        )}>
+                                        {t(`platform:sidebar.${section.id}`)}
+                                        </h3>
                                     <span className={cn("text-xs", isOpen ? "text-white" : "text-slate-400")}>
                                         {isOpen ? '▼' : '▶'}
                                     </span>
