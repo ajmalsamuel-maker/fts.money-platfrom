@@ -36,80 +36,42 @@ export function EnhancedLanguageProvider({ children, tenantType = 'platform', te
         }
     }, [language, rtl]);
 
-    // Load translations dynamically
+    // Embedded translations
+    const allTranslations = useMemo(() => ({
+        common: {
+            en: { actions: { save: "Save", cancel: "Cancel", delete: "Delete", edit: "Edit", add: "Add", search: "Search" }, status: { active: "Active", inactive: "Inactive", pending: "Pending" } },
+            fr: { actions: { save: "Enregistrer", cancel: "Annuler", delete: "Supprimer", edit: "Modifier", add: "Ajouter", search: "Rechercher" }, status: { active: "Actif", inactive: "Inactif", pending: "En attente" } },
+            es: { actions: { save: "Guardar", cancel: "Cancelar", delete: "Eliminar", edit: "Editar", add: "Agregar", search: "Buscar" }, status: { active: "Activo", inactive: "Inactivo", pending: "Pendiente" } },
+            de: { actions: { save: "Speichern", cancel: "Abbrechen", delete: "Löschen", edit: "Bearbeiten", add: "Hinzufügen", search: "Suchen" }, status: { active: "Aktiv", inactive: "Inaktiv", pending: "Ausstehend" } },
+            zh: { actions: { save: "保存", cancel: "取消", delete: "删除", edit: "编辑", add: "添加", search: "搜索" }, status: { active: "活跃", inactive: "不活跃", pending: "待处理" } }
+        },
+        platform: {
+            en: { dashboard: { title: "Control Panel Dashboard", subtitle: "Unified management for all PSP instances and global configurations" }, services: { title: "Platform Services" } },
+            fr: { dashboard: { title: "Tableau de bord du panneau de contrôle", subtitle: "Gestion unifiée de toutes les instances PSP et des configurations globales" }, services: { title: "Services de plateforme" } },
+            es: { dashboard: { title: "Panel de control", subtitle: "Gestión unificada de todas las instancias PSP y configuraciones globales" }, services: { title: "Servicios de plataforma" } },
+            de: { dashboard: { title: "Kontrollzentrum Dashboard", subtitle: "Einheitliche Verwaltung aller PSP-Instanzen und globalen Konfigurationen" }, services: { title: "Plattformdienste" } },
+            zh: { dashboard: { title: "控制面板仪表板", subtitle: "统一管理所有PSP实例和全局配置" }, services: { title: "平台服务" } }
+        }
+    }), []);
+
+    // Load translations based on language
     useEffect(() => {
-        const loadTranslations = async () => {
-            setLoading(true);
-            try {
-                const loadedTranslations = {};
-                
-                // Static imports for better bundler compatibility
-                const translationModules = {
-                    common: {
-                        en: () => import('./translations/common/en.js'),
-                        fr: () => import('./translations/common/fr.js'),
-                        es: () => import('./translations/common/es.js'),
-                        de: () => import('./translations/common/de.js'),
-                        zh: () => import('./translations/common/zh.js')
-                    },
-                    platform: {
-                        en: () => import('./translations/platform/en.js'),
-                        fr: () => import('./translations/platform/fr.js'),
-                        es: () => import('./translations/platform/es.js'),
-                        de: () => import('./translations/platform/de.js'),
-                        zh: () => import('./translations/platform/zh.js')
-                    }
-                };
-                
-                // Load all required namespaces
-                for (const ns of namespaces) {
-                    try {
-                        const nsModules = translationModules[ns];
-                        if (nsModules && nsModules[language]) {
-                            const module = await nsModules[language]();
-                            loadedTranslations[ns] = module.default;
-                            console.log(`✓ Loaded ${ns}/${language}.json:`, module.default);
-                        } else {
-                            console.warn(`Translation not found: ${ns}/${language}.json, falling back to English`);
-                            if (nsModules && nsModules['en']) {
-                                const fallback = await nsModules['en']();
-                                loadedTranslations[ns] = fallback.default;
-                            } else {
-                                console.error(`No fallback translation for namespace: ${ns}`);
-                                loadedTranslations[ns] = {};
-                            }
-                        }
-                    } catch (error) {
-                        console.error(`Error loading translation ${ns}/${language}:`, error);
-                        loadedTranslations[ns] = {};
-                    }
-                }
-
-                // Load tenant-specific overrides if applicable
-                if (tenantCode) {
-                    try {
-                        const tenantOverrides = await import(`./translations/tenants/${tenantCode}/${language}.json`);
-                        Object.keys(tenantOverrides.default).forEach(ns => {
-                            loadedTranslations[ns] = {
-                                ...loadedTranslations[ns],
-                                ...tenantOverrides.default[ns]
-                            };
-                        });
-                    } catch {
-                        // No tenant-specific overrides, that's okay
-                    }
-                }
-
-                setTranslations(loadedTranslations);
-            } catch (error) {
-                console.error('Failed to load translations:', error);
-            } finally {
-                setLoading(false);
+        setLoading(true);
+        const loadedTranslations = {};
+        
+        namespaces.forEach(ns => {
+            if (allTranslations[ns] && allTranslations[ns][language]) {
+                loadedTranslations[ns] = allTranslations[ns][language];
+            } else if (allTranslations[ns] && allTranslations[ns]['en']) {
+                loadedTranslations[ns] = allTranslations[ns]['en'];
+            } else {
+                loadedTranslations[ns] = {};
             }
-        };
+        });
 
-        loadTranslations();
-    }, [language, namespaces, tenantCode]);
+        setTranslations(loadedTranslations);
+        setLoading(false);
+    }, [language, namespaces, allTranslations]);
 
     // Persist language preference
     useEffect(() => {
