@@ -51,17 +51,14 @@ export default function ISOGatewayLogin() {
         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center p-4">
             <Card className="w-full max-w-md shadow-xl">
                 <CardHeader>
-                    <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center">
-                                <Zap className="h-6 w-6 text-white" />
-                            </div>
-                            <div>
-                                <CardTitle className="text-2xl">ISO Gateway</CardTitle>
-                                <p className="text-sm text-slate-600">by FTS.Money</p>
-                            </div>
+                    <div className="flex items-center justify-center gap-3 mb-4">
+                        <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center">
+                            <Zap className="h-6 w-6 text-white" />
                         </div>
-                        <LanguageSwitcher variant="select" showLabel={false} />
+                        <div>
+                            <CardTitle className="text-2xl">ISO Gateway</CardTitle>
+                            <p className="text-sm text-slate-600">by FTS.Money</p>
+                        </div>
                     </div>
                 </CardHeader>
                 <CardContent>
@@ -71,6 +68,10 @@ export default function ISOGatewayLogin() {
                         </div>
                     )}
                     <form onSubmit={handleLogin} className="space-y-4">
+                        <div className="flex justify-center mb-4">
+                            <LanguageSwitcher variant="select" showLabel={false} />
+                        </div>
+                        
                         <div>
                             <label className="text-sm font-medium">Email</label>
                             <Input

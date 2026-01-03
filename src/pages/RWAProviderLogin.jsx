@@ -36,18 +36,17 @@ export default function RWAProviderLogin() {
     return (
         <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 flex items-center justify-center p-4">
             <Card className="w-full max-w-md">
-                <CardHeader>
-                    <div className="flex items-start justify-between mb-4">
-                        <div className="text-center flex-1">
-                            <img src={FTS_LOGOS.primary} alt="FTS.Money" className="h-10 mx-auto mb-4" />
-                            <CardTitle className="text-2xl">RWA Provider Portal</CardTitle>
-                            <p className="text-sm text-slate-600 mt-2">Licensed tokenization platform</p>
-                        </div>
-                        <LanguageSwitcher variant="select" showLabel={false} />
-                    </div>
+                <CardHeader className="text-center">
+                    <img src={FTS_LOGOS.primary} alt="FTS.Money" className="h-10 mx-auto mb-4" />
+                    <CardTitle className="text-2xl">RWA Provider Portal</CardTitle>
+                    <p className="text-sm text-slate-600 mt-2">Licensed tokenization platform</p>
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={handleLogin} className="space-y-4">
+                        <div className="flex justify-center mb-4">
+                            <LanguageSwitcher variant="select" showLabel={false} />
+                        </div>
+                        
                         <div>
                             <Label>Provider Code</Label>
                             <Input

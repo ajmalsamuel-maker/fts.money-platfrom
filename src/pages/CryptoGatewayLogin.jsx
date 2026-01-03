@@ -79,13 +79,10 @@ export default function CryptoGatewayLogin() {
 
                 <Card className="bg-white/95 backdrop-blur border-slate-200 shadow-xl">
                     <CardHeader>
-                        <div className="flex items-center justify-between mb-4">
-                            <CardTitle className="flex items-center gap-2">
-                                <Wallet className="h-5 w-5 text-blue-600" />
-                                Banking Portal Login
-                            </CardTitle>
-                            <LanguageSwitcher variant="select" showLabel={false} />
-                        </div>
+                        <CardTitle className="flex items-center gap-2">
+                            <Wallet className="h-5 w-5 text-blue-600" />
+                            Banking Portal Login
+                        </CardTitle>
                     </CardHeader>
                     <CardContent>
                         <form onSubmit={handleLogin} className="space-y-4">
@@ -94,6 +91,10 @@ export default function CryptoGatewayLogin() {
                                     <AlertDescription>{error}</AlertDescription>
                                 </Alert>
                             )}
+
+                            <div className="flex justify-center mb-4">
+                                <LanguageSwitcher variant="select" showLabel={false} />
+                            </div>
 
                             <div>
                                 <Label>Email Address</Label>
