@@ -14,6 +14,8 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { 
     Globe, 
     Languages, 
@@ -40,6 +42,11 @@ export default function PlatformLanguageManagement() {
     const queryClient = useQueryClient();
     const [activeTab, setActiveTab] = useState('overview');
     const [selectedPSP, setSelectedPSP] = useState(null);
+    const [configDialogOpen, setConfigDialogOpen] = useState(false);
+    const [pspLanguageConfig, setPspLanguageConfig] = useState({
+        enabled_languages: ['en'],
+        default_language: 'en'
+    });
 
     const { data: psps = [] } = useQuery({
         queryKey: ['provisioned-psps'],
@@ -58,6 +65,63 @@ export default function PlatformLanguageManagement() {
         if (tier === 'TIER_1') return 'bg-emerald-600';
         if (tier === 'TIER_2') return 'bg-blue-600';
         return 'bg-slate-600';
+    };
+
+    const updatePSPLanguagesMutation = useMutation({
+        mutationFn: async ({ pspId, languageConfig }) => {
+            return await base44.entities.ProvisionedPSP.update(pspId, {
+                branding: {
+                    ...(selectedPSP?.branding || {}),
+                    enabled_languages: languageConfig.enabled_languages,
+                    default_language: languageConfig.default_language
+                }
+            });
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries(['provisioned-psps']);
+            setConfigDialogOpen(false);
+            toast.success('Language configuration saved!');
+        },
+        onError: (error) => {
+            toast.error(`Failed to save: ${error.message}`);
+        }
+    });
+
+    const openLanguageConfig = (psp) => {
+        setSelectedPSP(psp);
+        setPspLanguageConfig({
+            enabled_languages: psp.branding?.enabled_languages || ['en'],
+            default_language: psp.branding?.default_language || 'en'
+        });
+        setConfigDialogOpen(true);
+    };
+
+    const toggleLanguage = (langCode) => {
+        const isEnabled = pspLanguageConfig.enabled_languages.includes(langCode);
+        if (isEnabled && pspLanguageConfig.enabled_languages.length === 1) {
+            toast.error('At least one language must be enabled');
+            return;
+        }
+        
+        const newLanguages = isEnabled
+            ? pspLanguageConfig.enabled_languages.filter(l => l !== langCode)
+            : [...pspLanguageConfig.enabled_languages, langCode];
+        
+        setPspLanguageConfig({
+            ...pspLanguageConfig,
+            enabled_languages: newLanguages,
+            // If we disabled the default language, switch to first enabled
+            default_language: !newLanguages.includes(pspLanguageConfig.default_language) 
+                ? newLanguages[0] 
+                : pspLanguageConfig.default_language
+        });
+    };
+
+    const handleSaveLanguageConfig = () => {
+        updatePSPLanguagesMutation.mutate({
+            pspId: selectedPSP.id,
+            languageConfig: pspLanguageConfig
+        });
     };
 
     return (
@@ -221,29 +285,143 @@ export default function PlatformLanguageManagement() {
                                 </CardHeader>
                                 <CardContent>
                                     <div className="space-y-4">
-                                        {psps.map(psp => (
-                                            <div key={psp.id} className="p-4 border border-slate-200 rounded-lg">
-                                                <div className="flex items-center justify-between mb-3">
-                                                    <div>
-                                                        <h3 className="font-semibold">{psp.psp_name}</h3>
-                                                        <p className="text-xs text-slate-600">Code: {psp.psp_code} • Region: {psp.country}</p>
+                                        {psps.map(psp => {
+                                            const enabledLangs = psp.branding?.enabled_languages || ['en'];
+                                            const defaultLang = psp.branding?.default_language || 'en';
+                                            return (
+                                                <div key={psp.id} className="p-4 border border-slate-200 rounded-lg">
+                                                    <div className="flex items-center justify-between mb-3">
+                                                        <div>
+                                                            <h3 className="font-semibold">{psp.psp_name}</h3>
+                                                            <p className="text-xs text-slate-600">Code: {psp.psp_code} • Region: {psp.country}</p>
+                                                        </div>
+                                                        <Button 
+                                                            variant="outline" 
+                                                            size="sm"
+                                                            onClick={() => openLanguageConfig(psp)}
+                                                        >
+                                                            Configure Languages
+                                                        </Button>
                                                     </div>
-                                                    <Button variant="outline" size="sm">
-                                                        Configure Languages
-                                                    </Button>
+                                                    <div className="flex gap-2 flex-wrap">
+                                                        {enabledLangs.map(code => {
+                                                            const lang = SUPPORTED_LANGUAGES.find(l => l.code === code);
+                                                            return (
+                                                                <Badge key={code} variant="outline" className="gap-1">
+                                                                    <span>{lang?.flag}</span>
+                                                                    <span>{lang?.nativeName}</span>
+                                                                    {code === defaultLang && <span className="text-emerald-600">✓</span>}
+                                                                </Badge>
+                                                            );
+                                                        })}
+                                                    </div>
                                                 </div>
-                                                <div className="flex gap-2">
-                                                    <Badge variant="outline">English</Badge>
-                                                    <Badge variant="outline">Spanish</Badge>
-                                                    <Badge variant="outline">French</Badge>
-                                                    <span className="text-xs text-slate-500">+2 more</span>
-                                                </div>
-                                            </div>
-                                        ))}
+                                            );
+                                        })}
                                     </div>
                                 </CardContent>
                             </Card>
                         </TabsContent>
+
+                        {/* Language Configuration Dialog */}
+                        <Dialog open={configDialogOpen} onOpenChange={setConfigDialogOpen}>
+                            <DialogContent className="max-w-4xl max-h-[80vh]">
+                                <DialogHeader>
+                                    <DialogTitle>
+                                        Configure Languages - {selectedPSP?.psp_name}
+                                    </DialogTitle>
+                                </DialogHeader>
+
+                                <div className="space-y-6">
+                                    {/* Default Language */}
+                                    <div>
+                                        <Label className="text-sm font-semibold mb-2 block">Default Language</Label>
+                                        <div className="grid grid-cols-5 gap-2">
+                                            {pspLanguageConfig.enabled_languages.map(code => {
+                                                const lang = SUPPORTED_LANGUAGES.find(l => l.code === code);
+                                                return (
+                                                    <button
+                                                        key={code}
+                                                        onClick={() => setPspLanguageConfig({...pspLanguageConfig, default_language: code})}
+                                                        className={`
+                                                            flex flex-col items-center gap-2 p-3 rounded-lg border-2 transition-all
+                                                            ${pspLanguageConfig.default_language === code 
+                                                                ? 'border-emerald-500 bg-emerald-50' 
+                                                                : 'border-slate-200 hover:border-emerald-300'
+                                                            }
+                                                        `}
+                                                    >
+                                                        <span className="text-2xl">{lang?.flag}</span>
+                                                        <span className="text-xs font-medium">{lang?.nativeName}</span>
+                                                        {pspLanguageConfig.default_language === code && (
+                                                            <CheckCircle className="h-4 w-4 text-emerald-600" />
+                                                        )}
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+
+                                    {/* All Languages */}
+                                    <div>
+                                        <Label className="text-sm font-semibold mb-2 block">Enabled Languages</Label>
+                                        <ScrollArea className="h-[400px] pr-4">
+                                            <div className="grid grid-cols-3 gap-3">
+                                                {SUPPORTED_LANGUAGES.map(lang => {
+                                                    const isEnabled = pspLanguageConfig.enabled_languages.includes(lang.code);
+                                                    return (
+                                                        <div
+                                                            key={lang.code}
+                                                            onClick={() => toggleLanguage(lang.code)}
+                                                            className={`
+                                                                flex items-center justify-between p-3 rounded-lg border-2 cursor-pointer transition-all
+                                                                ${isEnabled 
+                                                                    ? 'border-blue-500 bg-blue-50' 
+                                                                    : 'border-slate-200 hover:border-blue-300'
+                                                                }
+                                                            `}
+                                                        >
+                                                            <div className="flex items-center gap-2">
+                                                                <span className="text-xl">{lang.flag}</span>
+                                                                <div>
+                                                                    <p className="text-sm font-medium">{lang.nativeName}</p>
+                                                                    <p className="text-xs text-slate-600">{lang.name}</p>
+                                                                </div>
+                                                            </div>
+                                                            <div className="flex items-center gap-1">
+                                                                {lang.rtl && <Badge variant="outline" className="text-[9px] px-1 py-0">RTL</Badge>}
+                                                                {isEnabled && <CheckCircle className="h-4 w-4 text-blue-600" />}
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        </ScrollArea>
+                                    </div>
+
+                                    {/* Summary */}
+                                    <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                                        <p className="text-sm text-blue-800">
+                                            <strong>{pspLanguageConfig.enabled_languages.length}</strong> languages enabled •
+                                            Default: <strong>{SUPPORTED_LANGUAGES.find(l => l.code === pspLanguageConfig.default_language)?.nativeName}</strong>
+                                        </p>
+                                    </div>
+
+                                    {/* Actions */}
+                                    <div className="flex justify-end gap-3">
+                                        <Button variant="outline" onClick={() => setConfigDialogOpen(false)}>
+                                            Cancel
+                                        </Button>
+                                        <Button 
+                                            onClick={handleSaveLanguageConfig}
+                                            disabled={updatePSPLanguagesMutation.isPending}
+                                        >
+                                            {updatePSPLanguagesMutation.isPending ? 'Saving...' : 'Save Configuration'}
+                                        </Button>
+                                    </div>
+                                </div>
+                            </DialogContent>
+                        </Dialog>
 
                         {/* Translation Status Tab */}
                         <TabsContent value="translations">
