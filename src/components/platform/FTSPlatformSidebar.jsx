@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -265,9 +264,9 @@ export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, i
                                             const Icon = item.icon;
                                             const isActive = currentPage === item.path;
                                             return (
-                                                <Link
+                                                <a
                                                     key={item.path}
-                                                    to={createPageUrl(item.path)}
+                                                    href={createPageUrl(item.path)}
                                                     className={cn(
                                                         "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group",
                                                         isActive
@@ -292,8 +291,8 @@ export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, i
                                                     </div>
                                                     {isActive && (
                                                         <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-600 to-cyan-500 rounded-r-full"></div>
-                                                    )}
-                                                </Link>
+                                                        )}
+                                                        </a>
                                             );
                                         })}
                                     </div>
