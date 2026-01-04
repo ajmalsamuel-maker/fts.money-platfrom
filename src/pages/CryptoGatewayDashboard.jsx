@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
+import { createPageUrl } from '@/utils';
 import CryptoGatewaySidebar from '@/components/crypto/CryptoGatewaySidebar';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -23,15 +24,17 @@ export default function CryptoGatewayDashboard() {
     const { t } = useI18n();
     const [session, setSession] = useState(() => {
         const stored = localStorage.getItem('crypto_gateway_session');
-        if (!stored) {
-            window.location.href = '/CryptoGatewayLogin';
-            return null;
-        }
-        return JSON.parse(stored);
+        return stored ? JSON.parse(stored) : null;
     });
     const [timeRange, setTimeRange] = useState('7d');
 
-    if (!session) return null;
+    React.useEffect(() => {
+        if (!session) {
+            window.location.href = createPageUrl('CryptoGatewayLogin');
+        }
+    }, [session]);
+
+    if (!session) return <div className="flex items-center justify-center h-screen">Redirecting to login...</div>;
 
     // Mock data - replace with real API calls
     const stats = {
