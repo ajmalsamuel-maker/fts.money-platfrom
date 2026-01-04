@@ -42,7 +42,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
+import { useI18n } from '@/components/i18n/I18nextProvider';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 
