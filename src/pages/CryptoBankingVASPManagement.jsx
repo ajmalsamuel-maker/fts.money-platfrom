@@ -33,7 +33,6 @@ import {
 export default function CryptoBankingVASPManagement() {
     const { platformUser, loading: authLoading } = usePlatformAuth();
     const queryClient = useQueryClient();
-    const navigate = useNavigate();
     const [showCreateDialog, setShowCreateDialog] = useState(false);
     const [showProviderSettings, setShowProviderSettings] = useState(false);
     const [filterJurisdiction, setFilterJurisdiction] = useState('all');
