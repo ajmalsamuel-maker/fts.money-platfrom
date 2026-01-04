@@ -22,17 +22,7 @@ import { LineChart, Line, BarChart, Bar, PieChart as RePieChart, Pie, Cell, XAxi
 
 export default function CryptoGatewayDashboard() {
     const { t } = useI18n();
-    const [session, setSession] = useState(null);
     const [timeRange, setTimeRange] = useState('7d');
-
-    React.useEffect(() => {
-        const stored = localStorage.getItem('crypto_gateway_session');
-        if (stored) {
-            setSession(JSON.parse(stored));
-        }
-    }, []);
-
-    if (!session) return <div className="flex items-center justify-center h-screen">Loading...</div>;
 
     // Mock data - replace with real API calls
     const stats = {
@@ -147,31 +137,21 @@ export default function CryptoGatewayDashboard() {
                 <div className="flex items-center gap-3">
                     <LanguageSwitcher variant="select" showLabel={true} />
                     <div className="text-right">
-                        <p className="text-sm font-medium text-slate-900">{session.user.email}</p>
+                        <p className="text-sm font-medium text-slate-900">FTS Admin</p>
                         <p className="text-xs text-slate-500">{t('crypto:dashboard.cryptoBanking')}</p>
                     </div>
-                    <button
-                        onClick={() => {
-                            localStorage.removeItem('crypto_gateway_session');
-                            window.location.href = '/CryptoGatewayLogin';
-                        }}
-                        className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 transition-colors"
-                    >
-                        <LogOut className="h-4 w-4" />
-                        {t('common:actions.logout')}
-                    </button>
                 </div>
             </div>
 
             {/* Main Content Area with Sidebar */}
             <div className="flex flex-1 overflow-hidden">
-                <CryptoGatewaySidebar currentPage="CryptoGatewayDashboard" userEmail={session.user.email} />
+                <CryptoGatewaySidebar currentPage="CryptoGatewayDashboard" userEmail="FTS Admin" />
                 
                 {/* Dashboard Content */}
                 <div className="flex-1 overflow-auto p-8">
                     <div className="mb-6">
-                        <h1 className="text-3xl font-bold text-slate-900">{t('crypto:dashboard.title')}</h1>
-                        <p className="text-slate-600 mt-1">{t('crypto:dashboard.welcomeBack')}, {session.user.company_name || session.user.email}</p>
+                        <h1 className="text-3xl font-bold text-slate-900">Striga Crypto Banking Platform</h1>
+                        <p className="text-slate-600 mt-1">Monitor and manage your whitelabel crypto banking infrastructure</p>
                     </div>
 
                 <div className="space-y-6">
