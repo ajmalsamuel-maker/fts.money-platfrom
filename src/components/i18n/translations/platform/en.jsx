@@ -60,7 +60,7 @@ export default {
   "sidebar": {
     "overview": "Overview & Insights",
     "psp-operations": "PSP Operations",
-    "crypto-gateway": "Crypto Banking Gateway",
+    "crypto-gateway": "Crypto Banking / VASP",
     "rwa-platform": "RWA Tokenization Platform",
     "services-marketplace": "Services & Marketplace",
     "user-management": "User & Access Management",
@@ -320,6 +320,8 @@ export default {
     "pspAdministratorsDesc": "Manage PSP staff",
     "resourceOrchestration": "Resource Orchestration",
     "resourceOrchestrationDesc": "Manage resources",
+    "vaspManagement": "VASP Management",
+    "vaspManagementDesc": "Manage VASP instances",
     "gatewayDashboard": "Gateway Dashboard",
     "gatewayDashboardDesc": "Crypto banking overview",
     "cryptoCustomers": "Crypto Customers",
