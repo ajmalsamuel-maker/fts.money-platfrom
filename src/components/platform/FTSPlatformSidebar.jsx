@@ -63,12 +63,12 @@ const menuSections = [
         title: 'Crypto Banking / VASP',
         defaultOpen: false,
         items: [
-            { label: 'VASP Management', description: 'Manage VASP instances', path: 'CryptoBankingVASPManagement', icon: Wallet, priority: true },
-            { label: 'Crypto Customers', description: 'Customer accounts', path: 'CryptoGatewayCustomers', icon: Users },
-            { label: 'Transactions', description: 'Transaction history', path: 'CryptoGatewayTransactions', icon: Activity },
-            { label: 'Wallets & IBANs', description: 'Wallet management', path: 'CryptoWallets', icon: Wallet },
-            { label: 'Compliance & KYC', description: 'Compliance monitoring', path: 'CryptoCompliance', icon: Shield },
-            { label: 'Striga Settings', description: 'Provider configuration', path: 'StrigaServiceManagement', icon: Settings }
+            { labelKey: 'vaspManagement', descKey: 'vaspManagementDesc', path: 'CryptoBankingVASPManagement', icon: Wallet, priority: true },
+            { labelKey: 'cryptoCustomers', descKey: 'cryptoCustomersDesc', path: 'CryptoGatewayCustomers', icon: Users },
+            { labelKey: 'cryptoTransactions', descKey: 'cryptoTransactionsDesc', path: 'CryptoGatewayTransactions', icon: Activity },
+            { labelKey: 'walletsIBANs', descKey: 'walletsIBANsDesc', path: 'CryptoWallets', icon: Wallet },
+            { labelKey: 'complianceKYC', descKey: 'complianceKYCDesc', path: 'CryptoCompliance', icon: Shield },
+            { labelKey: 'strigaSettings', descKey: 'strigaSettingsDesc', path: 'StrigaServiceManagement', icon: Settings }
         ]
     },
     {
