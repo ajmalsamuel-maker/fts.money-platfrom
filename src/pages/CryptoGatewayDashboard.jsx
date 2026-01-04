@@ -22,19 +22,17 @@ import { LineChart, Line, BarChart, Bar, PieChart as RePieChart, Pie, Cell, XAxi
 
 export default function CryptoGatewayDashboard() {
     const { t } = useI18n();
-    const [session, setSession] = useState(() => {
-        const stored = localStorage.getItem('crypto_gateway_session');
-        return stored ? JSON.parse(stored) : null;
-    });
+    const [session, setSession] = useState(null);
     const [timeRange, setTimeRange] = useState('7d');
 
     React.useEffect(() => {
-        if (!session) {
-            window.location.href = createPageUrl('CryptoGatewayLogin');
+        const stored = localStorage.getItem('crypto_gateway_session');
+        if (stored) {
+            setSession(JSON.parse(stored));
         }
-    }, [session]);
+    }, []);
 
-    if (!session) return <div className="flex items-center justify-center h-screen">Redirecting to login...</div>;
+    if (!session) return <div className="flex items-center justify-center h-screen">Loading...</div>;
 
     // Mock data - replace with real API calls
     const stats = {
