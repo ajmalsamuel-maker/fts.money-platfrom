@@ -110,7 +110,6 @@ const ROLE_PERMISSIONS_MAP = {
 };
 
 export function usePlatformAuth(requiredPermissions = []) {
-    const navigate = useNavigate();
     const [platformUser, setPlatformUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
