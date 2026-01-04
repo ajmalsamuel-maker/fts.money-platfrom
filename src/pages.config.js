@@ -276,6 +276,7 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
+import CryptoVASPSettings from './pages/CryptoVASPSettings';
 import __Layout from './Layout.jsx';
 
 
@@ -558,6 +559,7 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
+    "CryptoVASPSettings": CryptoVASPSettings,
 }
 
 export const pagesConfig = {

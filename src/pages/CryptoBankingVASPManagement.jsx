@@ -33,6 +33,7 @@ import {
 export default function CryptoBankingVASPManagement() {
     const { platformUser, loading: authLoading } = usePlatformAuth();
     const queryClient = useQueryClient();
+    const navigate = useNavigate();
     const [showCreateDialog, setShowCreateDialog] = useState(false);
     const [showProviderSettings, setShowProviderSettings] = useState(false);
     const [filterJurisdiction, setFilterJurisdiction] = useState('all');
@@ -526,7 +527,11 @@ export default function CryptoBankingVASPManagement() {
                                         </div>
 
                                         <div className="flex gap-2 mt-4 pt-4 border-t border-slate-200">
-                                            <Button variant="outline" size="sm">
+                                            <Button 
+                                                variant="outline" 
+                                                size="sm"
+                                                onClick={() => navigate(createPageUrl('CryptoVASPSettings') + '?id=' + vasp.id)}
+                                            >
                                                 <Settings className="h-4 w-4 mr-2" />
                                                 Configure
                                             </Button>
