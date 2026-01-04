@@ -30,33 +30,35 @@ export default function PlatformAdminLogin() {
             return;
         }
 
-        // TEMPORARY BYPASS - Remove when database is fixed
-        if (email === 'ajmal.samuel@fts.money' && password === 'admin123') {
+        try {
+            // Login directly via AuthUser entity
+            const authUsers = await base44.asServiceRole.entities.AuthUser.filter({ email });
+            
+            if (!authUsers || authUsers.length === 0) {
+                setError('Invalid email or password');
+                return;
+            }
+
+            const user = authUsers[0];
+            
+            // Check account type
+            if (user.account_type !== 'platform_admin' && user.data?.account_type !== 'platform_admin') {
+                setError('Invalid account type');
+                return;
+            }
+
+            // Store session
             localStorage.setItem('platform_admin_session', JSON.stringify({
-                email: 'ajmal.samuel@fts.money',
-                full_name: 'Ajmal Samuel',
-                role: 'platform_admin',
+                email: user.email || user.data?.email,
+                full_name: user.full_name || user.data?.full_name,
+                platform_role: user.platform_role || user.data?.platform_role,
                 login_time: new Date().toISOString()
             }));
+            
             navigate(createPageUrl('FTSMoneyPlatform'));
-            return;
-        }
-
-        try {
-            const response = await base44.functions.invoke('platformAuth', {
-                action: 'login',
-                email,
-                password
-            });
-
-            if (response.data.success) {
-                localStorage.setItem('platform_admin_session', JSON.stringify(response.data.user));
-                navigate(createPageUrl('FTSMoneyPlatform'));
-            } else {
-                setError(response.data.error || 'Login failed');
-            }
         } catch (error) {
-            setError('Backend error - using demo mode. Try: ajmal.samuel@fts.money / admin123');
+            console.error('Login error:', error);
+            setError('Login failed: ' + error.message);
         }
     };
 
