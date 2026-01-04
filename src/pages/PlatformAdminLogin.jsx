@@ -31,31 +31,21 @@ export default function PlatformAdminLogin() {
         }
 
         try {
-            // Login directly via AuthUser entity
-            const authUsers = await base44.asServiceRole.entities.AuthUser.filter({ email });
-            
-            if (!authUsers || authUsers.length === 0) {
-                setError('Invalid email or password');
-                return;
-            }
+            const response = await base44.functions.invoke('platformAuthSimple', {
+                action: 'login',
+                email,
+                password
+            });
 
-            const user = authUsers[0];
-            
-            // Check account type
-            if (user.account_type !== 'platform_admin' && user.data?.account_type !== 'platform_admin') {
-                setError('Invalid account type');
-                return;
+            if (response.data.success) {
+                localStorage.setItem('platform_admin_session', JSON.stringify({
+                    ...response.data.user,
+                    login_time: new Date().toISOString()
+                }));
+                navigate(createPageUrl('FTSMoneyPlatform'));
+            } else {
+                setError(response.data.error || 'Login failed');
             }
-
-            // Store session
-            localStorage.setItem('platform_admin_session', JSON.stringify({
-                email: user.email || user.data?.email,
-                full_name: user.full_name || user.data?.full_name,
-                platform_role: user.platform_role || user.data?.platform_role,
-                login_time: new Date().toISOString()
-            }));
-            
-            navigate(createPageUrl('FTSMoneyPlatform'));
         } catch (error) {
             console.error('Login error:', error);
             setError('Login failed: ' + error.message);
