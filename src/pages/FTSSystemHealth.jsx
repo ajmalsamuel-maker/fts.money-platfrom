@@ -81,7 +81,7 @@ export default function FTSSystemHealth() {
                             {systemStatus === 'healthy' && <CheckCircle2 className="h-3 w-3 mr-1" />}
                             {systemStatus === 'warning' && <AlertTriangle className="h-3 w-3 mr-1" />}
                             {systemStatus === 'degraded' && <XCircle className="h-3 w-3 mr-1" />}
-                            System {systemStatus}
+                            {t('platform:pages.systemHealth.systemHealthy')}
                         </Badge>
                     </div>
                 </header>
@@ -93,7 +93,7 @@ export default function FTSSystemHealth() {
                             <CardContent className="p-4">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-xs text-slate-600">Total Services</p>
+                                        <p className="text-xs text-slate-600">{t('platform:pages.systemHealth.totalServices')}</p>
                                         <p className="text-2xl font-bold text-blue-600 mt-1">{totalServices}</p>
                                     </div>
                                     <Activity className="h-6 w-6 text-blue-600" />
@@ -104,7 +104,7 @@ export default function FTSSystemHealth() {
                             <CardContent className="p-4">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-xs text-slate-600">PSPs</p>
+                                        <p className="text-xs text-slate-600">{t('platform:pages.systemHealth.psps')}</p>
                                         <p className="text-2xl font-bold text-emerald-600 mt-1">{activePSPs}</p>
                                     </div>
                                     <CheckCircle2 className="h-6 w-6 text-emerald-600" />
@@ -115,7 +115,7 @@ export default function FTSSystemHealth() {
                             <CardContent className="p-4">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-xs text-slate-600">ISO Gateway</p>
+                                        <p className="text-xs text-slate-600">{t('platform:pages.systemHealth.isoGateway')}</p>
                                         <p className="text-2xl font-bold text-indigo-600 mt-1">{activeISO}</p>
                                     </div>
                                     <Code className="h-6 w-6 text-indigo-600" />
@@ -126,7 +126,7 @@ export default function FTSSystemHealth() {
                             <CardContent className="p-4">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-xs text-slate-600">Orchestration</p>
+                                        <p className="text-xs text-slate-600">{t('platform:pages.systemHealth.orchestration')}</p>
                                         <p className="text-2xl font-bold text-purple-600 mt-1">{activeOrchestration}</p>
                                     </div>
                                     <GitBranch className="h-6 w-6 text-purple-600" />
@@ -137,7 +137,7 @@ export default function FTSSystemHealth() {
                             <CardContent className="p-4">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-xs text-slate-600">Crypto</p>
+                                        <p className="text-xs text-slate-600">{t('platform:pages.systemHealth.crypto')}</p>
                                         <p className="text-2xl font-bold text-cyan-600 mt-1">{activeCrypto}</p>
                                     </div>
                                     <Wallet className="h-6 w-6 text-cyan-600" />
@@ -148,7 +148,7 @@ export default function FTSSystemHealth() {
                             <CardContent className="p-4">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-xs text-slate-600">RWA</p>
+                                        <p className="text-xs text-slate-600">{t('platform:pages.systemHealth.rwa')}</p>
                                         <p className="text-2xl font-bold text-amber-600 mt-1">{activeRWA}</p>
                                     </div>
                                     <Briefcase className="h-6 w-6 text-amber-600" />
@@ -163,7 +163,7 @@ export default function FTSSystemHealth() {
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
                                     <CheckCircle2 className="h-5 w-5 text-emerald-600" />
-                                    PSP Instances ({activePSPs})
+                                    {t('platform:pages.systemHealth.pspInstances')} ({activePSPs})
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>
@@ -195,7 +195,7 @@ export default function FTSSystemHealth() {
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
                                     <Code className="h-5 w-5 text-indigo-600" />
-                                    ISO Gateway ({activeISO})
+                                    {t('platform:pages.systemHealth.isoGateway')} ({activeISO})
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>
@@ -219,7 +219,7 @@ export default function FTSSystemHealth() {
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
                                     <GitBranch className="h-5 w-5 text-purple-600" />
-                                    Orchestration ({activeOrchestration})
+                                    {t('platform:pages.systemHealth.orchestration')} ({activeOrchestration})
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>
@@ -245,7 +245,7 @@ export default function FTSSystemHealth() {
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
                                     <Wallet className="h-5 w-5 text-cyan-600" />
-                                    Crypto Banking ({activeCrypto})
+                                    {t('platform:pages.systemHealth.cryptoBanking')} ({activeCrypto})
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>
@@ -269,7 +269,7 @@ export default function FTSSystemHealth() {
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
                                     <Briefcase className="h-5 w-5 text-amber-600" />
-                                    RWA Platform ({activeRWA})
+                                    {t('platform:pages.systemHealth.rwaPlatform')} ({activeRWA})
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>
@@ -291,30 +291,30 @@ export default function FTSSystemHealth() {
 
                         <Card>
                             <CardHeader>
-                                <CardTitle>Infrastructure Status</CardTitle>
+                                <CardTitle>{t('platform:pages.systemHealth.infrastructureStatus')}</CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <div className="space-y-3">
                                     <div className="flex items-center justify-between p-2 bg-emerald-50 rounded border border-emerald-200">
                                         <div className="flex items-center gap-2">
                                             <Cpu className="h-4 w-4 text-emerald-600" />
-                                            <span className="text-sm font-medium">Compute</span>
+                                            <span className="text-sm font-medium">{t('platform:pages.systemHealth.compute')}</span>
                                         </div>
-                                        <Badge className="bg-emerald-100 text-emerald-700 text-xs">Healthy</Badge>
+                                        <Badge className="bg-emerald-100 text-emerald-700 text-xs">{t('platform:pages.systemHealth.healthy')}</Badge>
                                     </div>
                                     <div className="flex items-center justify-between p-2 bg-emerald-50 rounded border border-emerald-200">
                                         <div className="flex items-center gap-2">
                                             <Database className="h-4 w-4 text-emerald-600" />
-                                            <span className="text-sm font-medium">Database</span>
+                                            <span className="text-sm font-medium">{t('platform:pages.systemHealth.database')}</span>
                                         </div>
-                                        <Badge className="bg-emerald-100 text-emerald-700 text-xs">Operational</Badge>
+                                        <Badge className="bg-emerald-100 text-emerald-700 text-xs">{t('platform:pages.systemHealth.operational')}</Badge>
                                     </div>
                                     <div className="flex items-center justify-between p-2 bg-emerald-50 rounded border border-emerald-200">
                                         <div className="flex items-center gap-2">
                                             <HardDrive className="h-4 w-4 text-emerald-600" />
-                                            <span className="text-sm font-medium">Storage</span>
+                                            <span className="text-sm font-medium">{t('platform:pages.systemHealth.storage')}</span>
                                         </div>
-                                        <Badge className="bg-emerald-100 text-emerald-700 text-xs">Online</Badge>
+                                        <Badge className="bg-emerald-100 text-emerald-700 text-xs">{t('platform:pages.systemHealth.online')}</Badge>
                                     </div>
                                 </div>
                             </CardContent>

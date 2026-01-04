@@ -112,13 +112,19 @@ export default {
       "growth": "growth",
       "totalRevenue": "Total Revenue",
       "totalEndUsers": "Total End Users",
+      "acrossAllServices": "Across all services",
       "acrossServices": "Across all services",
-      "platformRevenue": "Platform Revenue"
+      "platformRevenue": "Platform Revenue",
+      "psp": "PSP",
+      "isoGateway": "ISO Gateway",
+      "orchestration": "Orchestration",
+      "crypto": "Crypto",
+      "rwa": "RWA"
     },
     "revenue": {
       "title": "Revenue Management",
       "subtitle": "Track revenue share and billing across all PSPs",
-      "totalMonthly": "Total Monthly Revenue",
+      "totalMonthlyRevenue": "Total Monthly Revenue",
       "allServices": "All services",
       "annualRunRate": "Annual Run Rate",
       "projected": "Projected",
@@ -135,10 +141,11 @@ export default {
       "service": "Service",
       "customers": "Customers",
       "monthlyRevenue": "Monthly Revenue",
-      "ofTotal": "% of Total",
+      "percentTotal": "% of Total",
       "pspPlatform": "PSP Platform",
       "tier": "Tier",
-      "growth": "Growth"
+      "growth": "Growth",
+      "pspName": "PSP Name"
     },
     "systemHealth": {
       "title": "System Health Monitor",
@@ -186,6 +193,27 @@ export default {
       "viewLogs": "View Logs",
       "noMatches": "No matching PSPs found",
       "complianceIssue": "Compliance Issue"
+    },
+    "systemHealth": {
+      "title": "System Health Monitor",
+      "subtitle": "Real-time platform status and metrics",
+      "systemHealthy": "System healthy",
+      "totalServices": "Total Services",
+      "psps": "PSPs",
+      "isoGateway": "ISO Gateway",
+      "orchestration": "Orchestration",
+      "crypto": "Crypto",
+      "rwa": "RWA",
+      "pspInstances": "PSP Instances",
+      "infrastructureStatus": "Infrastructure Status",
+      "compute": "Compute",
+      "database": "Database",
+      "storage": "Storage",
+      "healthy": "Healthy",
+      "operational": "Operational",
+      "online": "Online",
+      "cryptoBanking": "Crypto Banking",
+      "rwaPlatform": "RWA Platform"
     },
     "setupGuide": {
       "title": "FTS.Money Setup Guide",

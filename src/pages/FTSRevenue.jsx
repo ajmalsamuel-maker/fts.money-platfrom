@@ -142,7 +142,7 @@ export default function FTSRevenue() {
                                     <DollarSign className="h-5 w-5 text-emerald-600" />
                                 </div>
                                 <div>
-                                    <p className="text-xs text-slate-600">PSP Revenue</p>
+                                    <p className="text-xs text-slate-600">{t('platform:pages.revenue.pspRevenue')}</p>
                                     <p className="text-lg font-bold">${(pspRevenue / 1000).toFixed(0)}K</p>
                                 </div>
                             </div>
@@ -155,7 +155,7 @@ export default function FTSRevenue() {
                                     <Code className="h-5 w-5 text-indigo-600" />
                                 </div>
                                 <div>
-                                    <p className="text-xs text-slate-600">ISO Gateway</p>
+                                    <p className="text-xs text-slate-600">{t('platform:pages.revenue.isoGateway')}</p>
                                     <p className="text-lg font-bold">${(isoRevenue / 1000).toFixed(0)}K</p>
                                 </div>
                             </div>
@@ -168,7 +168,7 @@ export default function FTSRevenue() {
                                     <GitBranch className="h-5 w-5 text-purple-600" />
                                 </div>
                                 <div>
-                                    <p className="text-xs text-slate-600">Orchestration</p>
+                                    <p className="text-xs text-slate-600">{t('platform:pages.revenue.orchestration')}</p>
                                     <p className="text-lg font-bold">${(orchestrationRevenue / 1000).toFixed(0)}K</p>
                                 </div>
                             </div>
@@ -181,7 +181,7 @@ export default function FTSRevenue() {
                                     <Wallet className="h-5 w-5 text-cyan-600" />
                                 </div>
                                 <div>
-                                    <p className="text-xs text-slate-600">Crypto</p>
+                                    <p className="text-xs text-slate-600">{t('platform:pages.revenue.cryptoBanking')}</p>
                                     <p className="text-lg font-bold">${(cryptoRevenue / 1000).toFixed(0)}K</p>
                                 </div>
                             </div>
@@ -194,7 +194,7 @@ export default function FTSRevenue() {
                                     <Briefcase className="h-5 w-5 text-amber-600" />
                                 </div>
                                 <div>
-                                    <p className="text-xs text-slate-600">RWA</p>
+                                    <p className="text-xs text-slate-600">{t('platform:pages.revenue.rwaPlatform')}</p>
                                     <p className="text-lg font-bold">${(rwaRevenue / 1000).toFixed(0)}K</p>
                                 </div>
                             </div>
@@ -211,39 +211,39 @@ export default function FTSRevenue() {
                             <Table>
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead>{t('common:labels.service')}</TableHead>
-                                        <TableHead>{t('common:labels.customers')}</TableHead>
+                                        <TableHead>{t('platform:pages.revenue.service')}</TableHead>
+                                        <TableHead>{t('platform:pages.revenue.customers')}</TableHead>
                                         <TableHead className="text-right">{t('platform:pages.revenue.monthlyRevenue')}</TableHead>
                                         <TableHead className="text-right">{t('platform:pages.revenue.percentTotal')}</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
                                     <TableRow>
-                                        <TableCell className="font-medium">PSP Platform</TableCell>
+                                        <TableCell className="font-medium">{t('platform:pages.revenue.pspPlatform')}</TableCell>
                                         <TableCell>{psps.length}</TableCell>
                                         <TableCell className="text-right font-semibold">${(pspRevenue / 1000).toFixed(1)}K</TableCell>
                                         <TableCell className="text-right">{totalRevenue > 0 ? ((pspRevenue / totalRevenue) * 100).toFixed(0) : 0}%</TableCell>
                                     </TableRow>
                                     <TableRow>
-                                        <TableCell className="font-medium">ISO Gateway</TableCell>
+                                        <TableCell className="font-medium">{t('platform:pages.revenue.isoGateway')}</TableCell>
                                         <TableCell>{isoCustomers.length}</TableCell>
                                         <TableCell className="text-right font-semibold">${(isoRevenue / 1000).toFixed(1)}K</TableCell>
                                         <TableCell className="text-right">{totalRevenue > 0 ? ((isoRevenue / totalRevenue) * 100).toFixed(0) : 0}%</TableCell>
                                     </TableRow>
                                     <TableRow>
-                                        <TableCell className="font-medium">Orchestration</TableCell>
+                                        <TableCell className="font-medium">{t('platform:pages.revenue.orchestration')}</TableCell>
                                         <TableCell>{orchestrationCustomers.length}</TableCell>
                                         <TableCell className="text-right font-semibold">${(orchestrationRevenue / 1000).toFixed(1)}K</TableCell>
                                         <TableCell className="text-right">{totalRevenue > 0 ? ((orchestrationRevenue / totalRevenue) * 100).toFixed(0) : 0}%</TableCell>
                                     </TableRow>
                                     <TableRow>
-                                        <TableCell className="font-medium">Crypto Banking</TableCell>
+                                        <TableCell className="font-medium">{t('platform:pages.revenue.cryptoBanking')}</TableCell>
                                         <TableCell>{cryptoCustomers.length}</TableCell>
                                         <TableCell className="text-right font-semibold">${(cryptoRevenue / 1000).toFixed(1)}K</TableCell>
                                         <TableCell className="text-right">{totalRevenue > 0 ? ((cryptoRevenue / totalRevenue) * 100).toFixed(0) : 0}%</TableCell>
                                     </TableRow>
                                     <TableRow>
-                                        <TableCell className="font-medium">RWA Platform</TableCell>
+                                        <TableCell className="font-medium">{t('platform:pages.revenue.rwaPlatform')}</TableCell>
                                         <TableCell>{rwaProviders.length}</TableCell>
                                         <TableCell className="text-right font-semibold">${(rwaRevenue / 1000).toFixed(1)}K</TableCell>
                                         <TableCell className="text-right">{totalRevenue > 0 ? ((rwaRevenue / totalRevenue) * 100).toFixed(0) : 0}%</TableCell>
@@ -261,8 +261,8 @@ export default function FTSRevenue() {
                             <Table>
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead>{t('common:labels.pspName')}</TableHead>
-                                        <TableHead>{t('common:labels.tier')}</TableHead>
+                                        <TableHead>{t('platform:pages.revenue.pspName')}</TableHead>
+                                        <TableHead>{t('platform:pages.revenue.tier')}</TableHead>
                                         <TableHead className="text-right">{t('platform:pages.revenue.monthlyRevenue')}</TableHead>
                                     </TableRow>
                                 </TableHeader>

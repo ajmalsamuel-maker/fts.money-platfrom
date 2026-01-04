@@ -121,7 +121,7 @@ export default function FTSAnalytics() {
                         <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-xs text-slate-600">PSP</p>
+                                    <p className="text-xs text-slate-600">{t('platform:pages.analytics.psp')}</p>
                                     <p className="text-2xl font-bold text-emerald-600">{psps.filter(p => p.status === 'active').length}</p>
                                 </div>
                                 <Building2 className="h-6 w-6 text-emerald-600" />
@@ -132,7 +132,7 @@ export default function FTSAnalytics() {
                         <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-xs text-slate-600">ISO Gateway</p>
+                                    <p className="text-xs text-slate-600">{t('platform:pages.analytics.isoGateway')}</p>
                                     <p className="text-2xl font-bold text-indigo-600">{isoCustomers.filter(c => c.status === 'active').length}</p>
                                 </div>
                                 <Code className="h-6 w-6 text-indigo-600" />
@@ -143,7 +143,7 @@ export default function FTSAnalytics() {
                         <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-xs text-slate-600">Orchestration</p>
+                                    <p className="text-xs text-slate-600">{t('platform:pages.analytics.orchestration')}</p>
                                     <p className="text-2xl font-bold text-purple-600">{orchestrationCustomers.filter(c => c.status === 'active').length}</p>
                                 </div>
                                 <GitBranch className="h-6 w-6 text-purple-600" />
@@ -154,7 +154,7 @@ export default function FTSAnalytics() {
                         <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-xs text-slate-600">Crypto</p>
+                                    <p className="text-xs text-slate-600">{t('platform:pages.analytics.crypto')}</p>
                                     <p className="text-2xl font-bold text-cyan-600">{cryptoCustomers.filter(c => c.status === 'active').length}</p>
                                 </div>
                                 <Wallet className="h-6 w-6 text-cyan-600" />
@@ -165,7 +165,7 @@ export default function FTSAnalytics() {
                         <CardContent className="p-4">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-xs text-slate-600">RWA</p>
+                                    <p className="text-xs text-slate-600">{t('platform:pages.analytics.rwa')}</p>
                                     <p className="text-2xl font-bold text-amber-600">{rwaProviders.filter(p => p.status === 'active').length}</p>
                                 </div>
                                 <Briefcase className="h-6 w-6 text-amber-600" />
