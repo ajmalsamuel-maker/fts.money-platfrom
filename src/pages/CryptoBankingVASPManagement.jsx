@@ -166,13 +166,13 @@ export default function CryptoBankingVASPManagement() {
                                     <Settings className="h-4 w-4 mr-2" />
                                     Provider Settings
                                 </Button>
-                                <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
-                                <DialogTrigger asChild>
-                                    <Button className="bg-gradient-to-r from-blue-600 to-cyan-600">
-                                        <Plus className="h-4 w-4 mr-2" />
-                                        Create New VASP
-                                    </Button>
-                                </DialogTrigger>
+                                    <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
+                                        <DialogTrigger asChild>
+                                            <Button className="bg-gradient-to-r from-blue-600 to-cyan-600">
+                                                <Plus className="h-4 w-4 mr-2" />
+                                                Create New VASP
+                                            </Button>
+                                        </DialogTrigger>
                                 <DialogContent className="max-w-2xl">
                                     <DialogHeader>
                                         <DialogTitle>Provision New VASP Instance</DialogTitle>
@@ -255,9 +255,10 @@ export default function CryptoBankingVASPManagement() {
                                             </Alert>
                                         )}
                                     </div>
-                                </DialogContent>
-                            </Dialog>
-                        </div>
+                                    </DialogContent>
+                                    </Dialog>
+                                    </div>
+                                    </div>
 
                         {/* Stats */}
                         <div className="grid grid-cols-4 gap-4">
