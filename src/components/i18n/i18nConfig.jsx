@@ -5,7 +5,7 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
-// Import all translation files
+// Import all translation files - Common
 import commonEn from './translations/common/en';
 import commonEs from './translations/common/es';
 import commonFr from './translations/common/fr';
@@ -14,31 +14,75 @@ import commonZh from './translations/common/zh';
 import commonAr from './translations/common/ar';
 import commonHe from './translations/common/he';
 import commonJa from './translations/common/ja';
+import commonKo from './translations/common/ko';
+import commonPt from './translations/common/pt';
+import commonPtBR from './translations/common/pt-BR';
+import commonRu from './translations/common/ru';
+import commonIt from './translations/common/it';
+import commonNl from './translations/common/nl';
+import commonPl from './translations/common/pl';
+import commonTr from './translations/common/tr';
+import commonSv from './translations/common/sv';
+import commonNo from './translations/common/no';
+import commonDa from './translations/common/da';
+import commonFi from './translations/common/fi';
+import commonHi from './translations/common/hi';
+import commonTh from './translations/common/th';
+import commonVi from './translations/common/vi';
+import commonId from './translations/common/id';
+import commonZhTW from './translations/common/zh-TW';
 
+// Platform translations
 import platformEn from './translations/platform/en';
 import platformEs from './translations/platform/es';
 import platformFr from './translations/platform/fr';
 import platformDe from './translations/platform/de';
 import platformZh from './translations/platform/zh';
 import platformJa from './translations/platform/ja';
+import platformKo from './translations/platform/ko';
+import platformPt from './translations/platform/pt';
+import platformPtBR from './translations/platform/pt-BR';
+import platformRu from './translations/platform/ru';
+import platformIt from './translations/platform/it';
+import platformNl from './translations/platform/nl';
+import platformPl from './translations/platform/pl';
+import platformTr from './translations/platform/tr';
+import platformAr from './translations/platform/ar';
+import platformHe from './translations/platform/he';
+import platformSv from './translations/platform/sv';
+import platformNo from './translations/platform/no';
+import platformDa from './translations/platform/da';
+import platformFi from './translations/platform/fi';
+import platformHi from './translations/platform/hi';
+import platformTh from './translations/platform/th';
+import platformVi from './translations/platform/vi';
+import platformId from './translations/platform/id';
+import platformZhTW from './translations/platform/zh-TW';
 
+// Other namespaces
 import merchantEn from './translations/merchant/en';
 import merchantZh from './translations/merchant/zh';
+import merchantJa from './translations/merchant/ja';
 
 import pspEn from './translations/psp/en';
 import pspZh from './translations/psp/zh';
+import pspJa from './translations/psp/ja';
 
 import cryptoEn from './translations/crypto/en';
 import cryptoZh from './translations/crypto/zh';
+import cryptoJa from './translations/crypto/ja';
 
 import isoEn from './translations/iso/en';
 import isoZh from './translations/iso/zh';
+import isoJa from './translations/iso/ja';
 
 import orchestrationEn from './translations/orchestration/en';
 import orchestrationZh from './translations/orchestration/zh';
+import orchestrationJa from './translations/orchestration/ja';
 
 import rwaEn from './translations/rwa/en';
 import rwaZh from './translations/rwa/zh';
+import rwaJa from './translations/rwa/ja';
 
 // Supported languages configuration
 export const SUPPORTED_LANGUAGES = [
@@ -84,7 +128,7 @@ const resources = {
     es: {
         common: commonEs,
         platform: platformEs,
-        merchant: merchantEn, // Fallback to English
+        merchant: merchantEn,
         psp: pspEn,
         crypto: cryptoEn,
         iso: isoEn,
@@ -124,6 +168,86 @@ const resources = {
     ja: {
         common: commonJa,
         platform: platformJa,
+        merchant: merchantJa,
+        psp: pspJa,
+        crypto: cryptoJa,
+        iso: isoJa,
+        orchestration: orchestrationJa,
+        rwa: rwaJa
+    },
+    ko: {
+        common: commonKo,
+        platform: platformKo,
+        merchant: merchantEn,
+        psp: pspEn,
+        crypto: cryptoEn,
+        iso: isoEn,
+        orchestration: orchestrationEn,
+        rwa: rwaEn
+    },
+    pt: {
+        common: commonPt,
+        platform: platformPt,
+        merchant: merchantEn,
+        psp: pspEn,
+        crypto: cryptoEn,
+        iso: isoEn,
+        orchestration: orchestrationEn,
+        rwa: rwaEn
+    },
+    'pt-BR': {
+        common: commonPtBR,
+        platform: platformPtBR,
+        merchant: merchantEn,
+        psp: pspEn,
+        crypto: cryptoEn,
+        iso: isoEn,
+        orchestration: orchestrationEn,
+        rwa: rwaEn
+    },
+    ru: {
+        common: commonRu,
+        platform: platformRu,
+        merchant: merchantEn,
+        psp: pspEn,
+        crypto: cryptoEn,
+        iso: isoEn,
+        orchestration: orchestrationEn,
+        rwa: rwaEn
+    },
+    it: {
+        common: commonIt,
+        platform: platformIt,
+        merchant: merchantEn,
+        psp: pspEn,
+        crypto: cryptoEn,
+        iso: isoEn,
+        orchestration: orchestrationEn,
+        rwa: rwaEn
+    },
+    nl: {
+        common: commonNl,
+        platform: platformNl,
+        merchant: merchantEn,
+        psp: pspEn,
+        crypto: cryptoEn,
+        iso: isoEn,
+        orchestration: orchestrationEn,
+        rwa: rwaEn
+    },
+    pl: {
+        common: commonPl,
+        platform: platformPl,
+        merchant: merchantEn,
+        psp: pspEn,
+        crypto: cryptoEn,
+        iso: isoEn,
+        orchestration: orchestrationEn,
+        rwa: rwaEn
+    },
+    tr: {
+        common: commonTr,
+        platform: platformTr,
         merchant: merchantEn,
         psp: pspEn,
         crypto: cryptoEn,
@@ -133,7 +257,7 @@ const resources = {
     },
     ar: {
         common: commonAr,
-        platform: platformEn, // Fallback
+        platform: platformAr,
         merchant: merchantEn,
         psp: pspEn,
         crypto: cryptoEn,
@@ -143,7 +267,97 @@ const resources = {
     },
     he: {
         common: commonHe,
-        platform: platformEn,
+        platform: platformHe,
+        merchant: merchantEn,
+        psp: pspEn,
+        crypto: cryptoEn,
+        iso: isoEn,
+        orchestration: orchestrationEn,
+        rwa: rwaEn
+    },
+    sv: {
+        common: commonSv,
+        platform: platformSv,
+        merchant: merchantEn,
+        psp: pspEn,
+        crypto: cryptoEn,
+        iso: isoEn,
+        orchestration: orchestrationEn,
+        rwa: rwaEn
+    },
+    no: {
+        common: commonNo,
+        platform: platformNo,
+        merchant: merchantEn,
+        psp: pspEn,
+        crypto: cryptoEn,
+        iso: isoEn,
+        orchestration: orchestrationEn,
+        rwa: rwaEn
+    },
+    da: {
+        common: commonDa,
+        platform: platformDa,
+        merchant: merchantEn,
+        psp: pspEn,
+        crypto: cryptoEn,
+        iso: isoEn,
+        orchestration: orchestrationEn,
+        rwa: rwaEn
+    },
+    fi: {
+        common: commonFi,
+        platform: platformFi,
+        merchant: merchantEn,
+        psp: pspEn,
+        crypto: cryptoEn,
+        iso: isoEn,
+        orchestration: orchestrationEn,
+        rwa: rwaEn
+    },
+    hi: {
+        common: commonHi,
+        platform: platformHi,
+        merchant: merchantEn,
+        psp: pspEn,
+        crypto: cryptoEn,
+        iso: isoEn,
+        orchestration: orchestrationEn,
+        rwa: rwaEn
+    },
+    th: {
+        common: commonTh,
+        platform: platformTh,
+        merchant: merchantEn,
+        psp: pspEn,
+        crypto: cryptoEn,
+        iso: isoEn,
+        orchestration: orchestrationEn,
+        rwa: rwaEn
+    },
+    vi: {
+        common: commonVi,
+        platform: platformVi,
+        merchant: merchantEn,
+        psp: pspEn,
+        crypto: cryptoEn,
+        iso: isoEn,
+        orchestration: orchestrationEn,
+        rwa: rwaEn
+    },
+    id: {
+        common: commonId,
+        platform: platformId,
+        merchant: merchantEn,
+        psp: pspEn,
+        crypto: cryptoEn,
+        iso: isoEn,
+        orchestration: orchestrationEn,
+        rwa: rwaEn
+    },
+    'zh-TW': {
+        common: commonZhTW,
+        platform: platformZhTW,
         merchant: merchantEn,
         psp: pspEn,
         crypto: cryptoEn,
