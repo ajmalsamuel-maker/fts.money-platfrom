@@ -2,9 +2,12 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 Deno.serve(async (req) => {
     try {
+        console.log('🔍 Request received, action:', req.method);
         const base44 = createClientFromRequest(req);
         const body = await req.json();
+        console.log('📦 Body parsed:', body);
         const { action, email, password, full_name, role, account_type } = body;
+        console.log('🎯 Action:', action, 'Account Type:', account_type);
 
         if (action === 'login') {
             // Query users
@@ -86,7 +89,9 @@ Deno.serve(async (req) => {
 
         return Response.json({ success: false, error: 'Invalid action' });
     } catch (error) {
-        console.error('Auth error:', error);
-        return Response.json({ success: false, error: error.message }, { status: 500 });
+        console.error('❌ Auth error:', error);
+        console.error('❌ Error stack:', error.stack);
+        console.error('❌ Error details:', JSON.stringify(error, null, 2));
+        return Response.json({ success: false, error: error.message, stack: error.stack }, { status: 500 });
     }
 });
