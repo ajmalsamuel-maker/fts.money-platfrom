@@ -11,7 +11,7 @@ import { CreditCard, Lock, Mail, Eye, EyeOff, Loader2, AlertCircle, ArrowRight }
 import { FTS_COLORS, FTS_GRADIENTS, FTS_LOGOS } from '@/components/community/FTSBrandColors';
 import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
-import { MinimalComplianceFooter } from '@/components/compliance/ComplianceFooter';
+import ComplianceFooter from '@/components/compliance/ComplianceFooter';
 
 export default function StaffLogin() {
     const navigate = useNavigate();
@@ -204,8 +204,8 @@ export default function StaffLogin() {
             </div>
             </div>
             
-            {/* Minimal Footer */}
-            <MinimalComplianceFooter />
+            {/* Compliance Footer */}
+            <ComplianceFooter />
         </div>
     );
 }

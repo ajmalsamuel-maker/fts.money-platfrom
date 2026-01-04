@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
-import { MinimalComplianceFooter } from '@/components/compliance/ComplianceFooter';
+import ComplianceFooter from '@/components/compliance/ComplianceFooter';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -199,8 +199,8 @@ export default function PSPLogin() {
                 </div>
             </div>
             
-            {/* Minimal Footer */}
-            <MinimalComplianceFooter />
+            {/* Compliance Footer */}
+            <ComplianceFooter />
         </div>
     );
 }
