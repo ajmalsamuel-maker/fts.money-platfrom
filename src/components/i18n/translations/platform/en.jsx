@@ -1,4 +1,3 @@
-
 // Platform translations - English (v3.0.0 - Complete coverage)
 export default {
   "dashboard": {
@@ -170,7 +169,23 @@ export default {
       "allInstances": "All PSP Instances",
       "noPSPs": "No PSPs provisioned yet",
       "isoCompliant": "ISO Compliant",
-      "provisionFirst": "Provision Your First PSP"
+      "provisionFirst": "Provision Your First PSP",
+      "loggedInAs": "Logged in as",
+      "totalPSPs": "Total PSPs",
+      "active": "active",
+      "totalMerchants": "Total Merchants",
+      "acrossAllPSPs": "Across all PSPs",
+      "monthlyVolume": "Monthly Volume",
+      "vsLastMonth": "vs last month",
+      "monthlyRevenue": "Monthly Revenue",
+      "ftsEarnings": "FTS Earnings",
+      "merchants": "Merchants",
+      "volume": "Volume",
+      "manage": "Manage",
+      "configure": "Configure",
+      "viewLogs": "View Logs",
+      "noMatches": "No matching PSPs found",
+      "complianceIssue": "Compliance Issue"
     },
     "setupGuide": {
       "title": "FTS.Money Setup Guide",
