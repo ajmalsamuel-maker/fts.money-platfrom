@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,7 +14,6 @@ import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 import ComplianceFooter, { MinimalComplianceFooter } from '@/components/compliance/ComplianceFooter';
 
 export default function PlatformAdminLogin() {
-    const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [role, setRole] = useState(PLATFORM_ROLES.PLATFORM_ADMIN);
@@ -42,7 +40,7 @@ export default function PlatformAdminLogin() {
                     ...response.data.user,
                     login_time: new Date().toISOString()
                 }));
-                navigate(createPageUrl('FTSMoneyPlatform'));
+                window.location.href = createPageUrl('FTSMoneyPlatform');
             } else {
                 setError(response.data.error || 'Login failed');
             }
@@ -148,7 +146,7 @@ export default function PlatformAdminLogin() {
                                 Need an account?{' '}
                                 <button
                                     type="button"
-                                    onClick={() => navigate(createPageUrl('PlatformAdminRegister'))}
+                                    onClick={() => window.location.href = createPageUrl('PlatformAdminRegister')}
                                     className="text-blue-600 hover:underline"
                                 >
                                     Register here
