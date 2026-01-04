@@ -113,7 +113,14 @@ export default function FTSMoneyPlatform() {
     });
     
     if (loading) {
-        return <div className="flex items-center justify-center h-screen">{t('common:labels.loading')}</div>;
+        return (
+            <div className="flex items-center justify-center h-screen">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                    <p>{t('common:labels.loading')}</p>
+                </div>
+            </div>
+        );
     }
 
     const totalVolume = psps.reduce((sum, p) => sum + (Number(p.monthly_volume) || 0), 0);
