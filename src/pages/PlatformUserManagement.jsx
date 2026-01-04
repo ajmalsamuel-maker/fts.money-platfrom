@@ -48,7 +48,13 @@ export default function PlatformUserManagement() {
                 action: 'listUsers',
                 account_type: 'platform_admin'
             });
-            return response.data.users || [];
+            console.log('📊 Platform users response:', response);
+            if (response.data?.success && response.data?.users) {
+                console.log('✅ Found platform users:', response.data.users);
+                return response.data.users;
+            }
+            console.warn('⚠️ No users returned');
+            return [];
         },
         enabled: !loading
     });
