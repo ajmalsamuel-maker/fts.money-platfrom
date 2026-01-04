@@ -80,7 +80,7 @@ const defaultMenuItems = [
         icon: ArrowLeftRight,
         items: [
             { icon: ArrowLeftRight, label: 'allTransactions', path: 'Transactions', permission: 'VIEW_TRANSACTIONS' },
-            { icon: Coins, label: 'cryptoTransactions', path: 'CryptoTransactions', permission: 'VIEW_TRANSACTIONS' },
+            { icon: Coins, label: 'cryptoTransactions', path: 'Transactions?filter=crypto', permission: 'VIEW_TRANSACTIONS' },
             { icon: DollarSign, label: 'refunds', path: 'Refunds', permission: 'VIEW_TRANSACTIONS' },
             { icon: Receipt, label: 'settlements', path: 'Settlements', permission: 'VIEW_SETTLEMENTS' },
             { icon: Repeat, label: 'chargebacks', path: 'Chargebacks', permission: 'VIEW_CHARGEBACKS' },
