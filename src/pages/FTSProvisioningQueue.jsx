@@ -20,18 +20,19 @@ import {
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
-const provisioningSteps = [
-    { id: 'database', name: 'Database Instance', icon: Database, weight: 25 },
-    { id: 'api_keys', name: 'API Keys Generation', icon: Key, weight: 15 },
-    { id: 'domain', name: 'Domain & SSL Setup', icon: Globe, weight: 20 },
-    { id: 'security', name: 'Security Config', icon: Shield, weight: 20 },
-    { id: 'initialization', name: 'Platform Init', icon: Server, weight: 20 }
+const getProvisioningSteps = (t) => [
+    { id: 'database', name: t('platform:provisioningSteps.database'), icon: Database, weight: 25 },
+    { id: 'api_keys', name: t('platform:provisioningSteps.apiKeys'), icon: Key, weight: 15 },
+    { id: 'domain', name: t('platform:provisioningSteps.domain'), icon: Globe, weight: 20 },
+    { id: 'security', name: t('platform:provisioningSteps.security'), icon: Shield, weight: 20 },
+    { id: 'initialization', name: t('platform:provisioningSteps.initialization'), icon: Server, weight: 20 }
 ];
 
 export default function FTSProvisioningQueue() {
     const queryClient = useQueryClient();
     const { platformUser, loading } = usePlatformAuth();
     const { t } = useI18n();
+    const provisioningSteps = getProvisioningSteps(t);
     const [selectedPSP, setSelectedPSP] = useState(null);
     const [reviewComments, setReviewComments] = useState('');
 
@@ -568,7 +569,7 @@ FTS.Money Platform Team
                                                         PSP: {request.entity_data?.psp_name} ({request.entity_data?.psp_code})
                                                     </p>
                                                     <p className="text-xs text-slate-500 mt-1">
-                                                        Submitted by: {request.submitted_by} • {new Date(request.created_date).toLocaleString()}
+                                                        {t('platform:pages.provisioningQueue.submittedBy')}: {request.submitted_by} • {new Date(request.created_date).toLocaleString()}
                                                     </p>
                                                 </div>
                                                 <Badge className={cn(
@@ -586,7 +587,7 @@ FTS.Money Platform Team
                                                 <Alert>
                                                     <AlertCircle className="h-4 w-4" />
                                                     <AlertDescription>
-                                                        Status change: <strong>{request.entity_data?.status}</strong> → <strong>{request.action_data?.new_status}</strong>
+                                                        {t('platform:pages.provisioningQueue.statusChange')}: <strong>{request.entity_data?.status}</strong> → <strong>{request.action_data?.new_status}</strong>
                                                     </AlertDescription>
                                                 </Alert>
                                             )}
@@ -660,12 +661,12 @@ FTS.Money Platform Team
                                                             {completeProvisioningMutation.isPending ? (
                                                                 <>
                                                                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                                                                    Provisioning...
+                                                                    {t('platform:pages.provisioningQueue.provisioning')}
                                                                 </>
                                                             ) : (
                                                                 <>
                                                                     <Play className="h-4 w-4 mr-2" />
-                                                                    Auto Provision
+                                                                    {t('platform:pages.provisioningQueue.autoProvision')}
                                                                 </>
                                                             )}
                                                         </Button>
@@ -720,7 +721,7 @@ FTS.Money Platform Team
                                                                        </div>
                                                                        <div>
                                                                            <p className="font-semibold text-sm">{step.name}</p>
-                                                                           <p className="text-xs text-slate-500">{step.weight}% of total</p>
+                                                                           <p className="text-xs text-slate-500">{step.weight}% {t('platform:pages.provisioningQueue.ofTotal')}</p>
                                                                        </div>
                                                                    </div>
                                                                    <div className="flex gap-2">
@@ -785,7 +786,7 @@ FTS.Money Platform Team
                                                     <Alert className="bg-emerald-50 border-emerald-200">
                                                         <CheckCircle2 className="h-4 w-4 text-emerald-600" />
                                                         <AlertDescription className="text-emerald-900">
-                                                            All provisioning steps completed. Ready to activate.
+                                                            {t('platform:pages.provisioningQueue.readyToActivate')}
                                                         </AlertDescription>
                                                     </Alert>
                                                 )}
@@ -826,10 +827,10 @@ FTS.Money Platform Team
                                                 <h3 className="font-bold text-lg">{psp.psp_name}</h3>
                                                 <p className="text-sm text-slate-600 font-mono">{psp.psp_code}</p>
                                                 <p className="text-sm text-slate-500">
-                                                    Activated: {new Date(psp.go_live_date).toLocaleDateString()}
+                                                    {t('platform:pages.provisioningQueue.activated')}: {new Date(psp.go_live_date).toLocaleDateString()}
                                                 </p>
-                                            </div>
-                                            <Badge className="bg-emerald-100 text-emerald-700">Active</Badge>
+                                                            </div>
+                                                            <Badge className="bg-emerald-100 text-emerald-700">{t('common:status.active')}</Badge>
                                         </div>
                                     </CardContent>
                                 </Card>

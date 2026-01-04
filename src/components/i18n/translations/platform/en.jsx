@@ -219,8 +219,20 @@ export default {
       "activatePSP": "Activate PSP",
       "autoProvision": "Auto Provision",
       "provisioning": "Provisioning...",
-      "readyToActivate": "All provisioning steps completed. Ready to activate."
+      "readyToActivate": "All provisioning steps completed. Ready to activate.",
+      "submittedBy": "Submitted by",
+      "statusChange": "Status change",
+      "activated": "Activated",
+      "ofTotal": "of total"
     }
+  },
+  "provisioningSteps": {
+    "database": "Database Instance",
+    "apiKeys": "API Keys Generation",
+    "domain": "Domain & SSL Setup",
+    "security": "Security Config",
+    "initialization": "Platform Init"
+  },
   },
   "subMenuItems": {
     "pspManagement": "PSP Management",

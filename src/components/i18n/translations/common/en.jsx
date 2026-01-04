@@ -14,7 +14,14 @@ export default {
     "add": "Add",
     "create": "Create",
     "update": "Update",
-    "search": "Search"
+    "search": "Search",
+    "approve": "Approve",
+    "reject": "Reject",
+    "check": "Check",
+    "execute": "Execute",
+    "configure": "Configure",
+    "activate": "Activate",
+    "suspend": "Suspend"
   },
   "status": {
     "active": "Active",
@@ -23,7 +30,9 @@ export default {
     "live": "Live",
     "trial": "Trial",
     "suspended": "Suspended",
-    "cancelled": "Cancelled"
+    "cancelled": "Cancelled",
+    "valid": "Valid",
+    "failed": "Failed"
   },
   "labels": {
     "status": "Status",
