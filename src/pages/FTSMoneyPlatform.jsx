@@ -45,18 +45,19 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 
 function AddServiceButton({ navigate }) {
     const [open, setOpen] = useState(false);
+    const { t } = useI18n();
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Button className="gap-2 bg-blue-600 hover:bg-blue-700">
                     <Plus className="h-4 w-4" />
-                    Add Service
+                    {t('platform:addService')}
                 </Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Add New Service</DialogTitle>
+                    <DialogTitle>{t('platform:addServiceDialog.title')}</DialogTitle>
                 </DialogHeader>
                 <div className="space-y-3 py-4">
                     <button
@@ -71,8 +72,8 @@ function AddServiceButton({ navigate }) {
                                 <Building2 className="h-6 w-6 text-blue-600" />
                             </div>
                             <div>
-                                <p className="font-semibold text-slate-900">PSP Instance</p>
-                                <p className="text-sm text-slate-600">Provision a new Payment Service Provider</p>
+                                <p className="font-semibold text-slate-900">{t('platform:addServiceDialog.pspTitle')}</p>
+                                <p className="text-sm text-slate-600">{t('platform:addServiceDialog.pspDesc')}</p>
                             </div>
                         </div>
                     </button>
@@ -88,8 +89,8 @@ function AddServiceButton({ navigate }) {
                                 <Zap className="h-6 w-6 text-violet-600" />
                             </div>
                             <div>
-                                <p className="font-semibold text-slate-900">ISO Gateway Customer</p>
-                                <p className="text-sm text-slate-600">Add customer to ISO Gateway service</p>
+                                <p className="font-semibold text-slate-900">{t('platform:addServiceDialog.isoTitle')}</p>
+                                <p className="text-sm text-slate-600">{t('platform:addServiceDialog.isoDesc')}</p>
                             </div>
                         </div>
                     </button>
@@ -105,8 +106,8 @@ function AddServiceButton({ navigate }) {
                                 <GitBranch className="h-6 w-6 text-purple-600" />
                             </div>
                             <div>
-                                <p className="font-semibold text-slate-900">Standalone Orchestration</p>
-                                <p className="text-sm text-slate-600">Add routing-only customer</p>
+                                <p className="font-semibold text-slate-900">{t('platform:addServiceDialog.orchTitle')}</p>
+                                <p className="text-sm text-slate-600">{t('platform:addServiceDialog.orchDesc')}</p>
                             </div>
                         </div>
                     </button>
@@ -649,7 +650,10 @@ export default function FTSMoneyPlatform() {
                                                             e.stopPropagation();
                                                             const action = psp.status === 'active' ? 'suspend' : 'activate';
                                                             const newStatus = psp.status === 'active' ? 'suspended' : 'active';
-                                                            if (confirm(`${action === 'suspend' ? 'Suspend' : 'Activate'} ${psp.psp_name}?`)) {
+                                                            const confirmMsg = action === 'suspend' 
+                                                                ? `${t('platform:pages.dashboard.suspend')} ${psp.psp_name}?`
+                                                                : `${t('platform:pages.dashboard.activate')} ${psp.psp_name}?`;
+                                                            if (confirm(confirmMsg)) {
                                                                 await base44.entities.ApprovalRequest.create({
                                                                     request_type: 'psp_status_change',
                                                                     entity_type: 'ProvisionedPSP',
@@ -660,7 +664,7 @@ export default function FTSMoneyPlatform() {
                                                                     submitted_by_name: platformUser?.email || 'Admin',
                                                                     priority: 'high'
                                                                 });
-                                                                alert('Status change request submitted for approval');
+                                                                alert(t('platform:pages.dashboard.statusChangeSubmitted'));
                                                             }
                                                         }}
                                                     >
@@ -672,7 +676,7 @@ export default function FTSMoneyPlatform() {
                                                         className="flex-1 text-red-600 hover:text-red-700 hover:bg-red-50"
                                                         onClick={async (e) => {
                                                             e.stopPropagation();
-                                                            if (confirm(`Delete ${psp.psp_name}? This action cannot be undone.`)) {
+                                                            if (confirm(`${t('platform:pages.dashboard.delete')} ${psp.psp_name}? ${t('platform:pages.dashboard.cannotUndo')}`)) {
                                                                 await base44.entities.ApprovalRequest.create({
                                                                     request_type: 'psp_deletion',
                                                                     entity_type: 'ProvisionedPSP',
@@ -682,7 +686,7 @@ export default function FTSMoneyPlatform() {
                                                                     submitted_by_name: platformUser?.email || 'Admin',
                                                                     priority: 'urgent'
                                                                 });
-                                                                alert('Deletion request submitted for approval');
+                                                                alert(t('platform:pages.dashboard.deletionSubmitted'));
                                                             }
                                                         }}
                                                     >

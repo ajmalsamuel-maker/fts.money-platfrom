@@ -1,4 +1,3 @@
-
 // Platform translations - English (v3.0.0 - Complete coverage)
 export default {
   "dashboard": {
@@ -20,6 +19,15 @@ export default {
     "rwa": "RWA Platform"
   },
   "addService": "Add Service",
+  "addServiceDialog": {
+    "title": "Add New Service",
+    "pspTitle": "PSP Instance",
+    "pspDesc": "Provision a new Payment Service Provider",
+    "isoTitle": "ISO Gateway Customer",
+    "isoDesc": "Add customer to ISO Gateway service",
+    "orchTitle": "Standalone Orchestration",
+    "orchDesc": "Add routing-only customer"
+  },
   "quickActions": "Quick Actions",
   "performance": "Performance Metrics",
   "activePSPs": "Active PSP Instances",
@@ -91,7 +99,9 @@ export default {
       "protectedTemplate": "Protected template - cannot be deleted",
       "statusChangeSubmitted": "Status change request submitted for approval",
       "deletionSubmitted": "Deletion request submitted for approval",
-      "contracts": "Contracts"
+      "contracts": "Contracts",
+      "cannotUndo": "This action cannot be undone.",
+      "aum": "AUM"
     },
     "analytics": {
       "title": "Platform Analytics",
