@@ -160,6 +160,8 @@ export default function PlatformUserManagement() {
         inviteMutation.mutate(inviteForm);
     };
 
+    console.log('🔧 Debug - loading:', loading, 'usersLoading:', usersLoading, 'users:', users);
+
     if (loading || usersLoading) {
         return <div className="flex items-center justify-center h-screen">{t('common:labels.loading')}</div>;
     }
