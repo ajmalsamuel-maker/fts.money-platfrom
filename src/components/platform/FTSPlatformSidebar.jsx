@@ -183,9 +183,11 @@ const menuSections = [
 
 export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, isSuperAdmin }) {
     const { t } = useI18n();
-    const [openSections, setOpenSections] = React.useState(
-        menuSections.filter(s => s.defaultOpen).map(s => s.id)
-    );
+    const [openSections, setOpenSections] = React.useState(() => {
+        const defaultSections = menuSections.filter(s => s.defaultOpen).map(s => s.id);
+        console.log('Default open sections:', defaultSections);
+        return defaultSections;
+    });
     
     // Auto-open section containing current page
     React.useEffect(() => {
