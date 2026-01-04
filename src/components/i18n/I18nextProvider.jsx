@@ -3,7 +3,7 @@
  * Drop-in replacement for EnhancedLanguageProvider
  */
 import React from 'react';
-import { I18nextProvider as ReactI18nextProvider } from 'react-i18next';
+import { I18nextProvider as ReactI18nextProvider, useTranslation } from 'react-i18next';
 import i18n, { SUPPORTED_LANGUAGES } from './i18nConfig';
 
 export function I18nextProvider({ children }) {
@@ -19,32 +19,20 @@ export function I18nextProvider({ children }) {
  * Wraps react-i18next's useTranslation for existing code
  */
 export function useI18n() {
-    const [currentLanguage, setCurrentLanguage] = React.useState(i18n.language);
+    const { t: rawT, i18n: i18nInstance } = useTranslation();
+    const currentLanguage = i18nInstance.language;
     const isRTL = SUPPORTED_LANGUAGES.find(l => l.code === currentLanguage)?.rtl || false;
-    
-    // Subscribe to language changes to trigger re-renders
-    React.useEffect(() => {
-        const handleLanguageChange = (lng) => {
-            setCurrentLanguage(lng);
-        };
-        
-        i18n.on('languageChanged', handleLanguageChange);
-        
-        return () => {
-            i18n.off('languageChanged', handleLanguageChange);
-        };
-    }, []);
     
     return {
         language: currentLanguage,
-        setLanguage: (lng) => i18n.changeLanguage(lng),
+        setLanguage: (lng) => i18nInstance.changeLanguage(lng),
         t: (key, options) => {
             // Support both "namespace:key" and namespace parameter formats
             if (key.includes(':')) {
                 const [ns, actualKey] = key.split(':');
-                return i18n.t(actualKey, { ns, ...options });
+                return rawT(actualKey, { ns, ...options });
             }
-            return i18n.t(key, options);
+            return rawT(key, options);
         },
         supportedLanguages: SUPPORTED_LANGUAGES,
         rtl: isRTL
