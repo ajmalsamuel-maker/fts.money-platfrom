@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
-import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
+import { useI18n } from '@/components/i18n/I18nextProvider';
 import { 
     Building2, 
     Plus, 
