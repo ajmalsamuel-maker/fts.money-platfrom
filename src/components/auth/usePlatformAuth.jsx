@@ -137,7 +137,7 @@ export function usePlatformAuth(requiredPermissions = []) {
                 navigate(createPageUrl('FTSMoneyPlatform')); // Redirect to dashboard
             }
         }
-    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [navigate, requiredPermissions]);
 
     // Get permission utilities for this user
     const permissions = usePermissions(platformUser);
