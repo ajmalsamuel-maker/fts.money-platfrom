@@ -196,7 +196,7 @@ export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, i
         if (currentSection && !openSections.includes(currentSection.id)) {
             setOpenSections(prev => [...prev, currentSection.id]);
         }
-    }, [currentPage]);
+    }, [currentPage, openSections]);
     
     const toggleSection = (sectionId) => {
         setOpenSections(prev => 
