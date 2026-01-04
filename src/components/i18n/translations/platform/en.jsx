@@ -234,6 +234,13 @@ export default {
     "initialization": "Platform Init"
   },
   },
+  "provisioningSteps": {
+    "database": "Database Instance",
+    "apiKeys": "API Keys Generation",
+    "domain": "Domain & SSL Setup",
+    "security": "Security Config",
+    "initialization": "Platform Init"
+  },
   "subMenuItems": {
     "pspManagement": "PSP Management",
     "pspManagementDesc": "Manage PSP instances",
