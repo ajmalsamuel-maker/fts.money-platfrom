@@ -19,8 +19,21 @@ export function I18nextProvider({ children }) {
  * Wraps react-i18next's useTranslation for existing code
  */
 export function useI18n() {
-    const currentLanguage = i18n.language;
+    const [currentLanguage, setCurrentLanguage] = React.useState(i18n.language);
     const isRTL = SUPPORTED_LANGUAGES.find(l => l.code === currentLanguage)?.rtl || false;
+    
+    // Subscribe to language changes to trigger re-renders
+    React.useEffect(() => {
+        const handleLanguageChange = (lng) => {
+            setCurrentLanguage(lng);
+        };
+        
+        i18n.on('languageChanged', handleLanguageChange);
+        
+        return () => {
+            i18n.off('languageChanged', handleLanguageChange);
+        };
+    }, []);
     
     return {
         language: currentLanguage,
