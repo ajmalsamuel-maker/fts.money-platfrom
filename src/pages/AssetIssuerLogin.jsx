@@ -145,8 +145,6 @@ export default function AssetIssuerLogin() {
             </div>
             </div>
             
-            {/* Compliance Footer */}
-            <ComplianceFooter />
         </div>
     );
 }

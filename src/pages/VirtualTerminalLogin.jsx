@@ -160,8 +160,6 @@ export default function VirtualTerminalLogin() {
             </div>
             </div>
             
-            {/* Compliance Footer */}
-            <ComplianceFooter />
         </div>
     );
 }

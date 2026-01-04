@@ -199,8 +199,6 @@ export default function PSPLogin() {
                 </div>
             </div>
             
-            {/* Compliance Footer */}
-            <ComplianceFooter />
         </div>
     );
 }

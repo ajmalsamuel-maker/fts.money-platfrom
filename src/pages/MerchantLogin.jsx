@@ -210,8 +210,6 @@ export default function MerchantLogin() {
             </div>
             </div>
             
-            {/* Compliance Footer */}
-            <ComplianceFooter />
         </div>
     );
 }

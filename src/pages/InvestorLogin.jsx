@@ -134,8 +134,6 @@ export default function InvestorLogin() {
             </div>
             </div>
             
-            {/* Compliance Footer */}
-            <ComplianceFooter />
         </div>
     );
 }

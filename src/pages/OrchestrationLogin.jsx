@@ -150,8 +150,6 @@ export default function OrchestrationLogin() {
             </div>
             </div>
             
-            {/* Compliance Footer */}
-            <ComplianceFooter />
         </div>
     );
 }

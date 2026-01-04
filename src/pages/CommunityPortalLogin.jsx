@@ -154,8 +154,6 @@ export default function CommunityPortalLogin() {
                 </div>
             </div>
 
-            {/* Compliance Footer */}
-            <ComplianceFooter />
         </div>
     );
 }
