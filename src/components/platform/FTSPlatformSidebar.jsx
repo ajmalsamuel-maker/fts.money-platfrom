@@ -61,7 +61,7 @@ const menuSections = [
     {
         id: 'crypto-gateway',
         title: 'Crypto Banking / VASP',
-        defaultOpen: false,
+        defaultOpen: true,
         items: [
             { labelKey: 'vaspManagement', descKey: 'vaspManagementDesc', path: 'CryptoBankingVASPManagement', icon: Wallet, priority: true },
             { labelKey: 'cryptoCustomers', descKey: 'cryptoCustomersDesc', path: 'CryptoGatewayCustomers', icon: Users },
