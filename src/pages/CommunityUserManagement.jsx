@@ -40,7 +40,10 @@ export default function CommunityUserManagement() {
     const { data: communityUsers = [], isLoading: usersLoading } = useQuery({
         queryKey: ['community-users'],
         queryFn: async () => {
-            const response = await base44.functions.invoke('getCommunityUsers');
+            const response = await base44.functions.invoke('platformAuthSimple', {
+                action: 'listUsers',
+                account_type: 'community'
+            });
             return response.data.users || [];
         },
         enabled: !loading

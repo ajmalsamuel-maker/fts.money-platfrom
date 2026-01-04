@@ -44,6 +44,29 @@ Deno.serve(async (req) => {
             return Response.json({ success: true, user: newUser });
         }
 
+        if (action === 'listUsers') {
+            const { account_type } = await req.json();
+            const allUsers = await base44.asServiceRole.entities.AuthUser.list();
+            
+            const filtered = allUsers.filter(u => {
+                const userAccountType = u.account_type || u.data?.account_type;
+                return userAccountType === account_type;
+            });
+
+            const mapped = filtered.map(u => ({
+                id: u.id,
+                email: u.email || u.data?.email,
+                full_name: u.full_name || u.data?.full_name,
+                platform_role: u.platform_role || u.data?.platform_role,
+                community_role: u.community_role || u.data?.community_role,
+                account_type: u.account_type || u.data?.account_type,
+                last_login: u.last_login || u.data?.last_login,
+                created_date: u.created_date
+            }));
+
+            return Response.json({ success: true, users: mapped });
+        }
+
         return Response.json({ success: false, error: 'Invalid action' });
     } catch (error) {
         console.error('Auth error:', error);

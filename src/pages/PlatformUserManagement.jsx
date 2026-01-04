@@ -44,24 +44,11 @@ export default function PlatformUserManagement() {
     const { data: users = [], isLoading: usersLoading } = useQuery({
         queryKey: ['platform-users'],
         queryFn: async () => {
-            const authUsers = await base44.asServiceRole.entities.AuthUser.list();
-            console.log('🔍 RAW AuthUsers from Base44:', authUsers);
-            console.log('🔍 First user structure:', authUsers[0]);
-            
-            // Filter for platform_admin account type
-            const platformUsers = authUsers.filter(u => 
-                u.account_type === 'platform_admin' || u.data?.account_type === 'platform_admin'
-            );
-            console.log('✅ Filtered platform admins:', platformUsers);
-            
-            return platformUsers.map(u => ({
-                id: u.id,
-                email: u.email || u.data?.email,
-                full_name: u.full_name || u.data?.full_name,
-                platform_role: u.platform_role || u.data?.platform_role,
-                account_type: u.account_type || u.data?.account_type,
-                last_login: u.last_login || u.data?.last_login
-            }));
+            const response = await base44.functions.invoke('platformAuthSimple', {
+                action: 'listUsers',
+                account_type: 'platform_admin'
+            });
+            return response.data.users || [];
         },
         enabled: !loading
     });
