@@ -44,10 +44,15 @@ export default function PlatformUserManagement() {
     const { data: users = [], isLoading: usersLoading } = useQuery({
         queryKey: ['platform-users'],
         queryFn: async () => {
-            const response = await base44.functions.invoke('platformAuth', {
-                action: 'listPlatformUsers'
-            });
-            return response.data.users || [];
+            const authUsers = await base44.asServiceRole.entities.AuthUser.filter({ account_type: 'platform_admin' });
+            return authUsers.map(u => ({
+                id: u.id,
+                email: u.data.email,
+                full_name: u.data.full_name,
+                platform_role: u.data.platform_role,
+                account_type: u.data.account_type,
+                last_login: u.data.last_login
+            }));
         },
         enabled: !loading
     });
