@@ -1,3 +1,4 @@
+
 // Platform translations - English (v3.0.0 - Complete coverage)
 export default {
   "dashboard": {
@@ -187,6 +188,10 @@ export default {
     "rwaPlatform": {
       "title": "RWA Platform",
       "subtitle": "Universal tokenization infrastructure - blockchain native, Base44 optional"
+    },
+    "aiTranslationStudio": {
+      "title": "AI Translation Studio",
+      "subtitle": "Automated translation management for 25 languages"
     }
   },
   "subMenuItems": {
@@ -313,147 +318,8 @@ export default {
     "advancedTools": "Advanced Tools",
     "advancedToolsDesc": "Developer tools",
     "leiPhase1Testing": "LEI Phase 1 Testing",
-    "leiPhase1TestingDesc": "LEI testing tools"
-  },
-  "sidebar": {
-    "overview": "Overview & Insights",
-    "psp-operations": "PSP Operations",
-    "crypto-gateway": "Crypto Banking Gateway",
-    "rwa-platform": "RWA Tokenization Platform",
-    "services-marketplace": "Services & Marketplace",
-    "user-management": "User & Access Management",
-    "financial": "Financial Operations",
-    "compliance": "Compliance & Security",
-    "infrastructure": "Infrastructure",
-    "documentation": "Documentation",
-    "resources": "Settings & Resources"
-  },
-  "menuItems": {
-    "platformDashboard": "Platform Dashboard",
-    "platformDashboardDesc": "Main control panel",
-    "systemHealth": "System Health",
-    "systemHealthDesc": "Monitor platform status",
-    "revenueDashboard": "Revenue Dashboard",
-    "revenueDashboardDesc": "Track revenue and billing",
-    "platformAnalytics": "Platform Analytics",
-    "platformAnalyticsDesc": "Performance metrics",
-    "setupGuide": "Setup Guide",
-    "setupGuideDesc": "Quick start guide"
-  },
-  "pages": {
-    "dashboard": {
-      "title": "Control Panel Dashboard",
-      "subtitle": "Unified management for all PSP instances and global configurations",
-      "acrossAllPSPs": "Across all PSPs",
-      "simulationMode": "Simulation Mode",
-      "inProviderPool": "In provider pool",
-      "availableMethods": "Available methods",
-      "active": "active",
-      "mom": "MoM",
-      "template": "Template",
-      "suspend": "Suspend",
-      "activate": "Activate",
-      "delete": "Delete",
-      "protectedTemplate": "Protected template - cannot be deleted",
-      "statusChangeSubmitted": "Status change request submitted for approval",
-      "deletionSubmitted": "Deletion request submitted for approval",
-      "contracts": "Contracts"
-    },
-    "analytics": {
-      "title": "Platform Analytics",
-      "subtitle": "Comprehensive performance metrics and insights",
-      "allServices": "All Services",
-      "volumeTrend": "Transaction Volume Trend",
-      "platformVolume": "Platform Volume (6M)",
-      "growth": "growth",
-      "totalRevenue": "Total Revenue",
-      "totalEndUsers": "Total End Users",
-      "acrossServices": "Across all services",
-      "platformRevenue": "Platform Revenue"
-    },
-    "revenue": {
-      "title": "Revenue Management",
-      "subtitle": "Track revenue share and billing across all PSPs",
-      "totalMonthly": "Total Monthly Revenue",
-      "allServices": "All services",
-      "annualRunRate": "Annual Run Rate",
-      "projected": "Projected",
-      "activeCustomers": "Active Customers",
-      "allPlatforms": "All platforms",
-      "vsLastMonth": "vs last month",
-      "revenueByService": "Revenue by Service Type",
-      "topPSPCustomers": "Top PSP Customers",
-      "pspRevenue": "PSP Revenue",
-      "isoGateway": "ISO Gateway",
-      "orchestration": "Orchestration",
-      "cryptoBanking": "Crypto Banking",
-      "rwaPlatform": "RWA Platform",
-      "service": "Service",
-      "customers": "Customers",
-      "monthlyRevenue": "Monthly Revenue",
-      "ofTotal": "% of Total",
-      "pspPlatform": "PSP Platform",
-      "tier": "Tier",
-      "growth": "Growth"
-    },
-    "systemHealth": {
-      "title": "System Health Monitor",
-      "subtitle": "Real-time platform status and metrics",
-      "systemHealthy": "System healthy",
-      "totalServices": "Total Services",
-      "psps": "PSPs",
-      "isoGateway": "ISO Gateway",
-      "orchestration": "Orchestration",
-      "crypto": "Crypto",
-      "rwa": "RWA",
-      "pspInstances": "PSP Instances",
-      "infrastructureStatus": "Infrastructure Status",
-      "compute": "Compute",
-      "database": "Database",
-      "storage": "Storage",
-      "healthy": "Healthy",
-      "operational": "Operational",
-      "online": "Online",
-      "cryptoBanking": "Crypto Banking",
-      "rwaPlatform": "RWA Platform"
-    },
-    "pspProvisioning": {
-      "title": "PSP Instances",
-      "subtitle": "Manage white-label PSP infrastructure",
-      "provisionNew": "Provision New PSP",
-      "searchPlaceholder": "Search by PSP name or code...",
-      "allInstances": "All PSP Instances",
-      "noPSPs": "No PSPs provisioned yet",
-      "isoCompliant": "ISO Compliant",
-      "provisionFirst": "Provision Your First PSP"
-    },
-    "setupGuide": {
-      "title": "FTS.Money Setup Guide",
-      "subtitle": "Complete guide to accessing and configuring all services"
-    },
-    "serviceManager": {
-      "title": "FTS.Money Service Catalog",
-      "subtitle": "Services seeded from NetXHub development platform for provisioning to PSP customers"
-    },
-    "paymentProviders": {
-      "title": "Payment Provider Management",
-      "subtitle": "Configure payment providers and auto-populate Master Pricing"
-    },
-    "platformUsers": {
-      "title": "User Management",
-      "subtitle": "Manage platform administrators and their permissions"
-    },
-    "provisioningQueue": {
-      "title": "PSP Provisioning Queue",
-      "subtitle": "Manage infrastructure deployment"
-    },
-    "rwaProvisioning": {
-      "title": "RWA White-Label Provisioning",
-      "subtitle": "Deploy tokenization platforms for licensed financial institutions"
-    },
-    "rwaPlatform": {
-      "title": "RWA Platform",
-      "subtitle": "Universal tokenization infrastructure - blockchain native, Base44 optional"
-    }
+    "leiPhase1TestingDesc": "LEI testing tools",
+    "aiTranslationStudio": "AI Translation Studio",
+    "aiTranslationStudioDesc": "AI-powered translations"
   }
 };
