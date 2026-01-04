@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, ShieldAlert, TrendingUp, AlertCircle, RefreshCw } from 'lucide-react';
-import { useTranslation } from '@/components/i18n/LanguageContext';
+import { useI18n } from '@/components/i18n/I18nextProvider';
 
 const mockAlerts = [
     {
@@ -47,7 +47,7 @@ const mockAlerts = [
 export default function RiskAlertsCard() {
     const [alerts, setAlerts] = useState(mockAlerts);
     const [isRefreshing, setIsRefreshing] = useState(false);
-    const { t, language } = useTranslation();
+    const { language } = useI18n();
 
     const handleRefresh = () => {
         setIsRefreshing(true);
