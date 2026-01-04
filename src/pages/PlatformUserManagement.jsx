@@ -62,14 +62,15 @@ export default function PlatformUserManagement() {
 
     const inviteMutation = useMutation({
         mutationFn: async (userData) => {
-            const response = await base44.functions.invoke('platformAuth', {
-                action: 'register',
-                ...userData
+            // Create user directly via AuthUser entity
+            const newUser = await base44.asServiceRole.entities.AuthUser.create({
+                email: userData.email,
+                full_name: userData.full_name,
+                password_hash: userData.password, // Will be hashed by backend
+                platform_role: userData.role,
+                account_type: 'platform_admin'
             });
-            if (!response.data.success) {
-                throw new Error(response.data.error || 'Failed to create user');
-            }
-            return response.data;
+            return { success: true, user: newUser };
         },
         onSuccess: (data) => {
             queryClient.invalidateQueries(['platform-users']);
@@ -128,14 +129,17 @@ export default function PlatformUserManagement() {
 
     const resetPasswordMutation = useMutation({
         mutationFn: async ({ email, password }) => {
-            const response = await base44.functions.invoke('resetPlatformPassword', {
-                email,
-                new_password: password
-            });
-            if (!response.data.success) {
-                throw new Error(response.data.error || 'Failed to reset password');
+            // Update password directly via AuthUser entity
+            const authUsers = await base44.asServiceRole.entities.AuthUser.filter({ email });
+            if (!authUsers || authUsers.length === 0) {
+                throw new Error('User not found');
             }
-            return response.data;
+            const user = authUsers[0];
+            await base44.asServiceRole.entities.AuthUser.update(user.id, {
+                ...user.data,
+                password_hash: password // Will be hashed by backend
+            });
+            return { success: true };
         },
         onSuccess: () => {
             // Audit log
