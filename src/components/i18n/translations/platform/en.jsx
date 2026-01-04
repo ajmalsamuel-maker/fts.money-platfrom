@@ -262,12 +262,16 @@ export default {
       "updateUser": "Update User",
       "tempPassword": "Temporary Password",
       "minCharacters": "Minimum 8 characters",
-      "confirmDelete": "Are you sure you want to delete {{name}}? This action cannot be undone.",
+      "confirmDelete": "Are you sure you want to delete this user? This action cannot be undone.",
       "resetPassword": "Reset Password",
       "resetPasswordBtn": "Reset Password",
       "resettingPasswordFor": "Resetting password for",
       "newPassword": "New Password",
       "enterNewPassword": "Enter new password"
+    },
+    "leiCompliance": {
+      "title": "LEI Compliance Dashboard",
+      "subtitle": "Monitor Legal Entity Identifier compliance across all entities"
     },
     "leiCompliance": {
       "title": "LEI Compliance Dashboard",
