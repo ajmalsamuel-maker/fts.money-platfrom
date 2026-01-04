@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { usePermissions } from './usePermissions';
 
@@ -119,7 +118,7 @@ export function usePlatformAuth(requiredPermissions = []) {
         const sessionData = localStorage.getItem('platform_admin_session');
         
         if (!sessionData) {
-            navigate(createPageUrl('PlatformAdminLogin'));
+            window.location.href = createPageUrl('PlatformAdminLogin');
             return;
         }
 
@@ -134,10 +133,10 @@ export function usePlatformAuth(requiredPermissions = []) {
             );
             
             if (!hasAllPermissions) {
-                navigate(createPageUrl('FTSMoneyPlatform')); // Redirect to dashboard
+                window.location.href = createPageUrl('FTSMoneyPlatform');
             }
         }
-    }, [navigate, requiredPermissions]);
+    }, [requiredPermissions]);
 
     // Get permission utilities for this user
     const permissions = usePermissions(platformUser);
