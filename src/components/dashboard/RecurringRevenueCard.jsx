@@ -3,10 +3,10 @@ import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Card } from "@/components/ui/card";
 import { TrendingUp, Repeat } from 'lucide-react';
-import { useTranslation } from '@/components/i18n/LanguageContext';
+import { useI18n } from '@/components/i18n/I18nextProvider';
 
 export default function RecurringRevenueCard() {
-    const { t } = useTranslation();
+    const { t } = useI18n();
     const { data: subscriptions = [] } = useQuery({
         queryKey: ['recurring-payments-stats'],
         queryFn: () => base44.entities.RecurringPayment.filter({ status: 'active' }),

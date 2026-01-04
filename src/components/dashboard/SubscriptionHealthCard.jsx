@@ -3,10 +3,10 @@ import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Card } from "@/components/ui/card";
 import { Users, TrendingDown } from 'lucide-react';
-import { useTranslation } from '@/components/i18n/LanguageContext';
+import { useI18n } from '@/components/i18n/I18nextProvider';
 
 export default function SubscriptionHealthCard() {
-    const { t } = useTranslation();
+    const { t } = useI18n();
     const { data: subscriptions = [] } = useQuery({
         queryKey: ['subscriptions-health'],
         queryFn: () => base44.entities.RecurringPayment.list(),
