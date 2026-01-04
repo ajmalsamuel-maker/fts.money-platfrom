@@ -7,7 +7,7 @@ import { hasPermission, ROLE_CONFIG } from '@/components/auth/permissions';
 import { getStaffSession, staffLogout } from '@/components/auth/useStaffAuth';
 import { Badge } from "@/components/ui/badge";
 import HelpPanel from './HelpPanel';
-import { useTranslation } from '@/components/i18n/LanguageContext';
+import { useI18n } from '@/components/i18n/I18nextProvider';
 import { SmartMenuGenerator } from '@/components/platform/SmartMenuGenerator';
 import { MODULE_DEFINITIONS } from '@/components/platform/ModuleDefinitions';
 import { 
@@ -229,7 +229,7 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
     const [helpOpen, setHelpOpen] = useState(false);
     const [menuItems, setMenuItems] = useState(defaultMenuItems);
     const [pspRecord, setPspRecord] = useState(null);
-    const { t } = useTranslation();
+    const { t } = useI18n();
 
     useEffect(() => {
         // First check for staff session

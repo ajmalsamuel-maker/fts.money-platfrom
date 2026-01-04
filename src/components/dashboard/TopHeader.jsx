@@ -31,14 +31,14 @@ import {
     Check
 } from 'lucide-react';
 import HelpPanel from './HelpPanel';
-import { useTranslation } from '@/components/i18n/LanguageContext';
+import { useI18n } from '@/components/i18n/I18nextProvider';
 
 export default function TopHeader({ onToggleSidebar, collapsed }) {
     const [searchQuery, setSearchQuery] = useState('');
     const [user, setUser] = useState(null);
     const [themeSettings, setThemeSettings] = useState(null);
     const [helpOpen, setHelpOpen] = useState(false);
-    const { language, setLanguage, t } = useTranslation();
+    const { language, setLanguage, t } = useI18n();
 
     useEffect(() => {
         // First check for staff session
