@@ -1,5 +1,5 @@
 
-// Platform translations - English (v3.0.0 - Complete coverage)
+// Platform translations - English (v4.0.0 - Clean structure)
 export default {
   "dashboard": {
     "title": "Control Panel Dashboard",
@@ -71,18 +71,6 @@ export default {
     "documentation": "Documentation",
     "resources": "Settings & Resources"
   },
-  "menuItems": {
-    "platformDashboard": "Platform Dashboard",
-    "platformDashboardDesc": "Main control panel",
-    "systemHealth": "System Health",
-    "systemHealthDesc": "Monitor platform status",
-    "revenueDashboard": "Revenue Dashboard",
-    "revenueDashboardDesc": "Track revenue and billing",
-    "platformAnalytics": "Platform Analytics",
-    "platformAnalyticsDesc": "Performance metrics",
-    "setupGuide": "Setup Guide",
-    "setupGuideDesc": "Quick start guide"
-  },
   "pages": {
     "dashboard": {
       "title": "Control Panel Dashboard",
@@ -114,11 +102,10 @@ export default {
       "totalRevenue": "Total Revenue",
       "totalEndUsers": "Total End Users",
       "acrossAllServices": "Across all services",
-      "acrossServices": "Across all services",
       "platformRevenue": "Platform Revenue",
       "psp": "PSP",
-      "isoGateway": "ISO Gateway Customers",
-      "orchestration": "Orchestration Customers",
+      "isoGateway": "ISO Gateway",
+      "orchestration": "Orchestration",
       "crypto": "Crypto",
       "rwa": "RWA"
     },
@@ -135,8 +122,8 @@ export default {
       "revenueByService": "Revenue by Service Type",
       "topPSPCustomers": "Top PSP Customers",
       "pspRevenue": "PSP Revenue",
-      "isoGateway": "ISO Gateway Customers",
-      "orchestration": "Orchestration Customers",
+      "isoGateway": "ISO Gateway",
+      "orchestration": "Orchestration",
       "cryptoBanking": "Crypto Banking",
       "rwaPlatform": "RWA Platform",
       "service": "Service",
@@ -147,6 +134,27 @@ export default {
       "tier": "Tier",
       "growth": "Growth",
       "pspName": "PSP Name"
+    },
+    "systemHealth": {
+      "title": "System Health Monitor",
+      "subtitle": "Real-time platform status and metrics",
+      "systemHealthy": "System healthy",
+      "totalServices": "Total Services",
+      "psps": "PSPs",
+      "isoGateway": "ISO Gateway",
+      "orchestration": "Orchestration",
+      "crypto": "Crypto",
+      "rwa": "RWA",
+      "pspInstances": "PSP Instances",
+      "infrastructureStatus": "Infrastructure Status",
+      "compute": "Compute",
+      "database": "Database",
+      "storage": "Storage",
+      "healthy": "Healthy",
+      "operational": "Operational",
+      "online": "Online",
+      "cryptoBanking": "Crypto Banking",
+      "rwaPlatform": "RWA Platform"
     },
     "pspProvisioning": {
       "title": "PSP Instances",
@@ -165,7 +173,7 @@ export default {
       "monthlyVolume": "Monthly Volume",
       "vsLastMonth": "vs last month",
       "monthlyRevenue": "Monthly Revenue",
-      "ftsEarnings": "FTX Earnings",
+      "ftsEarnings": "FTS Earnings",
       "merchants": "Merchants",
       "volume": "Volume",
       "manage": "Manage",
@@ -173,55 +181,6 @@ export default {
       "viewLogs": "View Logs",
       "noMatches": "No matching PSPs found",
       "complianceIssue": "Compliance Issue"
-    },
-    "systemHealth": {
-      "title": "System Health Monitor",
-      "subtitle": "Real-time platform status and metrics",
-      "systemHealthy": "System healthy",
-      "totalServices": "Total Services",
-      "psps": "PSPs",
-      "isoGateway": "ISO Gateway Customers",
-      "orchestration": "Orchestration Customers",
-      "crypto": "Crypto",
-      "rwa": "RWA",
-      "pspInstances": "PSP Instances",
-      "infrastructureStatus": "Infrastructure Status",
-      "compute": "Compute",
-      "database": "Database",
-      "storage": "Storage",
-      "healthy": "Healthy",
-      "operational": "Operational",
-      "online": "Online",
-      "cryptoBanking": "Crypto Banking",
-      "rwaPlatform": "RWA Platform"
-    },
-    "setupGuide": {
-      "title": "FTX.Money Setup Guide",
-      "subtitle": "Complete guide to accessing and configuring all services"
-    },
-    "serviceManager": {
-      "title": "FTX.Money Service Catalog",
-      "subtitle": "Services seeded from NetXHub development platform for provisioning to PSP customers"
-    },
-    "paymentProviders": {
-      "title": "Payment Provider Management",
-      "subtitle": "Configure payment providers and auto-populate Master Pricing"
-    },
-    "platformUsers": {
-      "title": "User Management",
-      "subtitle": "Manage platform administrators and their permissions"
-    },
-    "rwaProvisioning": {
-      "title": "RWA White-Label Provisioning",
-      "subtitle": "Deploy tokenization platforms for licensed financial institutions"
-    },
-    "rwaPlatform": {
-      "title": "RWA Platform",
-      "subtitle": "Universal tokenization infrastructure - blockchain native, Base44 optional"
-    },
-    "aiTranslationStudio": {
-      "title": "AI Translation Studio",
-      "subtitle": "Automated translation management for 25 languages"
     },
     "provisioningQueue": {
       "title": "PSP Provisioning Queue",
@@ -244,6 +203,34 @@ export default {
       "statusChange": "Status change",
       "activated": "Activated",
       "ofTotal": "of total"
+    },
+    "setupGuide": {
+      "title": "FTS.Money Setup Guide",
+      "subtitle": "Complete guide to accessing and configuring all services"
+    },
+    "serviceManager": {
+      "title": "FTS.Money Service Catalog",
+      "subtitle": "Services seeded from NetXHub development platform for provisioning to PSP customers"
+    },
+    "paymentProviders": {
+      "title": "Payment Provider Management",
+      "subtitle": "Configure payment providers and auto-populate Master Pricing"
+    },
+    "platformUsers": {
+      "title": "User Management",
+      "subtitle": "Manage platform administrators and their permissions"
+    },
+    "rwaProvisioning": {
+      "title": "RWA White-Label Provisioning",
+      "subtitle": "Deploy tokenization platforms for licensed financial institutions"
+    },
+    "rwaPlatform": {
+      "title": "RWA Platform",
+      "subtitle": "Universal tokenization infrastructure - blockchain native, Base44 optional"
+    },
+    "aiTranslationStudio": {
+      "title": "AI Translation Studio",
+      "subtitle": "Automated translation management for 25 languages"
     }
   },
   "provisioningSteps": {
@@ -254,6 +241,16 @@ export default {
     "initialization": "Platform Init"
   },
   "subMenuItems": {
+    "platformDashboard": "Platform Dashboard",
+    "platformDashboardDesc": "Main control panel",
+    "systemHealth": "System Health",
+    "systemHealthDesc": "Monitor platform status",
+    "revenueDashboard": "Revenue Dashboard",
+    "revenueDashboardDesc": "Track revenue and billing",
+    "platformAnalytics": "Platform Analytics",
+    "platformAnalyticsDesc": "Performance metrics",
+    "setupGuide": "Setup Guide",
+    "setupGuideDesc": "Quick start guide",
     "pspManagement": "PSP Management",
     "pspManagementDesc": "Manage PSP instances",
     "provisioningQueue": "Provisioning Queue",
@@ -292,7 +289,7 @@ export default {
     "paymentProvidersDesc": "Provider management",
     "globalStandards": "Global Standards",
     "globalStandardsDesc": "Standards registry",
-    "isoGateway": "ISO Gateway Customers",
+    "isoGateway": "ISO Gateway",
     "isoGatewayDesc": "Gateway customers",
     "isoConnections": "ISO Connections",
     "isoConnectionsDesc": "Connection management",
@@ -300,7 +297,7 @@ export default {
     "isoTestConsoleDesc": "Test messaging",
     "isoMessageMonitor": "ISO Message Monitor",
     "isoMessageMonitorDesc": "Monitor messages",
-    "orchestration": "Orchestration Customers",
+    "orchestration": "Orchestration",
     "orchestrationDesc": "Orchestration customers",
     "payoutRoutes": "Payout Routes",
     "payoutRoutesDesc": "Configure routes",
