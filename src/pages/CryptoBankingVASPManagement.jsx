@@ -529,7 +529,7 @@ export default function CryptoBankingVASPManagement() {
                                             <Button 
                                                 variant="outline" 
                                                 size="sm"
-                                                onClick={() => navigate(createPageUrl('CryptoVASPSettings') + '?id=' + vasp.id)}
+                                                onClick={() => window.location.href = createPageUrl('CryptoVASPSettings') + '?id=' + vasp.id}
                                             >
                                                 <Settings className="h-4 w-4 mr-2" />
                                                 Configure
