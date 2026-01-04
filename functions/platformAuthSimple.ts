@@ -48,23 +48,40 @@ Deno.serve(async (req) => {
             const { account_type } = await req.json();
             const allUsers = await base44.asServiceRole.entities.AuthUser.list();
             
+            console.log('Total AuthUsers:', allUsers.length);
+            console.log('Sample user structure:', JSON.stringify(allUsers[0], null, 2));
+            
             const filtered = allUsers.filter(u => {
+                // Check all possible locations for account_type
                 const userAccountType = u.account_type || u.data?.account_type;
-                return userAccountType === account_type;
+                const matches = userAccountType === account_type;
+                
+                if (matches) {
+                    console.log('Found matching user:', u.email || u.data?.email, 'Type:', userAccountType);
+                }
+                
+                return matches;
             });
 
-            const mapped = filtered.map(u => ({
-                id: u.id,
-                email: u.email || u.data?.email,
-                full_name: u.full_name || u.data?.full_name,
-                platform_role: u.platform_role || u.data?.platform_role,
-                community_role: u.community_role || u.data?.community_role,
-                account_type: u.account_type || u.data?.account_type,
-                last_login: u.last_login || u.data?.last_login,
-                created_date: u.created_date
-            }));
+            console.log(`Filtered ${filtered.length} users with account_type=${account_type}`);
 
-            return Response.json({ success: true, users: mapped });
+            const mapped = filtered.map(u => {
+                // Try to get data from both root and nested data object
+                const userData = {
+                    id: u.id,
+                    email: u.email || u.data?.email || u.data?.data?.email,
+                    full_name: u.full_name || u.data?.full_name || u.data?.data?.full_name,
+                    platform_role: u.platform_role || u.data?.platform_role || u.data?.data?.platform_role,
+                    community_role: u.community_role || u.data?.community_role || u.data?.data?.community_role,
+                    account_type: u.account_type || u.data?.account_type || u.data?.data?.account_type,
+                    last_login: u.last_login || u.data?.last_login || u.data?.data?.last_login,
+                    created_date: u.created_date
+                };
+                console.log('Mapped user:', userData);
+                return userData;
+            });
+
+            return Response.json({ success: true, users: mapped, total: allUsers.length, filtered: filtered.length });
         }
 
         return Response.json({ success: false, error: 'Invalid action' });
