@@ -12,7 +12,7 @@ import { FTS_COLORS, FTS_GRADIENTS, FTS_LOGOS } from '@/components/community/FTS
 import { Shield, Lock, ArrowRight } from 'lucide-react';
 import { PLATFORM_ROLES, getRoleLabel } from '@/components/auth/usePlatformAuth';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
-import { MinimalComplianceFooter } from '@/components/compliance/ComplianceFooter';
+import ComplianceFooter, { MinimalComplianceFooter } from '@/components/compliance/ComplianceFooter';
 
 export default function PlatformAdminLogin() {
     const navigate = useNavigate();
