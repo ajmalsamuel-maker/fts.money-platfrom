@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import UnifiedCommandPalette from '@/components/system/UnifiedCommandPalette';
-import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
 import { usePlatformAuth, PLATFORM_PERMISSIONS, PLATFORM_ROLES, getRoleLabel } from '@/components/auth/usePlatformAuth';
@@ -54,7 +53,6 @@ const quickActions = [
 ];
 
 export default function FTSMoneyPlatform() {
-    const navigate = useNavigate();
     const { platformUser, loading } = usePlatformAuth();
     const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
     const { t, language } = useI18n();
@@ -179,7 +177,7 @@ export default function FTSMoneyPlatform() {
                             <p className="text-sm font-medium text-slate-900">{platformUser?.email}</p>
                         </div>
                         <Button 
-                            onClick={() => navigate(createPageUrl('PSPProvisioningWizard'))}
+                            onClick={() => window.location.href = createPageUrl('PSPProvisioningWizard')}
                             className="gap-2 bg-blue-600 hover:bg-blue-700"
                         >
                             <Plus className="h-4 w-4" />
@@ -218,10 +216,10 @@ export default function FTSMoneyPlatform() {
                                         </div>
                                     </div>
                                     <div className="flex gap-2">
-                                        <Button size="sm" className="flex-1 text-xs h-7" onClick={() => navigate(createPageUrl('PSPProvisioning'))}>
+                                        <Button size="sm" className="flex-1 text-xs h-7" onClick={() => window.location.href = createPageUrl('PSPProvisioning')}>
                                             {t('common:actions.manage')}
                                         </Button>
-                                        <Button size="sm" variant="outline" className="text-xs h-7" onClick={() => navigate(createPageUrl('PSPProvisioningWizard'))}>
+                                        <Button size="sm" variant="outline" className="text-xs h-7" onClick={() => window.location.href = createPageUrl('PSPProvisioningWizard')}>
                                             <Plus className="h-3 w-3" />
                                         </Button>
                                     </div>
@@ -253,10 +251,10 @@ export default function FTSMoneyPlatform() {
                                         </div>
                                     </div>
                                     <div className="flex gap-2">
-                                        <Button size="sm" className="flex-1 text-xs h-7 bg-violet-600 hover:bg-violet-700" onClick={() => navigate(createPageUrl('ISOGatewayCustomers'))}>
+                                        <Button size="sm" className="flex-1 text-xs h-7 bg-violet-600 hover:bg-violet-700" onClick={() => window.location.href = createPageUrl('ISOGatewayCustomers')}>
                                             {t('common:actions.manage')}
                                         </Button>
-                                        <Button size="sm" variant="outline" className="text-xs h-7" onClick={() => navigate(createPageUrl('ISOGatewayTestConsole'))}>
+                                        <Button size="sm" variant="outline" className="text-xs h-7" onClick={() => window.location.href = createPageUrl('ISOGatewayTestConsole')}>
                                             {t('common:actions.test')}
                                         </Button>
                                     </div>
@@ -288,7 +286,7 @@ export default function FTSMoneyPlatform() {
                                         </div>
                                     </div>
                                     <div className="flex gap-2">
-                                        <Button size="sm" className="flex-1 text-xs h-7 bg-purple-600 hover:bg-purple-700" onClick={() => navigate(createPageUrl('OrchestrationCustomers'))}>
+                                        <Button size="sm" className="flex-1 text-xs h-7 bg-purple-600 hover:bg-purple-700" onClick={() => window.location.href = createPageUrl('OrchestrationCustomers')}>
                                             {t('common:actions.manage')}
                                         </Button>
                                     </div>
@@ -320,7 +318,7 @@ export default function FTSMoneyPlatform() {
                                         </div>
                                     </div>
                                     <div className="flex gap-2">
-                                        <Button size="sm" className="flex-1 text-xs h-7 bg-cyan-600 hover:bg-cyan-700" onClick={() => navigate(createPageUrl('CryptoGatewayCustomers'))}>
+                                        <Button size="sm" className="flex-1 text-xs h-7 bg-cyan-600 hover:bg-cyan-700" onClick={() => window.location.href = createPageUrl('CryptoGatewayCustomers')}>
                                             {t('common:actions.manage')}
                                         </Button>
                                     </div>
@@ -352,10 +350,10 @@ export default function FTSMoneyPlatform() {
                                         </div>
                                     </div>
                                     <div className="flex gap-2">
-                                        <Button size="sm" className="flex-1 text-xs h-7 bg-emerald-600 hover:bg-emerald-700" onClick={() => navigate(createPageUrl('RWAWhiteLabelProvisioning'))}>
+                                        <Button size="sm" className="flex-1 text-xs h-7 bg-emerald-600 hover:bg-emerald-700" onClick={() => window.location.href = createPageUrl('RWAWhiteLabelProvisioning')}>
                                             {t('common:actions.manage')}
                                         </Button>
-                                        <Button size="sm" variant="outline" className="text-xs h-7" onClick={() => navigate(createPageUrl('RWAPlatform'))}>
+                                        <Button size="sm" variant="outline" className="text-xs h-7" onClick={() => window.location.href = createPageUrl('RWAPlatform')}>
                                             {t('platform:pages.dashboard.contracts')}
                                         </Button>
                                     </div>
@@ -373,7 +371,7 @@ export default function FTSMoneyPlatform() {
                                 return (
                                     <button
                                         key={action.path}
-                                        onClick={() => navigate(createPageUrl(action.path))}
+                                        onClick={() => window.location.href = createPageUrl(action.path)}
                                         className={cn(
                                             "p-4 rounded-lg border-2 hover:shadow-md transition-all text-left",
                                             action.color
@@ -539,7 +537,7 @@ export default function FTSMoneyPlatform() {
                                             
                                             <div 
                                                 className="flex items-start justify-between mb-3 cursor-pointer"
-                                                onClick={() => navigate(createPageUrl('PSPInstanceConfig') + `?id=${psp.id}`)}
+                                                onClick={() => window.location.href = createPageUrl('PSPInstanceConfig') + `?id=${psp.id}`}
                                             >
                                                 <div className="flex items-center gap-3">
                                                     <div 
@@ -636,7 +634,7 @@ export default function FTSMoneyPlatform() {
                                 <div className="col-span-3 text-center py-12">
                                     <Building2 className="h-12 w-12 text-slate-400 mx-auto mb-3" />
                                     <p className="text-slate-600 mb-4">{t('platform:pages.pspProvisioning.noPSPs')}</p>
-                                    <Button onClick={() => navigate(createPageUrl('PSPProvisioningWizard'))} className="bg-blue-600 hover:bg-blue-700">
+                                    <Button onClick={() => window.location.href = createPageUrl('PSPProvisioningWizard')} className="bg-blue-600 hover:bg-blue-700">
                                         <Plus className="h-4 w-4 mr-2" />
                                         {t('platform:pages.pspProvisioning.provisionFirst')}
                                     </Button>

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import {
     CommandDialog,
@@ -25,7 +24,6 @@ export default function UnifiedCommandPalette({
     portalType = 'community', // community, platform, psp, merchant
     customCommands = []
 }) {
-    const navigate = useNavigate();
     const [search, setSearch] = useState('');
 
     // Portal-specific commands
@@ -99,7 +97,7 @@ export default function UnifiedCommandPalette({
 
     const handleSelect = (path) => {
         onOpenChange(false);
-        navigate(createPageUrl(path));
+        window.location.href = createPageUrl(path);
     };
 
     return (
