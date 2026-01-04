@@ -45,14 +45,16 @@ export default function PlatformUserManagement() {
         queryKey: ['platform-users'],
         queryFn: async () => {
             const authUsers = await base44.asServiceRole.entities.AuthUser.list();
+            console.log('🔍 All AuthUsers:', authUsers.length, authUsers);
             const platformUsers = authUsers.filter(u => u.data?.account_type === 'platform_admin');
+            console.log('✅ Platform admins:', platformUsers.length, platformUsers);
             return platformUsers.map(u => ({
                 id: u.id,
-                email: u.data.email,
-                full_name: u.data.full_name,
-                platform_role: u.data.platform_role,
-                account_type: u.data.account_type,
-                last_login: u.data.last_login
+                email: u.data?.email || u.email,
+                full_name: u.data?.full_name || u.full_name,
+                platform_role: u.data?.platform_role || u.platform_role,
+                account_type: u.data?.account_type || u.account_type,
+                last_login: u.data?.last_login || u.last_login
             }));
         },
         enabled: !loading
