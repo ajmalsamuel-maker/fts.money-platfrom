@@ -58,22 +58,14 @@ export default function Dashboard() {
     const [userPspCode, setUserPspCode] = useState(null);
     const [isReady, setIsReady] = useState(false);
 
-    const hasInitialized = React.useRef(false);
-    
     React.useEffect(() => {
-        if (hasInitialized.current) {
-            console.log('📊 Dashboard: Already initialized, skipping');
-            return;
-        }
-        
         console.log('📊 Dashboard: Checking for session...');
         const sessionData = localStorage.getItem('staff_session');
         console.log('📊 Dashboard: Session found:', !!sessionData);
         
         if (!sessionData) {
             console.log('📊 Dashboard: No session, redirecting to PSPLogin...');
-            hasInitialized.current = true;
-            window.location.replace('/PSPLogin');
+            navigate(createPageUrl('PSPLogin'));
             return;
         }
         
@@ -83,22 +75,19 @@ export default function Dashboard() {
             
             if (session?.psp_code) {
                 console.log('📊 Dashboard: Valid PSP code:', session.psp_code);
-                hasInitialized.current = true;
                 setUserPspCode(session.psp_code);
                 setIsReady(true);
             } else {
                 console.log('📊 Dashboard: No PSP code in session, redirecting...');
                 localStorage.removeItem('staff_session');
-                hasInitialized.current = true;
-                window.location.replace('/PSPLogin');
+                navigate(createPageUrl('PSPLogin'));
             }
         } catch (err) {
             console.error('📊 Dashboard: Session parse error:', err);
             localStorage.removeItem('staff_session');
-            hasInitialized.current = true;
-            window.location.replace('/PSPLogin');
+            navigate(createPageUrl('PSPLogin'));
         }
-    }, []);
+    }, [navigate]);
 
     // Fetch data from isolated PSP schema (PCI Level 1 & GDPR compliant)
     const { data: transactions = [] } = useQuery({
