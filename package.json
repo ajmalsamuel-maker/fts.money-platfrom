@@ -82,7 +82,9 @@
     "xlsx": "^0.18.5",
     "mermaid": "^10.6.1",
     "remark-gfm": "^4.0.0",
-    "jspdf-autotable": "^3.8.3"
+    "jspdf-autotable": "^3.8.3",
+    "react-i18next": "^14.0.0",
+    "i18next": "^23.7.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",

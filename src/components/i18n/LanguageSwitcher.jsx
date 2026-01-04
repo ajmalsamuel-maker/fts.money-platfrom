@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { useI18n } from './EnhancedLanguageProvider';
+import { useI18n, SUPPORTED_LANGUAGES } from './I18nextProvider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Globe } from 'lucide-react';

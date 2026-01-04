@@ -3,7 +3,7 @@
  * @version 1.2.0
  */
 import React from 'react';
-import { EnhancedLanguageProvider } from '@/components/i18n/EnhancedLanguageProvider';
+import { I18nextProvider } from '@/components/i18n/I18nextProvider';
 import { AccessibilityProvider } from '@/components/accessibility/AccessibilityProvider';
 import { SkipNavigation } from '@/components/accessibility/AccessibleComponents';
 import FintechNewsTicker from '@/components/dashboard/FintechNewsTicker';
@@ -27,8 +27,8 @@ export default function Layout({ children }) {
     // For custom auth sessions, skip Base44's AuthContext entirely
     if (isStaffSession) {
         return (
-            <AccessibilityProvider>
-                <EnhancedLanguageProvider tenantType="platform">
+            <I18nextProvider>
+                <AccessibilityProvider>
                     <SkipNavigation targetId="main-content" />
                     <div className="min-h-screen bg-slate-50 flex flex-col">
                         <FintechNewsTicker />
@@ -37,14 +37,14 @@ export default function Layout({ children }) {
                         </main>
                         <ComplianceFooter />
                     </div>
-                </EnhancedLanguageProvider>
-            </AccessibilityProvider>
+                </AccessibilityProvider>
+            </I18nextProvider>
         );
     }
 
     return (
-        <AccessibilityProvider>
-            <EnhancedLanguageProvider tenantType="platform">
+        <I18nextProvider>
+            <AccessibilityProvider>
                 <SkipNavigation targetId="main-content" />
                 <div className="min-h-screen bg-slate-50 flex flex-col">
                     <FintechNewsTicker />
@@ -53,7 +53,7 @@ export default function Layout({ children }) {
                     </main>
                     <ComplianceFooter />
                 </div>
-            </EnhancedLanguageProvider>
-        </AccessibilityProvider>
+            </AccessibilityProvider>
+        </I18nextProvider>
     );
 }
