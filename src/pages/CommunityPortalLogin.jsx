@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Sparkles, Building2, Users, Globe, ArrowRight } from 'lucide-react';
 import { FTS_COLORS, FTS_GRADIENTS, FTS_LOGOS } from '@/components/community/FTSBrandColors';
-import ComplianceFooter from '@/components/community/ComplianceFooter';
+import ComplianceFooter from '@/components/compliance/ComplianceFooter';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 
 export default function CommunityPortalLogin() {
@@ -57,6 +57,11 @@ export default function CommunityPortalLogin() {
 
     return (
         <div className="min-h-screen flex flex-col bg-white">
+            {/* Language Selector - Top Right Corner */}
+            <div className="absolute top-4 right-6 z-20">
+                <LanguageSwitcher variant="select" showLabel={false} />
+            </div>
+
             {/* Main Content Area */}
             <div className="flex-1 flex items-center justify-center p-6 relative overflow-hidden">
                 {/* FTS.Money Wave Background - Bottom */}
@@ -107,10 +112,6 @@ export default function CommunityPortalLogin() {
                                         </Alert>
                                     )}
                                     
-                                    <div className="flex justify-center mb-4">
-                                        <LanguageSwitcher variant="select" showLabel={false} />
-                                    </div>
-                                    
                                     <div>
                                         <Label>Email</Label>
                                         <Input
@@ -153,28 +154,8 @@ export default function CommunityPortalLogin() {
                 </div>
             </div>
 
-            {/* Footer at Bottom */}
-            <footer className="relative z-20 bg-slate-900 text-white py-8 px-6">
-                <div className="max-w-7xl mx-auto">
-                    <div className="text-center">
-                        <h2 className="text-2xl font-bold mb-2" style={{ background: FTS_GRADIENTS.fluid, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                            Enterprise-Grade Fluid Payment Infrastructure
-                        </h2>
-                        <p className="text-sm text-slate-400 mb-4">
-                            Secure • Compliant • Borderless • Instant
-                        </p>
-                        <div className="flex items-center justify-center gap-2 text-xs text-slate-500">
-                            <span>© {new Date().getFullYear()} FTS.Money</span>
-                            <span>•</span>
-                            <span>PCI DSS Level 1</span>
-                            <span>•</span>
-                            <span>LEI/vLEI Certified</span>
-                            <span>•</span>
-                            <span>ISO 20022 Compliant</span>
-                        </div>
-                    </div>
-                </div>
-            </footer>
+            {/* Compliance Footer */}
+            <ComplianceFooter />
         </div>
     );
 }
