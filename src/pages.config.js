@@ -58,6 +58,7 @@ import CryptoPortalManagement from './pages/CryptoPortalManagement';
 import CryptoSettings from './pages/CryptoSettings';
 import CryptoTransactions from './pages/CryptoTransactions';
 import CryptoUsers from './pages/CryptoUsers';
+import CryptoVASPSettings from './pages/CryptoVASPSettings';
 import CryptoWallets from './pages/CryptoWallets';
 import CustomerAnalytics from './pages/CustomerAnalytics';
 import Customers from './pages/Customers';
@@ -107,8 +108,8 @@ import ISOGatewayCustomerPortal from './pages/ISOGatewayCustomerPortal';
 import ISOGatewayCustomers from './pages/ISOGatewayCustomers';
 import ISOGatewayLogin from './pages/ISOGatewayLogin';
 import ISOGatewayRouting from './pages/ISOGatewayRouting';
-import ISOGatewayTestConsole from './pages/ISOGatewayTestConsole';
 import Invoices from './pages/Invoices';
+import ISOGatewayTestConsole from './pages/ISOGatewayTestConsole';
 import ISOGatewayUserManagement from './pages/ISOGatewayUserManagement';
 import ISOMessageMonitor from './pages/ISOMessageMonitor';
 import InstantPayments from './pages/InstantPayments';
@@ -215,12 +216,12 @@ import PSPWholesaleBrowse from './pages/PSPWholesaleBrowse';
 import PSPWholesaleMarketplace from './pages/PSPWholesaleMarketplace';
 import PaymentGateways from './pages/PaymentGateways';
 import PaymentLinks from './pages/PaymentLinks';
-import Payouts from './pages/Payouts';
 import PaymentMethods from './pages/PaymentMethods';
 import PaymentOrchestration from './pages/PaymentOrchestration';
 import PaymentProviderManagement from './pages/PaymentProviderManagement';
 import PaymentProviders from './pages/PaymentProviders';
 import PayoutOrchestration from './pages/PayoutOrchestration';
+import Payouts from './pages/Payouts';
 import PlatformAdminLogin from './pages/PlatformAdminLogin';
 import PlatformAdminRegister from './pages/PlatformAdminRegister';
 import PlatformAuditLogs from './pages/PlatformAuditLogs';
@@ -276,7 +277,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import CryptoVASPSettings from './pages/CryptoVASPSettings';
 import __Layout from './Layout.jsx';
 
 
@@ -341,6 +341,7 @@ export const PAGES = {
     "CryptoSettings": CryptoSettings,
     "CryptoTransactions": CryptoTransactions,
     "CryptoUsers": CryptoUsers,
+    "CryptoVASPSettings": CryptoVASPSettings,
     "CryptoWallets": CryptoWallets,
     "CustomerAnalytics": CustomerAnalytics,
     "Customers": Customers,
@@ -390,8 +391,8 @@ export const PAGES = {
     "ISOGatewayCustomers": ISOGatewayCustomers,
     "ISOGatewayLogin": ISOGatewayLogin,
     "ISOGatewayRouting": ISOGatewayRouting,
-    "ISOGatewayTestConsole": ISOGatewayTestConsole,
     "Invoices": Invoices,
+    "ISOGatewayTestConsole": ISOGatewayTestConsole,
     "ISOGatewayUserManagement": ISOGatewayUserManagement,
     "ISOMessageMonitor": ISOMessageMonitor,
     "InstantPayments": InstantPayments,
@@ -498,12 +499,12 @@ export const PAGES = {
     "PSPWholesaleMarketplace": PSPWholesaleMarketplace,
     "PaymentGateways": PaymentGateways,
     "PaymentLinks": PaymentLinks,
-    "Payouts": Payouts,
     "PaymentMethods": PaymentMethods,
     "PaymentOrchestration": PaymentOrchestration,
     "PaymentProviderManagement": PaymentProviderManagement,
     "PaymentProviders": PaymentProviders,
     "PayoutOrchestration": PayoutOrchestration,
+    "Payouts": Payouts,
     "PlatformAdminLogin": PlatformAdminLogin,
     "PlatformAdminRegister": PlatformAdminRegister,
     "PlatformAuditLogs": PlatformAuditLogs,
@@ -559,7 +560,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "CryptoVASPSettings": CryptoVASPSettings,
 }
 
 export const pagesConfig = {
