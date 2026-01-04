@@ -3,7 +3,8 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 Deno.serve(async (req) => {
     try {
         const base44 = createClientFromRequest(req);
-        const { action, email, password, full_name, role } = await req.json();
+        const body = await req.json();
+        const { action, email, password, full_name, role, account_type } = body;
 
         if (action === 'login') {
             // Query users
@@ -45,7 +46,6 @@ Deno.serve(async (req) => {
         }
 
         if (action === 'listUsers') {
-            const { account_type } = await req.json();
             const allUsers = await base44.asServiceRole.entities.AuthUser.list();
             
             console.log('Total AuthUsers:', allUsers.length);
