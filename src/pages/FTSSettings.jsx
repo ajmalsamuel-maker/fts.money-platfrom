@@ -464,14 +464,14 @@ export default function FTSSettings() {
                     <TabsContent value="notifications">
                         <Card>
                             <CardHeader>
-                                <CardTitle>Notification Settings</CardTitle>
-                                <CardDescription>Configure platform-wide notifications</CardDescription>
+                                <CardTitle>{t('platform:pages.settings.notificationSettings')}</CardTitle>
+                                <CardDescription>{t('platform:pages.settings.notificationDesc')}</CardDescription>
                             </CardHeader>
                             <CardContent>
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <Label>Email Notifications</Label>
-                                        <p className="text-sm text-slate-600">Send email notifications for important events</p>
+                                        <Label>{t('platform:pages.settings.emailNotifications')}</Label>
+                                        <p className="text-sm text-slate-600">{t('platform:pages.settings.emailNotificationDesc')}</p>
                                     </div>
                                     <Switch
                                         checked={settings.notifications_enabled}

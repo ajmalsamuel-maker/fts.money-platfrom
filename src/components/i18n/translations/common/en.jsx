@@ -3,6 +3,7 @@
 export default {
   "actions": {
     "save": "Save",
+    "saveChanges": "Save Changes",
     "cancel": "Cancel",
     "edit": "Edit",
     "delete": "Delete",
@@ -32,7 +33,9 @@ export default {
     "suspended": "Suspended",
     "cancelled": "Cancelled",
     "valid": "Valid",
-    "failed": "Failed"
+    "failed": "Failed",
+    "creating": "Creating...",
+    "resetting": "Resetting..."
   },
   "labels": {
     "status": "Status",

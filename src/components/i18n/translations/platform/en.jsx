@@ -248,6 +248,46 @@ export default {
     "aiTranslationStudio": {
       "title": "AI Translation Studio",
       "subtitle": "Automated translation management for 25 languages"
+    },
+    "platformUsers": {
+      "title": "Platform User Management",
+      "subtitle": "Manage platform administrators and their permissions",
+      "platformUsers": "Platform Users",
+      "inviteUser": "Invite User",
+      "inviteNewUser": "Invite New User",
+      "addUser": "Add User",
+      "editUser": "Edit User",
+      "deleteUser": "Delete User",
+      "createUser": "Create User",
+      "updateUser": "Update User",
+      "tempPassword": "Temporary Password",
+      "minCharacters": "Minimum 8 characters",
+      "confirmDelete": "Are you sure you want to delete {{name}}? This action cannot be undone.",
+      "resetPassword": "Reset Password",
+      "resetPasswordBtn": "Reset Password",
+      "resettingPasswordFor": "Resetting password for",
+      "newPassword": "New Password",
+      "enterNewPassword": "Enter new password"
+    },
+    "leiCompliance": {
+      "title": "LEI Compliance Dashboard",
+      "subtitle": "Monitor Legal Entity Identifier compliance across all entities"
+    },
+    "settings": {
+      "title": "Platform Settings",
+      "subtitle": "Configure global platform settings and compliance",
+      "backToPlatform": "Back to Platform",
+      "general": "General",
+      "platformLEI": "Platform LEI",
+      "security": "Security",
+      "notifications": "Notifications",
+      "generalSettings": "General Settings",
+      "generalDesc": "Configure basic platform settings",
+      "platformName": "Platform Name",
+      "notificationSettings": "Notification Settings",
+      "notificationDesc": "Configure platform-wide notifications",
+      "emailNotifications": "Email Notifications",
+      "emailNotificationDesc": "Send email notifications for important events"
     }
   },
   "provisioningSteps": {
