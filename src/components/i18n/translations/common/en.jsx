@@ -2,14 +2,14 @@
 // Common translations - English (v3.0.0)
 export default {
   "actions": {
-    "save": "Save Changes",
+    "save": "Save",
     "cancel": "Cancel",
     "edit": "Edit",
     "delete": "Delete",
     "confirm": "Confirm",
     "manage": "Manage",
     "test": "Test",
-    "logout": "Logout",
+    "logout": "Log out",
     "viewAll": "View All",
     "add": "Add",
     "create": "Create",
@@ -51,6 +51,8 @@ export default {
     "of": "of",
     "noData": "No data",
     "loading": "Loading...",
-    "loggedInAs": "Logged in as"
+    "loggedInAs": "Logged in as",
+    "pspName": "PSP Name",
+    "growth": "Growth"
   }
 };
