@@ -1,3 +1,4 @@
+
 // Platform translations - English (v3.0.0 - Complete coverage)
 export default {
   "dashboard": {
@@ -33,7 +34,7 @@ export default {
   "activePSPs": "Active PSP Instances",
   "quickActionItems": {
     "pspInstances": "PSP Instances",
-    "isoGateway": "ISO Gateway",
+    "isoGateway": "ISO Gateway Customers",
     "serviceCatalog": "Service Catalog",
     "providerPool": "Provider Pool",
     "payoutRoutes": "Payout Routes",
@@ -116,8 +117,8 @@ export default {
       "acrossServices": "Across all services",
       "platformRevenue": "Platform Revenue",
       "psp": "PSP",
-      "isoGateway": "ISO Gateway",
-      "orchestration": "Orchestration",
+      "isoGateway": "ISO Gateway Customers",
+      "orchestration": "Orchestration Customers",
       "crypto": "Crypto",
       "rwa": "RWA"
     },
@@ -134,8 +135,8 @@ export default {
       "revenueByService": "Revenue by Service Type",
       "topPSPCustomers": "Top PSP Customers",
       "pspRevenue": "PSP Revenue",
-      "isoGateway": "ISO Gateway",
-      "orchestration": "Orchestration",
+      "isoGateway": "ISO Gateway Customers",
+      "orchestration": "Orchestration Customers",
       "cryptoBanking": "Crypto Banking",
       "rwaPlatform": "RWA Platform",
       "service": "Service",
@@ -146,27 +147,6 @@ export default {
       "tier": "Tier",
       "growth": "Growth",
       "pspName": "PSP Name"
-    },
-    "systemHealth": {
-      "title": "System Health Monitor",
-      "subtitle": "Real-time platform status and metrics",
-      "systemHealthy": "System healthy",
-      "totalServices": "Total Services",
-      "psps": "PSPs",
-      "isoGateway": "ISO Gateway",
-      "orchestration": "Orchestration",
-      "crypto": "Crypto",
-      "rwa": "RWA",
-      "pspInstances": "PSP Instances",
-      "infrastructureStatus": "Infrastructure Status",
-      "compute": "Compute",
-      "database": "Database",
-      "storage": "Storage",
-      "healthy": "Healthy",
-      "operational": "Operational",
-      "online": "Online",
-      "cryptoBanking": "Crypto Banking",
-      "rwaPlatform": "RWA Platform"
     },
     "pspProvisioning": {
       "title": "PSP Instances",
@@ -185,7 +165,7 @@ export default {
       "monthlyVolume": "Monthly Volume",
       "vsLastMonth": "vs last month",
       "monthlyRevenue": "Monthly Revenue",
-      "ftsEarnings": "FTS Earnings",
+      "ftsEarnings": "FTX Earnings",
       "merchants": "Merchants",
       "volume": "Volume",
       "manage": "Manage",
@@ -200,8 +180,8 @@ export default {
       "systemHealthy": "System healthy",
       "totalServices": "Total Services",
       "psps": "PSPs",
-      "isoGateway": "ISO Gateway",
-      "orchestration": "Orchestration",
+      "isoGateway": "ISO Gateway Customers",
+      "orchestration": "Orchestration Customers",
       "crypto": "Crypto",
       "rwa": "RWA",
       "pspInstances": "PSP Instances",
@@ -216,11 +196,11 @@ export default {
       "rwaPlatform": "RWA Platform"
     },
     "setupGuide": {
-      "title": "FTS.Money Setup Guide",
+      "title": "FTX.Money Setup Guide",
       "subtitle": "Complete guide to accessing and configuring all services"
     },
     "serviceManager": {
-      "title": "FTS.Money Service Catalog",
+      "title": "FTX.Money Service Catalog",
       "subtitle": "Services seeded from NetXHub development platform for provisioning to PSP customers"
     },
     "paymentProviders": {
@@ -230,10 +210,6 @@ export default {
     "platformUsers": {
       "title": "User Management",
       "subtitle": "Manage platform administrators and their permissions"
-    },
-    "provisioningQueue": {
-      "title": "PSP Provisioning Queue",
-      "subtitle": "Manage infrastructure deployment"
     },
     "rwaProvisioning": {
       "title": "RWA White-Label Provisioning",
@@ -316,7 +292,7 @@ export default {
     "paymentProvidersDesc": "Provider management",
     "globalStandards": "Global Standards",
     "globalStandardsDesc": "Standards registry",
-    "isoGateway": "ISO Gateway",
+    "isoGateway": "ISO Gateway Customers",
     "isoGatewayDesc": "Gateway customers",
     "isoConnections": "ISO Connections",
     "isoConnectionsDesc": "Connection management",
@@ -324,7 +300,7 @@ export default {
     "isoTestConsoleDesc": "Test messaging",
     "isoMessageMonitor": "ISO Message Monitor",
     "isoMessageMonitorDesc": "Monitor messages",
-    "orchestration": "Orchestration",
+    "orchestration": "Orchestration Customers",
     "orchestrationDesc": "Orchestration customers",
     "payoutRoutes": "Payout Routes",
     "payoutRoutesDesc": "Configure routes",
