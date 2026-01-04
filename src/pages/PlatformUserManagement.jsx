@@ -106,12 +106,13 @@ export default function PlatformUserManagement() {
 
     const updateRoleMutation = useMutation({
         mutationFn: async ({ userId, role, oldRole }) => {
-            const user = users.find(u => u.id === userId);
+            const authUser = await base44.asServiceRole.entities.AuthUser.filter({ id: userId });
+            const user = authUser[0];
             await base44.asServiceRole.entities.AuthUser.update(userId, {
-                ...user,
+                ...user.data,
                 platform_role: role
             });
-            return { user, oldRole, newRole: role };
+            return { user: users.find(u => u.id === userId), oldRole, newRole: role };
         },
         onSuccess: (data) => {
             queryClient.invalidateQueries(['platform-users']);
