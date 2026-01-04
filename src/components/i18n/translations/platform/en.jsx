@@ -1,3 +1,4 @@
+
 // Platform translations - English (v3.0.0 - Complete coverage)
 export default {
   "dashboard": {
@@ -225,14 +226,6 @@ export default {
       "activated": "Activated",
       "ofTotal": "of total"
     }
-  },
-  "provisioningSteps": {
-    "database": "Database Instance",
-    "apiKeys": "API Keys Generation",
-    "domain": "Domain & SSL Setup",
-    "security": "Security Config",
-    "initialization": "Platform Init"
-  },
   },
   "provisioningSteps": {
     "database": "Database Instance",
