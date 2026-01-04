@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
-import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
-import ComplianceFooter from '@/components/compliance/ComplianceFooter';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,7 +10,6 @@ import { FTS_COLORS, FTS_GRADIENTS, FTS_LOGOS } from '@/components/community/FTS
 import { Building2, AlertCircle, ArrowRight, Loader2 } from 'lucide-react';
 
 export default function PSPLogin() {
-    const { t } = useI18n();
     const [pspCode, setPspCode] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');

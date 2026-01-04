@@ -9,13 +9,10 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { CreditCard, Lock, Mail, Eye, EyeOff, Loader2, AlertCircle, ArrowRight } from 'lucide-react';
 import { FTS_COLORS, FTS_GRADIENTS, FTS_LOGOS } from '@/components/community/FTSBrandColors';
-import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
-import ComplianceFooter from '@/components/compliance/ComplianceFooter';
 
 export default function StaffLogin() {
     const navigate = useNavigate();
-    const { t } = useI18n();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
