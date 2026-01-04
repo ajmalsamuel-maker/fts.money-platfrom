@@ -1,5 +1,5 @@
 
-// Common translations - English (v3.0.0)
+// Common translations - English (v3.1.0)
 export default {
   "actions": {
     "save": "Save",
@@ -53,6 +53,16 @@ export default {
     "loading": "Loading...",
     "loggedInAs": "Logged in as",
     "pspName": "PSP Name",
-    "growth": "Growth"
+    "growth": "Growth",
+    "email": "Email",
+    "fullName": "Full Name",
+    "role": "Role"
+  },
+  "roles": {
+    "admin": "Admin",
+    "user": "User",
+    "staff": "Staff",
+    "viewer": "Viewer",
+    "manager": "Manager"
   }
 };

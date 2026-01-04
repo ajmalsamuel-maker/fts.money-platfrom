@@ -1,5 +1,4 @@
-
-// Platform translations - English (v4.0.0 - Clean structure)
+// Platform translations - English (v4.1.0 - Complete coverage)
 export default {
   "dashboard": {
     "title": "Control Panel Dashboard",
@@ -203,6 +202,24 @@ export default {
       "statusChange": "Status change",
       "activated": "Activated",
       "ofTotal": "of total"
+    },
+    "pspUsers": {
+      "filterByPSP": "Filter by PSP",
+      "allPSPs": "All PSPs",
+      "users": "Users",
+      "noUsers": "No users found",
+      "addUser": "Add User",
+      "editUser": "Edit User",
+      "addNewUser": "Add New User",
+      "pspCode": "PSP Code",
+      "selectPSP": "Select PSP",
+      "newPassword": "New Password",
+      "enterNewPassword": "Enter new password (leave blank to keep current)",
+      "defaultPassword": "Default Password",
+      "twoFactorAuth": "Two-Factor Authentication",
+      "require2FA": "Require 2FA for this user",
+      "updateUser": "Update User",
+      "createUser": "Create User"
     },
     "setupGuide": {
       "title": "FTS.Money Setup Guide",
