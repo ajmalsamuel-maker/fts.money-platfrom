@@ -202,6 +202,24 @@ export default {
     "aiTranslationStudio": {
       "title": "AI Translation Studio",
       "subtitle": "Automated translation management for 25 languages"
+    },
+    "provisioningQueue": {
+      "title": "PSP Provisioning Queue",
+      "subtitle": "Manage infrastructure deployment",
+      "pendingApprovals": "Pending Approvals",
+      "provisioningQueue": "Provisioning Queue",
+      "recentlyActivated": "Recently Activated",
+      "noPendingApprovals": "No Pending Approvals",
+      "allReviewed": "All requests have been reviewed",
+      "reviewComments": "Review Comments",
+      "addComments": "Add your review comments here...",
+      "allCaughtUp": "All Caught Up!",
+      "noPSPsPending": "No PSPs pending provisioning",
+      "overallProgress": "Overall Progress",
+      "activatePSP": "Activate PSP",
+      "autoProvision": "Auto Provision",
+      "provisioning": "Provisioning...",
+      "readyToActivate": "All provisioning steps completed. Ready to activate."
     }
   },
   "subMenuItems": {
