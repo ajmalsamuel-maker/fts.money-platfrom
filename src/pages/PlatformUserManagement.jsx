@@ -44,8 +44,9 @@ export default function PlatformUserManagement() {
     const { data: users = [], isLoading: usersLoading } = useQuery({
         queryKey: ['platform-users'],
         queryFn: async () => {
-            const authUsers = await base44.asServiceRole.entities.AuthUser.filter({ account_type: 'platform_admin' });
-            return authUsers.map(u => ({
+            const authUsers = await base44.asServiceRole.entities.AuthUser.list();
+            const platformUsers = authUsers.filter(u => u.data?.account_type === 'platform_admin');
+            return platformUsers.map(u => ({
                 id: u.id,
                 email: u.data.email,
                 full_name: u.data.full_name,
