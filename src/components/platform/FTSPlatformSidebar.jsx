@@ -63,7 +63,7 @@ const menuSections = [
         title: 'Crypto Banking Gateway',
         defaultOpen: false,
         items: [
-            { labelKey: 'gatewayDashboard', descKey: 'gatewayDashboardDesc', path: 'CryptoGatewayDashboard', icon: CreditCard, priority: true },
+            { labelKey: 'vaspManagement', descKey: 'vaspManagementDesc', path: 'CryptoBankingVASPManagement', icon: Wallet, priority: true },
             { labelKey: 'cryptoCustomers', descKey: 'cryptoCustomersDesc', path: 'CryptoGatewayCustomers', icon: Users },
             { labelKey: 'cryptoTransactions', descKey: 'cryptoTransactionsDesc', path: 'CryptoGatewayTransactions', icon: Activity },
             { labelKey: 'walletsIBANs', descKey: 'walletsIBANsDesc', path: 'CryptoWallets', icon: Wallet },
