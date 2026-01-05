@@ -123,6 +123,8 @@ const menuSections = [
         defaultOpen: false,
         items: [
             { labelKey: 'serviceBilling', descKey: 'serviceBillingDesc', path: 'FTSServiceBilling', icon: FileText, priority: true },
+            { labelKey: 'taxManagement', descKey: 'taxManagementDesc', path: 'TaxManagement', icon: FileText, priority: true },
+            { labelKey: 'eInvoicing', descKey: 'eInvoicingDesc', path: 'EInvoicingDashboard', icon: FileText, priority: true },
             { labelKey: 'masterPricing', descKey: 'masterPricingDesc', path: 'MasterPricingManagement', icon: DollarSign },
             { labelKey: 'platformPricing', descKey: 'platformPricingDesc', path: 'PlatformPricingConfiguration', icon: DollarSign },
             { labelKey: 'customReports', descKey: 'customReportsDesc', path: 'FTSReporting', icon: FileText },
