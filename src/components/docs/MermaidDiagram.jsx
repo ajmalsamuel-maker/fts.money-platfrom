@@ -11,19 +11,16 @@ mermaid.initialize({
 export default function MermaidDiagram({ chart }) {
     const [svg, setSvg] = useState('');
     const [error, setError] = useState(null);
-    const renderAttempted = useRef(false);
-    const lastChart = useRef(null);
+    const hasRendered = useRef(false);
     
     useEffect(() => {
-        // Only render if chart changed and we haven't attempted this chart yet
-        if (!chart || renderAttempted.current || lastChart.current === chart) return;
+        if (!chart || hasRendered.current) return;
         
-        renderAttempted.current = true;
-        lastChart.current = chart;
+        hasRendered.current = true;
         
         const render = async () => {
             try {
-                const id = `mermaid-${Date.now()}`;
+                const id = `mermaid-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
                 const result = await mermaid.render(id, chart.trim());
                 setSvg(result.svg);
             } catch (err) {
@@ -33,7 +30,7 @@ export default function MermaidDiagram({ chart }) {
         };
         
         render();
-    }, [chart]);
+    }, []); // Empty dependency array - only run on mount
     
     if (error) {
         return (
