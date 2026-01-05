@@ -11,18 +11,19 @@ mermaid.initialize({
 export default function MermaidDiagram({ chart }) {
     const [svg, setSvg] = useState(null);
     const [error, setError] = useState(null);
-    const renderAttempted = useRef(false);
+    const hasRendered = useRef(false);
     
     useEffect(() => {
-        // Only render once when chart is available
-        if (!chart || renderAttempted.current) return;
+        if (!chart || hasRendered.current) return;
         
-        renderAttempted.current = true;
+        hasRendered.current = true;
         
         const render = async () => {
             try {
+                console.log('Rendering Mermaid diagram...');
                 const id = `mermaid-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
                 const result = await mermaid.render(id, chart.trim());
+                console.log('Mermaid rendered successfully');
                 setSvg(result.svg);
             } catch (err) {
                 console.error('Mermaid render error:', err);
