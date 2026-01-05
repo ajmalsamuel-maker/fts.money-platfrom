@@ -135,7 +135,7 @@ export function usePlatformAuth(requiredPermissions = []) {
                 window.location.href = createPageUrl('FTSMoneyPlatform');
             }
         }
-    }, [requiredPermissions]);
+    }, []);
 
     // Get permission utilities for this user
     const permissions = usePermissions(platformUser);
