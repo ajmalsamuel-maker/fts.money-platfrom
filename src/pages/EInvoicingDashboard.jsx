@@ -7,8 +7,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { FileText, Globe, CheckCircle, AlertTriangle, Download } from 'lucide-react';
+import { FileText, Globe, CheckCircle, AlertTriangle, Download, RefreshCw, AlertCircle } from 'lucide-react';
 import { EINVOICING_STANDARDS, getStandardForCountry } from '@/components/utils/eInvoicingStandards';
+import { ValidationSummaryBadge } from '@/components/invoice/ValidationErrorDisplay';
+import { toast } from 'sonner';
 
 export default function EInvoicingDashboard() {
     const { platformUser, loading: authLoading } = usePlatformAuth();
@@ -25,6 +27,48 @@ export default function EInvoicingDashboard() {
     const eInvoiceCount = invoices.filter(inv => inv.einvoice_format).length;
     const pendingSubmission = invoices.filter(inv => inv.einvoice_status === 'generated').length;
     const submitted = invoices.filter(inv => inv.einvoice_status === 'submitted').length;
+    const validationFailed = invoices.filter(inv => inv.einvoice_status === 'validation_failed').length;
+
+    const retryValidation = async (invoice) => {
+        try {
+            toast.loading('Validating invoice...');
+            const response = await base44.functions.invoke('validateEInvoiceSchema', {
+                invoice_id: invoice.id,
+                xml_content: invoice.einvoice_xml,
+                format: invoice.einvoice_format,
+                strict_mode: true
+            });
+
+            if (response.data.success && response.data.validation.valid) {
+                toast.success('Validation passed!');
+                queryClient.invalidateQueries(['invoices-with-einvoicing']);
+            } else {
+                toast.error(`Validation failed: ${response.data.validation.error_count} errors`);
+            }
+        } catch (error) {
+            toast.error('Validation failed: ' + error.message);
+        }
+    };
+
+    const resubmitInvoice = async (invoice) => {
+        try {
+            toast.loading('Submitting to gateway...');
+            const response = await base44.functions.invoke('eInvoicingEngine', {
+                invoice_id: invoice.id,
+                format: invoice.einvoice_format,
+                submit_to_gateway: true
+            });
+
+            if (response.data.success) {
+                toast.success('Invoice submitted successfully!');
+                queryClient.invalidateQueries(['invoices-with-einvoicing']);
+            } else {
+                toast.error('Submission failed: ' + response.data.error);
+            }
+        } catch (error) {
+            toast.error('Submission failed: ' + error.message);
+        }
+    };
 
     if (authLoading) {
         return <div className="flex items-center justify-center h-screen">Loading...</div>;
@@ -48,7 +92,7 @@ export default function EInvoicingDashboard() {
                     </div>
 
                     {/* Stats */}
-                    <div className="grid grid-cols-4 gap-4 mb-8">
+                    <div className="grid grid-cols-5 gap-4 mb-8">
                         <Card>
                             <CardHeader className="pb-2">
                                 <CardTitle className="text-sm font-medium text-slate-600">E-Invoices Generated</CardTitle>
@@ -71,6 +115,14 @@ export default function EInvoicingDashboard() {
                             </CardHeader>
                             <CardContent>
                                 <div className="text-3xl font-bold text-green-600">{submitted}</div>
+                            </CardContent>
+                        </Card>
+                        <Card>
+                            <CardHeader className="pb-2">
+                                <CardTitle className="text-sm font-medium text-slate-600">Validation Failed</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-3xl font-bold text-red-600">{validationFailed}</div>
                             </CardContent>
                         </Card>
                         <Card>
@@ -157,11 +209,40 @@ export default function EInvoicingDashboard() {
                                                     <CheckCircle className="h-3 w-3 mr-1" />
                                                     Submitted
                                                 </Badge>
+                                            ) : invoice.einvoice_status === 'validation_failed' ? (
+                                                <Badge className="bg-red-100 text-red-800">
+                                                    <AlertCircle className="h-3 w-3 mr-1" />
+                                                    Failed
+                                                </Badge>
                                             ) : (
                                                 <Badge className="bg-amber-100 text-amber-800">
                                                     <AlertTriangle className="h-3 w-3 mr-1" />
                                                     Pending
                                                 </Badge>
+                                            )}
+                                            {invoice.einvoice_validation && (
+                                                <ValidationSummaryBadge validation={invoice.einvoice_validation} />
+                                            )}
+                                            {invoice.einvoice_status === 'validation_failed' && (
+                                                <Button 
+                                                    size="sm" 
+                                                    variant="outline"
+                                                    onClick={() => retryValidation(invoice)}
+                                                    className="gap-1"
+                                                >
+                                                    <RefreshCw className="h-3 w-3" />
+                                                    Retry
+                                                </Button>
+                                            )}
+                                            {invoice.einvoice_status === 'validated' && (
+                                                <Button 
+                                                    size="sm" 
+                                                    variant="default"
+                                                    onClick={() => resubmitInvoice(invoice)}
+                                                    className="gap-1 bg-green-600 hover:bg-green-700"
+                                                >
+                                                    Submit
+                                                </Button>
                                             )}
                                             <Button size="sm" variant="outline">
                                                 <Download className="h-4 w-4" />

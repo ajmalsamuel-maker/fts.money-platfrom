@@ -89,6 +89,7 @@ export default function InvoiceGenerator({ transaction, onSuccess }) {
                     </div>
                 </CardContent>
             </Card>
+            </div>
         );
     }
 

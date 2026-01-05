@@ -69,13 +69,25 @@ Deno.serve(async (req) => {
             eInvoiceData.signature_algorithm = 'XMLDSig-SHA256-RSA';
         }
 
-        // 5. Validate against standard
-        const validation = await validateEInvoice(eInvoiceData, targetFormat);
+        // 5. Validate against standard with real-time XSD validation
+        const validation = await validateEInvoiceRealTime(
+            eInvoiceData.signed_xml || eInvoiceData.xml, 
+            targetFormat, 
+            base44
+        );
 
-        // 6. Submit to gateway if requested
+        // 6. Submit to gateway only if validation passed
         let gatewayResponse = null;
-        if (submit_to_gateway && validation.valid) {
+        if (submit_to_gateway && validation.valid && validation.can_submit) {
             gatewayResponse = await submitToGateway(eInvoiceData, targetFormat, base44);
+        } else if (submit_to_gateway && !validation.valid) {
+            return Response.json({
+                success: false,
+                error: 'Validation failed - cannot submit to gateway',
+                format: targetFormat,
+                validation,
+                message: 'Please fix validation errors before submitting'
+            }, { status: 400 });
         }
 
         // 7. Update invoice with e-invoicing data
@@ -565,14 +577,35 @@ async function signDocument(xml, format) {
     return xml;
 }
 
-async function validateEInvoice(eInvoiceData, format) {
-    // In production, validate against XSD schemas
-    return {
-        valid: true,
-        format,
-        validated_at: new Date().toISOString(),
-        errors: []
-    };
+async function validateEInvoiceRealTime(xmlContent, format, base44) {
+    try {
+        // Call validation function for real-time XSD validation
+        const response = await base44.asServiceRole.functions.invoke('validateEInvoiceSchema', {
+            xml_content: xmlContent,
+            format: format,
+            strict_mode: true
+        });
+        
+        return response.data?.validation || {
+            valid: false,
+            errors: [{ code: 'VALIDATION_FAILED', message: 'Validation service error', severity: 'error' }],
+            warnings: [],
+            validated_at: new Date().toISOString()
+        };
+    } catch (error) {
+        console.error('Validation error:', error);
+        return {
+            valid: false,
+            errors: [{ 
+                code: 'VALIDATION_ERROR', 
+                message: error.message, 
+                severity: 'error',
+                field: 'system'
+            }],
+            warnings: [],
+            validated_at: new Date().toISOString()
+        };
+    }
 }
 
 async function submitToGateway(eInvoiceData, format, base44) {
