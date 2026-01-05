@@ -1,16 +1,23 @@
 import React from 'react';
-import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
+import FTSPlatformSidebarRestructured from '@/components/platform/FTSPlatformSidebarRestructured';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { GitBranch, Building2, Code, ArrowRight } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { GitBranch, Building2, Code, Wallet, Rocket, FileText, Globe } from 'lucide-react';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
+import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
 
 export default function FTSSetupGuide() {
     const { t } = useI18n();
+    const { platformUser } = usePlatformAuth();
+    
     return (
         <div className="flex h-screen bg-gray-50">
-            <FTSPlatformSidebar currentPage="FTSSetupGuide" />
+            <FTSPlatformSidebarRestructured 
+                currentPage="FTSSetupGuide" 
+                userEmail={platformUser?.email}
+            />
             
             <div className="flex-1 overflow-auto">
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
