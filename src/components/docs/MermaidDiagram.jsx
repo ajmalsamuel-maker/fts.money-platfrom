@@ -10,38 +10,40 @@ mermaid.initialize({
 
 export default function MermaidDiagram({ chart }) {
     const containerRef = useRef(null);
-    const renderedChartRef = useRef(null);
     
     useEffect(() => {
-        if (!chart || !containerRef.current || renderedChartRef.current === chart) {
-            return;
-        }
+        if (!chart || !containerRef.current) return;
         
-        renderedChartRef.current = chart;
+        let cancelled = false;
         
         const render = async () => {
             try {
                 const id = `mermaid-${Math.random().toString(36).substr(2, 9)}`;
                 const result = await mermaid.render(id, chart.trim());
                 
-                if (containerRef.current) {
+                if (!cancelled && containerRef.current) {
                     containerRef.current.innerHTML = result.svg;
                 }
             } catch (err) {
                 console.error('Mermaid error:', err);
-                if (containerRef.current) {
+                if (!cancelled && containerRef.current) {
                     containerRef.current.innerHTML = `<div class="p-4 border border-red-300 rounded bg-red-50 text-red-600">Failed to render diagram</div>`;
                 }
             }
         };
         
         render();
+        
+        return () => {
+            cancelled = true;
+        };
     }, [chart]);
     
     return (
         <div 
             ref={containerRef}
             className="my-6 overflow-x-auto flex justify-center"
+            suppressHydrationWarning
         />
     );
 }
