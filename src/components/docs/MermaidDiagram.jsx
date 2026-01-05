@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import mermaid from 'mermaid';
 
 mermaid.initialize({
@@ -9,51 +9,39 @@ mermaid.initialize({
 });
 
 export default function MermaidDiagram({ chart }) {
-    const [svg, setSvg] = useState(null);
-    const [error, setError] = useState(null);
+    const containerRef = useRef(null);
     const hasRendered = useRef(false);
     
     useEffect(() => {
-        if (!chart || hasRendered.current) return;
+        if (!chart || !containerRef.current || hasRendered.current) return;
         
         hasRendered.current = true;
         
         const render = async () => {
             try {
-                console.log('Rendering Mermaid diagram...');
                 const id = `mermaid-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
                 const result = await mermaid.render(id, chart.trim());
-                console.log('Mermaid rendered successfully');
-                setSvg(result.svg);
+                
+                if (containerRef.current) {
+                    containerRef.current.innerHTML = result.svg;
+                }
             } catch (err) {
                 console.error('Mermaid render error:', err);
-                setError(err.message);
+                if (containerRef.current) {
+                    containerRef.current.innerHTML = `<div class="p-4 border border-red-300 rounded bg-red-50 text-red-600">Failed to render diagram: ${err.message}</div>`;
+                }
             }
         };
         
         render();
     }, [chart]);
     
-    if (error) {
-        return (
-            <div className="my-6 p-4 border border-red-300 rounded bg-red-50 text-red-600">
-                Failed to render diagram: {error}
-            </div>
-        );
-    }
-    
-    if (!svg) {
-        return (
-            <div className="my-6 text-center text-slate-500">
-                Loading diagram...
-            </div>
-        );
-    }
-    
     return (
         <div 
+            ref={containerRef}
             className="my-6 overflow-x-auto flex justify-center"
-            dangerouslySetInnerHTML={{ __html: svg }}
-        />
+        >
+            <div className="text-center text-slate-500">Loading diagram...</div>
+        </div>
     );
 }
