@@ -20,6 +20,10 @@ import RecurringRevenueCard from '@/components/dashboard/RecurringRevenueCard';
 import AIPerformanceCard from '@/components/dashboard/AIPerformanceCard';
 import SubscriptionHealthCard from '@/components/dashboard/SubscriptionHealthCard';
 import CryptoAnalyticsCard from '@/components/dashboard/CryptoAnalyticsCard';
+import VATMetricsCard from '@/components/dashboard/VATMetricsCard';
+import EInvoicingMetricsCard from '@/components/dashboard/EInvoicingMetricsCard';
+import RWAMetricsCard from '@/components/dashboard/RWAMetricsCard';
+import VASPComplianceCard from '@/components/dashboard/VASPComplianceCard';
 
 // Suppress MetaMask connection errors if wallet not installed
 if (typeof window !== 'undefined' && !window.ethereum) {
@@ -248,6 +252,14 @@ export default function Dashboard() {
                         <SubscriptionHealthCard />
                         <AIPerformanceCard />
                         <TPSCounter />
+                    </div>
+
+                    {/* New Services Metrics: VAT, E-Invoicing, RWA, VASP */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mt-3 sm:mt-4">
+                        <VATMetricsCard />
+                        <EInvoicingMetricsCard />
+                        <RWAMetricsCard />
+                        <VASPComplianceCard />
                     </div>
 
                     {/* Charts and Business Metrics Row */}
