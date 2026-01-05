@@ -1,6 +1,3 @@
-import React from 'react';
-import MermaidDiagram from './MermaidDiagram';
-
 const VATTaxManagementDoc = `# VAT & Tax Management System
 
 ## Executive Summary
