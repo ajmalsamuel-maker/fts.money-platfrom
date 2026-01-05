@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import mermaid from 'mermaid';
 
 mermaid.initialize({
@@ -10,9 +10,11 @@ mermaid.initialize({
 
 export default function MermaidDiagram({ chart }) {
     const containerRef = useRef(null);
+    const [rendered, setRendered] = useState(false);
+    const chartRef = useRef(null);
     
     useEffect(() => {
-        if (!chart || !containerRef.current) return;
+        if (!chart || !containerRef.current || chartRef.current === chart) return;
         
         const render = async () => {
             try {
@@ -20,11 +22,13 @@ export default function MermaidDiagram({ chart }) {
                 const { svg } = await mermaid.render(id, chart.trim());
                 if (containerRef.current) {
                     containerRef.current.innerHTML = svg;
+                    chartRef.current = chart;
+                    setRendered(true);
                 }
             } catch (err) {
-                console.error('Mermaid render error:', err, 'Chart:', chart);
+                console.error('Mermaid render error:', err);
                 if (containerRef.current) {
-                    containerRef.current.innerHTML = `<div class="text-red-600 p-4 border border-red-300 rounded bg-red-50">Failed to render diagram: ${err.message}</div>`;
+                    containerRef.current.innerHTML = `<div class="text-red-600 p-4 border border-red-300 rounded bg-red-50">Failed to render diagram</div>`;
                 }
             }
         };
