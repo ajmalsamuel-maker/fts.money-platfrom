@@ -21,6 +21,7 @@ import CryptoBankingDoc from '@/components/docs/CryptoBankingDoc';
 import { RBACSystemDoc } from '@/components/docs/RBACSystemDoc';
 import { MerchantPortalDoc } from '@/components/docs/MerchantPortalDoc';
 import { VirtualTerminalDoc } from '@/components/docs/VirtualTerminalDoc';
+import VATTaxManagementDoc from '@/components/docs/VATTaxManagementDoc';
 import MermaidDiagram from '@/components/docs/MermaidDiagram';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -129,6 +130,13 @@ export default function FTSDocumentation() {
             icon: Code,
             content: VirtualTerminalDoc,
             description: 'Web-based payment terminal - MOTO, recurring, and card-not-present processing'
+        },
+        {
+            id: 'vat-tax',
+            title: 'VAT & Tax Management',
+            icon: FileText,
+            content: VATTaxManagementDoc,
+            description: 'Global tax compliance, automated VAT calculation, and tax reporting'
         }
     ];
 
