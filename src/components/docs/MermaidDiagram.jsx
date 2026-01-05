@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import mermaid from 'mermaid';
 
 mermaid.initialize({
@@ -8,14 +8,13 @@ mermaid.initialize({
     fontFamily: 'ui-sans-serif, system-ui, sans-serif'
 });
 
-export default function MermaidDiagram({ chart }) {
+const MermaidDiagram = React.memo(({ chart }) => {
     const containerRef = useRef(null);
-    const hasRendered = useRef(false);
+    const renderedChartRef = useRef(null);
     
     useEffect(() => {
-        if (!chart || !containerRef.current || hasRendered.current) return;
-        
-        hasRendered.current = true;
+        if (!chart || !containerRef.current) return;
+        if (renderedChartRef.current === chart) return;
         
         const render = async () => {
             try {
@@ -23,6 +22,7 @@ export default function MermaidDiagram({ chart }) {
                 const { svg } = await mermaid.render(id, chart.trim());
                 if (containerRef.current) {
                     containerRef.current.innerHTML = svg;
+                    renderedChartRef.current = chart;
                 }
             } catch (err) {
                 console.error('Mermaid render error:', err);
@@ -33,7 +33,11 @@ export default function MermaidDiagram({ chart }) {
         };
         
         render();
-    }, []);
+    }, [chart]);
     
     return <div ref={containerRef} className="my-6 overflow-x-auto flex justify-center" />;
-}
+});
+
+MermaidDiagram.displayName = 'MermaidDiagram';
+
+export default MermaidDiagram;
