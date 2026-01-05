@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import mermaid from 'mermaid';
 
 mermaid.initialize({
@@ -9,42 +9,28 @@ mermaid.initialize({
 });
 
 export default function MermaidDiagram({ chart }) {
-    const [html, setHtml] = useState('');
-    const [error, setError] = useState(null);
+    const containerRef = useRef(null);
     
     useEffect(() => {
-        if (!chart) return;
+        if (!chart || !containerRef.current) return;
         
         const render = async () => {
             try {
                 const id = `mermaid-${Math.random().toString(36).substr(2, 9)}`;
-                const { svg } = await mermaid.render(id, chart);
-                setHtml(svg);
-                setError(null);
+                const { svg } = await mermaid.render(id, chart.trim());
+                if (containerRef.current) {
+                    containerRef.current.innerHTML = svg;
+                }
             } catch (err) {
-                console.error('Mermaid error:', err);
-                setError(err.message);
+                console.error('Mermaid render error:', err, 'Chart:', chart);
+                if (containerRef.current) {
+                    containerRef.current.innerHTML = `<div class="text-red-600 p-4 border border-red-300 rounded bg-red-50">Failed to render diagram: ${err.message}</div>`;
+                }
             }
         };
         
         render();
     }, [chart]);
     
-    if (error) {
-        return (
-            <div className="my-4 p-4 bg-red-50 border border-red-300 rounded text-red-600 text-sm">
-                Diagram error: {error}
-            </div>
-        );
-    }
-    
-    if (!html) {
-        return (
-            <div className="my-4 p-4 bg-slate-100 rounded animate-pulse h-32"></div>
-        );
-    }
-    
-    return (
-        <div className="my-6 overflow-x-auto flex justify-center" dangerouslySetInnerHTML={{ __html: html }} />
-    );
+    return <div ref={containerRef} className="my-6 overflow-x-auto flex justify-center" />;
 }
