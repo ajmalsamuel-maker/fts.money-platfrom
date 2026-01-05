@@ -171,9 +171,12 @@ export default function FTSPlatformSidebarRestructured({ currentPage, userRole, 
         }
     ];
 
-    const [openSections, setOpenSections] = useState(
-        menuSections.filter(s => s.defaultOpen).map(s => s.id)
-    );
+    const [openSections, setOpenSections] = useState(() => {
+        // Only open sections marked as defaultOpen, respect collapsed flag
+        return menuSections
+            .filter(s => s.defaultOpen && !s.collapsed)
+            .map(s => s.id);
+    });
     
     // Auto-open section containing current page
     React.useEffect(() => {
