@@ -427,7 +427,8 @@ export default function FTSDocumentation() {
                                                         }
                                                         
                                                         if (language === 'mermaid') {
-                                                            return <MermaidDiagram chart={String(children).replace(/\n$/, '')} />;
+                                                            const cleanChart = String(children).trim().replace(/^\s+/gm, '').replace(/\s+$/gm, '');
+                                                            return <MermaidDiagram chart={cleanChart} />;
                                                         }
                                                         
                                                         return (
