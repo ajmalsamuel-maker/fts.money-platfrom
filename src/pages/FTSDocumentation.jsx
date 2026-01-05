@@ -431,7 +431,8 @@ export default function FTSDocumentation() {
                                                                 ? children.join('') 
                                                                 : String(children);
                                                             const cleanChart = textContent.replace(/^\n+|\n+$/g, '');
-                                                            return <MermaidDiagram chart={cleanChart} />;
+                                                            const chartKey = `mermaid-${cleanChart.substring(0, 50)}`;
+                                                            return <MermaidDiagram key={chartKey} chart={cleanChart} />;
                                                         }
 
                                                         return (

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, memo } from 'react';
+import React, { useEffect, useRef } from 'react';
 import mermaid from 'mermaid';
 
 mermaid.initialize({
@@ -8,30 +8,29 @@ mermaid.initialize({
     fontFamily: 'ui-sans-serif, system-ui, sans-serif'
 });
 
-function MermaidDiagram({ chart }) {
+export default function MermaidDiagram({ chart }) {
     const containerRef = useRef(null);
-    const renderIdRef = useRef(null);
+    const renderedChartRef = useRef(null);
     
     useEffect(() => {
-        if (!chart || !containerRef.current) return;
+        if (!chart || !containerRef.current || renderedChartRef.current === chart) {
+            return;
+        }
         
-        const currentId = chart;
-        if (renderIdRef.current === currentId) return;
-        
-        renderIdRef.current = currentId;
+        renderedChartRef.current = chart;
         
         const render = async () => {
             try {
-                const id = `mermaid-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+                const id = `mermaid-${Math.random().toString(36).substr(2, 9)}`;
                 const result = await mermaid.render(id, chart.trim());
                 
-                if (containerRef.current && renderIdRef.current === currentId) {
+                if (containerRef.current) {
                     containerRef.current.innerHTML = result.svg;
                 }
             } catch (err) {
-                console.error('Mermaid render error:', err);
-                if (containerRef.current && renderIdRef.current === currentId) {
-                    containerRef.current.innerHTML = `<div class="p-4 border border-red-300 rounded bg-red-50 text-red-600">Failed to render diagram: ${err.message}</div>`;
+                console.error('Mermaid error:', err);
+                if (containerRef.current) {
+                    containerRef.current.innerHTML = `<div class="p-4 border border-red-300 rounded bg-red-50 text-red-600">Failed to render diagram</div>`;
                 }
             }
         };
@@ -43,10 +42,6 @@ function MermaidDiagram({ chart }) {
         <div 
             ref={containerRef}
             className="my-6 overflow-x-auto flex justify-center"
-        >
-            <div className="text-center text-slate-500">Loading diagram...</div>
-        </div>
+        />
     );
 }
-
-export default memo(MermaidDiagram);
