@@ -40,6 +40,10 @@ import {
     CheckCircle2,
     Clock
 } from 'lucide-react';
+import VATMetricsCard from '@/components/dashboard/VATMetricsCard';
+import EInvoicingMetricsCard from '@/components/dashboard/EInvoicingMetricsCard';
+import RWAMetricsCard from '@/components/dashboard/RWAMetricsCard';
+import VASPComplianceCard from '@/components/dashboard/VASPComplianceCard';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 const quickActions = [
