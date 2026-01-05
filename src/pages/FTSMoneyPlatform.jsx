@@ -443,6 +443,17 @@ export default function FTSMoneyPlatform() {
                         </div>
                     </div>
 
+                    {/* New Services Metrics: VAT, E-Invoicing, RWA, VASP */}
+                    <div className="mb-6">
+                        <h3 className="text-sm font-semibold text-slate-900 mb-3">Service Metrics</h3>
+                        <div className="grid grid-cols-4 gap-4">
+                            <VATMetricsCard />
+                            <EInvoicingMetricsCard />
+                            <RWAMetricsCard />
+                            <VASPComplianceCard />
+                        </div>
+                    </div>
+
                     {/* Stats Grid */}
                     <div className="grid grid-cols-5 gap-4 mb-6">
                         <Card className="bg-white border-slate-200">
