@@ -20,6 +20,7 @@ export default function CategoryManager({ categories }) {
         category_code: '',
         category_name: '',
         description: '',
+        uncl5305_code: '',
         default_rate_type: 'standard',
         is_digital_service: false,
         is_financial_service: false,
@@ -54,6 +55,7 @@ export default function CategoryManager({ categories }) {
             category_code: '',
             category_name: '',
             description: '',
+            uncl5305_code: '',
             default_rate_type: 'standard',
             is_digital_service: false,
             is_financial_service: false,
@@ -111,6 +113,28 @@ export default function CategoryManager({ categories }) {
                                     placeholder="Software, streaming, SaaS, etc."
                                     rows={2}
                                 />
+                            </div>
+
+                            <div>
+                                <Label>UN/CEFACT UNCL5305 Code (ISO Standard)</Label>
+                                <Select value={formData.uncl5305_code} onValueChange={(value) => setFormData({...formData, uncl5305_code: value})}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select ISO code (for e-invoicing)" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="S">S - Standard Rate</SelectItem>
+                                        <SelectItem value="Z">Z - Zero Rated</SelectItem>
+                                        <SelectItem value="E">E - Exempt from Tax</SelectItem>
+                                        <SelectItem value="AE">AE - VAT Reverse Charge</SelectItem>
+                                        <SelectItem value="K">K - Intra-EU Supply</SelectItem>
+                                        <SelectItem value="G">G - Free Export (no tax)</SelectItem>
+                                        <SelectItem value="O">O - Outside Scope of Tax</SelectItem>
+                                        <SelectItem value="L">L - Canary Islands Tax</SelectItem>
+                                        <SelectItem value="M">M - Ceuta/Melilla Tax</SelectItem>
+                                        <SelectItem value="B">B - Transferred (VAT)</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <p className="text-xs text-slate-500 mt-1">Required for Peppol, UBL, ZATCA, and most e-invoicing standards</p>
                             </div>
 
                             <div>
@@ -176,6 +200,11 @@ export default function CategoryManager({ categories }) {
                         <CardContent>
                             <p className="text-sm text-slate-600 mb-4">{category.description}</p>
                             <div className="flex gap-2 mb-4">
+                                {category.uncl5305_code && (
+                                    <Badge variant="outline" className="font-mono">
+                                        UN/CEFACT: {category.uncl5305_code}
+                                    </Badge>
+                                )}
                                 {category.is_digital_service && (
                                     <Badge className="bg-blue-100 text-blue-800">Digital Service</Badge>
                                 )}
