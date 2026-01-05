@@ -1,58 +1,45 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import mermaid from 'mermaid';
 
-// Initialize mermaid once
-mermaid.initialize({
-    startOnLoad: false,
-    theme: 'default',
-    securityLevel: 'loose',
-    fontFamily: 'ui-sans-serif, system-ui, sans-serif',
-    flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis' },
-    sequence: { useMaxWidth: true, wrap: true },
-    pie: { useMaxWidth: true }
-});
+let mermaidInitialized = false;
 
 export default function MermaidDiagram({ chart }) {
-    const [svg, setSvg] = useState('');
-    const [error, setError] = useState(null);
+    const containerRef = useRef(null);
     
     useEffect(() => {
-        const renderDiagram = async () => {
-            if (!chart) return;
+        if (!mermaidInitialized) {
+            mermaid.initialize({
+                startOnLoad: false,
+                theme: 'default',
+                securityLevel: 'loose',
+                flowchart: { useMaxWidth: true, htmlLabels: true },
+                sequence: { useMaxWidth: true }
+            });
+            mermaidInitialized = true;
+        }
+    }, []);
+    
+    useEffect(() => {
+        const render = async () => {
+            if (!containerRef.current || !chart) return;
             
             try {
-                const id = `mermaid-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-                const { svg: renderedSvg } = await mermaid.render(id, chart.trim());
-                setSvg(renderedSvg);
-                setError(null);
+                containerRef.current.innerHTML = chart;
+                await mermaid.run({
+                    nodes: [containerRef.current],
+                });
             } catch (err) {
-                console.error('Mermaid error:', err);
-                setError(err.message);
+                console.error('Mermaid render error:', err);
+                containerRef.current.innerHTML = `<div class="text-red-600 p-4 border border-red-300 rounded bg-red-50">Failed to render diagram: ${err.message}</div>`;
             }
         };
         
-        renderDiagram();
+        render();
     }, [chart]);
     
-    if (error) {
-        return (
-            <div className="my-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
-                Diagram rendering error: {error}
-            </div>
-        );
-    }
-    
-    if (!svg) {
-        return (
-            <div className="my-4 p-4 bg-slate-50 border border-slate-200 rounded-lg">
-                <div className="animate-pulse h-32 bg-slate-200 rounded"></div>
-            </div>
-        );
-    }
-    
     return (
-        <div className="my-6 flex justify-center overflow-x-auto">
-            <div dangerouslySetInnerHTML={{ __html: svg }} />
+        <div className="my-6 overflow-x-auto">
+            <div ref={containerRef} className="mermaid"></div>
         </div>
     );
 }
