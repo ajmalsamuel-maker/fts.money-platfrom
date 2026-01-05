@@ -603,12 +603,4 @@ By treating each service as a composable building block, PSPs can rapidly adapt 
 *Document Version: 1.0 | Last Updated: 2025-01-05*
 `;
 
-export default function ServiceInteroperabilityDocComponent() {
-    return (
-        <div className="prose prose-slate max-w-none">
-            <MermaidDiagram content={ServiceInteroperabilityDoc} />
-        </div>
-    );
-}
-
-export { ServiceInteroperabilityDoc };
+export default ServiceInteroperabilityDoc;

@@ -645,12 +645,4 @@ gantt
 *Document Version: 1.0 | Last Updated: 2025-01-05*
 `;
 
-export default function EInvoicingSystemDocComponent() {
-    return (
-        <div className="prose prose-slate max-w-none">
-            <MermaidDiagram content={EInvoicingSystemDoc} />
-        </div>
-    );
-}
-
-export { EInvoicingSystemDoc };
+export default EInvoicingSystemDoc;

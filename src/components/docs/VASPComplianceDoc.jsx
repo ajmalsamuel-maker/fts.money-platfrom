@@ -1,3 +1,4 @@
+
 import React from 'react';
 import MermaidDiagram from './MermaidDiagram';
 
@@ -636,12 +637,4 @@ Filed automatically for transactions over $10,000 (US) or equivalent.
 *Document Version: 1.0 | Last Updated: 2025-01-05*
 `;
 
-export default function VASPComplianceDocComponent() {
-    return (
-        <div className="prose prose-slate max-w-none">
-            <MermaidDiagram content={VASPComplianceDoc} />
-        </div>
-    );
-}
-
-export { VASPComplianceDoc };
+export default VASPComplianceDoc;

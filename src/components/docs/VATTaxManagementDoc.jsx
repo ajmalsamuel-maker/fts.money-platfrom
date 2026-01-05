@@ -505,12 +505,4 @@ Every tax calculation generates an immutable audit log:
 *Document Version: 2.0 | Last Updated: 2025-01-05*
 `;
 
-export default function VATTaxManagementDocComponent() {
-    return (
-        <div className="prose prose-slate max-w-none">
-            <MermaidDiagram content={VATTaxManagementDoc} />
-        </div>
-    );
-}
-
-export { VATTaxManagementDoc };
+export default VATTaxManagementDoc;
