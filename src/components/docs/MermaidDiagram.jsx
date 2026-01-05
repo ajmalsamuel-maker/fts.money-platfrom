@@ -1,48 +1,50 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import mermaid from 'mermaid';
 
-let mermaidInitialized = false;
+mermaid.initialize({
+    startOnLoad: false,
+    theme: 'default',
+    securityLevel: 'loose',
+    fontFamily: 'ui-sans-serif, system-ui, sans-serif'
+});
 
 export default function MermaidDiagram({ chart }) {
-    const containerRef = useRef(null);
+    const [html, setHtml] = useState('');
+    const [error, setError] = useState(null);
     
     useEffect(() => {
-        if (!mermaidInitialized) {
-            mermaid.initialize({
-                startOnLoad: false,
-                theme: 'default',
-                securityLevel: 'loose',
-                flowchart: { useMaxWidth: true, htmlLabels: true },
-                sequence: { useMaxWidth: true }
-            });
-            mermaidInitialized = true;
-        }
-    }, []);
-    
-    useEffect(() => {
+        if (!chart) return;
+        
         const render = async () => {
-            if (!containerRef.current || !chart) return;
-            
             try {
-                const id = `mermaid-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-                containerRef.current.innerHTML = `<div class="mermaid" id="${id}">${chart}</div>`;
-                await mermaid.run({
-                    nodes: [containerRef.current.querySelector('.mermaid')],
-                });
+                const id = `mermaid-${Math.random().toString(36).substr(2, 9)}`;
+                const { svg } = await mermaid.render(id, chart);
+                setHtml(svg);
+                setError(null);
             } catch (err) {
-                console.error('Mermaid render error:', err);
-                if (containerRef.current) {
-                    containerRef.current.innerHTML = `<div class="text-red-600 p-4 border border-red-300 rounded bg-red-50">Failed to render diagram: ${err.message}</div>`;
-                }
+                console.error('Mermaid error:', err);
+                setError(err.message);
             }
         };
         
-        setTimeout(render, 100);
+        render();
     }, [chart]);
     
+    if (error) {
+        return (
+            <div className="my-4 p-4 bg-red-50 border border-red-300 rounded text-red-600 text-sm">
+                Diagram error: {error}
+            </div>
+        );
+    }
+    
+    if (!html) {
+        return (
+            <div className="my-4 p-4 bg-slate-100 rounded animate-pulse h-32"></div>
+        );
+    }
+    
     return (
-        <div className="my-6 overflow-x-auto">
-            <div ref={containerRef} className="mermaid"></div>
-        </div>
+        <div className="my-6 overflow-x-auto flex justify-center" dangerouslySetInnerHTML={{ __html: html }} />
     );
 }
