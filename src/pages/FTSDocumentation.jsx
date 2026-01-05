@@ -21,7 +21,7 @@ import CryptoBankingDoc from '@/components/docs/CryptoBankingDoc';
 import { RBACSystemDoc } from '@/components/docs/RBACSystemDoc';
 import { MerchantPortalDoc } from '@/components/docs/MerchantPortalDoc';
 import { VirtualTerminalDoc } from '@/components/docs/VirtualTerminalDoc';
-import VATTaxManagementDoc from '@/components/docs/VATTaxManagementDoc';
+import VATTaxManagementDoc from '@/components/docs/VATTaxManagementDoc.jsx';
 import MermaidDiagram from '@/components/docs/MermaidDiagram';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
