@@ -417,7 +417,7 @@ export default function FTSDocumentation() {
                                                     code: ({ inline, className, children }) => {
                                                         const match = /language-(\w+)/.exec(className || '');
                                                         const language = match ? match[1] : '';
-                                                        
+
                                                         if (inline) {
                                                             return (
                                                                 <code className="px-1.5 py-0.5 bg-slate-100 text-slate-800 rounded text-sm font-mono">
@@ -425,12 +425,15 @@ export default function FTSDocumentation() {
                                                                 </code>
                                                             );
                                                         }
-                                                        
+
                                                         if (language === 'mermaid') {
-                                                            const cleanChart = String(children).trim();
+                                                            const textContent = Array.isArray(children) 
+                                                                ? children.join('') 
+                                                                : String(children);
+                                                            const cleanChart = textContent.replace(/^\n+|\n+$/g, '');
                                                             return <MermaidDiagram chart={cleanChart} />;
                                                         }
-                                                        
+
                                                         return (
                                                             <pre className="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto mb-4">
                                                                 <code className="text-sm font-mono">
