@@ -84,6 +84,7 @@ export default function FTSPlatformSidebarRestructured({ currentPage, userRole, 
             id: 'crypto-banking',
             title: 'Crypto Banking Service',
             defaultOpen: false,
+            collapsed: true,
             items: [
                 { label: 'Overview', path: 'StrigaServiceManagement', icon: BarChart3, description: 'Dashboard', priority: true },
                 { label: 'Customers', path: 'CryptoGatewayCustomers', icon: Users, description: 'All customers', priority: true },
