@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import mermaid from 'mermaid';
 
 mermaid.initialize({
@@ -9,35 +9,45 @@ mermaid.initialize({
 });
 
 export default function MermaidDiagram({ chart }) {
-    const containerRef = useRef(null);
-    const isRenderedRef = useRef(false);
-    const chartContentRef = useRef(null);
+    const [svg, setSvg] = useState('');
+    const [error, setError] = useState(null);
+    const hasRendered = useRef(false);
     
     useEffect(() => {
-        // Only render if we have a chart, a container, and haven't rendered this exact chart yet
-        if (!chart || !containerRef.current) return;
-        if (isRenderedRef.current && chartContentRef.current === chart) return;
+        if (!chart || hasRendered.current) return;
+        
+        hasRendered.current = true;
         
         const render = async () => {
             try {
-                const id = `mermaid-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-                const { svg } = await mermaid.render(id, chart.trim());
-                
-                if (containerRef.current) {
-                    containerRef.current.innerHTML = svg;
-                    isRenderedRef.current = true;
-                    chartContentRef.current = chart;
-                }
+                const id = `mermaid-${Date.now()}`;
+                const result = await mermaid.render(id, chart.trim());
+                setSvg(result.svg);
             } catch (err) {
-                console.error('Mermaid render error:', err);
-                if (containerRef.current) {
-                    containerRef.current.innerHTML = `<div class="text-red-600 p-4 border border-red-300 rounded bg-red-50">Failed to render diagram: ${err.message}</div>`;
-                }
+                console.error('Mermaid error:', err);
+                setError(err.message);
             }
         };
         
         render();
-    }, [chart]);
+    }, []);
     
-    return <div ref={containerRef} className="my-6 overflow-x-auto flex justify-center" />;
+    if (error) {
+        return (
+            <div className="my-6 p-4 border border-red-300 rounded bg-red-50 text-red-600">
+                Failed to render diagram: {error}
+            </div>
+        );
+    }
+    
+    if (!svg) {
+        return <div className="my-6 text-center text-slate-500">Loading diagram...</div>;
+    }
+    
+    return (
+        <div 
+            className="my-6 overflow-x-auto flex justify-center"
+            dangerouslySetInnerHTML={{ __html: svg }}
+        />
+    );
 }
