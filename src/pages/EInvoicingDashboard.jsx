@@ -21,7 +21,9 @@ export default function EInvoicingDashboard() {
         queryFn: async () => {
             const result = await base44.entities.Invoice.list('-created_date', 100);
             return result || [];
-        }
+        },
+        refetchInterval: false,
+        refetchOnWindowFocus: false
     });
 
     const eInvoiceCount = invoices.filter(inv => inv.einvoice_format).length;
