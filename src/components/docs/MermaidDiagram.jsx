@@ -10,11 +10,12 @@ mermaid.initialize({
 
 export default function MermaidDiagram({ chart }) {
     const containerRef = useRef(null);
-    const [rendered, setRendered] = useState(false);
-    const chartRef = useRef(null);
+    const hasRendered = useRef(false);
     
     useEffect(() => {
-        if (!chart || !containerRef.current || chartRef.current === chart) return;
+        if (!chart || !containerRef.current || hasRendered.current) return;
+        
+        hasRendered.current = true;
         
         const render = async () => {
             try {
@@ -22,8 +23,6 @@ export default function MermaidDiagram({ chart }) {
                 const { svg } = await mermaid.render(id, chart.trim());
                 if (containerRef.current) {
                     containerRef.current.innerHTML = svg;
-                    chartRef.current = chart;
-                    setRendered(true);
                 }
             } catch (err) {
                 console.error('Mermaid render error:', err);
@@ -34,7 +33,7 @@ export default function MermaidDiagram({ chart }) {
         };
         
         render();
-    }, [chart]);
+    }, []);
     
     return <div ref={containerRef} className="my-6 overflow-x-auto flex justify-center" />;
 }
