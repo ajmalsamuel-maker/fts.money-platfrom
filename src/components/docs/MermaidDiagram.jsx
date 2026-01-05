@@ -8,16 +8,18 @@ mermaid.initialize({
     fontFamily: 'ui-sans-serif, system-ui, sans-serif'
 });
 
-export default function MermaidDiagram({ chart }) {
+const MermaidDiagram = React.memo(({ chart }) => {
     const containerRef = useRef(null);
+    const isRendering = useRef(false);
     const renderedChart = useRef(null);
     
     useEffect(() => {
-        if (!chart || !containerRef.current) return;
+        if (!chart || !containerRef.current || isRendering.current) return;
         
-        // Skip if we already rendered this exact chart
+        // Skip if already rendered this exact chart
         if (renderedChart.current === chart) return;
         
+        isRendering.current = true;
         renderedChart.current = chart;
         
         const render = async () => {
@@ -32,6 +34,8 @@ export default function MermaidDiagram({ chart }) {
                 if (containerRef.current) {
                     containerRef.current.innerHTML = `<div class="p-4 border border-red-300 rounded bg-red-50 text-red-600">Failed to render diagram: ${err.message}</div>`;
                 }
+            } finally {
+                isRendering.current = false;
             }
         };
         
@@ -46,4 +50,8 @@ export default function MermaidDiagram({ chart }) {
             <div className="text-center text-slate-500">Loading diagram...</div>
         </div>
     );
-}
+});
+
+MermaidDiagram.displayName = 'MermaidDiagram';
+
+export default MermaidDiagram;
