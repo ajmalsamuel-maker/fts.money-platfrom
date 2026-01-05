@@ -23,7 +23,7 @@ import { MerchantPortalDoc } from '@/components/docs/MerchantPortalDoc';
 import { VirtualTerminalDoc } from '@/components/docs/VirtualTerminalDoc';
 import VATTaxManagementDoc from '@/components/docs/VATTaxManagementDoc';
 import EInvoicingSystemDoc from '@/components/docs/EInvoicingSystemDoc';
-import VASPComplianceDoc from '@/components/docs/VASPComplianceDoc';
+import VASPPlatformDoc from '@/components/docs/VASPPlatformDoc';
 import ServiceInteroperabilityDoc from '@/components/docs/ServiceInteroperabilityDoc';
 import MermaidDiagram from '@/components/docs/MermaidDiagram';
 import jsPDF from 'jspdf';
@@ -149,11 +149,11 @@ export default function FTSDocumentation() {
             description: 'Multi-standard electronic invoicing - Peppol, ZATCA, FatturaPA, CFDI'
         },
         {
-            id: 'vasp-compliance',
-            title: 'VASP Compliance & Travel Rule',
-            icon: Shield,
-            content: VASPComplianceDoc,
-            description: 'Cryptocurrency AML/CFT compliance, Travel Rule, and sanctions screening'
+            id: 'vasp-platform',
+            title: 'VASP Platform - White-Label Crypto Banking',
+            icon: Wallet,
+            content: VASPPlatformDoc,
+            description: 'Complete VASP infrastructure - wallets, IBANs, cards, compliance, and white-label portal'
         },
         {
             id: 'service-interoperability',
