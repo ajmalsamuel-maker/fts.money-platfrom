@@ -20,6 +20,8 @@ export default function CategoryManager({ categories }) {
         category_code: '',
         category_name: '',
         description: '',
+        unspsc_code: '',
+        un_cpc_code: '',
         uncl5305_code: '',
         default_rate_type: 'standard',
         is_digital_service: false,
@@ -55,6 +57,8 @@ export default function CategoryManager({ categories }) {
             category_code: '',
             category_name: '',
             description: '',
+            unspsc_code: '',
+            un_cpc_code: '',
             uncl5305_code: '',
             default_rate_type: 'standard',
             is_digital_service: false,
@@ -102,6 +106,27 @@ export default function CategoryManager({ categories }) {
                                         onChange={(e) => setFormData({...formData, category_name: e.target.value})}
                                         placeholder="Digital Services"
                                     />
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <Label>UNSPSC Code (8-digit)</Label>
+                                    <Input
+                                        value={formData.unspsc_code}
+                                        onChange={(e) => setFormData({...formData, unspsc_code: e.target.value})}
+                                        placeholder="81111500"
+                                    />
+                                    <p className="text-xs text-slate-500 mt-1">UN Standard Products & Services</p>
+                                </div>
+                                <div>
+                                    <Label>UN CPC Code</Label>
+                                    <Input
+                                        value={formData.un_cpc_code}
+                                        onChange={(e) => setFormData({...formData, un_cpc_code: e.target.value})}
+                                        placeholder="47"
+                                    />
+                                    <p className="text-xs text-slate-500 mt-1">UN Central Product Classification</p>
                                 </div>
                             </div>
 
@@ -199,10 +224,20 @@ export default function CategoryManager({ categories }) {
                         </CardHeader>
                         <CardContent>
                             <p className="text-sm text-slate-600 mb-4">{category.description}</p>
-                            <div className="flex gap-2 mb-4">
+                            <div className="flex flex-wrap gap-2 mb-4">
+                                {category.unspsc_code && (
+                                    <Badge variant="outline" className="font-mono text-xs">
+                                        UNSPSC: {category.unspsc_code}
+                                    </Badge>
+                                )}
+                                {category.un_cpc_code && (
+                                    <Badge variant="outline" className="font-mono text-xs">
+                                        UN CPC: {category.un_cpc_code}
+                                    </Badge>
+                                )}
                                 {category.uncl5305_code && (
-                                    <Badge variant="outline" className="font-mono">
-                                        UN/CEFACT: {category.uncl5305_code}
+                                    <Badge variant="outline" className="font-mono text-xs">
+                                        Tax: {category.uncl5305_code}
                                     </Badge>
                                 )}
                                 {category.is_digital_service && (
