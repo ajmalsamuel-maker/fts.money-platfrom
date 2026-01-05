@@ -213,5 +213,13 @@ export function getRequiredFeatures(format) {
 }
 
 export function getAllEInvoiceStandards() {
-    return EINVOICING_STANDARDS;
+    return Object.entries(EINVOICING_STANDARDS).map(([key, standard]) => ({
+        id: key,
+        name: standard.name,
+        format: standard.format,
+        region: standard.regions?.join(', ') || 'Global',
+        countries: standard.regions,
+        mandatory: standard.mandatory?.length > 0,
+        ...standard
+    }));
 }
