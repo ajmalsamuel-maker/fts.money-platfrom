@@ -9,14 +9,15 @@ mermaid.initialize({
 });
 
 export default function MermaidDiagram({ chart }) {
-    const containerRef = useRef(null);
     const [svg, setSvg] = useState(null);
-    const hasRendered = useRef(false);
+    const [error, setError] = useState(null);
+    const renderAttempted = useRef(false);
     
     useEffect(() => {
-        // Only render once
-        if (hasRendered.current || !chart) return;
-        hasRendered.current = true;
+        // Only render once when chart is available
+        if (!chart || renderAttempted.current) return;
+        
+        renderAttempted.current = true;
         
         const render = async () => {
             try {
@@ -25,12 +26,20 @@ export default function MermaidDiagram({ chart }) {
                 setSvg(result.svg);
             } catch (err) {
                 console.error('Mermaid render error:', err);
-                setSvg(`<div class="p-4 border border-red-300 rounded bg-red-50 text-red-600">Failed to render diagram: ${err.message}</div>`);
+                setError(err.message);
             }
         };
         
         render();
-    }, []); // Empty dependency array - only run once
+    }, [chart]);
+    
+    if (error) {
+        return (
+            <div className="my-6 p-4 border border-red-300 rounded bg-red-50 text-red-600">
+                Failed to render diagram: {error}
+            </div>
+        );
+    }
     
     if (!svg) {
         return (
