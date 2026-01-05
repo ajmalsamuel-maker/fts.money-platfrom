@@ -10,12 +10,15 @@ mermaid.initialize({
 
 export default function MermaidDiagram({ chart }) {
     const containerRef = useRef(null);
-    const hasRendered = useRef(false);
+    const renderedChart = useRef(null);
     
     useEffect(() => {
-        if (!chart || !containerRef.current || hasRendered.current) return;
+        if (!chart || !containerRef.current) return;
         
-        hasRendered.current = true;
+        // Skip if we already rendered this exact chart
+        if (renderedChart.current === chart) return;
+        
+        renderedChart.current = chart;
         
         const render = async () => {
             try {
@@ -25,7 +28,7 @@ export default function MermaidDiagram({ chart }) {
                     containerRef.current.innerHTML = result.svg;
                 }
             } catch (err) {
-                console.error('Mermaid error:', err);
+                console.error('Mermaid render error:', err);
                 if (containerRef.current) {
                     containerRef.current.innerHTML = `<div class="p-4 border border-red-300 rounded bg-red-50 text-red-600">Failed to render diagram: ${err.message}</div>`;
                 }
@@ -33,7 +36,7 @@ export default function MermaidDiagram({ chart }) {
         };
         
         render();
-    }, []);
+    }, [chart]);
     
     return (
         <div 
