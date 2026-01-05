@@ -138,28 +138,28 @@ export default function FTSDocumentation() {
             id: 'vat-tax',
             title: 'VAT & Tax Management',
             icon: FileText,
-            content: () => import('@/components/docs/VATTaxManagementDoc').then(m => m.default),
+            content: VATTaxManagementDoc,
             description: 'Global tax compliance, automated VAT calculation, and tax reporting'
         },
         {
             id: 'einvoicing',
             title: 'E-Invoicing System',
             icon: FileText,
-            content: () => import('@/components/docs/EInvoicingSystemDoc').then(m => m.default),
+            content: EInvoicingSystemDoc,
             description: 'Multi-standard electronic invoicing - Peppol, ZATCA, FatturaPA, CFDI'
         },
         {
             id: 'vasp-compliance',
             title: 'VASP Compliance & Travel Rule',
             icon: Shield,
-            content: () => import('@/components/docs/VASPComplianceDoc').then(m => m.default),
+            content: VASPComplianceDoc,
             description: 'Cryptocurrency AML/CFT compliance, Travel Rule, and sanctions screening'
         },
         {
             id: 'service-interoperability',
             title: 'Service Interoperability',
             icon: GitBranch,
-            content: () => import('@/components/docs/ServiceInteroperabilityDoc').then(m => m.default),
+            content: ServiceInteroperabilityDoc,
             description: 'How FTS services integrate to create unique composite solutions'
         }
     ];
