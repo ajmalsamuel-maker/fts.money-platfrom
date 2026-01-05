@@ -21,10 +21,6 @@ import CryptoBankingDoc from '@/components/docs/CryptoBankingDoc';
 import { RBACSystemDoc } from '@/components/docs/RBACSystemDoc';
 import { MerchantPortalDoc } from '@/components/docs/MerchantPortalDoc';
 import { VirtualTerminalDoc } from '@/components/docs/VirtualTerminalDoc';
-import VATTaxManagementDoc from '@/components/docs/VATTaxManagementDoc';
-import EInvoicingSystemDoc from '@/components/docs/EInvoicingSystemDoc';
-import VASPComplianceDoc from '@/components/docs/VASPComplianceDoc';
-import ServiceInteroperabilityDoc from '@/components/docs/ServiceInteroperabilityDoc';
 import MermaidDiagram from '@/components/docs/MermaidDiagram';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -133,34 +129,6 @@ export default function FTSDocumentation() {
             icon: Code,
             content: VirtualTerminalDoc,
             description: 'Web-based payment terminal - MOTO, recurring, and card-not-present processing'
-        },
-        {
-            id: 'vat-tax',
-            title: 'VAT & Tax Management',
-            icon: FileText,
-            content: VATTaxManagementDoc,
-            description: 'Global tax compliance, automated VAT calculation, and tax reporting'
-        },
-        {
-            id: 'einvoicing',
-            title: 'E-Invoicing System',
-            icon: FileText,
-            content: EInvoicingSystemDoc,
-            description: 'Multi-standard electronic invoicing - Peppol, ZATCA, FatturaPA, CFDI'
-        },
-        {
-            id: 'vasp-compliance',
-            title: 'VASP Compliance & Travel Rule',
-            icon: Shield,
-            content: VASPComplianceDoc,
-            description: 'Cryptocurrency AML/CFT compliance, Travel Rule, and sanctions screening'
-        },
-        {
-            id: 'service-interoperability',
-            title: 'Service Interoperability',
-            icon: GitBranch,
-            content: ServiceInteroperabilityDoc,
-            description: 'How FTS services integrate to create unique composite solutions'
         }
     ];
 
