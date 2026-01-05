@@ -211,3 +211,7 @@ export function getRequiredFeatures(format) {
         pdf_hybrid: standard?.format?.includes('PDF') || false
     };
 }
+
+export function getAllEInvoiceStandards() {
+    return EINVOICING_STANDARDS;
+}
