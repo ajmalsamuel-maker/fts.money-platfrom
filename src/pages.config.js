@@ -69,6 +69,7 @@ import DatabaseSchemaValidation from './pages/DatabaseSchemaValidation';
 import DatabaseSetup from './pages/DatabaseSetup';
 import Disputes from './pages/Disputes';
 import Documentation from './pages/Documentation';
+import EInvoicingDashboard from './pages/EInvoicingDashboard';
 import EnhancedAuditLogs from './pages/EnhancedAuditLogs';
 import ExchangeIntegrations from './pages/ExchangeIntegrations';
 import FATFCompliance from './pages/FATFCompliance';
@@ -107,8 +108,8 @@ import ISOGatewayConnections from './pages/ISOGatewayConnections';
 import ISOGatewayCustomerPortal from './pages/ISOGatewayCustomerPortal';
 import ISOGatewayCustomers from './pages/ISOGatewayCustomers';
 import ISOGatewayLogin from './pages/ISOGatewayLogin';
-import ISOGatewayRouting from './pages/ISOGatewayRouting';
 import Invoices from './pages/Invoices';
+import ISOGatewayRouting from './pages/ISOGatewayRouting';
 import ISOGatewayTestConsole from './pages/ISOGatewayTestConsole';
 import ISOGatewayUserManagement from './pages/ISOGatewayUserManagement';
 import ISOMessageMonitor from './pages/ISOMessageMonitor';
@@ -278,7 +279,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import EInvoicingDashboard from './pages/EInvoicingDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -354,6 +354,7 @@ export const PAGES = {
     "DatabaseSetup": DatabaseSetup,
     "Disputes": Disputes,
     "Documentation": Documentation,
+    "EInvoicingDashboard": EInvoicingDashboard,
     "EnhancedAuditLogs": EnhancedAuditLogs,
     "ExchangeIntegrations": ExchangeIntegrations,
     "FATFCompliance": FATFCompliance,
@@ -392,8 +393,8 @@ export const PAGES = {
     "ISOGatewayCustomerPortal": ISOGatewayCustomerPortal,
     "ISOGatewayCustomers": ISOGatewayCustomers,
     "ISOGatewayLogin": ISOGatewayLogin,
-    "ISOGatewayRouting": ISOGatewayRouting,
     "Invoices": Invoices,
+    "ISOGatewayRouting": ISOGatewayRouting,
     "ISOGatewayTestConsole": ISOGatewayTestConsole,
     "ISOGatewayUserManagement": ISOGatewayUserManagement,
     "ISOMessageMonitor": ISOMessageMonitor,
@@ -563,7 +564,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "EInvoicingDashboard": EInvoicingDashboard,
 }
 
 export const pagesConfig = {

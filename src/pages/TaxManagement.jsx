@@ -7,11 +7,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Globe, Tag, Settings, Plus, AlertCircle, CheckCircle } from 'lucide-react';
+import { Globe, Tag, Settings, Plus, AlertCircle, CheckCircle, FileText } from 'lucide-react';
 import JurisdictionManager from '@/components/tax/JurisdictionManager';
 import CategoryManager from '@/components/tax/CategoryManager';
 import ServiceVATConfig from '@/components/tax/ServiceVATConfig';
 import TaxAnalytics from '@/components/tax/TaxAnalytics';
+import InvoiceTemplateManager from '@/components/tax/InvoiceTemplateManager';
 
 export default function TaxManagement() {
     const { platformUser, loading: authLoading } = usePlatformAuth();
@@ -128,6 +129,10 @@ export default function TaxManagement() {
                                 <AlertCircle className="h-4 w-4 mr-2" />
                                 Analytics
                             </TabsTrigger>
+                            <TabsTrigger value="templates">
+                                <FileText className="h-4 w-4 mr-2" />
+                                Invoice Templates
+                            </TabsTrigger>
                         </TabsList>
 
                         <TabsContent value="jurisdictions">
@@ -144,6 +149,10 @@ export default function TaxManagement() {
 
                         <TabsContent value="analytics">
                             <TaxAnalytics />
+                        </TabsContent>
+
+                        <TabsContent value="templates">
+                            <InvoiceTemplateManager />
                         </TabsContent>
                     </Tabs>
                 </div>
