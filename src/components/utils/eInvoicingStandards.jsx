@@ -1,277 +1,213 @@
 /**
- * Global E-Invoicing Standards Registry
- * Comprehensive support for worldwide e-invoicing compliance
+ * Global E-Invoicing Standards Reference
+ * Comprehensive guide for all supported formats
  */
 
-export const E_INVOICING_STANDARDS = {
-    // European Union - EN 16931 (Peppol BIS, UBL)
-    EU_EN16931: {
-        id: 'eu_en16931',
-        name: 'EN 16931 (Peppol BIS)',
-        region: 'European Union',
-        format: 'UBL 2.1 XML',
-        network: 'Peppol',
-        mandatory: true,
-        sectors: ['public', 'private'],
-        schema: 'EN 16931-1:2017',
-        transmission: ['peppol', 'api', 'email'],
-        validation_rules: 'CIUS (Core Invoice Usage Specification)',
-        countries: ['AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR', 'HU', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL', 'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE']
+export const EINVOICING_STANDARDS = {
+    peppol: {
+        name: 'Peppol BIS Billing 3.0',
+        format: 'UBL 2.1',
+        regions: ['EU', 'AU', 'NZ', 'SG', 'MY', 'NO', 'CH'],
+        mandatory: ['AU', 'SG'],
+        gateway_required: true,
+        digital_signature: false,
+        description: 'Pan-European Public Procurement Online standard'
     },
-
-    // Italy - FatturaPA
-    IT_FATTURAPA: {
-        id: 'it_fatturapa',
+    fatturapa: {
         name: 'FatturaPA',
-        region: 'Italy',
-        format: 'FatturaPA XML',
-        network: 'SDI (Sistema di Interscambio)',
-        mandatory: true,
-        sectors: ['public', 'private'],
-        schema: 'FatturaPA v1.2.1',
-        transmission: ['sdi', 'peppol', 'pec'],
-        validation_rules: 'Agenzia delle Entrate',
+        format: 'XML (FPR12)',
+        regions: ['IT'],
+        mandatory: ['IT'],
+        gateway_required: true,
+        gateway_name: 'Sistema di Interscambio (SDI)',
         digital_signature: true,
-        requires_certified_email: true,
-        countries: ['IT']
+        description: 'Italian electronic invoice format'
     },
-
-    // France & Germany - Factur-X / ZUGFeRD
-    FR_DE_FACTURX: {
-        id: 'fr_de_facturx',
+    zatca: {
+        name: 'ZATCA (Fatoora)',
+        format: 'UBL 2.1 with Saudi extensions',
+        regions: ['SA'],
+        mandatory: ['SA'],
+        gateway_required: true,
+        gateway_name: 'ZATCA Platform',
+        digital_signature: true,
+        qr_code_required: true,
+        phases: {
+            phase1: 'Generation (completed)',
+            phase2: 'Integration (current)'
+        },
+        description: 'Saudi Arabian e-invoicing system'
+    },
+    cfdi: {
+        name: 'CFDI 4.0',
+        format: 'XML',
+        regions: ['MX'],
+        mandatory: ['MX'],
+        gateway_required: true,
+        gateway_name: 'PAC (Proveedor Autorizado de Certificación)',
+        digital_signature: true,
+        description: 'Mexican Comprobante Fiscal Digital por Internet'
+    },
+    facturx: {
         name: 'Factur-X / ZUGFeRD',
-        region: 'France & Germany',
-        format: 'Hybrid PDF/A-3 + embedded UBL XML',
-        network: 'Chorus Pro (FR), ZRE (DE)',
-        mandatory: true,
-        sectors: ['public'],
-        schema: 'CII (Cross Industry Invoice)',
-        transmission: ['chorus_pro', 'peppol', 'email'],
-        validation_rules: 'EN 16931 compliant',
-        hybrid_format: true,
-        profiles: ['MINIMUM', 'BASIC WL', 'BASIC', 'EN 16931', 'EXTENDED'],
-        countries: ['FR', 'DE']
+        format: 'Hybrid PDF/A-3 with embedded XML',
+        regions: ['FR', 'DE'],
+        mandatory: ['FR'],
+        gateway_required: false,
+        digital_signature: false,
+        description: 'Franco-German hybrid invoice standard'
     },
-
-    // United Kingdom
-    UK_PEPPOL: {
-        id: 'uk_peppol',
-        name: 'UK Peppol BIS',
-        region: 'United Kingdom',
-        format: 'UBL 2.1 XML',
-        network: 'Peppol',
+    sii: {
+        name: 'SII (Suministro Inmediato de Información)',
+        format: 'JSON',
+        regions: ['ES'],
+        mandatory: ['ES'],
+        gateway_required: true,
+        gateway_name: 'AEAT SII Platform',
+        digital_signature: false,
+        real_time: true,
+        description: 'Spanish immediate supply of information system'
+    },
+    mtd: {
+        name: 'Making Tax Digital',
+        format: 'UBL 2.1',
+        regions: ['GB'],
+        mandatory: ['GB'],
+        gateway_required: true,
+        gateway_name: 'HMRC MTD API',
+        digital_signature: false,
+        description: 'UK digital tax reporting'
+    },
+    anaf: {
+        name: 'e-Factura',
+        format: 'UBL 2.1',
+        regions: ['RO'],
+        mandatory: ['RO'],
+        gateway_required: true,
+        gateway_name: 'ANAF SPV',
+        digital_signature: true,
+        description: 'Romanian e-invoice system'
+    },
+    fenix: {
+        name: 'FENIX',
+        format: 'UBL 2.1',
+        regions: ['PT'],
         mandatory: false,
-        sectors: ['public'],
-        schema: 'Peppol BIS Billing 3.0',
-        transmission: ['peppol', 'api'],
-        validation_rules: 'UK PEPPOL BIS',
-        countries: ['GB']
+        gateway_required: false,
+        digital_signature: false,
+        description: 'Portuguese e-invoicing platform'
     },
-
-    // Nordics (Denmark, Norway, Sweden, Finland)
-    NORDICS_PEPPOL: {
-        id: 'nordics_peppol',
-        name: 'Nordic Peppol BIS',
-        region: 'Nordic Countries',
-        format: 'UBL 2.1 XML',
-        network: 'Peppol',
-        mandatory: true,
-        sectors: ['public', 'private'],
-        schema: 'Peppol BIS Billing 3.0',
-        transmission: ['peppol'],
-        validation_rules: 'Nordic CIUS',
-        early_adopter: true,
-        countries: ['DK', 'NO', 'SE', 'FI']
-    },
-
-    // Australia & New Zealand
-    AU_NZ_PEPPOL: {
-        id: 'au_nz_peppol',
-        name: 'A-NZ Peppol BIS',
-        region: 'Australia & New Zealand',
-        format: 'UBL 2.1 XML',
-        network: 'Peppol',
-        mandatory: true,
-        sectors: ['public'],
-        schema: 'A-NZ PEPPOL BIS 3.0',
-        transmission: ['peppol'],
-        validation_rules: 'A-NZ extension',
-        countries: ['AU', 'NZ']
-    },
-
-    // Singapore
-    SG_PEPPOL: {
-        id: 'sg_peppol',
-        name: 'Singapore Peppol',
-        region: 'Singapore',
-        format: 'UBL 2.1 XML',
-        network: 'Peppol',
-        mandatory: true,
-        sectors: ['public', 'private'],
-        schema: 'Singapore Peppol BIS',
-        transmission: ['peppol', 'infocomm'],
-        validation_rules: 'IMDA requirements',
-        nationwide: true,
-        countries: ['SG']
-    },
-
-    // Japan
-    JP_PEPPOL: {
-        id: 'jp_peppol',
-        name: 'Japan Peppol / METI',
-        region: 'Japan',
-        format: 'UBL 2.1 XML / JP-PINT',
-        network: 'Peppol',
-        mandatory: false,
-        sectors: ['public', 'cross-border'],
-        schema: 'JP-PINT (Japan PEPPOL International)',
-        transmission: ['peppol', 'meti'],
-        validation_rules: 'METI guidelines',
-        countries: ['JP']
-    },
-
-    // India - e-Invoice (IRN/QR)
-    IN_EINVOICE: {
-        id: 'in_einvoice',
-        name: 'India e-Invoice (IRN)',
-        region: 'India',
-        format: 'JSON / XML',
-        network: 'IRP (Invoice Registration Portal)',
-        mandatory: true,
-        sectors: ['b2b'],
-        schema: 'GST e-Invoice Schema v1.1',
-        transmission: ['irp', 'gsp'],
-        validation_rules: 'CBIC e-Invoice Rules',
-        requires_qr_code: true,
-        requires_irn: true,
+    india_gst: {
+        name: 'e-Invoice (India GST)',
+        format: 'JSON',
+        regions: ['IN'],
+        mandatory: ['IN'],
+        gateway_required: true,
+        gateway_name: 'IRP (Invoice Registration Portal)',
         digital_signature: true,
-        threshold: '10 crore turnover',
-        countries: ['IN']
+        description: 'Indian GST e-invoicing system'
     },
-
-    // Brazil - NF-e
-    BR_NFE: {
-        id: 'br_nfe',
-        name: 'Nota Fiscal Eletrônica (NF-e)',
-        region: 'Brazil',
-        format: 'NF-e XML',
-        network: 'SEFAZ (State Tax Authority)',
-        mandatory: true,
-        sectors: ['all'],
-        schema: 'NF-e Schema v4.00',
-        transmission: ['sefaz', 'webservice'],
-        validation_rules: 'SEFAZ validation',
+    korea_etax: {
+        name: 'Korea e-Tax',
+        format: 'XML',
+        regions: ['KR'],
+        mandatory: ['KR'],
+        gateway_required: true,
+        gateway_name: 'National Tax Service',
         digital_signature: true,
-        requires_certificate: true,
-        danfe_required: true,
-        access_key: true,
-        countries: ['BR']
+        description: 'Korean electronic tax invoice'
     },
-
-    // Mexico - CFDI
-    MX_CFDI: {
-        id: 'mx_cfdi',
-        name: 'CFDI (Comprobante Fiscal Digital)',
-        region: 'Mexico',
-        format: 'CFDI XML 4.0',
-        network: 'SAT (Servicio de Administración Tributaria)',
-        mandatory: true,
-        sectors: ['all'],
-        schema: 'CFDI 4.0',
-        transmission: ['pac', 'sat'],
-        validation_rules: 'SAT validation',
+    brazil_nfe: {
+        name: 'NF-e (Nota Fiscal Eletrônica)',
+        format: 'XML',
+        regions: ['BR'],
+        mandatory: ['BR'],
+        gateway_required: true,
+        gateway_name: 'SEFAZ',
         digital_signature: true,
-        requires_pac: true,
-        requires_rfc: true,
-        uuid_required: true,
-        countries: ['MX']
+        description: 'Brazilian electronic fiscal document'
     },
-
-    // Saudi Arabia - ZATCA (Fatoorah)
-    SA_ZATCA: {
-        id: 'sa_zatca',
-        name: 'ZATCA e-Invoicing (Fatoorah)',
-        region: 'Saudi Arabia',
-        format: 'UBL 2.1 XML + Cryptographic Stamp',
-        network: 'ZATCA Portal',
-        mandatory: true,
-        sectors: ['all'],
-        schema: 'ZATCA UBL 2.1 extension',
-        transmission: ['zatca', 'api'],
-        validation_rules: 'ZATCA Phase 2',
+    turkey_einvoice: {
+        name: 'e-Fatura',
+        format: 'UBL-TR',
+        regions: ['TR'],
+        mandatory: ['TR'],
+        gateway_required: true,
+        gateway_name: 'GIB (Gelir İdaresi Başkanlığı)',
         digital_signature: true,
-        requires_qr_code: true,
-        cryptographic_stamp: true,
-        phase: 'Phase 2 (Integration)',
-        countries: ['SA']
-    },
-
-    // United States - No single standard
-    US_HYBRID: {
-        id: 'us_hybrid',
-        name: 'US E-Invoice (EDI/UBL/JSON)',
-        region: 'United States',
-        format: 'EDI X12 810 / UBL / JSON',
-        network: 'VAN / API',
-        mandatory: false,
-        sectors: ['voluntary'],
-        schema: 'ANSI X12 810 / UBL 2.1',
-        transmission: ['edi', 'api', 'email'],
-        validation_rules: 'Industry-specific',
-        legacy_dominant: true,
-        formats: ['EDIFACT', 'X12 810', 'UBL', 'JSON API'],
-        countries: ['US']
+        description: 'Turkish e-invoice system'
     }
 };
 
-/**
- * Get e-invoicing standard by country
- */
-export const getEInvoiceStandardByCountry = (countryCode) => {
-    const standards = Object.values(E_INVOICING_STANDARDS).filter(
-        standard => standard.countries.includes(countryCode)
-    );
-    return standards.length > 0 ? standards[0] : null;
+export const DIGITAL_SIGNATURE_STANDARDS = {
+    xmldsig: {
+        name: 'XML Digital Signature',
+        algorithm: 'XMLDSig-SHA256-RSA',
+        used_in: ['fatturapa', 'zatca', 'cfdi', 'anaf']
+    },
+    xades: {
+        name: 'XML Advanced Electronic Signatures',
+        algorithm: 'XAdES',
+        used_in: ['fatturapa', 'turkey_einvoice']
+    },
+    pades: {
+        name: 'PDF Advanced Electronic Signatures',
+        algorithm: 'PAdES',
+        used_in: ['facturx']
+    }
 };
 
-/**
- * Get all available e-invoicing standards
- */
-export const getAllEInvoiceStandards = () => {
-    return Object.values(E_INVOICING_STANDARDS);
+export const GATEWAY_ENDPOINTS = {
+    peppol: {
+        production: 'https://access-point.peppol.eu',
+        test: 'https://test-access-point.peppol.eu'
+    },
+    fatturapa: {
+        production: 'https://sdi.fatturapa.gov.it',
+        test: 'https://testservizi.fatturapa.it'
+    },
+    zatca: {
+        production: 'https://gw-fatoora.zatca.gov.sa',
+        test: 'https://gw-fatoora.zatca.gov.sa/e-invoicing/developer-portal'
+    },
+    sii: {
+        production: 'https://www7.aeat.es/wlpl/SSII-FACT/ws',
+        test: 'https://www7.aeat.es/wlpl/SSII-FACT/ws'
+    },
+    mtd: {
+        production: 'https://api.service.hmrc.gov.uk',
+        test: 'https://test-api.service.hmrc.gov.uk'
+    }
 };
 
-/**
- * Check if country has mandatory e-invoicing
- */
-export const isMandatory = (countryCode) => {
-    const standard = getEInvoiceStandardByCountry(countryCode);
-    return standard ? standard.mandatory : false;
-};
+export function getStandardForCountry(countryCode) {
+    for (const [key, standard] of Object.entries(EINVOICING_STANDARDS)) {
+        if (standard.mandatory?.includes(countryCode)) {
+            return key;
+        }
+        if (standard.regions?.includes(countryCode)) {
+            return key;
+        }
+    }
+    return 'peppol'; // Default to Peppol
+}
 
-/**
- * Get required fields for each standard
- */
-export const REQUIRED_FIELDS = {
-    eu_en16931: ['invoice_number', 'issue_date', 'seller_vat', 'buyer_vat', 'currency', 'total_amount', 'tax_amount'],
-    it_fatturapa: ['invoice_number', 'issue_date', 'seller_vat', 'buyer_vat', 'codice_destinatario', 'pec_email', 'currency', 'total_amount'],
-    fr_de_facturx: ['invoice_number', 'issue_date', 'seller_vat', 'buyer_vat', 'siret', 'currency', 'total_amount'],
-    in_einvoice: ['invoice_number', 'issue_date', 'seller_gstin', 'buyer_gstin', 'irn', 'supply_type', 'total_amount', 'tax_amount'],
-    br_nfe: ['invoice_number', 'issue_date', 'seller_cnpj', 'buyer_cnpj', 'access_key', 'danfe', 'total_amount'],
-    mx_cfdi: ['invoice_number', 'issue_date', 'seller_rfc', 'buyer_rfc', 'uuid', 'pac_stamp', 'total_amount'],
-    sa_zatca: ['invoice_number', 'issue_date', 'seller_vat', 'buyer_vat', 'qr_code', 'cryptographic_stamp', 'total_amount']
-};
+export function isEInvoicingMandatory(countryCode) {
+    for (const standard of Object.values(EINVOICING_STANDARDS)) {
+        if (standard.mandatory?.includes(countryCode)) {
+            return true;
+        }
+    }
+    return false;
+}
 
-/**
- * Validation functions for each standard
- */
-export const validateInvoice = (standard, invoiceData) => {
-    const requiredFields = REQUIRED_FIELDS[standard] || [];
-    const missingFields = requiredFields.filter(field => !invoiceData[field]);
-    
+export function getRequiredFeatures(format) {
+    const standard = EINVOICING_STANDARDS[format];
     return {
-        valid: missingFields.length === 0,
-        missingFields,
-        standard: E_INVOICING_STANDARDS[standard.toUpperCase()]
+        digital_signature: standard?.digital_signature || false,
+        gateway_submission: standard?.gateway_required || false,
+        qr_code: standard?.qr_code_required || false,
+        real_time: standard?.real_time || false,
+        pdf_hybrid: standard?.format?.includes('PDF') || false
     };
-};
+}

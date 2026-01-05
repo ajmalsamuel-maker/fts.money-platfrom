@@ -261,6 +261,7 @@ import SubMerchants from './pages/SubMerchants';
 import Subscriptions from './pages/Subscriptions';
 import Support from './pages/Support';
 import SystemArchitectureDocumentation from './pages/SystemArchitectureDocumentation';
+import TaxManagement from './pages/TaxManagement';
 import TenantManagement from './pages/TenantManagement';
 import TenantUserManagement from './pages/TenantUserManagement';
 import Terminals from './pages/Terminals';
@@ -277,7 +278,7 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import TaxManagement from './pages/TaxManagement';
+import EInvoicingDashboard from './pages/EInvoicingDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -545,6 +546,7 @@ export const PAGES = {
     "Subscriptions": Subscriptions,
     "Support": Support,
     "SystemArchitectureDocumentation": SystemArchitectureDocumentation,
+    "TaxManagement": TaxManagement,
     "TenantManagement": TenantManagement,
     "TenantUserManagement": TenantUserManagement,
     "Terminals": Terminals,
@@ -561,7 +563,7 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "TaxManagement": TaxManagement,
+    "EInvoicingDashboard": EInvoicingDashboard,
 }
 
 export const pagesConfig = {

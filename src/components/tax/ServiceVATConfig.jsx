@@ -39,6 +39,8 @@ export default function ServiceVATConfig({ configurations }) {
         reverse_charge_enabled: false,
         threshold_monitoring: true,
         auto_invoice_generation: true,
+        einvoicing_enabled: false,
+        einvoice_format: 'auto',
         invoice_prefix: 'INV-',
         status: 'active'
     });
@@ -208,7 +210,36 @@ export default function ServiceVATConfig({ configurations }) {
                                         onCheckedChange={(checked) => setFormData({...formData, auto_invoice_generation: checked})}
                                     />
                                 </div>
+                                <div className="flex items-center justify-between">
+                                    <Label>E-Invoicing Enabled</Label>
+                                    <Switch
+                                        checked={formData.einvoicing_enabled}
+                                        onCheckedChange={(checked) => setFormData({...formData, einvoicing_enabled: checked})}
+                                    />
+                                </div>
                             </div>
+
+                            {formData.einvoicing_enabled && (
+                                <div>
+                                    <Label>E-Invoice Format</Label>
+                                    <Select value={formData.einvoice_format || 'auto'} onValueChange={(value) => setFormData({...formData, einvoice_format: value})}>
+                                        <SelectTrigger>
+                                            <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="auto">Auto-detect</SelectItem>
+                                            <SelectItem value="peppol">Peppol UBL (EU/Global)</SelectItem>
+                                            <SelectItem value="fatturapa">FatturaPA (Italy)</SelectItem>
+                                            <SelectItem value="zatca">ZATCA (Saudi Arabia)</SelectItem>
+                                            <SelectItem value="cfdi">CFDI (Mexico)</SelectItem>
+                                            <SelectItem value="facturx">Factur-X (France/Germany)</SelectItem>
+                                            <SelectItem value="sii">SII (Spain)</SelectItem>
+                                            <SelectItem value="mtd">MTD (UK)</SelectItem>
+                                            <SelectItem value="anaf">e-Factura (Romania)</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            )}
 
                             <Button 
                                 onClick={() => createMutation.mutate(formData)} 
