@@ -1,3 +1,4 @@
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
 import pg from 'npm:pg@8.11.3';
 
 const { Pool } = pg;
@@ -9,6 +10,15 @@ const pool = new Pool({
 
 Deno.serve(async (req) => {
     try {
+        // Initialize SDK but don't require auth - validation runs in system context
+        const base44 = createClientFromRequest(req);
+        let user;
+        try {
+            user = await base44.auth.me();
+        } catch (err) {
+            console.log('[VALIDATE] Running in system context');
+        }
+
         const { psp_code, step_id } = await req.json();
         
         const client = await pool.connect();
