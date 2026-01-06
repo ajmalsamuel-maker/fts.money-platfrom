@@ -11,7 +11,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Copy, Play, Code, FileText, Zap, Menu } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { cn } from "@/lib/utils";
 
 export default function ISOGatewayTestConsole() {
