@@ -4,7 +4,7 @@ import { createPageUrl } from '@/utils';
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { FTS_LOGOS } from '@/components/community/FTSBrandColors';
-import { BarChart3, Users, Briefcase, Settings, LogOut, Building2, Coins, X } from 'lucide-react';
+import { BarChart3, Users, Briefcase, Settings, LogOut, Building2, Coins, X, Wallet } from 'lucide-react';
 
 export default function RWAProviderSidebar({ currentPage, providerName, providerEmail, onClose }) {
     const menuItems = [
@@ -13,6 +13,7 @@ export default function RWAProviderSidebar({ currentPage, providerName, provider
         { label: 'All Assets', path: 'RWAProviderAssets', icon: Coins },
         { label: 'All Investors', path: 'RWAProviderInvestors', icon: Users },
         { label: 'Analytics', path: 'RWAProviderAnalytics', icon: BarChart3 },
+        { label: 'Identity Wallet', path: 'DigitalIdentityWallet', icon: Wallet },
         { label: 'Settings', path: 'RWAProviderSettings', icon: Settings }
     ];
 

@@ -131,6 +131,7 @@ export default function CommunityPortalSidebarOptimized({ currentPage, userEmail
             title: 'Settings',
             defaultOpen: false,
             items: [
+                { icon: Wallet, label: 'Identity Wallet', path: 'DigitalIdentityWallet' },
                 { icon: Settings, label: 'Account Settings', path: 'CommunityAccountSettings' }
             ]
         }

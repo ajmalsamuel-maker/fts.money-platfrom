@@ -42,6 +42,7 @@ export default function CryptoGatewaySidebar({ currentPage, userEmail, onClose }
         {
             section: 'Settings',
             items: [
+                { label: 'Identity Wallet', path: 'DigitalIdentityWallet', icon: Wallet },
                 { label: 'Compliance', path: 'CryptoCompliance', icon: Shield },
                 { label: 'Settings', path: 'CryptoSettings', icon: Settings }
             ]

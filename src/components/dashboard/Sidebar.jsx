@@ -192,6 +192,7 @@ const defaultMenuItems = [
         group: 'system',
         icon: Settings,
         items: [
+            { icon: Wallet, label: 'identityWallet', path: 'DigitalIdentityWallet', permission: 'VIEW_DASHBOARD' },
             { icon: Shield, label: 'securityPKI', path: 'SecurityManagement', permission: 'VIEW_SETTINGS' },
             { icon: UserCog, label: 'userManagement', path: 'UserManagement', permission: 'VIEW_USERS' },
             { icon: Shield, label: 'auditLogs', path: 'AuditLogs', permission: 'VIEW_USERS' },

@@ -73,13 +73,23 @@ export default function DigitalIdentityWallet() {
                                 <p className="text-sm text-slate-600">Manage your verifiable credentials</p>
                             </div>
                         </div>
-                        <Button 
-                            onClick={() => setShowAddDialog(true)}
-                            className="bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600"
-                        >
-                            <Plus className="h-4 w-4 mr-2" />
-                            Add Credential
-                        </Button>
+                        <div className="flex gap-2">
+                            <CredentialPresentationButton
+                                serviceName="Third Party Service"
+                                buttonText="Present Credentials"
+                                buttonVariant="outline"
+                                onPresentationComplete={(vp) => {
+                                    toast.success('Presentation created successfully');
+                                }}
+                            />
+                            <Button 
+                                onClick={() => setShowAddDialog(true)}
+                                className="bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600"
+                            >
+                                <Plus className="h-4 w-4 mr-2" />
+                                Add Credential
+                            </Button>
+                        </div>
                     </div>
                 </div>
             </header>

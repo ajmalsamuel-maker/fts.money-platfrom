@@ -165,6 +165,7 @@ export default function FTSPlatformSidebarRestructured({ currentPage, userRole, 
             defaultOpen: false,
             collapsed: true,
             items: [
+                { label: 'Identity Wallet', path: 'DigitalIdentityWallet', icon: Wallet, description: 'Credentials', priority: true },
                 { label: 'Platform Config', path: 'FTSSettings', icon: Settings, description: 'System' },
                 { label: 'Advanced Tools', path: 'ModuleCatalogTest', icon: Code, description: 'Testing' }
             ]

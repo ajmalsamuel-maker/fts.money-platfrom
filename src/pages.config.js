@@ -280,6 +280,7 @@ import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
 import DigitalIdentityWallet from './pages/DigitalIdentityWallet';
+import CredentialPresentation from './pages/CredentialPresentation';
 import __Layout from './Layout.jsx';
 
 
@@ -566,6 +567,7 @@ export const PAGES = {
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
     "DigitalIdentityWallet": DigitalIdentityWallet,
+    "CredentialPresentation": CredentialPresentation,
 }
 
 export const pagesConfig = {
