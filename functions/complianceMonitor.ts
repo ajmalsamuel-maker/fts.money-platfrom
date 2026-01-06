@@ -59,16 +59,28 @@ Deno.serve(async (req) => {
             });
         }
 
-        // Monitor all PSPs and Merchants for LEI compliance
+        // Monitor all entities for LEI compliance
         if (action === 'check_all_compliance') {
             const psps = await base44.asServiceRole.entities.ProvisionedPSP.list();
             const merchants = await base44.asServiceRole.entities.Merchant.list();
+            const isoCustomers = await base44.asServiceRole.entities.ISOGatewayCustomer.list();
+            const orchCustomers = await base44.asServiceRole.entities.OrchestrationCustomer.list();
+            const cryptoCustomers = await base44.asServiceRole.entities.CryptoGatewayCustomer.list();
+            const rwaProviders = await base44.asServiceRole.entities.RWAWhiteLabelCustomer.list();
+            const assetIssuers = await base44.asServiceRole.entities.AssetIssuer.list();
             
             const results = {
                 psps: [],
                 merchants: [],
+                iso_gateway: [],
+                orchestration: [],
+                crypto_banking: [],
+                rwa_providers: [],
+                asset_issuers: [],
                 summary: {
-                    total_entities: psps.length + merchants.length,
+                    total_entities: psps.length + merchants.length + isoCustomers.length + 
+                                   orchCustomers.length + cryptoCustomers.length + 
+                                   rwaProviders.length + assetIssuers.length,
                     compliant: 0,
                     in_grace_period: 0,
                     non_compliant: 0,
@@ -184,6 +196,120 @@ Deno.serve(async (req) => {
                 }
             }
 
+            // Check ISO Gateway Customers
+            for (const customer of isoCustomers) {
+                const credentials = await base44.asServiceRole.entities.LEICredential.filter({
+                    entity_type: 'iso_gateway',
+                    entity_id: customer.id
+                });
+
+                if (credentials.length > 0) {
+                    const gleifData = await fetchGLEIFData(credentials[0].lei);
+                    if (gleifData) {
+                        await base44.asServiceRole.entities.LEICredential.update(credentials[0].id, {
+                            lei_status: gleifData.status === 'ISSUED' ? 'active' : 'expired',
+                            entity_name: gleifData.legal_name,
+                            last_verified_date: new Date().toISOString()
+                        });
+                    }
+                    results.summary.compliant++;
+                    results.iso_gateway.push({
+                        customer_name: customer.company_name,
+                        status: 'compliant',
+                        lei: credentials[0].lei
+                    });
+                } else {
+                    results.summary.in_grace_period++;
+                    results.iso_gateway.push({
+                        customer_name: customer.company_name,
+                        status: 'grace_period'
+                    });
+                }
+            }
+
+            // Check Orchestration Customers
+            for (const customer of orchCustomers) {
+                const credentials = await base44.asServiceRole.entities.LEICredential.filter({
+                    entity_type: 'orchestration',
+                    entity_id: customer.id
+                });
+
+                if (credentials.length > 0) {
+                    results.summary.compliant++;
+                    results.orchestration.push({
+                        customer_name: customer.company_name,
+                        status: 'compliant',
+                        lei: credentials[0].lei
+                    });
+                } else {
+                    results.summary.in_grace_period++;
+                }
+            }
+
+            // Check Crypto Banking Customers
+            for (const customer of cryptoCustomers) {
+                const credentials = await base44.asServiceRole.entities.LEICredential.filter({
+                    entity_type: 'crypto_banking',
+                    entity_id: customer.id
+                });
+
+                if (credentials.length > 0) {
+                    const gleifData = await fetchGLEIFData(credentials[0].lei);
+                    if (gleifData) {
+                        await base44.asServiceRole.entities.LEICredential.update(credentials[0].id, {
+                            lei_status: gleifData.status === 'ISSUED' ? 'active' : 'expired',
+                            last_verified_date: new Date().toISOString()
+                        });
+                    }
+                    results.summary.compliant++;
+                    results.crypto_banking.push({
+                        customer_name: customer.company_name,
+                        status: 'compliant',
+                        lei: credentials[0].lei
+                    });
+                } else {
+                    results.summary.in_grace_period++;
+                }
+            }
+
+            // Check RWA Platform Providers
+            for (const provider of rwaProviders) {
+                const credentials = await base44.asServiceRole.entities.LEICredential.filter({
+                    entity_type: 'rwa_provider',
+                    entity_id: provider.id
+                });
+
+                if (credentials.length > 0) {
+                    results.summary.compliant++;
+                    results.rwa_providers.push({
+                        provider_name: provider.company_name,
+                        status: 'compliant',
+                        lei: credentials[0].lei
+                    });
+                } else {
+                    results.summary.in_grace_period++;
+                }
+            }
+
+            // Check Asset Issuers
+            for (const issuer of assetIssuers) {
+                const credentials = await base44.asServiceRole.entities.LEICredential.filter({
+                    entity_type: 'asset_issuer',
+                    entity_id: issuer.id
+                });
+
+                if (credentials.length > 0) {
+                    results.summary.compliant++;
+                    results.asset_issuers.push({
+                        issuer_name: issuer.company_name,
+                        status: 'compliant',
+                        lei: credentials[0].lei
+                    });
+                } else {
+                    results.summary.in_grace_period++;
+                }
+            }
+
             // Check Merchants (similar logic)
             for (const merchant of merchants) {
                 const credentials = await base44.asServiceRole.entities.LEICredential.filter({
@@ -250,6 +376,11 @@ Deno.serve(async (req) => {
             const allCredentials = await base44.asServiceRole.entities.LEICredential.list();
             const allPSPs = await base44.asServiceRole.entities.ProvisionedPSP.list();
             const allMerchants = await base44.asServiceRole.entities.Merchant.list();
+            const isoCustomers = await base44.asServiceRole.entities.ISOGatewayCustomer.list();
+            const orchCustomers = await base44.asServiceRole.entities.OrchestrationCustomer.list();
+            const cryptoCustomers = await base44.asServiceRole.entities.CryptoGatewayCustomer.list();
+            const rwaProviders = await base44.asServiceRole.entities.RWAWhiteLabelCustomer.list();
+            const assetIssuers = await base44.asServiceRole.entities.AssetIssuer.list();
 
             // Refresh GLEIF data for all credentials (background update)
             for (const cred of allCredentials) {
@@ -266,14 +397,19 @@ Deno.serve(async (req) => {
                 }
             }
 
+            const totalEntities = allPSPs.length + allMerchants.length + isoCustomers.length + 
+                                 orchCustomers.length + cryptoCustomers.length + 
+                                 rwaProviders.length + assetIssuers.length;
+
             const dashboard = {
                 global_stats: {
                     total_leis_issued: allCredentials.length,
                     active_vleis: allCredentials.filter(c => c.vlei_status === 'active').length,
-                    compliance_rate: (allCredentials.length / (allPSPs.length + allMerchants.length) * 100).toFixed(1),
+                    compliance_rate: totalEntities > 0 ? (allCredentials.length / totalEntities * 100).toFixed(1) : '0.0',
                     entities_in_grace_period: 0,
                     entities_at_risk: 0,
-                    last_gleif_sync: new Date().toISOString()
+                    last_gleif_sync: new Date().toISOString(),
+                    total_entities: totalEntities
                 },
                 by_entity_type: {
                     psps: {
@@ -285,6 +421,31 @@ Deno.serve(async (req) => {
                         total: allMerchants.length,
                         with_lei: allCredentials.filter(c => c.entity_type === 'merchant').length,
                         with_vlei: allCredentials.filter(c => c.entity_type === 'merchant' && c.vlei_status === 'active').length
+                    },
+                    iso_gateway: {
+                        total: isoCustomers.length,
+                        with_lei: allCredentials.filter(c => c.entity_type === 'iso_gateway').length,
+                        with_vlei: allCredentials.filter(c => c.entity_type === 'iso_gateway' && c.vlei_status === 'active').length
+                    },
+                    orchestration: {
+                        total: orchCustomers.length,
+                        with_lei: allCredentials.filter(c => c.entity_type === 'orchestration').length,
+                        with_vlei: allCredentials.filter(c => c.entity_type === 'orchestration' && c.vlei_status === 'active').length
+                    },
+                    crypto_banking: {
+                        total: cryptoCustomers.length,
+                        with_lei: allCredentials.filter(c => c.entity_type === 'crypto_banking').length,
+                        with_vlei: allCredentials.filter(c => c.entity_type === 'crypto_banking' && c.vlei_status === 'active').length
+                    },
+                    rwa_providers: {
+                        total: rwaProviders.length,
+                        with_lei: allCredentials.filter(c => c.entity_type === 'rwa_provider').length,
+                        with_vlei: allCredentials.filter(c => c.entity_type === 'rwa_provider' && c.vlei_status === 'active').length
+                    },
+                    asset_issuers: {
+                        total: assetIssuers.length,
+                        with_lei: allCredentials.filter(c => c.entity_type === 'asset_issuer').length,
+                        with_vlei: allCredentials.filter(c => c.entity_type === 'asset_issuer' && c.vlei_status === 'active').length
                     }
                 },
                 upcoming_expirations: allCredentials

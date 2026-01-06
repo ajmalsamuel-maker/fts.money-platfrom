@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Shield, AlertTriangle, CheckCircle2, Clock, TrendingUp, Building2, Store, RefreshCw, ExternalLink } from 'lucide-react';
+import { Shield, AlertTriangle, CheckCircle2, Clock, TrendingUp, Building2, Store, RefreshCw, ExternalLink, Code, GitBranch, Wallet, Rocket, Users } from 'lucide-react';
 import FTSPlatformSidebarRestructured from '@/components/platform/FTSPlatformSidebarRestructured';
 import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
@@ -176,37 +176,27 @@ export default function LEIComplianceDashboard() {
                     </div>
 
                     {/* Entity Type Breakdown */}
-                    <div className="grid grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <Card>
                             <CardHeader>
                                 <div className="flex items-center gap-2">
                                     <Building2 className="h-5 w-5 text-blue-600" />
                                     <CardTitle>PSP Instances</CardTitle>
                                 </div>
-                                <CardDescription>Payment Service Provider compliance status</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 <div className="flex items-center justify-between">
-                                    <span className="text-sm text-slate-600">Total PSPs</span>
+                                    <span className="text-sm text-slate-600">Total</span>
                                     <Badge variant="outline">{dashboard.by_entity_type.psps.total}</Badge>
                                 </div>
                                 <div className="flex items-center justify-between">
                                     <span className="text-sm text-slate-600">With LEI</span>
                                     <Badge className="bg-blue-100 text-blue-800">{dashboard.by_entity_type.psps.with_lei}</Badge>
                                 </div>
-                                <div className="flex items-center justify-between">
-                                    <span className="text-sm text-slate-600">With vLEI</span>
-                                    <Badge className="bg-emerald-100 text-emerald-800">{dashboard.by_entity_type.psps.with_vlei}</Badge>
-                                </div>
-                                <div className="pt-3 border-t">
-                                    <Progress 
-                                        value={(dashboard.by_entity_type.psps.with_lei / dashboard.by_entity_type.psps.total) * 100} 
-                                        className="h-2"
-                                    />
-                                    <p className="text-xs text-slate-500 mt-2">
-                                        {((dashboard.by_entity_type.psps.with_lei / dashboard.by_entity_type.psps.total) * 100).toFixed(1)}% compliant
-                                    </p>
-                                </div>
+                                <Progress 
+                                    value={dashboard.by_entity_type.psps.total > 0 ? (dashboard.by_entity_type.psps.with_lei / dashboard.by_entity_type.psps.total) * 100 : 0} 
+                                    className="h-2"
+                                />
                             </CardContent>
                         </Card>
 
@@ -216,30 +206,135 @@ export default function LEIComplianceDashboard() {
                                     <Store className="h-5 w-5 text-purple-600" />
                                     <CardTitle>Merchants</CardTitle>
                                 </div>
-                                <CardDescription>Merchant compliance status</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 <div className="flex items-center justify-between">
-                                    <span className="text-sm text-slate-600">Total Merchants</span>
+                                    <span className="text-sm text-slate-600">Total</span>
                                     <Badge variant="outline">{dashboard.by_entity_type.merchants.total}</Badge>
                                 </div>
                                 <div className="flex items-center justify-between">
                                     <span className="text-sm text-slate-600">With LEI</span>
                                     <Badge className="bg-blue-100 text-blue-800">{dashboard.by_entity_type.merchants.with_lei}</Badge>
                                 </div>
+                                <Progress 
+                                    value={dashboard.by_entity_type.merchants.total > 0 ? (dashboard.by_entity_type.merchants.with_lei / dashboard.by_entity_type.merchants.total) * 100 : 0} 
+                                    className="h-2"
+                                />
+                            </CardContent>
+                        </Card>
+
+                        <Card>
+                            <CardHeader>
+                                <div className="flex items-center gap-2">
+                                    <Code className="h-5 w-5 text-cyan-600" />
+                                    <CardTitle>ISO Gateway</CardTitle>
+                                </div>
+                            </CardHeader>
+                            <CardContent className="space-y-4">
                                 <div className="flex items-center justify-between">
-                                    <span className="text-sm text-slate-600">With vLEI</span>
-                                    <Badge className="bg-emerald-100 text-emerald-800">{dashboard.by_entity_type.merchants.with_vlei}</Badge>
+                                    <span className="text-sm text-slate-600">Total</span>
+                                    <Badge variant="outline">{dashboard.by_entity_type.iso_gateway.total}</Badge>
                                 </div>
-                                <div className="pt-3 border-t">
-                                    <Progress 
-                                        value={(dashboard.by_entity_type.merchants.with_lei / dashboard.by_entity_type.merchants.total) * 100} 
-                                        className="h-2"
-                                    />
-                                    <p className="text-xs text-slate-500 mt-2">
-                                        {((dashboard.by_entity_type.merchants.with_lei / dashboard.by_entity_type.merchants.total) * 100).toFixed(1)}% compliant
-                                    </p>
+                                <div className="flex items-center justify-between">
+                                    <span className="text-sm text-slate-600">With LEI</span>
+                                    <Badge className="bg-blue-100 text-blue-800">{dashboard.by_entity_type.iso_gateway.with_lei}</Badge>
                                 </div>
+                                <Progress 
+                                    value={dashboard.by_entity_type.iso_gateway.total > 0 ? (dashboard.by_entity_type.iso_gateway.with_lei / dashboard.by_entity_type.iso_gateway.total) * 100 : 0} 
+                                    className="h-2"
+                                />
+                            </CardContent>
+                        </Card>
+
+                        <Card>
+                            <CardHeader>
+                                <div className="flex items-center gap-2">
+                                    <GitBranch className="h-5 w-5 text-indigo-600" />
+                                    <CardTitle>Orchestration</CardTitle>
+                                </div>
+                            </CardHeader>
+                            <CardContent className="space-y-4">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-sm text-slate-600">Total</span>
+                                    <Badge variant="outline">{dashboard.by_entity_type.orchestration.total}</Badge>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <span className="text-sm text-slate-600">With LEI</span>
+                                    <Badge className="bg-blue-100 text-blue-800">{dashboard.by_entity_type.orchestration.with_lei}</Badge>
+                                </div>
+                                <Progress 
+                                    value={dashboard.by_entity_type.orchestration.total > 0 ? (dashboard.by_entity_type.orchestration.with_lei / dashboard.by_entity_type.orchestration.total) * 100 : 0} 
+                                    className="h-2"
+                                />
+                            </CardContent>
+                        </Card>
+
+                        <Card>
+                            <CardHeader>
+                                <div className="flex items-center gap-2">
+                                    <Wallet className="h-5 w-5 text-emerald-600" />
+                                    <CardTitle>Crypto Banking</CardTitle>
+                                </div>
+                            </CardHeader>
+                            <CardContent className="space-y-4">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-sm text-slate-600">Total</span>
+                                    <Badge variant="outline">{dashboard.by_entity_type.crypto_banking.total}</Badge>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <span className="text-sm text-slate-600">With LEI</span>
+                                    <Badge className="bg-blue-100 text-blue-800">{dashboard.by_entity_type.crypto_banking.with_lei}</Badge>
+                                </div>
+                                <Progress 
+                                    value={dashboard.by_entity_type.crypto_banking.total > 0 ? (dashboard.by_entity_type.crypto_banking.with_lei / dashboard.by_entity_type.crypto_banking.total) * 100 : 0} 
+                                    className="h-2"
+                                />
+                            </CardContent>
+                        </Card>
+
+                        <Card>
+                            <CardHeader>
+                                <div className="flex items-center gap-2">
+                                    <Rocket className="h-5 w-5 text-orange-600" />
+                                    <CardTitle>RWA Providers</CardTitle>
+                                </div>
+                            </CardHeader>
+                            <CardContent className="space-y-4">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-sm text-slate-600">Total</span>
+                                    <Badge variant="outline">{dashboard.by_entity_type.rwa_providers.total}</Badge>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <span className="text-sm text-slate-600">With LEI</span>
+                                    <Badge className="bg-blue-100 text-blue-800">{dashboard.by_entity_type.rwa_providers.with_lei}</Badge>
+                                </div>
+                                <Progress 
+                                    value={dashboard.by_entity_type.rwa_providers.total > 0 ? (dashboard.by_entity_type.rwa_providers.with_lei / dashboard.by_entity_type.rwa_providers.total) * 100 : 0} 
+                                    className="h-2"
+                                />
+                            </CardContent>
+                        </Card>
+
+                        <Card>
+                            <CardHeader>
+                                <div className="flex items-center gap-2">
+                                    <Users className="h-5 w-5 text-pink-600" />
+                                    <CardTitle>Asset Issuers</CardTitle>
+                                </div>
+                            </CardHeader>
+                            <CardContent className="space-y-4">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-sm text-slate-600">Total</span>
+                                    <Badge variant="outline">{dashboard.by_entity_type.asset_issuers.total}</Badge>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <span className="text-sm text-slate-600">With LEI</span>
+                                    <Badge className="bg-blue-100 text-blue-800">{dashboard.by_entity_type.asset_issuers.with_lei}</Badge>
+                                </div>
+                                <Progress 
+                                    value={dashboard.by_entity_type.asset_issuers.total > 0 ? (dashboard.by_entity_type.asset_issuers.with_lei / dashboard.by_entity_type.asset_issuers.total) * 100 : 0} 
+                                    className="h-2"
+                                />
                             </CardContent>
                         </Card>
                     </div>
