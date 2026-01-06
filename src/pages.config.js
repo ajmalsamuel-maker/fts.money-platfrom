@@ -40,6 +40,7 @@ import CommunityProductCatalog from './pages/CommunityProductCatalog';
 import CommunityUserManagement from './pages/CommunityUserManagement';
 import Compliance from './pages/Compliance';
 import ComplianceFramework from './pages/ComplianceFramework';
+import CredentialPresentation from './pages/CredentialPresentation';
 import CryptoAPIKeys from './pages/CryptoAPIKeys';
 import CryptoAnalytics from './pages/CryptoAnalytics';
 import CryptoBankingVASPManagement from './pages/CryptoBankingVASPManagement';
@@ -67,6 +68,7 @@ import DataRetentionManagement from './pages/DataRetentionManagement';
 import DatabaseMigration from './pages/DatabaseMigration';
 import DatabaseSchemaValidation from './pages/DatabaseSchemaValidation';
 import DatabaseSetup from './pages/DatabaseSetup';
+import DigitalIdentityWallet from './pages/DigitalIdentityWallet';
 import Disputes from './pages/Disputes';
 import Documentation from './pages/Documentation';
 import EInvoicingDashboard from './pages/EInvoicingDashboard';
@@ -108,7 +110,6 @@ import ISOGatewayConnections from './pages/ISOGatewayConnections';
 import ISOGatewayCustomerPortal from './pages/ISOGatewayCustomerPortal';
 import ISOGatewayCustomers from './pages/ISOGatewayCustomers';
 import ISOGatewayLogin from './pages/ISOGatewayLogin';
-import Invoices from './pages/Invoices';
 import ISOGatewayRouting from './pages/ISOGatewayRouting';
 import ISOGatewayTestConsole from './pages/ISOGatewayTestConsole';
 import ISOGatewayUserManagement from './pages/ISOGatewayUserManagement';
@@ -121,6 +122,7 @@ import InvestorMarketplace from './pages/InvestorMarketplace';
 import InvestorOnboarding from './pages/InvestorOnboarding';
 import InvestorPortfolio from './pages/InvestorPortfolio';
 import InvestorSettings from './pages/InvestorSettings';
+import Invoices from './pages/Invoices';
 import Invoicing from './pages/Invoicing';
 import KongAPIIntegrationGuide from './pages/KongAPIIntegrationGuide';
 import KongAPIKeyManagement from './pages/KongAPIKeyManagement';
@@ -212,10 +214,10 @@ import PSPProvisioning from './pages/PSPProvisioning';
 import PSPProvisioningWizard from './pages/PSPProvisioningWizard';
 import PSPRouting from './pages/PSPRouting';
 import PSPSetupWizard from './pages/PSPSetupWizard';
+import PaymentGateways from './pages/PaymentGateways';
 import PSPUserManagement from './pages/PSPUserManagement';
 import PSPWholesaleBrowse from './pages/PSPWholesaleBrowse';
 import PSPWholesaleMarketplace from './pages/PSPWholesaleMarketplace';
-import PaymentGateways from './pages/PaymentGateways';
 import PaymentLinks from './pages/PaymentLinks';
 import PaymentMethods from './pages/PaymentMethods';
 import PaymentOrchestration from './pages/PaymentOrchestration';
@@ -279,8 +281,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import DigitalIdentityWallet from './pages/DigitalIdentityWallet';
-import CredentialPresentation from './pages/CredentialPresentation';
 import __Layout from './Layout.jsx';
 
 
@@ -327,6 +327,7 @@ export const PAGES = {
     "CommunityUserManagement": CommunityUserManagement,
     "Compliance": Compliance,
     "ComplianceFramework": ComplianceFramework,
+    "CredentialPresentation": CredentialPresentation,
     "CryptoAPIKeys": CryptoAPIKeys,
     "CryptoAnalytics": CryptoAnalytics,
     "CryptoBankingVASPManagement": CryptoBankingVASPManagement,
@@ -354,6 +355,7 @@ export const PAGES = {
     "DatabaseMigration": DatabaseMigration,
     "DatabaseSchemaValidation": DatabaseSchemaValidation,
     "DatabaseSetup": DatabaseSetup,
+    "DigitalIdentityWallet": DigitalIdentityWallet,
     "Disputes": Disputes,
     "Documentation": Documentation,
     "EInvoicingDashboard": EInvoicingDashboard,
@@ -395,7 +397,6 @@ export const PAGES = {
     "ISOGatewayCustomerPortal": ISOGatewayCustomerPortal,
     "ISOGatewayCustomers": ISOGatewayCustomers,
     "ISOGatewayLogin": ISOGatewayLogin,
-    "Invoices": Invoices,
     "ISOGatewayRouting": ISOGatewayRouting,
     "ISOGatewayTestConsole": ISOGatewayTestConsole,
     "ISOGatewayUserManagement": ISOGatewayUserManagement,
@@ -408,6 +409,7 @@ export const PAGES = {
     "InvestorOnboarding": InvestorOnboarding,
     "InvestorPortfolio": InvestorPortfolio,
     "InvestorSettings": InvestorSettings,
+    "Invoices": Invoices,
     "Invoicing": Invoicing,
     "KongAPIIntegrationGuide": KongAPIIntegrationGuide,
     "KongAPIKeyManagement": KongAPIKeyManagement,
@@ -499,10 +501,10 @@ export const PAGES = {
     "PSPProvisioningWizard": PSPProvisioningWizard,
     "PSPRouting": PSPRouting,
     "PSPSetupWizard": PSPSetupWizard,
+    "PaymentGateways": PaymentGateways,
     "PSPUserManagement": PSPUserManagement,
     "PSPWholesaleBrowse": PSPWholesaleBrowse,
     "PSPWholesaleMarketplace": PSPWholesaleMarketplace,
-    "PaymentGateways": PaymentGateways,
     "PaymentLinks": PaymentLinks,
     "PaymentMethods": PaymentMethods,
     "PaymentOrchestration": PaymentOrchestration,
@@ -566,8 +568,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "DigitalIdentityWallet": DigitalIdentityWallet,
-    "CredentialPresentation": CredentialPresentation,
 }
 
 export const pagesConfig = {

@@ -16,13 +16,14 @@ export default function LEIComplianceDashboard() {
     const queryClient = useQueryClient();
     const { platformUser } = usePlatformAuth();
 
-    const { data: dashboard, isLoading } = useQuery({
+    const { data: dashboard, isLoading, error } = useQuery({
         queryKey: ['lei-compliance-dashboard'],
         queryFn: async () => {
             const response = await base44.functions.invoke('complianceMonitor', { action: 'get_dashboard' });
             return response.data.dashboard;
         },
-        refetchInterval: 60000 // Refresh every minute
+        refetchInterval: 60000, // Refresh every minute
+        retry: 2
     });
 
     const runComplianceCheck = useMutation({
@@ -35,6 +36,29 @@ export default function LEIComplianceDashboard() {
         }
     });
 
+    if (error) {
+        return (
+            <div className="flex h-screen bg-slate-50">
+                <FTSPlatformSidebarRestructured 
+                    currentPage="LEIComplianceDashboard" 
+                    userEmail={platformUser?.email} 
+                    userRole={platformUser?.platform_role} 
+                />
+                <div className="flex-1 flex items-center justify-center">
+                    <div className="text-center">
+                        <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
+                        <p className="text-slate-900 font-semibold mb-2">Failed to load compliance data</p>
+                        <p className="text-sm text-slate-600 mb-4">{error.message}</p>
+                        <Button onClick={() => window.location.reload()} variant="outline">
+                            <RefreshCw className="h-4 w-4 mr-2" />
+                            Retry
+                        </Button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     if (isLoading || !dashboard) {
         return (
             <div className="flex h-screen bg-slate-50">
@@ -44,7 +68,10 @@ export default function LEIComplianceDashboard() {
                     userRole={platformUser?.platform_role} 
                 />
                 <div className="flex-1 flex items-center justify-center">
-                    <RefreshCw className="h-8 w-8 animate-spin text-blue-600" />
+                    <div className="text-center">
+                        <RefreshCw className="h-8 w-8 animate-spin text-blue-600 mx-auto mb-4" />
+                        <p className="text-sm text-slate-600">Loading compliance dashboard...</p>
+                    </div>
                 </div>
             </div>
         );
