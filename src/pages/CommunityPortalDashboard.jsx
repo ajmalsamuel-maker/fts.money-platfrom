@@ -528,7 +528,7 @@ export default function CommunityPortalDashboard() {
                             {/* ACTIVE USER DASHBOARD VIEW */}
 
                     {/* Stats Grid */}
-                    <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-6">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
                         <Card>
                             <CardContent className="p-6">
                                 <div className="flex flex-col items-center text-center">

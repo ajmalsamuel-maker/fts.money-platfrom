@@ -76,7 +76,7 @@ export default function RWAProviderDashboard() {
                     </div>
 
                     {/* Stats */}
-                    <div className="grid grid-cols-4 gap-4 mb-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                         <Card>
                             <CardHeader className="pb-2">
                                 <CardTitle className="text-sm text-slate-600 flex items-center gap-2">
@@ -135,7 +135,7 @@ export default function RWAProviderDashboard() {
                     </div>
 
                     {/* Recent Activity */}
-                    <div className="grid grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <Card>
                             <CardHeader>
                                 <CardTitle>Recent Asset Issuers</CardTitle>

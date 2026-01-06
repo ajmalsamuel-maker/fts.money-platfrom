@@ -208,7 +208,7 @@ export default function CryptoGatewayDashboard() {
                     )}
 
                     {/* Primary Metrics */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
                                 <Card className="bg-gradient-to-br from-blue-500 to-cyan-500 text-white border-0">
                                     <CardContent className="p-6">
                                         <div className="flex items-center justify-between">
@@ -291,7 +291,7 @@ export default function CryptoGatewayDashboard() {
                                 </div>
 
                                 {/* Secondary Metrics Row */}
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                                 <Card className="bg-white border-slate-200">
                                     <CardContent className="p-4">
                                         <div className="flex items-center justify-between">
@@ -632,7 +632,7 @@ export default function CryptoGatewayDashboard() {
                                                 <Bar dataKey="offRamp" fill="#ef4444" name="Off-Ramp (Crypto → Fiat)" />
                                             </BarChart>
                                         </ResponsiveContainer>
-                                        <div className="mt-4 grid grid-cols-2 gap-4">
+                                        <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
                                             <div className="p-3 bg-green-50 rounded-lg">
                                                 <div className="text-sm text-green-700 font-medium">Total On-Ramp</div>
                                                 <div className="text-2xl font-bold text-green-900">
@@ -656,7 +656,7 @@ export default function CryptoGatewayDashboard() {
                                     <CardTitle>Quick Actions</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="grid md:grid-cols-4 gap-4">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                                         <button 
                                             className="p-4 bg-white/10 rounded-lg hover:bg-white/20 transition-colors text-left"
                                             onClick={() => window.location.href = '/CryptoWallets'}

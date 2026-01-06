@@ -124,7 +124,7 @@ export default function LEIComplianceDashboard() {
                     </div>
 
                     {/* Global Stats */}
-                    <div className="grid grid-cols-4 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                         <Card>
                             <CardContent className="pt-6">
                                 <div className="flex items-center justify-between">
@@ -176,7 +176,7 @@ export default function LEIComplianceDashboard() {
                     </div>
 
                     {/* Entity Type Breakdown */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 md:gap-6">
                         <Card>
                             <CardHeader>
                                 <div className="flex items-center gap-2">
@@ -399,7 +399,7 @@ export default function LEIComplianceDashboard() {
                                 </CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <div className="grid grid-cols-4 gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                                     <div className="text-center p-4 bg-emerald-50 rounded-lg border border-emerald-200">
                                         <p className="text-2xl font-bold text-emerald-600">
                                             {runComplianceCheck.data.results.summary.compliant}
