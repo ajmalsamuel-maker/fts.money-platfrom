@@ -10,12 +10,15 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Copy, Play, Code, FileText, Zap } from 'lucide-react';
+import { Copy, Play, Code, FileText, Zap, Menu } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { cn } from "@/lib/utils";
 
 export default function ISOGatewayTestConsole() {
     const [testApiKey, setTestApiKey] = useState('');
     const [testMessage, setTestMessage] = useState('');
     const [testResult, setTestResult] = useState(null);
+    const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
     // Sample ISO 8583 message (base64)
     const sampleISO8583 = 'MDIwMDA3MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAxMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDA=';
@@ -71,9 +74,37 @@ export default function ISOGatewayTestConsole() {
 
     return (
         <div className="flex h-screen bg-gray-50">
-            <FTSPlatformSidebar currentPage="ISOGatewayTestConsole" />
+            {mobileSidebarOpen && (
+                <div 
+                    className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+                    onClick={() => setMobileSidebarOpen(false)}
+                />
+            )}
             
-            <div className="flex-1 overflow-auto p-8">
+            <div className={cn(
+                "fixed lg:static inset-y-0 left-0 z-50 lg:z-auto transition-transform duration-300",
+                mobileSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+            )}>
+                <FTSPlatformSidebar currentPage="ISOGatewayTestConsole" />
+            </div>
+            
+            <div className="flex-1 overflow-auto">
+                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-6 sticky top-0 z-10">
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="lg:hidden flex-shrink-0"
+                            onClick={() => setMobileSidebarOpen(true)}
+                        >
+                            <Menu className="h-5 w-5" />
+                        </Button>
+                        <div className="min-w-0">
+                            <h2 className="text-base md:text-lg font-semibold text-slate-900 truncate">ISO Gateway Test Console</h2>
+                        </div>
+                    </div>
+                </header>
+                <div className="p-4 md:p-8">
                 <div className="max-w-6xl mx-auto">
                     <div className="mb-6">
                         <h1 className="text-3xl font-bold text-gray-900">ISO Gateway Test Console</h1>
@@ -81,7 +112,7 @@ export default function ISOGatewayTestConsole() {
                     </div>
 
                     <Tabs defaultValue="endpoints" className="space-y-6">
-                        <TabsList className="grid w-full grid-cols-4">
+                        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4">
                             <TabsTrigger value="endpoints">API Endpoints</TabsTrigger>
                             <TabsTrigger value="test">Live Testing</TabsTrigger>
                             <TabsTrigger value="examples">Code Examples</TabsTrigger>
@@ -367,6 +398,7 @@ print(response.json()['translated_message'])`}
                         </TabsContent>
                     </Tabs>
                 </div>
+            </div>
             </div>
         </div>
     );
