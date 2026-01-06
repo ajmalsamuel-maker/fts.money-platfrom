@@ -496,18 +496,28 @@ export default function PSPUserManagement() {
                         <Button variant="outline" onClick={() => setShowPasswordDialog(false)}>Cancel</Button>
                         <Button 
                             onClick={async () => {
-                                if (passwordData.password.length < 8 || passwordData.password !== passwordData.confirmPassword) {
-                                    toast.error('Invalid password');
+                                if (passwordData.password.length < 8) {
+                                    toast.error('Password must be at least 8 characters');
                                     return;
                                 }
-                                await base44.functions.invoke('managePSPUsers', {
-                                    action: 'updatePassword',
-                                    psp_code: userPspCode,
-                                    user_id: selectedUser.id,
-                                    new_password: passwordData.password
-                                });
-                                toast.success('Password updated');
-                                setShowPasswordDialog(false);
+                                if (passwordData.password !== passwordData.confirmPassword) {
+                                    toast.error('Passwords do not match');
+                                    return;
+                                }
+                                try {
+                                    await base44.functions.invoke('managePSPUsers', {
+                                        action: 'update',
+                                        psp_code: userPspCode,
+                                        user_id: selectedUser.id,
+                                        password: passwordData.password
+                                    });
+                                    queryClient.invalidateQueries({ queryKey: ['psp-users', userPspCode] });
+                                    toast.success('Password updated successfully');
+                                    setShowPasswordDialog(false);
+                                    setPasswordData({ password: '', confirmPassword: '' });
+                                } catch (error) {
+                                    toast.error('Failed to update password: ' + error.message);
+                                }
                             }}
                         >
                             Update Password
