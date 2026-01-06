@@ -78,13 +78,26 @@ Deno.serve(async (req) => {
                     community_role: u.community_role || u.data?.community_role || u.data?.data?.community_role,
                     account_type: u.account_type || u.data?.account_type || u.data?.data?.account_type,
                     last_login: u.last_login || u.data?.last_login || u.data?.data?.last_login,
-                    created_date: u.created_date
+                    created_date: u.created_date,
+                    allowed_services: u.allowed_services || u.data?.allowed_services || u.data?.data?.allowed_services
                 };
                 console.log('Mapped user:', userData);
                 return userData;
             });
 
             return Response.json({ success: true, users: mapped, total: allUsers.length, filtered: filtered.length });
+        }
+
+        if (action === 'updateUser') {
+            const { userId, updates } = body;
+            await base44.asServiceRole.entities.AuthUser.update(userId, updates);
+            return Response.json({ success: true });
+        }
+
+        if (action === 'deleteUser') {
+            const { userId } = body;
+            await base44.asServiceRole.entities.AuthUser.delete(userId);
+            return Response.json({ success: true });
         }
 
         return Response.json({ success: false, error: 'Invalid action' });
