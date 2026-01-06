@@ -181,16 +181,18 @@ export default function Dashboard() {
 
     return (
         <div className="min-h-screen bg-slate-50">
-            <div className={cn(
-                "lg:block",
-                sidebarCollapsed ? "hidden" : "block"
-            )}>
-                <Sidebar 
-                    collapsed={sidebarCollapsed} 
-                    onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
-                    currentPage="Dashboard"
+            {!sidebarCollapsed && (
+                <div 
+                    className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+                    onClick={() => setSidebarCollapsed(true)}
                 />
-            </div>
+            )}
+            
+            <Sidebar 
+                collapsed={sidebarCollapsed} 
+                onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
+                currentPage="Dashboard"
+            />
             <UnifiedCommandPalette 
                 open={commandPaletteOpen} 
                 onOpenChange={setCommandPaletteOpen}
