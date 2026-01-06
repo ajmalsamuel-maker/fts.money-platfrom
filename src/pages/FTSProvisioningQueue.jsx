@@ -98,11 +98,16 @@ export default function FTSProvisioningQueue() {
             try {
                 // Execute based on step type
                 if (step === 'database') {
-                    const result = await base44.functions.invoke('provisionPSPSchema', {
-                        psp_code: psp.psp_code
-                    });
-                    if (!result.data?.success) throw new Error(result.data?.error || 'Schema creation failed');
-                    return { pspId, step, success: true };
+                    try {
+                        const result = await base44.functions.invoke('provisionPSPSchema', {
+                            psp_code: psp.psp_code
+                        });
+                        if (!result.data?.success) throw new Error(result.data?.error || 'Schema creation failed');
+                        return { pspId, step, success: true };
+                    } catch (err) {
+                        console.error('Database provisioning error:', err);
+                        throw new Error(err.response?.data?.error || err.message || 'Schema creation failed');
+                    }
                 }
 
                 if (step === 'api_keys') {
