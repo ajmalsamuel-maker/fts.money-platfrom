@@ -39,7 +39,7 @@ export default function PSPLogin() {
             }
         }
         setCheckComplete(true);
-    }, [navigate]);
+    }, []);
     
     if (!checkComplete) {
         return null;

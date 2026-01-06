@@ -91,7 +91,7 @@ export default function Dashboard() {
             localStorage.removeItem('staff_session');
             navigate('/PSPLogin');
         }
-    }, [navigate]);
+    }, []);
 
     // Fetch data from isolated PSP schema (PCI Level 1 & GDPR compliant)
     const { data: transactions = [] } = useQuery({
