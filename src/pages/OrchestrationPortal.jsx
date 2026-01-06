@@ -7,12 +7,14 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { GitBranch, Activity, TrendingUp, Zap, LogOut, Settings, Key, Webhook, Bell, Plus, Copy, Trash2, Eye, EyeOff } from 'lucide-react';
+import { GitBranch, Activity, TrendingUp, Zap, LogOut, Settings, Key, Webhook, Bell, Plus, Copy, Trash2, Eye, EyeOff, Menu } from 'lucide-react';
+import { cn } from "@/lib/utils";
 import OrchestrationRuleBuilder from '@/components/orchestration/OrchestrationRuleBuilder';
 import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function OrchestrationPortal() {
     const { t } = useI18n();
+    const [sidebarOpen, setSidebarOpen] = useState(false);
     const [customerId, setCustomerId] = useState(null);
     const [showSettings, setShowSettings] = useState(false);
     const [settingsTab, setSettingsTab] = useState('api_keys');
@@ -83,6 +85,14 @@ export default function OrchestrationPortal() {
             <header className="bg-white border-b border-slate-200 sticky top-0 z-10">
                 <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
                     <div className="flex items-center gap-3">
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="lg:hidden"
+                            onClick={() => setSidebarOpen(!sidebarOpen)}
+                        >
+                            <Menu className="h-5 w-5" />
+                        </Button>
                         <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center">
                             <GitBranch className="h-6 w-6 text-white" />
                         </div>

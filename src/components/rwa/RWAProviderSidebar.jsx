@@ -2,10 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import { FTS_LOGOS } from '@/components/community/FTSBrandColors';
-import { BarChart3, Users, Briefcase, Settings, LogOut, Building2, Coins } from 'lucide-react';
+import { BarChart3, Users, Briefcase, Settings, LogOut, Building2, Coins, X } from 'lucide-react';
 
-export default function RWAProviderSidebar({ currentPage, providerName, providerEmail }) {
+export default function RWAProviderSidebar({ currentPage, providerName, providerEmail, onClose }) {
     const menuItems = [
         { label: 'Dashboard', path: 'RWAProviderDashboard', icon: BarChart3 },
         { label: 'Asset Issuers', path: 'RWAProviderIssuers', icon: Building2 },
@@ -16,9 +17,17 @@ export default function RWAProviderSidebar({ currentPage, providerName, provider
     ];
 
     return (
-        <aside className="w-64 bg-white border-r border-slate-200 flex flex-col h-screen">
-            <div className="h-16 flex items-center justify-center border-b border-slate-200 px-3">
+        <aside className="w-64 bg-white border-r border-slate-200 flex flex-col h-screen fixed lg:static z-40">
+            <div className="h-16 flex items-center justify-between border-b border-slate-200 px-3">
                 <img src={FTS_LOGOS.primary} alt="RWA Platform" className="h-8" />
+                <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="lg:hidden"
+                    onClick={onClose}
+                >
+                    <X className="h-5 w-5" />
+                </Button>
             </div>
 
             {providerEmail && (

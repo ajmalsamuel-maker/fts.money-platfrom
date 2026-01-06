@@ -154,7 +154,7 @@ export default function CommunityPortalSidebarOptimized({ currentPage, userEmail
     };
 
     return (
-        <aside className="w-64 flex flex-col h-screen bg-white border-r border-slate-200" style={{ width: '256px' }}>
+        <aside className="w-64 flex flex-col h-screen bg-white border-r border-slate-200 fixed lg:static z-40" style={{ width: '256px' }}>
             {/* Logo */}
             <div className="h-16 flex items-center justify-center px-4 border-b border-slate-200" style={{ height: '64px' }}>
                 <div className="flex items-center gap-2">

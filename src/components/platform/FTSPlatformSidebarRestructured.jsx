@@ -197,7 +197,7 @@ export default function FTSPlatformSidebarRestructured({ currentPage, userRole, 
     };
 
     return (
-        <aside className="w-64 bg-white border-r border-slate-200 flex flex-col h-screen" style={{ width: '256px' }}>
+        <aside className="w-64 bg-white border-r border-slate-200 flex flex-col h-screen fixed lg:static z-40" style={{ width: '256px' }}>
             {/* Logo */}
             <div className="h-16 flex items-center justify-center border-b border-slate-200 px-3" style={{ height: '64px' }}>
                 <img 

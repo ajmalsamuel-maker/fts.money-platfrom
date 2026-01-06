@@ -32,7 +32,8 @@ import {
     Rocket,
     BarChart3,
     Wallet,
-    Briefcase
+    Briefcase,
+    Menu
 } from 'lucide-react';
 
 export default function CommunityPortalDashboard() {
@@ -109,6 +110,7 @@ export default function CommunityPortalDashboard() {
         enabled: !!session?.email
     });
 
+    const [sidebarOpen, setSidebarOpen] = useState(false);
     const totalServices = myPSPs.length + myISOCustomers.length + myOrchCustomers.length + myCryptoCustomers.length + myRWAProviders.length;
     const isNewUser = totalServices === 0;
 
@@ -180,7 +182,21 @@ export default function CommunityPortalDashboard() {
 
     return (
         <div className="flex h-screen bg-slate-50">
-            <CommunityPortalSidebarOptimized currentPage="CommunityPortalDashboard" userEmail={session?.email} />
+            <div className={cn(
+                "lg:block",
+                sidebarOpen ? "block" : "hidden"
+            )}>
+                <CommunityPortalSidebarOptimized currentPage="CommunityPortalDashboard" userEmail={session?.email} />
+            </div>
+            
+            {/* Mobile overlay */}
+            {sidebarOpen && (
+                <div 
+                    className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+                    onClick={() => setSidebarOpen(false)}
+                />
+            )}
+            
             <UnifiedCommandPalette 
                 open={commandPaletteOpen} 
                 onOpenChange={setCommandPaletteOpen}
@@ -191,6 +207,14 @@ export default function CommunityPortalDashboard() {
                 {/* Header - FTS.Money Style */}
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10" style={{ height: '64px' }}>
                     <div className="flex items-center gap-6">
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="lg:hidden"
+                            onClick={() => setSidebarOpen(!sidebarOpen)}
+                        >
+                            <Menu className="h-5 w-5" />
+                        </Button>
                         <h2 className="text-sm font-semibold text-slate-900" style={{ fontFamily: 'Montserrat, sans-serif' }}>
                             Community Portal
                         </h2>

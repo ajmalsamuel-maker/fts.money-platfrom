@@ -1,15 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useRWAProviderAuth } from '@/components/auth/useRWAProviderAuth';
 import RWAProviderSidebar from '@/components/rwa/RWAProviderSidebar';
-import { Building2, Coins, Users, DollarSign, TrendingUp, Activity } from 'lucide-react';
+import { Building2, Coins, Users, DollarSign, TrendingUp, Activity, Menu } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function RWAProviderDashboard() {
     const { provider, loading } = useRWAProviderAuth();
     const { t } = useI18n();
+    const [sidebarOpen, setSidebarOpen] = useState(false);
 
     const { data: issuers = [] } = useQuery({
         queryKey: ['issuers', provider?.provider_code],
@@ -35,17 +38,41 @@ export default function RWAProviderDashboard() {
 
     return (
         <div className="flex h-screen bg-slate-50">
-            <RWAProviderSidebar 
-                currentPage="RWAProviderDashboard"
-                providerName={provider?.company_name}
-                providerEmail={provider?.email}
-            />
+            <div className={cn(
+                "lg:block",
+                sidebarOpen ? "block" : "hidden"
+            )}>
+                <RWAProviderSidebar 
+                    currentPage="RWAProviderDashboard"
+                    providerName={provider?.company_name}
+                    providerEmail={provider?.email}
+                    onClose={() => setSidebarOpen(false)}
+                />
+            </div>
+            
+            {/* Mobile overlay */}
+            {sidebarOpen && (
+                <div 
+                    className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+                    onClick={() => setSidebarOpen(false)}
+                />
+            )}
 
             <div className="flex-1 overflow-auto">
                 <div className="p-6">
-                    <div className="mb-6">
+                    <div className="mb-6 flex items-center gap-3">
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="lg:hidden"
+                            onClick={() => setSidebarOpen(!sidebarOpen)}
+                        >
+                            <Menu className="h-5 w-5" />
+                        </Button>
+                        <div>
                         <h1 className="text-3xl font-bold text-slate-900">Dashboard</h1>
                         <p className="text-slate-600">Welcome to {provider?.company_name}</p>
+                        </div>
                     </div>
 
                     {/* Stats */}

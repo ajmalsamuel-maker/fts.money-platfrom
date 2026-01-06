@@ -12,10 +12,11 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { 
     Key, Plus, Copy, Eye, EyeOff, Trash2, GitBranch, Activity,
-    FileText, Code, Zap, TrendingUp, DollarSign, LogOut, Settings, Webhook, Bell
+    FileText, Code, Zap, TrendingUp, DollarSign, LogOut, Settings, Webhook, Bell, Menu
 } from 'lucide-react';
 
 export default function ISOGatewayCustomerPortal() {
+    const [sidebarOpen, setSidebarOpen] = useState(false);
     const [showKeyDialog, setShowKeyDialog] = useState(false);
     const [showConnDialog, setShowConnDialog] = useState(false);
     const [showSettings, setShowSettings] = useState(false);
@@ -136,6 +137,14 @@ export default function ISOGatewayCustomerPortal() {
             <header className="bg-white border-b border-slate-200 sticky top-0 z-10">
                 <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
                     <div className="flex items-center gap-3">
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="lg:hidden"
+                            onClick={() => setSidebarOpen(!sidebarOpen)}
+                        >
+                            <Menu className="h-5 w-5" />
+                        </Button>
                         <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center">
                             <Zap className="h-6 w-6 text-white" />
                         </div>

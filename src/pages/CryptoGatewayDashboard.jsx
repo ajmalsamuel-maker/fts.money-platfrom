@@ -16,13 +16,14 @@ import {
     ArrowUpRight, ArrowDownRight, Zap, AlertCircle,
     CheckCircle2, DollarSign, Globe, Shield, CreditCard,
     Clock, TrendingDown, ArrowRight, ExternalLink, LogOut,
-    BarChart3, PieChart, Calendar, ArrowLeftRight
+    BarChart3, PieChart, Calendar, ArrowLeftRight, Menu
 } from 'lucide-react';
 import { LineChart, Line, BarChart, Bar, PieChart as RePieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 export default function CryptoGatewayDashboard() {
     const { t } = useI18n();
     const [timeRange, setTimeRange] = useState('7d');
+    const [sidebarOpen, setSidebarOpen] = useState(false);
 
     // Mock data - replace with real API calls
     const stats = {
@@ -133,7 +134,17 @@ export default function CryptoGatewayDashboard() {
         <div className="flex flex-col h-screen bg-slate-50">
             {/* Top Header */}
             <div className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 flex-shrink-0">
-                <img src={FTS_LOGOS.primary} alt="FTS.Money" className="h-8" />
+                <div className="flex items-center gap-3">
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="lg:hidden"
+                        onClick={() => setSidebarOpen(!sidebarOpen)}
+                    >
+                        <Menu className="h-5 w-5" />
+                    </Button>
+                    <img src={FTS_LOGOS.primary} alt="FTS.Money" className="h-8" />
+                </div>
                 <div className="flex items-center gap-3">
                     <LanguageSwitcher variant="select" showLabel={true} />
                     <div className="text-right">
@@ -145,7 +156,24 @@ export default function CryptoGatewayDashboard() {
 
             {/* Main Content Area with Sidebar */}
             <div className="flex flex-1 overflow-hidden">
-                <CryptoGatewaySidebar currentPage="CryptoGatewayDashboard" userEmail="FTS Admin" />
+                <div className={cn(
+                    "lg:block",
+                    sidebarOpen ? "block" : "hidden"
+                )}>
+                    <CryptoGatewaySidebar 
+                        currentPage="CryptoGatewayDashboard" 
+                        userEmail="FTS Admin"
+                        onClose={() => setSidebarOpen(false)}
+                    />
+                </div>
+                
+                {/* Mobile overlay */}
+                {sidebarOpen && (
+                    <div 
+                        className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+                        onClick={() => setSidebarOpen(false)}
+                    />
+                )}
                 
                 {/* Dashboard Content */}
                 <div className="flex-1 overflow-auto p-8">
