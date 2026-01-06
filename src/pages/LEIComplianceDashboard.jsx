@@ -74,20 +74,22 @@ export default function LEIComplianceDashboard() {
 
     return (
         <div className="flex h-screen bg-slate-50">
-            <FTSPlatformSidebarRestructured 
-                currentPage="LEIComplianceDashboard" 
-                userEmail={platformUser?.email} 
-                userRole={platformUser?.platform_role}
-                isSuperAdmin={platformUser?.platform_role === 'super_admin'}
-            />
-            
+            <div className="hidden lg:block">
+                <FTSPlatformSidebarRestructured 
+                    currentPage="LEIComplianceDashboard" 
+                    userEmail={platformUser?.email} 
+                    userRole={platformUser?.platform_role}
+                    isSuperAdmin={platformUser?.platform_role === 'super_admin'}
+                />
+            </div>
+
             <div className="flex-1 overflow-auto">
-                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
-                    <div>
-                        <h2 className="text-lg font-semibold text-slate-900">{t('platform:pages.leiCompliance.title')}</h2>
-                        <p className="text-xs text-slate-600">{t('platform:pages.leiCompliance.subtitle')}</p>
+                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-6 sticky top-0 z-10">
+                    <div className="min-w-0 flex-1">
+                        <h2 className="text-lg font-semibold text-slate-900 truncate">{t('platform:pages.leiCompliance.title')}</h2>
+                        <p className="text-xs text-slate-600 truncate hidden sm:block">{t('platform:pages.leiCompliance.subtitle')}</p>
                     </div>
-                    <LanguageSwitcher variant="select" showLabel={true} />
+                    <LanguageSwitcher variant="select" showLabel={false} />
                 </header>
                 <div className="p-6 max-w-7xl mx-auto space-y-6">
                     {/* Header */}

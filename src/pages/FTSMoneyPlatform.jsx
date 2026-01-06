@@ -152,12 +152,14 @@ export default function FTSMoneyPlatform() {
 
     return (
         <div className="flex h-screen bg-slate-50">
-            <FTSPlatformSidebar 
-                currentPage="FTSMoneyPlatform" 
-                userRole={getRoleLabel(platformUser?.platform_role)} 
-                userEmail={platformUser?.email}
-                isSuperAdmin={platformUser?.platform_role === PLATFORM_ROLES.SUPER_ADMIN}
-            />
+            <div className="hidden lg:block">
+                <FTSPlatformSidebar 
+                    currentPage="FTSMoneyPlatform" 
+                    userRole={getRoleLabel(platformUser?.platform_role)} 
+                    userEmail={platformUser?.email}
+                    isSuperAdmin={platformUser?.platform_role === PLATFORM_ROLES.SUPER_ADMIN}
+                />
+            </div>
             <UnifiedCommandPalette 
                 open={commandPaletteOpen} 
                 onOpenChange={setCommandPaletteOpen}
