@@ -61,7 +61,8 @@ const iconMap = {
     Receipt, Globe, Key, HelpCircle, LogOut, Landmark, Smartphone, Brain,
     Zap, CheckSquare, Palette, UserCog, Monitor, DollarSign, Percent,
     Building, ArrowUpDown, Database, Headphones, Scale, Building2,
-    FileCheck, Coins, TrendingUp, Tag, Activity, InvoiceIcon, Layers
+    FileCheck, Coins, TrendingUp, Tag, Activity, InvoiceIcon, Layers, 
+    BookOpen: FileText
 };
 
 // Default fallback menu (for PSPs without enabled_features defined)
