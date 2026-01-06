@@ -16,7 +16,7 @@ import {
  * Implements 3-level hierarchy with progressive disclosure
  */
 export default function FTSPlatformSidebarRestructured({ currentPage, userRole, userEmail, isSuperAdmin }) {
-    const menuSections = [
+    const menuSections = React.useMemo(() => [
         {
             id: 'control-plane',
             title: 'Control Plane',
@@ -178,7 +178,7 @@ export default function FTSPlatformSidebarRestructured({ currentPage, userRole, 
                 { label: 'Advanced Tools', path: 'ModuleCatalogTest', icon: Code, description: 'Testing' }
             ]
         }
-    ];
+    ], []);
 
     const [openSections, setOpenSections] = useState(() => {
         // Only open sections marked as defaultOpen, respect collapsed flag
@@ -195,7 +195,7 @@ export default function FTSPlatformSidebarRestructured({ currentPage, userRole, 
         if (currentSection && !openSections.includes(currentSection.id)) {
             setOpenSections(prev => [...prev, currentSection.id]);
         }
-    }, [currentPage]);
+    }, [currentPage, menuSections, openSections]);
     
     const toggleSection = (sectionId) => {
         setOpenSections(prev => 
