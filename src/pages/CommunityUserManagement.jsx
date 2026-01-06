@@ -296,31 +296,61 @@ export default function CommunityUserManagement() {
                                                         {user.community_role || 'PSP Owner'}
                                                     </Badge>
                                                     <Button
-                                                        variant="ghost"
-                                                        size="icon"
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            setEditUser(user);
-                                                            setEditForm({
-                                                                full_name: user.full_name,
-                                                                email: user.email,
-                                                                community_role: user.community_role || 'PSP Owner'
-                                                            });
-                                                        }}
-                                                        className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                                                       variant="ghost"
+                                                       size="icon"
+                                                       onClick={(e) => {
+                                                           e.stopPropagation();
+                                                           setServicesUser(user);
+                                                           setServicesForm({
+                                                               allowed_services: user.allowed_services || []
+                                                           });
+                                                       }}
+                                                       className="text-purple-600 hover:text-purple-700 hover:bg-purple-50"
+                                                       title="Manage Services"
                                                     >
-                                                        <Pencil className="h-4 w-4" />
+                                                       <Layers className="h-4 w-4" />
                                                     </Button>
                                                     <Button
-                                                        variant="ghost"
-                                                        size="icon"
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            setDeleteUser(user);
-                                                        }}
-                                                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                                       variant="ghost"
+                                                       size="icon"
+                                                       onClick={(e) => {
+                                                           e.stopPropagation();
+                                                           setPasswordUser(user);
+                                                           setPasswordForm({ password: '', confirmPassword: '' });
+                                                       }}
+                                                       className="text-amber-600 hover:text-amber-700 hover:bg-amber-50"
+                                                       title="Change Password"
                                                     >
-                                                        <Trash2 className="h-4 w-4" />
+                                                       <KeyRound className="h-4 w-4" />
+                                                    </Button>
+                                                    <Button
+                                                       variant="ghost"
+                                                       size="icon"
+                                                       onClick={(e) => {
+                                                           e.stopPropagation();
+                                                           setEditUser(user);
+                                                           setEditForm({
+                                                               full_name: user.full_name,
+                                                               email: user.email,
+                                                               community_role: user.community_role || 'PSP Owner'
+                                                           });
+                                                       }}
+                                                       className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                                                       title="Edit User"
+                                                    >
+                                                       <Pencil className="h-4 w-4" />
+                                                    </Button>
+                                                    <Button
+                                                       variant="ghost"
+                                                       size="icon"
+                                                       onClick={(e) => {
+                                                           e.stopPropagation();
+                                                           setDeleteUser(user);
+                                                       }}
+                                                       className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                                       title="Delete User"
+                                                    >
+                                                       <Trash2 className="h-4 w-4" />
                                                     </Button>
                                                 </div>
                                             </div>
