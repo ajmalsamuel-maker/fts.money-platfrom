@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Code, Key, Zap, Copy, CheckCircle } from 'lucide-react';
+import { Code, Key, Zap, Copy, CheckCircle, CreditCard, Users, FileText } from 'lucide-react';
 
 export default function PSPAPIDocumentation() {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
