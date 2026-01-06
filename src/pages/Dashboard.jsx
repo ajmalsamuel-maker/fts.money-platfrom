@@ -61,11 +61,15 @@ export default function Dashboard() {
     // Get current PSP session - CRITICAL: Each PSP must be completely isolated
     const [userPspCode, setUserPspCode] = useState(null);
     const [isReady, setIsReady] = useState(false);
+    const hasCheckedRef = React.useRef(false);
 
     React.useEffect(() => {
+        if (hasCheckedRef.current) return;
+        hasCheckedRef.current = true;
+        
         const sessionData = localStorage.getItem('staff_session');
         if (!sessionData) {
-            window.location.href = '/PSPLogin';
+            navigate('/PSPLogin', { replace: true });
             return;
         }
         
@@ -76,13 +80,13 @@ export default function Dashboard() {
                 setIsReady(true);
             } else {
                 localStorage.removeItem('staff_session');
-                window.location.href = '/PSPLogin';
+                navigate('/PSPLogin', { replace: true });
             }
         } catch (err) {
             localStorage.removeItem('staff_session');
-            window.location.href = '/PSPLogin';
+            navigate('/PSPLogin', { replace: true });
         }
-    }, []);
+    }, [navigate]);
 
     // Fetch data from isolated PSP schema (PCI Level 1 & GDPR compliant)
     const { data: transactions = [] } = useQuery({

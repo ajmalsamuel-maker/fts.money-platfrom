@@ -17,15 +17,19 @@ export default function PSPLogin() {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const hasCheckedRef = React.useRef(false);
     const [checkComplete, setCheckComplete] = React.useState(false);
     
     React.useEffect(() => {
+        if (hasCheckedRef.current) return;
+        hasCheckedRef.current = true;
+        
         const existingSession = localStorage.getItem('staff_session');
         if (existingSession) {
             try {
                 const session = JSON.parse(existingSession);
                 if (session?.psp_code) {
-                    window.location.href = '/Dashboard';
+                    navigate('/Dashboard', { replace: true });
                     return;
                 }
             } catch (err) {
@@ -33,7 +37,7 @@ export default function PSPLogin() {
             }
         }
         setCheckComplete(true);
-    }, []);
+    }, [navigate]);
     
     if (!checkComplete) {
         return null;
@@ -63,7 +67,7 @@ export default function PSPLogin() {
                 };
 
                 localStorage.setItem('staff_session', JSON.stringify(sessionData));
-                window.location.href = '/Dashboard';
+                navigate('/Dashboard', { replace: true });
                 return;
             } else {
                 setError(data.error || 'Login failed');
