@@ -88,7 +88,7 @@ const hourlyData = Array.from({ length: 24 }, (_, i) => ({
 
 export default function Analytics() {
     const { t } = useI18n();
-    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+    const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
     const [period, setPeriod] = useState('30d');
     const [merchantFilter, setMerchantFilter] = useState('all');
 
@@ -146,10 +146,17 @@ export default function Analytics() {
 
     return (
         <div className="min-h-screen bg-slate-50">
+            {!sidebarCollapsed && (
+                <div 
+                    className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+                    onClick={() => setSidebarCollapsed(true)}
+                />
+            )}
+            
             <Sidebar collapsed={sidebarCollapsed} currentPage="Analytics" />
             
-            <div className={cn("transition-all duration-300", sidebarCollapsed ? "ml-20" : "ml-64")}>
-                <TopHeader onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} />
+            <div className="lg:ml-20">
+                <TopHeader onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} collapsed={sidebarCollapsed} />
                 
                 <main className="p-6">
                     {/* Header */}

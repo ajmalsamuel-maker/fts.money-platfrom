@@ -50,7 +50,7 @@ import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 export default function Settings() {
     const navigate = useNavigate();
     const { t } = useI18n();
-    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+    const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
     const queryClient = useQueryClient();
     const [userPspCode, setUserPspCode] = useState(null);
 
@@ -204,8 +204,15 @@ export default function Settings() {
     return (
         <div className="min-h-screen bg-slate-50">
                 <Toaster position="top-right" />
+                {!sidebarCollapsed && (
+                    <div 
+                        className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+                        onClick={() => setSidebarCollapsed(true)}
+                    />
+                )}
+                
                 <Sidebar collapsed={sidebarCollapsed} currentPage="Settings" />
-            <div className={cn("transition-all duration-300", "ml-64")}>
+            <div className="lg:ml-20">
                 <TopHeader onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} collapsed={sidebarCollapsed} />
                 
                 <main className="p-6">

@@ -8,7 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { GitBranch, Plus, Search, TrendingUp, Activity, Zap } from 'lucide-react';
+import { GitBranch, Plus, Search, TrendingUp, Activity, Zap, Menu } from 'lucide-react';
+import { cn } from "@/lib/utils";
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
@@ -16,6 +17,7 @@ export default function OrchestrationCustomers() {
     const { t } = useI18n();
     const [searchQuery, setSearchQuery] = useState('');
     const [showCreateDialog, setShowCreateDialog] = useState(false);
+    const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
     const [newCustomer, setNewCustomer] = useState({
         company_name: '',
         contact_email: '',
@@ -96,15 +98,37 @@ export default function OrchestrationCustomers() {
 
     return (
         <div className="flex h-screen bg-gray-50">
-            <FTSPlatformSidebar currentPage="OrchestrationCustomers" />
+            {mobileSidebarOpen && (
+                <div 
+                    className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+                    onClick={() => setMobileSidebarOpen(false)}
+                />
+            )}
+            
+            <div className={cn(
+                "fixed lg:static inset-y-0 left-0 z-50 lg:z-auto transition-transform duration-300",
+                mobileSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+            )}>
+                <FTSPlatformSidebar currentPage="OrchestrationCustomers" />
+            </div>
             
             <div className="flex-1 overflow-auto">
-                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
-                    <div>
-                        <h2 className="text-lg font-semibold text-slate-900">{t('orchestration:customers.title')}</h2>
-                        <p className="text-xs text-slate-600">{t('orchestration:customers.subtitle')}</p>
+                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-6 sticky top-0 z-10">
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="lg:hidden flex-shrink-0"
+                            onClick={() => setMobileSidebarOpen(true)}
+                        >
+                            <Menu className="h-5 w-5" />
+                        </Button>
+                        <div className="min-w-0">
+                            <h2 className="text-base md:text-lg font-semibold text-slate-900 truncate">{t('orchestration:customers.title')}</h2>
+                            <p className="text-xs text-slate-600 truncate hidden sm:block">{t('orchestration:customers.subtitle')}</p>
+                        </div>
                     </div>
-                    <LanguageSwitcher variant="select" showLabel={true} />
+                    <LanguageSwitcher variant="select" showLabel={false} />
                 </header>
                 <div className="p-8">
                     <div className="flex justify-between items-center mb-6">
@@ -316,7 +340,7 @@ export default function OrchestrationCustomers() {
                                     </CardHeader>
                                     
                                     <CardContent>
-                                        <div className="grid grid-cols-4 gap-6">
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
                                             <div>
                                                 <div className="flex items-center gap-2 text-sm text-gray-600 mb-1">
                                                     <TrendingUp className="h-4 w-4" />

@@ -27,8 +27,10 @@ import {
     AlertCircle,
     ArrowUpDown,
     Download,
-    RefreshCw
+    RefreshCw,
+    Menu
 } from 'lucide-react';
+import { cn } from "@/lib/utils";
 import { toast } from 'sonner';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
@@ -71,6 +73,7 @@ export default function MasterPricingManagement() {
     const [showDialog, setShowDialog] = useState(false);
     const [editingItem, setEditingItem] = useState(null);
     const [formData, setFormData] = useState({});
+    const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
     const { data: pricingItems = [] } = useQuery({
         queryKey: ['master-pricing'],
@@ -284,21 +287,43 @@ export default function MasterPricingManagement() {
 
     return (
         <div className="flex h-screen bg-slate-50">
-            <FTSPlatformSidebar 
-                currentPage="MasterPricingManagement" 
-                userRole={platformUser?.platform_role}
-                userEmail={platformUser?.email}
-                isSuperAdmin={platformUser?.platform_role === 'super_admin'}
-            />
+            {mobileSidebarOpen && (
+                <div 
+                    className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+                    onClick={() => setMobileSidebarOpen(false)}
+                />
+            )}
+            
+            <div className={cn(
+                "fixed lg:static inset-y-0 left-0 z-50 lg:z-auto transition-transform duration-300",
+                mobileSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+            )}>
+                <FTSPlatformSidebar 
+                    currentPage="MasterPricingManagement" 
+                    userRole={platformUser?.platform_role}
+                    userEmail={platformUser?.email}
+                    isSuperAdmin={platformUser?.platform_role === 'super_admin'}
+                />
+            </div>
 
             <div className="flex-1 overflow-auto">
-                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
-                    <div>
-                        <h2 className="text-lg font-semibold text-slate-900">{t('platform:pages.masterPricing.title')}</h2>
-                        <p className="text-xs text-slate-600">{t('platform:pages.masterPricing.subtitle')}</p>
+                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-6 sticky top-0 z-10">
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="lg:hidden flex-shrink-0"
+                            onClick={() => setMobileSidebarOpen(true)}
+                        >
+                            <Menu className="h-5 w-5" />
+                        </Button>
+                        <div className="min-w-0">
+                            <h2 className="text-base md:text-lg font-semibold text-slate-900 truncate">{t('platform:pages.masterPricing.title')}</h2>
+                            <p className="text-xs text-slate-600 truncate hidden sm:block">{t('platform:pages.masterPricing.subtitle')}</p>
+                        </div>
                     </div>
-                    <div className="flex items-center gap-3">
-                        <LanguageSwitcher variant="select" showLabel={true} />
+                    <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
+                        <LanguageSwitcher variant="select" showLabel={false} />
                         <Button variant="outline" className="gap-2">
                             <Download className="h-4 w-4" />
                             Export to Xero
@@ -339,7 +364,7 @@ export default function MasterPricingManagement() {
                         
                         <TabsContent value="pricing" className="space-y-6 mt-6">
                     {/* Stats Cards */}
-                    <div className="grid grid-cols-7 gap-4 mb-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-4 mb-6">
                         <Card>
                             <CardContent className="p-6">
                                 <div className="flex items-center justify-between">

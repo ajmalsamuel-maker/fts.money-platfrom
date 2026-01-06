@@ -9,7 +9,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ArrowLeft, DollarSign, TrendingUp, Calendar, Code, GitBranch, Wallet, Briefcase } from 'lucide-react';
+import { ArrowLeft, DollarSign, TrendingUp, Calendar, Code, GitBranch, Wallet, Briefcase, Menu } from 'lucide-react';
+import { cn } from "@/lib/utils";
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
@@ -17,6 +18,7 @@ export default function FTSRevenue() {
     const navigate = useNavigate();
     const { platformUser, loading } = usePlatformAuth();
     const { t } = useI18n();
+    const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
     
     const { data: psps = [] } = useQuery({
         queryKey: ['provisioned-psps'],
@@ -57,24 +59,46 @@ export default function FTSRevenue() {
 
     return (
         <div className="flex h-screen bg-slate-50">
-            <FTSPlatformSidebar 
-                currentPage="FTSRevenue" 
-                userRole={getRoleLabel(platformUser?.platform_role)} 
-                userEmail={platformUser?.email}
-                isSuperAdmin={platformUser?.platform_role === PLATFORM_ROLES.SUPER_ADMIN}
-            />
+            {mobileSidebarOpen && (
+                <div 
+                    className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+                    onClick={() => setMobileSidebarOpen(false)}
+                />
+            )}
+            
+            <div className={cn(
+                "fixed lg:static inset-y-0 left-0 z-50 lg:z-auto transition-transform duration-300",
+                mobileSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+            )}>
+                <FTSPlatformSidebar 
+                    currentPage="FTSRevenue" 
+                    userRole={getRoleLabel(platformUser?.platform_role)} 
+                    userEmail={platformUser?.email}
+                    isSuperAdmin={platformUser?.platform_role === PLATFORM_ROLES.SUPER_ADMIN}
+                />
+            </div>
 
             <div className="flex-1 overflow-auto">
-                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
-                    <div>
-                        <h2 className="text-lg font-semibold text-slate-900">{t('platform:pages.revenue.title')}</h2>
-                        <p className="text-xs text-slate-600">{t('platform:pages.revenue.subtitle')}</p>
+                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-6 sticky top-0 z-10">
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="lg:hidden flex-shrink-0"
+                            onClick={() => setMobileSidebarOpen(true)}
+                        >
+                            <Menu className="h-5 w-5" />
+                        </Button>
+                        <div className="min-w-0">
+                            <h2 className="text-base md:text-lg font-semibold text-slate-900 truncate">{t('platform:pages.revenue.title')}</h2>
+                            <p className="text-xs text-slate-600 truncate hidden sm:block">{t('platform:pages.revenue.subtitle')}</p>
+                        </div>
                     </div>
-                    <div className="flex items-center gap-4">
-                        <LanguageSwitcher variant="select" showLabel={true} />
-                        <div className="text-right">
+                    <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
+                        <LanguageSwitcher variant="select" showLabel={false} />
+                        <div className="text-right hidden lg:block">
                             <p className="text-xs text-slate-600">{t('common:labels.loggedInAs')}</p>
-                            <p className="text-sm font-medium text-slate-900">{platformUser?.email}</p>
+                            <p className="text-sm font-medium text-slate-900 truncate max-w-[150px]">{platformUser?.email}</p>
                             <Badge className="mt-1 bg-blue-600 text-white text-xs">
                                 {getRoleLabel(platformUser?.platform_role)}
                             </Badge>
@@ -83,7 +107,7 @@ export default function FTSRevenue() {
                 </header>
 
                 <div className="p-6 space-y-6">
-                <div className="grid grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <Card>
                         <CardContent className="p-6">
                             <div className="flex items-center justify-between">
@@ -134,7 +158,7 @@ export default function FTSRevenue() {
                     </Card>
                 </div>
 
-                <div className="grid grid-cols-5 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                     <Card>
                         <CardContent className="p-4">
                             <div className="flex items-center gap-3">
@@ -202,7 +226,7 @@ export default function FTSRevenue() {
                     </Card>
                 </div>
 
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <Card>
                         <CardHeader>
                             <CardTitle>{t('platform:pages.revenue.revenueByService')}</CardTitle>
