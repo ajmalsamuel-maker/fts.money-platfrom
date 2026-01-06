@@ -104,7 +104,15 @@ export default function CommunityUserManagement() {
 
     const updateMutation = useMutation({
         mutationFn: async ({ userId, updates }) => {
-            await base44.asServiceRole.entities.AuthUser.update(userId, updates);
+            const response = await base44.functions.invoke('platformAuthSimple', {
+                action: 'updateUser',
+                userId: userId,
+                updates: updates
+            });
+            if (!response.data.success) {
+                throw new Error(response.data.error || 'Failed to update user');
+            }
+            return response.data;
         },
         onSuccess: () => {
             queryClient.invalidateQueries(['community-users']);
