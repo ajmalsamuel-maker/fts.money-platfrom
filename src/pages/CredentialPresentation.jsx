@@ -116,35 +116,37 @@ export default function CredentialPresentation() {
 
     return (
         <div className="flex h-screen bg-slate-50">
-            <FTSPlatformSidebarRestructured 
-                currentPage="CredentialPresentation" 
-                userEmail={platformUser?.email} 
-                userRole={platformUser?.platform_role}
-                isSuperAdmin={platformUser?.platform_role === 'super_admin'}
-            />
+            <div className="hidden lg:block">
+                <FTSPlatformSidebarRestructured 
+                    currentPage="CredentialPresentation" 
+                    userEmail={platformUser?.email} 
+                    userRole={platformUser?.platform_role}
+                    isSuperAdmin={platformUser?.platform_role === 'super_admin'}
+                />
+            </div>
             
             <div className="flex-1 overflow-auto">
                 <Toaster position="top-right" />
                 
                 {/* Header */}
-                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
-                    <div className="flex items-center gap-4">
+                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-6 sticky top-0 z-10">
+                    <div className="flex items-center gap-2 md:gap-4 min-w-0 flex-1">
                         <Button 
                             variant="ghost" 
                             size="sm"
                             onClick={() => navigate(createPageUrl('FTSMoneyPlatform'))}
-                            className="text-slate-600 hover:text-slate-900"
+                            className="text-slate-600 hover:text-slate-900 hidden md:flex"
                         >
                             <ArrowLeft className="h-4 w-4 mr-2" />
                             Back to Dashboard
                         </Button>
-                        <div className="border-l border-slate-200 pl-4 flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-600 to-pink-500 flex items-center justify-center">
-                                <Send className="h-5 w-5 text-white" />
+                        <div className="border-l border-slate-200 pl-2 md:pl-4 flex items-center gap-2 md:gap-3 min-w-0">
+                            <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-gradient-to-br from-purple-600 to-pink-500 flex items-center justify-center flex-shrink-0">
+                                <Send className="h-4 w-4 md:h-5 md:w-5 text-white" />
                             </div>
-                            <div>
-                                <h2 className="text-lg font-semibold text-slate-900">Credential Presentation</h2>
-                                <p className="text-xs text-slate-600">Share verified credentials securely</p>
+                            <div className="min-w-0">
+                                <h2 className="text-base md:text-lg font-semibold text-slate-900 truncate">Credential Presentation</h2>
+                                <p className="text-xs text-slate-600 truncate hidden sm:block">Share verified credentials securely</p>
                             </div>
                         </div>
                     </div>
@@ -172,7 +174,7 @@ export default function CredentialPresentation() {
                         </Alert>
 
                         {/* Credential Stats */}
-                        <div className="grid grid-cols-3 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                             <Card>
                                 <CardContent className="p-4">
                                     <div className="flex items-center gap-3">
