@@ -1,3 +1,4 @@
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
 import pg from 'npm:pg@8.11.3';
 
 const { Pool } = pg;
@@ -27,8 +28,16 @@ const pool = new Pool({
 
 Deno.serve(async (req) => {
     try {
+        // Initialize SDK but don't require auth - runs in system context
+        const base44 = createClientFromRequest(req);
+        let user;
+        try {
+            user = await base44.auth.me();
+        } catch (err) {
+            console.log('[MANAGE_USERS] Running in system context');
+        }
+
         console.log('[START] managePSPUsers function invoked');
-        // FORCE CACHE CLEAR - v3
         const { action, email, full_name, role, psp_code, password, user_id, status, two_factor_enabled } = await req.json();
         console.log('[ACTION]', action, 'PSP:', psp_code);
 
