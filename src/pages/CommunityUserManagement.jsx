@@ -23,6 +23,8 @@ export default function CommunityUserManagement() {
     const [inviteOpen, setInviteOpen] = useState(false);
     const [deleteUser, setDeleteUser] = useState(null);
     const [editUser, setEditUser] = useState(null);
+    const [passwordUser, setPasswordUser] = useState(null);
+    const [servicesUser, setServicesUser] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [inviteForm, setInviteForm] = useState({
         email: '',
@@ -34,6 +36,13 @@ export default function CommunityUserManagement() {
         full_name: '',
         email: '',
         community_role: ''
+    });
+    const [passwordForm, setPasswordForm] = useState({
+        password: '',
+        confirmPassword: ''
+    });
+    const [servicesForm, setServicesForm] = useState({
+        allowed_services: []
     });
     const [error, setError] = useState('');
 
