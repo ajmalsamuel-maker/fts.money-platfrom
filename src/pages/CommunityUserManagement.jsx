@@ -87,7 +87,14 @@ export default function CommunityUserManagement() {
 
     const deleteMutation = useMutation({
         mutationFn: async (userId) => {
-            await base44.asServiceRole.entities.AuthUser.delete(userId);
+            const response = await base44.functions.invoke('platformAuthSimple', {
+                action: 'deleteUser',
+                userId: userId
+            });
+            if (!response.data.success) {
+                throw new Error(response.data.error || 'Failed to delete user');
+            }
+            return response.data;
         },
         onSuccess: () => {
             queryClient.invalidateQueries(['community-users']);
