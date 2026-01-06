@@ -69,7 +69,7 @@ export default function Dashboard() {
         
         if (!sessionData) {
             console.log('📊 Dashboard: No session, redirecting to PSPLogin...');
-            navigate(createPageUrl('PSPLogin'));
+            window.location.href = createPageUrl('PSPLogin');
             return;
         }
         
@@ -84,14 +84,14 @@ export default function Dashboard() {
             } else {
                 console.log('📊 Dashboard: No PSP code in session, redirecting...');
                 localStorage.removeItem('staff_session');
-                navigate(createPageUrl('PSPLogin'));
+                window.location.href = createPageUrl('PSPLogin');
             }
         } catch (err) {
             console.error('📊 Dashboard: Session parse error:', err);
             localStorage.removeItem('staff_session');
-            navigate(createPageUrl('PSPLogin'));
+            window.location.href = createPageUrl('PSPLogin');
         }
-    }, [navigate]);
+    }, []);
 
     // Fetch data from isolated PSP schema (PCI Level 1 & GDPR compliant)
     const { data: transactions = [] } = useQuery({
