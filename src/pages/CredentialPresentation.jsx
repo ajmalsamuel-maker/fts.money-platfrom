@@ -9,9 +9,10 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import VerifiablePresentationFlow from '@/components/identity/VerifiablePresentationFlow';
 import FTSPlatformSidebarRestructured from '@/components/platform/FTSPlatformSidebarRestructured';
 import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
+import { cn } from "@/lib/utils";
 import { 
     Shield, Send, History, Rocket, Wallet, Building2, 
-    Code, CheckCircle2, Clock, ArrowRight, FileCheck, Globe, ArrowLeft
+    Code, CheckCircle2, Clock, ArrowRight, FileCheck, Globe, ArrowLeft, Menu
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { Toaster } from "@/components/ui/sonner";
@@ -23,6 +24,7 @@ export default function CredentialPresentation() {
     const navigate = useNavigate();
     const [activeService, setActiveService] = useState(null);
     const [presentationHistory, setPresentationHistory] = useState([]);
+    const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
     const { data: user } = useQuery({
         queryKey: ['current-user'],
@@ -116,7 +118,17 @@ export default function CredentialPresentation() {
 
     return (
         <div className="flex h-screen bg-slate-50">
-            <div className="hidden lg:block">
+            {mobileSidebarOpen && (
+                <div 
+                    className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+                    onClick={() => setMobileSidebarOpen(false)}
+                />
+            )}
+            
+            <div className={cn(
+                "fixed lg:static inset-y-0 left-0 z-50 lg:z-auto transition-transform duration-300",
+                mobileSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+            )}>
                 <FTSPlatformSidebarRestructured 
                     currentPage="CredentialPresentation" 
                     userEmail={platformUser?.email} 
@@ -131,6 +143,14 @@ export default function CredentialPresentation() {
                 {/* Header */}
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-6 sticky top-0 z-10">
                     <div className="flex items-center gap-2 md:gap-4 min-w-0 flex-1">
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="lg:hidden"
+                            onClick={() => setMobileSidebarOpen(true)}
+                        >
+                            <Menu className="h-5 w-5" />
+                        </Button>
                         <Button 
                             variant="ghost" 
                             size="sm"

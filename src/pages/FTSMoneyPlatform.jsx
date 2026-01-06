@@ -152,7 +152,19 @@ export default function FTSMoneyPlatform() {
 
     return (
         <div className="flex h-screen bg-slate-50">
-            <div className="hidden lg:block">
+            {/* Mobile Sidebar Overlay */}
+            {mobileSidebarOpen && (
+                <div 
+                    className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+                    onClick={() => setMobileSidebarOpen(false)}
+                />
+            )}
+            
+            {/* Sidebar */}
+            <div className={cn(
+                "fixed lg:static inset-y-0 left-0 z-50 lg:z-auto transition-transform duration-300",
+                mobileSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+            )}>
                 <FTSPlatformSidebar 
                     currentPage="FTSMoneyPlatform" 
                     userRole={getRoleLabel(platformUser?.platform_role)} 
