@@ -203,7 +203,7 @@ export default function FTSMoneyPlatform() {
                     {/* Services Overview */}
                     <div className="mb-6">
                         <h3 className="text-sm font-semibold text-slate-900 mb-3">{t('platform:services.title')}</h3>
-                        <div className="grid grid-cols-5 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
                             {/* PSP Service */}
                             <Card className="border-2 border-blue-200 hover:border-blue-400 hover:shadow-lg transition-all group">
                                 <CardContent className="p-4">
@@ -211,8 +211,8 @@ export default function FTSMoneyPlatform() {
                                         <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
                                             <Building2 className="h-5 w-5 text-blue-600" />
                                         </div>
-                                        <div>
-                                            <p className="font-semibold text-slate-900 text-sm">{t('platform:services.psp')}</p>
+                                        <div className="min-w-0 flex-1">
+                                            <p className="font-semibold text-slate-900 text-sm truncate">{t('platform:services.psp')}</p>
                                             <Badge variant="outline" className="text-xs">
                                                 {psps.filter(p => p.status === 'active').length} {t('platform:dashboard.active')}
                                             </Badge>
@@ -378,7 +378,7 @@ export default function FTSMoneyPlatform() {
                     {/* Quick Actions */}
                     <div className="mb-6">
                         <h3 className="text-sm font-semibold text-slate-900 mb-3">{t('platform:quickActions')}</h3>
-                        <div className="grid grid-cols-7 gap-3">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-3">
                             {quickActions.map((action) => {
                                 const Icon = action.icon;
                                 return (
@@ -390,8 +390,8 @@ export default function FTSMoneyPlatform() {
                                             action.color
                                         )}
                                     >
-                                        <Icon className="h-6 w-6 mb-2" />
-                                        <p className="text-sm font-medium">{t(`platform:quickActionItems.${action.labelKey}`)}</p>
+                                        <Icon className="h-6 w-6 mb-2 flex-shrink-0" />
+                                        <p className="text-sm font-medium truncate">{t(`platform:quickActionItems.${action.labelKey}`)}</p>
                                     </button>
                                 );
                             })}
@@ -407,7 +407,7 @@ export default function FTSMoneyPlatform() {
                                 {t('platform:pages.dashboard.simulationMode')}
                             </Badge>
                         </div>
-                        <div className="grid grid-cols-4 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                             <Card className="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white">
                                 <CardContent className="p-4">
                                     <div className="flex items-center justify-between mb-1">
@@ -452,7 +452,7 @@ export default function FTSMoneyPlatform() {
                     {/* New Services Metrics: VAT, E-Invoicing, RWA, VASP */}
                     <div className="mb-6">
                         <h3 className="text-sm font-semibold text-slate-900 mb-3">Service Metrics</h3>
-                        <div className="grid grid-cols-4 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                             <VATMetricsCard />
                             <EInvoicingMetricsCard />
                             <RWAMetricsCard />
@@ -461,14 +461,14 @@ export default function FTSMoneyPlatform() {
                     </div>
 
                     {/* Stats Grid */}
-                    <div className="grid grid-cols-5 gap-4 mb-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
                         <Card className="bg-white border-slate-200">
                             <CardContent className="p-6">
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <p className="text-sm text-slate-600">{t('platform:stats.pspInstances')}</p>
+                                <div className="flex items-center justify-between gap-3">
+                                    <div className="min-w-0 flex-1">
+                                        <p className="text-sm text-slate-600 truncate">{t('platform:stats.pspInstances')}</p>
                                         <p className="text-3xl font-bold text-slate-900 mt-1">{psps.length}</p>
-                                        <p className="text-xs text-emerald-600 mt-1">{activePSPs} {t('platform:dashboard.active')}</p>
+                                        <p className="text-xs text-emerald-600 mt-1 truncate">{activePSPs} {t('platform:dashboard.active')}</p>
                                     </div>
                                     <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
                                         <Building2 className="h-6 w-6 text-blue-600" />
@@ -570,9 +570,9 @@ export default function FTSMoneyPlatform() {
                                                     >
                                                         {psp.psp_code?.substring(0, 2)}
                                                     </div>
-                                                    <div>
-                                                        <p className="font-semibold text-slate-900">{psp.psp_name}</p>
-                                                        <p className="text-xs text-slate-500 font-mono">{psp.psp_code}</p>
+                                                    <div className="min-w-0 flex-1">
+                                                        <p className="font-semibold text-slate-900 truncate">{psp.psp_name}</p>
+                                                        <p className="text-xs text-slate-500 font-mono truncate">{psp.psp_code}</p>
                                                     </div>
                                                 </div>
                                             </div>
