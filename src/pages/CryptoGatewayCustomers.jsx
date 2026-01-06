@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Users, Plus, Search, Building2, CheckCircle2, AlertCircle, Clock, TrendingUp, Shield, Activity } from 'lucide-react';
+import { Users, Plus, Search, Building2, CheckCircle2, AlertCircle, Clock, TrendingUp, Shield, Activity, Menu } from 'lucide-react';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
@@ -19,6 +19,7 @@ export default function CryptoGatewayCustomers() {
     const { platformUser, loading: authLoading } = usePlatformAuth();
     const [searchTerm, setSearchTerm] = useState('');
     const [createDialogOpen, setCreateDialogOpen] = useState(false);
+    const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
     const [newCustomer, setNewCustomer] = useState({
         company_name: '',
         email: '',
@@ -97,19 +98,41 @@ export default function CryptoGatewayCustomers() {
 
     return (
         <div className="flex h-screen bg-slate-50">
-            <FTSPlatformSidebarRestructured 
-                currentPage="CryptoGatewayCustomers"
-                userRole={platformUser?.platform_role}
-                userEmail={platformUser?.email}
-            />
+            {mobileSidebarOpen && (
+                <div 
+                    className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+                    onClick={() => setMobileSidebarOpen(false)}
+                />
+            )}
+            
+            <div className={cn(
+                "fixed lg:static inset-y-0 left-0 z-50 lg:z-auto transition-transform duration-300",
+                mobileSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+            )}>
+                <FTSPlatformSidebarRestructured 
+                    currentPage="CryptoGatewayCustomers"
+                    userRole={platformUser?.platform_role}
+                    userEmail={platformUser?.email}
+                />
+            </div>
             
             <div className="flex-1 overflow-auto">
-                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
-                    <div>
-                        <h2 className="text-lg font-semibold text-slate-900">{t('crypto:customers.title')}</h2>
-                        <p className="text-xs text-slate-600">{t('crypto:customers.subtitle')}</p>
+                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-6 sticky top-0 z-10">
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="lg:hidden flex-shrink-0"
+                            onClick={() => setMobileSidebarOpen(true)}
+                        >
+                            <Menu className="h-5 w-5" />
+                        </Button>
+                        <div className="min-w-0">
+                            <h2 className="text-base md:text-lg font-semibold text-slate-900 truncate">{t('crypto:customers.title')}</h2>
+                            <p className="text-xs text-slate-600 truncate hidden sm:block">{t('crypto:customers.subtitle')}</p>
+                        </div>
                     </div>
-                    <LanguageSwitcher variant="select" showLabel={true} />
+                    <LanguageSwitcher variant="select" showLabel={false} />
                 </header>
                 <div className="p-8">
                     {/* Header */}
@@ -247,7 +270,7 @@ export default function CryptoGatewayCustomers() {
                     </div>
 
                     {/* Stats */}
-                    <div className="grid grid-cols-4 gap-6 mb-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6">
                         <Card>
                             <CardContent className="p-6">
                                 <div className="flex items-center justify-between">

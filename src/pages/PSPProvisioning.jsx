@@ -31,7 +31,8 @@ import {
     Shield,
     Search,
     Settings,
-    MoreVertical
+    MoreVertical,
+    Menu
 } from 'lucide-react';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
@@ -43,6 +44,7 @@ export default function PSPProvisioning() {
     const { t } = useI18n();
     const [search, setSearch] = useState('');
     const [workflowCompliance, setWorkflowCompliance] = useState(null);
+    const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
     const { data: psps = [] } = useQuery({
         queryKey: ['provisioned-psps'],
@@ -81,19 +83,39 @@ export default function PSPProvisioning() {
 
     return (
         <div className="flex h-screen bg-slate-50">
-            <FTSPlatformSidebar 
-                currentPage="PSPProvisioning" 
-                userRole={getRoleLabel(platformUser?.platform_role)} 
-                userEmail={platformUser?.email}
-                isSuperAdmin={platformUser?.platform_role === PLATFORM_ROLES.SUPER_ADMIN}
-            />
+            {mobileSidebarOpen && (
+                <div 
+                    className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+                    onClick={() => setMobileSidebarOpen(false)}
+                />
+            )}
+            
+            <div className={cn(
+                "fixed lg:static inset-y-0 left-0 z-50 lg:z-auto transition-transform duration-300",
+                mobileSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+            )}>
+                <FTSPlatformSidebar 
+                    currentPage="PSPProvisioning" 
+                    userRole={getRoleLabel(platformUser?.platform_role)} 
+                    userEmail={platformUser?.email}
+                    isSuperAdmin={platformUser?.platform_role === PLATFORM_ROLES.SUPER_ADMIN}
+                />
+            </div>
 
             <div className="flex-1 overflow-auto">
-                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
-                    <div className="flex items-center gap-3">
-                        <div>
-                            <h2 className="text-lg font-semibold text-slate-900">{t('platform:pages.pspProvisioning.title')}</h2>
-                            <p className="text-xs text-slate-600">{t('platform:pages.pspProvisioning.subtitle')}</p>
+                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-6 sticky top-0 z-10">
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="lg:hidden flex-shrink-0"
+                            onClick={() => setMobileSidebarOpen(true)}
+                        >
+                            <Menu className="h-5 w-5" />
+                        </Button>
+                        <div className="min-w-0">
+                            <h2 className="text-base md:text-lg font-semibold text-slate-900 truncate">{t('platform:pages.pspProvisioning.title')}</h2>
+                            <p className="text-xs text-slate-600 truncate hidden sm:block">{t('platform:pages.pspProvisioning.subtitle')}</p>
                         </div>
                         {workflowCompliance && (
                             <Badge className={workflowCompliance.compliant ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}>
@@ -102,11 +124,11 @@ export default function PSPProvisioning() {
                             </Badge>
                         )}
                     </div>
-                    <div className="flex items-center gap-3">
-                        <LanguageSwitcher variant="select" showLabel={true} />
-                        <div className="text-right mr-2">
+                    <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
+                        <LanguageSwitcher variant="select" showLabel={false} />
+                        <div className="text-right mr-2 hidden lg:block">
                             <p className="text-xs text-slate-600">{t('platform:pages.pspProvisioning.loggedInAs')}</p>
-                            <p className="text-sm font-medium text-slate-900">{platformUser?.email}</p>
+                            <p className="text-sm font-medium text-slate-900 truncate max-w-[150px]">{platformUser?.email}</p>
                             <Badge className="mt-1 bg-blue-600 text-white text-xs">
                                 {getRoleLabel(platformUser?.platform_role)}
                             </Badge>
@@ -114,9 +136,11 @@ export default function PSPProvisioning() {
                         <Button 
                             onClick={() => navigate(createPageUrl('PSPProvisioningWizard'))}
                             className="gap-2 bg-blue-600 hover:bg-blue-700"
+                            size="sm"
                         >
-                            <Plus className="h-5 w-5" />
-                            {t('platform:pages.pspProvisioning.provisionNew')}
+                            <Plus className="h-4 w-4 md:h-5 md:w-5" />
+                            <span className="hidden md:inline">{t('platform:pages.pspProvisioning.provisionNew')}</span>
+                            <span className="md:hidden">Add</span>
                         </Button>
                     </div>
                 </header>
@@ -134,7 +158,7 @@ export default function PSPProvisioning() {
                         </div>
                     </div>
                 {/* Stats Overview */}
-                <div className="grid grid-cols-4 gap-4 mb-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                     <Card className="bg-white border-slate-200">
                         <CardContent className="p-6">
                             <div className="flex items-center justify-between">

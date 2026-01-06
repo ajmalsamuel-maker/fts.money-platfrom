@@ -19,10 +19,10 @@ export default function LanguageSwitcher({ variant = 'select', showLabel = true 
         return (
             <div className="flex items-center gap-2">
                 {showLabel && (
-                    <Globe className="h-4 w-4 text-slate-600" />
+                    <Globe className="h-4 w-4 text-slate-600 hidden sm:block" />
                 )}
                 <Select value={language} onValueChange={setLanguage}>
-                    <SelectTrigger className="w-[200px]">
+                    <SelectTrigger className="w-[140px] sm:w-[180px] md:w-[200px]">
                         <SelectValue>
                             <div className="flex items-center gap-2">
                                 <span>{currentLanguage?.flag}</span>

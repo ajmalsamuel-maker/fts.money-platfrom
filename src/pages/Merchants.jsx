@@ -254,14 +254,21 @@ export default function Merchants() {
 
     return (
         <div className="min-h-screen bg-slate-50">
+            {!sidebarCollapsed && (
+                <div 
+                    className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+                    onClick={() => setSidebarCollapsed(true)}
+                />
+            )}
+            
             <Sidebar 
                 collapsed={sidebarCollapsed} 
                 currentPage="Merchants"
             />
             
             <div className={cn(
-                "transition-all duration-300",
-                sidebarCollapsed ? "ml-20" : "ml-64"
+                "transition-all duration-300 lg:ml-20",
+                sidebarCollapsed && "ml-0"
             )}>
                 <TopHeader 
                     onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
