@@ -181,10 +181,8 @@ export default function FTSPlatformSidebarRestructured({ currentPage, userRole, 
     ], []);
 
     const [openSections, setOpenSections] = useState(() => {
-        // Only open sections marked as defaultOpen, respect collapsed flag
-        return menuSections
-            .filter(s => s.defaultOpen && !s.collapsed)
-            .map(s => s.id);
+        // Open Control Plane by default, always
+        return ['control-plane'];
     });
     
     // Auto-open section containing current page
@@ -193,9 +191,13 @@ export default function FTSPlatformSidebarRestructured({ currentPage, userRole, 
             section.items.some(item => item.path === currentPage)
         );
         if (currentSection && !openSections.includes(currentSection.id)) {
-            setOpenSections(prev => [...prev, currentSection.id]);
+            setOpenSections(prev => {
+                // Avoid adding duplicates
+                if (prev.includes(currentSection.id)) return prev;
+                return [...prev, currentSection.id];
+            });
         }
-    }, [currentPage, menuSections, openSections]);
+    }, [currentPage, menuSections]);
     
     const toggleSection = (sectionId) => {
         setOpenSections(prev => 
