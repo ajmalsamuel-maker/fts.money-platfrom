@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Shield, AlertTriangle, CheckCircle2, Clock, TrendingUp, Building2, Store, RefreshCw } from 'lucide-react';
+import { Shield, AlertTriangle, CheckCircle2, Clock, TrendingUp, Building2, Store, RefreshCw, AlertCircle } from 'lucide-react';
 import FTSPlatformSidebarRestructured from '@/components/platform/FTSPlatformSidebarRestructured';
 import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
