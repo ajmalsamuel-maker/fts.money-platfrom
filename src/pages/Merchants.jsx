@@ -312,7 +312,7 @@ export default function Merchants() {
                     </div>
                     
                     <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
-                            <DialogContent className="max-w-2xl">
+                        <DialogContent className="max-w-2xl">
                                 <DialogHeader>
                                     <DialogTitle>Add New Merchant</DialogTitle>
                                     <DialogDescription>
