@@ -284,6 +284,16 @@ export default function Merchants() {
                                 <Button 
                                     variant="outline" 
                                     className="gap-2"
+                                    onClick={() => setShowAddDialog(true)}
+                                >
+                                    <Plus className="h-4 w-4" />
+                                    Quick Add
+                                </Button>
+                            </PermissionGate>
+                            <PermissionGate permission="CREATE_MERCHANTS">
+                                <Button 
+                                    variant="outline" 
+                                    className="gap-2"
                                     onClick={() => setShowOnboardingLinkDialog(true)}
                                 >
                                     <Link2 className="h-4 w-4" />
@@ -300,12 +310,8 @@ export default function Merchants() {
                             </PermissionGate>
                         </div>
                     </div>
-                        <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
-                            <DialogTrigger asChild>
-                                <Button variant="outline" className="gap-2">
-                                    Quick Add
-                                </Button>
-                            </DialogTrigger>
+                    
+                    <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
                             <DialogContent className="max-w-2xl">
                                 <DialogHeader>
                                     <DialogTitle>Add New Merchant</DialogTitle>

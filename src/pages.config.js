@@ -201,7 +201,9 @@ import OrchestrationLogin from './pages/OrchestrationLogin';
 import OrchestrationPortal from './pages/OrchestrationPortal';
 import OrchestrationUserManagement from './pages/OrchestrationUserManagement';
 import PCICompliance from './pages/PCICompliance';
+import PSPAPIDocumentation from './pages/PSPAPIDocumentation';
 import PSPDetails from './pages/PSPDetails';
+import PSPDigitalIdentityWallet from './pages/PSPDigitalIdentityWallet';
 import PSPEmpowermentRoadmap from './pages/PSPEmpowermentRoadmap';
 import PSPInstanceConfig from './pages/PSPInstanceConfig';
 import PSPInstanceManagement from './pages/PSPInstanceManagement';
@@ -214,10 +216,11 @@ import PSPProvisioning from './pages/PSPProvisioning';
 import PSPProvisioningWizard from './pages/PSPProvisioningWizard';
 import PSPRouting from './pages/PSPRouting';
 import PSPSetupWizard from './pages/PSPSetupWizard';
-import PaymentGateways from './pages/PaymentGateways';
 import PSPUserManagement from './pages/PSPUserManagement';
+import PSPUserManual from './pages/PSPUserManual';
 import PSPWholesaleBrowse from './pages/PSPWholesaleBrowse';
 import PSPWholesaleMarketplace from './pages/PSPWholesaleMarketplace';
+import PaymentGateways from './pages/PaymentGateways';
 import PaymentLinks from './pages/PaymentLinks';
 import PaymentMethods from './pages/PaymentMethods';
 import PaymentOrchestration from './pages/PaymentOrchestration';
@@ -281,9 +284,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import PSPUserManual from './pages/PSPUserManual';
-import PSPAPIDocumentation from './pages/PSPAPIDocumentation';
-import PSPDigitalIdentityWallet from './pages/PSPDigitalIdentityWallet';
 import __Layout from './Layout.jsx';
 
 
@@ -491,7 +491,9 @@ export const PAGES = {
     "OrchestrationPortal": OrchestrationPortal,
     "OrchestrationUserManagement": OrchestrationUserManagement,
     "PCICompliance": PCICompliance,
+    "PSPAPIDocumentation": PSPAPIDocumentation,
     "PSPDetails": PSPDetails,
+    "PSPDigitalIdentityWallet": PSPDigitalIdentityWallet,
     "PSPEmpowermentRoadmap": PSPEmpowermentRoadmap,
     "PSPInstanceConfig": PSPInstanceConfig,
     "PSPInstanceManagement": PSPInstanceManagement,
@@ -504,10 +506,11 @@ export const PAGES = {
     "PSPProvisioningWizard": PSPProvisioningWizard,
     "PSPRouting": PSPRouting,
     "PSPSetupWizard": PSPSetupWizard,
-    "PaymentGateways": PaymentGateways,
     "PSPUserManagement": PSPUserManagement,
+    "PSPUserManual": PSPUserManual,
     "PSPWholesaleBrowse": PSPWholesaleBrowse,
     "PSPWholesaleMarketplace": PSPWholesaleMarketplace,
+    "PaymentGateways": PaymentGateways,
     "PaymentLinks": PaymentLinks,
     "PaymentMethods": PaymentMethods,
     "PaymentOrchestration": PaymentOrchestration,
@@ -571,9 +574,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "PSPUserManual": PSPUserManual,
-    "PSPAPIDocumentation": PSPAPIDocumentation,
-    "PSPDigitalIdentityWallet": PSPDigitalIdentityWallet,
 }
 
 export const pagesConfig = {
