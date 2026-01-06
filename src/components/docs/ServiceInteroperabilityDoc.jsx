@@ -6,8 +6,7 @@ const ServiceInteroperabilityDoc = `# FTS Service Interoperability & Composite S
 
 **Version:** 2.0  
 **Last Updated:** January 5, 2026  
-**Classification:** Public - Technical Architecture  
-**Word Count:** ~6,500 words
+**Classification:** Public - Technical Architecture
 
 ---
 
@@ -1948,7 +1947,6 @@ graph LR
 **Document Information:**
 - **Version:** 2.0
 - **Last Updated:** January 5, 2026
-- **Word Count:** ~6,500 words
 - **Classification:** Public - Technical Architecture
 
 © 2026 FTS.Money. All rights reserved.
