@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Shield, AlertTriangle, CheckCircle2, Clock, TrendingUp, Building2, Store, RefreshCw } from 'lucide-react';
+import { Shield, AlertTriangle, CheckCircle2, Clock, TrendingUp, Building2, Store, RefreshCw, ExternalLink } from 'lucide-react';
 import FTSPlatformSidebarRestructured from '@/components/platform/FTSPlatformSidebarRestructured';
 import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
@@ -94,18 +94,33 @@ export default function LEIComplianceDashboard() {
                     <div className="flex items-center justify-between">
                         <div>
                             <h1 className="text-2xl font-bold text-slate-900">Compliance Dashboard</h1>
-                        </div>
-                        <Button
-                            onClick={() => runComplianceCheck.mutate()}
-                            disabled={runComplianceCheck.isPending}
-                            className="bg-blue-600 hover:bg-blue-700"
-                        >
-                            {runComplianceCheck.isPending ? (
-                                <><RefreshCw className="h-4 w-4 mr-2 animate-spin" /> Checking...</>
-                            ) : (
-                                <><RefreshCw className="h-4 w-4 mr-2" /> Run Compliance Check</>
+                            {dashboard.global_stats.last_gleif_sync && (
+                                <p className="text-xs text-slate-600 mt-1 flex items-center gap-1">
+                                    <CheckCircle2 className="h-3 w-3 text-emerald-600" />
+                                    GLEIF data synced: {new Date(dashboard.global_stats.last_gleif_sync).toLocaleString()}
+                                </p>
                             )}
-                        </Button>
+                        </div>
+                        <div className="flex gap-2">
+                            <Button
+                                variant="outline"
+                                onClick={() => window.open('https://www.gleif.org', '_blank')}
+                            >
+                                <ExternalLink className="h-4 w-4 mr-2" />
+                                GLEIF.org
+                            </Button>
+                            <Button
+                                onClick={() => runComplianceCheck.mutate()}
+                                disabled={runComplianceCheck.isPending}
+                                className="bg-blue-600 hover:bg-blue-700"
+                            >
+                                {runComplianceCheck.isPending ? (
+                                    <><RefreshCw className="h-4 w-4 mr-2 animate-spin" /> Syncing GLEIF...</>
+                                ) : (
+                                    <><RefreshCw className="h-4 w-4 mr-2" /> Sync with GLEIF</>
+                                )}
+                            </Button>
+                        </div>
                     </div>
 
                     {/* Global Stats */}

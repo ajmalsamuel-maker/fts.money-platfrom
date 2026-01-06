@@ -1,5 +1,34 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
+// Fetch LEI data from GLEIF API
+async function fetchGLEIFData(lei) {
+    try {
+        const response = await fetch(`https://api.gleif.org/api/v1/lei-records/${lei}`);
+        if (!response.ok) {
+            return null;
+        }
+        const data = await response.json();
+        const record = data.data;
+        const attributes = record.attributes;
+        
+        return {
+            lei: attributes.lei,
+            legal_name: attributes.entity.legalName.name,
+            legal_jurisdiction: attributes.entity.legalAddress.country,
+            registration_authority: attributes.entity.registeredAs,
+            registration_date: attributes.registration.initialRegistrationDate,
+            last_updated: attributes.registration.lastUpdateDate,
+            next_renewal: attributes.registration.nextRenewalDate,
+            status: attributes.registration.status,
+            managing_lou: attributes.registration.managingLou,
+            raw_data: attributes
+        };
+    } catch (error) {
+        console.error('GLEIF API error:', error);
+        return null;
+    }
+}
+
 Deno.serve(async (req) => {
     try {
         const base44 = createClientFromRequest(req);
@@ -9,7 +38,26 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const { action } = await req.json();
+        const { action, lei } = await req.json();
+
+        // Verify and enrich LEI data from GLEIF
+        if (action === 'verify_lei') {
+            const gleifData = await fetchGLEIFData(lei);
+            
+            if (!gleifData) {
+                return Response.json({
+                    success: false,
+                    verified: false,
+                    error: 'LEI not found in GLEIF database'
+                });
+            }
+
+            return Response.json({
+                success: true,
+                verified: true,
+                data: gleifData
+            });
+        }
 
         // Monitor all PSPs and Merchants for LEI compliance
         if (action === 'check_all_compliance') {
@@ -39,6 +87,26 @@ Deno.serve(async (req) => {
                 const createdDate = new Date(psp.created_date);
                 const gracePeriodEnd = new Date(createdDate.getTime() + 180 * 24 * 60 * 60 * 1000);
                 const daysRemaining = Math.floor((gracePeriodEnd - new Date()) / (1000 * 60 * 60 * 24));
+
+                // If LEI exists, verify against GLEIF
+                if (credentials.length > 0) {
+                    const cred = credentials[0];
+                    const gleifData = await fetchGLEIFData(cred.lei);
+                    
+                    if (gleifData) {
+                        // Update credential with live GLEIF data
+                        await base44.asServiceRole.entities.LEICredential.update(cred.id, {
+                            lei_status: gleifData.status === 'ISSUED' ? 'active' : 
+                                       gleifData.status === 'LAPSED' ? 'expired' : 'pending',
+                            entity_name: gleifData.legal_name,
+                            issuer: gleifData.managing_lou,
+                            renewal_date: gleifData.next_renewal,
+                            last_verified_date: new Date().toISOString(),
+                            gleif_data: gleifData.raw_data,
+                            verification_status: 'verified'
+                        });
+                    }
+                }
 
                 if (credentials.length === 0) {
                     // No LEI credential
@@ -183,13 +251,29 @@ Deno.serve(async (req) => {
             const allPSPs = await base44.asServiceRole.entities.ProvisionedPSP.list();
             const allMerchants = await base44.asServiceRole.entities.Merchant.list();
 
+            // Refresh GLEIF data for all credentials (background update)
+            for (const cred of allCredentials) {
+                const gleifData = await fetchGLEIFData(cred.lei);
+                if (gleifData) {
+                    await base44.asServiceRole.entities.LEICredential.update(cred.id, {
+                        lei_status: gleifData.status === 'ISSUED' ? 'active' : 
+                                   gleifData.status === 'LAPSED' ? 'expired' : 'pending',
+                        entity_name: gleifData.legal_name,
+                        renewal_date: gleifData.next_renewal,
+                        last_verified_date: new Date().toISOString(),
+                        gleif_data: gleifData.raw_data
+                    });
+                }
+            }
+
             const dashboard = {
                 global_stats: {
                     total_leis_issued: allCredentials.length,
                     active_vleis: allCredentials.filter(c => c.vlei_status === 'active').length,
                     compliance_rate: (allCredentials.length / (allPSPs.length + allMerchants.length) * 100).toFixed(1),
                     entities_in_grace_period: 0,
-                    entities_at_risk: 0
+                    entities_at_risk: 0,
+                    last_gleif_sync: new Date().toISOString()
                 },
                 by_entity_type: {
                     psps: {
