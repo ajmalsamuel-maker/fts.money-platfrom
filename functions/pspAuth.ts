@@ -114,6 +114,13 @@ Deno.serve(async (req) => {
                 const hashBuffer = await crypto.subtle.digest('SHA-256', data);
                 const hashArray = Array.from(new Uint8Array(hashBuffer));
                 const passwordHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+                
+                console.log('[PSP_AUTH] Password comparison:');
+                console.log('[PSP_AUTH] Input password:', password);
+                console.log('[PSP_AUTH] Computed hash:', passwordHash);
+                console.log('[PSP_AUTH] Stored hash:', user.password_hash);
+                console.log('[PSP_AUTH] Match:', passwordHash === user.password_hash);
+                
                 const isValid = passwordHash === user.password_hash;
                 
                 if (!isValid) {
