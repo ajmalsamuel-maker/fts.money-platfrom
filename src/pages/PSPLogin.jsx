@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
+import { useNavigate } from 'react-router-dom';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,6 +11,7 @@ import { FTS_COLORS, FTS_GRADIENTS, FTS_LOGOS } from '@/components/community/FTS
 import { Building2, AlertCircle, ArrowRight, Loader2 } from 'lucide-react';
 
 export default function PSPLogin() {
+    const navigate = useNavigate();
     const [pspCode, setPspCode] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -28,7 +30,7 @@ export default function PSPLogin() {
                 console.log('🔐 PSPLogin: Session parsed:', session);
                 if (session?.psp_code) {
                     console.log('🔐 PSPLogin: Valid session, navigating to Dashboard...');
-                    window.location.replace('/Dashboard');
+                    navigate('/Dashboard');
                     return;
                 }
             } catch (err) {
@@ -37,7 +39,7 @@ export default function PSPLogin() {
             }
         }
         setCheckComplete(true);
-    }, []);
+    }, [navigate]);
     
     if (!checkComplete) {
         return null;
@@ -68,7 +70,7 @@ export default function PSPLogin() {
 
                 console.log('✅ PSPLogin: Login successful, saving session and redirecting...');
                 localStorage.setItem('staff_session', JSON.stringify(sessionData));
-                window.location.replace('/Dashboard');
+                navigate('/Dashboard');
                 return;
             } else {
                 setError(data.error || 'Login failed');
