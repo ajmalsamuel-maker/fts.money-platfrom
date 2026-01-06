@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Shield, AlertTriangle, CheckCircle2, Clock, TrendingUp, Building2, Store, RefreshCw } from 'lucide-react';
-import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
+import FTSPlatformSidebarRestructured from '@/components/platform/FTSPlatformSidebarRestructured';
 import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
@@ -38,7 +38,11 @@ export default function LEIComplianceDashboard() {
     if (isLoading || !dashboard) {
         return (
             <div className="flex h-screen bg-slate-50">
-                <FTSPlatformSidebar currentPage="LEIComplianceDashboard" userEmail={platformUser?.email} userRole={platformUser?.platform_role} />
+                <FTSPlatformSidebarRestructured 
+                    currentPage="LEIComplianceDashboard" 
+                    userEmail={platformUser?.email} 
+                    userRole={platformUser?.platform_role} 
+                />
                 <div className="flex-1 flex items-center justify-center">
                     <RefreshCw className="h-8 w-8 animate-spin text-blue-600" />
                 </div>
@@ -50,7 +54,12 @@ export default function LEIComplianceDashboard() {
 
     return (
         <div className="flex h-screen bg-slate-50">
-            <FTSPlatformSidebar currentPage="LEIComplianceDashboard" userEmail={platformUser?.email} userRole={platformUser?.platform_role} />
+            <FTSPlatformSidebarRestructured 
+                currentPage="LEIComplianceDashboard" 
+                userEmail={platformUser?.email} 
+                userRole={platformUser?.platform_role}
+                isSuperAdmin={platformUser?.platform_role === 'super_admin'}
+            />
             
             <div className="flex-1 overflow-auto">
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
