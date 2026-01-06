@@ -4,7 +4,6 @@ const PlatformOverviewComplete = `# FTS.Money - Complete Platform Overview & Tec
 **Version:** 4.0 - Complete Specification  
 **Classification:** Public - Comprehensive Reference  
 **Last Updated:** January 5, 2026  
-**Document Length:** ~12,000 words (Executive Summary + Architecture)  
 **Document Owner:** FTS.Money Product Team
 
 ---

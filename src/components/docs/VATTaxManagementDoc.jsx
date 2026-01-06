@@ -1123,8 +1123,7 @@ async function processPaymentWithTax(checkoutData) {
 ---
 
 *Document Version: 3.0 | Last Updated: 2026-01-05*  
-*Classification: Public - Technical Documentation*  
-*Word Count: ~8,500 words*
+*Classification: Public - Technical Documentation*
 
 © 2026 FTS.Money. All rights reserved.
 `;

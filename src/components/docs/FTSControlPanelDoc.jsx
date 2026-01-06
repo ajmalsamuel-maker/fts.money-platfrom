@@ -4,8 +4,7 @@ const FTSControlPanelDoc = `# FTS Control Panel - Complete Platform Administrati
 **Version:** 2.0  
 **Classification:** Internal - Platform Administrators  
 **Last Updated:** January 5, 2026  
-**Document Owner:** FTS.Money Platform Team  
-**Word Count:** ~9,500 words
+**Document Owner:** FTS.Money Platform Team
 
 ---
 
@@ -1218,7 +1217,6 @@ The FTS Control Panel provides comprehensive administration capabilities across 
 - **Version:** 2.0
 - **Last Updated:** January 5, 2026
 - **Classification:** Internal - Platform Administrators
-- **Word Count:** ~9,500 words
 
 © 2026 FTS.Money. Internal use only.`;
 
