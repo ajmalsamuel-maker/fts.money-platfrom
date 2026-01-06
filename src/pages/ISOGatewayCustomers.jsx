@@ -12,7 +12,6 @@ import { Building2, Plus, Search, TrendingUp, Activity, AlertCircle, Pencil, Shi
 import OrchestrationRuleBuilder from '@/components/orchestration/OrchestrationRuleBuilder';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export default function ISOGatewayCustomers() {
