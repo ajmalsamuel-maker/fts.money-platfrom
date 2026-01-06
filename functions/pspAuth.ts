@@ -10,15 +10,6 @@ const pool = new Pool({
 
 Deno.serve(async (req) => {
     try {
-        // Initialize SDK but don't require auth - login runs in system context
-        const base44 = createClientFromRequest(req);
-        let user;
-        try {
-            user = await base44.auth.me();
-        } catch (err) {
-            console.log('[PSP_AUTH] Running in system context');
-        }
-
         const { action, psp_code, email, password } = await req.json();
 
         if (action === 'verifyPSP') {
