@@ -51,7 +51,8 @@ import {
     Tag,
     Activity,
     FileText as InvoiceIcon,
-    Layers
+    Layers,
+    BookOpen
 } from 'lucide-react';
 
 // Map icon strings to actual icon components
