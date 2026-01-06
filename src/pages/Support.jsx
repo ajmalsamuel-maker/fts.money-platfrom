@@ -21,9 +21,12 @@ import {
     FileText,
     Search,
     Plus,
-    X
+    X,
+    ArrowLeft
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
+import { Link } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
 
 export default function Support() {
     const [pspSettings, setPspSettings] = useState(null);
