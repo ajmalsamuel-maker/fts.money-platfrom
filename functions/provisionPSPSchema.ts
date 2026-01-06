@@ -198,7 +198,7 @@ Deno.serve(async (req) => {
 
                 -- PSP Staff Users Table - COMPLETELY ISOLATED, NOT MANAGED BY BASE44
                 -- Separate table name prevents Base44 entity system from auto-syncing constraints
-                CREATE TABLE IF NOT EXISTS psp_staff_users (
+                CREATE TABLE IF NOT EXISTS "${schemaName}".psp_staff_users (
                     id SERIAL PRIMARY KEY,
                     email VARCHAR(255) NOT NULL,
                     full_name VARCHAR(255),
