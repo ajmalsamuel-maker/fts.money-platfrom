@@ -36,9 +36,10 @@ Deno.serve(async (req) => {
                 // Hash password
                 const hashedPassword = await hashPassword(password);
 
-                // Validate role
+                // Normalize role (accept any case variations)
+                const normalizedRole = community_role ? community_role.toLowerCase().replace(/\s+/g, '_') : 'psp_owner';
                 const validRoles = ['psp_owner', 'psp_administrator', 'developer', 'partner', 'reseller', 'operations', 'analyst'];
-                const role = community_role && validRoles.includes(community_role) ? community_role : 'psp_owner';
+                const role = validRoles.includes(normalizedRole) ? normalizedRole : 'psp_owner';
 
                 // Create community user
                 const user = await base44.asServiceRole.entities.AuthUser.create({
