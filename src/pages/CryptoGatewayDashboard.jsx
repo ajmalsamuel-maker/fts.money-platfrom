@@ -156,9 +156,16 @@ export default function CryptoGatewayDashboard() {
 
             {/* Main Content Area with Sidebar */}
             <div className="flex flex-1 overflow-hidden">
+                {sidebarOpen && (
+                    <div 
+                        className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+                        onClick={() => setSidebarOpen(false)}
+                    />
+                )}
+                
                 <div className={cn(
-                    "lg:block",
-                    sidebarOpen ? "block" : "hidden"
+                    "fixed lg:static inset-y-0 left-0 z-50 lg:z-auto transition-transform duration-300",
+                    sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
                 )}>
                     <CryptoGatewaySidebar 
                         currentPage="CryptoGatewayDashboard" 
@@ -166,14 +173,6 @@ export default function CryptoGatewayDashboard() {
                         onClose={() => setSidebarOpen(false)}
                     />
                 </div>
-                
-                {/* Mobile overlay */}
-                {sidebarOpen && (
-                    <div 
-                        className="fixed inset-0 bg-black/50 z-30 lg:hidden"
-                        onClick={() => setSidebarOpen(false)}
-                    />
-                )}
                 
                 {/* Dashboard Content */}
                 <div className="flex-1 overflow-auto p-8">
