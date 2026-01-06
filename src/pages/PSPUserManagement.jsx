@@ -136,13 +136,11 @@ export default function PSPUserManagement() {
             const { data } = await base44.functions.invoke('managePSPUsers', {
                 action: 'create',
                 psp_code: userPspCode,
-                user_data: {
-                    email: userData.email,
-                    full_name: userData.full_name,
-                    role: userData.app_role,
-                    department: userData.department,
-                    password: userData.password
-                }
+                email: userData.email,
+                full_name: userData.full_name,
+                role: userData.app_role,
+                department: userData.department,
+                password: userData.password
             });
             return data;
         },
