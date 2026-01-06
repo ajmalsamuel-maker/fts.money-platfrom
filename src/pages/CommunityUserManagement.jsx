@@ -429,6 +429,145 @@ export default function CommunityUserManagement() {
                 </DialogContent>
             </Dialog>
 
+            {/* Change Password Dialog */}
+            <Dialog open={!!passwordUser} onOpenChange={() => setPasswordUser(null)}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2">
+                            <KeyRound className="h-5 w-5 text-amber-600" />
+                            Change Password
+                        </DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4 mt-4">
+                        {error && (
+                            <Alert variant="destructive">
+                                <AlertDescription>{error}</AlertDescription>
+                            </Alert>
+                        )}
+                        <div>
+                            <Label>User</Label>
+                            <Input value={passwordUser?.full_name || ''} disabled className="bg-slate-50" />
+                        </div>
+                        <div>
+                            <Label>New Password *</Label>
+                            <Input
+                                type="password"
+                                value={passwordForm.password}
+                                onChange={(e) => setPasswordForm({...passwordForm, password: e.target.value})}
+                                placeholder="Minimum 8 characters"
+                            />
+                        </div>
+                        <div>
+                            <Label>Confirm Password *</Label>
+                            <Input
+                                type="password"
+                                value={passwordForm.confirmPassword}
+                                onChange={(e) => setPasswordForm({...passwordForm, confirmPassword: e.target.value})}
+                                placeholder="Re-enter password"
+                            />
+                        </div>
+                    </div>
+                    <DialogFooter className="mt-4">
+                        <Button variant="outline" onClick={() => setPasswordUser(null)}>Cancel</Button>
+                        <Button 
+                            onClick={() => {
+                                if (!passwordForm.password || passwordForm.password.length < 8) {
+                                    setError('Password must be at least 8 characters');
+                                    return;
+                                }
+                                if (passwordForm.password !== passwordForm.confirmPassword) {
+                                    setError('Passwords do not match');
+                                    return;
+                                }
+                                updateMutation.mutate({
+                                    userId: passwordUser.id,
+                                    updates: {
+                                        password_hash: passwordForm.password // Backend will hash it
+                                    }
+                                });
+                            }}
+                            disabled={updateMutation.isPending}
+                            className="bg-amber-600 hover:bg-amber-700"
+                        >
+                            {updateMutation.isPending ? 'Updating...' : 'Change Password'}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            {/* Manage Services Dialog */}
+            <Dialog open={!!servicesUser} onOpenChange={() => setServicesUser(null)}>
+                <DialogContent className="max-w-2xl">
+                    <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2">
+                            <Layers className="h-5 w-5 text-purple-600" />
+                            Manage Service Access
+                        </DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4 mt-4">
+                        {error && (
+                            <Alert variant="destructive">
+                                <AlertDescription>{error}</AlertDescription>
+                            </Alert>
+                        )}
+                        <div>
+                            <Label>User</Label>
+                            <Input value={servicesUser?.full_name || ''} disabled className="bg-slate-50" />
+                        </div>
+                        <div>
+                            <Label>Allowed Services</Label>
+                            <p className="text-xs text-slate-500 mb-3">Select which services this user can provision and access</p>
+                            <div className="grid grid-cols-2 gap-3">
+                                {[
+                                    { id: 'psp', label: 'PSP Portal', icon: Building2 },
+                                    { id: 'iso_gateway', label: 'ISO Gateway', icon: Shield },
+                                    { id: 'orchestration', label: 'Orchestration Platform', icon: Layers },
+                                    { id: 'crypto_gateway', label: 'Crypto Gateway (VASP)', icon: Shield },
+                                    { id: 'rwa_platform', label: 'RWA Platform', icon: Building2 },
+                                ].map(service => {
+                                    const Icon = service.icon;
+                                    const isSelected = servicesForm.allowed_services?.includes(service.id);
+                                    return (
+                                        <Button
+                                            key={service.id}
+                                            variant={isSelected ? "default" : "outline"}
+                                            className={`justify-start h-auto py-3 ${isSelected ? 'bg-purple-600 hover:bg-purple-700' : ''}`}
+                                            onClick={() => {
+                                                const current = servicesForm.allowed_services || [];
+                                                const updated = isSelected 
+                                                    ? current.filter(s => s !== service.id)
+                                                    : [...current, service.id];
+                                                setServicesForm({ allowed_services: updated });
+                                            }}
+                                        >
+                                            <Icon className="h-4 w-4 mr-2" />
+                                            {service.label}
+                                        </Button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    </div>
+                    <DialogFooter className="mt-4">
+                        <Button variant="outline" onClick={() => setServicesUser(null)}>Cancel</Button>
+                        <Button 
+                            onClick={() => {
+                                updateMutation.mutate({
+                                    userId: servicesUser.id,
+                                    updates: {
+                                        allowed_services: servicesForm.allowed_services
+                                    }
+                                });
+                            }}
+                            disabled={updateMutation.isPending}
+                            className="bg-purple-600 hover:bg-purple-700"
+                        >
+                            {updateMutation.isPending ? 'Updating...' : 'Update Services'}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
             <AlertDialog open={!!deleteUser} onOpenChange={() => setDeleteUser(null)}>
                 <AlertDialogContent>
                     <AlertDialogHeader>
