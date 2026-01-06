@@ -61,7 +61,7 @@ export default function CommunityPortalLogin() {
     return (
         <div className="min-h-screen flex flex-col bg-white">
             {/* Language Selector - Top Right Corner */}
-            <div className="absolute top-4 right-6 z-20">
+            <div className="absolute top-16 right-6 z-20">
                 <LanguageSwitcher variant="select" showLabel={false} />
             </div>
 
