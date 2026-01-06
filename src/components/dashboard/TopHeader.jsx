@@ -74,8 +74,7 @@ export default function TopHeader({ onToggleSidebar, collapsed }) {
                 const pspCode = session?.psp_code;
                 
                 if (!pspCode) {
-                    window.location.href = '/PSPLogin';
-                    return;
+                    return; // Let Dashboard handle redirect
                 }
                 
                 const result = await base44.functions.invoke('getPSPSettings', { psp_code: pspCode });

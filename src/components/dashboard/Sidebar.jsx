@@ -262,16 +262,11 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                 const staffSession = getStaffSession();
                 const pspCode = staffSession?.psp_code;
                 
-                console.log('🔍 SIDEBAR: Loading PSP settings for:', pspCode);
-                
                 if (!pspCode) {
-                    window.location.href = '/PSPLogin';
-                    return;
+                    return; // Let Dashboard handle redirect
                 }
 
                 const result = await base44.functions.invoke('getPSPSettings', { psp_code: pspCode });
-                
-                console.log('⚙️ SIDEBAR: PSP Settings response:', result.data);
                 
                 if (result.data.success && result.data.settings) {
                     setPspSettings(result.data.settings);
@@ -281,8 +276,6 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                     if (pspRecords && pspRecords.length > 0) {
                         const psp = pspRecords[0];
                         setPspRecord(psp);
-                        
-                        console.log('📦 SIDEBAR: PSP enabled_features:', psp.enabled_features);
                         
                         // Generate dynamic menu based on enabled features
                         if (psp.enabled_features && psp.enabled_features.length > 0) {
@@ -332,17 +325,12 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                                 { icon: TrendingUp, label: 'verticalSolutions', path: 'FTSVerticalSolutions', permission: 'VIEW_SETTINGS' },
                             ];
                             
-                            console.log('🎯 SIDEBAR: Documentation submenu:', docItem.submenu);
-                            console.log('🎯 SIDEBAR: Full menu structure:', JSON.stringify(formattedMenus, null, 2));
                             setMenuItems(formattedMenus);
-                        } else {
-                            console.log('⚠️ SIDEBAR: No enabled_features, using default menu');
                         }
                     }
                 }
             } catch (err) {
                 console.error('Error loading PSP settings:', err);
-                window.location.href = '/PSPLogin';
             }
         };
         loadPspSettings();
