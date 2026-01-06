@@ -102,6 +102,9 @@ export default function CommunityUserManagement() {
         onSuccess: () => {
             queryClient.invalidateQueries(['community-users']);
             setEditUser(null);
+            setPasswordUser(null);
+            setServicesUser(null);
+            setPasswordForm({ password: '', confirmPassword: '' });
             setError('');
         },
         onError: (err) => {
