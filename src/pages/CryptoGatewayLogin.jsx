@@ -43,6 +43,11 @@ export default function CryptoGatewayLogin() {
 
     return (
         <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden bg-white">
+            {/* Language Switcher - Top Right */}
+            <div className="absolute top-16 right-6 z-20">
+                <LanguageSwitcher variant="select" showLabel={false} />
+            </div>
+            
             {/* FTS.Money Wave Background - Bottom */}
             <div className="absolute bottom-0 left-0 right-0 h-1/3">
                 <svg className="absolute bottom-0 w-full h-full" viewBox="0 0 1440 320" preserveAspectRatio="none">
@@ -92,10 +97,6 @@ export default function CryptoGatewayLogin() {
                                 </Alert>
                             )}
 
-                            <div className="flex justify-center mb-4">
-                                <LanguageSwitcher variant="select" showLabel={false} />
-                            </div>
-
                             <div>
                                 <Label>Email Address</Label>
                                 <Input
@@ -136,10 +137,6 @@ export default function CryptoGatewayLogin() {
                     </Card>
 
                     <StrigaDisclaimer />
-
-                    <p className="text-center text-slate-600 text-sm mt-6" style={{ fontFamily: 'Montserrat, sans-serif' }}>
-                    © 2025 FTS.Money - Fluid global payments
-                    </p>
                     </div>
                     </div>
                     );
