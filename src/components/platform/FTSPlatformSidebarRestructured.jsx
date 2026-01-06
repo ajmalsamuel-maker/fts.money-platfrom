@@ -162,7 +162,7 @@ export default function FTSPlatformSidebarRestructured({ currentPage, userRole, 
         {
             id: 'identity',
             title: 'Digital Identity',
-            defaultOpen: true,
+            defaultOpen: false,
             items: [
                 { label: 'Identity Wallet', path: 'DigitalIdentityWallet', icon: Wallet, description: 'Credentials', priority: true },
                 { label: 'Credential Presentation', path: 'CredentialPresentation', icon: Send, description: 'Share VPs', priority: true }

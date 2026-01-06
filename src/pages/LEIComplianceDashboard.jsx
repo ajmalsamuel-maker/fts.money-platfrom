@@ -16,13 +16,14 @@ export default function LEIComplianceDashboard() {
     const queryClient = useQueryClient();
     const { platformUser } = usePlatformAuth();
 
-    const { data: dashboard, isLoading } = useQuery({
+    const { data: dashboard, isLoading, error } = useQuery({
         queryKey: ['lei-compliance-dashboard'],
         queryFn: async () => {
             const response = await base44.functions.invoke('complianceMonitor', { action: 'get_dashboard' });
             return response.data.dashboard;
         },
-        refetchInterval: 60000 // Refresh every minute
+        refetchInterval: 60000, // Refresh every minute
+        retry: 1
     });
 
     const runComplianceCheck = useMutation({
@@ -34,6 +35,25 @@ export default function LEIComplianceDashboard() {
             queryClient.invalidateQueries(['lei-compliance-dashboard']);
         }
     });
+
+    if (error) {
+        return (
+            <div className="flex h-screen bg-slate-50">
+                <FTSPlatformSidebarRestructured 
+                    currentPage="LEIComplianceDashboard" 
+                    userEmail={platformUser?.email} 
+                    userRole={platformUser?.platform_role} 
+                />
+                <div className="flex-1 flex items-center justify-center">
+                    <div className="text-center">
+                        <AlertTriangle className="h-12 w-12 text-amber-600 mx-auto mb-3" />
+                        <p className="text-slate-900 font-semibold mb-1">Compliance Monitor Not Available</p>
+                        <p className="text-sm text-slate-600">The compliance monitoring function is still deploying. Please refresh in a moment.</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     if (isLoading || !dashboard) {
         return (
