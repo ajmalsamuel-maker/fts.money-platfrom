@@ -8,7 +8,7 @@ import { FTS_LOGOS } from '@/components/community/FTSBrandColors';
 import { 
     Building2, BarChart3, DollarSign, Users, Settings, Shield, Database,
     Globe, Wallet, Zap, FileText, Activity, BookOpen, LogOut, Package,
-    GitBranch, Workflow, Code, TestTube2, ChevronDown, ChevronRight, Rocket
+    GitBranch, Workflow, Code, TestTube2, ChevronDown, ChevronRight, Rocket, Send
 } from 'lucide-react';
 
 /**
@@ -160,12 +160,20 @@ export default function FTSPlatformSidebarRestructured({ currentPage, userRole, 
             ]
         },
         {
+            id: 'identity',
+            title: 'Digital Identity',
+            defaultOpen: false,
+            items: [
+                { label: 'Identity Wallet', path: 'DigitalIdentityWallet', icon: Wallet, description: 'Credentials', priority: true },
+                { label: 'Credential Presentation', path: 'CredentialPresentation', icon: Send, description: 'Share VPs', priority: true }
+            ]
+        },
+        {
             id: 'settings',
             title: 'Settings',
             defaultOpen: false,
             collapsed: true,
             items: [
-                { label: 'Identity Wallet', path: 'DigitalIdentityWallet', icon: Wallet, description: 'Credentials', priority: true },
                 { label: 'Platform Config', path: 'FTSSettings', icon: Settings, description: 'System' },
                 { label: 'Advanced Tools', path: 'ModuleCatalogTest', icon: Code, description: 'Testing' }
             ]
