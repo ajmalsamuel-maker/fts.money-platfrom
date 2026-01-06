@@ -182,20 +182,20 @@ export default function CommunityPortalDashboard() {
 
     return (
         <div className="flex h-screen bg-slate-50">
-            <div className={cn(
-                "lg:block",
-                sidebarOpen ? "block" : "hidden"
-            )}>
-                <CommunityPortalSidebarOptimized currentPage="CommunityPortalDashboard" userEmail={session?.email} />
-            </div>
-            
             {/* Mobile overlay */}
             {sidebarOpen && (
                 <div 
-                    className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+                    className="fixed inset-0 bg-black/50 z-40 lg:hidden"
                     onClick={() => setSidebarOpen(false)}
                 />
             )}
+            
+            <div className={cn(
+                "fixed lg:static inset-y-0 left-0 z-50 lg:z-auto transition-transform duration-300",
+                sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+            )}>
+                <CommunityPortalSidebarOptimized currentPage="CommunityPortalDashboard" userEmail={session?.email} />
+            </div>
             
             <UnifiedCommandPalette 
                 open={commandPaletteOpen} 
