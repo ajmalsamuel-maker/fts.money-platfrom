@@ -38,6 +38,8 @@ export default function CommunityPortalLogin() {
                 password
             });
 
+            console.log('Login response:', response.data);
+
             if (response.data.success) {
                 localStorage.setItem('community_portal_session', JSON.stringify(response.data.user));
                 navigate(createPageUrl('CommunityPortalDashboard'));
@@ -45,7 +47,8 @@ export default function CommunityPortalLogin() {
                 setError(response.data.error || 'Invalid credentials');
             }
         } catch (err) {
-            setError('Login failed. Please check your credentials.');
+            console.error('Login error:', err);
+            setError(err.response?.data?.error || err.message || 'Login failed. Please check your credentials.');
         } finally {
             setLoading(false);
         }
