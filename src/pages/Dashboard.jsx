@@ -63,33 +63,24 @@ export default function Dashboard() {
     const [isReady, setIsReady] = useState(false);
 
     React.useEffect(() => {
-        console.log('📊 Dashboard: Checking for session...');
         const sessionData = localStorage.getItem('staff_session');
-        console.log('📊 Dashboard: Session found:', !!sessionData);
-        
         if (!sessionData) {
-            console.log('📊 Dashboard: No session, redirecting to PSPLogin...');
-            navigate('/PSPLogin');
+            window.location.href = '/PSPLogin';
             return;
         }
         
         try {
             const session = JSON.parse(sessionData);
-            console.log('📊 Dashboard: Session parsed:', session);
-            
             if (session?.psp_code) {
-                console.log('📊 Dashboard: Valid PSP code:', session.psp_code);
                 setUserPspCode(session.psp_code);
                 setIsReady(true);
             } else {
-                console.log('📊 Dashboard: No PSP code in session, redirecting...');
                 localStorage.removeItem('staff_session');
-                navigate('/PSPLogin');
+                window.location.href = '/PSPLogin';
             }
         } catch (err) {
-            console.error('📊 Dashboard: Session parse error:', err);
             localStorage.removeItem('staff_session');
-            navigate('/PSPLogin');
+            window.location.href = '/PSPLogin';
         }
     }, []);
 
