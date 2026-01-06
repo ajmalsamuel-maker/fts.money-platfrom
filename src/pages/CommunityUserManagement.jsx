@@ -13,7 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Users, UserPlus, Mail, Trash2, Search, Building2, Pencil, Shield } from 'lucide-react';
+import { Users, UserPlus, Mail, Trash2, Search, Building2, Pencil, Shield, KeyRound, Layers } from 'lucide-react';
 
 export default function CommunityUserManagement() {
     const queryClient = useQueryClient();
