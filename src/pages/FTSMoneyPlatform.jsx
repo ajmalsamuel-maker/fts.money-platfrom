@@ -59,6 +59,7 @@ const quickActions = [
 export default function FTSMoneyPlatform() {
     const { platformUser, loading } = usePlatformAuth();
     const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
+    const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
     const { t, language } = useI18n();
     
     // Debug: Log translation test
@@ -182,8 +183,16 @@ export default function FTSMoneyPlatform() {
             <div className="flex-1 overflow-auto bg-slate-50">
                 {/* Header */}
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-6 sticky top-0 z-10" style={{ height: '64px' }}>
-                    <div className="min-w-0 flex-1">
-                        <div>
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="lg:hidden"
+                            onClick={() => setMobileSidebarOpen(true)}
+                        >
+                            <Menu className="h-5 w-5" />
+                        </Button>
+                        <div className="min-w-0">
                             <h2 className="text-lg font-semibold text-slate-900 truncate">{t('platform:dashboard.title')}</h2>
                             <p className="text-xs text-slate-600 truncate hidden sm:block">{t('platform:dashboard.subtitle')}</p>
                         </div>
