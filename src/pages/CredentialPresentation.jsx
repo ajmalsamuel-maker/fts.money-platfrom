@@ -7,14 +7,20 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import VerifiablePresentationFlow from '@/components/identity/VerifiablePresentationFlow';
+import FTSPlatformSidebarRestructured from '@/components/platform/FTSPlatformSidebarRestructured';
+import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
 import { 
     Shield, Send, History, Rocket, Wallet, Building2, 
-    Code, CheckCircle2, Clock, ArrowRight, FileCheck, Globe
+    Code, CheckCircle2, Clock, ArrowRight, FileCheck, Globe, ArrowLeft
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { Toaster } from "@/components/ui/sonner";
+import { useNavigate } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
 
 export default function CredentialPresentation() {
+    const { platformUser } = usePlatformAuth();
+    const navigate = useNavigate();
     const [activeService, setActiveService] = useState(null);
     const [presentationHistory, setPresentationHistory] = useState([]);
 
@@ -109,34 +115,50 @@ export default function CredentialPresentation() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-slate-50">
-            <Toaster position="top-right" />
+        <div className="flex h-screen bg-slate-50">
+            <FTSPlatformSidebarRestructured 
+                currentPage="CredentialPresentation" 
+                userEmail={platformUser?.email} 
+                userRole={platformUser?.platform_role}
+                isSuperAdmin={platformUser?.platform_role === 'super_admin'}
+            />
             
-            {/* Header */}
-            <header className="bg-white border-b border-slate-200">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-600 to-pink-500 flex items-center justify-center">
-                                <Send className="h-6 w-6 text-white" />
+            <div className="flex-1 overflow-auto">
+                <Toaster position="top-right" />
+                
+                {/* Header */}
+                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
+                    <div className="flex items-center gap-4">
+                        <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => navigate(createPageUrl('FTSMoneyPlatform'))}
+                            className="text-slate-600 hover:text-slate-900"
+                        >
+                            <ArrowLeft className="h-4 w-4 mr-2" />
+                            Back to Dashboard
+                        </Button>
+                        <div className="border-l border-slate-200 pl-4 flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-600 to-pink-500 flex items-center justify-center">
+                                <Send className="h-5 w-5 text-white" />
                             </div>
                             <div>
-                                <h1 className="text-xl font-bold text-slate-900">Credential Presentation</h1>
-                                <p className="text-sm text-slate-600">Share verified credentials securely</p>
+                                <h2 className="text-lg font-semibold text-slate-900">Credential Presentation</h2>
+                                <p className="text-xs text-slate-600">Share verified credentials securely</p>
                             </div>
                         </div>
-                        <Button 
-                            variant="outline"
-                            onClick={() => window.location.href = '/DigitalIdentityWallet'}
-                        >
-                            <Shield className="h-4 w-4 mr-2" />
-                            My Wallet
-                        </Button>
                     </div>
-                </div>
-            </header>
+                    <Button 
+                        variant="outline"
+                        size="sm"
+                        onClick={() => navigate(createPageUrl('DigitalIdentityWallet'))}
+                    >
+                        <Shield className="h-4 w-4 mr-2" />
+                        My Wallet
+                    </Button>
+                </header>
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+                <div className="p-6 max-w-7xl mx-auto">
                 {!activeService ? (
                     <div className="space-y-6">
                         {/* Info Banner */}
@@ -314,6 +336,7 @@ export default function CredentialPresentation() {
                         />
                     </div>
                 )}
+                </div>
             </div>
         </div>
     );
