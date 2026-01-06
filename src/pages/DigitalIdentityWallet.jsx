@@ -12,6 +12,7 @@ import { Progress } from "@/components/ui/progress";
 import CredentialCard from '@/components/identity/CredentialCard';
 import AddCredentialDialog from '@/components/identity/AddCredentialDialog';
 import CredentialDetailsDialog from '@/components/identity/CredentialDetailsDialog';
+import CredentialPresentationButton from '@/components/identity/CredentialPresentationButton';
 import { 
     Wallet, Plus, Shield, CheckCircle2, AlertCircle, Clock,
     Key, Lock, Globe, Fingerprint, Sparkles, Info
