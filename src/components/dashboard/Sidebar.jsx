@@ -192,9 +192,9 @@ const defaultMenuItems = [
         group: 'system',
         icon: Settings,
         items: [
-            { icon: Wallet, label: 'identityWallet', path: 'DigitalIdentityWallet', permission: 'VIEW_DASHBOARD' },
+            { icon: Wallet, label: 'identityWallet', path: 'PSPDigitalIdentityWallet', permission: 'VIEW_DASHBOARD' },
             { icon: Shield, label: 'securityPKI', path: 'SecurityManagement', permission: 'VIEW_SETTINGS' },
-            { icon: UserCog, label: 'userManagement', path: 'UserManagement', permission: 'VIEW_USERS' },
+            { icon: UserCog, label: 'userManagement', path: 'PSPUserManagement', permission: 'VIEW_USERS' },
             { icon: Shield, label: 'auditLogs', path: 'AuditLogs', permission: 'VIEW_USERS' },
             { icon: Palette, label: 'appearance', path: 'Appearance', permission: 'VIEW_APPEARANCE' },
             { icon: FileCheck, label: 'isoStandards', path: 'ISOConfiguration', permission: 'VIEW_SETTINGS' },
@@ -206,9 +206,8 @@ const defaultMenuItems = [
                 path: 'FTSArchitectureDoc', 
                 permission: 'VIEW_SETTINGS',
                 submenu: [
-                    { icon: FileText, label: 'platformArchitecture', path: 'FTSArchitectureDoc', permission: 'VIEW_SETTINGS' },
-                    { icon: Building2, label: 'productEcosystem', path: 'FTSProductEcosystemReport', permission: 'VIEW_SETTINGS' },
-                    { icon: TrendingUp, label: 'verticalSolutions', path: 'FTSVerticalSolutions', permission: 'VIEW_SETTINGS' },
+                    { icon: FileText, label: 'userManual', path: 'PSPUserManual', permission: 'VIEW_SETTINGS' },
+                    { icon: Key, label: 'apiDocumentation', path: 'PSPAPIDocumentation', permission: 'VIEW_SETTINGS' },
                 ]
             },
         ]
@@ -318,11 +317,10 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                                 docItem = systemGroup.items[systemGroup.items.length - 1];
                             }
                             
-                            // ALWAYS set submenu with all three documents
+                            // Set PSP-specific documentation submenu
                             docItem.submenu = [
-                                { icon: FileText, label: 'platformArchitecture', path: 'FTSArchitectureDoc', permission: 'VIEW_SETTINGS' },
-                                { icon: Building2, label: 'productEcosystem', path: 'FTSProductEcosystemReport', permission: 'VIEW_SETTINGS' },
-                                { icon: TrendingUp, label: 'verticalSolutions', path: 'FTSVerticalSolutions', permission: 'VIEW_SETTINGS' },
+                                { icon: FileText, label: 'userManual', path: 'PSPUserManual', permission: 'VIEW_SETTINGS' },
+                                { icon: Key, label: 'apiDocumentation', path: 'PSPAPIDocumentation', permission: 'VIEW_SETTINGS' },
                             ];
                             
                             setMenuItems(formattedMenus);
@@ -492,7 +490,7 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
             {/* Submenu Panel */}
             {activeGroupData && (
                 <aside 
-                    className="h-full w-56 border-r flex flex-col"
+                    className="h-full w-64 border-r flex flex-col"
                     style={{ backgroundColor: '#1e293b', borderColor: 'rgba(255,255,255,0.1)' }}
                 >
                     {/* Group Header */}

@@ -1,393 +1,520 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { useNavigate } from 'react-router-dom';
-import { createPageUrl } from '@/utils';
-import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
-import { usePlatformAuth, PLATFORM_ROLES, getRoleLabel } from '@/components/auth/usePlatformAuth';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { format } from 'date-fns';
+import Sidebar from '@/components/dashboard/Sidebar';
+import TopHeader from '@/components/dashboard/TopHeader';
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { Users, Plus, Edit, Trash2, Mail, Shield, ArrowLeft, Lock, KeyRound } from 'lucide-react';
-import { Switch } from "@/components/ui/switch";
-import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogFooter,
+} from "@/components/ui/dialog";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { 
+    Search, 
+    MoreHorizontal, 
+    Shield,
+    UserCog,
+    Users,
+    Crown,
+    Eye,
+    KeyRound,
+    Mail,
+    Clock,
+    Building2,
+    Check,
+    Plus,
+    Loader2,
+} from 'lucide-react';
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { toast } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
+import { usePermissions } from '@/components/auth/usePermissions';
+import { ROLE_CONFIG } from '@/components/auth/permissions';
+import { getStaffSession } from '@/components/auth/useStaffAuth';
 
 export default function PSPUserManagement() {
-    const navigate = useNavigate();
-    const queryClient = useQueryClient();
-    const { platformUser, loading } = usePlatformAuth();
-    const { t } = useI18n();
-    const [selectedPSP, setSelectedPSP] = useState('all');
-    const [dialogOpen, setDialogOpen] = useState(false);
-    const [editingUser, setEditingUser] = useState(null);
-    const [formData, setFormData] = useState({
-        email: '',
-        full_name: '',
-        role: 'user',
-        psp_code: '',
-        password: 'Welcome123!',
-        status: 'active',
-        two_factor_enabled: false
-    });
+    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [roleFilter, setRoleFilter] = useState('all');
+    const [selectedUser, setSelectedUser] = useState(null);
+    const [showRoleDialog, setShowRoleDialog] = useState(false);
+    const [showPasswordDialog, setShowPasswordDialog] = useState(false);
+    const [passwordData, setPasswordData] = useState({ password: '', confirmPassword: '' });
+    const [show2FADialog, setShow2FADialog] = useState(false);
+    const [tfaData, setTfaData] = useState({ enabled: false, method: 'email' });
+    const [confirmRoleChange, setConfirmRoleChange] = useState(null);
+    const [showAddUserDialog, setShowAddUserDialog] = useState(false);
+    const [newUser, setNewUser] = useState({ email: '', full_name: '', app_role: 'viewer', department: '', password: '', confirmPassword: '' });
+    const [showStatusDialog, setShowStatusDialog] = useState(false);
+    const [selectedStatus, setSelectedStatus] = useState('active');
 
-    const { data: psps = [] } = useQuery({
-        queryKey: ['psp-list'],
-        queryFn: async () => {
-            const allPsps = await base44.entities.ProvisionedPSP.filter({ status: 'active' }, '-created_date');
-            return allPsps || [];
+    const queryClient = useQueryClient();
+    const { can, loading: permLoading, userRole, user: currentUser } = usePermissions();
+    
+    const [userPspCode, setUserPspCode] = useState(null);
+    
+    React.useEffect(() => {
+        const sessionData = localStorage.getItem('staff_session');
+        if (sessionData) {
+            const session = JSON.parse(sessionData);
+            setUserPspCode(session?.psp_code);
         }
-    });
+    }, []);
 
     const { data: users = [], isLoading } = useQuery({
-        queryKey: ['psp-users', selectedPSP],
+        queryKey: ['psp-users', userPspCode],
         queryFn: async () => {
-            const result = await base44.functions.invoke('managePSPUsers', { 
+            const result = await base44.functions.invoke('managePSPUsers', {
                 action: 'list',
-                psp_code: selectedPSP === 'all' ? undefined : selectedPSP
+                psp_code: userPspCode
             });
-            return result.data.users || [];
-        }
+            return result.data?.users || [];
+        },
+        enabled: !!userPspCode,
     });
 
-    const createMutation = useMutation({
-        mutationFn: async (data) => {
-            try {
-                const result = await base44.functions.invoke('managePSPUsers', { action: 'create', ...data });
-                if (!result.data?.success) {
-                    throw new Error(result.data?.error || 'Failed to create user');
+    const updateUserMutation = useMutation({
+        mutationFn: async ({ userId, data }) => {
+            const { data: response } = await base44.functions.invoke('managePSPUsers', {
+                action: 'update',
+                psp_code: userPspCode,
+                user_id: userId,
+                updates: data
+            });
+            return response;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['psp-users', userPspCode] });
+            setShowRoleDialog(false);
+            setConfirmRoleChange(null);
+            toast.success('User updated successfully');
+        },
+    });
+
+    const inviteUserMutation = useMutation({
+        mutationFn: async (userData) => {
+            const { data } = await base44.functions.invoke('managePSPUsers', {
+                action: 'create',
+                psp_code: userPspCode,
+                user_data: {
+                    email: userData.email,
+                    full_name: userData.full_name,
+                    role: userData.app_role,
+                    department: userData.department,
+                    password: userData.password
                 }
-                return result;
-            } catch (err) {
-                // Extract the actual error message from various response formats
-                const errorMsg = err.response?.data?.error || err.message || 'Unknown error occurred';
-                throw new Error(errorMsg);
-            }
-        },
-        onSuccess: (result) => {
-            queryClient.invalidateQueries(['psp-users']);
-            setDialogOpen(false);
-            setEditingUser(null);
-            setFormData({ email: '', full_name: '', role: 'user', psp_code: '', password: 'Welcome123!', status: 'active', two_factor_enabled: false });
-            alert('User created successfully!');
-        },
-        onError: (error) => {
-            alert(`Error: ${error.message}`);
-        }
-    });
-
-    const updateMutation = useMutation({
-        mutationFn: async (data) => {
-            const result = await base44.functions.invoke('managePSPUsers', { action: 'update', ...data });
-            if (!result.data?.success) {
-                throw new Error(result.data?.error || 'Failed to update user');
-            }
-            return result;
+            });
+            return data;
         },
         onSuccess: () => {
-            queryClient.invalidateQueries(['psp-users']);
-            setDialogOpen(false);
-            setEditingUser(null);
-            setFormData({ email: '', full_name: '', role: 'user', psp_code: '', password: 'Welcome123!', status: 'active', two_factor_enabled: false });
-            alert('User updated successfully!');
+            queryClient.invalidateQueries({ queryKey: ['psp-users', userPspCode] });
+            setShowAddUserDialog(false);
+            setNewUser({ email: '', full_name: '', app_role: 'viewer', department: '', password: '', confirmPassword: '' });
+            toast.success('User created successfully');
         },
         onError: (error) => {
-            alert(`Error: ${error.message}`);
+            toast.error('Failed to create user: ' + error.message);
         }
     });
 
-    const deleteMutation = useMutation({
-        mutationFn: (user_id) => base44.functions.invoke('managePSPUsers', { action: 'delete', user_id }),
-        onSuccess: () => {
-            queryClient.invalidateQueries(['psp-users']);
-        }
+    const filteredUsers = users.filter(u => {
+        const matchesSearch = !searchQuery || 
+            u.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            u.email?.toLowerCase().includes(searchQuery.toLowerCase());
+        const userRole = u.role || u.app_role || 'viewer';
+        const matchesRole = roleFilter === 'all' || userRole === roleFilter;
+        return matchesSearch && matchesRole;
     });
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (!formData.psp_code) {
-            alert('Please select a PSP');
+    const handleRoleChange = (user, newRole) => {
+        setConfirmRoleChange({ user, newRole });
+    };
+
+    const confirmAndChangeRole = async () => {
+        if (confirmRoleChange) {
+            updateUserMutation.mutate({
+                userId: confirmRoleChange.user.id,
+                data: { role: confirmRoleChange.newRole }
+            });
+        }
+    };
+
+    const handleInviteUser = () => {
+        if (!newUser.email || !newUser.full_name) {
+            toast.error('Please fill in all required fields');
             return;
         }
-        
-        // Check if email already exists for this PSP
-        if (!editingUser) {
-            const existingUser = users.find(u => 
-                u.email.toLowerCase() === formData.email.toLowerCase() && 
-                u.psp_code === formData.psp_code
-            );
-            if (existingUser) {
-                alert(`A user with email ${formData.email} already exists for PSP ${formData.psp_code}`);
-                return;
-            }
+        if (!newUser.password || newUser.password.length < 8) {
+            toast.error('Password must be at least 8 characters');
+            return;
         }
-        
-        if (editingUser) {
-            updateMutation.mutate({ ...formData, user_id: editingUser.id });
-        } else {
-            createMutation.mutate(formData);
+        if (newUser.password !== newUser.confirmPassword) {
+            toast.error('Passwords do not match');
+            return;
         }
+        inviteUserMutation.mutate(newUser);
     };
 
-    const handleEdit = (user) => {
-        setEditingUser(user);
-        setFormData({
-            email: user.email,
-            full_name: user.full_name,
-            role: user.role,
-            psp_code: user.psp_code || '',
-            password: '',
-            status: user.status,
-            two_factor_enabled: user.two_factor_enabled || false
-        });
-        setDialogOpen(true);
-    };
-
-    if (loading) {
-        return <div className="flex items-center justify-center h-screen">Loading...</div>;
+    if (permLoading) {
+        return (
+            <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            </div>
+        );
     }
 
+    const roleStats = {
+        total: users.length,
+        admin: users.filter(u => (u.role || u.app_role) === 'admin').length,
+        finance: users.filter(u => (u.role || u.app_role) === 'finance').length,
+        operations: users.filter(u => (u.role || u.app_role) === 'operations').length,
+        compliance: users.filter(u => (u.role || u.app_role) === 'compliance').length,
+        technical: users.filter(u => (u.role || u.app_role) === 'technical').length,
+        editor: users.filter(u => (u.role || u.app_role) === 'editor').length,
+        viewer: users.filter(u => ((u.role || u.app_role) === 'viewer' || (!u.role && !u.app_role))).length,
+    };
+
     return (
-        <div className="flex h-screen bg-slate-50">
-            <FTSPlatformSidebar 
-                currentPage="PSPUserManagement" 
-                userRole={getRoleLabel(platformUser?.platform_role)} 
-                userEmail={platformUser?.email}
-                isSuperAdmin={platformUser?.platform_role === PLATFORM_ROLES.SUPER_ADMIN}
-            />
-
-            <div className="flex-1 overflow-auto">
-                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
-                    <div className="flex items-center gap-4">
-                        <Button 
-                            variant="ghost" 
-                            size="icon"
-                            onClick={() => navigate(createPageUrl('FTSMoneyPlatform'))}
-                        >
-                            <ArrowLeft className="h-4 w-4" />
-                        </Button>
+        <div className="min-h-screen bg-slate-50">
+            <Sidebar collapsed={sidebarCollapsed} onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} currentPage="PSPUserManagement" />
+            
+            <div className={cn("transition-all duration-300", "lg:ml-20", sidebarCollapsed && "ml-0")}>
+                <TopHeader onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} collapsed={sidebarCollapsed} />
+                
+                <main className="p-3 sm:p-6">
+                    <Toaster position="top-right" />
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                         <div>
-                            <h2 className="text-lg font-semibold text-slate-900">{t('platform:subMenuItems.pspAdministrators')}</h2>
-                            <p className="text-xs text-slate-600">{t('platform:subMenuItems.pspAdministratorsDesc')}</p>
+                            <h1 className="text-xl sm:text-2xl font-bold text-slate-900">User Management</h1>
+                            <p className="text-sm sm:text-base text-slate-500">Manage PSP staff users and permissions</p>
                         </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                        <div className="text-right mr-2">
-                            <p className="text-xs text-slate-600">{t('platform:dashboard.loggedInAs')}</p>
-                            <p className="text-sm font-medium text-slate-900">{platformUser?.email}</p>
-                            <Badge className="mt-1 bg-blue-600 text-white text-xs">
-                                {getRoleLabel(platformUser?.platform_role)}
-                            </Badge>
-                        </div>
-                        <Button onClick={() => setDialogOpen(true)} className="gap-2 bg-blue-600 hover:bg-blue-700">
+                        <Button className="gap-2" onClick={() => setShowAddUserDialog(true)}>
                             <Plus className="h-4 w-4" />
-                            {t('platform:pages.pspUsers.addUser')}
+                            Add User
                         </Button>
                     </div>
-                </header>
 
-                <div className="p-6">
+                    {/* Role Stats */}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+                        <Card className="p-4">
+                            <div className="flex items-center gap-3">
+                                <Users className="h-5 w-5 text-slate-600" />
+                                <div>
+                                    <p className="text-xs text-slate-500">Total</p>
+                                    <p className="text-xl font-bold">{roleStats.total}</p>
+                                </div>
+                            </div>
+                        </Card>
+                        <Card className="p-4">
+                            <div className="flex items-center gap-3">
+                                <Crown className="h-5 w-5 text-red-600" />
+                                <div>
+                                    <p className="text-xs text-slate-500">Admins</p>
+                                    <p className="text-xl font-bold text-red-600">{roleStats.admin}</p>
+                                </div>
+                            </div>
+                        </Card>
+                        <Card className="p-4">
+                            <div className="flex items-center gap-3">
+                                <Shield className="h-5 w-5 text-emerald-600" />
+                                <div>
+                                    <p className="text-xs text-slate-500">Managers</p>
+                                    <p className="text-xl font-bold text-emerald-600">{roleStats.finance + roleStats.operations}</p>
+                                </div>
+                            </div>
+                        </Card>
+                        <Card className="p-4">
+                            <div className="flex items-center gap-3">
+                                <Eye className="h-5 w-5 text-purple-600" />
+                                <div>
+                                    <p className="text-xs text-slate-500">Staff</p>
+                                    <p className="text-xl font-bold text-purple-600">{roleStats.viewer + roleStats.editor}</p>
+                                </div>
+                            </div>
+                        </Card>
+                    </div>
 
-                <Card className="mb-6">
-                    <CardHeader>
-                        <CardTitle className="text-sm">{t('platform:pages.pspUsers.filterByPSP')}</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <Select value={selectedPSP} onValueChange={setSelectedPSP}>
-                            <SelectTrigger>
-                                <SelectValue placeholder={t('platform:pages.pspUsers.allPSPs')} />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="all">{t('platform:pages.pspUsers.allPSPs')}</SelectItem>
-                                {psps.map(psp => (
-                                    <SelectItem key={psp.psp_code} value={psp.psp_code}>
-                                        {psp.psp_name} ({psp.psp_code})
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    </CardContent>
-                </Card>
-
-                <Card>
-                    <CardHeader>
-                        <CardTitle>{t('platform:pages.pspUsers.users')} ({users.length})</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        {isLoading ? (
-                            <p className="text-center py-4 text-slate-600">{t('common:labels.loading')}</p>
-                        ) : users.length === 0 ? (
-                            <p className="text-center py-4 text-slate-600">{t('platform:pages.pspUsers.noUsers')}</p>
-                        ) : (
-                            <div className="space-y-3">
-                                {users.map(user => (
-                                    <div key={user.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-slate-50">
-                                        <div className="flex items-center gap-4 flex-1">
-                                            <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-                                                <Mail className="h-5 w-5 text-blue-600" />
-                                            </div>
-                                            <div className="flex-1">
-                                                <p className="font-medium text-slate-900">{user.full_name}</p>
-                                                <p className="text-sm text-slate-600">{user.email}</p>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                               <Badge variant="outline">{user.psp_code}</Badge>
-                                               <Badge className={user.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}>
-                                                   <Shield className="h-3 w-3 mr-1" />
-                                                   {user.role}
-                                               </Badge>
-                                               <Badge variant={user.status === 'active' ? 'default' : 'secondary'}>
-                                                   {user.status}
-                                               </Badge>
-                                               {user.two_factor_enabled && (
-                                                   <Badge className="bg-green-100 text-green-700">
-                                                       <KeyRound className="h-3 w-3 mr-1" />
-                                                       2FA
-                                                   </Badge>
-                                               )}
-                                            </div>
-                                        </div>
-                                        <div className="flex gap-2">
-                                            <Button 
-                                                variant="ghost" 
-                                                size="sm"
-                                                onClick={() => handleEdit(user)}
-                                            >
-                                                <Edit className="h-4 w-4 text-blue-600" />
-                                            </Button>
-                                            <Button 
-                                                variant="ghost" 
-                                                size="sm"
-                                                onClick={() => deleteMutation.mutate(user.id)}
-                                            >
-                                                <Trash2 className="h-4 w-4 text-red-600" />
-                                            </Button>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </CardContent>
-                </Card>
-
-                <Dialog open={dialogOpen} onOpenChange={(open) => {
-                    setDialogOpen(open);
-                    if (!open) {
-                        setEditingUser(null);
-                        setFormData({ email: '', full_name: '', role: 'user', psp_code: '', password: 'Welcome123!', status: 'active', two_factor_enabled: false });
-                    }
-                }}>
-                    <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle>{editingUser ? t('platform:pages.pspUsers.editUser') : t('platform:pages.pspUsers.addNewUser')}</DialogTitle>
-                        </DialogHeader>
-                        <form onSubmit={handleSubmit} className="space-y-4">
-                            <div>
-                                <Label>{t('common:labels.email')}</Label>
-                                <Input
-                                    type="email"
-                                    value={formData.email}
-                                    onChange={(e) => setFormData({...formData, email: e.target.value})}
-                                    required
-                                    disabled={!!editingUser}
-                                />
-                            </div>
-                            <div>
-                                <Label>{t('common:labels.fullName')}</Label>
-                                <Input
-                                    value={formData.full_name}
-                                    onChange={(e) => setFormData({...formData, full_name: e.target.value})}
-                                    required
-                                />
-                            </div>
-                            <div>
-                                <Label>{t('platform:pages.pspUsers.pspCode')} *</Label>
-                                <Select value={formData.psp_code} onValueChange={(value) => setFormData({...formData, psp_code: value})} required>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder={t('platform:pages.pspUsers.selectPSP')} />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {psps.map(psp => (
-                                            <SelectItem key={psp.psp_code} value={psp.psp_code}>
-                                                {psp.psp_name} ({psp.psp_code})
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            <div>
-                                <Label>{t('common:labels.role')}</Label>
-                                <Select value={formData.role} onValueChange={(value) => setFormData({...formData, role: value})}>
-                                    <SelectTrigger>
+                    {/* Filters */}
+                    <Card className="mb-6">
+                        <CardContent className="p-4">
+                            <div className="flex gap-4">
+                                <div className="relative flex-1">
+                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                                    <Input
+                                        placeholder="Search users..."
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        className="pl-10"
+                                    />
+                                </div>
+                                <Select value={roleFilter} onValueChange={setRoleFilter}>
+                                    <SelectTrigger className="w-40">
                                         <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="user">{t('common:roles.user')}</SelectItem>
-                                        <SelectItem value="admin">{t('common:roles.admin')}</SelectItem>
-                                        <SelectItem value="staff">{t('common:roles.staff')}</SelectItem>
+                                        <SelectItem value="all">All Roles</SelectItem>
+                                        <SelectItem value="admin">Admin</SelectItem>
+                                        <SelectItem value="finance">Finance</SelectItem>
+                                        <SelectItem value="operations">Operations</SelectItem>
+                                        <SelectItem value="viewer">Viewer</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
-                            {editingUser && (
-                                <div>
-                                    <Label className="flex items-center gap-2">
-                                        <Lock className="h-4 w-4" />
-                                        {t('platform:pages.pspUsers.newPassword')}
-                                    </Label>
-                                    <Input
-                                        type="password"
-                                        value={formData.password}
-                                        onChange={(e) => setFormData({...formData, password: e.target.value})}
-                                        placeholder={t('platform:pages.pspUsers.enterNewPassword')}
-                                    />
-                                </div>
-                            )}
-                            {!editingUser && (
-                                <div>
-                                    <Label>{t('platform:pages.pspUsers.defaultPassword')}</Label>
-                                    <Input
-                                        type="password"
-                                        value={formData.password}
-                                        onChange={(e) => setFormData({...formData, password: e.target.value})}
-                                    />
-                                </div>
-                            )}
-                            <div>
-                                <Label>{t('common:labels.status')}</Label>
-                                <Select value={formData.status} onValueChange={(value) => setFormData({...formData, status: value})}>
-                                    <SelectTrigger>
-                                        <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="active">{t('common:status.active')}</SelectItem>
-                                        <SelectItem value="inactive">{t('common:status.inactive')}</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            <div className="flex items-center justify-between p-4 border rounded-lg">
-                                <div className="flex items-center gap-3">
-                                    <KeyRound className="h-5 w-5 text-slate-600" />
-                                    <div>
-                                        <Label className="text-sm font-medium">{t('platform:pages.pspUsers.twoFactorAuth')}</Label>
-                                        <p className="text-xs text-slate-500">{t('platform:pages.pspUsers.require2FA')}</p>
-                                    </div>
-                                </div>
-                                <Switch
-                                    checked={formData.two_factor_enabled}
-                                    onCheckedChange={(checked) => setFormData({...formData, two_factor_enabled: checked})}
-                                />
-                            </div>
-                            <Button type="submit" className="w-full" disabled={!formData.psp_code || createMutation.isPending || updateMutation.isPending}>
-                                {editingUser ? t('platform:pages.pspUsers.updateUser') : t('platform:pages.pspUsers.createUser')}
-                            </Button>
-                        </form>
-                    </DialogContent>
-                </Dialog>
-                </div>
+                        </CardContent>
+                    </Card>
+
+                    {/* Users Table */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <UserCog className="h-5 w-5" />
+                                User Accounts
+                                <Badge variant="secondary">{filteredUsers.length}</Badge>
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="p-0">
+                            <Table>
+                                <TableHeader>
+                                    <TableRow className="bg-slate-50">
+                                        <TableHead>User</TableHead>
+                                        <TableHead>Role</TableHead>
+                                        <TableHead>Status</TableHead>
+                                        <TableHead>Department</TableHead>
+                                        <TableHead>Last Login</TableHead>
+                                        <TableHead></TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {filteredUsers.map((user) => {
+                                        const role = user.role || user.app_role || 'viewer';
+                                        const config = ROLE_CONFIG[role] || ROLE_CONFIG.viewer;
+
+                                        return (
+                                            <TableRow key={user.id}>
+                                                <TableCell>
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white font-semibold">
+                                                            {user.full_name?.charAt(0)?.toUpperCase() || '?'}
+                                                        </div>
+                                                        <div>
+                                                            <p className="font-medium">{user.full_name}</p>
+                                                            <p className="text-sm text-slate-500">{user.email}</p>
+                                                        </div>
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Badge className={cn(config.bgColor, config.textColor)}>
+                                                        {config.label}
+                                                    </Badge>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Badge className={user.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-700'}>
+                                                        {user.status || 'active'}
+                                                    </Badge>
+                                                </TableCell>
+                                                <TableCell>{user.department || '-'}</TableCell>
+                                                <TableCell className="text-sm text-slate-600">
+                                                    {user.last_login ? format(new Date(user.last_login), 'MMM dd, HH:mm') : 'Never'}
+                                                </TableCell>
+                                                <TableCell>
+                                                    <DropdownMenu>
+                                                        <DropdownMenuTrigger asChild>
+                                                            <Button variant="ghost" size="icon">
+                                                                <MoreHorizontal className="h-4 w-4" />
+                                                            </Button>
+                                                        </DropdownMenuTrigger>
+                                                        <DropdownMenuContent align="end">
+                                                            <DropdownMenuItem onClick={() => { setSelectedUser(user); setShowRoleDialog(true); }}>
+                                                                <Shield className="h-4 w-4 mr-2" />
+                                                                Change Role
+                                                            </DropdownMenuItem>
+                                                            <DropdownMenuItem onClick={() => { setSelectedUser(user); setShowPasswordDialog(true); }}>
+                                                                <KeyRound className="h-4 w-4 mr-2" />
+                                                                Reset Password
+                                                            </DropdownMenuItem>
+                                                        </DropdownMenuContent>
+                                                    </DropdownMenu>
+                                                </TableCell>
+                                            </TableRow>
+                                        );
+                                    })}
+                                </TableBody>
+                            </Table>
+                        </CardContent>
+                    </Card>
+                </main>
             </div>
+
+            {/* Add User Dialog */}
+            <Dialog open={showAddUserDialog} onOpenChange={setShowAddUserDialog}>
+                <DialogContent className="max-w-md">
+                    <DialogHeader>
+                        <DialogTitle>Add New User</DialogTitle>
+                        <DialogDescription>Create a new PSP staff account</DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4 py-4">
+                        <div>
+                            <Label>Full Name *</Label>
+                            <Input
+                                value={newUser.full_name}
+                                onChange={(e) => setNewUser({ ...newUser, full_name: e.target.value })}
+                                placeholder="John Doe"
+                            />
+                        </div>
+                        <div>
+                            <Label>Email *</Label>
+                            <Input
+                                type="email"
+                                value={newUser.email}
+                                onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+                                placeholder="john@example.com"
+                            />
+                        </div>
+                        <div>
+                            <Label>Password *</Label>
+                            <Input
+                                type="password"
+                                value={newUser.password}
+                                onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
+                                placeholder="Min 8 characters"
+                            />
+                        </div>
+                        <div>
+                            <Label>Confirm Password *</Label>
+                            <Input
+                                type="password"
+                                value={newUser.confirmPassword}
+                                onChange={(e) => setNewUser({ ...newUser, confirmPassword: e.target.value })}
+                            />
+                        </div>
+                        <div>
+                            <Label>Role</Label>
+                            <Select value={newUser.app_role} onValueChange={(val) => setNewUser({ ...newUser, app_role: val })}>
+                                <SelectTrigger>
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {Object.entries(ROLE_CONFIG).map(([key, config]) => (
+                                        <SelectItem key={key} value={key}>{config.label}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setShowAddUserDialog(false)}>Cancel</Button>
+                        <Button onClick={handleInviteUser}>
+                            <Plus className="h-4 w-4 mr-2" />
+                            Add User
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            {/* Change Role Dialog */}
+            <AlertDialog open={!!confirmRoleChange} onOpenChange={() => setConfirmRoleChange(null)}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Confirm Role Change</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Change {confirmRoleChange?.user?.full_name}'s role to {ROLE_CONFIG[confirmRoleChange?.newRole]?.label}?
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={confirmAndChangeRole}>Confirm</AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+
+            {/* Set Password Dialog */}
+            <Dialog open={showPasswordDialog} onOpenChange={setShowPasswordDialog}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Reset Password</DialogTitle>
+                        <DialogDescription>Set a new password for {selectedUser?.full_name}</DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4 py-4">
+                        <div>
+                            <Label>New Password *</Label>
+                            <Input
+                                type="password"
+                                value={passwordData.password}
+                                onChange={(e) => setPasswordData({ ...passwordData, password: e.target.value })}
+                            />
+                        </div>
+                        <div>
+                            <Label>Confirm Password *</Label>
+                            <Input
+                                type="password"
+                                value={passwordData.confirmPassword}
+                                onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
+                            />
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setShowPasswordDialog(false)}>Cancel</Button>
+                        <Button 
+                            onClick={async () => {
+                                if (passwordData.password.length < 8 || passwordData.password !== passwordData.confirmPassword) {
+                                    toast.error('Invalid password');
+                                    return;
+                                }
+                                await base44.functions.invoke('managePSPUsers', {
+                                    action: 'updatePassword',
+                                    psp_code: userPspCode,
+                                    user_id: selectedUser.id,
+                                    new_password: passwordData.password
+                                });
+                                toast.success('Password updated');
+                                setShowPasswordDialog(false);
+                            }}
+                        >
+                            Update Password
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }

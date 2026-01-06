@@ -281,6 +281,9 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
+import PSPUserManual from './pages/PSPUserManual';
+import PSPAPIDocumentation from './pages/PSPAPIDocumentation';
+import PSPDigitalIdentityWallet from './pages/PSPDigitalIdentityWallet';
 import __Layout from './Layout.jsx';
 
 
@@ -568,6 +571,9 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
+    "PSPUserManual": PSPUserManual,
+    "PSPAPIDocumentation": PSPAPIDocumentation,
+    "PSPDigitalIdentityWallet": PSPDigitalIdentityWallet,
 }
 
 export const pagesConfig = {
