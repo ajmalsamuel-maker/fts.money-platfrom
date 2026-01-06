@@ -211,6 +211,13 @@ export default function Support() {
             {/* Header */}
             <div className="bg-white border-b shadow-sm">
                 <div className="max-w-7xl mx-auto px-6 py-8">
+                    <Link 
+                        to={createPageUrl('Dashboard')} 
+                        className="inline-flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900 mb-4 transition-colors"
+                    >
+                        <ArrowLeft className="h-4 w-4" />
+                        Back to Dashboard
+                    </Link>
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                             <Headphones className="h-10 w-10 text-blue-600" />
