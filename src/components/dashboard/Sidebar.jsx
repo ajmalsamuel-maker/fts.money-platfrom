@@ -415,7 +415,7 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
     return (
         <>
             {/* Mobile Overlay */}
-            {collapsed === false && (
+            {!collapsed && (
                 <div 
                     className="fixed inset-0 bg-black/50 z-30 lg:hidden"
                     onClick={() => onToggle && onToggle()}
@@ -424,8 +424,7 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
             
             <div 
                 className={cn(
-                    "fixed left-0 top-0 h-screen z-40 flex transition-transform duration-300",
-                    "lg:translate-x-0",
+                    "fixed left-0 top-0 h-screen z-40 flex transition-transform duration-300 lg:translate-x-0",
                     collapsed ? "-translate-x-full" : "translate-x-0"
                 )}
                 onMouseLeave={() => setActiveGroup(null)}

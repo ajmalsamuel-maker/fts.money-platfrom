@@ -80,7 +80,7 @@ const typeConfig = {
 
 export default function Transactions() {
     const { t } = useI18n();
-    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+    const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
     const [typeFilter, setTypeFilter] = useState('all');
@@ -212,10 +212,7 @@ export default function Transactions() {
                 currentPage="Transactions"
             />
             
-            <div className={cn(
-                "transition-all duration-300 lg:ml-20",
-                sidebarCollapsed && "ml-0"
-            )}>
+            <div className="lg:ml-20">
                 <TopHeader 
                     onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
                     collapsed={sidebarCollapsed}
