@@ -53,7 +53,7 @@ const menuSections = [
         items: [
             { labelKey: 'pspManagement', descKey: 'pspManagementDesc', path: 'PSPProvisioning', icon: Building2, priority: true },
             { labelKey: 'provisioningQueue', descKey: 'provisioningQueueDesc', path: 'FTSProvisioningQueue', icon: Activity },
-            { labelKey: 'pspAdministrators', descKey: 'pspAdministratorsDesc', path: 'PSPUserManagement', icon: Users },
+            { labelKey: 'pspAdministrators', descKey: 'pspAdministratorsDesc', path: 'PlatformUserManagement', icon: Users },
             { labelKey: 'resourceOrchestration', descKey: 'resourceOrchestrationDesc', path: 'ResourceOrchestration', icon: Workflow }
         ]
     },
