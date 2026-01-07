@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
-import FTSPlatformSidebarRestructured from '@/components/platform/FTSPlatformSidebarRestructured';
+import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
+import { cn } from "@/lib/utils";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -76,7 +77,7 @@ export default function CryptoGatewayCustomers() {
     if (authLoading || isLoading) {
         return (
             <div className="flex h-screen">
-                <FTSPlatformSidebarRestructured currentPage="CryptoGatewayCustomers" />
+                <FTSPlatformSidebar currentPage="CryptoGatewayCustomers" userEmail={platformUser?.email} userRole={platformUser?.platform_role} isSuperAdmin={platformUser?.platform_role === 'super_admin'} />
                 <div className="flex-1 flex items-center justify-center">
                     <div className="text-slate-500">Loading customers...</div>
                 </div>
@@ -109,10 +110,11 @@ export default function CryptoGatewayCustomers() {
                 "fixed lg:static inset-y-0 left-0 z-50 lg:z-auto transition-transform duration-300",
                 mobileSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
             )}>
-                <FTSPlatformSidebarRestructured 
+                <FTSPlatformSidebar 
                     currentPage="CryptoGatewayCustomers"
                     userRole={platformUser?.platform_role}
                     userEmail={platformUser?.email}
+                    isSuperAdmin={platformUser?.platform_role === 'super_admin'}
                 />
             </div>
             
