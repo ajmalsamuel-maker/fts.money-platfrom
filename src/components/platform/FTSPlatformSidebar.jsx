@@ -159,13 +159,26 @@ const menuSections = [
         ]
     },
     {
+        id: 'pci-compliance',
+        title: 'PCI DSS Compliance',
+        defaultOpen: false,
+        items: [
+            { labelKey: 'pciDashboard', descKey: 'pciDashboardDesc', path: 'PCIComplianceDashboard', icon: Shield, priority: true },
+            { labelKey: 'requirementsTracker', descKey: 'requirementsTrackerDesc', path: 'PCIRequirementsTracker', icon: Shield },
+            { labelKey: 'evidenceVault', descKey: 'evidenceVaultDesc', path: 'PCIEvidenceVault', icon: FileText },
+            { labelKey: 'controlTesting', descKey: 'controlTestingDesc', path: 'PCIControlTesting', icon: Shield },
+            { labelKey: 'policyLibrary', descKey: 'policyLibraryDesc', path: 'PCIPolicyLibrary', icon: FileText },
+            { labelKey: 'gapAnalysis', descKey: 'gapAnalysisDesc', path: 'PCIGapAnalysis', icon: AlertCircle },
+            { labelKey: 'auditReports', descKey: 'auditReportsDesc', path: 'PCIAuditReports', icon: TrendingUp }
+        ]
+    },
+    {
         id: 'documentation',
         title: 'Documentation',
         defaultOpen: false,
         items: [
             { labelKey: 'documentationHub', descKey: 'documentationHubDesc', path: 'FTSDocumentation', icon: BookOpen, priority: true },
-            { labelKey: 'architectureDocs', descKey: 'architectureDocsDesc', path: 'FTSArchitectureDoc', icon: BookOpen },
-            { labelKey: 'pciCompliance', descKey: 'pciComplianceDesc', path: 'PCIDocumentManager', icon: Shield, priority: true }
+            { labelKey: 'architectureDocs', descKey: 'architectureDocsDesc', path: 'FTSArchitectureDoc', icon: BookOpen }
         ]
     },
     {

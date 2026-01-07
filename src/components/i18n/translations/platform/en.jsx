@@ -58,17 +58,18 @@ export default {
     "platformRevenue": "Platform Revenue"
   },
   "sidebar": {
-    "overview": "Overview & Insights",
-    "psp-operations": "PSP Operations",
-    "crypto-gateway": "Crypto Banking / VASP",
-    "rwa-platform": "RWA Tokenization Platform",
-    "services-marketplace": "Services & Marketplace",
-    "user-management": "User & Access Management",
-    "financial": "Financial Operations",
-    "compliance": "Compliance & Security",
-    "infrastructure": "Infrastructure",
-    "documentation": "Documentation",
-    "resources": "Settings & Resources"
+      "overview": "Overview & Insights",
+      "psp-operations": "PSP Operations",
+      "crypto-gateway": "Crypto Banking / VASP",
+      "rwa-platform": "RWA Tokenization Platform",
+      "services-marketplace": "Services & Marketplace",
+      "user-management": "User & Access Management",
+      "financial": "Financial Operations",
+      "compliance": "Compliance & Security",
+      "pci-compliance": "PCI DSS Compliance",
+      "infrastructure": "Infrastructure",
+      "documentation": "Documentation",
+      "resources": "Settings & Resources"
   },
   "pages": {
     "dashboard": {
