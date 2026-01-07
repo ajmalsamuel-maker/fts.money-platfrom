@@ -22,6 +22,17 @@ export default function AssetIssuerLogin() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
+    // Clear any conflicting sessions on mount
+    React.useEffect(() => {
+        // Keep only asset issuer session, clear others
+        const assetSession = localStorage.getItem('asset_issuer_session');
+        if (!assetSession) {
+            // Clear potentially conflicting sessions
+            localStorage.removeItem('platform_admin_session');
+            localStorage.removeItem('rwa_provider_session');
+        }
+    }, []);
+
     const handleLogin = async (e) => {
         e.preventDefault();
         setError('');
