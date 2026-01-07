@@ -28,7 +28,9 @@ import {
     ChevronDown,
     ChevronRight,
     Briefcase,
-    Key
+    Key,
+    AlertCircle,
+    TrendingUp
 } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useI18n } from '@/components/i18n/I18nextProvider';
