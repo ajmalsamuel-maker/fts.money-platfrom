@@ -20,14 +20,15 @@ export default function PCIDocumentManager() {
     const queryClient = useQueryClient();
     const { user, loading } = usePlatformAuth({ requiredPermissions: ['PSP:MANAGE'] });
 
+    const { data: documents, isLoading } = useQuery({
+        queryKey: ['pci-documents'],
+        queryFn: () => base44.entities.PCIDocument.list('-created_date', 100),
+        enabled: !loading
+    });
+
     if (loading) {
         return <div className="flex items-center justify-center h-screen">Loading...</div>;
     }
-
-    const { data: documents, isLoading } = useQuery({
-        queryKey: ['pci-documents'],
-        queryFn: () => base44.entities.PCIDocument.list('-created_date', 100)
-    });
 
     const handleFileUpload = async (e) => {
         const files = Array.from(e.target.files);
