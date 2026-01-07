@@ -18,7 +18,7 @@ export default function FTSRevenue() {
     const navigate = useNavigate();
     const { platformUser, loading } = usePlatformAuth();
     const { t } = useI18n();
-    const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+    const [mobileSidebarOpen, setMobileSidebarOpen] = React.useState(false);
     
     const { data: psps = [] } = useQuery({
         queryKey: ['provisioned-psps'],
