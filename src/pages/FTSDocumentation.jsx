@@ -217,20 +217,34 @@ export default function FTSDocumentation() {
         <>
             <style>{`
                 @media print {
-                    /* Hide UI elements */
-                    aside, nav, header, button,
-                    [role="tablist"], [role="tab"],
-                    .print-hide, .border-b, 
-                    h1.text-3xl, p.text-slate-600,
-                    div.mb-6:has(button), div.flex.gap-2,
-                    body > div > div > aside,
-                    body > div > div > div > div:first-child,
-                    footer {
+                    /* Hide all UI chrome */
+                    aside, nav, header, button, footer,
+                    [role="tablist"], [role="tab"] {
                         display: none !important;
                     }
                     
-                    /* Show FTS.Money logo at top */
-                    .prose::before {
+                    /* Hide card wrapper and header */
+                    .print-hide {
+                        display: none !important;
+                    }
+                    
+                    @page {
+                        size: A4;
+                        margin: 20mm;
+                    }
+                    
+                    body, html {
+                        margin: 0;
+                        padding: 0;
+                    }
+                    
+                    /* Remove all card styling */
+                    .flex, .flex-1 {
+                        display: block !important;
+                    }
+                    
+                    /* Add logo before first page content */
+                    body::before {
                         content: '';
                         display: block;
                         width: 150px;
@@ -239,45 +253,28 @@ export default function FTSDocumentation() {
                         background-image: url('https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6931510c4507988f66a42ca8/865871aa1_FTSMoney-primary-logo-RGB.jpg');
                         background-size: contain;
                         background-repeat: no-repeat;
+                        background-position: left center;
                     }
                     
-                    /* Full width for content */
-                    body, html {
-                        width: 210mm;
-                        margin: 0;
-                        padding: 0;
-                    }
-                    
-                    body > div, body > div > div {
-                        display: block !important;
-                        width: 100% !important;
-                    }
-                    
-                    /* Content styling */
+                    /* Show all text content */
                     .prose {
-                        max-width: 190mm !important;
-                        width: 190mm !important;
-                        margin: 10mm auto !important;
-                        padding: 0 !important;
-                        font-size: 10pt;
-                        line-height: 1.5;
+                        max-width: 100% !important;
+                        font-size: 10pt !important;
+                        line-height: 1.5 !important;
                     }
                     
                     .prose * {
-                        color: black !important;
-                    }
-                    
-                    .prose p, .prose ul, .prose ol, .prose li,
-                    .prose strong, .prose em, .prose span {
-                        display: block !important;
-                        color: black !important;
+                        color: #000 !important;
+                        visibility: visible !important;
                     }
                     
                     .prose p {
+                        display: block !important;
                         margin: 6pt 0 !important;
                     }
                     
                     .prose ul, .prose ol {
+                        display: block !important;
                         padding-left: 20pt !important;
                         margin: 6pt 0 !important;
                     }
@@ -287,11 +284,35 @@ export default function FTSDocumentation() {
                         margin: 3pt 0 !important;
                     }
                     
+                    .prose strong, .prose em {
+                        display: inline !important;
+                    }
+                    
+                    .prose h1 { 
+                        display: block !important;
+                        font-size: 16pt !important; 
+                        page-break-after: avoid !important; 
+                        margin: 12pt 0 8pt !important; 
+                    }
+                    .prose h2 { 
+                        display: block !important;
+                        font-size: 13pt !important; 
+                        page-break-after: avoid !important; 
+                        margin: 10pt 0 6pt !important; 
+                    }
+                    .prose h3 { 
+                        display: block !important;
+                        font-size: 11pt !important; 
+                        page-break-after: avoid !important; 
+                        margin: 8pt 0 4pt !important; 
+                    }
+                    
                     .prose table {
-                        font-size: 8pt;
-                        border-collapse: collapse;
-                        width: 100% !important;
                         display: table !important;
+                        font-size: 8pt !important;
+                        border-collapse: collapse !important;
+                        width: 100% !important;
+                        margin: 6pt 0 !important;
                     }
                     
                     .prose thead { display: table-header-group !important; }
@@ -299,18 +320,28 @@ export default function FTSDocumentation() {
                     .prose tr { display: table-row !important; }
                     .prose th, .prose td {
                         display: table-cell !important;
-                        padding: 4px;
-                        border: 1px solid black;
+                        padding: 4px !important;
+                        border: 1px solid #000 !important;
                     }
                     
-                    .prose h1 { font-size: 16pt; page-break-after: avoid; margin: 12pt 0 8pt !important; }
-                    .prose h2 { font-size: 13pt; page-break-after: avoid; margin: 10pt 0 6pt !important; }
-                    .prose h3 { font-size: 11pt; page-break-after: avoid; margin: 8pt 0 4pt !important; }
-                    
-                    .prose pre, .prose code {
-                        font-size: 7pt;
-                        page-break-inside: avoid;
+                    .prose pre {
                         display: block !important;
+                        font-size: 7pt !important;
+                        page-break-inside: avoid !important;
+                        white-space: pre-wrap !important;
+                        word-wrap: break-word !important;
+                    }
+                    
+                    .prose code {
+                        display: inline !important;
+                        font-size: 8pt !important;
+                    }
+                    
+                    .prose blockquote {
+                        display: block !important;
+                        margin: 6pt 0 !important;
+                        padding-left: 10pt !important;
+                        border-left: 2pt solid #000 !important;
                     }
                 }
             `}</style>
