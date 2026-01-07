@@ -304,6 +304,7 @@ import CryptoBankingCompliance from './pages/CryptoBankingCompliance';
 import RWAPlatformIssuers from './pages/RWAPlatformIssuers';
 import RWAPlatformAssets from './pages/RWAPlatformAssets';
 import RWAPlatformInvestors from './pages/RWAPlatformInvestors';
+import RWAPlatformAnalytics from './pages/RWAPlatformAnalytics';
 import __Layout from './Layout.jsx';
 
 
@@ -614,6 +615,7 @@ export const PAGES = {
     "RWAPlatformIssuers": RWAPlatformIssuers,
     "RWAPlatformAssets": RWAPlatformAssets,
     "RWAPlatformInvestors": RWAPlatformInvestors,
+    "RWAPlatformAnalytics": RWAPlatformAnalytics,
 }
 
 export const pagesConfig = {

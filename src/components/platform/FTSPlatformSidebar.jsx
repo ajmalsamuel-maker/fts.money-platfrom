@@ -84,7 +84,7 @@ const menuSections = [
             { labelKey: 'assetIssuers', descKey: 'assetIssuersDesc', path: 'RWAPlatformIssuers', icon: Users },
             { labelKey: 'tokenizedAssets', descKey: 'tokenizedAssetsDesc', path: 'RWAPlatformAssets', icon: Package },
             { labelKey: 'investors', descKey: 'investorsDesc', path: 'RWAPlatformInvestors', icon: Users },
-            { labelKey: 'rwaAnalytics', descKey: 'rwaAnalyticsDesc', path: 'RWAProviderAnalytics', icon: BarChart3 }
+            { labelKey: 'rwaAnalytics', descKey: 'rwaAnalyticsDesc', path: 'RWAPlatformAnalytics', icon: BarChart3 }
         ]
     },
     {
