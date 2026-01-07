@@ -5,16 +5,15 @@ Deno.serve(async (req) => {
         const base44 = createClientFromRequest(req);
         const { provider_code, password } = await req.json();
 
-        // Get associated customer to verify password
-        const customers = await base44.asServiceRole.entities.RWAWhiteLabelCustomer.filter({ 
-            customer_code: provider_code 
-        });
+        // Get associated customer to verify password (case-insensitive)
+        const allCustomers = await base44.asServiceRole.entities.RWAWhiteLabelCustomer.list();
+        const customer = allCustomers.find(c => 
+            c.customer_code?.toLowerCase() === provider_code?.toLowerCase()
+        );
 
-        if (customers.length === 0) {
+        if (!customer) {
             return Response.json({ error: 'Invalid credentials' }, { status: 401 });
         }
-
-        const customer = customers[0];
 
         // Verify password hash
         const password_hash = await crypto.subtle.digest(
@@ -29,8 +28,10 @@ Deno.serve(async (req) => {
         }
 
         // Get provider details
-        const providers = await base44.asServiceRole.entities.RWAProvider.filter({ provider_code });
-        const provider = providers.length > 0 ? providers[0] : null;
+        const allProviders = await base44.asServiceRole.entities.RWAProvider.list();
+        const provider = allProviders.find(p => 
+            p.provider_code?.toLowerCase() === provider_code?.toLowerCase()
+        );
         
         return Response.json({
             provider_code: customer.customer_code,
