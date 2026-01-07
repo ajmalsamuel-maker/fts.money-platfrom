@@ -13,7 +13,7 @@ import CredentialCard from '@/components/identity/CredentialCard';
 import AddCredentialDialog from '@/components/identity/AddCredentialDialog';
 import CredentialDetailsDialog from '@/components/identity/CredentialDetailsDialog';
 import CredentialPresentationButton from '@/components/identity/CredentialPresentationButton';
-import FTSPlatformSidebarRestructured from '@/components/platform/FTSPlatformSidebarRestructured';
+import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
 import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
 import { 
     Wallet, Plus, Shield, CheckCircle2, AlertCircle, Clock,
@@ -62,7 +62,7 @@ export default function DigitalIdentityWallet() {
 
     return (
         <div className="flex h-screen bg-slate-50">
-            <FTSPlatformSidebarRestructured 
+            <FTSPlatformSidebar 
                 currentPage="DigitalIdentityWallet" 
                 userEmail={platformUser?.email} 
                 userRole={platformUser?.platform_role}

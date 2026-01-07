@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
-import FTSPlatformSidebarRestructured from '@/components/platform/FTSPlatformSidebarRestructured';
+import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -25,7 +25,7 @@ export default function CryptoPortalManagement() {
     if (authLoading) {
         return (
             <div className="flex h-screen">
-                <FTSPlatformSidebarRestructured currentPage="CryptoPortalManagement" />
+                <FTSPlatformSidebar currentPage="CryptoPortalManagement" userEmail={platformUser?.email} userRole={platformUser?.platform_role} isSuperAdmin={platformUser?.platform_role === 'super_admin'} />
                 <div className="flex-1 flex items-center justify-center">
                     <div className="text-slate-500">Loading...</div>
                 </div>
@@ -35,10 +35,11 @@ export default function CryptoPortalManagement() {
 
     return (
         <div className="flex h-screen bg-slate-50">
-            <FTSPlatformSidebarRestructured 
+            <FTSPlatformSidebar 
                 currentPage="CryptoPortalManagement"
                 userRole={platformUser?.platform_role}
                 userEmail={platformUser?.email}
+                isSuperAdmin={platformUser?.platform_role === 'super_admin'}
             />
             
             <div className="flex-1 overflow-auto">
