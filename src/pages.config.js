@@ -200,7 +200,15 @@ import OrchestrationCustomers from './pages/OrchestrationCustomers';
 import OrchestrationLogin from './pages/OrchestrationLogin';
 import OrchestrationPortal from './pages/OrchestrationPortal';
 import OrchestrationUserManagement from './pages/OrchestrationUserManagement';
+import PCIAuditReports from './pages/PCIAuditReports';
 import PCICompliance from './pages/PCICompliance';
+import PCIComplianceDashboard from './pages/PCIComplianceDashboard';
+import PCIControlTesting from './pages/PCIControlTesting';
+import PCIDocumentManager from './pages/PCIDocumentManager';
+import PCIEvidenceVault from './pages/PCIEvidenceVault';
+import PCIGapAnalysis from './pages/PCIGapAnalysis';
+import PCIPolicyLibrary from './pages/PCIPolicyLibrary';
+import PCIRequirementsTracker from './pages/PCIRequirementsTracker';
 import PSPAPIDocumentation from './pages/PSPAPIDocumentation';
 import PSPDetails from './pages/PSPDetails';
 import PSPDigitalIdentityWallet from './pages/PSPDigitalIdentityWallet';
@@ -284,14 +292,8 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import PCIDocumentManager from './pages/PCIDocumentManager';
-import PCIComplianceDashboard from './pages/PCIComplianceDashboard';
-import PCIRequirementsTracker from './pages/PCIRequirementsTracker';
-import PCIEvidenceVault from './pages/PCIEvidenceVault';
-import PCIControlTesting from './pages/PCIControlTesting';
-import PCIPolicyLibrary from './pages/PCIPolicyLibrary';
-import PCIGapAnalysis from './pages/PCIGapAnalysis';
-import PCIAuditReports from './pages/PCIAuditReports';
+import QSAPortalLogin from './pages/QSAPortalLogin';
+import QSAPortalDashboard from './pages/QSAPortalDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -498,7 +500,15 @@ export const PAGES = {
     "OrchestrationLogin": OrchestrationLogin,
     "OrchestrationPortal": OrchestrationPortal,
     "OrchestrationUserManagement": OrchestrationUserManagement,
+    "PCIAuditReports": PCIAuditReports,
     "PCICompliance": PCICompliance,
+    "PCIComplianceDashboard": PCIComplianceDashboard,
+    "PCIControlTesting": PCIControlTesting,
+    "PCIDocumentManager": PCIDocumentManager,
+    "PCIEvidenceVault": PCIEvidenceVault,
+    "PCIGapAnalysis": PCIGapAnalysis,
+    "PCIPolicyLibrary": PCIPolicyLibrary,
+    "PCIRequirementsTracker": PCIRequirementsTracker,
     "PSPAPIDocumentation": PSPAPIDocumentation,
     "PSPDetails": PSPDetails,
     "PSPDigitalIdentityWallet": PSPDigitalIdentityWallet,
@@ -582,14 +592,8 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "PCIDocumentManager": PCIDocumentManager,
-    "PCIComplianceDashboard": PCIComplianceDashboard,
-    "PCIRequirementsTracker": PCIRequirementsTracker,
-    "PCIEvidenceVault": PCIEvidenceVault,
-    "PCIControlTesting": PCIControlTesting,
-    "PCIPolicyLibrary": PCIPolicyLibrary,
-    "PCIGapAnalysis": PCIGapAnalysis,
-    "PCIAuditReports": PCIAuditReports,
+    "QSAPortalLogin": QSAPortalLogin,
+    "QSAPortalDashboard": QSAPortalDashboard,
 }
 
 export const pagesConfig = {
