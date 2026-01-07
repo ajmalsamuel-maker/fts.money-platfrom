@@ -167,6 +167,10 @@ const menuSections = [
         defaultOpen: false,
         items: [
             { labelKey: 'pciDashboard', descKey: 'pciDashboardDesc', path: 'PCIComplianceDashboard', icon: Shield, priority: true },
+            { label: 'Continuous Monitoring', description: 'Real-time automated compliance checks', path: 'PCIContinuousMonitoring', icon: Activity, priority: true },
+            { label: 'Predictive Analytics', description: 'AI-powered compliance forecasting', path: 'PCIPredictiveAnalytics', icon: Brain, priority: true },
+            { label: 'Workflow Automation', description: 'Automated remediation workflows', path: 'PCIWorkflowManager', icon: GitBranch, priority: true },
+            { label: 'Advanced Reporting', description: 'Interactive dashboards & reports', path: 'PCIReportingDashboard', icon: BarChart3, priority: true },
             { labelKey: 'requirementsTracker', descKey: 'requirementsTrackerDesc', path: 'PCIRequirementsTracker', icon: Shield },
             { labelKey: 'evidenceVault', descKey: 'evidenceVaultDesc', path: 'PCIEvidenceVault', icon: FileText },
             { labelKey: 'controlTesting', descKey: 'controlTestingDesc', path: 'PCIControlTesting', icon: Shield },
