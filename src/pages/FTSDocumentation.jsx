@@ -243,13 +243,20 @@ export default function FTSDocumentation() {
                     }
                     
                     body::before {
-                        content: 'FTS.Money';
+                        content: '';
                         display: block;
-                        font-size: 24pt;
-                        font-weight: bold;
+                        width: 200px;
+                        height: 60px;
                         margin: 0 auto 20px;
-                        text-align: center;
-                        color: #1e40af;
+                        background-image: url('https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6931510c4507988f66a42ca8/865871aa1_FTSMoney-primary-logo-RGB.jpg');
+                        background-size: contain;
+                        background-repeat: no-repeat;
+                        background-position: center;
+                    }
+                    
+                    /* Hide Base44 App text */
+                    title, [class*="base44"], [class*="Base44"] {
+                        display: none !important;
                     }
                     
                     /* Remove all flex layouts */
