@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { useStaffAuth } from '@/components/auth/useStaffAuth';
-import Sidebar from '@/components/dashboard/Sidebar';
-import TopHeader from '@/components/dashboard/TopHeader';
+import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
+import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,17 +13,16 @@ import { Upload, FileText, CheckCircle2, AlertCircle, Loader2, Download } from '
 import { toast } from 'sonner';
 
 export default function PCIDocumentManager() {
-    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const [uploadedFiles, setUploadedFiles] = useState([]);
     const [batchName, setBatchName] = useState('');
     const [processing, setProcessing] = useState(false);
     const [progress, setProgress] = useState(0);
     const queryClient = useQueryClient();
-    const { requireAuth } = useStaffAuth();
+    const { user, loading } = usePlatformAuth({ requiredPermissions: ['PSP:MANAGE'] });
 
-    React.useEffect(() => {
-        requireAuth();
-    }, []);
+    if (loading) {
+        return <div className="flex items-center justify-center h-screen">Loading...</div>;
+    }
 
     const { data: documents, isLoading } = useQuery({
         queryKey: ['pci-documents'],
@@ -105,18 +103,14 @@ export default function PCIDocumentManager() {
 
     return (
         <div className="flex min-h-screen bg-slate-50">
-            <Sidebar 
-                collapsed={sidebarCollapsed} 
-                onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
+            <FTSPlatformSidebar 
                 currentPage="PCIDocumentManager"
+                userRole={user?.platform_role}
+                userEmail={user?.email}
+                isSuperAdmin={user?.platform_role === 'super_admin'}
             />
             
-            <div className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-20' : 'lg:ml-80'}`}>
-                <TopHeader 
-                    onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
-                    collapsed={sidebarCollapsed}
-                />
-
+            <div className="flex-1 ml-64">
                 <main className="p-6">
                     <div className="mb-6">
                         <h1 className="text-3xl font-bold text-slate-900">PCI Compliance Documents</h1>
@@ -151,10 +145,12 @@ export default function PCIDocumentManager() {
                                         className="hidden"
                                         id="file-upload"
                                     />
-                                    <label htmlFor="file-upload" className="cursor-pointer">
-                                        <Button variant="outline">Select Files</Button>
+                                    <label htmlFor="file-upload" className="cursor-pointer inline-block">
+                                        <Button type="button" variant="outline" onClick={() => document.getElementById('file-upload').click()}>
+                                            Select Files
+                                        </Button>
                                     </label>
-                                    <p className="text-sm text-slate-500 mt-2">Word or PDF files</p>
+                                    <p className="text-sm text-slate-500 mt-2">Word or PDF files (52 documents)</p>
                                 </div>
                             </div>
 
