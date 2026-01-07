@@ -9,8 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { FTS_LOGOS } from '@/components/community/FTSBrandColors';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
-import FintechNewsTicker from '@/components/dashboard/FintechNewsTicker';
-import ComplianceFooter, { MinimalComplianceFooter } from '@/components/compliance/ComplianceFooter';
+import { MinimalComplianceFooter } from '@/components/compliance/ComplianceFooter';
 
 export default function RWAProviderLogin() {
     const navigate = useNavigate();
@@ -37,8 +36,6 @@ export default function RWAProviderLogin() {
 
     return (
         <div className="min-h-screen flex flex-col relative overflow-hidden bg-white">
-            <FintechNewsTicker />
-            
             {/* Language Switcher - Below News Ticker */}
             <div className="absolute top-12 right-6 z-20">
                 <LanguageSwitcher variant="select" showLabel={false} />
