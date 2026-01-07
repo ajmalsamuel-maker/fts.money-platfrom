@@ -90,7 +90,7 @@ const menuSections = [
     {
         id: 'services-marketplace',
         title: 'Services & Marketplace',
-        defaultOpen: false,
+        defaultOpen: true,
         items: [
             { labelKey: 'serviceCatalog', descKey: 'serviceCatalogDesc', path: 'FTSServiceManager', icon: Package, priority: true },
             { label: 'Payment Providers', description: 'Provider pool', path: 'PaymentProviderManagement', icon: Database, priority: true },
