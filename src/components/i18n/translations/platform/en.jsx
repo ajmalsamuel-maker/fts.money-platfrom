@@ -446,6 +446,20 @@ export default {
     "leiPhase1Testing": "LEI Phase 1 Testing",
     "leiPhase1TestingDesc": "LEI testing tools",
     "aiTranslationStudio": "AI Translation Studio",
-    "aiTranslationStudioDesc": "AI-powered translations"
+    "aiTranslationStudioDesc": "AI-powered translations",
+    "pciDashboard": "PCI Compliance Dashboard",
+    "pciDashboardDesc": "Overview of PCI DSS compliance status",
+    "requirementsTracker": "Requirements Tracker",
+    "requirementsTrackerDesc": "Track all 12 PCI DSS requirements",
+    "evidenceVault": "Evidence Vault",
+    "evidenceVaultDesc": "Manage compliance evidence",
+    "controlTesting": "Control Testing",
+    "controlTestingDesc": "Test and validate security controls",
+    "policyLibrary": "Policy Library",
+    "policyLibraryDesc": "Manage security policies",
+    "gapAnalysis": "Gap Analysis",
+    "gapAnalysisDesc": "Track findings and remediation",
+    "auditReports": "Audit Reports",
+    "auditReportsDesc": "Audit history and reporting"
   }
 };
