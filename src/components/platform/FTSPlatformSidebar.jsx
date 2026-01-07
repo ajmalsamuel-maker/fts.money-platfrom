@@ -219,21 +219,19 @@ const menuSections = [
 
 export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, isSuperAdmin }) {
     const { t } = useI18n();
-    const [openSections, setOpenSections] = React.useState(() => {
-        // Default to ALL sections open by default
-        const allSectionIds = menuSections.map(s => s.id);
-        
-        // Try to load from localStorage
-        const stored = localStorage.getItem('ftsPlatformSidebarSections');
-        if (stored) {
-            try {
-                return JSON.parse(stored);
-            } catch (e) {
-                console.error('Failed to parse stored sections:', e);
-            }
+    
+    // Force clear old localStorage on mount
+    React.useEffect(() => {
+        const version = localStorage.getItem('ftsSidebarVersion');
+        if (version !== '2.0') {
+            localStorage.removeItem('ftsPlatformSidebarSections');
+            localStorage.setItem('ftsSidebarVersion', '2.0');
         }
-        
-        // Return all sections open by default
+    }, []);
+    
+    const [openSections, setOpenSections] = React.useState(() => {
+        // Default to ALL sections open
+        const allSectionIds = menuSections.map(s => s.id);
         return allSectionIds;
     });
     
