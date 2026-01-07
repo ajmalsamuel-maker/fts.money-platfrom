@@ -30,7 +30,8 @@ import {
     Briefcase,
     Key,
     AlertCircle,
-    TrendingUp
+    TrendingUp,
+    Brain
 } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useI18n } from '@/components/i18n/I18nextProvider';
