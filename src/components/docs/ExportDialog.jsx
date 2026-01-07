@@ -7,9 +7,10 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { FileText, Download, Loader2 } from 'lucide-react';
 import { saveAs } from 'file-saver';
-import { Document, Packer, Paragraph, HeadingLevel, TextRun, AlignmentType, Table, TableRow, TableCell, WidthType, BorderStyle } from 'docx';
+import { Document, Packer, Paragraph, HeadingLevel, TextRun, AlignmentType, Table, TableRow, TableCell, WidthType, BorderStyle, ImageRun } from 'docx';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
+import mermaid from 'mermaid';
 
 export default function ExportDialog({ open, onOpenChange, documentTitle, documentContent }) {
     const [format, setFormat] = useState('pdf');
@@ -33,27 +34,113 @@ export default function ExportDialog({ open, onOpenChange, documentTitle, docume
         wide: { top: 30, right: 30, bottom: 30, left: 30 }
     };
 
-    const parseMarkdownToSections = (markdown) => {
+    const parseMarkdownToElements = (markdown) => {
         const lines = markdown.split('\n');
-        const sections = [];
-        let currentSection = null;
+        const elements = [];
+        let i = 0;
 
-        lines.forEach((line) => {
+        while (i < lines.length) {
+            const line = lines[i];
+
+            // Headings
             if (line.startsWith('# ')) {
-                currentSection = { level: 1, title: line.substring(2), content: [] };
-                sections.push(currentSection);
+                elements.push({ type: 'heading', level: 1, text: line.substring(2) });
+                i++;
             } else if (line.startsWith('## ')) {
-                currentSection = { level: 2, title: line.substring(3), content: [] };
-                sections.push(currentSection);
+                elements.push({ type: 'heading', level: 2, text: line.substring(3) });
+                i++;
             } else if (line.startsWith('### ')) {
-                currentSection = { level: 3, title: line.substring(4), content: [] };
-                sections.push(currentSection);
-            } else if (currentSection && line.trim()) {
-                currentSection.content.push(line);
+                elements.push({ type: 'heading', level: 3, text: line.substring(4) });
+                i++;
+            } else if (line.startsWith('#### ')) {
+                elements.push({ type: 'heading', level: 4, text: line.substring(5) });
+                i++;
             }
-        });
+            // Code blocks (including Mermaid)
+            else if (line.startsWith('```')) {
+                const language = line.substring(3).trim();
+                const codeLines = [];
+                i++;
+                while (i < lines.length && !lines[i].startsWith('```')) {
+                    codeLines.push(lines[i]);
+                    i++;
+                }
+                elements.push({ 
+                    type: language === 'mermaid' ? 'mermaid' : 'code', 
+                    language,
+                    content: codeLines.join('\n') 
+                });
+                i++; // Skip closing ```
+            }
+            // Tables
+            else if (line.includes('|') && line.trim().startsWith('|')) {
+                const tableLines = [];
+                while (i < lines.length && lines[i].includes('|')) {
+                    tableLines.push(lines[i]);
+                    i++;
+                }
+                elements.push({ type: 'table', rows: parseTable(tableLines) });
+            }
+            // Lists
+            else if (line.match(/^[\s]*[-*+]\s/)) {
+                const listItems = [];
+                while (i < lines.length && lines[i].match(/^[\s]*[-*+]\s/)) {
+                    listItems.push(lines[i].replace(/^[\s]*[-*+]\s/, '').trim());
+                    i++;
+                }
+                elements.push({ type: 'list', items: listItems });
+            }
+            // Paragraphs
+            else if (line.trim()) {
+                elements.push({ type: 'paragraph', text: line.trim() });
+                i++;
+            } else {
+                i++;
+            }
+        }
 
-        return sections;
+        return elements;
+    };
+
+    const parseTable = (tableLines) => {
+        return tableLines
+            .filter(line => !line.match(/^[\s]*\|[\s-:]+\|/)) // Skip separator line
+            .map(line => 
+                line.split('|')
+                    .map(cell => cell.trim())
+                    .filter(cell => cell)
+            );
+    };
+
+    const renderMermaidToImage = async (mermaidCode) => {
+        try {
+            const id = 'mermaid-' + Math.random().toString(36).substr(2, 9);
+            const { svg } = await mermaid.render(id, mermaidCode);
+            
+            // Convert SVG to image data URL
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
+            
+            return new Promise((resolve) => {
+                img.onload = () => {
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    ctx.fillStyle = 'white';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(img, 0, 0);
+                    resolve({
+                        dataUrl: canvas.toDataURL('image/png'),
+                        width: img.width,
+                        height: img.height
+                    });
+                };
+                img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg)));
+            });
+        } catch (error) {
+            console.error('Mermaid render error:', error);
+            return null;
+        }
     };
 
     const exportToPDF = async () => {
@@ -85,54 +172,96 @@ export default function ExportDialog({ open, onOpenChange, documentTitle, docume
         doc.text(documentTitle, margin.left, yPos);
         yPos += 15;
 
-        // Parse sections
-        const sections = parseMarkdownToSections(documentContent);
+        // Parse elements
+        const elements = parseMarkdownToElements(documentContent);
 
-        sections.forEach((section, index) => {
+        for (const element of elements) {
             // Check if we need a new page
-            if (yPos > pageHeight - margin.bottom - 20) {
+            if (yPos > pageHeight - margin.bottom - 30) {
                 doc.addPage();
                 yPos = margin.top;
             }
 
-            // Section heading
-            if (section.level === 1) {
-                doc.setFontSize(fontSizes[fontSize].h1);
-            } else if (section.level === 2) {
-                doc.setFontSize(fontSizes[fontSize].h2);
-            } else {
-                doc.setFontSize(fontSizes[fontSize].h3);
+            if (element.type === 'heading') {
+                const size = element.level === 1 ? fontSizes[fontSize].h1 :
+                            element.level === 2 ? fontSizes[fontSize].h2 :
+                            element.level === 3 ? fontSizes[fontSize].h3 : fontSizes[fontSize].body;
+                doc.setFontSize(size);
+                doc.setFont(undefined, 'bold');
+                const lines = doc.splitTextToSize(element.text, contentWidth);
+                lines.forEach(line => {
+                    doc.text(line, margin.left, yPos);
+                    yPos += element.level === 1 ? 8 : element.level === 2 ? 6 : 5;
+                });
+                yPos += 3;
             }
-            doc.setFont(undefined, 'bold');
-            
-            const titleLines = doc.splitTextToSize(section.title, contentWidth);
-            titleLines.forEach(line => {
-                doc.text(line, margin.left, yPos);
-                yPos += section.level === 1 ? 8 : section.level === 2 ? 6 : 5;
-            });
-
-            yPos += 3;
-
-            // Section content
-            doc.setFontSize(fontSizes[fontSize].body);
-            doc.setFont(undefined, 'normal');
-            
-            section.content.forEach(paragraph => {
-                if (yPos > pageHeight - margin.bottom - 10) {
-                    doc.addPage();
-                    yPos = margin.top;
-                }
-
-                const lines = doc.splitTextToSize(paragraph, contentWidth);
+            else if (element.type === 'paragraph') {
+                doc.setFontSize(fontSizes[fontSize].body);
+                doc.setFont(undefined, 'normal');
+                const lines = doc.splitTextToSize(element.text, contentWidth);
                 lines.forEach(line => {
                     doc.text(line, margin.left, yPos);
                     yPos += 5;
                 });
                 yPos += 2;
-            });
-
-            yPos += 5;
-        });
+            }
+            else if (element.type === 'list') {
+                doc.setFontSize(fontSizes[fontSize].body);
+                doc.setFont(undefined, 'normal');
+                element.items.forEach(item => {
+                    const lines = doc.splitTextToSize('• ' + item, contentWidth - 5);
+                    lines.forEach((line, idx) => {
+                        doc.text(line, margin.left + (idx > 0 ? 5 : 0), yPos);
+                        yPos += 5;
+                    });
+                });
+                yPos += 2;
+            }
+            else if (element.type === 'table' && element.rows.length > 0) {
+                doc.autoTable({
+                    startY: yPos,
+                    head: [element.rows[0]],
+                    body: element.rows.slice(1),
+                    margin: { left: margin.left, right: margin.right },
+                    styles: { fontSize: fontSizes[fontSize].body - 1, cellPadding: 2 },
+                    headStyles: { fillColor: [71, 85, 105], fontStyle: 'bold' },
+                    theme: 'grid'
+                });
+                yPos = doc.lastAutoTable.finalY + 5;
+            }
+            else if (element.type === 'mermaid') {
+                const imgData = await renderMermaidToImage(element.content);
+                if (imgData) {
+                    const maxWidth = contentWidth;
+                    const scale = Math.min(maxWidth / (imgData.width * 0.264583), 1);
+                    const imgWidth = imgData.width * 0.264583 * scale;
+                    const imgHeight = imgData.height * 0.264583 * scale;
+                    
+                    if (yPos + imgHeight > pageHeight - margin.bottom) {
+                        doc.addPage();
+                        yPos = margin.top;
+                    }
+                    
+                    doc.addImage(imgData.dataUrl, 'PNG', margin.left, yPos, imgWidth, imgHeight);
+                    yPos += imgHeight + 5;
+                }
+            }
+            else if (element.type === 'code') {
+                doc.setFontSize(fontSizes[fontSize].body - 2);
+                doc.setFont('courier', 'normal');
+                const lines = element.content.split('\n');
+                lines.forEach(line => {
+                    if (yPos > pageHeight - margin.bottom - 10) {
+                        doc.addPage();
+                        yPos = margin.top;
+                    }
+                    doc.text(line, margin.left, yPos);
+                    yPos += 4;
+                });
+                doc.setFont(undefined, 'normal');
+                yPos += 3;
+            }
+        }
 
         // Page numbers
         if (includePageNumbers) {
@@ -148,11 +277,11 @@ export default function ExportDialog({ open, onOpenChange, documentTitle, docume
     };
 
     const exportToWord = async () => {
-        const sections = parseMarkdownToSections(documentContent);
-        const docSections = [];
+        const elements = parseMarkdownToElements(documentContent);
+        const docElements = [];
 
         // Title
-        docSections.push(
+        docElements.push(
             new Paragraph({
                 text: documentTitle,
                 heading: HeadingLevel.TITLE,
@@ -161,40 +290,104 @@ export default function ExportDialog({ open, onOpenChange, documentTitle, docume
             })
         );
 
-        // Content sections
-        sections.forEach((section) => {
-            // Heading
-            const headingLevel = section.level === 1 ? HeadingLevel.HEADING_1 :
-                               section.level === 2 ? HeadingLevel.HEADING_2 :
-                               HeadingLevel.HEADING_3;
-
-            docSections.push(
-                new Paragraph({
-                    text: section.title,
-                    heading: headingLevel,
-                    spacing: { before: 240, after: 120 }
-                })
-            );
-
-            // Content paragraphs
-            section.content.forEach(text => {
-                if (text.trim()) {
-                    docSections.push(
+        // Content elements
+        for (const element of elements) {
+            if (element.type === 'heading') {
+                const headingLevel = element.level === 1 ? HeadingLevel.HEADING_1 :
+                                   element.level === 2 ? HeadingLevel.HEADING_2 :
+                                   element.level === 3 ? HeadingLevel.HEADING_3 :
+                                   HeadingLevel.HEADING_4;
+                
+                docElements.push(
+                    new Paragraph({
+                        text: element.text,
+                        heading: headingLevel,
+                        spacing: { before: 240, after: 120 }
+                    })
+                );
+            }
+            else if (element.type === 'paragraph') {
+                docElements.push(
+                    new Paragraph({
+                        children: [new TextRun(element.text)],
+                        spacing: { after: 120 }
+                    })
+                );
+            }
+            else if (element.type === 'list') {
+                element.items.forEach(item => {
+                    docElements.push(
                         new Paragraph({
-                            children: [new TextRun(text)],
-                            spacing: { after: 120 }
+                            text: item,
+                            bullet: { level: 0 },
+                            spacing: { after: 60 }
+                        })
+                    );
+                });
+            }
+            else if (element.type === 'table' && element.rows.length > 0) {
+                const tableRows = element.rows.map((row, rowIndex) => 
+                    new TableRow({
+                        children: row.map(cell => 
+                            new TableCell({
+                                children: [new Paragraph({ text: cell })],
+                                shading: rowIndex === 0 ? { fill: "CCCCCC" } : undefined,
+                                width: { size: 100 / row.length, type: WidthType.PERCENTAGE }
+                            })
+                        )
+                    })
+                );
+                
+                docElements.push(
+                    new Table({
+                        rows: tableRows,
+                        width: { size: 100, type: WidthType.PERCENTAGE }
+                    })
+                );
+                
+                docElements.push(new Paragraph({ text: '', spacing: { after: 200 } }));
+            }
+            else if (element.type === 'mermaid') {
+                const imgData = await renderMermaidToImage(element.content);
+                if (imgData) {
+                    // Convert data URL to buffer
+                    const base64Data = imgData.dataUrl.split(',')[1];
+                    const buffer = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
+                    
+                    docElements.push(
+                        new Paragraph({
+                            children: [
+                                new ImageRun({
+                                    data: buffer,
+                                    transformation: {
+                                        width: Math.min(imgData.width * 0.75, 600),
+                                        height: Math.min(imgData.height * 0.75, 600)
+                                    }
+                                })
+                            ],
+                            spacing: { before: 120, after: 120 }
                         })
                     );
                 }
-            });
-        });
+            }
+            else if (element.type === 'code') {
+                element.content.split('\n').forEach(line => {
+                    docElements.push(
+                        new Paragraph({
+                            children: [new TextRun({ text: line, font: 'Courier New', size: 18 })],
+                            spacing: { after: 40 }
+                        })
+                    );
+                });
+            }
+        }
 
         const doc = new Document({
             sections: [{
                 properties: {
                     page: {
                         margin: {
-                            top: marginSizes[margins].top * 56.7, // Convert mm to twips
+                            top: marginSizes[margins].top * 56.7,
                             right: marginSizes[margins].right * 56.7,
                             bottom: marginSizes[margins].bottom * 56.7,
                             left: marginSizes[margins].left * 56.7
@@ -204,7 +397,7 @@ export default function ExportDialog({ open, onOpenChange, documentTitle, docume
                         }
                     }
                 },
-                children: docSections
+                children: docElements
             }]
         });
 
