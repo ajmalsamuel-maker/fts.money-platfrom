@@ -306,6 +306,8 @@ import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
 import RWAProviderIdentityWallet from './pages/RWAProviderIdentityWallet';
+import AssetIssuerInvestors from './pages/AssetIssuerInvestors';
+import AssetIssuerSettings from './pages/AssetIssuerSettings';
 import __Layout from './Layout.jsx';
 
 
@@ -618,6 +620,8 @@ export const PAGES = {
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
     "RWAProviderIdentityWallet": RWAProviderIdentityWallet,
+    "AssetIssuerInvestors": AssetIssuerInvestors,
+    "AssetIssuerSettings": AssetIssuerSettings,
 }
 
 export const pagesConfig = {
