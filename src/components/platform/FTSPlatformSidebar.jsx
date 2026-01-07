@@ -171,7 +171,8 @@ const menuSections = [
             { labelKey: 'controlTesting', descKey: 'controlTestingDesc', path: 'PCIControlTesting', icon: Shield },
             { labelKey: 'policyLibrary', descKey: 'policyLibraryDesc', path: 'PCIPolicyLibrary', icon: FileText },
             { labelKey: 'gapAnalysis', descKey: 'gapAnalysisDesc', path: 'PCIGapAnalysis', icon: AlertCircle },
-            { labelKey: 'auditReports', descKey: 'auditReportsDesc', path: 'PCIAuditReports', icon: TrendingUp }
+            { labelKey: 'auditReports', descKey: 'auditReportsDesc', path: 'PCIAuditReports', icon: TrendingUp },
+            { labelKey: 'qsaUserManagement', descKey: 'qsaUserManagementDesc', path: 'QSAUserManagement', icon: Users, priority: true }
         ]
     },
     {

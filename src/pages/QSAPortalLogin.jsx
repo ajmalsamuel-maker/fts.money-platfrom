@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Shield, AlertCircle } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 
@@ -16,15 +18,19 @@ export default function QSAPortalLogin() {
         setLoading(true);
 
         try {
-            // Simple auth - store QSA session
-            if (credentials.email && credentials.password) {
+            const response = await base44.functions.invoke('qsaAuth', {
+                email: credentials.email,
+                access_token: credentials.password
+            });
+
+            if (response.data?.success) {
                 localStorage.setItem('qsa_session', JSON.stringify({
-                    email: credentials.email,
+                    ...response.data.qsa_user,
                     loginTime: new Date().toISOString()
                 }));
                 window.location.href = createPageUrl('QSAPortalDashboard');
             } else {
-                setError('Please enter email and password');
+                setError(response.data?.error || 'Login failed');
             }
         } catch (err) {
             setError('Login failed. Please check your credentials.');
@@ -60,20 +66,23 @@ export default function QSAPortalLogin() {
                             />
                         </div>
                         <div>
-                            <label className="text-sm font-medium">Access Code</label>
+                            <label className="text-sm font-medium">Access Token</label>
                             <Input 
                                 type="password"
-                                placeholder="Enter access code"
+                                placeholder="Enter your access token"
                                 value={credentials.password}
                                 onChange={(e) => setCredentials({...credentials, password: e.target.value})}
                                 required
                             />
+                            <p className="text-xs text-slate-500 mt-1">
+                                Your access token was provided by the FTS.Money administrator
+                            </p>
                         </div>
                         {error && (
-                            <div className="flex items-center gap-2 text-sm text-red-600 bg-red-50 p-3 rounded-lg">
+                            <Alert variant="destructive">
                                 <AlertCircle className="h-4 w-4" />
-                                {error}
-                            </div>
+                                <AlertDescription>{error}</AlertDescription>
+                            </Alert>
                         )}
                         <Button type="submit" className="w-full" disabled={loading}>
                             {loading ? 'Authenticating...' : 'Access Portal'}

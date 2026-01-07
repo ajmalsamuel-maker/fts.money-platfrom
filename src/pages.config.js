@@ -294,6 +294,7 @@ import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
 import QSAPortalLogin from './pages/QSAPortalLogin';
 import QSAPortalDashboard from './pages/QSAPortalDashboard';
+import QSAUserManagement from './pages/QSAUserManagement';
 import __Layout from './Layout.jsx';
 
 
@@ -594,6 +595,7 @@ export const PAGES = {
     "XeroIntegration": XeroIntegration,
     "QSAPortalLogin": QSAPortalLogin,
     "QSAPortalDashboard": QSAPortalDashboard,
+    "QSAUserManagement": QSAUserManagement,
 }
 
 export const pagesConfig = {
