@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Button } from "@/components/ui/button";
@@ -16,7 +15,6 @@ import TopHeader from '@/components/dashboard/TopHeader';
 import { toast } from 'sonner';
 
 export default function MerchantSelfOnboarding() {
-    const navigate = useNavigate();
     const queryClient = useQueryClient();
     const [sidebarCollapsed, setSidebarCollapsed] = useState(window.innerWidth < 1024);
     const [currentStep, setCurrentStep] = useState(1);
@@ -75,7 +73,7 @@ export default function MerchantSelfOnboarding() {
         onSuccess: () => {
             queryClient.invalidateQueries(['merchants']);
             toast.success('Merchant application submitted successfully!');
-            navigate(createPageUrl('Merchants'));
+            window.location.href = createPageUrl('Merchants');
         },
         onError: (error) => {
             toast.error('Failed to submit application: ' + error.message);
@@ -119,13 +117,13 @@ export default function MerchantSelfOnboarding() {
                         <Breadcrumb>
                             <BreadcrumbList>
                                 <BreadcrumbItem>
-                                    <BreadcrumbLink onClick={() => navigate(createPageUrl('Dashboard'))} className="cursor-pointer">
+                                    <BreadcrumbLink onClick={() => window.location.href = createPageUrl('Dashboard')} className="cursor-pointer">
                                         Dashboard
                                     </BreadcrumbLink>
                                 </BreadcrumbItem>
                                 <BreadcrumbSeparator />
                                 <BreadcrumbItem>
-                                    <BreadcrumbLink onClick={() => navigate(createPageUrl('Merchants'))} className="cursor-pointer">
+                                    <BreadcrumbLink onClick={() => window.location.href = createPageUrl('Merchants')} className="cursor-pointer">
                                         Merchants
                                     </BreadcrumbLink>
                                 </BreadcrumbItem>
@@ -142,7 +140,7 @@ export default function MerchantSelfOnboarding() {
                         <div className="mb-8">
                             <Button 
                                 variant="ghost" 
-                                onClick={() => navigate(createPageUrl('Merchants'))}
+                                onClick={() => window.location.href = createPageUrl('Merchants')}
                                 className="mb-4"
                             >
                                 <ArrowLeft className="h-4 w-4 mr-2" />
