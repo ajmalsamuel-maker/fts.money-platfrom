@@ -124,7 +124,7 @@ const menuSections = [
     {
         id: 'financial',
         title: 'Financial Operations',
-        defaultOpen: false,
+        defaultOpen: true,
         items: [
             { labelKey: 'serviceBilling', descKey: 'serviceBillingDesc', path: 'FTSServiceBilling', icon: FileText, priority: true },
             { labelKey: 'taxManagement', descKey: 'taxManagementDesc', path: 'TaxManagement', icon: FileText, priority: true },
@@ -165,7 +165,7 @@ const menuSections = [
     {
         id: 'pci-compliance',
         title: 'PCI DSS Compliance',
-        defaultOpen: false,
+        defaultOpen: true,
         items: [
             { labelKey: 'pciDashboard', descKey: 'pciDashboardDesc', path: 'PCIComplianceDashboard', icon: Shield, priority: true },
             { label: 'Continuous Monitoring', description: 'Real-time automated compliance checks', path: 'PCIContinuousMonitoring', icon: Activity, priority: true },
@@ -195,7 +195,7 @@ const menuSections = [
     {
         id: 'identity',
         title: 'Digital Identity',
-        defaultOpen: false,
+        defaultOpen: true,
         items: [
             { label: 'Identity Wallet', description: 'Verifiable credentials', path: 'DigitalIdentityWallet', icon: Wallet, priority: true },
             { label: 'Credential Presentation', description: 'Share credentials', path: 'CredentialPresentation', icon: Shield, priority: true }
