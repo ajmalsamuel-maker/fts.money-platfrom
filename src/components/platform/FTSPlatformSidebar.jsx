@@ -186,10 +186,7 @@ const menuSections = [
         title: 'Documentation',
         defaultOpen: false,
         items: [
-            { labelKey: 'documentationHub', descKey: 'documentationHubDesc', path: 'FTSDocumentation', icon: BookOpen, priority: true },
-            { labelKey: 'architectureDocs', descKey: 'architectureDocsDesc', path: 'FTSArchitectureDoc', icon: BookOpen },
-            { label: 'Product Ecosystem', description: 'Products overview', path: 'FTSProductEcosystemReport', icon: Package },
-            { labelKey: 'verticalSolutions', descKey: 'verticalSolutionsDesc', path: 'FTSVerticalSolutions', icon: Building2 }
+            { labelKey: 'documentationHub', descKey: 'documentationHubDesc', path: 'FTSDocumentation', icon: BookOpen, priority: true }
         ]
     },
     {

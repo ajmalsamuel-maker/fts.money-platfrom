@@ -284,39 +284,34 @@ export default function ExportDialog({ open, onOpenChange, documentTitle, docume
             else if (element.type === 'mermaid') {
                 const imgData = await renderMermaidToImage(element.content);
                 if (imgData) {
-                    // Better scaling for mermaid diagrams
-                    const maxWidth = contentWidth;
-                    const maxHeight = (pageHeight - margin.top - margin.bottom) * 0.6;
-                    
                     // Calculate dimensions (convert pixels to mm, 1px = 0.264583mm)
                     let imgWidth = imgData.width * 0.264583;
                     let imgHeight = imgData.height * 0.264583;
                     
-                    // Scale to fit width if needed
-                    if (imgWidth > maxWidth) {
-                        const scale = maxWidth / imgWidth;
-                        imgWidth = maxWidth;
+                    // Scale down by 30% for better fit
+                    imgWidth = imgWidth * 0.7;
+                    imgHeight = imgHeight * 0.7;
+                    
+                    // Ensure it fits within page width
+                    if (imgWidth > contentWidth) {
+                        const scale = contentWidth / imgWidth;
+                        imgWidth = contentWidth;
                         imgHeight = imgHeight * scale;
                     }
                     
-                    // Scale to fit height if needed
+                    // Ensure it fits within remaining page height
+                    const remainingHeight = pageHeight - yPos - margin.bottom;
+                    if (imgHeight > remainingHeight * 0.8) {
+                        doc.addPage();
+                        yPos = margin.top;
+                    }
+                    
+                    // If still too tall, scale to fit
+                    const maxHeight = (pageHeight - margin.top - margin.bottom) * 0.7;
                     if (imgHeight > maxHeight) {
                         const scale = maxHeight / imgHeight;
                         imgHeight = maxHeight;
                         imgWidth = imgWidth * scale;
-                    }
-                    
-                    // Ensure minimum readable size
-                    const minWidth = 100;
-                    if (imgWidth < minWidth) {
-                        const scale = minWidth / imgWidth;
-                        imgWidth = minWidth;
-                        imgHeight = imgHeight * scale;
-                    }
-                    
-                    if (yPos + imgHeight > pageHeight - margin.bottom) {
-                        doc.addPage();
-                        yPos = margin.top;
                     }
                     
                     // Center the diagram
@@ -463,31 +458,26 @@ export default function ExportDialog({ open, onOpenChange, documentTitle, docume
                     const base64Data = imgData.dataUrl.split(',')[1];
                     const buffer = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
                     
-                    // Better scaling for Word - maintain aspect ratio and ensure readable size
-                    const maxWidth = 550;
-                    const maxHeight = 700;
-                    let width = imgData.width;
-                    let height = imgData.height;
+                    // Scale down by 40% for better page fit
+                    let width = imgData.width * 0.6;
+                    let height = imgData.height * 0.6;
                     
-                    // Scale to fit
+                    // Max dimensions for Word page
+                    const maxWidth = 500;
+                    const maxHeight = 600;
+                    
+                    // Scale to fit width
                     if (width > maxWidth) {
                         const scale = maxWidth / width;
                         width = maxWidth;
                         height = height * scale;
                     }
                     
+                    // Scale to fit height
                     if (height > maxHeight) {
                         const scale = maxHeight / height;
                         height = maxHeight;
                         width = width * scale;
-                    }
-                    
-                    // Ensure minimum size
-                    const minWidth = 300;
-                    if (width < minWidth) {
-                        const scale = minWidth / width;
-                        width = minWidth;
-                        height = height * scale;
                     }
                     
                     docElements.push(
