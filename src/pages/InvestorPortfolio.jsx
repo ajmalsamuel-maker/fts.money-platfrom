@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import InvestorSidebar from '@/components/rwa/InvestorSidebar';
-import { TrendingUp, DollarSign, Briefcase, Award, ArrowUpRight, Calendar, Activity, ShoppingCart, Eye } from 'lucide-react';
+import { TrendingUp, DollarSign, Briefcase, Award, ArrowUpRight, Calendar, Activity, ShoppingCart, Eye, Settings } from 'lucide-react';
 import { LineChart, Line, AreaChart, Area, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
