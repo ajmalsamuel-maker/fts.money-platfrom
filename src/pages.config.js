@@ -301,6 +301,9 @@ import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
 import CryptoBankingWallets from './pages/CryptoBankingWallets';
 import CryptoBankingCompliance from './pages/CryptoBankingCompliance';
+import RWAPlatformIssuers from './pages/RWAPlatformIssuers';
+import RWAPlatformAssets from './pages/RWAPlatformAssets';
+import RWAPlatformInvestors from './pages/RWAPlatformInvestors';
 import __Layout from './Layout.jsx';
 
 
@@ -608,6 +611,9 @@ export const PAGES = {
     "XeroIntegration": XeroIntegration,
     "CryptoBankingWallets": CryptoBankingWallets,
     "CryptoBankingCompliance": CryptoBankingCompliance,
+    "RWAPlatformIssuers": RWAPlatformIssuers,
+    "RWAPlatformAssets": RWAPlatformAssets,
+    "RWAPlatformInvestors": RWAPlatformInvestors,
 }
 
 export const pagesConfig = {

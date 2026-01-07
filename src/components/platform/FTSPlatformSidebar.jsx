@@ -81,9 +81,9 @@ const menuSections = [
         items: [
             { labelKey: 'rwaDashboard', descKey: 'rwaDashboardDesc', path: 'RWAPlatform', icon: Briefcase, priority: true },
             { labelKey: 'rwaProviders', descKey: 'rwaProvidersDesc', path: 'RWAWhiteLabelProvisioning', icon: Building2 },
-            { labelKey: 'assetIssuers', descKey: 'assetIssuersDesc', path: 'RWAProviderIssuers', icon: Users },
-            { labelKey: 'tokenizedAssets', descKey: 'tokenizedAssetsDesc', path: 'RWAProviderAssets', icon: Package },
-            { labelKey: 'investors', descKey: 'investorsDesc', path: 'RWAProviderInvestors', icon: Users },
+            { labelKey: 'assetIssuers', descKey: 'assetIssuersDesc', path: 'RWAPlatformIssuers', icon: Users },
+            { labelKey: 'tokenizedAssets', descKey: 'tokenizedAssetsDesc', path: 'RWAPlatformAssets', icon: Package },
+            { labelKey: 'investors', descKey: 'investorsDesc', path: 'RWAPlatformInvestors', icon: Users },
             { labelKey: 'rwaAnalytics', descKey: 'rwaAnalyticsDesc', path: 'RWAProviderAnalytics', icon: BarChart3 }
         ]
     },
