@@ -6,11 +6,30 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import InvoiceUploadManager from '@/components/invoice/InvoiceUploadManager';
+import MerchantSidebar from '@/components/merchant/MerchantSidebar';
+import MerchantTopBar from '@/components/merchant/MerchantTopBar';
+import { useMerchantAuth } from '@/components/auth/useMerchantAuth';
 import { FileText, DollarSign, CheckCircle, Clock, AlertCircle, ExternalLink } from 'lucide-react';
 
 export default function MerchantInvoicePortal() {
-    const merchantSession = localStorage.getItem('merchantSession');
-    const merchant = merchantSession ? JSON.parse(merchantSession) : null;
+    const { user, merchant, loading } = useMerchantAuth();
+    const [selectedMID, setSelectedMID] = useState('');
+
+    const { data: mids = [] } = useQuery({
+        queryKey: ['merchant-mids', merchant?.merchant_code],
+        queryFn: () => base44.entities.MerchantMID.filter({ merchant_code: merchant.merchant_code }),
+        enabled: !!merchant
+    });
+
+    React.useEffect(() => {
+        if (mids.length > 0 && !selectedMID) {
+            setSelectedMID(mids[0].mid);
+        }
+    }, [mids]);
+
+    if (loading) {
+        return <div className="flex items-center justify-center h-screen">Loading...</div>;
+    }
 
     const { data: invoices = [] } = useQuery({
         queryKey: ['merchant-invoices', merchant?.merchant_code],
@@ -53,7 +72,18 @@ export default function MerchantInvoicePortal() {
     };
 
     return (
-        <div className="p-6 max-w-7xl mx-auto">
+        <div className="flex h-screen bg-slate-50">
+            <MerchantSidebar 
+                currentPage="MerchantInvoicePortal"
+                selectedMID={selectedMID}
+                mids={mids}
+                onMIDChange={setSelectedMID}
+                user={user}
+                merchant={merchant}
+            />
+            <div className="flex-1 flex flex-col overflow-hidden">
+                <MerchantTopBar user={user} merchant={merchant} />
+                <div className="flex-1 overflow-auto p-6 max-w-7xl mx-auto w-full">
             <div className="mb-6">
                 <h1 className="text-3xl font-bold text-slate-900">Invoice Management</h1>
                 <p className="text-slate-600">Upload, manage, and reconcile invoices with payments</p>
@@ -192,6 +222,8 @@ export default function MerchantInvoicePortal() {
                     </Card>
                 </TabsContent>
             </Tabs>
+                </div>
+            </div>
         </div>
     );
 }
