@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { Shield, AlertTriangle, CheckCircle2, Clock, TrendingUp, Building2, Store, RefreshCw, ExternalLink, Code, GitBranch, Wallet, Rocket, Users, Menu } from 'lucide-react';
-import FTSPlatformSidebarRestructured from '@/components/platform/FTSPlatformSidebarRestructured';
+import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
 import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
@@ -41,7 +41,7 @@ export default function LEIComplianceDashboard() {
     if (error) {
         return (
             <div className="flex h-screen bg-slate-50">
-                <FTSPlatformSidebarRestructured 
+                <FTSPlatformSidebar 
                     currentPage="LEIComplianceDashboard" 
                     userEmail={platformUser?.email} 
                     userRole={platformUser?.platform_role} 
@@ -60,7 +60,7 @@ export default function LEIComplianceDashboard() {
     if (isLoading || !dashboard) {
         return (
             <div className="flex h-screen bg-slate-50">
-                <FTSPlatformSidebarRestructured 
+                <FTSPlatformSidebar 
                     currentPage="LEIComplianceDashboard" 
                     userEmail={platformUser?.email} 
                     userRole={platformUser?.platform_role} 
@@ -87,7 +87,7 @@ export default function LEIComplianceDashboard() {
                 "fixed lg:static inset-y-0 left-0 z-50 lg:z-auto transition-transform duration-300",
                 mobileSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
             )}>
-                <FTSPlatformSidebarRestructured 
+                <FTSPlatformSidebar 
                     currentPage="LEIComplianceDashboard" 
                     userEmail={platformUser?.email} 
                     userRole={platformUser?.platform_role}

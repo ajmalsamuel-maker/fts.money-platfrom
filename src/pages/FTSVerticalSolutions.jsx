@@ -5,7 +5,7 @@ import { Download } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
-import FTSPlatformSidebarRestructured from '@/components/platform/FTSPlatformSidebarRestructured';
+import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
 import MermaidDiagram from '@/components/docs/MermaidDiagram';
 import VerticalSolutionsDoc from '@/components/docs/VerticalSolutionsDoc';
 import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
@@ -34,7 +34,7 @@ export default function FTSVerticalSolutions() {
 
     return (
         <div className="flex h-screen bg-slate-50">
-            <FTSPlatformSidebarRestructured 
+            <FTSPlatformSidebar 
                 currentPage="FTSVerticalSolutions"
                 userEmail={platformUser?.email}
             />
