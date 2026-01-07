@@ -117,21 +117,18 @@ export default function ExportDialog({ open, onOpenChange, documentTitle, docume
             const id = 'mermaid-' + Math.random().toString(36).substr(2, 9);
             const { svg } = await mermaid.render(id, mermaidCode);
             
-            // Convert SVG to high-resolution image
+            // Convert SVG to image at normal resolution
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
             const img = new Image();
             
             return new Promise((resolve) => {
                 img.onload = () => {
-                    // Scale up for better quality (3x resolution)
-                    const scale = 3;
-                    canvas.width = img.width * scale;
-                    canvas.height = img.height * scale;
+                    canvas.width = img.width;
+                    canvas.height = img.height;
                     
                     ctx.fillStyle = 'white';
                     ctx.fillRect(0, 0, canvas.width, canvas.height);
-                    ctx.scale(scale, scale);
                     ctx.drawImage(img, 0, 0);
                     
                     resolve({
@@ -270,10 +267,15 @@ export default function ExportDialog({ open, onOpenChange, documentTitle, docume
                 yPos += 2;
             }
             else if (element.type === 'table' && element.rows.length > 0) {
+                // Clean markdown from table cells
+                const cleanedRows = element.rows.map(row => 
+                    row.map(cell => parseTextFormatting(cell))
+                );
+                
                 doc.autoTable({
                     startY: yPos,
-                    head: [element.rows[0]],
-                    body: element.rows.slice(1),
+                    head: [cleanedRows[0]],
+                    body: cleanedRows.slice(1),
                     margin: { left: margin.left, right: margin.right },
                     styles: { fontSize: fontSizes[fontSize].body - 1, cellPadding: 2 },
                     headStyles: { fillColor: [71, 85, 105], fontStyle: 'bold' },
@@ -288,26 +290,23 @@ export default function ExportDialog({ open, onOpenChange, documentTitle, docume
                     let imgWidth = imgData.width * 0.264583;
                     let imgHeight = imgData.height * 0.264583;
                     
-                    // Scale down by 30% for better fit
-                    imgWidth = imgWidth * 0.7;
-                    imgHeight = imgHeight * 0.7;
-                    
-                    // Ensure it fits within page width
-                    if (imgWidth > contentWidth) {
-                        const scale = contentWidth / imgWidth;
-                        imgWidth = contentWidth;
+                    // Scale to fit width with 85% of content width
+                    const targetWidth = contentWidth * 0.85;
+                    if (imgWidth > targetWidth) {
+                        const scale = targetWidth / imgWidth;
+                        imgWidth = targetWidth;
                         imgHeight = imgHeight * scale;
                     }
                     
-                    // Ensure it fits within remaining page height
+                    // Check if new page needed
                     const remainingHeight = pageHeight - yPos - margin.bottom;
-                    if (imgHeight > remainingHeight * 0.8) {
+                    if (imgHeight > remainingHeight - 20) {
                         doc.addPage();
                         yPos = margin.top;
                     }
                     
-                    // If still too tall, scale to fit
-                    const maxHeight = (pageHeight - margin.top - margin.bottom) * 0.7;
+                    // If still too tall, scale to fit page
+                    const maxHeight = (pageHeight - margin.top - margin.bottom) * 0.65;
                     if (imgHeight > maxHeight) {
                         const scale = maxHeight / imgHeight;
                         imgHeight = maxHeight;
@@ -432,13 +431,38 @@ export default function ExportDialog({ open, onOpenChange, documentTitle, docume
             else if (element.type === 'table' && element.rows.length > 0) {
                 const tableRows = element.rows.map((row, rowIndex) => 
                     new TableRow({
-                        children: row.map(cell => 
-                            new TableCell({
-                                children: [new Paragraph({ text: cell })],
+                        children: row.map(cell => {
+                            // Parse formatting in table cells
+                            const parts = [];
+                            const regex = /(\*\*[^*]+\*\*|\*[^*]+\*)/g;
+                            let lastIndex = 0;
+                            let match;
+                            
+                            while ((match = regex.exec(cell)) !== null) {
+                                if (match.index > lastIndex) {
+                                    parts.push(new TextRun(cell.substring(lastIndex, match.index)));
+                                }
+                                
+                                const matchedText = match[0];
+                                if (matchedText.startsWith('**') && matchedText.endsWith('**')) {
+                                    parts.push(new TextRun({ text: matchedText.slice(2, -2), bold: true }));
+                                } else if (matchedText.startsWith('*') && matchedText.endsWith('*')) {
+                                    parts.push(new TextRun({ text: matchedText.slice(1, -1), italics: true }));
+                                }
+                                
+                                lastIndex = regex.lastIndex;
+                            }
+                            
+                            if (lastIndex < cell.length) {
+                                parts.push(new TextRun(cell.substring(lastIndex)));
+                            }
+                            
+                            return new TableCell({
+                                children: [new Paragraph({ children: parts.length > 0 ? parts : [new TextRun(cell)] })],
                                 shading: rowIndex === 0 ? { fill: "CCCCCC" } : undefined,
                                 width: { size: 100 / row.length, type: WidthType.PERCENTAGE }
-                            })
-                        )
+                            });
+                        })
                     })
                 );
                 
@@ -458,13 +482,12 @@ export default function ExportDialog({ open, onOpenChange, documentTitle, docume
                     const base64Data = imgData.dataUrl.split(',')[1];
                     const buffer = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
                     
-                    // Scale down by 40% for better page fit
-                    let width = imgData.width * 0.6;
-                    let height = imgData.height * 0.6;
+                    // Target 80% of page width (approx 480px for standard Word page)
+                    let width = imgData.width * 0.8;
+                    let height = imgData.height * 0.8;
                     
-                    // Max dimensions for Word page
-                    const maxWidth = 500;
-                    const maxHeight = 600;
+                    const maxWidth = 480;
+                    const maxHeight = 550;
                     
                     // Scale to fit width
                     if (width > maxWidth) {
