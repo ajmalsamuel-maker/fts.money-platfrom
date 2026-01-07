@@ -164,7 +164,8 @@ const menuSections = [
         defaultOpen: false,
         items: [
             { labelKey: 'documentationHub', descKey: 'documentationHubDesc', path: 'FTSDocumentation', icon: BookOpen, priority: true },
-            { labelKey: 'architectureDocs', descKey: 'architectureDocsDesc', path: 'FTSArchitectureDoc', icon: BookOpen }
+            { labelKey: 'architectureDocs', descKey: 'architectureDocsDesc', path: 'FTSArchitectureDoc', icon: BookOpen },
+            { labelKey: 'pciCompliance', descKey: 'pciComplianceDesc', path: 'PCIDocumentManager', icon: Shield, priority: true }
         ]
     },
     {
