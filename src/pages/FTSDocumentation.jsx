@@ -27,6 +27,7 @@ import VASPPlatformDoc from '@/components/docs/VASPPlatformDoc';
 import ServiceInteroperabilityDoc from '@/components/docs/ServiceInteroperabilityDoc';
 import { PCIDSSComplianceDoc } from '@/components/docs/PCIDSSComplianceDoc';
 import { DigitalIdentityDoc } from '@/components/docs/DigitalIdentityDoc';
+import { PlatformPortalsGuide } from '@/components/docs/PlatformPortalsGuide';
 import MermaidDiagram from '@/components/docs/MermaidDiagram';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -177,6 +178,13 @@ export default function FTSDocumentation() {
             icon: Wallet,
             content: DigitalIdentityDoc,
             description: 'W3C Verifiable Credentials and DIDs - passwordless authentication, selective disclosure, and privacy-preserving identity'
+        },
+        {
+            id: 'platform-portals',
+            title: 'Platform Portals Guide',
+            icon: BookOpen,
+            content: PlatformPortalsGuide,
+            description: 'Complete guide to all FTS.Money portals - URLs, pages, features, and workflows with detailed diagrams'
         }
     ];
 
