@@ -220,18 +220,12 @@ const menuSections = [
 export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, isSuperAdmin }) {
     const { t } = useI18n();
     
-    // Force clear old localStorage on mount
-    React.useEffect(() => {
-        const version = localStorage.getItem('ftsSidebarVersion');
-        if (version !== '2.0') {
-            localStorage.removeItem('ftsPlatformSidebarSections');
-            localStorage.setItem('ftsSidebarVersion', '2.0');
-        }
-    }, []);
-    
     const [openSections, setOpenSections] = React.useState(() => {
-        // Default to ALL sections open
+        // FORCE CLEAR all old state and default ALL sections to OPEN
+        localStorage.removeItem('ftsPlatformSidebarSections');
+        localStorage.setItem('ftsSidebarVersion', '3.0');
         const allSectionIds = menuSections.map(s => s.id);
+        localStorage.setItem('ftsPlatformSidebarSections', JSON.stringify(allSectionIds));
         return allSectionIds;
     });
     
