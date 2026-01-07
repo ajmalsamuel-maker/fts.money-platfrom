@@ -18,7 +18,9 @@ import AssetIssuerAssets from './pages/AssetIssuerAssets';
 import AssetIssuerCompliance from './pages/AssetIssuerCompliance';
 import AssetIssuerDashboard from './pages/AssetIssuerDashboard';
 import AssetIssuerDividends from './pages/AssetIssuerDividends';
+import AssetIssuerInvestors from './pages/AssetIssuerInvestors';
 import AssetIssuerLogin from './pages/AssetIssuerLogin';
+import AssetIssuerSettings from './pages/AssetIssuerSettings';
 import AssetIssuerTokenize from './pages/AssetIssuerTokenize';
 import AuditLogs from './pages/AuditLogs';
 import AutomatedPayouts from './pages/AutomatedPayouts';
@@ -264,6 +266,7 @@ import RWAPlatformIssuers from './pages/RWAPlatformIssuers';
 import RWAProviderAnalytics from './pages/RWAProviderAnalytics';
 import RWAProviderAssets from './pages/RWAProviderAssets';
 import RWAProviderDashboard from './pages/RWAProviderDashboard';
+import RWAProviderIdentityWallet from './pages/RWAProviderIdentityWallet';
 import RWAProviderInvestors from './pages/RWAProviderInvestors';
 import RWAProviderIssuers from './pages/RWAProviderIssuers';
 import RWAProviderLogin from './pages/RWAProviderLogin';
@@ -305,9 +308,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import RWAProviderIdentityWallet from './pages/RWAProviderIdentityWallet';
-import AssetIssuerInvestors from './pages/AssetIssuerInvestors';
-import AssetIssuerSettings from './pages/AssetIssuerSettings';
 import __Layout from './Layout.jsx';
 
 
@@ -332,7 +332,9 @@ export const PAGES = {
     "AssetIssuerCompliance": AssetIssuerCompliance,
     "AssetIssuerDashboard": AssetIssuerDashboard,
     "AssetIssuerDividends": AssetIssuerDividends,
+    "AssetIssuerInvestors": AssetIssuerInvestors,
     "AssetIssuerLogin": AssetIssuerLogin,
+    "AssetIssuerSettings": AssetIssuerSettings,
     "AssetIssuerTokenize": AssetIssuerTokenize,
     "AuditLogs": AuditLogs,
     "AutomatedPayouts": AutomatedPayouts,
@@ -578,6 +580,7 @@ export const PAGES = {
     "RWAProviderAnalytics": RWAProviderAnalytics,
     "RWAProviderAssets": RWAProviderAssets,
     "RWAProviderDashboard": RWAProviderDashboard,
+    "RWAProviderIdentityWallet": RWAProviderIdentityWallet,
     "RWAProviderInvestors": RWAProviderInvestors,
     "RWAProviderIssuers": RWAProviderIssuers,
     "RWAProviderLogin": RWAProviderLogin,
@@ -619,9 +622,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "RWAProviderIdentityWallet": RWAProviderIdentityWallet,
-    "AssetIssuerInvestors": AssetIssuerInvestors,
-    "AssetIssuerSettings": AssetIssuerSettings,
 }
 
 export const pagesConfig = {
