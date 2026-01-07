@@ -53,7 +53,7 @@ const menuSections = [
     {
         id: 'psp-operations',
         title: 'PSP Operations',
-        defaultOpen: false,
+        defaultOpen: true,
         items: [
             { labelKey: 'pspManagement', descKey: 'pspManagementDesc', path: 'PSPProvisioning', icon: Building2, priority: true },
             { labelKey: 'provisioningQueue', descKey: 'provisioningQueueDesc', path: 'FTSProvisioningQueue', icon: Activity },
