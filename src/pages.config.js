@@ -285,6 +285,8 @@ import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
 import PCIDocumentManager from './pages/PCIDocumentManager';
+import PCIComplianceDashboard from './pages/PCIComplianceDashboard';
+import PCIRequirementsTracker from './pages/PCIRequirementsTracker';
 import __Layout from './Layout.jsx';
 
 
@@ -576,6 +578,8 @@ export const PAGES = {
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
     "PCIDocumentManager": PCIDocumentManager,
+    "PCIComplianceDashboard": PCIComplianceDashboard,
+    "PCIRequirementsTracker": PCIRequirementsTracker,
 }
 
 export const pagesConfig = {
