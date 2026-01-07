@@ -217,9 +217,11 @@ export default function FTSDocumentation() {
         <>
             <style>{`
                 @media print {
-                    /* Forcefully hide sidebar and all UI */
+                    /* Forcefully hide sidebar and all UI chrome */
                     aside, nav, header, button, footer,
-                    [role="tablist"], [role="tab"] {
+                    [role="tablist"], [role="tab"],
+                    [class*="ticker"], [class*="news"],
+                    div[class*="bg-slate-900"] {
                         display: none !important;
                         visibility: hidden !important;
                         position: absolute !important;
@@ -240,17 +242,13 @@ export default function FTSDocumentation() {
                         padding: 0;
                     }
                     
-                    /* Override title */
-                    head title {
-                        display: none;
-                    }
-                    
                     body::before {
                         content: 'FTS.Money';
                         display: block;
                         font-size: 24pt;
                         font-weight: bold;
-                        margin: 0 0 10px 0;
+                        margin: 0 auto 20px;
+                        text-align: center;
                         color: #1e40af;
                     }
                     
