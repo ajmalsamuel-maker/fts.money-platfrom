@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
-import FTSPlatformSidebarRestructured from '@/components/platform/FTSPlatformSidebarRestructured';
+import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -27,7 +27,7 @@ export default function CryptoGatewayTransactions() {
     if (authLoading || isLoading) {
         return (
             <div className="flex h-screen">
-                <FTSPlatformSidebarRestructured currentPage="CryptoGatewayTransactions" />
+                <FTSPlatformSidebar currentPage="CryptoGatewayTransactions" userEmail={platformUser?.email} userRole={platformUser?.platform_role} isSuperAdmin={platformUser?.platform_role === 'super_admin'} />
                 <div className="flex-1 flex items-center justify-center">
                     <div className="text-slate-500">Loading transactions...</div>
                 </div>
@@ -49,10 +49,11 @@ export default function CryptoGatewayTransactions() {
 
     return (
         <div className="flex h-screen bg-slate-50">
-            <FTSPlatformSidebarRestructured 
+            <FTSPlatformSidebar 
                 currentPage="CryptoGatewayTransactions"
                 userRole={platformUser?.platform_role}
                 userEmail={platformUser?.email}
+                isSuperAdmin={platformUser?.platform_role === 'super_admin'}
             />
             
             <div className="flex-1 overflow-auto">
