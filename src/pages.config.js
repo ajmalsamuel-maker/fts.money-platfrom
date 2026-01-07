@@ -43,7 +43,9 @@ import ComplianceFramework from './pages/ComplianceFramework';
 import CredentialPresentation from './pages/CredentialPresentation';
 import CryptoAPIKeys from './pages/CryptoAPIKeys';
 import CryptoAnalytics from './pages/CryptoAnalytics';
+import CryptoBankingCompliance from './pages/CryptoBankingCompliance';
 import CryptoBankingVASPManagement from './pages/CryptoBankingVASPManagement';
+import CryptoBankingWallets from './pages/CryptoBankingWallets';
 import CryptoCards from './pages/CryptoCards';
 import CryptoCompliance from './pages/CryptoCompliance';
 import CryptoDocs from './pages/CryptoDocs';
@@ -255,6 +257,10 @@ import QSAPortalLogin from './pages/QSAPortalLogin';
 import QSAUserManagement from './pages/QSAUserManagement';
 import QuickPSPProvisioning from './pages/QuickPSPProvisioning';
 import RWAPlatform from './pages/RWAPlatform';
+import RWAPlatformAnalytics from './pages/RWAPlatformAnalytics';
+import RWAPlatformAssets from './pages/RWAPlatformAssets';
+import RWAPlatformInvestors from './pages/RWAPlatformInvestors';
+import RWAPlatformIssuers from './pages/RWAPlatformIssuers';
 import RWAProviderAnalytics from './pages/RWAProviderAnalytics';
 import RWAProviderAssets from './pages/RWAProviderAssets';
 import RWAProviderDashboard from './pages/RWAProviderDashboard';
@@ -299,12 +305,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import CryptoBankingWallets from './pages/CryptoBankingWallets';
-import CryptoBankingCompliance from './pages/CryptoBankingCompliance';
-import RWAPlatformIssuers from './pages/RWAPlatformIssuers';
-import RWAPlatformAssets from './pages/RWAPlatformAssets';
-import RWAPlatformInvestors from './pages/RWAPlatformInvestors';
-import RWAPlatformAnalytics from './pages/RWAPlatformAnalytics';
 import __Layout from './Layout.jsx';
 
 
@@ -354,7 +354,9 @@ export const PAGES = {
     "CredentialPresentation": CredentialPresentation,
     "CryptoAPIKeys": CryptoAPIKeys,
     "CryptoAnalytics": CryptoAnalytics,
+    "CryptoBankingCompliance": CryptoBankingCompliance,
     "CryptoBankingVASPManagement": CryptoBankingVASPManagement,
+    "CryptoBankingWallets": CryptoBankingWallets,
     "CryptoCards": CryptoCards,
     "CryptoCompliance": CryptoCompliance,
     "CryptoDocs": CryptoDocs,
@@ -566,6 +568,10 @@ export const PAGES = {
     "QSAUserManagement": QSAUserManagement,
     "QuickPSPProvisioning": QuickPSPProvisioning,
     "RWAPlatform": RWAPlatform,
+    "RWAPlatformAnalytics": RWAPlatformAnalytics,
+    "RWAPlatformAssets": RWAPlatformAssets,
+    "RWAPlatformInvestors": RWAPlatformInvestors,
+    "RWAPlatformIssuers": RWAPlatformIssuers,
     "RWAProviderAnalytics": RWAProviderAnalytics,
     "RWAProviderAssets": RWAProviderAssets,
     "RWAProviderDashboard": RWAProviderDashboard,
@@ -610,12 +616,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "CryptoBankingWallets": CryptoBankingWallets,
-    "CryptoBankingCompliance": CryptoBankingCompliance,
-    "RWAPlatformIssuers": RWAPlatformIssuers,
-    "RWAPlatformAssets": RWAPlatformAssets,
-    "RWAPlatformInvestors": RWAPlatformInvestors,
-    "RWAPlatformAnalytics": RWAPlatformAnalytics,
 }
 
 export const pagesConfig = {
