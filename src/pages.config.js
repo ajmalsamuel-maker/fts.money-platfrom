@@ -309,6 +309,9 @@ import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
 import InvestorAssetDetails from './pages/InvestorAssetDetails';
+import MerchantInvoicePortal from './pages/MerchantInvoicePortal';
+import PSPInvoiceAggregator from './pages/PSPInvoiceAggregator';
+import PlatformBillingPortal from './pages/PlatformBillingPortal';
 import __Layout from './Layout.jsx';
 
 
@@ -624,6 +627,9 @@ export const PAGES = {
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
     "InvestorAssetDetails": InvestorAssetDetails,
+    "MerchantInvoicePortal": MerchantInvoicePortal,
+    "PSPInvoiceAggregator": PSPInvoiceAggregator,
+    "PlatformBillingPortal": PlatformBillingPortal,
 }
 
 export const pagesConfig = {
