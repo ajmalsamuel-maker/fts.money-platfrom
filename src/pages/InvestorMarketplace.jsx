@@ -10,6 +10,8 @@ import { Label } from "@/components/ui/label";
 import InvestorSidebar from '@/components/rwa/InvestorSidebar';
 import { ShoppingCart, TrendingUp, Shield, ExternalLink, DollarSign } from 'lucide-react';
 import { toast } from 'sonner';
+import { Link } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
 
 export default function InvestorMarketplace() {
     const [selectedAsset, setSelectedAsset] = useState(null);
@@ -139,16 +141,23 @@ export default function InvestorMarketplace() {
                                                         <Shield className="h-3 w-3" />
                                                         {asset.accredited_only ? 'Accredited Investors Only' : 'Open to All'}
                                                     </div>
-                                                    <Button 
-                                                        className="w-full"
-                                                        onClick={() => {
-                                                            setSelectedAsset(asset);
-                                                            setShowOrderDialog(true);
-                                                        }}
-                                                    >
-                                                        <ShoppingCart className="h-4 w-4 mr-2" />
-                                                        Invest Now
-                                                    </Button>
+                                                    <div className="flex gap-2">
+                                                        <Link to={`${createPageUrl('InvestorAssetDetails')}?id=${asset.asset_id}`} className="flex-1">
+                                                            <Button variant="outline" className="w-full">
+                                                                Details
+                                                            </Button>
+                                                        </Link>
+                                                        <Button 
+                                                            className="flex-1"
+                                                            onClick={() => {
+                                                                setSelectedAsset(asset);
+                                                                setShowOrderDialog(true);
+                                                            }}
+                                                        >
+                                                            <ShoppingCart className="h-4 w-4 mr-2" />
+                                                            Invest
+                                                        </Button>
+                                                    </div>
                                                     {asset.contract_address && (
                                                         <a
                                                             href={`https://polygonscan.com/address/${asset.contract_address}`}
