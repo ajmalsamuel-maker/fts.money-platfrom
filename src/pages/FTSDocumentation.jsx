@@ -217,14 +217,74 @@ export default function FTSDocumentation() {
         <>
             <style>{`
                 @media print {
-                    aside, .print-hide, [role="tablist"] {
+                    /* Hide sidebar, header, and buttons */
+                    aside, .print-hide, header, nav, button {
                         display: none !important;
                     }
-                    .flex.h-screen {
-                        display: block !important;
+                    
+                    /* Remove flex layout */
+                    body, html {
+                        width: 100% !important;
+                        height: auto !important;
+                        overflow: visible !important;
                     }
+                    
+                    /* Main container adjustments */
+                    .flex, .flex.h-screen {
+                        display: block !important;
+                        height: auto !important;
+                    }
+                    
+                    /* Content area full width */
                     .flex-1 {
                         width: 100% !important;
+                        max-width: 100% !important;
+                        overflow: visible !important;
+                        padding: 0 !important;
+                        margin: 0 !important;
+                    }
+                    
+                    /* Document content scaling */
+                    .prose {
+                        max-width: 100% !important;
+                        width: 100% !important;
+                        padding: 20px !important;
+                        font-size: 11pt !important;
+                        line-height: 1.4 !important;
+                    }
+                    
+                    /* Tables */
+                    .prose table {
+                        font-size: 9pt !important;
+                        page-break-inside: avoid !important;
+                    }
+                    
+                    /* Headings */
+                    .prose h1 { font-size: 18pt !important; page-break-after: avoid !important; }
+                    .prose h2 { font-size: 14pt !important; page-break-after: avoid !important; }
+                    .prose h3 { font-size: 12pt !important; page-break-after: avoid !important; }
+                    
+                    /* Code blocks */
+                    .prose pre {
+                        font-size: 8pt !important;
+                        page-break-inside: avoid !important;
+                    }
+                    
+                    /* Images and diagrams */
+                    .prose img, .prose svg {
+                        max-width: 100% !important;
+                        page-break-inside: avoid !important;
+                    }
+                    
+                    /* Remove background colors for print */
+                    * {
+                        background: white !important;
+                        color: black !important;
+                    }
+                    
+                    /* Keep table borders visible */
+                    table, th, td {
+                        border-color: black !important;
                     }
                 }
             `}</style>
