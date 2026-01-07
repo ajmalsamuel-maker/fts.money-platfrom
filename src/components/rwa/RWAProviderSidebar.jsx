@@ -13,7 +13,7 @@ export default function RWAProviderSidebar({ currentPage, providerName, provider
         { label: 'All Assets', path: 'RWAProviderAssets', icon: Coins },
         { label: 'All Investors', path: 'RWAProviderInvestors', icon: Users },
         { label: 'Analytics', path: 'RWAProviderAnalytics', icon: BarChart3 },
-        { label: 'Identity Wallet', path: 'DigitalIdentityWallet', icon: Wallet },
+        { label: 'Identity Wallet', path: 'RWAProviderIdentityWallet', icon: Wallet },
         { label: 'Settings', path: 'RWAProviderSettings', icon: Settings }
     ];
 
