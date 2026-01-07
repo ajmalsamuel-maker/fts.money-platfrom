@@ -37,18 +37,19 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { useI18n } from '@/components/i18n/I18nextProvider';
 
 const menuSections = [
-    {
-        id: 'overview',
-        title: 'Overview & Insights',
-        defaultOpen: true,
-        items: [
-            { labelKey: 'platformDashboard', descKey: 'platformDashboardDesc', path: 'FTSMoneyPlatform', icon: Activity, priority: true },
-            { labelKey: 'systemHealth', descKey: 'systemHealthDesc', path: 'FTSSystemHealth', icon: Activity },
-            { labelKey: 'revenueDashboard', descKey: 'revenueDashboardDesc', path: 'FTSRevenue', icon: BarChart3, priority: true },
-            { labelKey: 'platformAnalytics', descKey: 'platformAnalyticsDesc', path: 'FTSAnalytics', icon: BarChart3 },
-            { labelKey: 'setupGuide', descKey: 'setupGuideDesc', path: 'FTSSetupGuide', icon: BookOpen }
-        ]
-    },
+        {
+            id: 'overview',
+            title: 'Overview & Insights',
+            defaultOpen: true,
+            items: [
+                { labelKey: 'platformDashboard', descKey: 'platformDashboardDesc', path: 'FTSMoneyPlatform', icon: Activity, priority: true },
+                { labelKey: 'systemHealth', descKey: 'systemHealthDesc', path: 'FTSSystemHealth', icon: Activity },
+                { labelKey: 'revenueDashboard', descKey: 'revenueDashboardDesc', path: 'FTSRevenue', icon: BarChart3, priority: true },
+                { labelKey: 'platformAnalytics', descKey: 'platformAnalyticsDesc', path: 'FTSAnalytics', icon: BarChart3 },
+                { labelKey: 'setupGuide', descKey: 'setupGuideDesc', path: 'FTSSetupGuide', icon: BookOpen },
+                { label: 'Custom Reports', description: 'Report builder', path: 'FTSReporting', icon: FileText }
+            ]
+        },
     {
         id: 'psp-operations',
         title: 'PSP Operations',
@@ -92,7 +93,7 @@ const menuSections = [
         defaultOpen: false,
         items: [
             { labelKey: 'serviceCatalog', descKey: 'serviceCatalogDesc', path: 'FTSServiceManager', icon: Package, priority: true },
-            { labelKey: 'paymentProviders', descKey: 'paymentProvidersDesc', path: 'PaymentProviderManagement', icon: CreditCard, priority: true },
+            { label: 'Payment Providers', description: 'Provider pool', path: 'PaymentProviderManagement', icon: Database, priority: true },
             { labelKey: 'globalStandards', descKey: 'globalStandardsDesc', path: 'GlobalStandardsRegistry', icon: Globe, priority: true },
             { labelKey: 'isoGateway', descKey: 'isoGatewayDesc', path: 'ISOGatewayCustomers', icon: Code, priority: true },
             { labelKey: 'isoConnections', descKey: 'isoConnectionsDesc', path: 'ISOGatewayConnections', icon: GitBranch },
@@ -186,7 +187,18 @@ const menuSections = [
         defaultOpen: false,
         items: [
             { labelKey: 'documentationHub', descKey: 'documentationHubDesc', path: 'FTSDocumentation', icon: BookOpen, priority: true },
-            { labelKey: 'architectureDocs', descKey: 'architectureDocsDesc', path: 'FTSArchitectureDoc', icon: BookOpen }
+            { labelKey: 'architectureDocs', descKey: 'architectureDocsDesc', path: 'FTSArchitectureDoc', icon: BookOpen },
+            { label: 'Product Ecosystem', description: 'Products overview', path: 'FTSProductEcosystemReport', icon: Package },
+            { labelKey: 'verticalSolutions', descKey: 'verticalSolutionsDesc', path: 'FTSVerticalSolutions', icon: Building2 }
+        ]
+    },
+    {
+        id: 'identity',
+        title: 'Digital Identity',
+        defaultOpen: false,
+        items: [
+            { label: 'Identity Wallet', description: 'Verifiable credentials', path: 'DigitalIdentityWallet', icon: Wallet, priority: true },
+            { label: 'Credential Presentation', description: 'Share credentials', path: 'CredentialPresentation', icon: Shield, priority: true }
         ]
     },
     {
