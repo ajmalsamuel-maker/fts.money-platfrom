@@ -8,11 +8,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import InvoiceUploadManager from '@/components/invoice/InvoiceUploadManager';
 import MerchantSidebar from '@/components/merchant/MerchantSidebar';
 import MerchantTopBar from '@/components/merchant/MerchantTopBar';
-import { useMerchantAuth } from '@/components/auth/useMerchantAuth';
 import { FileText, DollarSign, CheckCircle, Clock, AlertCircle, ExternalLink } from 'lucide-react';
 
 export default function MerchantInvoicePortal() {
-    const { user, merchant, loading } = useMerchantAuth();
+    const merchantSession = localStorage.getItem('merchantSession');
+    const merchant = merchantSession ? JSON.parse(merchantSession) : null;
     const [selectedMID, setSelectedMID] = useState('');
 
     const { data: mids = [] } = useQuery({
@@ -26,10 +26,6 @@ export default function MerchantInvoicePortal() {
             setSelectedMID(mids[0].mid);
         }
     }, [mids]);
-
-    if (loading) {
-        return <div className="flex items-center justify-center h-screen">Loading...</div>;
-    }
 
     const { data: invoices = [] } = useQuery({
         queryKey: ['merchant-invoices', merchant?.merchant_code],
@@ -78,11 +74,11 @@ export default function MerchantInvoicePortal() {
                 selectedMID={selectedMID}
                 mids={mids}
                 onMIDChange={setSelectedMID}
-                user={user}
+                user={merchant}
                 merchant={merchant}
             />
             <div className="flex-1 flex flex-col overflow-hidden">
-                <MerchantTopBar user={user} merchant={merchant} />
+                <MerchantTopBar user={merchant} merchant={merchant} />
                 <div className="flex-1 overflow-auto p-6 max-w-7xl mx-auto w-full">
             <div className="mb-6">
                 <h1 className="text-3xl font-bold text-slate-900">Invoice Management</h1>
