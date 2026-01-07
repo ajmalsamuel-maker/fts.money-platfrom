@@ -217,13 +217,15 @@ export default function FTSDocumentation() {
         <>
             <style>{`
                 @media print {
-                    /* Hide all UI chrome */
+                    /* Forcefully hide sidebar and all UI */
                     aside, nav, header, button, footer,
                     [role="tablist"], [role="tab"] {
                         display: none !important;
+                        visibility: hidden !important;
+                        position: absolute !important;
+                        left: -9999px !important;
                     }
                     
-                    /* Hide card wrapper and header */
                     .print-hide {
                         display: none !important;
                     }
@@ -238,22 +240,25 @@ export default function FTSDocumentation() {
                         padding: 0;
                     }
                     
-                    /* Remove all card styling */
-                    .flex, .flex-1 {
-                        display: block !important;
+                    /* Override title */
+                    head title {
+                        display: none;
                     }
                     
-                    /* Add logo before first page content */
                     body::before {
-                        content: '';
+                        content: 'FTS.Money';
                         display: block;
-                        width: 150px;
-                        height: 50px;
-                        margin: 0 0 20px 0;
-                        background-image: url('https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6931510c4507988f66a42ca8/865871aa1_FTSMoney-primary-logo-RGB.jpg');
-                        background-size: contain;
-                        background-repeat: no-repeat;
-                        background-position: left center;
+                        font-size: 24pt;
+                        font-weight: bold;
+                        margin: 0 0 10px 0;
+                        color: #1e40af;
+                    }
+                    
+                    /* Remove all flex layouts */
+                    .flex, .flex-1, .h-screen {
+                        display: block !important;
+                        height: auto !important;
+                        width: 100% !important;
                     }
                     
                     /* Show all text content */
