@@ -287,6 +287,8 @@ import XeroIntegration from './pages/XeroIntegration';
 import PCIDocumentManager from './pages/PCIDocumentManager';
 import PCIComplianceDashboard from './pages/PCIComplianceDashboard';
 import PCIRequirementsTracker from './pages/PCIRequirementsTracker';
+import PCIEvidenceVault from './pages/PCIEvidenceVault';
+import PCIControlTesting from './pages/PCIControlTesting';
 import __Layout from './Layout.jsx';
 
 
@@ -580,6 +582,8 @@ export const PAGES = {
     "PCIDocumentManager": PCIDocumentManager,
     "PCIComplianceDashboard": PCIComplianceDashboard,
     "PCIRequirementsTracker": PCIRequirementsTracker,
+    "PCIEvidenceVault": PCIEvidenceVault,
+    "PCIControlTesting": PCIControlTesting,
 }
 
 export const pagesConfig = {
