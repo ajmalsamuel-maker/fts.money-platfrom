@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Download, FileText, BookOpen, Code, GitBranch, Wallet, Shield } from 'lucide-react';
+import { Download, FileText, BookOpen, Code, GitBranch, Wallet, Shield, Printer } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
@@ -29,8 +29,6 @@ import { PCIDSSComplianceDoc } from '@/components/docs/PCIDSSComplianceDoc';
 import { DigitalIdentityDoc } from '@/components/docs/DigitalIdentityDoc';
 import { PlatformPortalsGuide } from '@/components/docs/PlatformPortalsGuide';
 import MermaidDiagram from '@/components/docs/MermaidDiagram';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
 import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function FTSDocumentation() {
@@ -198,113 +196,8 @@ export default function FTSDocumentation() {
         document.body.removeChild(element);
     };
 
-    const downloadPDF = async (doc) => {
-        // Create loading indicator
-        const loadingDiv = document.createElement('div');
-        loadingDiv.style.cssText = 'position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 9999;';
-        loadingDiv.innerHTML = `
-            <div style="background: white; border-radius: 8px; padding: 24px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);">
-                <div style="width: 32px; height: 32px; border: 4px solid #2563eb; border-top-color: transparent; border-radius: 50%; margin: 0 auto 16px; animation: spin 1s linear infinite;"></div>
-                <p style="color: #475569; margin: 0;">Generating PDF with tables and diagrams...</p>
-            </div>
-            <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
-        `;
-        document.body.appendChild(loadingDiv);
-
-        try {
-            // Wait for Mermaid diagrams to render
-            await new Promise(resolve => setTimeout(resolve, 2000));
-
-            // Get the rendered content element
-            const contentElement = document.querySelector('.prose');
-            if (!contentElement) {
-                throw new Error('Content element not found');
-            }
-
-            // Scroll to top to ensure everything is visible
-            contentElement.scrollTop = 0;
-            window.scrollTo(0, 0);
-
-            // Capture the rendered content as canvas with better settings
-            const canvas = await html2canvas(contentElement, {
-                scale: 1,
-                useCORS: true,
-                allowTaint: true,
-                logging: true,
-                backgroundColor: '#ffffff',
-                width: 1200,
-                height: contentElement.scrollHeight,
-                windowWidth: 1200,
-                windowHeight: contentElement.scrollHeight,
-                x: 0,
-                y: 0
-            });
-
-            console.log('Canvas created:', canvas.width, 'x', canvas.height);
-
-            // Create PDF
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            const pageWidth = pdf.internal.pageSize.getWidth();
-            const pageHeight = pdf.internal.pageSize.getHeight();
-            
-            // Add title page
-            pdf.setFontSize(24);
-            pdf.setFont(undefined, 'bold');
-            pdf.text(doc.title, pageWidth / 2, 40, { align: 'center' });
-            pdf.setFontSize(12);
-            pdf.setFont(undefined, 'normal');
-            pdf.setTextColor(100);
-            pdf.text('FTS.Money Documentation', pageWidth / 2, 50, { align: 'center' });
-            pdf.text(`Generated: ${new Date().toLocaleDateString()}`, pageWidth / 2, 60, { align: 'center' });
-
-            // Convert canvas to image
-            const imgData = canvas.toDataURL('image/jpeg', 1.0);
-            console.log('Image data length:', imgData.length);
-            
-            if (imgData === 'data:,' || imgData.length < 100) {
-                throw new Error('Canvas is empty - content may not be visible');
-            }
-
-            const imgWidth = pageWidth - 4;
-            const imgHeight = (canvas.height * imgWidth) / canvas.width;
-            
-            // Calculate pages needed
-            const margin = 2;
-            const maxHeight = pageHeight - 4;
-            let heightLeft = imgHeight;
-            let position = margin;
-
-            // Add first page of content
-            pdf.addPage();
-            pdf.addImage(imgData, 'JPEG', margin, position, imgWidth, imgHeight);
-            heightLeft -= maxHeight;
-
-            // Add additional pages
-            while (heightLeft > 0) {
-                position = -(imgHeight - heightLeft) + margin;
-                pdf.addPage();
-                pdf.addImage(imgData, 'JPEG', margin, position, imgWidth, imgHeight);
-                heightLeft -= maxHeight;
-            }
-
-            // Add page numbers
-            const totalPages = pdf.internal.pages.length - 1;
-            pdf.setFontSize(8);
-            pdf.setTextColor(150);
-            for (let i = 2; i <= totalPages; i++) {
-                pdf.setPage(i);
-                pdf.text(`Page ${i - 1} of ${totalPages - 1}`, pageWidth / 2, pageHeight - 5, { align: 'center' });
-            }
-
-            pdf.save(`${doc.title.replace(/\s+/g, '-').toLowerCase()}.pdf`);
-        } catch (error) {
-            console.error('PDF generation error:', error);
-            alert(`Failed to generate PDF: ${error.message}. Please try the Markdown download instead.`);
-        } finally {
-            if (loadingDiv.parentNode) {
-                document.body.removeChild(loadingDiv);
-            }
-        }
+    const printDocument = () => {
+        window.print();
     };
 
     const currentDoc = documents.find(d => d.id === activeTab);
@@ -374,11 +267,11 @@ export default function FTSDocumentation() {
                                                     Download MD
                                                 </Button>
                                                 <Button
-                                                    onClick={() => downloadPDF(doc)}
+                                                    onClick={printDocument}
                                                     className="gap-2 bg-blue-600 hover:bg-blue-700 text-white"
                                                 >
-                                                    <Download className="h-4 w-4" />
-                                                    Download PDF
+                                                    <Printer className="h-4 w-4" />
+                                                    Print
                                                 </Button>
                                             </div>
                                         </div>
