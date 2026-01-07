@@ -217,18 +217,14 @@ export default function FTSDocumentation() {
         <>
             <style>{`
                 @media print {
-                    /* Hide sidebar and UI chrome */
-                    aside {
-                        display: none !important;
-                    }
-                    
-                    /* Hide buttons and tabs */
-                    button, [role="tablist"] {
-                        display: none !important;
-                    }
-                    
-                    /* Hide page header */
-                    .print-hide {
+                    /* Hide ALL UI elements */
+                    aside, nav, header, button,
+                    [role="tablist"], [role="tab"],
+                    .print-hide, .border-b, 
+                    h1.text-3xl, p.text-slate-600,
+                    div.mb-6:has(button), div.flex.gap-2,
+                    body > div > div > aside,
+                    body > div > div > div > div:first-child {
                         display: none !important;
                     }
                     
@@ -239,8 +235,9 @@ export default function FTSDocumentation() {
                         padding: 0;
                     }
                     
-                    .flex {
+                    body > div, body > div > div {
                         display: block !important;
+                        width: 100% !important;
                     }
                     
                     /* Content styling */
