@@ -217,14 +217,27 @@ export default function FTSDocumentation() {
         <>
             <style>{`
                 @media print {
-                    /* Hide everything except content */
-                    aside, header, nav, button, .print-hide,
-                    [role="tablist"], [role="tab"],
-                    .flex.gap-2, .mb-6, .border-b {
+                    /* Aggressively hide ALL UI elements */
+                    aside, header, nav, button, 
+                    .print-hide, [role="tablist"], [role="tab"],
+                    .flex.gap-2, .mb-6, .border-b,
+                    .rounded-lg.border, .bg-white.border,
+                    h1, h1 + p, div.mb-6, div.flex.items-start,
+                    [class*="Card"], [class*="Tabs"] {
+                        display: none !important;
+                        visibility: hidden !important;
+                        height: 0 !important;
+                        margin: 0 !important;
+                        padding: 0 !important;
+                    }
+                    
+                    /* Only show content inside prose */
+                    body > *:not(.prose),
+                    body * > *:not(.prose) {
                         display: none !important;
                     }
                     
-                    /* Reset layout */
+                    /* Reset everything */
                     body, html {
                         width: 210mm !important;
                         height: auto !important;
@@ -233,23 +246,18 @@ export default function FTSDocumentation() {
                         overflow: visible !important;
                     }
                     
-                    /* Remove all flex layouts */
                     * {
                         position: static !important;
+                        box-shadow: none !important;
                     }
                     
-                    .flex, .flex-1, .h-screen {
+                    /* Show ONLY prose content */
+                    .prose, .prose * {
                         display: block !important;
-                        width: 100% !important;
-                        height: auto !important;
-                        overflow: visible !important;
-                        margin: 0 !important;
-                        padding: 0 !important;
+                        visibility: visible !important;
                     }
                     
-                    /* Only show document content */
                     .prose {
-                        display: block !important;
                         max-width: 190mm !important;
                         width: 190mm !important;
                         margin: 10mm auto !important;
@@ -260,77 +268,63 @@ export default function FTSDocumentation() {
                         background: white !important;
                     }
                     
-                    /* Scale down tables */
+                    /* Tables */
                     .prose table {
+                        display: table !important;
                         width: 100% !important;
                         font-size: 8pt !important;
-                        page-break-inside: auto !important;
                         border-collapse: collapse !important;
                     }
                     
-                    .prose th, .prose td {
+                    .prose thead { display: table-header-group !important; }
+                    .prose tbody { display: table-row-group !important; }
+                    .prose tr { display: table-row !important; }
+                    .prose th, .prose td { 
+                        display: table-cell !important;
                         padding: 4px !important;
                         border: 1px solid black !important;
                     }
                     
                     /* Headings */
-                    .prose h1 { 
-                        font-size: 16pt !important; 
-                        margin-top: 12pt !important;
-                        margin-bottom: 8pt !important;
-                        page-break-after: avoid !important; 
+                    .prose h1, .prose h2, .prose h3, 
+                    .prose h4, .prose h5, .prose h6 {
+                        display: block !important;
+                        page-break-after: avoid !important;
                     }
-                    .prose h2 { 
-                        font-size: 13pt !important;
-                        margin-top: 10pt !important;
-                        margin-bottom: 6pt !important;
-                        page-break-after: avoid !important; 
-                    }
-                    .prose h3 { 
-                        font-size: 11pt !important;
-                        margin-top: 8pt !important;
-                        margin-bottom: 4pt !important;
-                        page-break-after: avoid !important; 
-                    }
+                    
+                    .prose h1 { font-size: 16pt !important; margin: 12pt 0 8pt !important; }
+                    .prose h2 { font-size: 13pt !important; margin: 10pt 0 6pt !important; }
+                    .prose h3 { font-size: 11pt !important; margin: 8pt 0 4pt !important; }
                     
                     /* Code blocks */
                     .prose pre {
+                        display: block !important;
                         font-size: 7pt !important;
                         padding: 4pt !important;
-                        page-break-inside: avoid !important;
                         border: 1px solid #ccc !important;
+                        page-break-inside: avoid !important;
                     }
                     
-                    .prose code {
-                        font-size: 8pt !important;
-                    }
-                    
-                    /* Paragraphs */
-                    .prose p {
-                        margin: 6pt 0 !important;
-                    }
+                    .prose code { font-size: 8pt !important; }
+                    .prose p { display: block !important; margin: 6pt 0 !important; }
                     
                     /* Lists */
-                    .prose ul, .prose ol {
-                        margin: 6pt 0 !important;
-                        padding-left: 20pt !important;
+                    .prose ul, .prose ol { 
+                        display: block !important;
+                        margin: 6pt 0 !important; 
+                        padding-left: 20pt !important; 
+                    }
+                    .prose li { 
+                        display: list-item !important;
+                        margin: 3pt 0 !important; 
                     }
                     
-                    .prose li {
-                        margin: 3pt 0 !important;
-                    }
-                    
-                    /* Images and diagrams - scale to fit */
+                    /* Images */
                     .prose img, .prose svg {
+                        display: block !important;
                         max-width: 100% !important;
                         height: auto !important;
                         page-break-inside: avoid !important;
-                    }
-                    
-                    /* Remove all backgrounds */
-                    * {
-                        background: white !important;
-                        box-shadow: none !important;
                     }
                 }
             `}</style>
