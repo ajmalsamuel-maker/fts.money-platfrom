@@ -299,6 +299,8 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
+import CryptoBankingWallets from './pages/CryptoBankingWallets';
+import CryptoBankingCompliance from './pages/CryptoBankingCompliance';
 import __Layout from './Layout.jsx';
 
 
@@ -604,6 +606,8 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
+    "CryptoBankingWallets": CryptoBankingWallets,
+    "CryptoBankingCompliance": CryptoBankingCompliance,
 }
 
 export const pagesConfig = {

@@ -69,8 +69,8 @@ const menuSections = [
             { labelKey: 'vaspManagement', descKey: 'vaspManagementDesc', path: 'CryptoBankingVASPManagement', icon: Wallet, priority: true },
             { labelKey: 'cryptoCustomers', descKey: 'cryptoCustomersDesc', path: 'CryptoGatewayCustomers', icon: Users },
             { labelKey: 'cryptoTransactions', descKey: 'cryptoTransactionsDesc', path: 'CryptoGatewayTransactions', icon: Activity },
-            { labelKey: 'walletsIBANs', descKey: 'walletsIBANsDesc', path: 'CryptoWallets', icon: Wallet },
-            { labelKey: 'complianceKYC', descKey: 'complianceKYCDesc', path: 'CryptoCompliance', icon: Shield },
+            { labelKey: 'walletsIBANs', descKey: 'walletsIBANsDesc', path: 'CryptoBankingWallets', icon: Wallet },
+            { labelKey: 'complianceKYC', descKey: 'complianceKYCDesc', path: 'CryptoBankingCompliance', icon: Shield },
             { labelKey: 'strigaSettings', descKey: 'strigaSettingsDesc', path: 'StrigaServiceManagement', icon: Settings }
         ]
     },
