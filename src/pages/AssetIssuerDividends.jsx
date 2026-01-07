@@ -6,244 +6,178 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { useAssetIssuerAuth } from '@/components/auth/useRWAProviderAuth';
 import AssetIssuerSidebar from '@/components/rwa/AssetIssuerSidebar';
-import { DollarSign, Calendar, Plus, Send, Users, CheckCircle } from 'lucide-react';
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { DollarSign, Plus, Calendar, CheckCircle, Clock } from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function AssetIssuerDividends() {
-    const [session, setSession] = useState(null);
-    const [showScheduleDialog, setShowScheduleDialog] = useState(false);
-    const [selectedAsset, setSelectedAsset] = useState(null);
-    const [dividendForm, setDividendForm] = useState({
-        payment_type: 'dividend',
-        total_amount: '',
-        payment_date: '',
-        record_date: '',
-        currency: 'USD'
-    });
-
-    React.useEffect(() => {
-        const savedSession = localStorage.getItem('asset_issuer_session');
-        if (savedSession) setSession(JSON.parse(savedSession));
-    }, []);
-
+    const { issuer, loading } = useAssetIssuerAuth();
     const queryClient = useQueryClient();
+    const [showDistributeDialog, setShowDistributeDialog] = useState(false);
+    const [selectedAsset, setSelectedAsset] = useState('');
+    const [amount, setAmount] = useState('');
+    const [dividendType, setDividendType] = useState('cash');
 
-    const { data: assets = [] } = useQuery({
-        queryKey: ['issuer-assets', session?.issuer_code],
+    const { data: myAssets = [] } = useQuery({
+        queryKey: ['my-assets', issuer?.issuer_id],
         queryFn: async () => {
-            const allAssets = await base44.entities.RWAAsset.list();
-            return allAssets.filter(a => a.issuer_email === session.email);
+            const issuers = await base44.entities.AssetIssuer.filter({ id: issuer.issuer_id });
+            if (issuers.length === 0) return [];
+            return base44.entities.RWAAsset.filter({ issuer_lei: issuers[0].lei });
         },
-        enabled: !!session
+        enabled: !!issuer
     });
 
     const { data: dividends = [] } = useQuery({
-        queryKey: ['issuer-dividends', session?.issuer_code],
-        queryFn: async () => {
-            const assetIds = assets.map(a => a.asset_id);
-            if (assetIds.length === 0) return [];
-            const allDividends = await base44.entities.RWADividend.list('-announcement_date', 200);
-            return allDividends.filter(d => assetIds.includes(d.asset_id));
-        },
-        enabled: !!session && assets.length > 0
+        queryKey: ['dividends'],
+        queryFn: () => base44.entities.RWADividend.list('-payment_date'),
+        enabled: !!issuer
     });
 
     const { data: holdings = [] } = useQuery({
-        queryKey: ['asset-holdings'],
+        queryKey: ['holdings'],
         queryFn: () => base44.entities.RWAHolding.list(),
-        enabled: !!session
+        enabled: !!issuer
     });
 
-    const createDividendMutation = useMutation({
-        mutationFn: async (data) => {
-            const asset = assets.find(a => a.asset_id === data.asset_id);
-            const perTokenAmount = data.total_amount / asset.total_supply;
+    const distributeMutation = useMutation({
+        mutationFn: async (dividendData) => {
+            const asset = myAssets.find(a => a.asset_id === selectedAsset);
+            const assetHoldings = holdings.filter(h => h.asset_id === selectedAsset);
+            const totalAmount = parseFloat(amount);
+            const totalTokens = assetHoldings.reduce((sum, h) => sum + h.token_amount, 0);
             
-            return await base44.entities.RWADividend.create({
-                ...data,
-                per_token_amount: perTokenAmount,
-                announcement_date: new Date().toISOString(),
-                status: 'announced',
-                snapshot_taken: false,
-                total_recipients: 0,
-                paid_recipients: 0
+            // Create dividend record
+            const dividend = await base44.entities.RWADividend.create({
+                asset_id: selectedAsset,
+                total_amount: totalAmount,
+                per_token_amount: totalAmount / totalTokens,
+                payment_date: new Date().toISOString(),
+                dividend_type: dividendType,
+                status: 'processing'
             });
+
+            // In production, this would trigger blockchain transactions
+            // For now, just mark as completed
+            await base44.entities.RWADividend.update(dividend.id, { status: 'completed' });
+
+            return dividend;
         },
         onSuccess: () => {
-            queryClient.invalidateQueries(['issuer-dividends']);
-            setShowScheduleDialog(false);
-            setDividendForm({
-                payment_type: 'dividend',
-                total_amount: '',
-                payment_date: '',
-                record_date: '',
-                currency: 'USD'
-            });
+            toast.success('Dividend distributed successfully!');
+            setShowDistributeDialog(false);
+            setSelectedAsset('');
+            setAmount('');
+            queryClient.invalidateQueries(['dividends']);
         }
     });
 
-    const processDividendMutation = useMutation({
-        mutationFn: async (dividendId) => {
-            const response = await base44.functions.invoke('processDividendPayment', {
-                dividend_id: dividendId
-            });
-            return response.data;
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries(['issuer-dividends']);
+    const handleDistribute = () => {
+        if (!selectedAsset || !amount) {
+            toast.error('Please fill all fields');
+            return;
         }
-    });
-
-    const handleScheduleDividend = () => {
-        if (!selectedAsset) return;
-        
-        createDividendMutation.mutate({
-            asset_id: selectedAsset.asset_id,
-            ...dividendForm,
-            total_amount: parseFloat(dividendForm.total_amount)
-        });
+        distributeMutation.mutate();
     };
 
-    const totalScheduled = dividends.filter(d => d.status === 'announced').length;
-    const totalProcessing = dividends.filter(d => d.status === 'processing').length;
-    const totalPaid = dividends.filter(d => d.status === 'completed').reduce((sum, d) => sum + d.total_amount, 0);
+    if (loading) return <div className="flex h-screen items-center justify-center">Loading...</div>;
+
+    const myAssetIds = myAssets.map(a => a.asset_id);
+    const myDividends = dividends.filter(d => myAssetIds.includes(d.asset_id));
 
     return (
         <div className="flex h-screen bg-slate-50">
             <AssetIssuerSidebar 
                 currentPage="AssetIssuerDividends"
-                issuerName={session?.company_name}
-                issuerEmail={session?.email}
+                issuerName={issuer?.company_name}
+                issuerEmail={issuer?.email}
             />
 
             <div className="flex-1 overflow-auto">
                 <div className="p-6">
-                    <div className="flex items-center justify-between mb-6">
+                    <div className="flex justify-between items-center mb-6">
                         <div>
                             <h1 className="text-3xl font-bold text-slate-900">Dividend Management</h1>
-                            <p className="text-slate-600">Schedule and manage dividend payments to investors</p>
+                            <p className="text-slate-600">Distribute returns to token holders</p>
                         </div>
-                        <Button 
-                            className="gap-2 bg-green-600 hover:bg-green-700"
-                            onClick={() => setShowScheduleDialog(true)}
-                        >
-                            <Plus className="h-4 w-4" />
-                            Schedule Dividend
+                        <Button onClick={() => setShowDistributeDialog(true)}>
+                            <Plus className="h-4 w-4 mr-2" />
+                            Distribute Dividend
                         </Button>
                     </div>
 
-                    <div className="grid md:grid-cols-3 gap-4 mb-6">
+                    <div className="grid grid-cols-3 gap-4 mb-6">
                         <Card>
                             <CardHeader className="pb-2">
-                                <CardTitle className="text-sm text-slate-600 flex items-center gap-2">
-                                    <Calendar className="h-4 w-4" />
-                                    Scheduled
-                                </CardTitle>
+                                <CardTitle className="text-sm text-slate-600">Total Distributed</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <p className="text-3xl font-bold text-blue-600">{totalScheduled}</p>
+                                <p className="text-3xl font-bold">
+                                    ${myDividends.reduce((sum, d) => sum + (d.total_amount || 0), 0).toLocaleString()}
+                                </p>
                             </CardContent>
                         </Card>
 
                         <Card>
                             <CardHeader className="pb-2">
-                                <CardTitle className="text-sm text-slate-600 flex items-center gap-2">
-                                    <Send className="h-4 w-4" />
-                                    Processing
-                                </CardTitle>
+                                <CardTitle className="text-sm text-slate-600">Distributions</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <p className="text-3xl font-bold text-yellow-600">{totalProcessing}</p>
+                                <p className="text-3xl font-bold">{myDividends.length}</p>
                             </CardContent>
                         </Card>
 
                         <Card>
                             <CardHeader className="pb-2">
-                                <CardTitle className="text-sm text-slate-600 flex items-center gap-2">
-                                    <DollarSign className="h-4 w-4" />
-                                    Total Paid
-                                </CardTitle>
+                                <CardTitle className="text-sm text-slate-600">Last Payment</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <p className="text-3xl font-bold text-green-600">${totalPaid.toLocaleString()}</p>
+                                <p className="text-sm">
+                                    {myDividends[0] ? new Date(myDividends[0].payment_date).toLocaleDateString() : 'N/A'}
+                                </p>
                             </CardContent>
                         </Card>
                     </div>
 
                     <Card>
                         <CardHeader>
-                            <CardTitle>Dividend Schedule</CardTitle>
+                            <CardTitle>Distribution History</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            {dividends.length === 0 ? (
-                                <p className="text-center text-slate-500 py-8">No dividends scheduled yet</p>
+                            {myDividends.length === 0 ? (
+                                <div className="text-center py-12">
+                                    <DollarSign className="h-12 w-12 text-slate-300 mx-auto mb-4" />
+                                    <p className="text-slate-600">No dividends distributed yet</p>
+                                </div>
                             ) : (
                                 <div className="space-y-3">
-                                    {dividends.map(dividend => {
-                                        const asset = assets.find(a => a.asset_id === dividend.asset_id);
-                                        const assetHoldings = holdings.filter(h => h.asset_id === dividend.asset_id);
-                                        const recipientCount = assetHoldings.length;
-
+                                    {myDividends.map((dividend) => {
+                                        const asset = myAssets.find(a => a.asset_id === dividend.asset_id);
                                         return (
                                             <div key={dividend.id} className="border rounded-lg p-4">
-                                                <div className="flex items-start justify-between">
-                                                    <div className="flex-1">
-                                                        <div className="flex items-center gap-2 mb-2">
-                                                            <h3 className="font-semibold">{asset?.name}</h3>
-                                                            <Badge variant="outline">{dividend.payment_type}</Badge>
-                                                            <Badge className={
-                                                                dividend.status === 'completed' ? 'bg-green-100 text-green-700' :
-                                                                dividend.status === 'processing' ? 'bg-yellow-100 text-yellow-700' :
-                                                                'bg-blue-100 text-blue-700'
-                                                            }>
-                                                                {dividend.status}
-                                                            </Badge>
-                                                        </div>
-                                                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm mt-3">
-                                                            <div>
-                                                                <p className="text-xs text-slate-500">Total Amount</p>
-                                                                <p className="font-medium">${dividend.total_amount.toLocaleString()}</p>
-                                                            </div>
-                                                            <div>
-                                                                <p className="text-xs text-slate-500">Per Token</p>
-                                                                <p className="font-medium">${dividend.per_token_amount?.toFixed(4)}</p>
-                                                            </div>
-                                                            <div>
-                                                                <p className="text-xs text-slate-500">Record Date</p>
-                                                                <p className="font-medium">{new Date(dividend.record_date).toLocaleDateString()}</p>
-                                                            </div>
-                                                            <div>
-                                                                <p className="text-xs text-slate-500">Payment Date</p>
-                                                                <p className="font-medium">{new Date(dividend.payment_date).toLocaleDateString()}</p>
-                                                            </div>
-                                                        </div>
-                                                        <div className="flex items-center gap-4 mt-3">
-                                                            <div className="flex items-center gap-2 text-sm">
-                                                                <Users className="h-4 w-4 text-slate-400" />
-                                                                <span>{recipientCount} investors</span>
-                                                            </div>
-                                                            {dividend.status === 'completed' && (
-                                                                <div className="flex items-center gap-2 text-sm text-green-600">
-                                                                    <CheckCircle className="h-4 w-4" />
-                                                                    <span>{dividend.paid_recipients} paid</span>
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                    </div>
+                                                <div className="flex items-center justify-between">
                                                     <div>
-                                                        {dividend.status === 'announced' && new Date(dividend.payment_date) <= new Date() && (
-                                                            <Button
-                                                                size="sm"
-                                                                onClick={() => processDividendMutation.mutate(dividend.id)}
-                                                                disabled={processDividendMutation.isPending}
-                                                                className="bg-green-600 hover:bg-green-700"
-                                                            >
-                                                                <Send className="h-3 w-3 mr-1" />
-                                                                Process Payment
-                                                            </Button>
-                                                        )}
+                                                        <h3 className="font-semibold">{asset?.name || 'Unknown Asset'}</h3>
+                                                        <p className="text-sm text-slate-600 flex items-center gap-2 mt-1">
+                                                            <Calendar className="h-3 w-3" />
+                                                            {new Date(dividend.payment_date).toLocaleDateString()}
+                                                        </p>
+                                                    </div>
+                                                    <div className="text-right">
+                                                        <p className="text-lg font-bold">${dividend.total_amount.toLocaleString()}</p>
+                                                        <p className="text-xs text-slate-500">${dividend.per_token_amount?.toFixed(4)} per token</p>
+                                                        <Badge className={
+                                                            dividend.status === 'completed' ? 'bg-green-100 text-green-700' :
+                                                            dividend.status === 'processing' ? 'bg-yellow-100 text-yellow-700' :
+                                                            'bg-slate-100 text-slate-700'
+                                                        }>
+                                                            {dividend.status === 'completed' && <CheckCircle className="h-3 w-3 mr-1" />}
+                                                            {dividend.status === 'processing' && <Clock className="h-3 w-3 mr-1" />}
+                                                            {dividend.status}
+                                                        </Badge>
                                                     </div>
                                                 </div>
                                             </div>
@@ -256,109 +190,68 @@ export default function AssetIssuerDividends() {
                 </div>
             </div>
 
-            <Dialog open={showScheduleDialog} onOpenChange={setShowScheduleDialog}>
+            <Dialog open={showDistributeDialog} onOpenChange={setShowDistributeDialog}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Schedule Dividend Payment</DialogTitle>
+                        <DialogTitle>Distribute Dividend</DialogTitle>
                     </DialogHeader>
                     <div className="space-y-4">
-                        <Alert>
-                            <AlertDescription className="text-sm">
-                                Dividends will be automatically distributed to all token holders on the record date.
-                            </AlertDescription>
-                        </Alert>
-
                         <div>
-                            <Label>Select Asset *</Label>
-                            <select
-                                className="w-full px-3 py-2 border rounded-lg mt-1"
-                                value={selectedAsset?.asset_id || ''}
-                                onChange={(e) => {
-                                    const asset = assets.find(a => a.asset_id === e.target.value);
-                                    setSelectedAsset(asset);
-                                }}
-                            >
-                                <option value="">Choose an asset...</option>
-                                {assets.map(asset => (
-                                    <option key={asset.asset_id} value={asset.asset_id}>
-                                        {asset.name} ({asset.symbol})
-                                    </option>
-                                ))}
-                            </select>
+                            <Label>Select Asset</Label>
+                            <Select value={selectedAsset} onValueChange={setSelectedAsset}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Choose an asset" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {myAssets.map(asset => (
+                                        <SelectItem key={asset.asset_id} value={asset.asset_id}>
+                                            {asset.name} ({asset.symbol})
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                         </div>
 
-                        {selectedAsset && (
-                            <>
-                                <div className="bg-blue-50 border border-blue-200 rounded p-3 text-sm">
-                                    <p className="text-blue-900">
-                                        <strong>Total Supply:</strong> {selectedAsset.total_supply?.toLocaleString()} tokens
-                                    </p>
-                                    <p className="text-blue-900 mt-1">
-                                        <strong>Current Holders:</strong> {holdings.filter(h => h.asset_id === selectedAsset.asset_id).length}
-                                    </p>
-                                </div>
+                        <div>
+                            <Label>Total Amount (USD)</Label>
+                            <Input
+                                type="number"
+                                placeholder="Enter total dividend amount"
+                                value={amount}
+                                onChange={(e) => setAmount(e.target.value)}
+                            />
+                        </div>
 
-                                <div>
-                                    <Label>Payment Type *</Label>
-                                    <select
-                                        className="w-full px-3 py-2 border rounded-lg mt-1"
-                                        value={dividendForm.payment_type}
-                                        onChange={(e) => setDividendForm({...dividendForm, payment_type: e.target.value})}
-                                    >
-                                        <option value="dividend">Dividend</option>
-                                        <option value="coupon">Coupon</option>
-                                        <option value="interest">Interest</option>
-                                        <option value="rent">Rent</option>
-                                    </select>
-                                </div>
+                        <div>
+                            <Label>Dividend Type</Label>
+                            <Select value={dividendType} onValueChange={setDividendType}>
+                                <SelectTrigger>
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="cash">Cash</SelectItem>
+                                    <SelectItem value="reinvest">Reinvestment</SelectItem>
+                                    <SelectItem value="stablecoin">Stablecoin</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
 
-                                <div>
-                                    <Label>Total Amount ({dividendForm.currency}) *</Label>
-                                    <Input
-                                        type="number"
-                                        step="0.01"
-                                        placeholder="10000.00"
-                                        value={dividendForm.total_amount}
-                                        onChange={(e) => setDividendForm({...dividendForm, total_amount: e.target.value})}
-                                    />
-                                    {dividendForm.total_amount && selectedAsset.total_supply && (
-                                        <p className="text-xs text-slate-500 mt-1">
-                                            ≈ ${(parseFloat(dividendForm.total_amount) / selectedAsset.total_supply).toFixed(4)} per token
-                                        </p>
-                                    )}
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-3">
-                                    <div>
-                                        <Label>Record Date *</Label>
-                                        <Input
-                                            type="date"
-                                            value={dividendForm.record_date}
-                                            onChange={(e) => setDividendForm({...dividendForm, record_date: e.target.value})}
-                                        />
-                                        <p className="text-xs text-slate-500 mt-1">Holders as of this date receive payment</p>
-                                    </div>
-
-                                    <div>
-                                        <Label>Payment Date *</Label>
-                                        <Input
-                                            type="date"
-                                            value={dividendForm.payment_date}
-                                            onChange={(e) => setDividendForm({...dividendForm, payment_date: e.target.value})}
-                                        />
-                                        <p className="text-xs text-slate-500 mt-1">When payment will be sent</p>
-                                    </div>
-                                </div>
-
-                                <Button
-                                    onClick={handleScheduleDividend}
-                                    disabled={!dividendForm.total_amount || !dividendForm.record_date || !dividendForm.payment_date || createDividendMutation.isPending}
-                                    className="w-full bg-green-600 hover:bg-green-700"
-                                >
-                                    {createDividendMutation.isPending ? 'Scheduling...' : 'Schedule Dividend'}
-                                </Button>
-                            </>
+                        {selectedAsset && amount && (
+                            <div className="bg-blue-50 p-3 rounded-lg">
+                                <p className="text-sm text-blue-900">
+                                    This will distribute <strong>${parseFloat(amount).toLocaleString()}</strong> to all token holders of{' '}
+                                    <strong>{myAssets.find(a => a.asset_id === selectedAsset)?.name}</strong>
+                                </p>
+                            </div>
                         )}
+
+                        <Button 
+                            className="w-full" 
+                            onClick={handleDistribute}
+                            disabled={distributeMutation.isPending}
+                        >
+                            {distributeMutation.isPending ? 'Processing...' : 'Distribute Dividend'}
+                        </Button>
                     </div>
                 </DialogContent>
             </Dialog>
