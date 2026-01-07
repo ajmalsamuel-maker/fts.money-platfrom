@@ -607,7 +607,7 @@ export const PAGES = {
 }
 
 export const pagesConfig = {
-    mainPage: "MerchantSelfOnboarding",
+    mainPage: "FTSMoneyPlatform",
     Pages: PAGES,
     Layout: __Layout,
 };
