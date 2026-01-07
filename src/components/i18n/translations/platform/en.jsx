@@ -430,6 +430,8 @@ export default {
     "documentationHubDesc": "All documentation",
     "architectureDocs": "Architecture Docs",
     "architectureDocsDesc": "System architecture",
+    "pciCompliance": "PCI Compliance",
+    "pciComplianceDesc": "PCI DSS documentation management",
     "platformConfig": "Platform Config",
     "platformConfigDesc": "Platform settings",
     "multilingualSystem": "Multilingual System",
