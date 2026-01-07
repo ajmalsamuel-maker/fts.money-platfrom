@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,11 +6,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useAssetIssuerAuth } from '@/components/auth/useRWAProviderAuth';
 import AssetIssuerSidebar from '@/components/rwa/AssetIssuerSidebar';
+import ValuationUpdateDialog from '@/components/rwa/ValuationUpdateDialog';
 import { createPageUrl } from '@/utils';
-import { Coins, Plus, ExternalLink } from 'lucide-react';
+import { Coins, Plus, ExternalLink, TrendingUp } from 'lucide-react';
 
 export default function AssetIssuerAssets() {
     const { issuer } = useAssetIssuerAuth();
+    const [valuationAsset, setValuationAsset] = useState(null);
 
     const { data: myAssets = [] } = useQuery({
         queryKey: ['my-assets', issuer?.issuer_id],
@@ -98,6 +100,15 @@ export default function AssetIssuerAssets() {
                                                 <ExternalLink className="h-3 w-3" />
                                             </a>
                                         )}
+                                        <Button 
+                                            variant="outline" 
+                                            size="sm" 
+                                            className="w-full mt-2"
+                                            onClick={() => setValuationAsset(asset)}
+                                        >
+                                            <TrendingUp className="h-3 w-3 mr-1" />
+                                            Update Valuation
+                                        </Button>
                                     </CardContent>
                                 </Card>
                             ))}
@@ -105,6 +116,12 @@ export default function AssetIssuerAssets() {
                     )}
                 </div>
             </div>
+
+            <ValuationUpdateDialog 
+                asset={valuationAsset}
+                open={!!valuationAsset}
+                onClose={() => setValuationAsset(null)}
+            />
         </div>
     );
 }
