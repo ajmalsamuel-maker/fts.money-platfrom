@@ -117,18 +117,23 @@ export default function ExportDialog({ open, onOpenChange, documentTitle, docume
             const id = 'mermaid-' + Math.random().toString(36).substr(2, 9);
             const { svg } = await mermaid.render(id, mermaidCode);
             
-            // Convert SVG to image data URL
+            // Convert SVG to high-resolution image
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
             const img = new Image();
             
             return new Promise((resolve) => {
                 img.onload = () => {
-                    canvas.width = img.width;
-                    canvas.height = img.height;
+                    // Scale up for better quality (3x resolution)
+                    const scale = 3;
+                    canvas.width = img.width * scale;
+                    canvas.height = img.height * scale;
+                    
                     ctx.fillStyle = 'white';
                     ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.scale(scale, scale);
                     ctx.drawImage(img, 0, 0);
+                    
                     resolve({
                         dataUrl: canvas.toDataURL('image/png'),
                         width: img.width,
@@ -141,6 +146,13 @@ export default function ExportDialog({ open, onOpenChange, documentTitle, docume
             console.error('Mermaid render error:', error);
             return null;
         }
+    };
+
+    const parseTextFormatting = (text) => {
+        // Parse **bold** and *italic* formatting
+        return text
+            .replace(/\*\*(.+?)\*\*/g, '$1') // Remove bold markers but keep text
+            .replace(/\*(.+?)\*/g, '$1');     // Remove italic markers but keep text
     };
 
     const exportToPDF = async () => {
@@ -188,7 +200,8 @@ export default function ExportDialog({ open, onOpenChange, documentTitle, docume
                             element.level === 3 ? fontSizes[fontSize].h3 : fontSizes[fontSize].body;
                 doc.setFontSize(size);
                 doc.setFont(undefined, 'bold');
-                const lines = doc.splitTextToSize(element.text, contentWidth);
+                const cleanText = parseTextFormatting(element.text);
+                const lines = doc.splitTextToSize(cleanText, contentWidth);
                 lines.forEach(line => {
                     doc.text(line, margin.left, yPos);
                     yPos += element.level === 1 ? 8 : element.level === 2 ? 6 : 5;
@@ -197,12 +210,51 @@ export default function ExportDialog({ open, onOpenChange, documentTitle, docume
             }
             else if (element.type === 'paragraph') {
                 doc.setFontSize(fontSizes[fontSize].body);
-                doc.setFont(undefined, 'normal');
-                const lines = doc.splitTextToSize(element.text, contentWidth);
-                lines.forEach(line => {
-                    doc.text(line, margin.left, yPos);
+                
+                // Handle bold/italic formatting
+                const text = element.text;
+                const boldPattern = /\*\*(.+?)\*\*/g;
+                const italicPattern = /\*(.+?)\*/g;
+                
+                if (boldPattern.test(text) || italicPattern.test(text)) {
+                    // Split text by formatting
+                    const parts = text.split(/(\*\*[^*]+\*\*|\*[^*]+\*)/);
+                    let xPos = margin.left;
+                    
+                    parts.forEach(part => {
+                        if (part.startsWith('**') && part.endsWith('**')) {
+                            doc.setFont(undefined, 'bold');
+                            doc.text(part.slice(2, -2), xPos, yPos);
+                            xPos += doc.getTextWidth(part.slice(2, -2));
+                        } else if (part.startsWith('*') && part.endsWith('*')) {
+                            doc.setFont(undefined, 'italic');
+                            doc.text(part.slice(1, -1), xPos, yPos);
+                            xPos += doc.getTextWidth(part.slice(1, -1));
+                        } else if (part.trim()) {
+                            doc.setFont(undefined, 'normal');
+                            const lines = doc.splitTextToSize(part, contentWidth - (xPos - margin.left));
+                            doc.text(lines[0] || part, xPos, yPos);
+                            if (lines.length > 1) {
+                                yPos += 5;
+                                xPos = margin.left;
+                                for (let i = 1; i < lines.length; i++) {
+                                    doc.text(lines[i], xPos, yPos);
+                                    yPos += 5;
+                                }
+                                return;
+                            }
+                            xPos += doc.getTextWidth(lines[0] || part);
+                        }
+                    });
                     yPos += 5;
-                });
+                } else {
+                    doc.setFont(undefined, 'normal');
+                    const lines = doc.splitTextToSize(text, contentWidth);
+                    lines.forEach(line => {
+                        doc.text(line, margin.left, yPos);
+                        yPos += 5;
+                    });
+                }
                 yPos += 2;
             }
             else if (element.type === 'list') {
@@ -232,18 +284,45 @@ export default function ExportDialog({ open, onOpenChange, documentTitle, docume
             else if (element.type === 'mermaid') {
                 const imgData = await renderMermaidToImage(element.content);
                 if (imgData) {
+                    // Better scaling for mermaid diagrams
                     const maxWidth = contentWidth;
-                    const scale = Math.min(maxWidth / (imgData.width * 0.264583), 1);
-                    const imgWidth = imgData.width * 0.264583 * scale;
-                    const imgHeight = imgData.height * 0.264583 * scale;
+                    const maxHeight = (pageHeight - margin.top - margin.bottom) * 0.6;
+                    
+                    // Calculate dimensions (convert pixels to mm, 1px = 0.264583mm)
+                    let imgWidth = imgData.width * 0.264583;
+                    let imgHeight = imgData.height * 0.264583;
+                    
+                    // Scale to fit width if needed
+                    if (imgWidth > maxWidth) {
+                        const scale = maxWidth / imgWidth;
+                        imgWidth = maxWidth;
+                        imgHeight = imgHeight * scale;
+                    }
+                    
+                    // Scale to fit height if needed
+                    if (imgHeight > maxHeight) {
+                        const scale = maxHeight / imgHeight;
+                        imgHeight = maxHeight;
+                        imgWidth = imgWidth * scale;
+                    }
+                    
+                    // Ensure minimum readable size
+                    const minWidth = 100;
+                    if (imgWidth < minWidth) {
+                        const scale = minWidth / imgWidth;
+                        imgWidth = minWidth;
+                        imgHeight = imgHeight * scale;
+                    }
                     
                     if (yPos + imgHeight > pageHeight - margin.bottom) {
                         doc.addPage();
                         yPos = margin.top;
                     }
                     
-                    doc.addImage(imgData.dataUrl, 'PNG', margin.left, yPos, imgWidth, imgHeight);
-                    yPos += imgHeight + 5;
+                    // Center the diagram
+                    const xPos = margin.left + (contentWidth - imgWidth) / 2;
+                    doc.addImage(imgData.dataUrl, 'PNG', xPos, yPos, imgWidth, imgHeight);
+                    yPos += imgHeight + 10;
                 }
             }
             else if (element.type === 'code') {
@@ -298,18 +377,48 @@ export default function ExportDialog({ open, onOpenChange, documentTitle, docume
                                    element.level === 3 ? HeadingLevel.HEADING_3 :
                                    HeadingLevel.HEADING_4;
                 
+                const cleanText = parseTextFormatting(element.text);
                 docElements.push(
                     new Paragraph({
-                        text: element.text,
+                        text: cleanText,
                         heading: headingLevel,
                         spacing: { before: 240, after: 120 }
                     })
                 );
             }
             else if (element.type === 'paragraph') {
+                // Parse bold and italic formatting
+                const text = element.text;
+                const parts = [];
+                const regex = /(\*\*[^*]+\*\*|\*[^*]+\*)/g;
+                let lastIndex = 0;
+                let match;
+                
+                while ((match = regex.exec(text)) !== null) {
+                    // Add text before match
+                    if (match.index > lastIndex) {
+                        parts.push(new TextRun(text.substring(lastIndex, match.index)));
+                    }
+                    
+                    // Add formatted text
+                    const matchedText = match[0];
+                    if (matchedText.startsWith('**') && matchedText.endsWith('**')) {
+                        parts.push(new TextRun({ text: matchedText.slice(2, -2), bold: true }));
+                    } else if (matchedText.startsWith('*') && matchedText.endsWith('*')) {
+                        parts.push(new TextRun({ text: matchedText.slice(1, -1), italics: true }));
+                    }
+                    
+                    lastIndex = regex.lastIndex;
+                }
+                
+                // Add remaining text
+                if (lastIndex < text.length) {
+                    parts.push(new TextRun(text.substring(lastIndex)));
+                }
+                
                 docElements.push(
                     new Paragraph({
-                        children: [new TextRun(element.text)],
+                        children: parts.length > 0 ? parts : [new TextRun(text)],
                         spacing: { after: 120 }
                     })
                 );
@@ -354,18 +463,46 @@ export default function ExportDialog({ open, onOpenChange, documentTitle, docume
                     const base64Data = imgData.dataUrl.split(',')[1];
                     const buffer = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
                     
+                    // Better scaling for Word - maintain aspect ratio and ensure readable size
+                    const maxWidth = 550;
+                    const maxHeight = 700;
+                    let width = imgData.width;
+                    let height = imgData.height;
+                    
+                    // Scale to fit
+                    if (width > maxWidth) {
+                        const scale = maxWidth / width;
+                        width = maxWidth;
+                        height = height * scale;
+                    }
+                    
+                    if (height > maxHeight) {
+                        const scale = maxHeight / height;
+                        height = maxHeight;
+                        width = width * scale;
+                    }
+                    
+                    // Ensure minimum size
+                    const minWidth = 300;
+                    if (width < minWidth) {
+                        const scale = minWidth / width;
+                        width = minWidth;
+                        height = height * scale;
+                    }
+                    
                     docElements.push(
                         new Paragraph({
                             children: [
                                 new ImageRun({
                                     data: buffer,
                                     transformation: {
-                                        width: Math.min(imgData.width * 0.75, 600),
-                                        height: Math.min(imgData.height * 0.75, 600)
+                                        width: Math.round(width),
+                                        height: Math.round(height)
                                     }
                                 })
                             ],
-                            spacing: { before: 120, after: 120 }
+                            alignment: AlignmentType.CENTER,
+                            spacing: { before: 200, after: 200 }
                         })
                     );
                 }
