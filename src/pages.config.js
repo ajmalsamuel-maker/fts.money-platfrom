@@ -210,6 +210,7 @@ import PCIEvidenceVault from './pages/PCIEvidenceVault';
 import PCIGapAnalysis from './pages/PCIGapAnalysis';
 import PCIPolicyLibrary from './pages/PCIPolicyLibrary';
 import PCIPredictiveAnalytics from './pages/PCIPredictiveAnalytics';
+import PCIReportingDashboard from './pages/PCIReportingDashboard';
 import PCIRequirementsTracker from './pages/PCIRequirementsTracker';
 import PCIWorkflowManager from './pages/PCIWorkflowManager';
 import PSPAPIDocumentation from './pages/PSPAPIDocumentation';
@@ -298,7 +299,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import PCIReportingDashboard from './pages/PCIReportingDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -515,6 +515,7 @@ export const PAGES = {
     "PCIGapAnalysis": PCIGapAnalysis,
     "PCIPolicyLibrary": PCIPolicyLibrary,
     "PCIPredictiveAnalytics": PCIPredictiveAnalytics,
+    "PCIReportingDashboard": PCIReportingDashboard,
     "PCIRequirementsTracker": PCIRequirementsTracker,
     "PCIWorkflowManager": PCIWorkflowManager,
     "PSPAPIDocumentation": PSPAPIDocumentation,
@@ -603,7 +604,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "PCIReportingDashboard": PCIReportingDashboard,
 }
 
 export const pagesConfig = {
