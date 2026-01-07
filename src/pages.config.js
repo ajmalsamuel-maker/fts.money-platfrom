@@ -203,12 +203,15 @@ import OrchestrationUserManagement from './pages/OrchestrationUserManagement';
 import PCIAuditReports from './pages/PCIAuditReports';
 import PCICompliance from './pages/PCICompliance';
 import PCIComplianceDashboard from './pages/PCIComplianceDashboard';
+import PCIContinuousMonitoring from './pages/PCIContinuousMonitoring';
 import PCIControlTesting from './pages/PCIControlTesting';
 import PCIDocumentManager from './pages/PCIDocumentManager';
 import PCIEvidenceVault from './pages/PCIEvidenceVault';
 import PCIGapAnalysis from './pages/PCIGapAnalysis';
 import PCIPolicyLibrary from './pages/PCIPolicyLibrary';
+import PCIPredictiveAnalytics from './pages/PCIPredictiveAnalytics';
 import PCIRequirementsTracker from './pages/PCIRequirementsTracker';
+import PCIWorkflowManager from './pages/PCIWorkflowManager';
 import PSPAPIDocumentation from './pages/PSPAPIDocumentation';
 import PSPDetails from './pages/PSPDetails';
 import PSPDigitalIdentityWallet from './pages/PSPDigitalIdentityWallet';
@@ -246,6 +249,9 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import ProductTemplateLibrary from './pages/ProductTemplateLibrary';
 import Products from './pages/Products';
 import PublicSupport from './pages/PublicSupport';
+import QSAPortalDashboard from './pages/QSAPortalDashboard';
+import QSAPortalLogin from './pages/QSAPortalLogin';
+import QSAUserManagement from './pages/QSAUserManagement';
 import QuickPSPProvisioning from './pages/QuickPSPProvisioning';
 import RWAPlatform from './pages/RWAPlatform';
 import RWAProviderAnalytics from './pages/RWAProviderAnalytics';
@@ -292,12 +298,7 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import QSAPortalLogin from './pages/QSAPortalLogin';
-import QSAPortalDashboard from './pages/QSAPortalDashboard';
-import QSAUserManagement from './pages/QSAUserManagement';
-import PCIContinuousMonitoring from './pages/PCIContinuousMonitoring';
-import PCIPredictiveAnalytics from './pages/PCIPredictiveAnalytics';
-import PCIWorkflowManager from './pages/PCIWorkflowManager';
+import PCIReportingDashboard from './pages/PCIReportingDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -507,12 +508,15 @@ export const PAGES = {
     "PCIAuditReports": PCIAuditReports,
     "PCICompliance": PCICompliance,
     "PCIComplianceDashboard": PCIComplianceDashboard,
+    "PCIContinuousMonitoring": PCIContinuousMonitoring,
     "PCIControlTesting": PCIControlTesting,
     "PCIDocumentManager": PCIDocumentManager,
     "PCIEvidenceVault": PCIEvidenceVault,
     "PCIGapAnalysis": PCIGapAnalysis,
     "PCIPolicyLibrary": PCIPolicyLibrary,
+    "PCIPredictiveAnalytics": PCIPredictiveAnalytics,
     "PCIRequirementsTracker": PCIRequirementsTracker,
+    "PCIWorkflowManager": PCIWorkflowManager,
     "PSPAPIDocumentation": PSPAPIDocumentation,
     "PSPDetails": PSPDetails,
     "PSPDigitalIdentityWallet": PSPDigitalIdentityWallet,
@@ -550,6 +554,9 @@ export const PAGES = {
     "ProductTemplateLibrary": ProductTemplateLibrary,
     "Products": Products,
     "PublicSupport": PublicSupport,
+    "QSAPortalDashboard": QSAPortalDashboard,
+    "QSAPortalLogin": QSAPortalLogin,
+    "QSAUserManagement": QSAUserManagement,
     "QuickPSPProvisioning": QuickPSPProvisioning,
     "RWAPlatform": RWAPlatform,
     "RWAProviderAnalytics": RWAProviderAnalytics,
@@ -596,12 +603,7 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "QSAPortalLogin": QSAPortalLogin,
-    "QSAPortalDashboard": QSAPortalDashboard,
-    "QSAUserManagement": QSAUserManagement,
-    "PCIContinuousMonitoring": PCIContinuousMonitoring,
-    "PCIPredictiveAnalytics": PCIPredictiveAnalytics,
-    "PCIWorkflowManager": PCIWorkflowManager,
+    "PCIReportingDashboard": PCIReportingDashboard,
 }
 
 export const pagesConfig = {
