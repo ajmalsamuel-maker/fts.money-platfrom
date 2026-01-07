@@ -55,6 +55,7 @@ const menuSections = [
         items: [
             { label: 'Product Catalog', icon: Building, path: 'MerchantProducts' },
             { label: 'Invoicing', icon: FileText, path: 'MerchantInvoicing' },
+            { label: 'Invoice Portal', icon: FileText, path: 'MerchantInvoicePortal' },
         ]
     },
     {

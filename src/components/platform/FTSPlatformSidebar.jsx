@@ -127,6 +127,8 @@ const menuSections = [
         defaultOpen: true,
         items: [
             { labelKey: 'serviceBilling', descKey: 'serviceBillingDesc', path: 'FTSServiceBilling', icon: FileText, priority: true },
+            { label: 'Platform Billing', description: 'Invoice PSPs & Merchants', path: 'PlatformBillingPortal', icon: DollarSign, priority: true },
+            { label: 'PSP Invoice Aggregator', description: 'View all merchant invoices', path: 'PSPInvoiceAggregator', icon: FileText, priority: true },
             { labelKey: 'taxManagement', descKey: 'taxManagementDesc', path: 'TaxManagement', icon: FileText, priority: true },
             { labelKey: 'eInvoicing', descKey: 'eInvoicingDesc', path: 'EInvoicingDashboard', icon: FileText, priority: true },
             { labelKey: 'masterPricing', descKey: 'masterPricingDesc', path: 'MasterPricingManagement', icon: DollarSign },
