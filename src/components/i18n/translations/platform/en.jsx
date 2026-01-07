@@ -2,7 +2,7 @@
 export default {
   "dashboard": {
     "title": "Control Panel Dashboard",
-    "subtitle": "Unified management for all PSP instances and global configurations",
+    "subtitle": "Unified management for Enterprise Payment Infrastructure and global configurations",
     "welcomeBack": "Welcome back",
     "loggedInAs": "Logged in as",
     "search": "Search",
@@ -74,7 +74,7 @@ export default {
   "pages": {
     "dashboard": {
       "title": "Control Panel Dashboard",
-      "subtitle": "Unified management for all PSP instances and global configurations",
+      "subtitle": "Unified management for Enterprise Payment Infrastructure and global configurations",
       "acrossAllPSPs": "Across all PSPs",
       "simulationMode": "Simulation Mode",
       "inProviderPool": "In provider pool",
@@ -111,7 +111,7 @@ export default {
     },
     "revenue": {
       "title": "Revenue Management",
-      "subtitle": "Track revenue share and billing across all PSPs",
+      "subtitle": "Track revenue share and billing across Enterprise Payment Infrastructure",
       "totalMonthlyRevenue": "Total Monthly Revenue",
       "allServices": "All services",
       "annualRunRate": "Annual Run Rate",
