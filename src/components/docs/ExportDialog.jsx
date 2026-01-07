@@ -290,8 +290,8 @@ export default function ExportDialog({ open, onOpenChange, documentTitle, docume
                     let imgWidth = imgData.width * 0.264583;
                     let imgHeight = imgData.height * 0.264583;
                     
-                    // Scale to fit width with 85% of content width
-                    const targetWidth = contentWidth * 0.85;
+                    // Scale to fit width with 102% of content width (85% * 1.2)
+                    const targetWidth = contentWidth * 1.02;
                     if (imgWidth > targetWidth) {
                         const scale = targetWidth / imgWidth;
                         imgWidth = targetWidth;
@@ -482,12 +482,12 @@ export default function ExportDialog({ open, onOpenChange, documentTitle, docume
                     const base64Data = imgData.dataUrl.split(',')[1];
                     const buffer = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
                     
-                    // Target 80% of page width (approx 480px for standard Word page)
-                    let width = imgData.width * 0.8;
-                    let height = imgData.height * 0.8;
+                    // Target 96% of page width (80% * 1.2)
+                    let width = imgData.width * 0.96;
+                    let height = imgData.height * 0.96;
                     
-                    const maxWidth = 480;
-                    const maxHeight = 550;
+                    const maxWidth = 576;
+                    const maxHeight = 660;
                     
                     // Scale to fit width
                     if (width > maxWidth) {
