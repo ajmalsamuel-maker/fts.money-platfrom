@@ -13,7 +13,6 @@ import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 import ComplianceFooter from '@/components/compliance/ComplianceFooter';
 
 export default function AssetIssuerLogin() {
-    const navigate = useNavigate();
     const [credentials, setCredentials] = useState({ 
         provider_code: '', 
         issuer_code: '', 
@@ -22,15 +21,13 @@ export default function AssetIssuerLogin() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
-    // Clear any conflicting sessions on mount
+    // Clear conflicting sessions on mount
     React.useEffect(() => {
-        // Keep only asset issuer session, clear others
-        const assetSession = localStorage.getItem('asset_issuer_session');
-        if (!assetSession) {
-            // Clear potentially conflicting sessions
-            localStorage.removeItem('platform_admin_session');
-            localStorage.removeItem('rwa_provider_session');
-        }
+        localStorage.removeItem('platform_admin_session');
+        localStorage.removeItem('rwa_provider_session');
+        localStorage.removeItem('staff_session');
+        localStorage.removeItem('merchantSession');
+        localStorage.removeItem('crypto_gateway_session');
     }, []);
 
     const handleLogin = async (e) => {
@@ -41,8 +38,11 @@ export default function AssetIssuerLogin() {
         try {
             const { data } = await base44.functions.invoke('assetIssuerAuth', credentials);
             
+            // Clear all sessions before setting the new one
+            localStorage.clear();
             localStorage.setItem('asset_issuer_session', JSON.stringify(data));
-            navigate(createPageUrl('AssetIssuerDashboard'));
+            
+            window.location.href = createPageUrl('AssetIssuerDashboard');
         } catch (err) {
             setError('Invalid credentials');
         } finally {
