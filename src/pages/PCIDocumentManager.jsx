@@ -64,19 +64,26 @@ export default function PCIDocumentManager() {
         try {
             const fileUrls = uploadedFiles.map(f => f.url);
             
+            console.log('Processing documents:', { fileUrls, batchName });
+            
             const result = await base44.functions.invoke('processPCIDocuments', {
                 file_urls: fileUrls,
                 batch_name: batchName || `PCI Upload ${new Date().toLocaleDateString()}`
             });
 
-            if (result.data.success) {
-                toast.success(result.data.message);
+            console.log('Processing result:', result);
+
+            if (result.data?.success) {
+                toast.success(result.data.message || 'Documents processed successfully');
                 setUploadedFiles([]);
                 setBatchName('');
                 queryClient.invalidateQueries({ queryKey: ['pci-documents'] });
+            } else {
+                toast.error(result.data?.error || 'Processing failed - no success response');
             }
         } catch (error) {
-            toast.error('Processing failed: ' + error.message);
+            console.error('Processing error:', error);
+            toast.error('Processing failed: ' + (error.response?.data?.error || error.message));
         } finally {
             setProcessing(false);
         }
