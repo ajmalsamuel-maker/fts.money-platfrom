@@ -7,7 +7,6 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { FTS_LOGOS } from '@/components/community/FTSBrandColors';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 import ComplianceFooter from '@/components/compliance/ComplianceFooter';
-import FintechNewsTicker from '@/components/dashboard/FintechNewsTicker';
 import { Shield, Mail, Lock } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 
@@ -43,13 +42,11 @@ export default function InvestorLogin() {
 
     return (
         <div className="min-h-screen bg-white flex flex-col">
-            <FintechNewsTicker />
-            
-            <div className="py-4 flex justify-center">
+            <div className="py-4 px-6 flex justify-end">
                 <LanguageSwitcher variant="compact" />
             </div>
 
-            <div className="flex-1 flex items-center justify-center p-6 relative">
+            <div className="flex-1 flex items-center justify-center p-6 relative overflow-hidden">
                 <Card className="w-full max-w-md shadow-xl">
                     <CardHeader className="space-y-4 text-center pb-8">
                         <img src={FTS_LOGOS.primary} alt="RWA Platform" className="h-12 mx-auto" />
@@ -106,17 +103,17 @@ export default function InvestorLogin() {
                         </form>
                     </CardContent>
                 </Card>
+            </div>
 
-                {/* Wave SVG under the card */}
-                <div className="absolute bottom-0 left-0 right-0 -z-10">
-                    <svg viewBox="0 0 1440 320" className="w-full h-auto">
-                        <path 
-                            fill="#e0e7ff" 
-                            fillOpacity="0.5" 
-                            d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,138.7C960,139,1056,117,1152,106.7C1248,96,1344,96,1392,96L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
-                        ></path>
-                    </svg>
-                </div>
+            {/* Wave SVG under the login area */}
+            <div className="relative -mt-32 pointer-events-none">
+                <svg viewBox="0 0 1440 320" className="w-full h-auto">
+                    <path 
+                        fill="#dbeafe" 
+                        fillOpacity="1" 
+                        d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,138.7C960,139,1056,117,1152,106.7C1248,96,1344,96,1392,96L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
+                    ></path>
+                </svg>
             </div>
 
             <ComplianceFooter />
