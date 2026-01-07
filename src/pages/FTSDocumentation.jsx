@@ -217,74 +217,120 @@ export default function FTSDocumentation() {
         <>
             <style>{`
                 @media print {
-                    /* Hide sidebar, header, and buttons */
-                    aside, .print-hide, header, nav, button {
+                    /* Hide everything except content */
+                    aside, header, nav, button, .print-hide,
+                    [role="tablist"], [role="tab"],
+                    .flex.gap-2, .mb-6, .border-b {
                         display: none !important;
                     }
                     
-                    /* Remove flex layout */
+                    /* Reset layout */
                     body, html {
-                        width: 100% !important;
+                        width: 210mm !important;
                         height: auto !important;
-                        overflow: visible !important;
-                    }
-                    
-                    /* Main container adjustments */
-                    .flex, .flex.h-screen {
-                        display: block !important;
-                        height: auto !important;
-                    }
-                    
-                    /* Content area full width */
-                    .flex-1 {
-                        width: 100% !important;
-                        max-width: 100% !important;
-                        overflow: visible !important;
-                        padding: 0 !important;
                         margin: 0 !important;
+                        padding: 0 !important;
+                        overflow: visible !important;
                     }
                     
-                    /* Document content scaling */
-                    .prose {
-                        max-width: 100% !important;
+                    /* Remove all flex layouts */
+                    * {
+                        position: static !important;
+                    }
+                    
+                    .flex, .flex-1, .h-screen {
+                        display: block !important;
                         width: 100% !important;
-                        padding: 20px !important;
-                        font-size: 11pt !important;
-                        line-height: 1.4 !important;
+                        height: auto !important;
+                        overflow: visible !important;
+                        margin: 0 !important;
+                        padding: 0 !important;
                     }
                     
-                    /* Tables */
+                    /* Only show document content */
+                    .prose {
+                        display: block !important;
+                        max-width: 190mm !important;
+                        width: 190mm !important;
+                        margin: 10mm auto !important;
+                        padding: 0 !important;
+                        font-size: 10pt !important;
+                        line-height: 1.5 !important;
+                        color: black !important;
+                        background: white !important;
+                    }
+                    
+                    /* Scale down tables */
                     .prose table {
-                        font-size: 9pt !important;
-                        page-break-inside: avoid !important;
+                        width: 100% !important;
+                        font-size: 8pt !important;
+                        page-break-inside: auto !important;
+                        border-collapse: collapse !important;
+                    }
+                    
+                    .prose th, .prose td {
+                        padding: 4px !important;
+                        border: 1px solid black !important;
                     }
                     
                     /* Headings */
-                    .prose h1 { font-size: 18pt !important; page-break-after: avoid !important; }
-                    .prose h2 { font-size: 14pt !important; page-break-after: avoid !important; }
-                    .prose h3 { font-size: 12pt !important; page-break-after: avoid !important; }
+                    .prose h1 { 
+                        font-size: 16pt !important; 
+                        margin-top: 12pt !important;
+                        margin-bottom: 8pt !important;
+                        page-break-after: avoid !important; 
+                    }
+                    .prose h2 { 
+                        font-size: 13pt !important;
+                        margin-top: 10pt !important;
+                        margin-bottom: 6pt !important;
+                        page-break-after: avoid !important; 
+                    }
+                    .prose h3 { 
+                        font-size: 11pt !important;
+                        margin-top: 8pt !important;
+                        margin-bottom: 4pt !important;
+                        page-break-after: avoid !important; 
+                    }
                     
                     /* Code blocks */
                     .prose pre {
-                        font-size: 8pt !important;
+                        font-size: 7pt !important;
+                        padding: 4pt !important;
                         page-break-inside: avoid !important;
+                        border: 1px solid #ccc !important;
                     }
                     
-                    /* Images and diagrams */
+                    .prose code {
+                        font-size: 8pt !important;
+                    }
+                    
+                    /* Paragraphs */
+                    .prose p {
+                        margin: 6pt 0 !important;
+                    }
+                    
+                    /* Lists */
+                    .prose ul, .prose ol {
+                        margin: 6pt 0 !important;
+                        padding-left: 20pt !important;
+                    }
+                    
+                    .prose li {
+                        margin: 3pt 0 !important;
+                    }
+                    
+                    /* Images and diagrams - scale to fit */
                     .prose img, .prose svg {
                         max-width: 100% !important;
+                        height: auto !important;
                         page-break-inside: avoid !important;
                     }
                     
-                    /* Remove background colors for print */
+                    /* Remove all backgrounds */
                     * {
                         background: white !important;
-                        color: black !important;
-                    }
-                    
-                    /* Keep table borders visible */
-                    table, th, td {
-                        border-color: black !important;
+                        box-shadow: none !important;
                     }
                 }
             `}</style>
