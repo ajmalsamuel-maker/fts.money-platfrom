@@ -6,7 +6,7 @@ import { Download, FileText, BookOpen, Code, GitBranch, Wallet, Shield } from 'l
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
-import FTSPlatformSidebarRestructured from '@/components/platform/FTSPlatformSidebarRestructured';
+import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
 import FTSOverviewDoc from '@/components/docs/FTSOverviewDoc';
 import FTSControlPanelDoc from '@/components/docs/FTSControlPanelDoc';
 import PSPPortalDoc from '@/components/docs/PSPPortalDoc';
@@ -298,9 +298,11 @@ export default function FTSDocumentation() {
 
     return (
         <div className="flex h-screen bg-slate-50">
-            <FTSPlatformSidebarRestructured 
+            <FTSPlatformSidebar 
                 currentPage="FTSDocumentation"
                 userEmail={platformUser?.email}
+                userRole={platformUser?.platform_role}
+                isSuperAdmin={platformUser?.platform_role === 'super_admin'}
             />
 
             <div className="flex-1 overflow-auto">
