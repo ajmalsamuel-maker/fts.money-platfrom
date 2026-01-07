@@ -5,8 +5,8 @@ Deno.serve(async (req) => {
     const { provider_code, issuer_code, password } = await req.json();
 
     const issuers = await base44.asServiceRole.entities.AssetIssuer.filter({ 
-        provider_code, 
-        issuer_code 
+        provider_code: provider_code.toLowerCase(), 
+        issuer_code: issuer_code.toLowerCase() 
     });
     
     if (issuers.length === 0) {
