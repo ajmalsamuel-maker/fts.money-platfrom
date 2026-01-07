@@ -220,8 +220,10 @@ export default function FTSDocumentation() {
                     /* Forcefully hide sidebar and all UI chrome */
                     aside, nav, header, button, footer,
                     [role="tablist"], [role="tab"],
-                    [class*="ticker"], [class*="news"],
-                    div[class*="bg-slate-900"] {
+                    [class*="ticker"], [class*="news"], [class*="News"],
+                    div[class*="bg-slate-900"], div[class*="bg-blue"],
+                    div:has(> p:contains("Loading fintech news")),
+                    body > div:first-child > div:first-child {
                         display: none !important;
                         visibility: hidden !important;
                         position: absolute !important;
@@ -245,10 +247,10 @@ export default function FTSDocumentation() {
                     body::before {
                         content: '';
                         display: block;
-                        width: 200px;
-                        height: 60px;
-                        margin: 0 auto 20px;
-                        background-image: url('https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6931510c4507988f66a42ca8/865871aa1_FTSMoney-primary-logo-RGB.jpg');
+                        width: 300px;
+                        height: 80px;
+                        margin: 0 auto 30px;
+                        background-image: url('https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6931510c4507988f66a42ca8/80c34e6d5_FTSMoney-primary-logo-RGB.png');
                         background-size: contain;
                         background-repeat: no-repeat;
                         background-position: center;
