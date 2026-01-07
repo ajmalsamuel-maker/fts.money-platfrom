@@ -220,10 +220,24 @@ const menuSections = [
 export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, isSuperAdmin }) {
     const { t } = useI18n();
     const [openSections, setOpenSections] = React.useState(() => {
+        // Try to load from localStorage first
+        const stored = localStorage.getItem('ftsPlatformSidebarSections');
+        if (stored) {
+            try {
+                return JSON.parse(stored);
+            } catch (e) {
+                console.error('Failed to parse stored sections:', e);
+            }
+        }
+        // Default to all sections with defaultOpen: true
         const defaultSections = menuSections.filter(s => s.defaultOpen).map(s => s.id);
-        console.log('Default open sections:', defaultSections);
         return defaultSections;
     });
+    
+    // Persist open sections to localStorage
+    React.useEffect(() => {
+        localStorage.setItem('ftsPlatformSidebarSections', JSON.stringify(openSections));
+    }, [openSections]);
     
     // Auto-open section containing current page
     React.useEffect(() => {
@@ -233,7 +247,7 @@ export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, i
         if (currentSection && !openSections.includes(currentSection.id)) {
             setOpenSections(prev => [...prev, currentSection.id]);
         }
-    }, [currentPage, openSections]);
+    }, [currentPage]);
     
     const toggleSection = (sectionId) => {
         setOpenSections(prev => 
