@@ -214,18 +214,32 @@ export default function FTSDocumentation() {
     }
 
     return (
-        <div className="flex h-screen bg-slate-50">
-            <FTSPlatformSidebar 
-                currentPage="FTSDocumentation"
-                userEmail={platformUser?.email}
-                userRole={platformUser?.platform_role}
-                isSuperAdmin={platformUser?.platform_role === 'super_admin'}
-            />
+        <>
+            <style>{`
+                @media print {
+                    aside, .print-hide, [role="tablist"] {
+                        display: none !important;
+                    }
+                    .flex.h-screen {
+                        display: block !important;
+                    }
+                    .flex-1 {
+                        width: 100% !important;
+                    }
+                }
+            `}</style>
+            <div className="flex h-screen bg-slate-50">
+                <FTSPlatformSidebar 
+                    currentPage="FTSDocumentation"
+                    userEmail={platformUser?.email}
+                    userRole={platformUser?.platform_role}
+                    isSuperAdmin={platformUser?.platform_role === 'super_admin'}
+                />
 
-            <div className="flex-1 overflow-auto">
+                <div className="flex-1 overflow-auto">
                 <div className="p-6">
                     {/* Header */}
-                    <div className="mb-6">
+                    <div className="mb-6 print-hide">
                         <h1 className="text-3xl font-bold text-slate-900 mb-2">{t('platform:subMenuItems.documentationHub')}</h1>
                         <p className="text-slate-600">{t('platform:subMenuItems.documentationHubDesc')}</p>
                     </div>
@@ -251,13 +265,13 @@ export default function FTSDocumentation() {
                         {documents.map((doc) => (
                             <TabsContent key={doc.id} value={doc.id}>
                                 <Card>
-                                    <CardHeader className="border-b bg-white">
-                                        <div className="flex items-start justify-between">
-                                            <div>
-                                                <CardTitle className="text-2xl">{doc.title}</CardTitle>
-                                                <p className="text-sm text-slate-600 mt-1">{doc.description}</p>
-                                            </div>
-                                            <div className="flex gap-2">
+                                    <CardHeader className="border-b bg-white print-hide">
+                                       <div className="flex items-start justify-between">
+                                           <div>
+                                               <CardTitle className="text-2xl">{doc.title}</CardTitle>
+                                               <p className="text-sm text-slate-600 mt-1">{doc.description}</p>
+                                           </div>
+                                           <div className="flex gap-2">
                                                 <Button
                                                     onClick={() => downloadMarkdown(doc)}
                                                     variant="outline"
@@ -434,5 +448,6 @@ export default function FTSDocumentation() {
                 </div>
             </div>
         </div>
+        </>
     );
 }
