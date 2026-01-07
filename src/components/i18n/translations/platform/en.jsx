@@ -69,6 +69,7 @@ export default {
       "pci-compliance": "PCI DSS Compliance",
       "infrastructure": "Infrastructure",
       "documentation": "Documentation",
+      "identity": "Digital Identity",
       "resources": "Settings & Resources"
   },
   "pages": {
