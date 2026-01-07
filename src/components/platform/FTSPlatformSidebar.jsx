@@ -225,10 +225,9 @@ export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, i
         localStorage.removeItem('ftsPlatformSidebarSections');
         localStorage.removeItem('ftsSidebarVersion');
     }, []);
-    
-    // Always default ALL sections to OPEN (ignore any saved state)
-    const allSectionIds = menuSections.map(s => s.id);
-    const [openSections, setOpenSections] = React.useState(allSectionIds);
+
+    // Only open the first section (overview) by default
+    const [openSections, setOpenSections] = React.useState(['overview']);
     
     // Persist open sections to localStorage
     React.useEffect(() => {
