@@ -10,13 +10,16 @@ import FintechNewsTicker from '@/components/dashboard/FintechNewsTicker';
 import ComplianceFooter from '@/components/compliance/ComplianceFooter';
 
 export default function Layout({ children }) {
-    // Check if this is a staff session - bypass Base44 auth (NO STATE CHANGE)
+    // Check if this is a custom auth session - bypass Base44 auth
     const staffSession = localStorage.getItem('staff_session');
     const merchantSession = localStorage.getItem('merchantSession');
     const platformSession = localStorage.getItem('platform_admin_session');
     const cryptoSession = localStorage.getItem('crypto_gateway_session');
+    const rwaProviderSession = localStorage.getItem('rwa_provider_session');
+    const assetIssuerSession = localStorage.getItem('asset_issuer_session');
+    const investorSession = localStorage.getItem('rwa_investor_session');
     
-    const isStaffSession = !!(staffSession || merchantSession || platformSession || cryptoSession);
+    const isCustomAuthSession = !!(staffSession || merchantSession || platformSession || cryptoSession || rwaProviderSession || assetIssuerSession || investorSession);
 
     // For custom auth sessions, skip Base44's AuthContext entirely
     return (
