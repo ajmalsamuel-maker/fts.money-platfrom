@@ -30,11 +30,13 @@ import { DigitalIdentityDoc } from '@/components/docs/DigitalIdentityDoc';
 import { PlatformPortalsGuide } from '@/components/docs/PlatformPortalsGuide';
 import MermaidDiagram from '@/components/docs/MermaidDiagram';
 import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
+import ExportDialog from '@/components/docs/ExportDialog';
 
 export default function FTSDocumentation() {
     const { platformUser, loading } = usePlatformAuth();
     const { t } = useI18n();
     const [activeTab, setActiveTab] = useState('overview');
+    const [exportDialogOpen, setExportDialogOpen] = useState(false);
 
     const documents = [
         {
@@ -407,22 +409,30 @@ export default function FTSDocumentation() {
                                                <p className="text-sm text-slate-600 mt-1">{doc.description}</p>
                                            </div>
                                            <div className="flex gap-2">
-                                                <Button
-                                                    onClick={() => downloadMarkdown(doc)}
-                                                    variant="outline"
-                                                    className="gap-2"
-                                                >
-                                                    <Download className="h-4 w-4" />
-                                                    Download MD
-                                                </Button>
-                                                <Button
-                                                    onClick={printDocument}
-                                                    className="gap-2 bg-blue-600 hover:bg-blue-700 text-white"
-                                                >
-                                                    <Printer className="h-4 w-4" />
-                                                    Print
-                                                </Button>
-                                            </div>
+                                               <Button
+                                                   onClick={() => setExportDialogOpen(true)}
+                                                   className="gap-2 bg-blue-600 hover:bg-blue-700 text-white"
+                                               >
+                                                   <Download className="h-4 w-4" />
+                                                   Export
+                                               </Button>
+                                               <Button
+                                                   onClick={() => downloadMarkdown(doc)}
+                                                   variant="outline"
+                                                   className="gap-2"
+                                               >
+                                                   <FileText className="h-4 w-4" />
+                                                   Markdown
+                                               </Button>
+                                               <Button
+                                                   onClick={printDocument}
+                                                   variant="outline"
+                                                   className="gap-2"
+                                               >
+                                                   <Printer className="h-4 w-4" />
+                                                   Print
+                                               </Button>
+                                           </div>
                                         </div>
                                     </CardHeader>
                                     <CardContent className="p-8 bg-white">
@@ -583,6 +593,16 @@ export default function FTSDocumentation() {
                 </div>
             </div>
         </div>
+
+        {/* Export Dialog */}
+        {currentDoc && (
+            <ExportDialog
+                open={exportDialogOpen}
+                onOpenChange={setExportDialogOpen}
+                documentTitle={currentDoc.title}
+                documentContent={currentDoc.content}
+            />
+        )}
         </>
     );
 }
