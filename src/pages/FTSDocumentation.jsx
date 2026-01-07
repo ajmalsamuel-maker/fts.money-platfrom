@@ -217,15 +217,28 @@ export default function FTSDocumentation() {
         <>
             <style>{`
                 @media print {
-                    /* Hide ALL UI elements */
+                    /* Hide UI elements */
                     aside, nav, header, button,
                     [role="tablist"], [role="tab"],
                     .print-hide, .border-b, 
                     h1.text-3xl, p.text-slate-600,
                     div.mb-6:has(button), div.flex.gap-2,
                     body > div > div > aside,
-                    body > div > div > div > div:first-child {
+                    body > div > div > div > div:first-child,
+                    footer {
                         display: none !important;
+                    }
+                    
+                    /* Show FTS.Money logo at top */
+                    .prose::before {
+                        content: '';
+                        display: block;
+                        width: 150px;
+                        height: 50px;
+                        margin: 0 0 20px 0;
+                        background-image: url('https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6931510c4507988f66a42ca8/865871aa1_FTSMoney-primary-logo-RGB.jpg');
+                        background-size: contain;
+                        background-repeat: no-repeat;
                     }
                     
                     /* Full width for content */
@@ -250,23 +263,54 @@ export default function FTSDocumentation() {
                         line-height: 1.5;
                     }
                     
+                    .prose * {
+                        color: black !important;
+                    }
+                    
+                    .prose p, .prose ul, .prose ol, .prose li,
+                    .prose strong, .prose em, .prose span {
+                        display: block !important;
+                        color: black !important;
+                    }
+                    
+                    .prose p {
+                        margin: 6pt 0 !important;
+                    }
+                    
+                    .prose ul, .prose ol {
+                        padding-left: 20pt !important;
+                        margin: 6pt 0 !important;
+                    }
+                    
+                    .prose li {
+                        display: list-item !important;
+                        margin: 3pt 0 !important;
+                    }
+                    
                     .prose table {
                         font-size: 8pt;
                         border-collapse: collapse;
+                        width: 100% !important;
+                        display: table !important;
                     }
                     
+                    .prose thead { display: table-header-group !important; }
+                    .prose tbody { display: table-row-group !important; }
+                    .prose tr { display: table-row !important; }
                     .prose th, .prose td {
+                        display: table-cell !important;
                         padding: 4px;
                         border: 1px solid black;
                     }
                     
-                    .prose h1 { font-size: 16pt; page-break-after: avoid; }
-                    .prose h2 { font-size: 13pt; page-break-after: avoid; }
-                    .prose h3 { font-size: 11pt; page-break-after: avoid; }
+                    .prose h1 { font-size: 16pt; page-break-after: avoid; margin: 12pt 0 8pt !important; }
+                    .prose h2 { font-size: 13pt; page-break-after: avoid; margin: 10pt 0 6pt !important; }
+                    .prose h3 { font-size: 11pt; page-break-after: avoid; margin: 8pt 0 4pt !important; }
                     
-                    .prose pre {
+                    .prose pre, .prose code {
                         font-size: 7pt;
                         page-break-inside: avoid;
+                        display: block !important;
                     }
                 }
             `}</style>
