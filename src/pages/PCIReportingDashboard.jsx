@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
@@ -16,8 +16,8 @@ import { toast } from 'sonner';
 export default function PCIReportingDashboard() {
     const { platformUser, loading } = usePlatformAuth();
     const queryClient = useQueryClient();
-    const [reportDialog, setReportDialog] = useState(false);
-    const [reportConfig, setReportConfig] = useState({
+    const [reportDialog, setReportDialog] = React.useState(false);
+    const [reportConfig, setReportConfig] = React.useState({
         title: '',
         type: 'executive_summary',
         stakeholder: 'executive',
