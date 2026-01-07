@@ -220,7 +220,10 @@ const menuSections = [
 export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, isSuperAdmin }) {
     const { t } = useI18n();
     const [openSections, setOpenSections] = React.useState(() => {
-        // Try to load from localStorage first
+        // Default to ALL sections open by default
+        const allSectionIds = menuSections.map(s => s.id);
+        
+        // Try to load from localStorage
         const stored = localStorage.getItem('ftsPlatformSidebarSections');
         if (stored) {
             try {
@@ -229,9 +232,9 @@ export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, i
                 console.error('Failed to parse stored sections:', e);
             }
         }
-        // Default to all sections with defaultOpen: true
-        const defaultSections = menuSections.filter(s => s.defaultOpen).map(s => s.id);
-        return defaultSections;
+        
+        // Return all sections open by default
+        return allSectionIds;
     });
     
     // Persist open sections to localStorage
