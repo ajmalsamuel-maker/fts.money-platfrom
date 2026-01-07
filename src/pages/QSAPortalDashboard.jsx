@@ -751,3 +751,237 @@ function NewTaskDialog({ open, onOpenChange, onSubmit }) {
         </Dialog>
     );
 }
+
+// AI Report Generator Component
+function AIReportGenerator({ qsaEmail, requirements, findings, reports }) {
+    const [selectedRequirements, setSelectedRequirements] = useState([]);
+    const [selectedFindings, setSelectedFindings] = useState([]);
+    const [selectedReports, setSelectedReports] = useState([]);
+    const [reportTitle, setReportTitle] = useState('');
+    const [generating, setGenerating] = useState(false);
+    const [generatedReport, setGeneratedReport] = useState(null);
+
+    const handleGenerate = async () => {
+        if (!reportTitle) {
+            toast.error('Please enter a report title');
+            return;
+        }
+
+        setGenerating(true);
+        try {
+            const response = await base44.functions.invoke('generateQSAReport', {
+                qsa_email: qsaEmail,
+                report_title: reportTitle,
+                selected_requirements: selectedRequirements,
+                selected_findings: selectedFindings,
+                selected_reports: selectedReports,
+                include_evidence_summary: true
+            });
+
+            if (response.data?.success) {
+                setGeneratedReport(response.data.report);
+                toast.success('Report generated successfully');
+            } else {
+                toast.error('Failed to generate report');
+            }
+        } catch (error) {
+            toast.error('Error generating report');
+        } finally {
+            setGenerating(false);
+        }
+    };
+
+    const handleDownload = () => {
+        if (!generatedReport) return;
+
+        const content = `
+${generatedReport.title}
+Generated: ${new Date(generatedReport.generated_at).toLocaleString()}
+
+EXECUTIVE SUMMARY
+${generatedReport.content.executive_summary}
+
+SCOPE AND METHODOLOGY
+${generatedReport.content.scope_methodology}
+
+REQUIREMENTS ASSESSMENT SUMMARY
+${generatedReport.content.requirements_summary}
+
+KEY FINDINGS AND OBSERVATIONS
+${generatedReport.content.key_findings}
+
+RISK ANALYSIS
+${generatedReport.content.risk_analysis}
+
+RECOMMENDATIONS
+${generatedReport.content.recommendations}
+
+CONCLUSION
+${generatedReport.content.conclusion}
+        `;
+
+        const blob = new Blob([content], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${reportTitle.replace(/\s+/g, '_')}.txt`;
+        a.click();
+        URL.revokeObjectURL(url);
+    };
+
+    return (
+        <div className="space-y-6">
+            {!generatedReport ? (
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                            <Sparkles className="h-5 w-5 text-purple-600" />
+                            AI-Powered Report Generator
+                        </CardTitle>
+                        <CardDescription>
+                            Select findings and requirements to include in your automated audit report
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                        <div>
+                            <label className="text-sm font-medium">Report Title</label>
+                            <Input
+                                value={reportTitle}
+                                onChange={(e) => setReportTitle(e.target.value)}
+                                placeholder="e.g., Q1 2026 PCI DSS Compliance Assessment"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="text-sm font-medium mb-2 block">
+                                Select Requirements ({selectedRequirements.length} selected)
+                            </label>
+                            <div className="border rounded-lg p-4 max-h-64 overflow-y-auto space-y-2">
+                                {requirements?.slice(0, 15).map((req) => (
+                                    <label key={req.id} className="flex items-center gap-2 p-2 hover:bg-slate-50 rounded cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedRequirements.includes(req.id)}
+                                            onChange={(e) => {
+                                                if (e.target.checked) {
+                                                    setSelectedRequirements([...selectedRequirements, req.id]);
+                                                } else {
+                                                    setSelectedRequirements(selectedRequirements.filter(id => id !== req.id));
+                                                }
+                                            }}
+                                            className="rounded"
+                                        />
+                                        <div className="flex-1">
+                                            <p className="text-sm font-medium">{req.requirement_number}</p>
+                                            <p className="text-xs text-slate-600 truncate">{req.requirement_title}</p>
+                                        </div>
+                                        <Badge variant={req.compliance_status === 'completed' ? 'default' : 'secondary'}>
+                                            {req.compliance_status}
+                                        </Badge>
+                                    </label>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div>
+                            <label className="text-sm font-medium mb-2 block">
+                                Select Findings ({selectedFindings.length} selected)
+                            </label>
+                            <div className="border rounded-lg p-4 max-h-64 overflow-y-auto space-y-2">
+                                {findings?.slice(0, 20).map((finding) => (
+                                    <label key={finding.id} className="flex items-center gap-2 p-2 hover:bg-slate-50 rounded cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedFindings.includes(finding.id)}
+                                            onChange={(e) => {
+                                                if (e.target.checked) {
+                                                    setSelectedFindings([...selectedFindings, finding.id]);
+                                                } else {
+                                                    setSelectedFindings(selectedFindings.filter(id => id !== finding.id));
+                                                }
+                                            }}
+                                            className="rounded"
+                                        />
+                                        <div className="flex-1">
+                                            <p className="text-sm font-medium">{finding.finding_title}</p>
+                                            <p className="text-xs text-slate-500">Req {finding.requirement_number}</p>
+                                        </div>
+                                        <Badge>{finding.severity}</Badge>
+                                    </label>
+                                ))}
+                            </div>
+                        </div>
+
+                        <Button 
+                            onClick={handleGenerate} 
+                            disabled={generating || !reportTitle}
+                            className="w-full"
+                        >
+                            {generating ? (
+                                <>Processing... This may take 30-60 seconds</>
+                            ) : (
+                                <>
+                                    <Sparkles className="h-4 w-4 mr-2" />
+                                    Generate Report with AI
+                                </>
+                            )}
+                        </Button>
+                    </CardContent>
+                </Card>
+            ) : (
+                <Card>
+                    <CardHeader>
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <CardTitle>{generatedReport.title}</CardTitle>
+                                <CardDescription>
+                                    Generated on {new Date(generatedReport.generated_at).toLocaleString()} • 
+                                    {generatedReport.requirements_count} requirements, {generatedReport.findings_count} findings
+                                </CardDescription>
+                            </div>
+                            <div className="flex gap-2">
+                                <Button onClick={handleDownload}>
+                                    <Download className="h-4 w-4 mr-2" />
+                                    Download
+                                </Button>
+                                <Button variant="outline" onClick={() => setGeneratedReport(null)}>
+                                    Generate New
+                                </Button>
+                            </div>
+                        </div>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                        <div>
+                            <h3 className="font-semibold text-lg mb-2">Executive Summary</h3>
+                            <p className="text-sm text-slate-700 whitespace-pre-wrap">{generatedReport.content.executive_summary}</p>
+                        </div>
+                        <div>
+                            <h3 className="font-semibold text-lg mb-2">Scope and Methodology</h3>
+                            <p className="text-sm text-slate-700 whitespace-pre-wrap">{generatedReport.content.scope_methodology}</p>
+                        </div>
+                        <div>
+                            <h3 className="font-semibold text-lg mb-2">Requirements Assessment Summary</h3>
+                            <p className="text-sm text-slate-700 whitespace-pre-wrap">{generatedReport.content.requirements_summary}</p>
+                        </div>
+                        <div>
+                            <h3 className="font-semibold text-lg mb-2">Key Findings and Observations</h3>
+                            <p className="text-sm text-slate-700 whitespace-pre-wrap">{generatedReport.content.key_findings}</p>
+                        </div>
+                        <div>
+                            <h3 className="font-semibold text-lg mb-2">Risk Analysis</h3>
+                            <p className="text-sm text-slate-700 whitespace-pre-wrap">{generatedReport.content.risk_analysis}</p>
+                        </div>
+                        <div>
+                            <h3 className="font-semibold text-lg mb-2">Recommendations</h3>
+                            <p className="text-sm text-slate-700 whitespace-pre-wrap">{generatedReport.content.recommendations}</p>
+                        </div>
+                        <div>
+                            <h3 className="font-semibold text-lg mb-2">Conclusion</h3>
+                            <p className="text-sm text-slate-700 whitespace-pre-wrap">{generatedReport.content.conclusion}</p>
+                        </div>
+                    </CardContent>
+                </Card>
+            )}
+        </div>
+    );
+}
