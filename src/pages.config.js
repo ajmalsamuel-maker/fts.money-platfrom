@@ -295,6 +295,9 @@ import XeroIntegration from './pages/XeroIntegration';
 import QSAPortalLogin from './pages/QSAPortalLogin';
 import QSAPortalDashboard from './pages/QSAPortalDashboard';
 import QSAUserManagement from './pages/QSAUserManagement';
+import PCIContinuousMonitoring from './pages/PCIContinuousMonitoring';
+import PCIPredictiveAnalytics from './pages/PCIPredictiveAnalytics';
+import PCIWorkflowManager from './pages/PCIWorkflowManager';
 import __Layout from './Layout.jsx';
 
 
@@ -596,6 +599,9 @@ export const PAGES = {
     "QSAPortalLogin": QSAPortalLogin,
     "QSAPortalDashboard": QSAPortalDashboard,
     "QSAUserManagement": QSAUserManagement,
+    "PCIContinuousMonitoring": PCIContinuousMonitoring,
+    "PCIPredictiveAnalytics": PCIPredictiveAnalytics,
+    "PCIWorkflowManager": PCIWorkflowManager,
 }
 
 export const pagesConfig = {
