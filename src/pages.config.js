@@ -284,6 +284,7 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
+import PCIDocumentManager from './pages/PCIDocumentManager';
 import __Layout from './Layout.jsx';
 
 
@@ -574,6 +575,7 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
+    "PCIDocumentManager": PCIDocumentManager,
 }
 
 export const pagesConfig = {
