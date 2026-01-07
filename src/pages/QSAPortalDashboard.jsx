@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Shield, FileText, CheckCircle2, AlertTriangle, Download, LogOut, MessageSquare, Upload, Calendar, Send } from 'lucide-react';
+import { Shield, FileText, CheckCircle2, AlertTriangle, Download, LogOut, MessageSquare, Upload, Calendar, Send, Sparkles } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import { toast } from 'sonner';
 
@@ -206,6 +206,7 @@ export default function QSAPortalDashboard() {
                             Messages {pendingMessages.length > 0 && <Badge className="ml-2">{pendingMessages.length}</Badge>}
                         </TabsTrigger>
                         <TabsTrigger value="reports">My Reports</TabsTrigger>
+                        <TabsTrigger value="generate">AI Report Generator</TabsTrigger>
                         <TabsTrigger value="tasks">Tasks & Timeline</TabsTrigger>
                         <TabsTrigger value="evidence">Evidence Review</TabsTrigger>
                     </TabsList>
@@ -390,6 +391,16 @@ export default function QSAPortalDashboard() {
                                 </div>
                             </CardContent>
                         </Card>
+                    </TabsContent>
+
+                    {/* AI Report Generator Tab */}
+                    <TabsContent value="generate">
+                        <AIReportGenerator 
+                            qsaEmail={qsaSession.email}
+                            requirements={requirements}
+                            findings={findings}
+                            reports={reports}
+                        />
                     </TabsContent>
 
                     {/* Evidence Tab */}
