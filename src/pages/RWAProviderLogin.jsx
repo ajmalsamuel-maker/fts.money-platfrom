@@ -9,7 +9,8 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { FTS_LOGOS } from '@/components/community/FTSBrandColors';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
-import ComplianceFooter from '@/components/compliance/ComplianceFooter';
+import FintechNewsTicker from '@/components/dashboard/FintechNewsTicker';
+import ComplianceFooter, { MinimalComplianceFooter } from '@/components/compliance/ComplianceFooter';
 
 export default function RWAProviderLogin() {
     const navigate = useNavigate();
@@ -35,15 +36,31 @@ export default function RWAProviderLogin() {
     };
 
     return (
-        <div className="min-h-screen bg-white flex flex-col">
-            {/* Language Switcher - Top Right */}
-            <div className="absolute top-4 right-4 z-10">
+        <div className="min-h-screen flex flex-col relative overflow-hidden bg-white">
+            <FintechNewsTicker />
+            
+            {/* Language Switcher - Below News Ticker */}
+            <div className="absolute top-12 right-6 z-20">
                 <LanguageSwitcher variant="select" showLabel={false} />
             </div>
 
             {/* Main Content */}
-            <div className="flex-1 flex items-center justify-center p-4 relative">
-                <Card className="w-full max-w-md relative z-10">
+            <div className="flex-1 flex items-center justify-center p-6">
+                {/* FTS.Money Wave Background - Bottom */}
+                <div className="absolute bottom-0 left-0 right-0 h-1/3">
+                    <svg className="absolute bottom-0 w-full h-full" viewBox="0 0 1440 320" preserveAspectRatio="none">
+                        <path fill="url(#wave-gradient)" fillOpacity="1" d="M0,192L48,197.3C96,203,192,213,288,229.3C384,245,480,267,576,250.7C672,235,768,181,864,181.3C960,181,1056,235,1152,234.7C1248,235,1344,181,1392,154.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+                        <defs>
+                            <linearGradient id="wave-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" style={{ stopColor: '#0066CC', stopOpacity: 0.8 }} />
+                                <stop offset="50%" style={{ stopColor: '#00BFFF', stopOpacity: 0.8 }} />
+                                <stop offset="100%" style={{ stopColor: '#87CEEB', stopOpacity: 0.7 }} />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+
+                <Card className="w-full max-w-md relative z-10 bg-white/95 backdrop-blur border-slate-200 shadow-xl">
                     <CardHeader className="text-center">
                         <img src={FTS_LOGOS.primary} alt="FTS.Money" className="h-10 mx-auto mb-4" />
                         <CardTitle className="text-2xl">RWA Provider Portal</CardTitle>
@@ -80,30 +97,9 @@ export default function RWAProviderLogin() {
                         </form>
                     </CardContent>
                 </Card>
-
-                {/* Background Wave */}
-                <svg 
-                    className="absolute bottom-0 left-0 w-full" 
-                    style={{ height: '40vh' }}
-                    viewBox="0 0 1440 320" 
-                    preserveAspectRatio="none"
-                >
-                    <defs>
-                        <linearGradient id="waveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stopColor="#3b82f6" />
-                            <stop offset="50%" stopColor="#06b6d4" />
-                            <stop offset="100%" stopColor="#0ea5e9" />
-                        </linearGradient>
-                    </defs>
-                    <path 
-                        fill="url(#waveGradient)" 
-                        fillOpacity="0.15"
-                        d="M0,192L48,181.3C96,171,192,149,288,154.7C384,160,480,192,576,197.3C672,203,768,181,864,154.7C960,128,1056,96,1152,96C1248,96,1344,128,1392,144L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
-                    />
-                </svg>
             </div>
 
-            <ComplianceFooter />
+            <MinimalComplianceFooter />
         </div>
     );
 }
