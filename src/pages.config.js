@@ -289,6 +289,9 @@ import PCIComplianceDashboard from './pages/PCIComplianceDashboard';
 import PCIRequirementsTracker from './pages/PCIRequirementsTracker';
 import PCIEvidenceVault from './pages/PCIEvidenceVault';
 import PCIControlTesting from './pages/PCIControlTesting';
+import PCIPolicyLibrary from './pages/PCIPolicyLibrary';
+import PCIGapAnalysis from './pages/PCIGapAnalysis';
+import PCIAuditReports from './pages/PCIAuditReports';
 import __Layout from './Layout.jsx';
 
 
@@ -584,6 +587,9 @@ export const PAGES = {
     "PCIRequirementsTracker": PCIRequirementsTracker,
     "PCIEvidenceVault": PCIEvidenceVault,
     "PCIControlTesting": PCIControlTesting,
+    "PCIPolicyLibrary": PCIPolicyLibrary,
+    "PCIGapAnalysis": PCIGapAnalysis,
+    "PCIAuditReports": PCIAuditReports,
 }
 
 export const pagesConfig = {
