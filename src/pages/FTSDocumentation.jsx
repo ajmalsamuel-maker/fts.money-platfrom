@@ -25,6 +25,8 @@ import VATTaxManagementDoc from '@/components/docs/VATTaxManagementDoc';
 import EInvoicingSystemDoc from '@/components/docs/EInvoicingSystemDoc';
 import VASPPlatformDoc from '@/components/docs/VASPPlatformDoc';
 import ServiceInteroperabilityDoc from '@/components/docs/ServiceInteroperabilityDoc';
+import { PCIDSSComplianceDoc } from '@/components/docs/PCIDSSComplianceDoc';
+import { DigitalIdentityDoc } from '@/components/docs/DigitalIdentityDoc';
 import MermaidDiagram from '@/components/docs/MermaidDiagram';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -161,6 +163,20 @@ export default function FTSDocumentation() {
             icon: GitBranch,
             content: ServiceInteroperabilityDoc,
             description: 'How FTS services integrate to create unique composite solutions'
+        },
+        {
+            id: 'pci-dss-compliance',
+            title: 'PCI DSS Level 1 Compliance',
+            icon: Shield,
+            content: PCIDSSComplianceDoc,
+            description: 'Comprehensive PCI DSS compliance management - continuous monitoring, predictive analytics, QSA integration, and blockchain audit trails'
+        },
+        {
+            id: 'digital-identity',
+            title: 'Digital Identity & Verifiable Credentials',
+            icon: Wallet,
+            content: DigitalIdentityDoc,
+            description: 'W3C Verifiable Credentials and DIDs - passwordless authentication, selective disclosure, and privacy-preserving identity'
         }
     ];
 
