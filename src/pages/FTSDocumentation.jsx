@@ -217,114 +217,59 @@ export default function FTSDocumentation() {
         <>
             <style>{`
                 @media print {
-                    /* Aggressively hide ALL UI elements */
-                    aside, header, nav, button, 
-                    .print-hide, [role="tablist"], [role="tab"],
-                    .flex.gap-2, .mb-6, .border-b,
-                    .rounded-lg.border, .bg-white.border,
-                    h1, h1 + p, div.mb-6, div.flex.items-start,
-                    [class*="Card"], [class*="Tabs"] {
-                        display: none !important;
-                        visibility: hidden !important;
-                        height: 0 !important;
-                        margin: 0 !important;
-                        padding: 0 !important;
-                    }
-                    
-                    /* Only show content inside prose */
-                    body > *:not(.prose),
-                    body * > *:not(.prose) {
+                    /* Hide sidebar and UI chrome */
+                    aside {
                         display: none !important;
                     }
                     
-                    /* Reset everything */
+                    /* Hide buttons and tabs */
+                    button, [role="tablist"] {
+                        display: none !important;
+                    }
+                    
+                    /* Hide page header */
+                    .print-hide {
+                        display: none !important;
+                    }
+                    
+                    /* Full width for content */
                     body, html {
-                        width: 210mm !important;
-                        height: auto !important;
-                        margin: 0 !important;
-                        padding: 0 !important;
-                        overflow: visible !important;
+                        width: 210mm;
+                        margin: 0;
+                        padding: 0;
                     }
                     
-                    * {
-                        position: static !important;
-                        box-shadow: none !important;
-                    }
-                    
-                    /* Show ONLY prose content */
-                    .prose, .prose * {
+                    .flex {
                         display: block !important;
-                        visibility: visible !important;
                     }
                     
+                    /* Content styling */
                     .prose {
                         max-width: 190mm !important;
                         width: 190mm !important;
                         margin: 10mm auto !important;
                         padding: 0 !important;
-                        font-size: 10pt !important;
-                        line-height: 1.5 !important;
-                        color: black !important;
-                        background: white !important;
+                        font-size: 10pt;
+                        line-height: 1.5;
                     }
                     
-                    /* Tables */
                     .prose table {
-                        display: table !important;
-                        width: 100% !important;
-                        font-size: 8pt !important;
-                        border-collapse: collapse !important;
+                        font-size: 8pt;
+                        border-collapse: collapse;
                     }
                     
-                    .prose thead { display: table-header-group !important; }
-                    .prose tbody { display: table-row-group !important; }
-                    .prose tr { display: table-row !important; }
-                    .prose th, .prose td { 
-                        display: table-cell !important;
-                        padding: 4px !important;
-                        border: 1px solid black !important;
+                    .prose th, .prose td {
+                        padding: 4px;
+                        border: 1px solid black;
                     }
                     
-                    /* Headings */
-                    .prose h1, .prose h2, .prose h3, 
-                    .prose h4, .prose h5, .prose h6 {
-                        display: block !important;
-                        page-break-after: avoid !important;
-                    }
+                    .prose h1 { font-size: 16pt; page-break-after: avoid; }
+                    .prose h2 { font-size: 13pt; page-break-after: avoid; }
+                    .prose h3 { font-size: 11pt; page-break-after: avoid; }
                     
-                    .prose h1 { font-size: 16pt !important; margin: 12pt 0 8pt !important; }
-                    .prose h2 { font-size: 13pt !important; margin: 10pt 0 6pt !important; }
-                    .prose h3 { font-size: 11pt !important; margin: 8pt 0 4pt !important; }
-                    
-                    /* Code blocks */
                     .prose pre {
-                        display: block !important;
-                        font-size: 7pt !important;
-                        padding: 4pt !important;
-                        border: 1px solid #ccc !important;
-                        page-break-inside: avoid !important;
-                    }
-                    
-                    .prose code { font-size: 8pt !important; }
-                    .prose p { display: block !important; margin: 6pt 0 !important; }
-                    
-                    /* Lists */
-                    .prose ul, .prose ol { 
-                        display: block !important;
-                        margin: 6pt 0 !important; 
-                        padding-left: 20pt !important; 
-                    }
-                    .prose li { 
-                        display: list-item !important;
-                        margin: 3pt 0 !important; 
-                    }
-                    
-                    /* Images */
-                    .prose img, .prose svg {
-                        display: block !important;
-                        max-width: 100% !important;
-                        height: auto !important;
-                        page-break-inside: avoid !important;
+                        font-size: 7pt;
+                        page-break-inside: avoid;
                     }
                 }
             `}</style>
