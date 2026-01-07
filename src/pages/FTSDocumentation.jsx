@@ -217,17 +217,23 @@ export default function FTSDocumentation() {
         <>
             <style>{`
                 @media print {
-                    /* Forcefully hide sidebar and all UI chrome */
+                    /* Forcefully hide ALL navigation and UI */
                     aside, nav, header, button, footer,
-                    [role="tablist"], [role="tab"],
+                    [role="tablist"], [role="tab"], [role="navigation"],
+                    [class*="sidebar"], [class*="Sidebar"],
+                    [class*="w-64"], div.w-64,
                     [class*="ticker"], [class*="news"], [class*="News"],
                     div[class*="bg-slate-900"], div[class*="bg-blue"],
-                    div:has(> p:contains("Loading fintech news")),
-                    body > div:first-child > div:first-child {
+                    div[class*="bg-white"][class*="border-r"],
+                    div.flex.h-screen > aside,
+                    div.flex.h-screen > div:first-child {
                         display: none !important;
                         visibility: hidden !important;
                         position: absolute !important;
                         left: -9999px !important;
+                        width: 0 !important;
+                        height: 0 !important;
+                        overflow: hidden !important;
                     }
                     
                     .print-hide {
