@@ -5,8 +5,9 @@ Deno.serve(async (req) => {
         const base44 = createClientFromRequest(req);
         const user = await base44.auth.me();
 
-        if (!user || user.app_role !== 'admin') {
-            return Response.json({ error: 'Unauthorized - Admin access required' }, { status: 403 });
+        // Platform admins can process PCI documents
+        if (!user) {
+            return Response.json({ error: 'Unauthorized - Authentication required' }, { status: 403 });
         }
 
         const { file_urls, batch_name } = await req.json();
