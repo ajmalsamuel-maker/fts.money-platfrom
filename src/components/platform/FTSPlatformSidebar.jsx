@@ -220,14 +220,15 @@ const menuSections = [
 export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, isSuperAdmin }) {
     const { t } = useI18n();
     
-    const [openSections, setOpenSections] = React.useState(() => {
-        // FORCE CLEAR all old state and default ALL sections to OPEN
+    // FORCE RESET: Clear ALL cached sidebar state
+    React.useEffect(() => {
         localStorage.removeItem('ftsPlatformSidebarSections');
-        localStorage.setItem('ftsSidebarVersion', '3.0');
-        const allSectionIds = menuSections.map(s => s.id);
-        localStorage.setItem('ftsPlatformSidebarSections', JSON.stringify(allSectionIds));
-        return allSectionIds;
-    });
+        localStorage.removeItem('ftsSidebarVersion');
+    }, []);
+    
+    // Always default ALL sections to OPEN (ignore any saved state)
+    const allSectionIds = menuSections.map(s => s.id);
+    const [openSections, setOpenSections] = React.useState(allSectionIds);
     
     // Persist open sections to localStorage
     React.useEffect(() => {
