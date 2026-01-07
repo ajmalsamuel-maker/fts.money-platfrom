@@ -5,6 +5,7 @@ import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
 import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { 
@@ -82,9 +83,36 @@ export default function PCIComplianceDashboard() {
             <div className="flex-1 ml-64">
                 <main className="p-6">
                     {/* Header */}
-                    <div className="mb-6">
-                        <h1 className="text-3xl font-bold text-slate-900">PCI DSS Level 1 Compliance</h1>
-                        <p className="text-slate-600">Enterprise Payment Card Industry Data Security Standard Management</p>
+                    <div className="flex justify-between items-center mb-6">
+                        <div>
+                            <h1 className="text-3xl font-bold text-slate-900">PCI DSS Level 1 Compliance</h1>
+                            <p className="text-slate-600">Enterprise Payment Card Industry Data Security Standard Management</p>
+                        </div>
+                        <div className="flex gap-3">
+                            <Button 
+                                variant="outline"
+                                onClick={async () => {
+                                    try {
+                                        const response = await base44.functions.invoke('exportPCIPackage', {});
+                                        if (response.data?.pdf_base64) {
+                                            const link = document.createElement('a');
+                                            link.href = `data:application/pdf;base64,${response.data.pdf_base64}`;
+                                            link.download = `PCI_Compliance_Package_${new Date().toISOString().split('T')[0]}.pdf`;
+                                            link.click();
+                                        }
+                                    } catch (error) {
+                                        console.error('Export failed:', error);
+                                    }
+                                }}
+                            >
+                                <Download className="h-4 w-4 mr-2" />
+                                Export Package
+                            </Button>
+                            <Button onClick={() => window.open(createPageUrl('QSAPortalLogin'), '_blank')}>
+                                <Shield className="h-4 w-4 mr-2" />
+                                QSA Portal
+                            </Button>
+                        </div>
                     </div>
 
                     {/* Compliance Status Alert */}
