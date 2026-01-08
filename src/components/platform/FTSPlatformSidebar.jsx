@@ -130,6 +130,7 @@ const menuSections = [
         title: 'Financial Operations',
         defaultOpen: true,
         items: [
+            { label: 'Service Billing Config', description: 'Configure pricing & tiers', path: 'ServiceBillingConfiguration', icon: DollarSign, priority: true },
             { labelKey: 'serviceBilling', descKey: 'serviceBillingDesc', path: 'FTSServiceBilling', icon: FileText, priority: true },
             { label: 'Platform Billing', description: 'Invoice PSPs & Merchants', path: 'PlatformBillingPortal', icon: DollarSign, priority: true },
             { label: 'PSP Invoice Aggregator', description: 'View all merchant invoices', path: 'PSPInvoiceAggregator', icon: FileText, priority: true },
