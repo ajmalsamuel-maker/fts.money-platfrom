@@ -119,6 +119,7 @@ import ISOGatewayTestConsole from './pages/ISOGatewayTestConsole';
 import ISOGatewayUserManagement from './pages/ISOGatewayUserManagement';
 import ISOMessageMonitor from './pages/ISOMessageMonitor';
 import InstantPayments from './pages/InstantPayments';
+import InvestorAssetDetails from './pages/InvestorAssetDetails';
 import InvestorDividends from './pages/InvestorDividends';
 import InvestorHoldings from './pages/InvestorHoldings';
 import InvestorLogin from './pages/InvestorLogin';
@@ -160,6 +161,7 @@ import MerchantEmailTemplates from './pages/MerchantEmailTemplates';
 import MerchantHelpCenter from './pages/MerchantHelpCenter';
 import MerchantInfo from './pages/MerchantInfo';
 import MerchantInvoiceGenerator from './pages/MerchantInvoiceGenerator';
+import MerchantInvoicePortal from './pages/MerchantInvoicePortal';
 import MerchantInvoices from './pages/MerchantInvoices';
 import MerchantInvoicing from './pages/MerchantInvoicing';
 import MerchantLogin from './pages/MerchantLogin';
@@ -223,6 +225,7 @@ import PSPDigitalIdentityWallet from './pages/PSPDigitalIdentityWallet';
 import PSPEmpowermentRoadmap from './pages/PSPEmpowermentRoadmap';
 import PSPInstanceConfig from './pages/PSPInstanceConfig';
 import PSPInstanceManagement from './pages/PSPInstanceManagement';
+import PSPInvoiceAggregator from './pages/PSPInvoiceAggregator';
 import PSPLogin from './pages/PSPLogin';
 import PSPMerchantPricing from './pages/PSPMerchantPricing';
 import PSPOwnershipMigration from './pages/PSPOwnershipMigration';
@@ -247,6 +250,7 @@ import Payouts from './pages/Payouts';
 import PlatformAdminLogin from './pages/PlatformAdminLogin';
 import PlatformAdminRegister from './pages/PlatformAdminRegister';
 import PlatformAuditLogs from './pages/PlatformAuditLogs';
+import PlatformBillingPortal from './pages/PlatformBillingPortal';
 import PlatformLanguageManagement from './pages/PlatformLanguageManagement';
 import PlatformPricingConfiguration from './pages/PlatformPricingConfiguration';
 import PlatformUserManagement from './pages/PlatformUserManagement';
@@ -308,10 +312,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import InvestorAssetDetails from './pages/InvestorAssetDetails';
-import MerchantInvoicePortal from './pages/MerchantInvoicePortal';
-import PSPInvoiceAggregator from './pages/PSPInvoiceAggregator';
-import PlatformBillingPortal from './pages/PlatformBillingPortal';
 import __Layout from './Layout.jsx';
 
 
@@ -437,6 +437,7 @@ export const PAGES = {
     "ISOGatewayUserManagement": ISOGatewayUserManagement,
     "ISOMessageMonitor": ISOMessageMonitor,
     "InstantPayments": InstantPayments,
+    "InvestorAssetDetails": InvestorAssetDetails,
     "InvestorDividends": InvestorDividends,
     "InvestorHoldings": InvestorHoldings,
     "InvestorLogin": InvestorLogin,
@@ -478,6 +479,7 @@ export const PAGES = {
     "MerchantHelpCenter": MerchantHelpCenter,
     "MerchantInfo": MerchantInfo,
     "MerchantInvoiceGenerator": MerchantInvoiceGenerator,
+    "MerchantInvoicePortal": MerchantInvoicePortal,
     "MerchantInvoices": MerchantInvoices,
     "MerchantInvoicing": MerchantInvoicing,
     "MerchantLogin": MerchantLogin,
@@ -541,6 +543,7 @@ export const PAGES = {
     "PSPEmpowermentRoadmap": PSPEmpowermentRoadmap,
     "PSPInstanceConfig": PSPInstanceConfig,
     "PSPInstanceManagement": PSPInstanceManagement,
+    "PSPInvoiceAggregator": PSPInvoiceAggregator,
     "PSPLogin": PSPLogin,
     "PSPMerchantPricing": PSPMerchantPricing,
     "PSPOwnershipMigration": PSPOwnershipMigration,
@@ -565,6 +568,7 @@ export const PAGES = {
     "PlatformAdminLogin": PlatformAdminLogin,
     "PlatformAdminRegister": PlatformAdminRegister,
     "PlatformAuditLogs": PlatformAuditLogs,
+    "PlatformBillingPortal": PlatformBillingPortal,
     "PlatformLanguageManagement": PlatformLanguageManagement,
     "PlatformPricingConfiguration": PlatformPricingConfiguration,
     "PlatformUserManagement": PlatformUserManagement,
@@ -626,10 +630,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "InvestorAssetDetails": InvestorAssetDetails,
-    "MerchantInvoicePortal": MerchantInvoicePortal,
-    "PSPInvoiceAggregator": PSPInvoiceAggregator,
-    "PlatformBillingPortal": PlatformBillingPortal,
 }
 
 export const pagesConfig = {

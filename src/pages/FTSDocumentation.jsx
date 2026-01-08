@@ -28,6 +28,7 @@ import ServiceInteroperabilityDoc from '@/components/docs/ServiceInteroperabilit
 import { PCIDSSComplianceDoc } from '@/components/docs/PCIDSSComplianceDoc';
 import { DigitalIdentityDoc } from '@/components/docs/DigitalIdentityDoc';
 import { PlatformPortalsGuide } from '@/components/docs/PlatformPortalsGuide';
+import NanoSustainabilityIntegration from '@/components/docs/NanoSustainabilityIntegration';
 import MermaidDiagram from '@/components/docs/MermaidDiagram';
 import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 import ExportDialog from '@/components/docs/ExportDialog';
@@ -185,6 +186,13 @@ export default function FTSDocumentation() {
             icon: BookOpen,
             content: PlatformPortalsGuide,
             description: 'Complete guide to all FTS.Money portals - URLs, pages, features, and workflows with detailed diagrams'
+        },
+        {
+            id: 'nano-sustainability',
+            title: 'Nano Sustainability Integration',
+            icon: FileText,
+            content: NanoSustainabilityIntegration,
+            description: 'Strategic integration of gamified sustainability platform - market analysis, revenue models, and implementation roadmap'
         }
     ];
 
