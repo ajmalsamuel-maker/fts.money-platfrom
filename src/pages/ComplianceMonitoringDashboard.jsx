@@ -289,6 +289,51 @@ export default function ComplianceMonitoringDashboard() {
                 nextDeadline: null,
                 mandate: 'Mandatory since 2012',
                 implementation: '100%'
+            },
+            { 
+                country: 'Japan', 
+                standard: 'Qualified Invoice', 
+                status: 'compliant', 
+                lastCheck: '2026-01-08',
+                nextDeadline: null,
+                mandate: 'Mandatory since 2023',
+                implementation: '100%'
+            },
+            { 
+                country: 'Thailand', 
+                standard: 'e-Tax Invoice', 
+                status: 'compliant', 
+                lastCheck: '2026-01-08',
+                nextDeadline: null,
+                mandate: 'Voluntary (incentivized)',
+                implementation: '100%'
+            },
+            { 
+                country: 'Australia', 
+                standard: 'Peppol', 
+                status: 'compliant', 
+                lastCheck: '2026-01-08',
+                nextDeadline: null,
+                mandate: 'B2G mandatory',
+                implementation: '100%'
+            },
+            { 
+                country: 'Ethiopia', 
+                standard: 'ERCA', 
+                status: 'compliant', 
+                lastCheck: '2026-01-08',
+                nextDeadline: null,
+                mandate: 'Phased rollout',
+                implementation: '100%'
+            },
+            { 
+                country: 'Tanzania', 
+                standard: 'VFD', 
+                status: 'compliant', 
+                lastCheck: '2026-01-08',
+                nextDeadline: null,
+                mandate: 'Mandatory since 2020',
+                implementation: '100%'
             }
         ],
         upcomingMandates: [],
@@ -325,10 +370,10 @@ export default function ComplianceMonitoringDashboard() {
         gapAnalysis: [
             {
                 region: 'Asia Pacific',
-                supported: 7,
-                missing: 3,
-                priority: 'low',
-                keyGaps: ['Japan Qualified Invoice', 'Australia Peppol', 'Thailand e-Tax']
+                supported: 10,
+                missing: 0,
+                priority: 'complete',
+                keyGaps: []
             },
             {
                 region: 'Latin America',
@@ -346,10 +391,10 @@ export default function ComplianceMonitoringDashboard() {
             },
             {
                 region: 'Middle East & Africa',
-                supported: 4,
-                missing: 2,
-                priority: 'low',
-                keyGaps: ['Ethiopia ERCA', 'Tanzania VFD']
+                supported: 6,
+                missing: 0,
+                priority: 'complete',
+                keyGaps: []
             }
         ]
     };
@@ -416,7 +461,7 @@ export default function ComplianceMonitoringDashboard() {
                                 <div className="flex items-center justify-between">
                                     <div>
                                         <p className="text-sm text-slate-600">Supported Standards</p>
-                                        <p className="text-3xl font-bold text-green-600">29</p>
+                                        <p className="text-3xl font-bold text-green-600">34</p>
                                     </div>
                                     <CheckCircle className="h-10 w-10 text-green-600" />
                                 </div>
@@ -449,7 +494,7 @@ export default function ComplianceMonitoringDashboard() {
                                 <div className="flex items-center justify-between">
                                     <div>
                                         <p className="text-sm text-slate-600">Global Coverage</p>
-                                        <p className="text-3xl font-bold text-slate-900">83%</p>
+                                        <p className="text-3xl font-bold text-slate-900">97%</p>
                                     </div>
                                     <Globe className="h-10 w-10 text-slate-600" />
                                 </div>
@@ -461,7 +506,7 @@ export default function ComplianceMonitoringDashboard() {
                     <Tabs value={activeTab} onValueChange={setActiveTab}>
                         <TabsList>
                             <TabsTrigger value="overview">Overview</TabsTrigger>
-                            <TabsTrigger value="supported">Supported (29)</TabsTrigger>
+                            <TabsTrigger value="supported">Supported (34)</TabsTrigger>
                             <TabsTrigger value="upcoming">Upcoming (0)</TabsTrigger>
                             <TabsTrigger value="gaps">Gap Analysis</TabsTrigger>
                             <TabsTrigger value="changes">Recent Changes</TabsTrigger>
@@ -534,7 +579,7 @@ export default function ComplianceMonitoringDashboard() {
                         <TabsContent value="supported">
                             <Card>
                                 <CardHeader>
-                                    <CardTitle>Currently Supported Standards (29)</CardTitle>
+                                    <CardTitle>Currently Supported Standards (34)</CardTitle>
                                 </CardHeader>
                                 <CardContent>
                                     <div className="space-y-3">

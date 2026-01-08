@@ -372,6 +372,79 @@ const VALIDATION_RULES = {
             { rule: 'cfe_signature', message: 'Digital signature mandatory' },
             { rule: 'cae_number', message: 'CAE number from DGI required' }
         ]
+    },
+
+    // Japan - Qualified Invoice System
+    'jqis_japan': {
+        required: ['InvoiceNumber', 'IssueDate', 'SellerRegistrationNumber', 'BuyerName', 'TaxAmount', 'TotalAmount'],
+        formats: {
+            SellerRegistrationNumber: /^T\d{13}$/,
+            InvoiceNumber: /^.{1,40}$/
+        },
+        business_rules: [
+            { rule: 'registration_number', message: 'T-number (Qualified Invoice Issuer) required' },
+            { rule: 'consumption_tax', message: 'Consumption tax must be 10% (standard) or 8% (reduced)' },
+            { rule: 'digital_preservation', message: '7-year digital preservation mandatory' }
+        ]
+    },
+
+    // Thailand - e-Tax Invoice
+    'etax_thailand': {
+        required: ['InvoiceNumber', 'IssueDate', 'SellerTaxID', 'BuyerTaxID', 'TotalAmount', 'VATAmount'],
+        formats: {
+            SellerTaxID: /^\d{13}$/,
+            BuyerTaxID: /^\d{13}$/
+        },
+        business_rules: [
+            { rule: 'xml_format', message: 'Must use XML format' },
+            { rule: 'vat_7', message: 'VAT must be 7%' },
+            { rule: 'digital_signature', message: 'Digital signature required' },
+            { rule: 'rd_submission', message: 'Submit to Revenue Department system' }
+        ]
+    },
+
+    // Australia - Peppol
+    'peppol_australia': {
+        required: ['InvoiceNumber', 'IssueDate', 'SellerABN', 'BuyerABN', 'TotalAmount'],
+        formats: {
+            SellerABN: /^\d{11}$/,
+            BuyerABN: /^\d{11}$/
+        },
+        business_rules: [
+            { rule: 'peppol_ubl', message: 'Must use Peppol BIS 3.0 (UBL)' },
+            { rule: 'gst_10', message: 'GST must be 10%' },
+            { rule: 'peppol_network', message: 'Transmission via Peppol network' }
+        ]
+    },
+
+    // Ethiopia - ERCA
+    'erca_ethiopia': {
+        required: ['InvoiceNumber', 'IssueDate', 'SellerTIN', 'BuyerTIN', 'TotalAmount', 'VATAmount'],
+        formats: {
+            SellerTIN: /^\d{10}$/,
+            BuyerTIN: /^\d{10}$/
+        },
+        business_rules: [
+            { rule: 'json_xml', message: 'JSON or XML format accepted' },
+            { rule: 'vat_15', message: 'VAT must be 15%' },
+            { rule: 'erca_validation', message: 'Real-time ERCA validation required' },
+            { rule: 'fiscal_device', message: 'Fiscal device integration recommended' }
+        ]
+    },
+
+    // Tanzania - VFD
+    'vfd_tanzania': {
+        required: ['InvoiceNumber', 'IssueDate', 'SellerTIN', 'BuyerTIN', 'TotalAmount', 'VATAmount'],
+        formats: {
+            SellerTIN: /^\d{9}$/,
+            BuyerTIN: /^\d{9}$/
+        },
+        business_rules: [
+            { rule: 'vfd_integration', message: 'Virtual Fiscal Device integration required' },
+            { rule: 'vat_18', message: 'VAT must be 18%' },
+            { rule: 'tra_submission', message: 'Real-time submission to TRA' },
+            { rule: 'qr_code', message: 'QR code verification mandatory' }
+        ]
     }
 };
 
