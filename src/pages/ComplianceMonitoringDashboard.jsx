@@ -481,8 +481,8 @@ export default function ComplianceMonitoringDashboard() {
                             <CardContent className="pt-6">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-sm text-slate-600">Supported Standards</p>
-                                        <p className="text-3xl font-bold text-green-600">34</p>
+                                       <p className="text-sm text-slate-600">Supported Standards</p>
+                                       <p className="text-3xl font-bold text-green-600">{EINVOICING_STATISTICS.total_standards}</p>
                                     </div>
                                     <CheckCircle className="h-10 w-10 text-green-600" />
                                 </div>
@@ -514,8 +514,8 @@ export default function ComplianceMonitoringDashboard() {
                             <CardContent className="pt-6">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-sm text-slate-600">Global Coverage</p>
-                                        <p className="text-3xl font-bold text-slate-900">97%</p>
+                                       <p className="text-sm text-slate-600">Countries Covered</p>
+                                       <p className="text-3xl font-bold text-slate-900">{EINVOICING_STATISTICS.total_countries}+</p>
                                     </div>
                                     <Globe className="h-10 w-10 text-slate-600" />
                                 </div>
@@ -527,7 +527,7 @@ export default function ComplianceMonitoringDashboard() {
                     <Tabs value={activeTab} onValueChange={setActiveTab}>
                         <TabsList>
                             <TabsTrigger value="overview">Overview</TabsTrigger>
-                            <TabsTrigger value="supported">Supported (34)</TabsTrigger>
+                            <TabsTrigger value="supported">Supported ({EINVOICING_STATISTICS.total_standards})</TabsTrigger>
                             <TabsTrigger value="upcoming">Upcoming (0)</TabsTrigger>
                             {globalRegistry && <TabsTrigger value="global">Global Registry ({globalRegistry.totalCountries})</TabsTrigger>}
                             <TabsTrigger value="gaps">Gap Analysis</TabsTrigger>
@@ -601,7 +601,7 @@ export default function ComplianceMonitoringDashboard() {
                         <TabsContent value="supported">
                             <Card>
                                 <CardHeader>
-                                    <CardTitle>Currently Supported Standards (34)</CardTitle>
+                                    <CardTitle>Currently Supported Standards ({EINVOICING_STATISTICS.total_standards})</CardTitle>
                                 </CardHeader>
                                 <CardContent>
                                     <div className="space-y-3">
