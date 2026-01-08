@@ -10,7 +10,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Sparkles, Building2, Users, Globe, ArrowRight } from 'lucide-react';
 import { FTS_COLORS, FTS_GRADIENTS, FTS_LOGOS } from '@/components/community/FTSBrandColors';
-import ComplianceFooter from '@/components/compliance/ComplianceFooter';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 
 export default function CommunityPortalLogin() {
@@ -157,8 +156,6 @@ export default function CommunityPortalLogin() {
                 </div>
             </div>
 
-            {/* Footer */}
-            <ComplianceFooter />
         </div>
     );
 }
