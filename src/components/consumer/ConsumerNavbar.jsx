@@ -21,7 +21,7 @@ export default function ConsumerNavbar({ user }) {
 
     return (
         <nav className="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm">
-            <div className="max-w-7xl mx-auto px-6 py-4">
+            <div className="max-w-7xl mx-auto px-6 py-3">
                 <div className="flex items-center justify-between">
                     {/* Logo */}
                     <Link to={createPageUrl('ConsumerHome')} className="flex items-center gap-3">
@@ -42,27 +42,25 @@ export default function ConsumerNavbar({ user }) {
                     <div className="hidden md:flex items-center gap-6">
                         <Link 
                             to={createPageUrl('NanoTaskMarketplace')}
-                            className="text-slate-700 hover:text-green-600 transition-colors font-medium"
+                            className="text-slate-700 hover:text-blue-600 transition-colors"
                         >
-                            <Leaf className="inline h-4 w-4 mr-1" />
                             Tasks
                         </Link>
                         <Link 
                             to={createPageUrl('UserNanoHub')}
-                            className="text-slate-700 hover:text-green-600 transition-colors font-medium"
+                            className="text-slate-700 hover:text-blue-600 transition-colors"
                         >
-                            <TrendingUp className="inline h-4 w-4 mr-1" />
                             My Impact
                         </Link>
                         <Link 
                             to={createPageUrl('CommunityLeaderboard')}
-                            className="text-slate-700 hover:text-green-600 transition-colors font-medium"
+                            className="text-slate-700 hover:text-blue-600 transition-colors font-medium"
                         >
                             Leaderboard
                         </Link>
                         <Link 
                             to={createPageUrl('CommunityForum')}
-                            className="text-slate-700 hover:text-green-600 transition-colors font-medium"
+                            className="text-slate-700 hover:text-blue-600 transition-colors font-medium"
                         >
                             Community
                         </Link>
@@ -118,8 +116,8 @@ export default function ConsumerNavbar({ user }) {
                             <Button variant="ghost" asChild>
                                 <Link to={createPageUrl('ConsumerLogin')}>Sign In</Link>
                             </Button>
-                            <Button className="bg-green-600 hover:bg-green-700" asChild>
-                                <Link to={createPageUrl('ConsumerRegister')}>Get Started</Link>
+                            <Button className="bg-blue-600 hover:bg-blue-700 rounded-full" asChild>
+                                <Link to={createPageUrl('ConsumerRegister')}>Sign up</Link>
                             </Button>
                         </div>
                     )}
