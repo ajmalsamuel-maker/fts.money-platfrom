@@ -236,9 +236,22 @@ export default function TaxRateUpdateManager() {
     };
 
     useEffect(() => {
+        fetchUpdates();
         fetchCurrentRates();
         fetchHistory();
+        fetchAllCountryRules();
     }, []);
+
+    const fetchAllCountryRules = async () => {
+        try {
+            const response = await base44.functions.invoke('updateGlobalTaxRates', {
+                action: 'get_all_country_rules'
+            });
+            setAllCountryRules(response.data.countries || []);
+        } catch (error) {
+            console.error('Failed to fetch country rules:', error);
+        }
+    };
 
     if (authLoading) {
         return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
