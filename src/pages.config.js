@@ -334,6 +334,9 @@ import BusinessEInvoicePortal from './pages/BusinessEInvoicePortal';
 import BusinessEInvoiceLogin from './pages/BusinessEInvoiceLogin';
 import BusinessOnboarding from './pages/BusinessOnboarding';
 import BusinessInvoiceImport from './pages/BusinessInvoiceImport';
+import BusinessInvoiceCreate from './pages/BusinessInvoiceCreate';
+import BusinessInvoiceList from './pages/BusinessInvoiceList';
+import BusinessEInvoiceRegister from './pages/BusinessEInvoiceRegister';
 import __Layout from './Layout.jsx';
 
 
@@ -674,6 +677,9 @@ export const PAGES = {
     "BusinessEInvoiceLogin": BusinessEInvoiceLogin,
     "BusinessOnboarding": BusinessOnboarding,
     "BusinessInvoiceImport": BusinessInvoiceImport,
+    "BusinessInvoiceCreate": BusinessInvoiceCreate,
+    "BusinessInvoiceList": BusinessInvoiceList,
+    "BusinessEInvoiceRegister": BusinessEInvoiceRegister,
 }
 
 export const pagesConfig = {
