@@ -44,7 +44,8 @@ import VATMetricsCard from '@/components/dashboard/VATMetricsCard';
 import EInvoicingMetricsCard from '@/components/dashboard/EInvoicingMetricsCard';
 import RWAMetricsCard from '@/components/dashboard/RWAMetricsCard';
 import VASPComplianceCard from '@/components/dashboard/VASPComplianceCard';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { useNavigate } from 'react-router-dom';
 
 const quickActions = [
     { icon: Building2, labelKey: 'pspInstances', path: 'PSPProvisioning', color: 'bg-blue-50 text-blue-700 border-blue-200' },
@@ -57,9 +58,11 @@ const quickActions = [
 ];
 
 export default function FTSMoneyPlatform() {
+    const navigate = useNavigate();
     const { platformUser, loading } = usePlatformAuth();
     const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
     const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+    const [showServiceSelector, setShowServiceSelector] = useState(false);
     const { t, language } = useI18n();
     
     // Debug: Log translation test
@@ -213,7 +216,7 @@ export default function FTSMoneyPlatform() {
                             <p className="text-sm font-medium text-slate-900 truncate max-w-[150px]">{platformUser?.email}</p>
                         </div>
                         <Button 
-                            onClick={() => window.location.href = createPageUrl('PSPProvisioningWizard')}
+                            onClick={() => setShowServiceSelector(true)}
                             className="gap-2 bg-blue-600 hover:bg-blue-700"
                         >
                             <Plus className="h-4 w-4" />
@@ -690,6 +693,103 @@ export default function FTSMoneyPlatform() {
                         </div>
                     </div>
                 </div>
+
+                {/* Service Selector Dialog */}
+                <Dialog open={showServiceSelector} onOpenChange={setShowServiceSelector}>
+                    <DialogContent className="max-w-4xl">
+                        <DialogHeader>
+                            <DialogTitle>Add New Service</DialogTitle>
+                            <DialogDescription>
+                                Choose the type of service you want to add to the FTS.Money platform
+                            </DialogDescription>
+                        </DialogHeader>
+                        <div className="grid md:grid-cols-3 gap-4 py-4">
+                            <Card 
+                                className="cursor-pointer hover:border-blue-500 hover:shadow-lg transition-all"
+                                onClick={() => {
+                                    setShowServiceSelector(false);
+                                    navigate(createPageUrl('PSPProvisioningWizard'));
+                                }}
+                            >
+                                <CardContent className="p-6">
+                                    <Building2 className="h-8 w-8 text-blue-600 mb-3" />
+                                    <h3 className="font-semibold mb-2">PSP Instance</h3>
+                                    <p className="text-sm text-slate-600">Complete payment service provider platform with merchant portal</p>
+                                </CardContent>
+                            </Card>
+
+                            <Card 
+                                className="cursor-pointer hover:border-violet-500 hover:shadow-lg transition-all"
+                                onClick={() => {
+                                    setShowServiceSelector(false);
+                                    navigate(createPageUrl('ISOGatewayCustomers'));
+                                }}
+                            >
+                                <CardContent className="p-6">
+                                    <Zap className="h-8 w-8 text-violet-600 mb-3" />
+                                    <h3 className="font-semibold mb-2">ISO Gateway</h3>
+                                    <p className="text-sm text-slate-600">Message translation for ISO 8583 and ISO 20022</p>
+                                </CardContent>
+                            </Card>
+
+                            <Card 
+                                className="cursor-pointer hover:border-purple-500 hover:shadow-lg transition-all"
+                                onClick={() => {
+                                    setShowServiceSelector(false);
+                                    navigate(createPageUrl('OrchestrationCustomers'));
+                                }}
+                            >
+                                <CardContent className="p-6">
+                                    <GitBranch className="h-8 w-8 text-purple-600 mb-3" />
+                                    <h3 className="font-semibold mb-2">Orchestration</h3>
+                                    <p className="text-sm text-slate-600">Smart payment routing and optimization</p>
+                                </CardContent>
+                            </Card>
+
+                            <Card 
+                                className="cursor-pointer hover:border-cyan-500 hover:shadow-lg transition-all"
+                                onClick={() => {
+                                    setShowServiceSelector(false);
+                                    navigate(createPageUrl('CryptoGatewayCustomers'));
+                                }}
+                            >
+                                <CardContent className="p-6">
+                                    <Wallet className="h-8 w-8 text-cyan-600 mb-3" />
+                                    <h3 className="font-semibold mb-2">Crypto Gateway</h3>
+                                    <p className="text-sm text-slate-600">Cryptocurrency payment processing and VASP compliance</p>
+                                </CardContent>
+                            </Card>
+
+                            <Card 
+                                className="cursor-pointer hover:border-emerald-500 hover:shadow-lg transition-all"
+                                onClick={() => {
+                                    setShowServiceSelector(false);
+                                    navigate(createPageUrl('RWAWhiteLabelProvisioning'));
+                                }}
+                            >
+                                <CardContent className="p-6">
+                                    <Rocket className="h-8 w-8 text-emerald-600 mb-3" />
+                                    <h3 className="font-semibold mb-2">RWA Platform</h3>
+                                    <p className="text-sm text-slate-600">Real-World Asset tokenization infrastructure</p>
+                                </CardContent>
+                            </Card>
+
+                            <Card 
+                                className="cursor-pointer hover:border-indigo-500 hover:shadow-lg transition-all"
+                                onClick={() => {
+                                    setShowServiceSelector(false);
+                                    navigate(createPageUrl('FTSServiceManager'));
+                                }}
+                            >
+                                <CardContent className="p-6">
+                                    <Package className="h-8 w-8 text-indigo-600 mb-3" />
+                                    <h3 className="font-semibold mb-2">Payment Service</h3>
+                                    <p className="text-sm text-slate-600">Add payment APIs and integrations to the catalog</p>
+                                </CardContent>
+                            </Card>
+                        </div>
+                    </DialogContent>
+                </Dialog>
             </div>
         </div>
     );
