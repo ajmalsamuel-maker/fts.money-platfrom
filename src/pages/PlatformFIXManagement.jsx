@@ -70,7 +70,12 @@ export default function PlatformFIXManagement() {
 
     return (
         <div className="flex min-h-screen bg-slate-50">
-            <FTSPlatformSidebar user={platformUser} />
+            <FTSPlatformSidebar 
+                currentPage="PlatformFIXManagement"
+                userRole={platformUser?.platform_role}
+                userEmail={platformUser?.email}
+                isSuperAdmin={platformUser?.platform_role === 'super_admin'}
+            />
             
             <div className="flex-1 p-8 space-y-6">
                 <div className="flex items-center justify-between">
