@@ -851,8 +851,6 @@ export default function ComplianceMonitoringDashboard() {
                     />
                 </DialogContent>
             </Dialog>
-                </div>
-            </div>
         </div>
     );
 }
