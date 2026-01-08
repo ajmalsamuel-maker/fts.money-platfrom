@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { ArrowLeft, RefreshCw, CheckCircle, Package, DollarSign, Save, CreditCard, Shield, Activity, BarChart3, Code, Zap, Wallet, TrendingUp, Info, Loader2, Plus, FileText, Heart } from 'lucide-react';
+import { ArrowLeft, RefreshCw, CheckCircle, Package, DollarSign, Save, CreditCard, Shield, Activity, BarChart3, Code, Zap, Wallet, TrendingUp, Info, Loader2, Plus, FileText, Heart, Building2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { toast } from 'sonner';
 import { AuditLogger } from '@/components/platform/EnhancedAuditLogger';
@@ -45,6 +45,7 @@ export default function FTSServiceManager() {
     const [editingService, setEditingService] = useState(null);
     const [runningHealthChecks, setRunningHealthChecks] = useState(false);
     const [generatingDocs, setGeneratingDocs] = useState(false);
+    const [showServiceTypeSelector, setShowServiceTypeSelector] = useState(false);
 
     const { data: services = [] } = useQuery({
         queryKey: ['service-catalog'],
@@ -336,11 +337,11 @@ Make the response detailed, authoritative, and include the most recent informati
                             {generatingDocs ? t('common:status.generating') : t('platform:pages.serviceManager.generateDocs')}
                         </Button>
                         <Button 
-                            onClick={() => { setEditingService(null); setShowServiceEditor(true); }}
+                            onClick={() => setShowServiceTypeSelector(true)}
                             className="gap-2 bg-blue-600"
                         >
                             <Plus className="h-4 w-4" />
-                            {t('platform:pages.serviceManager.newService')}
+                            Add Service
                         </Button>
                         <Button 
                             onClick={() => seedMutation.mutate()}
@@ -967,6 +968,104 @@ Make the response detailed, authoritative, and include the most recent informati
                                         </div>
                                     </div>
                                 ) : null}
+                            </div>
+                        </DialogContent>
+                    </Dialog>
+
+                    {/* Service Type Selector Dialog */}
+                    <Dialog open={showServiceTypeSelector} onOpenChange={setShowServiceTypeSelector}>
+                        <DialogContent className="max-w-3xl">
+                            <DialogHeader>
+                                <DialogTitle>Add New Service</DialogTitle>
+                                <DialogDescription>
+                                    Choose the type of service you want to add to the platform
+                                </DialogDescription>
+                            </DialogHeader>
+                            <div className="grid md:grid-cols-2 gap-4 py-4">
+                                <Card 
+                                    className="cursor-pointer hover:border-blue-500 hover:shadow-lg transition-all"
+                                    onClick={() => {
+                                        setShowServiceTypeSelector(false);
+                                        setEditingService(null);
+                                        setShowServiceEditor(true);
+                                    }}
+                                >
+                                    <CardContent className="p-6">
+                                        <Package className="h-8 w-8 text-blue-600 mb-3" />
+                                        <h3 className="font-semibold mb-2">Payment Service</h3>
+                                        <p className="text-sm text-slate-600">Add a payment processing service, gateway, or API integration</p>
+                                    </CardContent>
+                                </Card>
+
+                                <Card 
+                                    className="cursor-pointer hover:border-blue-500 hover:shadow-lg transition-all"
+                                    onClick={() => {
+                                        setShowServiceTypeSelector(false);
+                                        navigate(createPageUrl('PSPProvisioning'));
+                                    }}
+                                >
+                                    <CardContent className="p-6">
+                                        <Building2 className="h-8 w-8 text-indigo-600 mb-3" />
+                                        <h3 className="font-semibold mb-2">PSP Instance</h3>
+                                        <p className="text-sm text-slate-600">Launch a complete Payment Service Provider platform</p>
+                                    </CardContent>
+                                </Card>
+
+                                <Card 
+                                    className="cursor-pointer hover:border-blue-500 hover:shadow-lg transition-all"
+                                    onClick={() => {
+                                        setShowServiceTypeSelector(false);
+                                        navigate(createPageUrl('ISOGatewayCustomers'));
+                                    }}
+                                >
+                                    <CardContent className="p-6">
+                                        <Code className="h-8 w-8 text-purple-600 mb-3" />
+                                        <h3 className="font-semibold mb-2">ISO Gateway</h3>
+                                        <p className="text-sm text-slate-600">Message translation service for ISO 8583/20022</p>
+                                    </CardContent>
+                                </Card>
+
+                                <Card 
+                                    className="cursor-pointer hover:border-blue-500 hover:shadow-lg transition-all"
+                                    onClick={() => {
+                                        setShowServiceTypeSelector(false);
+                                        navigate(createPageUrl('OrchestrationCustomers'));
+                                    }}
+                                >
+                                    <CardContent className="p-6">
+                                        <Zap className="h-8 w-8 text-orange-600 mb-3" />
+                                        <h3 className="font-semibold mb-2">Orchestration Service</h3>
+                                        <p className="text-sm text-slate-600">Smart payment routing and optimization</p>
+                                    </CardContent>
+                                </Card>
+
+                                <Card 
+                                    className="cursor-pointer hover:border-blue-500 hover:shadow-lg transition-all"
+                                    onClick={() => {
+                                        setShowServiceTypeSelector(false);
+                                        navigate(createPageUrl('CryptoGatewayCustomers'));
+                                    }}
+                                >
+                                    <CardContent className="p-6">
+                                        <TrendingUp className="h-8 w-8 text-green-600 mb-3" />
+                                        <h3 className="font-semibold mb-2">Crypto Gateway</h3>
+                                        <p className="text-sm text-slate-600">Cryptocurrency payment processing</p>
+                                    </CardContent>
+                                </Card>
+
+                                <Card 
+                                    className="cursor-pointer hover:border-blue-500 hover:shadow-lg transition-all"
+                                    onClick={() => {
+                                        setShowServiceTypeSelector(false);
+                                        navigate(createPageUrl('RWAWhiteLabelProvisioning'));
+                                    }}
+                                >
+                                    <CardContent className="p-6">
+                                        <Wallet className="h-8 w-8 text-cyan-600 mb-3" />
+                                        <h3 className="font-semibold mb-2">RWA Platform</h3>
+                                        <p className="text-sm text-slate-600">Real-World Asset tokenization platform</p>
+                                    </CardContent>
+                                </Card>
                             </div>
                         </DialogContent>
                     </Dialog>
