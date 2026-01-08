@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 import { toast } from 'sonner';
+import { createPageUrl } from '@/utils';
 
 export default function StrigaServiceManagement() {
     const { platformUser, loading: authLoading } = usePlatformAuth();
