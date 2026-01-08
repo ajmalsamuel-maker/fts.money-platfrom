@@ -29,6 +29,10 @@ import { PCIDSSComplianceDoc } from '@/components/docs/PCIDSSComplianceDoc';
 import { DigitalIdentityDoc } from '@/components/docs/DigitalIdentityDoc';
 import { PlatformPortalsGuide } from '@/components/docs/PlatformPortalsGuide';
 import NanoSustainabilityIntegration from '@/components/docs/NanoSustainabilityIntegration';
+import FIXScoreSystemDoc from '@/components/docs/FIXScoreSystemDoc';
+import NANOSustainabilityDoc from '@/components/docs/NANOSustainabilityDoc';
+import InvoicingSystemDoc from '@/components/docs/InvoicingSystemDoc';
+import PCIAdvancedFeaturesDoc from '@/components/docs/PCIAdvancedFeaturesDoc';
 import MermaidDiagram from '@/components/docs/MermaidDiagram';
 import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 import ExportDialog from '@/components/docs/ExportDialog';
@@ -193,6 +197,34 @@ export default function FTSDocumentation() {
             icon: FileText,
             content: NanoSustainabilityIntegration,
             description: 'Strategic integration of gamified sustainability platform - market analysis, revenue models, and implementation roadmap'
+        },
+        {
+            id: 'fix-score',
+            title: 'FIX Score System',
+            icon: Shield,
+            content: FIXScoreSystemDoc,
+            description: 'FTS Index merchant scoring algorithm - complete technical documentation with calculation methodology and integration guide'
+        },
+        {
+            id: 'nano-platform',
+            title: 'NANO Sustainability Platform',
+            icon: FileText,
+            content: NANOSustainabilityDoc,
+            description: 'Complete NANO ecosystem - tasks, tokens, staking, NFTs, DAO governance, and carbon offset integration'
+        },
+        {
+            id: 'invoicing-system',
+            title: 'Global Invoicing & Tax System',
+            icon: FileText,
+            content: InvoicingSystemDoc,
+            description: 'Multi-standard e-invoicing and global VAT compliance - Peppol, ZATCA, FatturaPA, CFDI with automated tax calculation'
+        },
+        {
+            id: 'pci-advanced',
+            title: 'PCI DSS Advanced Suite',
+            icon: Shield,
+            content: PCIAdvancedFeaturesDoc,
+            description: 'AI-powered continuous monitoring, predictive analytics, workflow automation, and QSA collaboration tools'
         }
     ];
 
