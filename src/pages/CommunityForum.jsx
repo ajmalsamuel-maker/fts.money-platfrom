@@ -174,6 +174,7 @@ export default function CommunityForum() {
                         </div>
                     </div>
                 </div>
-            </>
-        );
-    }
+            </div>
+        </>
+    );
+}
