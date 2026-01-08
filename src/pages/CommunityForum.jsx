@@ -166,14 +166,14 @@ export default function CommunityForum() {
                             </Card>
                         ))}
                     </div>
-                </div>
+                        </div>
 
-                {/* Sidebar */}
-                <div className="space-y-6">
-                    <DiscordWidget />
+                        {/* Sidebar */}
+                        <div className="space-y-6">
+                            <DiscordWidget />
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-        </>
-    );
-}
+            </>
+        );
+    }
