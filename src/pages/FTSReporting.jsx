@@ -22,7 +22,9 @@ import {
     Activity,
     Calendar as CalendarIcon,
     Filter,
-    RefreshCw
+    RefreshCw,
+    Trophy,
+    Leaf
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { AreaChart, Area, BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
@@ -474,6 +476,8 @@ export default function FTSReporting() {
                                                 <SelectItem value="psp_performance">PSP Performance</SelectItem>
                                                 <SelectItem value="revenue">Revenue Analysis</SelectItem>
                                                 <SelectItem value="services">Service Subscriptions</SelectItem>
+                                                <SelectItem value="fix_score">FIX Score Management</SelectItem>
+                                                <SelectItem value="nano_marketplace">Nano Sustainability</SelectItem>
                                                 <SelectItem value="audit">Audit Trail</SelectItem>
                                             </SelectContent>
                                         </Select>
