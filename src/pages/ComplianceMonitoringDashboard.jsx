@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
 import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
+import { base44 } from '@/api/base44Client';
 import { 
     AlertTriangle, 
     CheckCircle, 
@@ -25,6 +26,8 @@ export default function ComplianceMonitoringDashboard() {
     const { platformUser, loading } = usePlatformAuth();
     const [activeTab, setActiveTab] = useState('overview');
     const [lastUpdated, setLastUpdated] = useState(new Date());
+    const [refreshing, setRefreshing] = useState(false);
+    const [globalRegistry, setGlobalRegistry] = useState(null);
 
     // Compliance data structure
     const complianceData = {
@@ -418,6 +421,19 @@ export default function ComplianceMonitoringDashboard() {
         }
     };
 
+    const handleRefresh = async () => {
+        setRefreshing(true);
+        try {
+            const response = await base44.functions.invoke('checkGlobalEInvoicingMandates', {});
+            setGlobalRegistry(response.data);
+            setLastUpdated(new Date());
+        } catch (error) {
+            console.error('Error refreshing global mandates:', error);
+        } finally {
+            setRefreshing(false);
+        }
+    };
+
     if (loading) {
         return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
     }
@@ -443,9 +459,14 @@ export default function ComplianceMonitoringDashboard() {
                             <div className="text-xs text-slate-500">
                                 Last updated: {lastUpdated.toLocaleString()}
                             </div>
-                            <Button variant="outline" size="sm" onClick={() => setLastUpdated(new Date())}>
-                                <RefreshCw className="h-4 w-4 mr-2" />
-                                Refresh
+                            <Button 
+                                variant="outline" 
+                                size="sm"
+                                onClick={handleRefresh}
+                                disabled={refreshing}
+                            >
+                                <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+                                {refreshing ? 'Checking 195+ countries...' : 'Check Global Status'}
                             </Button>
                             <Button size="sm">
                                 <Download className="h-4 w-4 mr-2" />
@@ -508,6 +529,7 @@ export default function ComplianceMonitoringDashboard() {
                             <TabsTrigger value="overview">Overview</TabsTrigger>
                             <TabsTrigger value="supported">Supported (34)</TabsTrigger>
                             <TabsTrigger value="upcoming">Upcoming (0)</TabsTrigger>
+                            {globalRegistry && <TabsTrigger value="global">Global Registry ({globalRegistry.totalCountries})</TabsTrigger>}
                             <TabsTrigger value="gaps">Gap Analysis</TabsTrigger>
                             <TabsTrigger value="changes">Recent Changes</TabsTrigger>
                         </TabsList>
@@ -645,6 +667,71 @@ export default function ComplianceMonitoringDashboard() {
                                 </CardContent>
                             </Card>
                         </TabsContent>
+
+                        {/* Global Registry Tab */}
+                        {globalRegistry && (
+                            <TabsContent value="global" className="space-y-6">
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>Global E-Invoicing Registry ({globalRegistry.totalCountries} Countries)</CardTitle>
+                                        <CardDescription>Last updated: {globalRegistry.timestamp}</CardDescription>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
+                                            <div className="text-center p-3 bg-green-50 rounded-lg">
+                                                <div className="text-2xl font-bold text-green-600">{globalRegistry.statistics.mandatory}</div>
+                                                <div className="text-xs text-slate-600">Mandatory</div>
+                                            </div>
+                                            <div className="text-center p-3 bg-blue-50 rounded-lg">
+                                                <div className="text-2xl font-bold text-blue-600">{globalRegistry.statistics.active}</div>
+                                                <div className="text-xs text-slate-600">Active</div>
+                                            </div>
+                                            <div className="text-center p-3 bg-purple-50 rounded-lg">
+                                                <div className="text-2xl font-bold text-purple-600">{globalRegistry.statistics.pilot}</div>
+                                                <div className="text-xs text-slate-600">Pilot</div>
+                                            </div>
+                                            <div className="text-center p-3 bg-orange-50 rounded-lg">
+                                                <div className="text-2xl font-bold text-orange-600">{globalRegistry.statistics.planning}</div>
+                                                <div className="text-xs text-slate-600">Planning</div>
+                                            </div>
+                                            <div className="text-center p-3 bg-yellow-50 rounded-lg">
+                                                <div className="text-2xl font-bold text-yellow-600">{globalRegistry.statistics.voluntary}</div>
+                                                <div className="text-xs text-slate-600">Voluntary</div>
+                                            </div>
+                                            <div className="text-center p-3 bg-slate-50 rounded-lg">
+                                                <div className="text-2xl font-bold text-slate-600">{globalRegistry.statistics.no_mandate}</div>
+                                                <div className="text-xs text-slate-600">No Mandate</div>
+                                            </div>
+                                        </div>
+
+                                        {Object.entries(globalRegistry.regions).map(([region, countries]) => (
+                                            <div key={region} className="mb-6">
+                                                <h3 className="font-semibold mb-3">{region} ({countries.length} countries)</h3>
+                                                <div className="grid gap-2">
+                                                    {countries.map(([code, data]) => (
+                                                        <div key={code} className="flex items-center justify-between p-2 border rounded text-sm hover:bg-slate-50">
+                                                            <div>
+                                                                <span className="font-medium">{code}</span> - {data.standard} ({data.format})
+                                                            </div>
+                                                            <Badge className={
+                                                                data.status === 'mandatory' ? 'bg-green-100 text-green-800' :
+                                                                data.status === 'active' ? 'bg-blue-100 text-blue-800' :
+                                                                data.status === 'pilot' ? 'bg-purple-100 text-purple-800' :
+                                                                data.status === 'planning' ? 'bg-orange-100 text-orange-800' :
+                                                                data.status === 'voluntary' ? 'bg-yellow-100 text-yellow-800' :
+                                                                'bg-slate-100 text-slate-600'
+                                                            }>
+                                                                {data.status.toUpperCase().replace('_', ' ')}
+                                                            </Badge>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </CardContent>
+                                </Card>
+                            </TabsContent>
+                        )}
 
                         {/* Gap Analysis Tab */}
                         <TabsContent value="gaps">

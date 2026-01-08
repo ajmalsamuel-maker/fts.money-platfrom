@@ -46,6 +46,7 @@ import CommunityProductCatalog from './pages/CommunityProductCatalog';
 import CommunityUserManagement from './pages/CommunityUserManagement';
 import Compliance from './pages/Compliance';
 import ComplianceFramework from './pages/ComplianceFramework';
+import ComplianceMonitoringDashboard from './pages/ComplianceMonitoringDashboard';
 import ConsumerHome from './pages/ConsumerHome';
 import ConsumerLogin from './pages/ConsumerLogin';
 import CredentialPresentation from './pages/CredentialPresentation';
@@ -328,7 +329,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import ComplianceMonitoringDashboard from './pages/ComplianceMonitoringDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -381,6 +381,7 @@ export const PAGES = {
     "CommunityUserManagement": CommunityUserManagement,
     "Compliance": Compliance,
     "ComplianceFramework": ComplianceFramework,
+    "ComplianceMonitoringDashboard": ComplianceMonitoringDashboard,
     "ConsumerHome": ConsumerHome,
     "ConsumerLogin": ConsumerLogin,
     "CredentialPresentation": CredentialPresentation,
@@ -663,7 +664,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "ComplianceMonitoringDashboard": ComplianceMonitoringDashboard,
 }
 
 export const pagesConfig = {
