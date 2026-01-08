@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
+import { createPageUrl } from '@/utils';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -45,15 +46,15 @@ export default function NanoTaskMarketplace() {
     });
 
     const { data: userTokens } = useQuery({
-        queryKey: ['nanoTokens', user?.email],
-        queryFn: () => base44.entities.NanoToken.filter({ user_email: user?.email }),
-        enabled: !!user?.email,
+        queryKey: ['nanoTokens', currentUser?.email],
+        queryFn: () => base44.entities.NanoToken.filter({ user_email: currentUser?.email }),
+        enabled: !!currentUser?.email,
     });
 
     const { data: completedTasks = [] } = useQuery({
-        queryKey: ['taskCompletions', user?.email],
-        queryFn: () => base44.entities.TaskCompletion.filter({ user_email: user?.email }),
-        enabled: !!user?.email,
+        queryKey: ['taskCompletions', currentUser?.email],
+        queryFn: () => base44.entities.TaskCompletion.filter({ user_email: currentUser?.email }),
+        enabled: !!currentUser?.email,
     });
 
     const completeTaskMutation = useMutation({
@@ -68,7 +69,7 @@ export default function NanoTaskMarketplace() {
     const handleTaskComplete = (task) => {
         completeTaskMutation.mutate({
             task_id: task.id,
-            user_email: user.email,
+            user_email: currentUser.email,
             verification_data: verificationData,
             nano_tokens_earned: task.reward_amount,
             carbon_impact: task.carbon_impact,
