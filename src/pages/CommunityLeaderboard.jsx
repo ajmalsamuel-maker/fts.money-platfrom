@@ -90,10 +90,10 @@ export default function CommunityLeaderboard() {
     return (
         <>
             <ConsumerNavbar user={user} />
-            <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 p-6">
+            <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-white p-6">
                 <div className="max-w-5xl mx-auto space-y-6">
                     <div className="text-center space-y-2">
-                        <h1 className="text-4xl font-bold text-slate-900">Community Leaderboard</h1>
+                        <h1 className="text-4xl font-bold text-slate-900" style={{ fontFamily: 'Montserrat, sans-serif' }}>Community Leaderboard</h1>
                         <p className="text-slate-600">See who's making the biggest impact</p>
                     </div>
 

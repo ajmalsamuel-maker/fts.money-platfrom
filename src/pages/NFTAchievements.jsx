@@ -61,49 +61,49 @@ export default function NFTAchievements() {
     return (
         <>
             <ConsumerNavbar user={user} />
-            <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-slate-900 p-6">
+            <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-white p-6">
                 <div className="max-w-7xl mx-auto space-y-8">
                     {/* Hero */}
                     <div className="text-center space-y-4">
-                        <Badge className="bg-gradient-to-r from-purple-600 to-pink-600 text-white">
+                        <Badge className="bg-gradient-to-r from-blue-600 to-cyan-500 text-white">
                             Phase 3 - NFT Achievement System
                         </Badge>
-                        <h1 className="text-6xl font-bold text-white">
+                        <h1 className="text-6xl font-bold text-slate-900" style={{ fontFamily: 'Montserrat, sans-serif' }}>
                             Your Achievement NFTs
                         </h1>
-                        <p className="text-xl text-blue-200 max-w-2xl mx-auto">
+                        <p className="text-xl text-slate-600 max-w-2xl mx-auto">
                             Mint your sustainability achievements as NFTs. Own your impact on-chain.
                         </p>
                     </div>
 
                     {/* Stats */}
                     <div className="grid md:grid-cols-4 gap-4">
-                        <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                            <CardContent className="p-6 text-center text-white">
+                        <Card className="bg-white border-slate-200">
+                            <CardContent className="p-6 text-center">
                                 <div className="text-4xl mb-2">🏆</div>
-                                <div className="text-3xl font-bold">{achievements.length}</div>
-                                <p className="text-sm text-blue-200">Badges Earned</p>
+                                <div className="text-3xl font-bold text-blue-600">{achievements.length}</div>
+                                <p className="text-sm text-slate-600">Badges Earned</p>
                             </CardContent>
                         </Card>
-                        <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                            <CardContent className="p-6 text-center text-white">
+                        <Card className="bg-white border-slate-200">
+                            <CardContent className="p-6 text-center">
                                 <div className="text-4xl mb-2">💎</div>
-                                <div className="text-3xl font-bold">{achievements.filter(a => a.badge_level === 'platinum').length}</div>
-                                <p className="text-sm text-blue-200">Platinum NFTs</p>
+                                <div className="text-3xl font-bold text-cyan-600">{achievements.filter(a => a.badge_level === 'platinum').length}</div>
+                                <p className="text-sm text-slate-600">Platinum NFTs</p>
                             </CardContent>
                         </Card>
-                        <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                            <CardContent className="p-6 text-center text-white">
+                        <Card className="bg-white border-slate-200">
+                            <CardContent className="p-6 text-center">
                                 <div className="text-4xl mb-2">🔥</div>
-                                <div className="text-3xl font-bold">{((achievements.length / allBadges.length) * 100).toFixed(0)}%</div>
-                                <p className="text-sm text-blue-200">Collection Complete</p>
+                                <div className="text-3xl font-bold text-blue-600">{((achievements.length / allBadges.length) * 100).toFixed(0)}%</div>
+                                <p className="text-sm text-slate-600">Collection Complete</p>
                             </CardContent>
                         </Card>
-                        <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                            <CardContent className="p-6 text-center text-white">
+                        <Card className="bg-white border-slate-200">
+                            <CardContent className="p-6 text-center">
                                 <div className="text-4xl mb-2">⛓️</div>
-                                <div className="text-3xl font-bold">Polygon</div>
-                                <p className="text-sm text-blue-200">Blockchain</p>
+                                <div className="text-3xl font-bold text-cyan-600">Polygon</div>
+                                <p className="text-sm text-slate-600">Blockchain</p>
                             </CardContent>
                         </Card>
                     </div>
@@ -156,7 +156,7 @@ export default function NFTAchievements() {
                                                 <div className="opacity-0 group-hover:opacity-100 transition-opacity space-y-2">
                                                     <Button 
                                                         size="sm" 
-                                                        className="w-full bg-white text-purple-900 hover:bg-white/90"
+                                                        className="w-full bg-blue-600 hover:bg-blue-700 text-white"
                                                         onClick={() => handleMintNFT(badge)}
                                                     >
                                                         <Trophy className="h-3 w-3 mr-1" />
@@ -184,20 +184,20 @@ export default function NFTAchievements() {
                     </div>
 
                     {/* Info */}
-                    <Card className="bg-gradient-to-r from-purple-600/20 to-pink-600/20 border-purple-500/50 backdrop-blur-sm">
-                        <CardContent className="p-8 text-white">
-                            <h3 className="text-2xl font-bold mb-4">About Achievement NFTs</h3>
+                    <Card className="bg-gradient-to-r from-blue-50 to-cyan-50 border-blue-200">
+                        <CardContent className="p-8">
+                            <h3 className="text-2xl font-bold mb-4" style={{ fontFamily: 'Montserrat, sans-serif' }}>About Achievement NFTs</h3>
                             <div className="grid md:grid-cols-2 gap-6 text-sm">
                                 <div>
                                     <h4 className="font-semibold mb-2">✨ What are Achievement NFTs?</h4>
-                                    <p className="text-blue-200">
+                                    <p className="text-slate-600">
                                         Your sustainability achievements minted as unique NFTs on Polygon blockchain. 
                                         Own, trade, and showcase your environmental impact.
                                     </p>
                                 </div>
                                 <div>
                                     <h4 className="font-semibold mb-2">🎁 Benefits</h4>
-                                    <ul className="list-disc list-inside text-blue-200 space-y-1">
+                                    <ul className="list-disc list-inside text-slate-600 space-y-1">
                                         <li>Tradeable on OpenSea & other NFT marketplaces</li>
                                         <li>Unlock exclusive rewards & merchant discounts</li>
                                         <li>Governance rights in Project DAOs</li>

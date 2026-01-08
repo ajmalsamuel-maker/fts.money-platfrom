@@ -95,14 +95,14 @@ export default function NANOStaking() {
     return (
         <>
             <ConsumerNavbar user={user} />
-            <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-6">
+            <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-white p-6">
                 <div className="max-w-7xl mx-auto space-y-8">
                     {/* Hero */}
                     <div className="text-center space-y-4">
-                        <Badge className="bg-gradient-to-r from-purple-600 to-pink-600 text-white">
+                        <Badge className="bg-gradient-to-r from-blue-600 to-cyan-500 text-white">
                             Phase 3 - DeFi Staking
                         </Badge>
-                        <h1 className="text-5xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                        <h1 className="text-5xl font-bold text-slate-900" style={{ fontFamily: 'Montserrat, sans-serif' }}>
                             Stake Your NANO Tokens
                         </h1>
                         <p className="text-xl text-slate-600 max-w-2xl mx-auto">
@@ -126,7 +126,7 @@ export default function NANOStaking() {
                                 <p className="text-sm opacity-90">Staked NANO</p>
                             </CardContent>
                         </Card>
-                        <Card className="bg-gradient-to-br from-blue-600 to-cyan-500 text-white">
+                        <Card className="bg-gradient-to-br from-cyan-500 to-blue-400 text-white">
                             <CardContent className="p-6 text-center">
                                 <TrendingUp className="h-8 w-8 mx-auto mb-2" />
                                 <div className="text-3xl font-bold">{((staked * 0.25) / 12).toFixed(2)}</div>
@@ -203,24 +203,24 @@ export default function NANOStaking() {
                                     </div>
 
                                     {stakeAmount && (
-                                        <Card className="bg-purple-50 border-purple-200">
+                                        <Card className="bg-blue-50 border-blue-200">
                                             <CardContent className="p-4">
                                                 <h4 className="font-semibold mb-2">Projected Earnings</h4>
                                                 <div className="grid grid-cols-3 gap-4 text-center">
                                                     <div>
-                                                        <p className="text-2xl font-bold text-purple-600">
+                                                        <p className="text-2xl font-bold text-blue-600">
                                                             {(projectedEarnings / 12).toFixed(2)}
                                                         </p>
                                                         <p className="text-xs text-slate-600">Monthly</p>
                                                     </div>
                                                     <div>
-                                                        <p className="text-2xl font-bold text-purple-600">
+                                                        <p className="text-2xl font-bold text-blue-600">
                                                             {(projectedEarnings / 4).toFixed(2)}
                                                         </p>
                                                         <p className="text-xs text-slate-600">Quarterly</p>
                                                     </div>
                                                     <div>
-                                                        <p className="text-2xl font-bold text-purple-600">
+                                                        <p className="text-2xl font-bold text-blue-600">
                                                             {projectedEarnings.toFixed(2)}
                                                         </p>
                                                         <p className="text-xs text-slate-600">Yearly</p>
@@ -231,7 +231,7 @@ export default function NANOStaking() {
                                     )}
 
                                     <Button 
-                                        className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                                        className="w-full bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600"
                                         onClick={handleStake}
                                         disabled={!stakeAmount || parseFloat(stakeAmount) > balance}
                                     >
@@ -264,7 +264,7 @@ export default function NANOStaking() {
                                 </CardContent>
                             </Card>
 
-                            <Card className="bg-gradient-to-br from-purple-600 to-pink-600 text-white">
+                            <Card className="bg-gradient-to-br from-blue-600 to-cyan-500 text-white">
                                 <CardContent className="p-6 space-y-4">
                                     <div className="flex items-center gap-2">
                                         <Vote className="h-5 w-5" />
@@ -273,7 +273,7 @@ export default function NANOStaking() {
                                     <p className="text-sm opacity-90">
                                         Stakers get voting rights on Project DAOs. Decide which green projects get funded!
                                     </p>
-                                    <Button variant="outline" className="w-full bg-white text-purple-600 hover:bg-white/90">
+                                    <Button variant="outline" className="w-full bg-white text-blue-600 hover:bg-white/90">
                                         View Active Proposals
                                     </Button>
                                 </CardContent>

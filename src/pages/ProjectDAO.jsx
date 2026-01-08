@@ -97,14 +97,14 @@ export default function ProjectDAO() {
     return (
         <>
             <ConsumerNavbar user={user} />
-            <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-6">
+            <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-white p-6">
                 <div className="max-w-7xl mx-auto space-y-8">
                     {/* Hero */}
                     <div className="text-center space-y-4">
-                        <Badge className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+                        <Badge className="bg-gradient-to-r from-blue-600 to-cyan-500 text-white">
                             Phase 3 - Project DAOs
                         </Badge>
-                        <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                        <h1 className="text-5xl font-bold text-slate-900" style={{ fontFamily: 'Montserrat, sans-serif' }}>
                             Green Project Governance
                         </h1>
                         <p className="text-xl text-slate-600 max-w-3xl mx-auto">
@@ -113,7 +113,7 @@ export default function ProjectDAO() {
                     </div>
 
                     {/* Voting Power Card */}
-                    <Card className="bg-gradient-to-r from-blue-600 to-purple-600 text-white border-0">
+                    <Card className="bg-gradient-to-r from-blue-600 to-cyan-500 text-white border-0">
                         <CardContent className="p-6">
                             <div className="flex items-center justify-between">
                                 <div>
@@ -242,7 +242,7 @@ export default function ProjectDAO() {
                                         {isActive && (
                                             <div className="flex gap-3 pt-2">
                                                 <Button 
-                                                    className="flex-1 bg-green-600 hover:bg-green-700"
+                                                    className="flex-1 bg-blue-600 hover:bg-blue-700"
                                                     onClick={() => handleVote(proposal.id, 'yes')}
                                                     disabled={votingPower === 0}
                                                 >
@@ -251,7 +251,7 @@ export default function ProjectDAO() {
                                                 </Button>
                                                 <Button 
                                                     variant="outline" 
-                                                    className="flex-1 border-red-200 text-red-600 hover:bg-red-50"
+                                                    className="flex-1 border-slate-200 text-slate-600 hover:bg-slate-50"
                                                     onClick={() => handleVote(proposal.id, 'no')}
                                                     disabled={votingPower === 0}
                                                 >

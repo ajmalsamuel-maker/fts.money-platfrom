@@ -59,16 +59,16 @@ export default function CommunityForum() {
     return (
         <>
             <ConsumerNavbar user={user} />
-            <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 p-6">
+            <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-white p-6">
                 <div className="max-w-5xl mx-auto space-y-6">
                     <div className="flex justify-between items-center">
                         <div>
-                            <h1 className="text-4xl font-bold text-slate-900">Community Forum</h1>
+                            <h1 className="text-4xl font-bold text-slate-900" style={{ fontFamily: 'Montserrat, sans-serif' }}>Community Forum</h1>
                             <p className="text-slate-600">Share tips, ask questions, celebrate achievements</p>
                         </div>
                         <Dialog>
                             <DialogTrigger asChild>
-                                <Button className="bg-green-600 hover:bg-green-700">
+                                <Button className="bg-blue-600 hover:bg-blue-700">
                                     <Plus className="h-4 w-4 mr-2" />
                                     New Post
                                 </Button>
@@ -100,7 +100,7 @@ export default function CommunityForum() {
                                         onChange={(e) => setNewPost({ ...newPost, content: e.target.value })}
                                         rows={6}
                                     />
-                                    <Button onClick={handleCreatePost} className="w-full bg-green-600 hover:bg-green-700">
+                                    <Button onClick={handleCreatePost} className="w-full bg-blue-600 hover:bg-blue-700">
                                         Post
                                     </Button>
                                 </div>
@@ -149,11 +149,11 @@ export default function CommunityForum() {
                                 <CardContent className="space-y-4">
                                     <p className="text-slate-700">{post.content}</p>
                                     <div className="flex items-center gap-4 text-sm text-slate-500">
-                                        <button className="flex items-center gap-1 hover:text-green-600">
+                                        <button className="flex items-center gap-1 hover:text-blue-600">
                                             <ThumbsUp className="h-4 w-4" />
                                             {post.likes_count || 0}
                                         </button>
-                                        <button className="flex items-center gap-1 hover:text-green-600">
+                                        <button className="flex items-center gap-1 hover:text-blue-600">
                                             <MessageSquare className="h-4 w-4" />
                                             {post.comments_count || 0}
                                         </button>
