@@ -313,8 +313,8 @@ Make the response detailed, authoritative, and include the most recent informati
             <div className="flex-1 overflow-auto">
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
                     <div>
-                        <h2 className="text-lg font-semibold text-slate-900">{t('platform:pages.serviceManager.title')}</h2>
-                        <p className="text-xs text-slate-600">{t('platform:pages.serviceManager.subtitle')}</p>
+                        <h2 className="text-lg font-semibold text-slate-900">Service Catalog Manager</h2>
+                        <p className="text-xs text-slate-600">Manage and configure all platform services</p>
                     </div>
                     <div className="flex items-center gap-3">
                         <LanguageSwitcher variant="select" showLabel={true} />
@@ -325,7 +325,7 @@ Make the response detailed, authoritative, and include the most recent informati
                             className="gap-2"
                         >
                             <Heart className={`h-4 w-4 ${runningHealthChecks ? 'animate-pulse' : ''}`} />
-                            {runningHealthChecks ? t('common:status.checking') : t('platform:pages.serviceManager.runHealthChecks')}
+                            {runningHealthChecks ? 'Checking...' : 'Run Health Checks'}
                         </Button>
                         <Button 
                             onClick={() => handleGenerateDocs()}
@@ -334,7 +334,7 @@ Make the response detailed, authoritative, and include the most recent informati
                             className="gap-2"
                         >
                             <FileText className={`h-4 w-4 ${generatingDocs ? 'animate-spin' : ''}`} />
-                            {generatingDocs ? t('common:status.generating') : t('platform:pages.serviceManager.generateDocs')}
+                            {generatingDocs ? 'Generating...' : 'Generate Docs'}
                         </Button>
                         <Button 
                             onClick={() => setShowServiceTypeSelector(true)}
@@ -358,10 +358,10 @@ Make the response detailed, authoritative, and include the most recent informati
                 <div className="p-6">
                     <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                         <TabsList>
-                            <TabsTrigger value="catalog">{t('platform:pages.serviceManager.serviceCatalog')}</TabsTrigger>
-                            <TabsTrigger value="pricing">{t('platform:pages.serviceManager.pricingMatrix')}</TabsTrigger>
-                            <TabsTrigger value="health">{t('platform:pages.serviceManager.healthMonitoring')}</TabsTrigger>
-                            <TabsTrigger value="cache">{t('platform:pages.serviceManager.cacheManagement')}</TabsTrigger>
+                            <TabsTrigger value="catalog">Service Catalog</TabsTrigger>
+                            <TabsTrigger value="pricing">Pricing Matrix</TabsTrigger>
+                            <TabsTrigger value="health">Health Monitoring</TabsTrigger>
+                            <TabsTrigger value="cache">Cache Management</TabsTrigger>
                         </TabsList>
 
                         <TabsContent value="catalog" className="space-y-6">
@@ -371,7 +371,7 @@ Make the response detailed, authoritative, and include the most recent informati
                             <CardContent className="p-6">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-sm text-slate-600">{t('platform:pages.serviceManager.totalServices')}</p>
+                                        <p className="text-sm text-slate-600">Total Services</p>
                                         <p className="text-3xl font-bold text-slate-900 mt-1">{services.length}</p>
                                     </div>
                                     <Package className="h-8 w-8 text-blue-600" />
@@ -382,7 +382,7 @@ Make the response detailed, authoritative, and include the most recent informati
                             <CardContent className="p-6">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-sm text-slate-600">{t('platform:pages.serviceManager.categories')}</p>
+                                        <p className="text-sm text-slate-600">Categories</p>
                                         <p className="text-3xl font-bold text-slate-900 mt-1">{Object.keys(servicesByCategory).length}</p>
                                     </div>
                                     <CheckCircle className="h-8 w-8 text-emerald-600" />
