@@ -186,19 +186,35 @@ export default function StrigaServiceManagement() {
                                     <CardTitle>Quick Actions</CardTitle>
                                 </CardHeader>
                                 <CardContent className="space-y-3">
-                                    <Button variant="outline" className="w-full justify-start">
+                                    <Button 
+                                        variant="outline" 
+                                        className="w-full justify-start"
+                                        onClick={() => window.open('/CryptoGatewayDashboard', '_blank')}
+                                    >
                                         <ExternalLink className="w-4 h-4 mr-2" />
                                         View FTS Crypto Dashboard
                                     </Button>
-                                    <Button variant="outline" className="w-full justify-start">
+                                    <Button 
+                                        variant="outline" 
+                                        className="w-full justify-start"
+                                        onClick={() => window.open('https://docs.fts.money/crypto-gateway', '_blank')}
+                                    >
                                         <ExternalLink className="w-4 h-4 mr-2" />
                                         API Documentation
                                     </Button>
-                                    <Button variant="outline" className="w-full justify-start">
+                                    <Button 
+                                        variant="outline" 
+                                        className="w-full justify-start"
+                                        onClick={() => setSelectedTab('setup')}
+                                    >
                                         <Users className="w-4 h-4 mr-2" />
                                         Test Integration
                                     </Button>
-                                    <Button variant="outline" className="w-full justify-start">
+                                    <Button 
+                                        variant="outline" 
+                                        className="w-full justify-start"
+                                        onClick={() => window.open('/CryptoGatewayDashboard?tab=config', '_blank')}
+                                    >
                                         <CreditCard className="w-4 h-4 mr-2" />
                                         White-Label Configuration
                                     </Button>
