@@ -11,7 +11,7 @@ import { FTS_COLORS, FTS_LOGOS } from '@/components/community/FTSBrandColors';
 import { 
     LayoutDashboard, Building2, Globe, Users, Settings, LogOut,
     Rocket, FileText, DollarSign, ChevronDown, ChevronRight,
-    Code, GitBranch, Package, Briefcase, BarChart3, BookOpen, Wallet
+    Code, GitBranch, Package, Briefcase, BarChart3, BookOpen, Wallet, Leaf, Sprout
 } from 'lucide-react';
 
 export default function CommunityPortalSidebarOptimized({ currentPage, userEmail }) {
@@ -106,6 +106,15 @@ export default function CommunityPortalSidebarOptimized({ currentPage, userEmail
                 { icon: DollarSign, label: 'Billing', path: 'CommunityBilling' }
             ]
         }] : []),
+        {
+            id: 'sustainability',
+            title: 'Sustainability',
+            defaultOpen: false,
+            items: [
+                { icon: Sprout, label: 'My Impact Hub', path: 'UserNanoHub' },
+                { icon: Leaf, label: 'Task Marketplace', path: 'NanoTaskMarketplace' }
+            ]
+        },
         {
             id: 'provider',
             title: 'Provider Hub',

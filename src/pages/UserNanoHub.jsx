@@ -8,10 +8,28 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 
 export default function UserNanoHub() {
+    // Check for community session or Base44 auth
+    const [communityUser, setCommunityUser] = useState(null);
+    
+    React.useEffect(() => {
+        const sessionData = localStorage.getItem('community_portal_session');
+        if (sessionData) {
+            setCommunityUser(JSON.parse(sessionData));
+        }
+    }, []);
+
     const { data: user } = useQuery({
         queryKey: ['currentUser'],
-        queryFn: async () => await base44.auth.me(),
+        queryFn: async () => {
+            try {
+                return await base44.auth.me();
+            } catch (error) {
+                return null;
+            }
+        },
     });
+
+    const currentUser = communityUser || user;
 
     const { data: tokenBalance } = useQuery({
         queryKey: ['nanoTokens', user?.email],

@@ -16,6 +16,16 @@ export default function NanoTaskMarketplace() {
     const [verificationData, setVerificationData] = useState({});
     const queryClient = useQueryClient();
 
+    // Check for community session or Base44 auth
+    const [communityUser, setCommunityUser] = useState(null);
+    
+    React.useEffect(() => {
+        const sessionData = localStorage.getItem('community_portal_session');
+        if (sessionData) {
+            setCommunityUser(JSON.parse(sessionData));
+        }
+    }, []);
+
     const { data: user } = useQuery({
         queryKey: ['currentUser'],
         queryFn: async () => {
@@ -26,6 +36,8 @@ export default function NanoTaskMarketplace() {
             }
         },
     });
+
+    const currentUser = communityUser || user;
 
     const { data: tasks = [], isLoading: tasksLoading } = useQuery({
         queryKey: ['nanoTasks'],
@@ -195,9 +207,9 @@ export default function NanoTaskMarketplace() {
                                         </Badge>
                                     )}
 
-                                    {!user ? (
+                                    {!currentUser ? (
                                         <Button 
-                                            onClick={() => base44.auth.redirectToLogin()}
+                                            onClick={() => window.location.href = createPageUrl('CommunityPortalLogin')}
                                             className="w-full bg-green-600 hover:bg-green-700"
                                         >
                                             Login to Start Task
