@@ -217,8 +217,8 @@ export default function CarbonDashboard() {
                                         <p className="text-sm text-blue-800 mb-3">
                                             Calculate transaction-level carbon footprints
                                         </p>
-                                        <Badge variant={Deno.env.get('MASTERCARD_CARBON_API_KEY') ? 'default' : 'outline'}>
-                                            {Deno.env.get('MASTERCARD_CARBON_API_KEY') ? 'Connected' : 'Demo Mode'}
+                                        <Badge variant="outline">
+                                            Check via test calculation
                                         </Badge>
                                         <a 
                                             href="https://developer.mastercard.com/carbon-calculator" 
@@ -234,8 +234,8 @@ export default function CarbonDashboard() {
                                         <p className="text-sm text-purple-800 mb-3">
                                             Purchase verified carbon removal credits
                                         </p>
-                                        <Badge variant={Deno.env.get('STRIPE_SECRET_KEY') ? 'default' : 'outline'}>
-                                            {Deno.env.get('STRIPE_SECRET_KEY') ? 'Connected' : 'Demo Mode'}
+                                        <Badge variant="outline">
+                                            Check via test offset
                                         </Badge>
                                         <a 
                                             href="https://stripe.com/climate" 
