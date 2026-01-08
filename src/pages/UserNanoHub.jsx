@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent } from "@/components/ui/card";
@@ -32,15 +32,15 @@ export default function UserNanoHub() {
     const currentUser = communityUser || user;
 
     const { data: tokenBalance } = useQuery({
-        queryKey: ['nanoTokens', user?.email],
-        queryFn: () => base44.entities.NanoToken.filter({ user_email: user?.email }),
-        enabled: !!user?.email,
+        queryKey: ['nanoTokens', currentUser?.email],
+        queryFn: () => base44.entities.NanoToken.filter({ user_email: currentUser?.email }),
+        enabled: !!currentUser?.email,
     });
 
     const { data: completedTasks = [] } = useQuery({
-        queryKey: ['taskCompletions', user?.email],
-        queryFn: () => base44.entities.TaskCompletion.filter({ user_email: user?.email }),
-        enabled: !!user?.email,
+        queryKey: ['taskCompletions', currentUser?.email],
+        queryFn: () => base44.entities.TaskCompletion.filter({ user_email: currentUser?.email }),
+        enabled: !!currentUser?.email,
     });
 
     const balance = tokenBalance?.[0]?.balance || 0;
