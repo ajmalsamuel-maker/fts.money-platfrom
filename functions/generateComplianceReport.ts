@@ -1,5 +1,4 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
-import { GLOBAL_EINVOICING_STANDARDS } from '../components/utils/globalEInvoicingRegistry.js';
 
 Deno.serve(async (req) => {
     try {
@@ -23,8 +22,22 @@ Deno.serve(async (req) => {
             format
         } = payload;
 
+        // Mock standards data for report generation
+        const mockStandards = [
+            { country: 'Saudi Arabia', name: 'ZATCA', format: 'UBL 2.1', status: 'mandatory', regions: ['Middle East & Africa'] },
+            { country: 'Poland', name: 'KSeF', format: 'FA(3)', status: 'mandatory', regions: ['Europe'] },
+            { country: 'India', name: 'GST e-Invoice', format: 'JSON', status: 'mandatory', regions: ['Asia Pacific'] },
+            { country: 'France', name: 'Chorus Pro', format: 'UBL/CII', status: 'mandatory', regions: ['Europe'] },
+            { country: 'Italy', name: 'FatturaPA', format: 'XML', status: 'mandatory', regions: ['Europe'] },
+            { country: 'Germany', name: 'XRechnung', format: 'XML', status: 'mandatory', regions: ['Europe'] },
+            { country: 'Spain', name: 'FacturaE', format: 'XML', status: 'mandatory', regions: ['Europe'] },
+            { country: 'Brazil', name: 'NF-e', format: 'XML', status: 'mandatory', regions: ['Latin America'] },
+            { country: 'Mexico', name: 'CFDI', format: 'XML', status: 'mandatory', regions: ['Latin America'] },
+            { country: 'Malaysia', name: 'MyInvois', format: 'XML', status: 'active', regions: ['Asia Pacific'] }
+        ];
+
         // Filter standards based on criteria
-        let filteredStandards = Object.values(GLOBAL_EINVOICING_STANDARDS);
+        let filteredStandards = mockStandards;
 
         if (countries && countries.length > 0) {
             filteredStandards = filteredStandards.filter(std => countries.includes(std.country));
