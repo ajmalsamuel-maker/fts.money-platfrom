@@ -143,8 +143,9 @@ const menuSections = [
     {
         id: 'compliance',
         title: 'Compliance & Security',
-        defaultOpen: false,
+        defaultOpen: true,
         items: [
+            { label: 'E-Invoicing Compliance', description: 'Global mandates & deadlines', path: 'ComplianceMonitoringDashboard', icon: Shield, priority: true },
             { labelKey: 'leiDashboard', descKey: 'leiDashboardDesc', path: 'LEIComplianceDashboard', icon: Shield, priority: true },
             { label: 'Carbon Dashboard', description: 'Track & offset carbon footprint', path: 'CarbonDashboard', icon: Leaf, priority: true },
             { label: 'ESG Reporting', description: 'Environmental & sustainability analytics', path: 'ESGReportingDashboard', icon: TrendingUp, priority: true },
