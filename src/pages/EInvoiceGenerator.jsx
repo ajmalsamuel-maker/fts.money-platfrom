@@ -13,31 +13,9 @@ import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
 import { base44 } from '@/api/base44Client';
 import { CheckCircle, AlertTriangle, Loader2, FileText, Send, Calculator } from 'lucide-react';
 
-const EINVOICING_STANDARDS = [
-    { code: 'zatca_saudi', name: 'Saudi Arabia (ZATCA)', format: 'UBL 2.1 XML' },
-    { code: 'ksef_poland', name: 'Poland (KSeF)', format: 'FA(3) XML' },
-    { code: 'peppol_belgium', name: 'Belgium (Peppol)', format: 'UBL 2.1' },
-    { code: 'gst_india', name: 'India (GST e-Invoice)', format: 'JSON' },
-    { code: 'myinvois_malaysia', name: 'Malaysia (MyInvois)', format: 'UBL/JSON' },
-    { code: 'efatura_turkey', name: 'Turkey (e-Fatura)', format: 'UBL-TR 1.2' },
-    { code: 'chorus_france', name: 'France (Chorus Pro)', format: 'UBL/CII' },
-    { code: 'coretax_indonesia', name: 'Indonesia (Coretax)', format: 'XML' },
-    { code: 'gdt_vietnam', name: 'Vietnam (GDT)', format: 'XML' },
-    { code: 'nts_korea', name: 'South Korea (NTS)', format: 'XML' },
-    { code: 'bir_philippines', name: 'Philippines (BIR)', format: 'XML' },
-    { code: 'dian_colombia', name: 'Colombia (DIAN)', format: 'UBL 2.1' },
-    { code: 'sunat_peru', name: 'Peru (SUNAT)', format: 'UBL 2.1' },
-    { code: 'eta_egypt', name: 'Egypt (ETA)', format: 'JSON/XML' },
-    { code: 'fta_uae', name: 'UAE (FTA)', format: 'UBL 2.1/PDF' },
-    { code: 'etims_kenya', name: 'Kenya (eTIMS)', format: 'JSON' },
-    { code: 'afip_argentina', name: 'Argentina (AFIP)', format: 'XML' },
-    { code: 'cfe_uruguay', name: 'Uruguay (CFE)', format: 'XML' },
-    { code: 'jqis_japan', name: 'Japan (JQIS)', format: 'Digital' },
-    { code: 'etax_thailand', name: 'Thailand (e-Tax)', format: 'XML' },
-    { code: 'peppol_australia', name: 'Australia (Peppol)', format: 'UBL' },
-    { code: 'erca_ethiopia', name: 'Ethiopia (ERCA)', format: 'JSON/XML' },
-    { code: 'vfd_tanzania', name: 'Tanzania (VFD)', format: 'JSON' }
-];
+import { getStandardsArray } from '@/components/utils/globalEInvoicingRegistry';
+
+const EINVOICING_STANDARDS = getStandardsArray();
 
 export default function EInvoiceGenerator() {
     const { platformUser, loading } = usePlatformAuth();
@@ -179,7 +157,7 @@ export default function EInvoiceGenerator() {
                                                 <SelectContent>
                                                     {EINVOICING_STANDARDS.map(std => (
                                                         <SelectItem key={std.code} value={std.code}>
-                                                            {std.name} ({std.format})
+                                                            {std.name} • {std.format}
                                                         </SelectItem>
                                                     ))}
                                                 </SelectContent>
