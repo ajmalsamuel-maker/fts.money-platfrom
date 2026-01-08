@@ -316,6 +316,7 @@ import CarbonDashboard from './pages/CarbonDashboard';
 import NanoTaskMarketplace from './pages/NanoTaskMarketplace';
 import GreenMerchantDashboard from './pages/GreenMerchantDashboard';
 import ESGReportingDashboard from './pages/ESGReportingDashboard';
+import UserNanoHub from './pages/UserNanoHub';
 import __Layout from './Layout.jsx';
 
 
@@ -638,6 +639,7 @@ export const PAGES = {
     "NanoTaskMarketplace": NanoTaskMarketplace,
     "GreenMerchantDashboard": GreenMerchantDashboard,
     "ESGReportingDashboard": ESGReportingDashboard,
+    "UserNanoHub": UserNanoHub,
 }
 
 export const pagesConfig = {

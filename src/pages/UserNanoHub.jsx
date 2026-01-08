@@ -1,0 +1,83 @@
+import React from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { base44 } from '@/api/base44Client';
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Leaf, Zap, TrendingUp } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
+
+export default function UserNanoHub() {
+    const { data: user } = useQuery({
+        queryKey: ['currentUser'],
+        queryFn: async () => await base44.auth.me(),
+    });
+
+    const { data: tokenBalance } = useQuery({
+        queryKey: ['nanoTokens', user?.email],
+        queryFn: () => base44.entities.NanoToken.filter({ user_email: user?.email }),
+        enabled: !!user?.email,
+    });
+
+    const { data: completedTasks = [] } = useQuery({
+        queryKey: ['taskCompletions', user?.email],
+        queryFn: () => base44.entities.TaskCompletion.filter({ user_email: user?.email }),
+        enabled: !!user?.email,
+    });
+
+    const balance = tokenBalance?.[0]?.balance || 0;
+    const totalCO2 = completedTasks.reduce((sum, t) => sum + (t.carbon_impact || 0), 0);
+
+    return (
+        <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 p-6">
+            <div className="max-w-4xl mx-auto space-y-8">
+                <div className="text-center space-y-4">
+                    <h1 className="text-5xl font-bold text-green-800">Nano Sustainability Hub</h1>
+                    <p className="text-xl text-slate-700">Complete tasks, earn tokens, save the planet</p>
+                </div>
+
+                <div className="grid md:grid-cols-3 gap-6">
+                    <Card className="bg-gradient-to-br from-green-600 to-emerald-600 text-white">
+                        <CardContent className="p-6 text-center">
+                            <Zap className="h-12 w-12 mx-auto mb-3" />
+                            <p className="text-sm opacity-90 mb-2">Your Balance</p>
+                            <p className="text-4xl font-bold">{balance} NANO</p>
+                        </CardContent>
+                    </Card>
+
+                    <Card className="bg-gradient-to-br from-blue-600 to-cyan-600 text-white">
+                        <CardContent className="p-6 text-center">
+                            <Leaf className="h-12 w-12 mx-auto mb-3" />
+                            <p className="text-sm opacity-90 mb-2">CO₂ Offset</p>
+                            <p className="text-4xl font-bold">{totalCO2.toFixed(1)} kg</p>
+                        </CardContent>
+                    </Card>
+
+                    <Card className="bg-gradient-to-br from-purple-600 to-pink-600 text-white">
+                        <CardContent className="p-6 text-center">
+                            <TrendingUp className="h-12 w-12 mx-auto mb-3" />
+                            <p className="text-sm opacity-90 mb-2">Tasks Done</p>
+                            <p className="text-4xl font-bold">{completedTasks.length}</p>
+                        </CardContent>
+                    </Card>
+                </div>
+
+                <Card className="border-green-200">
+                    <CardContent className="p-8 text-center space-y-6">
+                        <h2 className="text-2xl font-bold text-slate-900">Ready to Make an Impact?</h2>
+                        <p className="text-slate-600 max-w-2xl mx-auto">
+                            Browse available sustainability tasks, complete them, and earn NANO tokens. 
+                            Each task helps offset carbon emissions and builds a greener future.
+                        </p>
+                        <Link to={createPageUrl('NanoTaskMarketplace')}>
+                            <Button size="lg" className="bg-green-600 hover:bg-green-700">
+                                <Leaf className="h-5 w-5 mr-2" />
+                                Browse Tasks
+                            </Button>
+                        </Link>
+                    </CardContent>
+                </Card>
+            </div>
+        </div>
+    );
+}
