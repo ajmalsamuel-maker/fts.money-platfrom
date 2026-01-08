@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
+import ConsumerNavbar from '@/components/consumer/ConsumerNavbar';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Leaf, Zap, TrendingUp } from 'lucide-react';
@@ -12,9 +13,14 @@ export default function UserNanoHub() {
     const [communityUser, setCommunityUser] = useState(null);
     
     React.useEffect(() => {
-        const sessionData = localStorage.getItem('community_portal_session');
-        if (sessionData) {
-            setCommunityUser(JSON.parse(sessionData));
+        // Check both consumer and community sessions
+        const consumerSession = localStorage.getItem('consumer_session');
+        const communitySession = localStorage.getItem('community_portal_session');
+        
+        if (consumerSession) {
+            setCommunityUser(JSON.parse(consumerSession));
+        } else if (communitySession) {
+            setCommunityUser(JSON.parse(communitySession));
         }
     }, []);
 
@@ -47,8 +53,10 @@ export default function UserNanoHub() {
     const totalCO2 = completedTasks.reduce((sum, t) => sum + (t.carbon_impact || 0), 0);
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 p-6">
-            <div className="max-w-4xl mx-auto space-y-8">
+        <>
+            <ConsumerNavbar user={currentUser} />
+            <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 p-6">
+                <div className="max-w-4xl mx-auto space-y-8">
                 <div className="text-center space-y-4">
                     <h1 className="text-5xl font-bold text-green-800">Nano Sustainability Hub</h1>
                     <p className="text-xl text-slate-700">Complete tasks, earn tokens, save the planet</p>
@@ -96,6 +104,6 @@ export default function UserNanoHub() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+        </>
     );
 }

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { createPageUrl } from '@/utils';
+import ConsumerNavbar from '@/components/consumer/ConsumerNavbar';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -21,9 +22,14 @@ export default function NanoTaskMarketplace() {
     const [communityUser, setCommunityUser] = useState(null);
     
     React.useEffect(() => {
-        const sessionData = localStorage.getItem('community_portal_session');
-        if (sessionData) {
-            setCommunityUser(JSON.parse(sessionData));
+        // Check both consumer and community sessions
+        const consumerSession = localStorage.getItem('consumer_session');
+        const communitySession = localStorage.getItem('community_portal_session');
+        
+        if (consumerSession) {
+            setCommunityUser(JSON.parse(consumerSession));
+        } else if (communitySession) {
+            setCommunityUser(JSON.parse(communitySession));
         }
     }, []);
 
@@ -89,8 +95,10 @@ export default function NanoTaskMarketplace() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 p-6">
-            <div className="max-w-7xl mx-auto space-y-6">
+        <>
+            <ConsumerNavbar user={currentUser} />
+            <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 p-6">
+                <div className="max-w-7xl mx-auto space-y-6">
                 {/* Header */}
                 <div className="flex justify-between items-center">
                     <div>
@@ -210,7 +218,7 @@ export default function NanoTaskMarketplace() {
 
                                     {!currentUser ? (
                                         <Button 
-                                            onClick={() => window.location.href = createPageUrl('CommunityPortalLogin')}
+                                            onClick={() => window.location.href = createPageUrl('ConsumerLogin')}
                                             className="w-full bg-green-600 hover:bg-green-700"
                                         >
                                             Login to Start Task
@@ -260,6 +268,6 @@ export default function NanoTaskMarketplace() {
                     })}
                 </div>
             </div>
-        </div>
+        </>
     );
 }

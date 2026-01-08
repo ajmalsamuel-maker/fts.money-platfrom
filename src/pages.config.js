@@ -29,6 +29,7 @@ import Balances from './pages/Balances';
 import BankMIDs from './pages/BankMIDs';
 import BlockchainConnectors from './pages/BlockchainConnectors';
 import BuyRates from './pages/BuyRates';
+import CarbonDashboard from './pages/CarbonDashboard';
 import Chargebacks from './pages/Chargebacks';
 import CheckoutComponents from './pages/CheckoutComponents';
 import CommunityAccountSettings from './pages/CommunityAccountSettings';
@@ -76,6 +77,7 @@ import DigitalIdentityWallet from './pages/DigitalIdentityWallet';
 import Disputes from './pages/Disputes';
 import Documentation from './pages/Documentation';
 import EInvoicingDashboard from './pages/EInvoicingDashboard';
+import ESGReportingDashboard from './pages/ESGReportingDashboard';
 import EnhancedAuditLogs from './pages/EnhancedAuditLogs';
 import ExchangeIntegrations from './pages/ExchangeIntegrations';
 import FATFCompliance from './pages/FATFCompliance';
@@ -108,6 +110,7 @@ import FeeTypeManagement from './pages/FeeTypeManagement';
 import FraudMonitoring from './pages/FraudMonitoring';
 import FraudPrevention from './pages/FraudPrevention';
 import GlobalStandardsRegistry from './pages/GlobalStandardsRegistry';
+import GreenMerchantDashboard from './pages/GreenMerchantDashboard';
 import ISOConfiguration from './pages/ISOConfiguration';
 import ISOCustomerRouting from './pages/ISOCustomerRouting';
 import ISOGatewayConnections from './pages/ISOGatewayConnections';
@@ -200,6 +203,7 @@ import MyPSPInstances from './pages/MyPSPInstances';
 import MyServiceRequests from './pages/MyServiceRequests';
 import MySubscriptions from './pages/MySubscriptions';
 import MyWholesaleOfferings from './pages/MyWholesaleOfferings';
+import NanoTaskMarketplace from './pages/NanoTaskMarketplace';
 import NetworkTokenization from './pages/NetworkTokenization';
 import OpenBankingConfiguration from './pages/OpenBankingConfiguration';
 import OrchestrationCustomers from './pages/OrchestrationCustomers';
@@ -305,6 +309,7 @@ import ThreeDSecure from './pages/ThreeDSecure';
 import Transactions from './pages/Transactions';
 import UsageMeteringSystem from './pages/UsageMeteringSystem';
 import UserManagement from './pages/UserManagement';
+import UserNanoHub from './pages/UserNanoHub';
 import VirtualTerminal from './pages/VirtualTerminal';
 import VirtualTerminalLogin from './pages/VirtualTerminalLogin';
 import VirtualTerminals from './pages/VirtualTerminals';
@@ -312,11 +317,8 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import CarbonDashboard from './pages/CarbonDashboard';
-import NanoTaskMarketplace from './pages/NanoTaskMarketplace';
-import GreenMerchantDashboard from './pages/GreenMerchantDashboard';
-import ESGReportingDashboard from './pages/ESGReportingDashboard';
-import UserNanoHub from './pages/UserNanoHub';
+import ConsumerHome from './pages/ConsumerHome';
+import ConsumerLogin from './pages/ConsumerLogin';
 import __Layout from './Layout.jsx';
 
 
@@ -352,6 +354,7 @@ export const PAGES = {
     "BankMIDs": BankMIDs,
     "BlockchainConnectors": BlockchainConnectors,
     "BuyRates": BuyRates,
+    "CarbonDashboard": CarbonDashboard,
     "Chargebacks": Chargebacks,
     "CheckoutComponents": CheckoutComponents,
     "CommunityAccountSettings": CommunityAccountSettings,
@@ -399,6 +402,7 @@ export const PAGES = {
     "Disputes": Disputes,
     "Documentation": Documentation,
     "EInvoicingDashboard": EInvoicingDashboard,
+    "ESGReportingDashboard": ESGReportingDashboard,
     "EnhancedAuditLogs": EnhancedAuditLogs,
     "ExchangeIntegrations": ExchangeIntegrations,
     "FATFCompliance": FATFCompliance,
@@ -431,6 +435,7 @@ export const PAGES = {
     "FraudMonitoring": FraudMonitoring,
     "FraudPrevention": FraudPrevention,
     "GlobalStandardsRegistry": GlobalStandardsRegistry,
+    "GreenMerchantDashboard": GreenMerchantDashboard,
     "ISOConfiguration": ISOConfiguration,
     "ISOCustomerRouting": ISOCustomerRouting,
     "ISOGatewayConnections": ISOGatewayConnections,
@@ -523,6 +528,7 @@ export const PAGES = {
     "MyServiceRequests": MyServiceRequests,
     "MySubscriptions": MySubscriptions,
     "MyWholesaleOfferings": MyWholesaleOfferings,
+    "NanoTaskMarketplace": NanoTaskMarketplace,
     "NetworkTokenization": NetworkTokenization,
     "OpenBankingConfiguration": OpenBankingConfiguration,
     "OrchestrationCustomers": OrchestrationCustomers,
@@ -628,6 +634,7 @@ export const PAGES = {
     "Transactions": Transactions,
     "UsageMeteringSystem": UsageMeteringSystem,
     "UserManagement": UserManagement,
+    "UserNanoHub": UserNanoHub,
     "VirtualTerminal": VirtualTerminal,
     "VirtualTerminalLogin": VirtualTerminalLogin,
     "VirtualTerminals": VirtualTerminals,
@@ -635,11 +642,8 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "CarbonDashboard": CarbonDashboard,
-    "NanoTaskMarketplace": NanoTaskMarketplace,
-    "GreenMerchantDashboard": GreenMerchantDashboard,
-    "ESGReportingDashboard": ESGReportingDashboard,
-    "UserNanoHub": UserNanoHub,
+    "ConsumerHome": ConsumerHome,
+    "ConsumerLogin": ConsumerLogin,
 }
 
 export const pagesConfig = {

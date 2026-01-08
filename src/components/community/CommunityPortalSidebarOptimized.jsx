@@ -106,15 +106,7 @@ export default function CommunityPortalSidebarOptimized({ currentPage, userEmail
                 { icon: DollarSign, label: 'Billing', path: 'CommunityBilling' }
             ]
         }] : []),
-        {
-            id: 'sustainability',
-            title: 'Sustainability',
-            defaultOpen: false,
-            items: [
-                { icon: Sprout, label: 'My Impact Hub', path: 'UserNanoHub' },
-                { icon: Leaf, label: 'Task Marketplace', path: 'NanoTaskMarketplace' }
-            ]
-        },
+
         {
             id: 'provider',
             title: 'Provider Hub',
