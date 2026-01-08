@@ -9,6 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { base44 } from '@/api/base44Client';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 import {
     BarChart,
     Bar,
@@ -94,19 +96,79 @@ export default function AdvancedReportingDashboard() {
                 timestamp: new Date().toISOString()
             });
             
-            // Download report
-            const contentType = reportConfig.format === 'csv' ? 'text/csv' : 'application/json';
-            const blob = new Blob([response.data.content], { type: contentType });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `compliance-report-${new Date().toISOString().split('T')[0]}.${reportConfig.format === 'json' || reportConfig.format === 'pdf' || reportConfig.format === 'excel' ? 'json' : reportConfig.format}`;
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-            a.remove();
+            if (reportConfig.format === 'pdf') {
+                // Generate actual PDF
+                const data = JSON.parse(response.data.content);
+                const doc = new jsPDF();
+                
+                // Title
+                doc.setFontSize(20);
+                doc.text('E-Invoicing Compliance Report', 14, 20);
+                
+                // Metadata
+                doc.setFontSize(10);
+                doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 30);
+                doc.text(`Report Type: ${reportConfig.reportType}`, 14, 35);
+                
+                // Summary
+                doc.setFontSize(14);
+                doc.text('Summary', 14, 45);
+                doc.setFontSize(10);
+                doc.text(`Total Standards: ${data.summary?.total_records || 0}`, 14, 52);
+                doc.text(`Grouped By: ${reportConfig.groupBy}`, 14, 57);
+                
+                // Data table
+                let yPos = 70;
+                doc.setFontSize(12);
+                doc.text('Standards', 14, yPos);
+                
+                const tableData = [];
+                Object.entries(data.data || {}).forEach(([group, standards]) => {
+                    standards.forEach(std => {
+                        tableData.push([
+                            std.country,
+                            std.name,
+                            std.format,
+                            std.status
+                        ]);
+                    });
+                });
+                
+                doc.autoTable({
+                    startY: yPos + 5,
+                    head: [['Country', 'Standard', 'Format', 'Status']],
+                    body: tableData,
+                    theme: 'grid',
+                    headStyles: { fillColor: [59, 130, 246] },
+                    styles: { fontSize: 8 }
+                });
+                
+                doc.save(`compliance-report-${new Date().toISOString().split('T')[0]}.pdf`);
+            } else if (reportConfig.format === 'csv') {
+                // CSV download
+                const blob = new Blob([response.data.content], { type: 'text/csv' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `compliance-report-${new Date().toISOString().split('T')[0]}.csv`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                a.remove();
+            } else {
+                // JSON/Excel download as JSON
+                const blob = new Blob([response.data.content], { type: 'application/json' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `compliance-report-${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                a.remove();
+            }
             
-            alert('Report generated successfully! Note: PDF and Excel formats download as JSON for now.');
+            alert('Report generated successfully!');
         } catch (error) {
             alert('Error generating report: ' + error.message);
         } finally {
