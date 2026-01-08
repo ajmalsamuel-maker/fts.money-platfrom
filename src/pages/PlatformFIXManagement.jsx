@@ -45,6 +45,14 @@ export default function PlatformFIXManagement() {
         return null;
     }
 
+    if (loading) {
+        return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+    }
+    
+    if (!platformUser) {
+        return null;
+    }
+
     const filteredScores = allScores.filter(score => {
         const matchesSearch = score.merchant_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                             score.merchant_email?.toLowerCase().includes(searchTerm.toLowerCase());
