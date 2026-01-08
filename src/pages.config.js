@@ -35,6 +35,7 @@ import CheckoutComponents from './pages/CheckoutComponents';
 import CommunityAccountSettings from './pages/CommunityAccountSettings';
 import CommunityAnalytics from './pages/CommunityAnalytics';
 import CommunityBilling from './pages/CommunityBilling';
+import CommunityFIXLeaderboard from './pages/CommunityFIXLeaderboard';
 import CommunityForum from './pages/CommunityForum';
 import CommunityLeaderboard from './pages/CommunityLeaderboard';
 import CommunityMarketplace from './pages/CommunityMarketplace';
@@ -166,6 +167,7 @@ import MerchantDashboard from './pages/MerchantDashboard';
 import MerchantDataTransactions from './pages/MerchantDataTransactions';
 import MerchantDisputeManagement from './pages/MerchantDisputeManagement';
 import MerchantEmailTemplates from './pages/MerchantEmailTemplates';
+import MerchantFIXDashboard from './pages/MerchantFIXDashboard';
 import MerchantHelpCenter from './pages/MerchantHelpCenter';
 import MerchantInfo from './pages/MerchantInfo';
 import MerchantInvoiceGenerator from './pages/MerchantInvoiceGenerator';
@@ -214,10 +216,10 @@ import NanoTaskMarketplace from './pages/NanoTaskMarketplace';
 import NetworkTokenization from './pages/NetworkTokenization';
 import OpenBankingConfiguration from './pages/OpenBankingConfiguration';
 import OrchestrationCustomers from './pages/OrchestrationCustomers';
-import PCIAuditReports from './pages/PCIAuditReports';
 import OrchestrationLogin from './pages/OrchestrationLogin';
 import OrchestrationPortal from './pages/OrchestrationPortal';
 import OrchestrationUserManagement from './pages/OrchestrationUserManagement';
+import PCIAuditReports from './pages/PCIAuditReports';
 import PCICompliance from './pages/PCICompliance';
 import PCIComplianceDashboard from './pages/PCIComplianceDashboard';
 import PCIContinuousMonitoring from './pages/PCIContinuousMonitoring';
@@ -262,6 +264,7 @@ import PlatformAdminLogin from './pages/PlatformAdminLogin';
 import PlatformAdminRegister from './pages/PlatformAdminRegister';
 import PlatformAuditLogs from './pages/PlatformAuditLogs';
 import PlatformBillingPortal from './pages/PlatformBillingPortal';
+import PlatformFIXManagement from './pages/PlatformFIXManagement';
 import PlatformLanguageManagement from './pages/PlatformLanguageManagement';
 import PlatformPricingConfiguration from './pages/PlatformPricingConfiguration';
 import PlatformUserManagement from './pages/PlatformUserManagement';
@@ -325,9 +328,7 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import MerchantFIXDashboard from './pages/MerchantFIXDashboard';
-import PlatformFIXManagement from './pages/PlatformFIXManagement';
-import CommunityFIXLeaderboard from './pages/CommunityFIXLeaderboard';
+import ComplianceMonitoringDashboard from './pages/ComplianceMonitoringDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -369,6 +370,7 @@ export const PAGES = {
     "CommunityAccountSettings": CommunityAccountSettings,
     "CommunityAnalytics": CommunityAnalytics,
     "CommunityBilling": CommunityBilling,
+    "CommunityFIXLeaderboard": CommunityFIXLeaderboard,
     "CommunityForum": CommunityForum,
     "CommunityLeaderboard": CommunityLeaderboard,
     "CommunityMarketplace": CommunityMarketplace,
@@ -500,6 +502,7 @@ export const PAGES = {
     "MerchantDataTransactions": MerchantDataTransactions,
     "MerchantDisputeManagement": MerchantDisputeManagement,
     "MerchantEmailTemplates": MerchantEmailTemplates,
+    "MerchantFIXDashboard": MerchantFIXDashboard,
     "MerchantHelpCenter": MerchantHelpCenter,
     "MerchantInfo": MerchantInfo,
     "MerchantInvoiceGenerator": MerchantInvoiceGenerator,
@@ -548,10 +551,10 @@ export const PAGES = {
     "NetworkTokenization": NetworkTokenization,
     "OpenBankingConfiguration": OpenBankingConfiguration,
     "OrchestrationCustomers": OrchestrationCustomers,
-    "PCIAuditReports": PCIAuditReports,
     "OrchestrationLogin": OrchestrationLogin,
     "OrchestrationPortal": OrchestrationPortal,
     "OrchestrationUserManagement": OrchestrationUserManagement,
+    "PCIAuditReports": PCIAuditReports,
     "PCICompliance": PCICompliance,
     "PCIComplianceDashboard": PCIComplianceDashboard,
     "PCIContinuousMonitoring": PCIContinuousMonitoring,
@@ -596,6 +599,7 @@ export const PAGES = {
     "PlatformAdminRegister": PlatformAdminRegister,
     "PlatformAuditLogs": PlatformAuditLogs,
     "PlatformBillingPortal": PlatformBillingPortal,
+    "PlatformFIXManagement": PlatformFIXManagement,
     "PlatformLanguageManagement": PlatformLanguageManagement,
     "PlatformPricingConfiguration": PlatformPricingConfiguration,
     "PlatformUserManagement": PlatformUserManagement,
@@ -659,9 +663,7 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "MerchantFIXDashboard": MerchantFIXDashboard,
-    "PlatformFIXManagement": PlatformFIXManagement,
-    "CommunityFIXLeaderboard": CommunityFIXLeaderboard,
+    "ComplianceMonitoringDashboard": ComplianceMonitoringDashboard,
 }
 
 export const pagesConfig = {
