@@ -13,6 +13,13 @@ import {
 } from 'lucide-react';
 export default function PlatformFIXManagement() {
     const { platformUser, loading } = usePlatformAuth();
+    const [searchTerm, setSearchTerm] = useState('');
+    const [tierFilter, setTierFilter] = useState('all');
+
+    const { data: allScores = [], isLoading } = useQuery({
+        queryKey: ['allFIXScores'],
+        queryFn: () => base44.entities.FIXScore.list('-overall_score', 500),
+    });
     
     if (loading) {
         return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
@@ -21,13 +28,6 @@ export default function PlatformFIXManagement() {
     if (!platformUser) {
         return null;
     }
-    const [searchTerm, setSearchTerm] = useState('');
-    const [tierFilter, setTierFilter] = useState('all');
-
-    const { data: allScores = [], isLoading } = useQuery({
-        queryKey: ['allFIXScores'],
-        queryFn: () => base44.entities.FIXScore.list('-overall_score', 500),
-    });
 
     const filteredScores = allScores.filter(score => {
         const matchesSearch = score.merchant_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
