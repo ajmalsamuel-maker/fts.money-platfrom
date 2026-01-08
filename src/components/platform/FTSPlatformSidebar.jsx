@@ -33,7 +33,8 @@ import {
     TrendingUp,
     Brain,
     Leaf,
-    Trophy
+    Trophy,
+    RefreshCw
 } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useI18n } from '@/components/i18n/I18nextProvider';
