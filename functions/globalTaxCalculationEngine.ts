@@ -73,6 +73,8 @@ const TAX_RULES = {
     'PE': { type: 'IGV', standard: 18, reduced: [], zero: ['exports'], digital_services: 18 },
     'AR': { type: 'IVA', standard: 21, reduced: [10.5], zero: ['exports'], digital_services: 21 },
     'UY': { type: 'IVA', standard: 22, reduced: [10], zero: ['exports'], digital_services: 22 },
+    'EC': { type: 'IVA', standard: 15, reduced: [], zero: ['exports'], digital_services: 15 },
+    'BO': { type: 'IVA', standard: 13, reduced: [], zero: ['exports'], digital_services: 13 },
     
     // Pakistan
     'PK': { type: 'Sales Tax', standard: 18, reduced: [10], zero: ['exports'], digital_services: 18 },

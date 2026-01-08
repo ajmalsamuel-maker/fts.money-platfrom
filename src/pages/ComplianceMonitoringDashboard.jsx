@@ -271,30 +271,27 @@ export default function ComplianceMonitoringDashboard() {
                 nextDeadline: null,
                 mandate: 'Mandatory since 2024',
                 implementation: '100%'
-            }
-        ],
-        upcomingMandates: [
-            {
-                country: 'Argentina',
-                standard: 'AFIP',
-                deadline: '2026-08-01',
-                daysRemaining: 205,
-                status: 'planning',
-                priority: 'medium',
-                scope: 'Progressive by activity',
-                action: 'CAE authorization integration'
             },
-            {
-                country: 'Uruguay',
-                standard: 'CFE (DGI)',
-                deadline: '2026-10-01',
-                daysRemaining: 266,
-                status: 'monitoring',
-                priority: 'low',
-                scope: 'All taxpayers',
-                action: 'Monitor DGI updates'
+            { 
+                country: 'Argentina', 
+                standard: 'AFIP', 
+                status: 'compliant', 
+                lastCheck: '2026-01-08',
+                nextDeadline: null,
+                mandate: 'Progressive mandate',
+                implementation: '100%'
+            },
+            { 
+                country: 'Uruguay', 
+                standard: 'CFE (DGI)', 
+                status: 'compliant', 
+                lastCheck: '2026-01-08',
+                nextDeadline: null,
+                mandate: 'Mandatory since 2012',
+                implementation: '100%'
             }
         ],
+        upcomingMandates: [],
         recentChanges: [
             {
                 date: '2026-01-05',
@@ -329,16 +326,16 @@ export default function ComplianceMonitoringDashboard() {
             {
                 region: 'Asia Pacific',
                 supported: 7,
-                missing: 4,
+                missing: 3,
                 priority: 'low',
                 keyGaps: ['Japan Qualified Invoice', 'Australia Peppol', 'Thailand e-Tax']
             },
             {
                 region: 'Latin America',
-                supported: 5,
-                missing: 2,
-                priority: 'low',
-                keyGaps: ['Argentina AFIP', 'Uruguay CFE']
+                supported: 7,
+                missing: 0,
+                priority: 'complete',
+                keyGaps: []
             },
             {
                 region: 'Europe',
@@ -419,7 +416,7 @@ export default function ComplianceMonitoringDashboard() {
                                 <div className="flex items-center justify-between">
                                     <div>
                                         <p className="text-sm text-slate-600">Supported Standards</p>
-                                        <p className="text-3xl font-bold text-green-600">27</p>
+                                        <p className="text-3xl font-bold text-green-600">29</p>
                                     </div>
                                     <CheckCircle className="h-10 w-10 text-green-600" />
                                 </div>
@@ -430,7 +427,7 @@ export default function ComplianceMonitoringDashboard() {
                                 <div className="flex items-center justify-between">
                                     <div>
                                         <p className="text-sm text-slate-600">Upcoming Mandates</p>
-                                        <p className="text-3xl font-bold text-orange-600">2</p>
+                                        <p className="text-3xl font-bold text-orange-600">0</p>
                                     </div>
                                     <Clock className="h-10 w-10 text-orange-600" />
                                 </div>
@@ -452,7 +449,7 @@ export default function ComplianceMonitoringDashboard() {
                                 <div className="flex items-center justify-between">
                                     <div>
                                         <p className="text-sm text-slate-600">Global Coverage</p>
-                                        <p className="text-3xl font-bold text-slate-900">77%</p>
+                                        <p className="text-3xl font-bold text-slate-900">83%</p>
                                     </div>
                                     <Globe className="h-10 w-10 text-slate-600" />
                                 </div>
@@ -464,8 +461,8 @@ export default function ComplianceMonitoringDashboard() {
                     <Tabs value={activeTab} onValueChange={setActiveTab}>
                         <TabsList>
                             <TabsTrigger value="overview">Overview</TabsTrigger>
-                            <TabsTrigger value="supported">Supported (27)</TabsTrigger>
-                            <TabsTrigger value="upcoming">Upcoming (2)</TabsTrigger>
+                            <TabsTrigger value="supported">Supported (29)</TabsTrigger>
+                            <TabsTrigger value="upcoming">Upcoming (0)</TabsTrigger>
                             <TabsTrigger value="gaps">Gap Analysis</TabsTrigger>
                             <TabsTrigger value="changes">Recent Changes</TabsTrigger>
                         </TabsList>
@@ -537,7 +534,7 @@ export default function ComplianceMonitoringDashboard() {
                         <TabsContent value="supported">
                             <Card>
                                 <CardHeader>
-                                    <CardTitle>Currently Supported Standards (27)</CardTitle>
+                                    <CardTitle>Currently Supported Standards (29)</CardTitle>
                                 </CardHeader>
                                 <CardContent>
                                     <div className="space-y-3">

@@ -338,6 +338,40 @@ const VALIDATION_RULES = {
             { rule: 'pdp_submission', message: 'Submit via PDP or direct to Chorus Pro' },
             { rule: 'e_reporting', message: 'E-reporting to tax authority required' }
         ]
+    },
+
+    // Argentina - AFIP
+    'afip_argentina': {
+        required: ['PtoVta', 'TipoComprobante', 'Concepto', 'DocTipo', 'DocNro', 'CbteFch', 'ImpTotal', 'ImpTotConc', 'ImpNeto', 'ImpIVA'],
+        formats: {
+            CUIT_Emisor: /^\d{11}$/,
+            CUIT_Receptor: /^\d{11}$/,
+            TipoComprobante: /^(01|02|03|06|07|08|11|12|13)$/,
+            CAE: /^\d{14}$/
+        },
+        business_rules: [
+            { rule: 'cae_authorization', message: 'CAE authorization from AFIP required' },
+            { rule: 'iva_calculation', message: 'IVA must be 21% or 10.5% (reduced)' },
+            { rule: 'afip_validation', message: 'Real-time AFIP web service validation' },
+            { rule: 'cae_expiry', message: 'CAE valid for 10 days from authorization' }
+        ]
+    },
+
+    // Uruguay - CFE (DGI)
+    'cfe_uruguay': {
+        required: ['Serie', 'Nro', 'FchEmis', 'RUC_Emisor', 'RUC_Receptor', 'MntTotal', 'MntNetoIVA'],
+        formats: {
+            RUC_Emisor: /^\d{12}$/,
+            RUC_Receptor: /^\d{12}$/,
+            Serie: /^[A-Z]{1}$/,
+            Nro: /^\d{1,7}$/
+        },
+        business_rules: [
+            { rule: 'dgi_authorization', message: 'DGI pre-clearance required' },
+            { rule: 'iva_22', message: 'IVA must be 22% or 10% (reduced)' },
+            { rule: 'cfe_signature', message: 'Digital signature mandatory' },
+            { rule: 'cae_number', message: 'CAE number from DGI required' }
+        ]
     }
 };
 
