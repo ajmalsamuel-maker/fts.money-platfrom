@@ -337,6 +337,7 @@ import BusinessInvoiceImport from './pages/BusinessInvoiceImport';
 import BusinessInvoiceCreate from './pages/BusinessInvoiceCreate';
 import BusinessInvoiceList from './pages/BusinessInvoiceList';
 import BusinessEInvoiceRegister from './pages/BusinessEInvoiceRegister';
+import TaxRateUpdateManager from './pages/TaxRateUpdateManager';
 import __Layout from './Layout.jsx';
 
 
@@ -680,6 +681,7 @@ export const PAGES = {
     "BusinessInvoiceCreate": BusinessInvoiceCreate,
     "BusinessInvoiceList": BusinessInvoiceList,
     "BusinessEInvoiceRegister": BusinessEInvoiceRegister,
+    "TaxRateUpdateManager": TaxRateUpdateManager,
 }
 
 export const pagesConfig = {
