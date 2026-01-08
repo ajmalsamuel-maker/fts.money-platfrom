@@ -65,9 +65,6 @@ export default function NFTAchievements() {
                 <div className="max-w-7xl mx-auto space-y-8">
                     {/* Hero */}
                     <div className="text-center space-y-4">
-                        <Badge className="bg-gradient-to-r from-blue-600 to-cyan-500 text-white">
-                            Phase 3 - NFT Achievement System
-                        </Badge>
                         <h1 className="text-6xl font-bold text-slate-900" style={{ fontFamily: 'Montserrat, sans-serif' }}>
                             Your Achievement NFTs
                         </h1>
@@ -120,14 +117,14 @@ export default function NFTAchievements() {
                                     key={badge.type} 
                                     className={`relative group transition-all duration-300 ${
                                         isLocked 
-                                            ? 'bg-slate-800/50 border-slate-700' 
+                                            ? 'bg-slate-100 border-slate-300' 
                                             : `bg-gradient-to-br ${tier.color} border-0 shadow-lg ${tier.glow}`
                                     } ${!isLocked && 'hover:scale-105 hover:shadow-2xl'}`}
                                 >
                                     <CardContent className="p-6 text-center space-y-4">
                                         {isLocked && (
-                                            <div className="absolute inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm rounded-lg">
-                                                <Lock className="h-12 w-12 text-white/50" />
+                                            <div className="absolute inset-0 flex items-center justify-center bg-white/60 backdrop-blur-sm rounded-lg">
+                                                <Lock className="h-12 w-12 text-slate-400" />
                                             </div>
                                         )}
                                         
@@ -136,7 +133,7 @@ export default function NFTAchievements() {
                                         </div>
                                         
                                         <div>
-                                            <h3 className={`font-bold ${isLocked ? 'text-slate-400' : 'text-white'}`}>
+                                            <h3 className={`font-bold ${isLocked ? 'text-slate-500' : 'text-white'}`}>
                                                 {badge.name}
                                             </h3>
                                             {!isLocked && (
