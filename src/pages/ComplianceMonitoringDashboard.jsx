@@ -5,9 +5,12 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
 import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
 import { base44 } from '@/api/base44Client';
+import CountryWorkflowGuide from '@/components/einvoicing/CountryWorkflowGuide';
+import AdvancedReportingDashboard from '@/components/einvoicing/AdvancedReportingDashboard';
 import { 
     AlertTriangle, 
     CheckCircle, 
@@ -19,7 +22,8 @@ import {
     Settings,
     Bell,
     Download,
-    RefreshCw
+    RefreshCw,
+    Book
 } from 'lucide-react';
 
 export default function ComplianceMonitoringDashboard() {
@@ -28,6 +32,8 @@ export default function ComplianceMonitoringDashboard() {
     const [lastUpdated, setLastUpdated] = useState(new Date());
     const [refreshing, setRefreshing] = useState(false);
     const [globalRegistry, setGlobalRegistry] = useState(null);
+    const [selectedCountry, setSelectedCountry] = useState(null);
+    const [showWorkflowGuide, setShowWorkflowGuide] = useState(false);
 
     // Compliance data structure
     const complianceData = {
@@ -525,13 +531,14 @@ export default function ComplianceMonitoringDashboard() {
 
                     {/* Tabs */}
                     <Tabs value={activeTab} onValueChange={setActiveTab}>
-                        <TabsList>
+                        <TabsList className="grid w-full grid-cols-7">
                             <TabsTrigger value="overview">Overview</TabsTrigger>
                             <TabsTrigger value="supported">Supported ({EINVOICING_STATISTICS.total_standards})</TabsTrigger>
                             <TabsTrigger value="upcoming">Upcoming (0)</TabsTrigger>
                             {globalRegistry && <TabsTrigger value="global">Global Registry ({globalRegistry.totalCountries})</TabsTrigger>}
                             <TabsTrigger value="gaps">Gap Analysis</TabsTrigger>
                             <TabsTrigger value="changes">Recent Changes</TabsTrigger>
+                            <TabsTrigger value="reports">Reports</TabsTrigger>
                         </TabsList>
 
                         {/* Overview Tab */}
@@ -615,10 +622,21 @@ export default function ComplianceMonitoringDashboard() {
                                                         <div className="text-xs text-slate-500 mt-1">{standard.mandate}</div>
                                                     </div>
                                                 </div>
-                                                <div className="text-right">
+                                                <div className="text-right flex flex-col gap-2">
                                                     <Badge className="bg-green-100 text-green-800">Compliant</Badge>
-                                                    <div className="text-xs text-slate-500 mt-2">Last checked: {standard.lastCheck}</div>
-                                                    <div className="text-xs font-semibold text-green-700 mt-1">{standard.implementation} Implemented</div>
+                                                    <div className="text-xs text-slate-500">Last checked: {standard.lastCheck}</div>
+                                                    <div className="text-xs font-semibold text-green-700">{standard.implementation} Implemented</div>
+                                                    <Button 
+                                                        size="sm" 
+                                                        variant="outline"
+                                                        onClick={() => {
+                                                            setSelectedCountry(standard.country);
+                                                            setShowWorkflowGuide(true);
+                                                        }}
+                                                    >
+                                                        <Book className="h-3 w-3 mr-1" />
+                                                        View Guide
+                                                    </Button>
                                                 </div>
                                             </div>
                                         ))}
@@ -812,7 +830,27 @@ export default function ComplianceMonitoringDashboard() {
                                 </CardContent>
                             </Card>
                         </TabsContent>
+
+                        {/* Advanced Reports Tab */}
+                        <TabsContent value="reports">
+                            <AdvancedReportingDashboard />
+                        </TabsContent>
                     </Tabs>
+                </div>
+            </div>
+
+            {/* Workflow Guide Dialog */}
+            <Dialog open={showWorkflowGuide} onOpenChange={setShowWorkflowGuide}>
+                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                    <DialogHeader>
+                        <DialogTitle>Integration Workflow Guide</DialogTitle>
+                    </DialogHeader>
+                    <CountryWorkflowGuide 
+                        countryCode={selectedCountry?.toLowerCase().replace(/\s+/g, '_')}
+                        onClose={() => setShowWorkflowGuide(false)}
+                    />
+                </DialogContent>
+            </Dialog>
                 </div>
             </div>
         </div>
