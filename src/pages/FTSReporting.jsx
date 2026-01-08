@@ -420,70 +420,180 @@ export default function FTSReporting() {
                         </TabsList>
 
                         <TabsContent value="visualizations" className="space-y-6">
-                            {/* Revenue Time Series */}
+                            {/* FIX Score Distribution */}
                             <Card>
                                 <CardHeader>
-                                    <CardTitle>Revenue Trend (Last 30 Days)</CardTitle>
+                                    <CardTitle>FIX Score Distribution (All Merchants)</CardTitle>
                                 </CardHeader>
                                 <CardContent>
                                     <ResponsiveContainer width="100%" height={300}>
-                                        <AreaChart data={revenueTimeSeriesData}>
-                                            <defs>
-                                                <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                                                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
-                                                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
-                                                </linearGradient>
-                                            </defs>
+                                        <BarChart data={[
+                                            { name: 'Bronze', value: fixScores.filter(f => f.score_tier === 'bronze').length },
+                                            { name: 'Silver', value: fixScores.filter(f => f.score_tier === 'silver').length },
+                                            { name: 'Gold', value: fixScores.filter(f => f.score_tier === 'gold').length },
+                                            { name: 'Platinum', value: fixScores.filter(f => f.score_tier === 'platinum').length },
+                                            { name: 'Diamond', value: fixScores.filter(f => f.score_tier === 'diamond').length }
+                                        ]}>
                                             <CartesianGrid strokeDasharray="3 3" />
-                                            <XAxis dataKey="date" />
+                                            <XAxis dataKey="name" />
                                             <YAxis />
                                             <Tooltip />
                                             <Legend />
-                                            <Area type="monotone" dataKey="revenue" stroke="#3b82f6" fillOpacity={1} fill="url(#colorRevenue)" />
-                                        </AreaChart>
+                                            <Bar dataKey="value" fill="#6366f1" />
+                                        </BarChart>
                                     </ResponsiveContainer>
                                 </CardContent>
                             </Card>
 
                             <div className="grid grid-cols-2 gap-6">
-                                {/* Revenue by PSP */}
+                                {/* RWA Asset Types */}
                                 <Card>
                                     <CardHeader>
-                                        <CardTitle>Top PSPs by Revenue</CardTitle>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <ResponsiveContainer width="100%" height={300}>
-                                            <BarChart data={revenueByPSP}>
-                                                <CartesianGrid strokeDasharray="3 3" />
-                                                <XAxis dataKey="name" />
-                                                <YAxis />
-                                                <Tooltip />
-                                                <Legend />
-                                                <Bar dataKey="revenue" fill="#8b5cf6" />
-                                            </BarChart>
-                                        </ResponsiveContainer>
-                                    </CardContent>
-                                </Card>
-
-                                {/* PSP Status Distribution */}
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle>PSP Status Distribution</CardTitle>
+                                        <CardTitle>RWA Assets by Type</CardTitle>
                                     </CardHeader>
                                     <CardContent>
                                         <ResponsiveContainer width="100%" height={300}>
                                             <PieChart>
                                                 <Pie
-                                                    data={pspStatusData}
+                                                    data={[
+                                                        { name: 'Real Estate', value: rwaAssets.filter(a => a.asset_type === 'real_estate').length },
+                                                        { name: 'Treasury Bill', value: rwaAssets.filter(a => a.asset_type === 'treasury_bill').length },
+                                                        { name: 'Private Credit', value: rwaAssets.filter(a => a.asset_type === 'private_credit').length },
+                                                        { name: 'Commodity', value: rwaAssets.filter(a => a.asset_type === 'commodity').length },
+                                                        { name: 'Other', value: rwaAssets.filter(a => !['real_estate', 'treasury_bill', 'private_credit', 'commodity'].includes(a.asset_type)).length }
+                                                    ].filter(d => d.value > 0)}
                                                     cx="50%"
                                                     cy="50%"
                                                     labelLine={false}
                                                     label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}
                                                     outerRadius={80}
-                                                    fill="#8884d8"
                                                     dataKey="value"
                                                 >
-                                                    {pspStatusData.map((entry, index) => (
+                                                    {['real_estate', 'treasury_bill', 'private_credit', 'commodity'].map((_, index) => (
+                                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                                    ))}
+                                                </Pie>
+                                                <Tooltip />
+                                            </PieChart>
+                                        </ResponsiveContainer>
+                                    </CardContent>
+                                </Card>
+
+                                {/* Tax Coverage */}
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>Global Tax Rate Coverage</CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <ResponsiveContainer width="100%" height={300}>
+                                            <PieChart>
+                                                <Pie
+                                                    data={[
+                                                        { name: 'Active', value: taxRates.filter(t => t.is_active).length },
+                                                        { name: 'Inactive', value: taxRates.filter(t => !t.is_active).length }
+                                                    ]}
+                                                    cx="50%"
+                                                    cy="50%"
+                                                    labelLine={false}
+                                                    label={({ name, value }) => `${name}: ${value} countries`}
+                                                    outerRadius={80}
+                                                    dataKey="value"
+                                                >
+                                                    <Cell fill="#f59e0b" />
+                                                    <Cell fill="#d1d5db" />
+                                                </Pie>
+                                                <Tooltip />
+                                            </PieChart>
+                                        </ResponsiveContainer>
+                                    </CardContent>
+                                </Card>
+                            </div>
+
+                            <div className="grid grid-cols-3 gap-6">
+                                {/* E-Invoicing Status */}
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>E-Invoice Status</CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <ResponsiveContainer width="100%" height={250}>
+                                            <PieChart>
+                                                <Pie
+                                                    data={[
+                                                        { name: 'Submitted', value: invoices.filter(i => i.status === 'submitted').length },
+                                                        { name: 'Approved', value: invoices.filter(i => i.status === 'approved').length },
+                                                        { name: 'Rejected', value: invoices.filter(i => i.status === 'rejected').length }
+                                                    ].filter(d => d.value > 0)}
+                                                    cx="50%"
+                                                    cy="50%"
+                                                    labelLine={false}
+                                                    label={({ name, percent }) => `${name}`}
+                                                    outerRadius={70}
+                                                    dataKey="value"
+                                                >
+                                                    <Cell fill="#ef4444" />
+                                                    <Cell fill="#10b981" />
+                                                    <Cell fill="#f59e0b" />
+                                                </Pie>
+                                                <Tooltip />
+                                            </PieChart>
+                                        </ResponsiveContainer>
+                                    </CardContent>
+                                </Card>
+
+                                {/* ESG Metrics */}
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>ESG Compliance Status</CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <ResponsiveContainer width="100%" height={250}>
+                                            <PieChart>
+                                                <Pie
+                                                    data={[
+                                                        { name: 'CSRD Compliant', value: esgReports.filter(e => e.csrd_compliant).length },
+                                                        { name: 'Non-Compliant', value: esgReports.filter(e => !e.csrd_compliant).length }
+                                                    ]}
+                                                    cx="50%"
+                                                    cy="50%"
+                                                    labelLine={false}
+                                                    label={({ name, percent }) => `${name}`}
+                                                    outerRadius={70}
+                                                    dataKey="value"
+                                                >
+                                                    <Cell fill="#10b981" />
+                                                    <Cell fill="#ef4444" />
+                                                </Pie>
+                                                <Tooltip />
+                                            </PieChart>
+                                        </ResponsiveContainer>
+                                    </CardContent>
+                                </Card>
+
+                                {/* Nano Tasks by Type */}
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>Nano Tasks Distribution</CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <ResponsiveContainer width="100%" height={250}>
+                                            <PieChart>
+                                                <Pie
+                                                    data={[
+                                                        { name: 'Plant Tree', value: nanoTasks.filter(t => t.task_type === 'plant_tree').length },
+                                                        { name: 'Reduce Plastic', value: nanoTasks.filter(t => t.task_type === 'reduce_plastic').length },
+                                                        { name: 'Transport', value: nanoTasks.filter(t => t.task_type === 'public_transport').length },
+                                                        { name: 'Energy Saving', value: nanoTasks.filter(t => t.task_type === 'energy_saving').length },
+                                                        { name: 'Other', value: nanoTasks.filter(t => !['plant_tree', 'reduce_plastic', 'public_transport', 'energy_saving'].includes(t.task_type)).length }
+                                                    ].filter(d => d.value > 0)}
+                                                    cx="50%"
+                                                    cy="50%"
+                                                    labelLine={false}
+                                                    label={({ name }) => `${name}`}
+                                                    outerRadius={70}
+                                                    dataKey="value"
+                                                >
+                                                    {[0, 1, 2, 3, 4].map(index => (
                                                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                                     ))}
                                                 </Pie>
