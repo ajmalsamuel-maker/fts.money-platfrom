@@ -21,6 +21,32 @@ Deno.serve(async (req) => {
         };
 
         switch (action) {
+            case 'reset_password': {
+                // Reset password for existing user
+                if (!email || !password) {
+                    return Response.json({ success: false, error: 'Email and password required' }, { status: 400 });
+                }
+
+                const allUsers = await base44.asServiceRole.entities.AuthUser.list();
+                const users = allUsers.filter(u => u.email === email && u.account_type === 'community');
+
+                if (users.length === 0) {
+                    return Response.json({ success: false, error: 'User not found' }, { status: 404 });
+                }
+
+                const user = users[0];
+                const hashedPassword = await hashPassword(password);
+
+                await base44.asServiceRole.entities.AuthUser.update(user.id, {
+                    password_hash: hashedPassword
+                });
+
+                return Response.json({ 
+                    success: true, 
+                    message: 'Password reset successfully' 
+                });
+            }
+
             case 'register': {
                 // Register a new community user
                 if (!email || !password || !full_name) {
