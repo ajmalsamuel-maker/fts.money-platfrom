@@ -31,7 +31,8 @@ import {
     Key,
     AlertCircle,
     TrendingUp,
-    Brain
+    Brain,
+    Leaf
 } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useI18n } from '@/components/i18n/I18nextProvider';
@@ -143,6 +144,7 @@ const menuSections = [
         defaultOpen: false,
         items: [
             { labelKey: 'leiDashboard', descKey: 'leiDashboardDesc', path: 'LEIComplianceDashboard', icon: Shield, priority: true },
+            { label: 'Carbon Dashboard', description: 'Track & offset carbon footprint', path: 'CarbonDashboard', icon: Leaf, priority: true },
             { labelKey: 'complianceTesting', descKey: 'complianceTestingDesc', path: 'FTSComplianceTesting', icon: TestTube2 },
             { labelKey: 'platformAuditLogs', descKey: 'platformAuditLogsDesc', path: 'PlatformAuditLogs', icon: FileText, priority: true },
             { labelKey: 'accessLogs', descKey: 'accessLogsDesc', path: 'EnhancedAuditLogs', icon: FileText },
