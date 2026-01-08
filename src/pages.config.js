@@ -35,6 +35,8 @@ import CheckoutComponents from './pages/CheckoutComponents';
 import CommunityAccountSettings from './pages/CommunityAccountSettings';
 import CommunityAnalytics from './pages/CommunityAnalytics';
 import CommunityBilling from './pages/CommunityBilling';
+import CommunityForum from './pages/CommunityForum';
+import CommunityLeaderboard from './pages/CommunityLeaderboard';
 import CommunityMarketplace from './pages/CommunityMarketplace';
 import CommunityPSPProvisioning from './pages/CommunityPSPProvisioning';
 import CommunityPortalDashboard from './pages/CommunityPortalDashboard';
@@ -43,6 +45,8 @@ import CommunityProductCatalog from './pages/CommunityProductCatalog';
 import CommunityUserManagement from './pages/CommunityUserManagement';
 import Compliance from './pages/Compliance';
 import ComplianceFramework from './pages/ComplianceFramework';
+import ConsumerHome from './pages/ConsumerHome';
+import ConsumerLogin from './pages/ConsumerLogin';
 import CredentialPresentation from './pages/CredentialPresentation';
 import CryptoAPIKeys from './pages/CryptoAPIKeys';
 import CryptoAnalytics from './pages/CryptoAnalytics';
@@ -110,6 +114,7 @@ import FeeTypeManagement from './pages/FeeTypeManagement';
 import FraudMonitoring from './pages/FraudMonitoring';
 import FraudPrevention from './pages/FraudPrevention';
 import GlobalStandardsRegistry from './pages/GlobalStandardsRegistry';
+import GreenBondsMarketplace from './pages/GreenBondsMarketplace';
 import GreenMerchantDashboard from './pages/GreenMerchantDashboard';
 import ISOConfiguration from './pages/ISOConfiguration';
 import ISOCustomerRouting from './pages/ISOCustomerRouting';
@@ -203,14 +208,16 @@ import MyPSPInstances from './pages/MyPSPInstances';
 import MyServiceRequests from './pages/MyServiceRequests';
 import MySubscriptions from './pages/MySubscriptions';
 import MyWholesaleOfferings from './pages/MyWholesaleOfferings';
+import NANOStaking from './pages/NANOStaking';
+import NFTAchievements from './pages/NFTAchievements';
 import NanoTaskMarketplace from './pages/NanoTaskMarketplace';
 import NetworkTokenization from './pages/NetworkTokenization';
 import OpenBankingConfiguration from './pages/OpenBankingConfiguration';
 import OrchestrationCustomers from './pages/OrchestrationCustomers';
+import PCIAuditReports from './pages/PCIAuditReports';
 import OrchestrationLogin from './pages/OrchestrationLogin';
 import OrchestrationPortal from './pages/OrchestrationPortal';
 import OrchestrationUserManagement from './pages/OrchestrationUserManagement';
-import PCIAuditReports from './pages/PCIAuditReports';
 import PCICompliance from './pages/PCICompliance';
 import PCIComplianceDashboard from './pages/PCIComplianceDashboard';
 import PCIContinuousMonitoring from './pages/PCIContinuousMonitoring';
@@ -261,6 +268,7 @@ import PlatformUserManagement from './pages/PlatformUserManagement';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import ProductTemplateLibrary from './pages/ProductTemplateLibrary';
 import Products from './pages/Products';
+import ProjectDAO from './pages/ProjectDAO';
 import PublicSupport from './pages/PublicSupport';
 import QSAPortalDashboard from './pages/QSAPortalDashboard';
 import QSAPortalLogin from './pages/QSAPortalLogin';
@@ -317,16 +325,9 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import ConsumerHome from './pages/ConsumerHome';
-import ConsumerLogin from './pages/ConsumerLogin';
-import CommunityLeaderboard from './pages/CommunityLeaderboard';
-import CommunityForum from './pages/CommunityForum';
-import GreenBondsMarketplace from './pages/GreenBondsMarketplace';
-import NFTAchievements from './pages/NFTAchievements';
-import NANOStaking from './pages/NANOStaking';
-import ProjectDAO from './pages/ProjectDAO';
 import MerchantFIXDashboard from './pages/MerchantFIXDashboard';
 import PlatformFIXManagement from './pages/PlatformFIXManagement';
+import CommunityFIXLeaderboard from './pages/CommunityFIXLeaderboard';
 import __Layout from './Layout.jsx';
 
 
@@ -368,6 +369,8 @@ export const PAGES = {
     "CommunityAccountSettings": CommunityAccountSettings,
     "CommunityAnalytics": CommunityAnalytics,
     "CommunityBilling": CommunityBilling,
+    "CommunityForum": CommunityForum,
+    "CommunityLeaderboard": CommunityLeaderboard,
     "CommunityMarketplace": CommunityMarketplace,
     "CommunityPSPProvisioning": CommunityPSPProvisioning,
     "CommunityPortalDashboard": CommunityPortalDashboard,
@@ -376,6 +379,8 @@ export const PAGES = {
     "CommunityUserManagement": CommunityUserManagement,
     "Compliance": Compliance,
     "ComplianceFramework": ComplianceFramework,
+    "ConsumerHome": ConsumerHome,
+    "ConsumerLogin": ConsumerLogin,
     "CredentialPresentation": CredentialPresentation,
     "CryptoAPIKeys": CryptoAPIKeys,
     "CryptoAnalytics": CryptoAnalytics,
@@ -443,6 +448,7 @@ export const PAGES = {
     "FraudMonitoring": FraudMonitoring,
     "FraudPrevention": FraudPrevention,
     "GlobalStandardsRegistry": GlobalStandardsRegistry,
+    "GreenBondsMarketplace": GreenBondsMarketplace,
     "GreenMerchantDashboard": GreenMerchantDashboard,
     "ISOConfiguration": ISOConfiguration,
     "ISOCustomerRouting": ISOCustomerRouting,
@@ -536,14 +542,16 @@ export const PAGES = {
     "MyServiceRequests": MyServiceRequests,
     "MySubscriptions": MySubscriptions,
     "MyWholesaleOfferings": MyWholesaleOfferings,
+    "NANOStaking": NANOStaking,
+    "NFTAchievements": NFTAchievements,
     "NanoTaskMarketplace": NanoTaskMarketplace,
     "NetworkTokenization": NetworkTokenization,
     "OpenBankingConfiguration": OpenBankingConfiguration,
     "OrchestrationCustomers": OrchestrationCustomers,
+    "PCIAuditReports": PCIAuditReports,
     "OrchestrationLogin": OrchestrationLogin,
     "OrchestrationPortal": OrchestrationPortal,
     "OrchestrationUserManagement": OrchestrationUserManagement,
-    "PCIAuditReports": PCIAuditReports,
     "PCICompliance": PCICompliance,
     "PCIComplianceDashboard": PCIComplianceDashboard,
     "PCIContinuousMonitoring": PCIContinuousMonitoring,
@@ -594,6 +602,7 @@ export const PAGES = {
     "PrivacyPolicy": PrivacyPolicy,
     "ProductTemplateLibrary": ProductTemplateLibrary,
     "Products": Products,
+    "ProjectDAO": ProjectDAO,
     "PublicSupport": PublicSupport,
     "QSAPortalDashboard": QSAPortalDashboard,
     "QSAPortalLogin": QSAPortalLogin,
@@ -650,16 +659,9 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "ConsumerHome": ConsumerHome,
-    "ConsumerLogin": ConsumerLogin,
-    "CommunityLeaderboard": CommunityLeaderboard,
-    "CommunityForum": CommunityForum,
-    "GreenBondsMarketplace": GreenBondsMarketplace,
-    "NFTAchievements": NFTAchievements,
-    "NANOStaking": NANOStaking,
-    "ProjectDAO": ProjectDAO,
     "MerchantFIXDashboard": MerchantFIXDashboard,
     "PlatformFIXManagement": PlatformFIXManagement,
+    "CommunityFIXLeaderboard": CommunityFIXLeaderboard,
 }
 
 export const pagesConfig = {
