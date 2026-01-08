@@ -119,7 +119,7 @@ export default function NANOStaking() {
                                 <p className="text-sm opacity-90">Available NANO</p>
                             </CardContent>
                         </Card>
-                        <Card className="bg-gradient-to-br from-purple-600 to-pink-600 text-white">
+                        <Card className="bg-gradient-to-br from-blue-600 to-cyan-500 text-white">
                             <CardContent className="p-6 text-center">
                                 <Lock className="h-8 w-8 mx-auto mb-2" />
                                 <div className="text-3xl font-bold">{staked.toFixed(2)}</div>
