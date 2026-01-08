@@ -18,7 +18,13 @@ export default function NanoTaskMarketplace() {
 
     const { data: user } = useQuery({
         queryKey: ['currentUser'],
-        queryFn: async () => await base44.auth.me(),
+        queryFn: async () => {
+            try {
+                return await base44.auth.me();
+            } catch (error) {
+                return null;
+            }
+        },
     });
 
     const { data: tasks = [], isLoading: tasksLoading } = useQuery({
@@ -189,7 +195,14 @@ export default function NanoTaskMarketplace() {
                                         </Badge>
                                     )}
 
-                                    {alreadyCompleted ? (
+                                    {!user ? (
+                                        <Button 
+                                            onClick={() => base44.auth.redirectToLogin()}
+                                            className="w-full bg-green-600 hover:bg-green-700"
+                                        >
+                                            Login to Start Task
+                                        </Button>
+                                    ) : alreadyCompleted ? (
                                         <Button disabled className="w-full">
                                             <CheckCircle className="h-4 w-4 mr-2" />
                                             Completed
