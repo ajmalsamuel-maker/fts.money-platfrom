@@ -7,11 +7,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { 
     Wallet, CreditCard, ArrowLeftRight, Building2, Users, 
-    TrendingUp, AlertCircle, CheckCircle2, Clock, ExternalLink 
+    TrendingUp, AlertCircle, CheckCircle2, Clock, ExternalLink, Copy, Check
 } from 'lucide-react';
 import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
+import { toast } from 'sonner';
 
 export default function StrigaServiceManagement() {
     const { platformUser, loading: authLoading } = usePlatformAuth();
