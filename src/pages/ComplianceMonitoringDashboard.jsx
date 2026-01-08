@@ -109,48 +109,74 @@ export default function ComplianceMonitoringDashboard() {
                 nextDeadline: null,
                 mandate: 'Mandatory',
                 implementation: '100%'
+            },
+            { 
+                country: 'Poland', 
+                standard: 'KSeF', 
+                status: 'compliant', 
+                lastCheck: '2026-01-08',
+                nextDeadline: '2026-02-01',
+                mandate: 'B2B mandatory (Feb 2026)',
+                implementation: '100%'
+            },
+            { 
+                country: 'Belgium', 
+                standard: 'B2B Peppol', 
+                status: 'compliant', 
+                lastCheck: '2026-01-08',
+                nextDeadline: '2026-01-01',
+                mandate: 'B2B mandatory',
+                implementation: '100%'
+            },
+            { 
+                country: 'India', 
+                standard: 'GST e-Invoice', 
+                status: 'compliant', 
+                lastCheck: '2026-01-08',
+                nextDeadline: null,
+                mandate: 'Turnover > ₹5 crore',
+                implementation: '100%'
+            },
+            { 
+                country: 'Malaysia', 
+                standard: 'MyInvois', 
+                status: 'compliant', 
+                lastCheck: '2026-01-08',
+                nextDeadline: '2027-01-01',
+                mandate: 'Phased rollout',
+                implementation: '100%'
             }
         ],
         upcomingMandates: [
             {
-                country: 'Poland',
-                standard: 'KSeF',
-                deadline: '2026-02-01',
-                daysRemaining: 24,
-                status: 'planning',
-                priority: 'critical',
-                scope: 'Large taxpayers (PLN 200M+)',
-                action: 'Integration development required'
-            },
-            {
-                country: 'Belgium',
-                standard: 'B2B Peppol',
-                deadline: '2026-04-01',
-                daysRemaining: 83,
+                country: 'Romania',
+                standard: 'RO e-Factura',
+                deadline: '2026-07-01',
+                daysRemaining: 174,
                 status: 'planning',
                 priority: 'high',
                 scope: 'All B2B transactions',
-                action: 'Peppol Access Point setup'
+                action: 'ANAF API integration required'
             },
             {
-                country: 'India',
-                standard: 'GST e-Invoice',
-                deadline: '2026-04-01',
-                daysRemaining: 83,
+                country: 'Turkey',
+                standard: 'e-Fatura',
+                deadline: '2026-06-01',
+                daysRemaining: 144,
                 status: 'planning',
-                priority: 'critical',
-                scope: 'Turnover > ₹5 crore',
-                action: 'IRP integration required'
+                priority: 'high',
+                scope: 'All businesses',
+                action: 'GIB integration required'
             },
             {
-                country: 'Malaysia',
-                standard: 'MyInvois',
-                deadline: '2027-01-01',
-                daysRemaining: 358,
+                country: 'France',
+                standard: 'Chorus Pro B2B',
+                deadline: '2026-09-01',
+                daysRemaining: 236,
                 status: 'monitoring',
                 priority: 'medium',
-                scope: 'All businesses (final phase)',
-                action: 'Monitor IRBM updates'
+                scope: 'Large enterprises',
+                action: 'PDP certification required'
             }
         ],
         recentChanges: [
@@ -186,10 +212,10 @@ export default function ComplianceMonitoringDashboard() {
         gapAnalysis: [
             {
                 region: 'Asia Pacific',
-                supported: 1,
-                missing: 10,
-                priority: 'critical',
-                keyGaps: ['India GST', 'Malaysia MyInvois', 'Indonesia Coretax', 'Vietnam GDT']
+                supported: 3,
+                missing: 8,
+                priority: 'high',
+                keyGaps: ['Indonesia Coretax', 'Vietnam GDT', 'South Korea NTS', 'Philippines BIR']
             },
             {
                 region: 'Latin America',
@@ -200,10 +226,10 @@ export default function ComplianceMonitoringDashboard() {
             },
             {
                 region: 'Europe',
-                supported: 6,
-                missing: 5,
-                priority: 'high',
-                keyGaps: ['Romania RO e-Factura', 'Poland KSeF', 'France Chorus', 'Turkey e-Fatura']
+                supported: 8,
+                missing: 3,
+                priority: 'medium',
+                keyGaps: ['Romania RO e-Factura', 'France Chorus Pro', 'Turkey e-Fatura']
             },
             {
                 region: 'Middle East & Africa',
@@ -277,7 +303,7 @@ export default function ComplianceMonitoringDashboard() {
                                 <div className="flex items-center justify-between">
                                     <div>
                                         <p className="text-sm text-slate-600">Supported Standards</p>
-                                        <p className="text-3xl font-bold text-green-600">{complianceData.currentlySupported.length}</p>
+                                        <p className="text-3xl font-bold text-green-600">13</p>
                                     </div>
                                     <CheckCircle className="h-10 w-10 text-green-600" />
                                 </div>
@@ -288,7 +314,7 @@ export default function ComplianceMonitoringDashboard() {
                                 <div className="flex items-center justify-between">
                                     <div>
                                         <p className="text-sm text-slate-600">Upcoming Mandates</p>
-                                        <p className="text-3xl font-bold text-orange-600">{complianceData.upcomingMandates.length}</p>
+                                        <p className="text-3xl font-bold text-orange-600">3</p>
                                     </div>
                                     <Clock className="h-10 w-10 text-orange-600" />
                                 </div>
@@ -310,7 +336,7 @@ export default function ComplianceMonitoringDashboard() {
                                 <div className="flex items-center justify-between">
                                     <div>
                                         <p className="text-sm text-slate-600">Global Coverage</p>
-                                        <p className="text-3xl font-bold text-slate-900">26%</p>
+                                        <p className="text-3xl font-bold text-slate-900">37%</p>
                                     </div>
                                     <Globe className="h-10 w-10 text-slate-600" />
                                 </div>
@@ -322,8 +348,8 @@ export default function ComplianceMonitoringDashboard() {
                     <Tabs value={activeTab} onValueChange={setActiveTab}>
                         <TabsList>
                             <TabsTrigger value="overview">Overview</TabsTrigger>
-                            <TabsTrigger value="supported">Supported (9)</TabsTrigger>
-                            <TabsTrigger value="upcoming">Upcoming (4)</TabsTrigger>
+                            <TabsTrigger value="supported">Supported (13)</TabsTrigger>
+                            <TabsTrigger value="upcoming">Upcoming (3)</TabsTrigger>
                             <TabsTrigger value="gaps">Gap Analysis</TabsTrigger>
                             <TabsTrigger value="changes">Recent Changes</TabsTrigger>
                         </TabsList>
@@ -395,7 +421,7 @@ export default function ComplianceMonitoringDashboard() {
                         <TabsContent value="supported">
                             <Card>
                                 <CardHeader>
-                                    <CardTitle>Currently Supported Standards ({complianceData.currentlySupported.length})</CardTitle>
+                                    <CardTitle>Currently Supported Standards (13)</CardTitle>
                                 </CardHeader>
                                 <CardContent>
                                     <div className="space-y-3">
