@@ -11,10 +11,10 @@ import {
     Trophy, TrendingUp, TrendingDown, Search, 
     Filter, Download, BarChart3 
 } from 'lucide-react';
-import { PLATFORM_PERMISSIONS } from '@/components/auth/permissions';
+import { PERMISSIONS } from '@/components/auth/permissions';
 
 export default function PlatformFIXManagement() {
-    const { platformUser } = usePlatformAuth([PLATFORM_PERMISSIONS.VIEW_ANALYTICS]);
+    const { platformUser } = usePlatformAuth([PERMISSIONS.ANALYTICS_VIEW]);
     const [searchTerm, setSearchTerm] = useState('');
     const [tierFilter, setTierFilter] = useState('all');
 
