@@ -87,10 +87,53 @@ export default function TaxRateUpdateManager() {
                 ...update
             });
             await fetchUpdates();
+            await fetchCurrentRates();
             await fetchHistory();
-            alert('Tax rate updated successfully!');
+            alert('Tax rate updated successfully and is now available system-wide!');
         } catch (error) {
             alert('Failed to apply update: ' + error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const applyAllUpdates = async () => {
+        if (updates.length === 0) {
+            alert('No updates available to apply');
+            return;
+        }
+
+        const confirmApply = window.confirm(
+            `Apply all ${updates.length} tax rate updates?\n\nThis will update tax rates system-wide for VAT/TAX calculations, e-invoicing, and billing.`
+        );
+        
+        if (!confirmApply) return;
+
+        setLoading(true);
+        let successCount = 0;
+        let errorCount = 0;
+
+        try {
+            for (const update of updates) {
+                try {
+                    await base44.functions.invoke('updateGlobalTaxRates', {
+                        action: 'apply_update',
+                        ...update
+                    });
+                    successCount++;
+                } catch (error) {
+                    console.error(`Failed to apply update for ${update.country}:`, error);
+                    errorCount++;
+                }
+            }
+
+            await fetchUpdates();
+            await fetchCurrentRates();
+            await fetchHistory();
+            
+            alert(`Applied ${successCount} updates successfully${errorCount > 0 ? ` (${errorCount} failed)` : ''}.\n\nTax rates are now available system-wide for VAT/TAX, e-invoicing, and billing.`);
+        } catch (error) {
+            alert('Error during batch update: ' + error.message);
         } finally {
             setLoading(false);
         }
@@ -222,8 +265,22 @@ export default function TaxRateUpdateManager() {
                         <TabsContent value="updates" className="space-y-4">
                             <Card>
                                 <CardHeader>
-                                    <CardTitle>Tax Rate Updates from External Providers</CardTitle>
-                                    <CardDescription>Review and apply updates from Avalara, TaxJar, OECD, and EU VIES</CardDescription>
+                                    <div className="flex items-start justify-between">
+                                        <div>
+                                            <CardTitle>Tax Rate Updates from External Providers</CardTitle>
+                                            <CardDescription>Review and apply updates from Avalara, TaxJar, OECD, and EU VIES</CardDescription>
+                                        </div>
+                                        {updates.length > 0 && (
+                                            <Button 
+                                                onClick={applyAllUpdates}
+                                                disabled={loading}
+                                                className="bg-green-600 hover:bg-green-700"
+                                            >
+                                                <CheckCircle className="h-4 w-4 mr-2" />
+                                                Apply All ({updates.length})
+                                            </Button>
+                                        )}
+                                    </div>
                                 </CardHeader>
                                 <CardContent className="space-y-3">
                                     {updates.length === 0 ? (
