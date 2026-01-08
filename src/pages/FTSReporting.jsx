@@ -65,6 +65,36 @@ export default function FTSReporting() {
         queryFn: () => base44.entities.PSPAuditTrail.list('-created_date', 1000)
     });
 
+    const { data: fixScores = [] } = useQuery({
+        queryKey: ['fix-scores'],
+        queryFn: () => base44.entities.FIXScore.list('-overall_score', 100)
+    });
+
+    const { data: nanoTasks = [] } = useQuery({
+        queryKey: ['nano-tasks'],
+        queryFn: () => base44.entities.NanoTask.list('-created_date', 100)
+    });
+
+    const { data: rwaAssets = [] } = useQuery({
+        queryKey: ['rwa-assets'],
+        queryFn: () => base44.entities.RWAAsset.list('-created_date', 100)
+    });
+
+    const { data: taxRates = [] } = useQuery({
+        queryKey: ['tax-rates'],
+        queryFn: () => base44.entities.TaxRate.list()
+    });
+
+    const { data: esgReports = [] } = useQuery({
+        queryKey: ['esg-reports'],
+        queryFn: () => base44.entities.ESGReport.list('-created_date', 100)
+    });
+
+    const { data: invoices = [] } = useQuery({
+        queryKey: ['invoices'],
+        queryFn: () => base44.entities.Invoice.list('-created_date', 100)
+    });
+
     if (loading) {
         return <div className="flex items-center justify-center h-screen">Loading...</div>;
     }
