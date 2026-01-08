@@ -189,22 +189,104 @@ export default function StrigaServiceManagement() {
                                     <CardTitle>Quick Actions</CardTitle>
                                 </CardHeader>
                                 <CardContent className="space-y-3">
-                                    <Button 
-                                        variant="outline" 
-                                        className="w-full justify-start"
-                                        onClick={() => window.open('/CryptoGatewayDashboard', '_blank')}
-                                    >
-                                        <ExternalLink className="w-4 h-4 mr-2" />
-                                        View FTS Crypto Dashboard
-                                    </Button>
-                                    <Button 
-                                        variant="outline" 
-                                        className="w-full justify-start"
-                                        onClick={() => window.open('https://docs.fts.money/crypto-gateway', '_blank')}
-                                    >
-                                        <ExternalLink className="w-4 h-4 mr-2" />
-                                        API Documentation
-                                    </Button>
+                                    <Dialog>
+                                        <DialogTrigger asChild>
+                                            <Button 
+                                                variant="outline" 
+                                                className="w-full justify-start"
+                                            >
+                                                <Wallet className="w-4 h-4 mr-2" />
+                                                View Crypto Dashboard
+                                            </Button>
+                                        </DialogTrigger>
+                                        <DialogContent className="max-w-2xl">
+                                            <DialogHeader>
+                                                <DialogTitle>FTS.Money Crypto Dashboard</DialogTitle>
+                                            </DialogHeader>
+                                            <div className="space-y-4">
+                                                <div className="p-4 bg-slate-50 rounded-lg">
+                                                    <h3 className="font-semibold mb-2">Dashboard Features</h3>
+                                                    <ul className="space-y-2 text-sm">
+                                                        <li className="flex items-center gap-2">
+                                                            <CheckCircle2 className="w-4 h-4 text-green-600" />
+                                                            Real-time wallet balances
+                                                        </li>
+                                                        <li className="flex items-center gap-2">
+                                                            <CheckCircle2 className="w-4 h-4 text-green-600" />
+                                                            Transaction history
+                                                        </li>
+                                                        <li className="flex items-center gap-2">
+                                                            <CheckCircle2 className="w-4 h-4 text-green-600" />
+                                                            User management
+                                                        </li>
+                                                        <li className="flex items-center gap-2">
+                                                            <CheckCircle2 className="w-4 h-4 text-green-600" />
+                                                            Card issuing controls
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                                                    <p className="text-sm text-blue-900">
+                                                        Access the full crypto dashboard at <strong>https://crypto.fts.money</strong> with your Striga credentials.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </DialogContent>
+                                    </Dialog>
+
+                                    <Dialog>
+                                        <DialogTrigger asChild>
+                                            <Button 
+                                                variant="outline" 
+                                                className="w-full justify-start"
+                                            >
+                                                <ExternalLink className="w-4 h-4 mr-2" />
+                                                API Documentation
+                                            </Button>
+                                        </DialogTrigger>
+                                        <DialogContent className="max-w-2xl">
+                                            <DialogHeader>
+                                                <DialogTitle>Striga API Documentation</DialogTitle>
+                                            </DialogHeader>
+                                            <div className="space-y-4">
+                                                <div className="p-4 bg-slate-50 rounded-lg space-y-3">
+                                                    <div>
+                                                        <h4 className="font-semibold text-sm mb-2">Base URL</h4>
+                                                        <div className="flex items-center gap-2 p-2 bg-white border border-slate-200 rounded text-xs">
+                                                            <code>https://api.striga.com/v1</code>
+                                                            <Button 
+                                                                size="sm" 
+                                                                variant="ghost"
+                                                                onClick={() => {
+                                                                    navigator.clipboard.writeText('https://api.striga.com/v1');
+                                                                    toast.success('Copied to clipboard');
+                                                                }}
+                                                            >
+                                                                <Copy className="w-3 h-3" />
+                                                            </Button>
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <h4 className="font-semibold text-sm mb-2">Key Endpoints</h4>
+                                                        <ul className="space-y-1 text-xs">
+                                                            <li>• <code>POST /wallets/create</code> - Create user wallet</li>
+                                                            <li>• <code>GET /wallets/list</code> - List wallets</li>
+                                                            <li>• <code>POST /cards/issue</code> - Issue card</li>
+                                                            <li>• <code>GET /transactions</code> - Transaction history</li>
+                                                        </ul>
+                                                    </div>
+                                                    <div>
+                                                        <h4 className="font-semibold text-sm mb-2">Authentication</h4>
+                                                        <p className="text-xs text-slate-600">Use API Key in header: <code>Authorization: Bearer YOUR_API_KEY</code></p>
+                                                    </div>
+                                                </div>
+                                                <Button className="w-full" onClick={() => window.open('https://docs.striga.com', '_blank')}>
+                                                    Open Full Documentation →
+                                                </Button>
+                                            </div>
+                                        </DialogContent>
+                                    </Dialog>
+
                                     <Button 
                                         variant="outline" 
                                         className="w-full justify-start"
@@ -213,14 +295,46 @@ export default function StrigaServiceManagement() {
                                         <Users className="w-4 h-4 mr-2" />
                                         Test Integration
                                     </Button>
-                                    <Button 
-                                        variant="outline" 
-                                        className="w-full justify-start"
-                                        onClick={() => window.open('/CryptoGatewayDashboard?tab=config', '_blank')}
-                                    >
-                                        <CreditCard className="w-4 h-4 mr-2" />
-                                        White-Label Configuration
-                                    </Button>
+
+                                    <Dialog>
+                                        <DialogTrigger asChild>
+                                            <Button 
+                                                variant="outline" 
+                                                className="w-full justify-start"
+                                            >
+                                                <CreditCard className="w-4 h-4 mr-2" />
+                                                White-Label Configuration
+                                            </Button>
+                                        </DialogTrigger>
+                                        <DialogContent className="max-w-2xl">
+                                            <DialogHeader>
+                                                <DialogTitle>White-Label Configuration</DialogTitle>
+                                            </DialogHeader>
+                                            <div className="space-y-4">
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                    <div className="p-4 border border-slate-200 rounded-lg">
+                                                        <h4 className="font-semibold mb-2">Branding</h4>
+                                                        <ul className="space-y-2 text-sm text-slate-600">
+                                                            <li>• Custom logo upload</li>
+                                                            <li>• Color scheme customization</li>
+                                                            <li>• Domain white-labeling</li>
+                                                        </ul>
+                                                    </div>
+                                                    <div className="p-4 border border-slate-200 rounded-lg">
+                                                        <h4 className="font-semibold mb-2">Configuration</h4>
+                                                        <ul className="space-y-2 text-sm text-slate-600">
+                                                            <li>• API rate limits</li>
+                                                            <li>• Webhook endpoints</li>
+                                                            <li>• Security settings</li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <Button className="w-full">
+                                                    Contact Sales for White-Label Setup
+                                                </Button>
+                                            </div>
+                                        </DialogContent>
+                                    </Dialog>
                                 </CardContent>
                             </Card>
                         </TabsContent>
