@@ -136,6 +136,7 @@ const menuSections = [
             { labelKey: 'taxManagement', descKey: 'taxManagementDesc', path: 'TaxManagement', icon: FileText, priority: true },
             { label: 'Tax Rate Updates', description: 'Auto-sync global tax rates', path: 'TaxRateUpdateManager', icon: RefreshCw, priority: true },
             { label: 'Tax Reports & Analytics', description: 'Advanced tax reporting', path: 'TaxAdvancedReports', icon: BarChart3, priority: true },
+            { label: 'Tax Calculation Tester', description: 'Test complex tax scenarios', path: 'TaxCalculationTester', icon: Activity, priority: true },
             { labelKey: 'eInvoicing', descKey: 'eInvoicingDesc', path: 'EInvoicingDashboard', icon: FileText, priority: true },
             { label: 'E-Invoice Generator', description: 'Create & submit e-invoices', path: 'EInvoiceGenerator', icon: FileText, priority: true },
             { labelKey: 'masterPricing', descKey: 'masterPricingDesc', path: 'MasterPricingManagement', icon: DollarSign },

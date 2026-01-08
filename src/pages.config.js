@@ -339,6 +339,7 @@ import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
 import TaxAdvancedReports from './pages/TaxAdvancedReports';
+import TaxCalculationTester from './pages/TaxCalculationTester';
 import __Layout from './Layout.jsx';
 
 
@@ -684,6 +685,7 @@ export const PAGES = {
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
     "TaxAdvancedReports": TaxAdvancedReports,
+    "TaxCalculationTester": TaxCalculationTester,
 }
 
 export const pagesConfig = {
