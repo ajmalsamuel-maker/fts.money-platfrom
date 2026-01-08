@@ -226,10 +226,10 @@ export default function CommunityPortalDashboard() {
                                 Dashboard
                             </button>
                             <button 
-                                onClick={() => navigate(createPageUrl('MyPSPInstances'))}
-                                className="text-slate-700 hover:text-blue-600 transition-colors"
+                                 onClick={() => navigate(createPageUrl('MyAllServices'))}
+                                 className="text-slate-700 hover:text-blue-600 transition-colors"
                             >
-                                My PSPs
+                                 My Services
                             </button>
                             <button 
                                 onClick={() => navigate(createPageUrl('CommunityMarketplace'))}
