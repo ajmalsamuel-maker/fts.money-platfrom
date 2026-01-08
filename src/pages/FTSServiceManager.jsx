@@ -60,7 +60,7 @@ export default function FTSServiceManager() {
 
     const seedMutation = useMutation({
         mutationFn: async () => {
-            const response = await base44.functions.invoke('seedNetXHubServices', { action: 'seed' });
+            const response = await base44.functions.invoke('seedPlatformServices', { action: 'seed' });
             return response.data;
         },
         onSuccess: async (data) => {
@@ -71,13 +71,13 @@ export default function FTSServiceManager() {
                 data.count,
                 data.iso_standards || [],
                 { email: platformUser?.email || 'admin@fts.money', platform_role: platformUser?.platform_role || 'platform_admin' },
-                { source: 'netxhub' }
+                { source: 'platform' }
             );
             
             // Switch to pricing matrix tab after import
             setActiveTab('pricing');
             
-            toast.success(`Successfully imported ${data.count} services from NetXHub - Review pricing matrix`);
+            toast.success(`Successfully imported ${data.count} services - Review pricing matrix`);
         },
         onError: (error) => {
             toast.error('Failed to seed services: ' + error.message);
@@ -350,7 +350,7 @@ Make the response detailed, authoritative, and include the most recent informati
                             className="gap-2"
                         >
                             <RefreshCw className={`h-4 w-4 ${seedMutation.isPending ? 'animate-spin' : ''}`} />
-                            {t('platform:pages.serviceManager.importNetXHub')}
+                            {seedMutation.isPending ? 'Importing Services...' : 'Import Services'}
                         </Button>
                     </div>
                 </header>
@@ -561,13 +561,13 @@ Make the response detailed, authoritative, and include the most recent informati
                         <div className="text-center py-12">
                             <Package className="h-16 w-16 text-slate-400 mx-auto mb-4" />
                             <p className="text-slate-600 mb-4">No services imported yet</p>
-                            <p className="text-xs text-slate-500 mb-6">Import services from NetXHub development platform to make them available for PSP provisioning</p>
+                            <p className="text-xs text-slate-500 mb-6">Import services to make them available for PSP provisioning</p>
                             <Button 
                                 onClick={() => seedMutation.mutate()}
                                 disabled={seedMutation.isPending}
                                 className="bg-blue-600 hover:bg-blue-700"
                             >
-                                Import Services from NetXHub
+                                {seedMutation.isPending ? 'Importing...' : 'Import Services'}
                             </Button>
                         </div>
                     )}
@@ -579,7 +579,7 @@ Make the response detailed, authoritative, and include the most recent informati
                                     <div className="flex items-center justify-between">
                                         <div>
                                             <CardTitle>Master Pricing Matrix</CardTitle>
-                                            <p className="text-sm text-slate-600 mt-1">Edit pricing for all NetXHub services</p>
+                                            <p className="text-sm text-slate-600 mt-1">Edit pricing for all platform services</p>
                                         </div>
                                         <Button 
                                             onClick={handleSavePricing}
