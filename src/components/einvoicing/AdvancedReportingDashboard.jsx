@@ -95,17 +95,18 @@ export default function AdvancedReportingDashboard() {
             });
             
             // Download report
-            const blob = new Blob([response.data.content], { 
-                type: reportConfig.format === 'pdf' ? 'application/pdf' : 'text/csv' 
-            });
+            const contentType = reportConfig.format === 'csv' ? 'text/csv' : 'application/json';
+            const blob = new Blob([response.data.content], { type: contentType });
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `compliance-report-${new Date().toISOString().split('T')[0]}.${reportConfig.format}`;
+            a.download = `compliance-report-${new Date().toISOString().split('T')[0]}.${reportConfig.format === 'json' || reportConfig.format === 'pdf' || reportConfig.format === 'excel' ? 'json' : reportConfig.format}`;
             document.body.appendChild(a);
             a.click();
             window.URL.revokeObjectURL(url);
             a.remove();
+            
+            alert('Report generated successfully! Note: PDF and Excel formats download as JSON for now.');
         } catch (error) {
             alert('Error generating report: ' + error.message);
         } finally {
