@@ -188,7 +188,51 @@ const TAX_RULES = {
     'PY': { type: 'IVA', standard: 10, reduced: [5], zero: ['exports'], digital_services: 10, physical_goods: 10 },
     'GY': { type: 'VAT', standard: 14, reduced: [], zero: ['exports'], digital_services: 14, physical_goods: 14 },
     'SR': { type: 'VAT', standard: 10, reduced: [], zero: ['exports'], digital_services: 10, physical_goods: 10 },
-    'GF': { type: 'VAT', standard: 8.5, reduced: [2.1], zero: ['exports'], digital_services: 8.5, physical_goods: 8.5 }
+    'GF': { type: 'VAT', standard: 8.5, reduced: [2.1], zero: ['exports'], digital_services: 8.5, physical_goods: 8.5 },
+    
+    // Additional African Countries
+    'ML': { type: 'VAT', standard: 18, reduced: [], zero: ['exports'], digital_services: 18, physical_goods: 18 },
+    'BF': { type: 'VAT', standard: 18, reduced: [], zero: ['exports'], digital_services: 18, physical_goods: 18 },
+    'NE': { type: 'VAT', standard: 19, reduced: [], zero: ['exports'], digital_services: 19, physical_goods: 19 },
+    'TD': { type: 'VAT', standard: 18, reduced: [], zero: ['exports'], digital_services: 18, physical_goods: 18 },
+    'SO': { type: 'No VAT', standard: 0, reduced: [], zero: ['all'], digital_services: 0, physical_goods: 0 },
+    'DJ': { type: 'No VAT', standard: 0, reduced: [], zero: ['all'], digital_services: 0, physical_goods: 0 },
+    'ER': { type: 'No VAT', standard: 0, reduced: [], zero: ['all'], digital_services: 0, physical_goods: 0 },
+    'SS': { type: 'No VAT', standard: 0, reduced: [], zero: ['all'], digital_services: 0, physical_goods: 0 },
+    'CF': { type: 'VAT', standard: 19, reduced: [], zero: ['exports'], digital_services: 19, physical_goods: 19 },
+    'CG': { type: 'VAT', standard: 18.9, reduced: [], zero: ['exports'], digital_services: 18.9, physical_goods: 18.9 },
+    'CD': { type: 'VAT', standard: 16, reduced: [], zero: ['exports'], digital_services: 16, physical_goods: 16 },
+    'GA': { type: 'VAT', standard: 18, reduced: [], zero: ['exports'], digital_services: 18, physical_goods: 18 },
+    'GQ': { type: 'VAT', standard: 15, reduced: [], zero: ['exports'], digital_services: 15, physical_goods: 15 },
+    'BJ': { type: 'VAT', standard: 18, reduced: [], zero: ['exports'], digital_services: 18, physical_goods: 18 },
+    'TG': { type: 'VAT', standard: 18, reduced: [], zero: ['exports'], digital_services: 18, physical_goods: 18 },
+    'SL': { type: 'VAT', standard: 15, reduced: [], zero: ['exports'], digital_services: 15, physical_goods: 15 },
+    'LR': { type: 'GST', standard: 10, reduced: [], zero: ['exports'], digital_services: 10, physical_goods: 10 },
+    'GM': { type: 'VAT', standard: 15, reduced: [], zero: ['exports'], digital_services: 15, physical_goods: 15 },
+    'GN': { type: 'VAT', standard: 18, reduced: [], zero: ['exports'], digital_services: 18, physical_goods: 18 },
+    'GW': { type: 'VAT', standard: 15, reduced: [], zero: ['exports'], digital_services: 15, physical_goods: 15 },
+    'MR': { type: 'VAT', standard: 14, reduced: [], zero: ['exports'], digital_services: 14, physical_goods: 14 },
+    'LS': { type: 'VAT', standard: 15, reduced: [], zero: ['exports'], digital_services: 15, physical_goods: 15 },
+    'SZ': { type: 'VAT', standard: 15, reduced: [], zero: ['exports'], digital_services: 15, physical_goods: 15 },
+    'BI': { type: 'VAT', standard: 18, reduced: [], zero: ['exports'], digital_services: 18, physical_goods: 18 },
+    'KM': { type: 'No VAT', standard: 0, reduced: [], zero: ['all'], digital_services: 0, physical_goods: 0 },
+    'ST': { type: 'VAT', standard: 15, reduced: [], zero: ['exports'], digital_services: 15, physical_goods: 15 },
+    'CV': { type: 'VAT', standard: 15, reduced: [], zero: ['exports'], digital_services: 15, physical_goods: 15 },
+    
+    // Additional Caribbean & Pacific Islands
+    'AG': { type: 'ABST', standard: 15, reduced: [], zero: ['exports'], digital_services: 15, physical_goods: 15 },
+    'DM': { type: 'VAT', standard: 15, reduced: [], zero: ['exports'], digital_services: 15, physical_goods: 15 },
+    'GD': { type: 'VAT', standard: 15, reduced: [], zero: ['exports'], digital_services: 15, physical_goods: 15 },
+    'KN': { type: 'VAT', standard: 17, reduced: [], zero: ['exports'], digital_services: 17, physical_goods: 17 },
+    'LC': { type: 'VAT', standard: 15, reduced: [8], zero: ['exports'], digital_services: 15, physical_goods: 15 },
+    'VC': { type: 'VAT', standard: 16, reduced: [], zero: ['exports'], digital_services: 16, physical_goods: 16 },
+    'KI': { type: 'No VAT', standard: 0, reduced: [], zero: ['all'], digital_services: 0, physical_goods: 0 },
+    'SB': { type: 'VAT', standard: 10, reduced: [], zero: ['exports'], digital_services: 10, physical_goods: 10 },
+    'NR': { type: 'No VAT', standard: 0, reduced: [], zero: ['all'], digital_services: 0, physical_goods: 0 },
+    'TV': { type: 'No VAT', standard: 0, reduced: [], zero: ['all'], digital_services: 0, physical_goods: 0 },
+    'FM': { type: 'No VAT', standard: 0, reduced: [], zero: ['all'], digital_services: 0, physical_goods: 0 },
+    'MH': { type: 'No VAT', standard: 0, reduced: [], zero: ['all'], digital_services: 0, physical_goods: 0 },
+    'PW': { type: 'No VAT', standard: 0, reduced: [], zero: ['all'], digital_services: 0, physical_goods: 0 }
 };
 
 const EU_COUNTRIES = ['AT', 'BE', 'BG', 'CY', 'CZ', 'DE', 'DK', 'EE', 'ES', 'FI', 'FR', 'GR', 'HR', 'HU', 'IE', 'IT', 'LT', 'LU', 'LV', 'MT', 'NL', 'PL', 'PT', 'RO', 'SE', 'SI', 'SK'];
