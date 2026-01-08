@@ -22,7 +22,8 @@ import {
     Book,
     Bitcoin,
     Key,
-    Leaf
+    Leaf,
+    Trophy
 } from 'lucide-react';
 
 const menuSections = [
@@ -31,6 +32,7 @@ const menuSections = [
         items: [
             { label: 'Dashboard', icon: LayoutDashboard, path: 'MerchantDashboard' },
             { label: 'Analytics', icon: BarChart3, path: 'MerchantAnalytics' },
+            { label: 'FIX Score', icon: Trophy, path: 'MerchantFIXDashboard' },
         ]
     },
     {

@@ -32,7 +32,8 @@ import {
     AlertCircle,
     TrendingUp,
     Brain,
-    Leaf
+    Leaf,
+    Trophy
 } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useI18n } from '@/components/i18n/I18nextProvider';
@@ -44,6 +45,7 @@ const menuSections = [
             defaultOpen: true,
             items: [
                 { labelKey: 'platformDashboard', descKey: 'platformDashboardDesc', path: 'FTSMoneyPlatform', icon: Activity, priority: true },
+                { label: 'FIX Score Management', description: 'FTS Index merchant scores', path: 'PlatformFIXManagement', icon: Trophy, priority: true },
                 { labelKey: 'systemHealth', descKey: 'systemHealthDesc', path: 'FTSSystemHealth', icon: Activity },
                 { labelKey: 'revenueDashboard', descKey: 'revenueDashboardDesc', path: 'FTSRevenue', icon: BarChart3, priority: true },
                 { labelKey: 'platformAnalytics', descKey: 'platformAnalyticsDesc', path: 'FTSAnalytics', icon: BarChart3 },
