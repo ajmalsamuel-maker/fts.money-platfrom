@@ -70,6 +70,10 @@ export default function FTSSetupGuide() {
                                 <FileText className="h-4 w-4 mr-1" />
                                 ESG
                             </TabsTrigger>
+                            <TabsTrigger value="nano" className="data-[state=active]:bg-green-50 data-[state=active]:text-green-700">
+                                <Leaf className="h-4 w-4 mr-1" />
+                                Nano
+                            </TabsTrigger>
                             <TabsTrigger value="fix" className="data-[state=active]:bg-rose-50 data-[state=active]:text-rose-700">
                                 <Trophy className="h-4 w-4 mr-1" />
                                 FIX Score
@@ -324,37 +328,81 @@ export default function FTSSetupGuide() {
                                 <CardContent className="space-y-4">
                                     <div className="p-4 bg-amber-50 rounded-lg">
                                         <p className="font-medium text-amber-900 mb-2">🎯 Purpose:</p>
-                                        <p className="text-sm text-amber-800">Tokenize real-world assets (real estate, bonds, credit) with ERC-3643 compliance</p>
+                                        <p className="text-sm text-amber-800">Tokenize real-world assets (real estate, bonds, credit) with ERC-3643 compliance, investor management, dividend distribution</p>
                                     </div>
 
                                     <div>
-                                        <p className="font-medium mb-2">Setup Flow:</p>
+                                        <p className="font-medium mb-2">Platform Admin Setup:</p>
                                         <div className="space-y-3">
                                             <div className="flex items-start gap-3">
                                                 <div className="w-6 h-6 rounded-full bg-amber-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">1</div>
                                                 <div>
-                                                    <p className="font-medium">Provision RWA Provider (Platform Admin)</p>
-                                                    <p className="text-sm text-slate-600">Navigate to: <code className="bg-slate-100 px-2 py-0.5 rounded">RWA Platform → Provision Customers</code></p>
-                                                    <p className="text-sm text-slate-600">LEI mandatory for asset issuers</p>
+                                                    <p className="font-medium">Provision RWA Customers (White-Label)</p>
+                                                    <p className="text-sm text-slate-600">Navigate to: <code className="bg-slate-100 px-2 py-0.5 rounded">RWA Tokenization Platform → Provision Customers</code></p>
+                                                    <p className="text-sm text-slate-600 space-y-1">
+                                                        <span className="block">• LEI mandatory for verified compliance</span>
+                                                        <span className="block">• Set subscription tier (Starter, Professional, Enterprise)</span>
+                                                        <span className="block">• Configure enabled asset types & blockchain networks</span>
+                                                    </p>
                                                 </div>
                                             </div>
 
                                             <div className="flex items-start gap-3">
                                                 <div className="w-6 h-6 rounded-full bg-amber-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">2</div>
                                                 <div>
-                                                    <p className="font-medium">Provider Login</p>
+                                                    <p className="font-medium">Monitor RWA Platform Analytics</p>
+                                                    <p className="text-sm text-slate-600">Navigate to: <code className="bg-slate-100 px-2 py-0.5 rounded">RWA Tokenization Platform → Analytics</code></p>
+                                                    <p className="text-sm text-slate-600 space-y-1">
+                                                        <span className="block">• Total value locked across all assets</span>
+                                                        <span className="block">• Investor onboarding metrics</span>
+                                                        <span className="block">• Dividend payment tracking</span>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <p className="font-medium mb-2 mt-4">RWA Provider Portals:</p>
+                                        <div className="space-y-3">
+                                            <div className="flex items-start gap-3">
+                                                <div className="w-6 h-6 rounded-full bg-amber-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">3</div>
+                                                <div>
+                                                    <p className="font-medium">Provider Portal Login</p>
                                                     <p className="text-sm text-slate-600">URL: <code className="bg-slate-100 px-2 py-0.5 rounded">/RWAProviderLogin</code></p>
+                                                    <p className="text-sm text-slate-600 space-y-1">
+                                                        <span className="block">• Asset management & tokenization workflow</span>
+                                                        <span className="block">• Issuer onboarding (KYB verification)</span>
+                                                        <span className="block">• Investor management & accreditation tracking</span>
+                                                        <span className="block">• Dividend & payout management</span>
+                                                    </p>
                                                 </div>
                                             </div>
 
                                             <div className="flex items-start gap-3">
-                                                <div className="w-6 h-6 rounded-full bg-amber-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">3</div>
+                                                <div className="w-6 h-6 rounded-full bg-amber-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">4</div>
                                                 <div>
-                                                    <p className="font-medium">Tokenize Assets</p>
+                                                    <p className="font-medium">Asset Issuer Portal</p>
+                                                    <p className="text-sm text-slate-600">URL: <code className="bg-slate-100 px-2 py-0.5 rounded">/AssetIssuerLogin</code></p>
                                                     <p className="text-sm text-slate-600 space-y-1">
-                                                        <span className="block">• <strong>Assets:</strong> Submit property/asset details</span>
-                                                        <span className="block">• <strong>Issuers:</strong> Onboard asset issuers (KYB)</span>
-                                                        <span className="block">• <strong>Investors:</strong> Onboard investors (KYC/accreditation)</span>
+                                                        <span className="block">• Submit assets for tokenization</span>
+                                                        <span className="block">• Manage compliance documentation</span>
+                                                        <span className="block">• Monitor investor base & holdings</span>
+                                                        <span className="block">• Process dividend distributions</span>
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-start gap-3">
+                                                <div className="w-6 h-6 rounded-full bg-amber-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">5</div>
+                                                <div>
+                                                    <p className="font-medium">Investor Portal (Consumer-Facing)</p>
+                                                    <p className="text-sm text-slate-600">URL: <code className="bg-slate-100 px-2 py-0.5 rounded">/InvestorLogin</code></p>
+                                                    <p className="text-sm text-slate-600 space-y-1">
+                                                        <span className="block">• Browse & invest in tokenized assets</span>
+                                                        <span className="block">• Portfolio management & valuation tracking</span>
+                                                        <span className="block">• Dividend payments & distributions</span>
+                                                        <span className="block">• KYC/accreditation status management</span>
                                                     </p>
                                                 </div>
                                             </div>
@@ -377,38 +425,69 @@ export default function FTSSetupGuide() {
                                 <CardContent className="space-y-4">
                                     <div className="p-4 bg-blue-50 rounded-lg">
                                         <p className="font-medium text-blue-900 mb-2">🎯 Purpose:</p>
-                                        <p className="text-sm text-blue-800">Automated VAT/GST calculation for 100+ jurisdictions, MOSS/OSS compliance</p>
+                                        <p className="text-sm text-blue-800">Automated VAT/GST calculation for 150+ jurisdictions, MOSS/OSS compliance, real-time tax rate updates</p>
                                     </div>
 
                                     <div>
-                                        <p className="font-medium mb-2">Setup Flow:</p>
+                                        <p className="font-medium mb-2">Platform Admin Setup:</p>
                                         <div className="space-y-3">
                                             <div className="flex items-start gap-3">
                                                 <div className="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">1</div>
                                                 <div>
                                                     <p className="font-medium">Configure Global Tax Settings</p>
-                                                    <p className="text-sm text-slate-600">Navigate to: <code className="bg-slate-100 px-2 py-0.5 rounded">TaxManagement</code> (Platform Admin)</p>
-                                                    <p className="text-sm text-slate-600">Set up jurisdictions, rates, categories</p>
+                                                    <p className="text-sm text-slate-600">Navigate to: <code className="bg-slate-100 px-2 py-0.5 rounded">Financial Operations → Tax Management</code></p>
+                                                    <p className="text-sm text-slate-600">Set up 150+ countries, jurisdiction rules, product categories</p>
                                                 </div>
                                             </div>
 
                                             <div className="flex items-start gap-3">
                                                 <div className="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">2</div>
                                                 <div>
-                                                    <p className="font-medium">Integrate with Payment Processing</p>
-                                                    <p className="text-sm text-slate-600">Automatically enabled for all PSP instances</p>
-                                                    <p className="text-sm text-slate-600">Real-time tax calculation on transactions</p>
+                                                    <p className="font-medium">Enable Auto-Sync from Tax Providers</p>
+                                                    <p className="text-sm text-slate-600">Navigate to: <code className="bg-slate-100 px-2 py-0.5 rounded">Financial Operations → Tax Rate Update Manager</code></p>
+                                                    <p className="text-sm text-slate-600 space-y-1">
+                                                        <span className="block">• Sync rates from Avalara, TaxJar, OECD, EU VIES</span>
+                                                        <span className="block">• Auto-approval for minor changes, flagged review for major updates</span>
+                                                        <span className="block">• Automatic application to all PSP instances</span>
+                                                    </p>
                                                 </div>
                                             </div>
 
                                             <div className="flex items-start gap-3">
                                                 <div className="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">3</div>
                                                 <div>
-                                                    <p className="font-medium">Use VAT Engine</p>
+                                                    <p className="font-medium">Configure Tax Calculation Tester</p>
+                                                    <p className="text-sm text-slate-600">Navigate to: <code className="bg-slate-100 px-2 py-0.5 rounded">Financial Operations → Tax Calculation Tester</code></p>
+                                                    <p className="text-sm text-slate-600">Validate complex tax scenarios before applying system-wide</p>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-start gap-3">
+                                                <div className="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">4</div>
+                                                <div>
+                                                    <p className="font-medium">Enable Advanced Tax Reports</p>
+                                                    <p className="text-sm text-slate-600">Navigate to: <code className="bg-slate-100 px-2 py-0.5 rounded">Financial Operations → Tax Reports & Analytics</code></p>
                                                     <p className="text-sm text-slate-600 space-y-1">
-                                                        <span className="block">• <strong>API Integration:</strong> REST API for tax calculation</span>
-                                                        <span className="block">• <strong>Returns:</strong> Automated VAT return generation</span>
-                                                        <span className="block">• <strong>Reporting:</strong> Jurisdiction-specific reports</span>
+                                                        <span className="block">• Compliance dashboard with mandate tracking</span>
+                                                        <span className="block">• Historical analysis and trend forecasting</span>
+                                                        <span className="block">• Country-specific VAT return generation</span>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <p className="font-medium mb-2 mt-4">PSP Tax Billing Integration:</p>
+                                        <div className="space-y-3">
+                                            <div className="flex items-start gap-3">
+                                                <div className="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">5</div>
+                                                <div>
+                                                    <p className="font-medium">Automatic Tax on Invoicing</p>
+                                                    <p className="text-sm text-slate-600 space-y-1">
+                                                        <span className="block">• Auto-calculate tax on service billing</span>
+                                                        <span className="block">• Generate tax-compliant platform invoices</span>
+                                                        <span className="block">• Link to <code className="bg-slate-100 px-2 py-0.5 rounded">PlatformBillingPortal</code> for invoice management</span>
                                                     </p>
                                                 </div>
                                             </div>
@@ -431,39 +510,87 @@ export default function FTSSetupGuide() {
                                 <CardContent className="space-y-4">
                                     <div className="p-4 bg-teal-50 rounded-lg">
                                         <p className="font-medium text-teal-900 mb-2">🎯 Purpose:</p>
-                                        <p className="text-sm text-teal-800">Generate compliant e-invoices: Peppol, ZATCA, FatturaPA, CFDI, UBL</p>
+                                        <p className="text-sm text-teal-800">Generate compliant e-invoices: Peppol, ZATCA, FatturaPA, CFDI, UBL + business portal for self-service invoice generation</p>
                                     </div>
 
                                     <div>
-                                        <p className="font-medium mb-2">Setup Flow:</p>
+                                        <p className="font-medium mb-2">Platform Admin Setup:</p>
                                         <div className="space-y-3">
                                             <div className="flex items-start gap-3">
                                                 <div className="w-6 h-6 rounded-full bg-teal-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">1</div>
                                                 <div>
-                                                    <p className="font-medium">Configure E-Invoicing (Platform Admin)</p>
-                                                    <p className="text-sm text-slate-600">Navigate to: <code className="bg-slate-100 px-2 py-0.5 rounded">EInvoicingDashboard</code></p>
-                                                    <p className="text-sm text-slate-600">Set up templates, digital certificates</p>
+                                                    <p className="font-medium">Configure E-Invoicing Standards</p>
+                                                    <p className="text-sm text-slate-600">Navigate to: <code className="bg-slate-100 px-2 py-0.5 rounded">Financial Operations → EInvoicingDashboard</code></p>
+                                                    <p className="text-sm text-slate-600">Set up templates, digital certificates, government integrations</p>
                                                 </div>
                                             </div>
 
                                             <div className="flex items-start gap-3">
                                                 <div className="w-6 h-6 rounded-full bg-teal-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">2</div>
                                                 <div>
-                                                    <p className="font-medium">Enable for PSPs</p>
-                                                    <p className="text-sm text-slate-600">Automatically integrated with payment processing</p>
-                                                    <p className="text-sm text-slate-600">Auto-generate invoices after successful payments</p>
+                                                    <p className="font-medium">Enable Compliance Monitoring</p>
+                                                    <p className="text-sm text-slate-600">Navigate to: <code className="bg-slate-100 px-2 py-0.5 rounded">Compliance → Compliance Monitoring Dashboard</code></p>
+                                                    <p className="text-sm text-slate-600 space-y-1">
+                                                        <span className="block">• Track mandatory e-invoicing deadlines by country</span>
+                                                        <span className="block">• Monitor adoption rates across PSPs & merchants</span>
+                                                        <span className="block">• Gap analysis and readiness assessment</span>
+                                                    </p>
                                                 </div>
                                             </div>
 
                                             <div className="flex items-start gap-3">
                                                 <div className="w-6 h-6 rounded-full bg-teal-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">3</div>
                                                 <div>
+                                                    <p className="font-medium">Enable Auto-Generation for PSPs</p>
+                                                    <p className="text-sm text-slate-600">Automatically integrated with payment processing</p>
+                                                    <p className="text-sm text-slate-600">Auto-generate compliant invoices after successful payments</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <p className="font-medium mb-2 mt-4">Business Invoice Portal Setup:</p>
+                                        <div className="space-y-3">
+                                            <div className="flex items-start gap-3">
+                                                <div className="w-6 h-6 rounded-full bg-teal-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">4</div>
+                                                <div>
+                                                    <p className="font-medium">Business Portal for Invoice Generation</p>
+                                                    <p className="text-sm text-slate-600">URL: <code className="bg-slate-100 px-2 py-0.5 rounded">/BusinessEInvoicePortal</code></p>
+                                                    <p className="text-sm text-slate-600 space-y-1">
+                                                        <span className="block">• Self-service invoice creation & editing</span>
+                                                        <span className="block">• Multi-format support (Peppol, UBL, Factura, etc.)</span>
+                                                        <span className="block">• Batch upload & import functionality</span>
+                                                        <span className="block">• Real-time compliance validation</span>
+                                                        <span className="block">• Government submission tracking</span>
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-start gap-3">
+                                                <div className="w-6 h-6 rounded-full bg-teal-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">5</div>
+                                                <div>
+                                                    <p className="font-medium">Business Portal Features</p>
+                                                    <p className="text-sm text-slate-600 space-y-1">
+                                                        <span className="block">• Dashboard: Onboarding status & quick actions</span>
+                                                        <span className="block">• Invoice Creator: Template-based generation</span>
+                                                        <span className="block">• Batch Importer: CSV/Excel upload</span>
+                                                        <span className="block">• Validation Engine: Real-time compliance checks</span>
+                                                        <span className="block">• Submission Manager: Track government submissions</span>
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-start gap-3">
+                                                <div className="w-6 h-6 rounded-full bg-teal-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">6</div>
+                                                <div>
                                                     <p className="font-medium">Government Gateway Integration</p>
                                                     <p className="text-sm text-slate-600 space-y-1">
                                                         <span className="block">• <strong>Peppol:</strong> Access Point certified</span>
-                                                        <span className="block">• <strong>ZATCA:</strong> Real-time clearance/reporting</span>
+                                                        <span className="block">• <strong>ZATCA:</strong> Real-time clearance (Saudi Arabia)</span>
                                                         <span className="block">• <strong>SDI (Italy):</strong> Sistema di Interscambio</span>
-                                                        <span className="block">• <strong>PAC (Mexico):</strong> Authorized stamping</span>
+                                                        <span className="block">• <strong>PAC (Mexico):</strong> Authorized stamping provider</span>
+                                                        <span className="block">• <strong>SAFT (Portugal):</strong> eInvoicing integration</span>
                                                     </p>
                                                 </div>
                                             </div>
@@ -597,6 +724,147 @@ export default function FTSSetupGuide() {
                                                     <p className="font-medium">Generate ESG Reports</p>
                                                     <p className="text-sm text-slate-600">
                                                         URL: <code className="bg-slate-100 px-2 py-0.5 rounded">/ESGReportingDashboard</code> - CSRD/GRI compliance
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
+
+                        {/* Nano Sustainability Marketplace */}
+                        <TabsContent value="nano">
+                            <Card className="mb-6">
+                                <CardHeader>
+                                    <CardTitle className="flex items-center gap-2">
+                                        <Leaf className="h-6 w-6 text-green-600" />
+                                        Nano Sustainability Marketplace
+                                        <Badge className="bg-green-100 text-green-700">Consumer Rewards</Badge>
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent className="space-y-4">
+                                    <div className="p-4 bg-green-50 rounded-lg">
+                                        <p className="font-medium text-green-900 mb-2">🎯 Purpose:</p>
+                                        <p className="text-sm text-green-800">Engage consumers with micro-tasks for sustainability, reward with NANO tokens, sponsor via merchants</p>
+                                    </div>
+
+                                    <div>
+                                        <p className="font-medium mb-2">Consumer Marketplace Portal:</p>
+                                        <div className="space-y-3">
+                                            <div className="flex items-start gap-3">
+                                                <div className="w-6 h-6 rounded-full bg-green-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">1</div>
+                                                <div>
+                                                    <p className="font-medium">Consumer Portal URL</p>
+                                                    <p className="text-sm text-slate-600"><code className="bg-slate-100 px-2 py-0.5 rounded">/NanoTaskMarketplace</code> - Browse & complete tasks</p>
+                                                    <p className="text-sm text-slate-600 space-y-1">
+                                                        <span className="block">• Task discovery & filtering</span>
+                                                        <span className="block">• Real-time carbon impact tracking</span>
+                                                        <span className="block">• Merchant discount redemption</span>
+                                                        <span className="block">• NANO token wallet & staking</span>
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-start gap-3">
+                                                <div className="w-6 h-6 rounded-full bg-green-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">2</div>
+                                                <div>
+                                                    <p className="font-medium">Task Types & Rewards</p>
+                                                    <p className="text-sm text-slate-600 space-y-1">
+                                                        <span className="block">• <strong>Reduce Plastic:</strong> Earn 5-20 NANO per task</span>
+                                                        <span className="block">• <strong>Plant Tree:</strong> Earn 50-100 NANO per tree</span>
+                                                        <span className="block">• <strong>Public Transport:</strong> Earn 10-30 NANO per trip</span>
+                                                        <span className="block">• <strong>Recycle:</strong> Earn 5-15 NANO per item</span>
+                                                        <span className="block">• <strong>Energy Saving:</strong> Earn 20-50 NANO</span>
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-start gap-3">
+                                                <div className="w-6 h-6 rounded-full bg-green-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">3</div>
+                                                <div>
+                                                    <p className="font-medium">Task Verification Methods</p>
+                                                    <p className="text-sm text-slate-600 space-y-1">
+                                                        <span className="block">• Receipt scanning (carbon offset purchases)</span>
+                                                        <span className="block">• Photo upload with GPS verification</span>
+                                                        <span className="block">• GPS tracking (public transport routes)</span>
+                                                        <span className="block">• QR code scanning (merchant locations)</span>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <p className="font-medium mb-2 mt-4">Merchant Sponsorship Setup (Platform Admin):</p>
+                                        <div className="space-y-3">
+                                            <div className="flex items-start gap-3">
+                                                <div className="w-6 h-6 rounded-full bg-green-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">4</div>
+                                                <div>
+                                                    <p className="font-medium">Create & Manage Sponsored Tasks</p>
+                                                    <p className="text-sm text-slate-600">Platform Admin navigates to: <code className="bg-slate-100 px-2 py-0.5 rounded">Services → Nano Task Management</code></p>
+                                                    <p className="text-sm text-slate-600 space-y-1">
+                                                        <span className="block">• Merchants sponsor tasks with budget allocation</span>
+                                                        <span className="block">• Offer discount codes to task completers</span>
+                                                        <span className="block">• Track task sponsorship ROI</span>
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-start gap-3">
+                                                <div className="w-6 h-6 rounded-full bg-green-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">5</div>
+                                                <div>
+                                                    <p className="font-medium">Green Merchant Tracking</p>
+                                                    <p className="text-sm text-slate-600">Navigate to: <code className="bg-slate-100 px-2 py-0.5 rounded">Services → Green Merchant Dashboard</code></p>
+                                                    <p className="text-sm text-slate-600 space-y-1">
+                                                        <span className="block">• Monitor merchant sustainability scores</span>
+                                                        <span className="block">• Track total NANO rewards issued</span>
+                                                        <span className="block">• Carbon offset commitments</span>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <p className="font-medium mb-2 mt-4">Consumer Engagement Features:</p>
+                                        <div className="space-y-3">
+                                            <div className="flex items-start gap-3">
+                                                <div className="w-6 h-6 rounded-full bg-green-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">6</div>
+                                                <div>
+                                                    <p className="font-medium">Rewards & Achievements</p>
+                                                    <p className="text-sm text-slate-600"><code className="bg-slate-100 px-2 py-0.5 rounded">/NFTAchievements</code> - NFT badges for milestones</p>
+                                                    <p className="text-sm text-slate-600 space-y-1">
+                                                        <span className="block">• Tree Planter (10 trees)</span>
+                                                        <span className="block">• Plastic Reducer (50 items)</span>
+                                                        <span className="block">• Green Champion (1000+ NANO earned)</span>
+                                                        <span className="block">• Eco Warrior (500+ green transactions)</span>
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-start gap-3">
+                                                <div className="w-6 h-6 rounded-full bg-green-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">7</div>
+                                                <div>
+                                                    <p className="font-medium">Community & Leaderboards</p>
+                                                    <p className="text-sm text-slate-600"><code className="bg-slate-100 px-2 py-0.5 rounded">/CommunityLeaderboard</code></p>
+                                                    <p className="text-sm text-slate-600 space-y-1">
+                                                        <span className="block">• Global leaderboard by NANO earned</span>
+                                                        <span className="block">• Regional rankings</span>
+                                                        <span className="block">• Monthly challenges with bonus rewards</span>
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-start gap-3">
+                                                <div className="w-6 h-6 rounded-full bg-green-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">8</div>
+                                                <div>
+                                                    <p className="font-medium">Staking & Governance</p>
+                                                    <p className="text-sm text-slate-600"><code className="bg-slate-100 px-2 py-0.5 rounded">/NANOStaking</code></p>
+                                                    <p className="text-sm text-slate-600 space-y-1">
+                                                        <span className="block">• Stake NANO to earn returns</span>
+                                                        <span className="block">• Vote on new task categories</span>
+                                                        <span className="block">• Governance participation rewards</span>
                                                     </p>
                                                 </div>
                                             </div>
