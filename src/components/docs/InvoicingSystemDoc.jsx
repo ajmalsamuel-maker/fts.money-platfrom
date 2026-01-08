@@ -108,6 +108,7 @@ graph TB
 | **UAE** | VAT | 5% | 0% (exports, education) | Excise tax on specific goods |
 | **Singapore** | GST | 9% | 0% (exports, financial services) | Overseas vendor registration |
 | **Mexico** | IVA | 16% | 0% (food, medicine) | CFDI mandatory |
+| **Pakistan** | Sales Tax | 18% | 10% (retail), 0% (exports) | PRAL/FBR real-time API |
 
 ### Tax Rule Engine Logic
 
@@ -172,6 +173,8 @@ graph TB
         EHF[🇳🇴 EHF<br/>Norway<br/>UBL 2.1<br/>Peppol network]
         
         FINVOICE[🇫🇮 Finvoice<br/>Finland<br/>XML format<br/>Banking integration]
+        
+        PRAL[🇵🇰 PRAL/FBR<br/>Pakistan<br/>JSON format<br/>Real-time API<br/>Sandbox required]
     end
     
     subgraph "Universal Invoice Engine"
@@ -196,6 +199,7 @@ graph TB
     FACTURAE --> GENERATOR
     EHF --> GENERATOR
     FINVOICE --> GENERATOR
+    PRAL --> GENERATOR
     
     TRANSMIT --> EMAIL
     TRANSMIT --> API
@@ -331,6 +335,220 @@ graph TB
 - **Submission**: Real-time to ZATCA within 24 hours
 - **Archival**: 6 years minimum retention
 - **Penalties**: SAR 5,000-50,000 for non-compliance
+
+---
+
+## PRAL/FBR Integration (Pakistan)
+
+### Digital Invoicing via IRIS System
+
+**Mandatory for Pakistan since 2024**
+
+\`\`\`mermaid
+graph TB
+    subgraph "PRAL Integration Process"
+        REGISTER[Register with FBR<br/>IRIS portal login]
+        
+        subgraph "Choose Integration Path"
+            PRAL_PATH[PRAL as Integrator<br/>Free service]
+            OTHER_PATH[Licensed Integrator<br/>Third-party service]
+        end
+        
+        subgraph "Technical Setup"
+            TECH_DETAILS[Provide Technical Details<br/>ERP system, software version]
+            BUSINESS_TYPE[Select Business Nature<br/>Sector classification]
+            IP_WHITELIST[IP Whitelisting<br/>Register hosting IPs]
+        end
+        
+        subgraph "Sandbox Testing"
+            SANDBOX[Sandbox Environment<br/>Test API endpoint]
+            TEST_SCENARIOS[Submit Test Invoices<br/>Scenario-based validation]
+            VALIDATION[FBR Validation<br/>Success required]
+        end
+        
+        subgraph "Production"
+            PROD_TOKEN[Production Token<br/>Auto-generated after tests]
+            REAL_TIME[Real-Time Transmission<br/>Every invoice to FBR]
+            DASHBOARD[Invoice Dashboard<br/>Daily/monthly/quarterly view]
+        end
+    end
+    
+    REGISTER --> PRAL_PATH
+    REGISTER --> OTHER_PATH
+    
+    PRAL_PATH --> TECH_DETAILS
+    OTHER_PATH --> TECH_DETAILS
+    
+    TECH_DETAILS --> BUSINESS_TYPE
+    BUSINESS_TYPE --> IP_WHITELIST
+    
+    IP_WHITELIST --> SANDBOX
+    SANDBOX --> TEST_SCENARIOS
+    TEST_SCENARIOS --> VALIDATION
+    
+    VALIDATION --> PROD_TOKEN
+    PROD_TOKEN --> REAL_TIME
+    REAL_TIME --> DASHBOARD
+    
+    style SANDBOX fill:#f59e0b,color:#fff
+    style PROD_TOKEN fill:#10b981,color:#fff
+    style REAL_TIME fill:#3b82f6,color:#fff
+\`\`\`
+
+**PRAL Requirements**:
+- **Format**: JSON (primary) or XML
+- **Transmission**: Real-time API (immediate upon invoice creation)
+- **Authentication**: IP whitelisting + Bearer token
+- **Testing**: Mandatory sandbox scenario testing
+- **Invoice Types**: Sales invoice, debit note, credit note
+- **Dashboard**: Real-time monitoring in IRIS portal
+- **CRM Integration**: Support ticket system for issues
+
+**Integration Flow**:
+
+\`\`\`mermaid
+sequenceDiagram
+    participant Merchant as Pakistani Merchant
+    participant FTS as FTS.Money Platform
+    participant PRAL as PRAL API
+    participant FBR as FBR IRIS System
+    participant Dashboard as Invoice Dashboard
+    
+    Note over Merchant,FBR: One-Time Setup
+    Merchant->>FTS: Register for PRAL integration
+    FTS->>PRAL: Submit technical details
+    FTS->>PRAL: Register IP addresses
+    PRAL-->>FTS: Sandbox credentials
+    
+    Note over FTS,PRAL: Sandbox Testing (Mandatory)
+    FTS->>PRAL: Submit test invoices (scenarios)
+    PRAL->>PRAL: Validate scenarios
+    PRAL-->>FTS: Production token (after success)
+    
+    Note over Merchant,Dashboard: Production - Real-Time Invoicing
+    Merchant->>FTS: Create invoice
+    FTS->>FTS: Generate JSON format
+    FTS->>FTS: Calculate Pakistan sales tax
+    
+    FTS->>PRAL: POST invoice (real-time)
+    Note right of PRAL: Authorization: Bearer token<br/>Content-Type: application/json
+    
+    PRAL->>PRAL: Validate invoice format
+    PRAL->>FBR: Store in IRIS database
+    FBR-->>Dashboard: Update dashboard
+    PRAL-->>FTS: Response (invoice ID, status)
+    
+    FTS-->>Merchant: Invoice created + FBR submitted
+    
+    alt Invoice Rejected
+        PRAL-->>FTS: Error response (validation failure)
+        FTS-->>Merchant: Show error, fix required
+    end
+\`\`\`
+
+**PRAL Invoice JSON Format**:
+\`\`\`json
+{
+  "InvoiceNumber": "INV-2026-0001",
+  "InvoiceDate": "2026-01-08",
+  "InvoiceType": "Sales",
+  "BuyerNTN": "1234567-8",
+  "BuyerName": "ABC Corporation",
+  "BuyerAddress": "Karachi, Pakistan",
+  "Items": [
+    {
+      "ItemDescription": "Professional Services",
+      "Quantity": 10,
+      "UnitPrice": 15000.00,
+      "TotalValue": 150000.00,
+      "SalesTaxRate": 18,
+      "SalesTaxAmount": 27000.00
+    }
+  ],
+  "TotalInvoiceValue": 150000.00,
+  "TotalSalesTax": 27000.00,
+  "InvoiceValueInclusiveTax": 177000.00,
+  "PaymentMode": "Credit",
+  "SupplierNTN": "9876543-2",
+  "SupplierName": "XYZ Services Ltd",
+  "InvoiceCategory": "B2B"
+}
+\`\`\`
+
+**Technical Specifications**:
+
+| Specification | Details |
+|---------------|---------|
+| **API Endpoint** | https://iris.fbr.gov.pk/api/di/submit |
+| **Authentication** | Bearer token (from production environment) |
+| **Content-Type** | application/json |
+| **Method** | POST |
+| **Timeout** | 30 seconds |
+| **Retry Policy** | 3 attempts with exponential backoff |
+| **Response Format** | JSON with invoice_id and status |
+| **IP Restriction** | Only whitelisted IPs allowed |
+| **Rate Limit** | 100 invoices/minute |
+
+**Sandbox vs Production**:
+
+| Environment | URL | Purpose | Token Validity |
+|-------------|-----|---------|----------------|
+| **Sandbox** | https://sandbox-iris.fbr.gov.pk/api | Testing with scenarios | 90 days |
+| **Production** | https://iris.fbr.gov.pk/api | Live invoice submission | Annual renewal |
+
+**Required Sandbox Test Scenarios**:
+Based on business nature and sector selected during registration:
+1. Standard B2B invoice (18% sales tax)
+2. Export invoice (0% sales tax)
+3. Debit note (adjustment)
+4. Credit note (return)
+5. Mixed items (different tax rates)
+6. Withholding tax scenario (if applicable)
+
+**Business Nature Options**:
+- Manufacturer
+- Distributor
+- Retailer
+- Service Provider
+- Exporter
+- E-commerce
+
+**Sector Options**:
+- Manufacturing
+- Wholesale & Retail Trade
+- Services
+- Construction
+- Information Technology
+- Others
+
+**Error Codes**:
+
+| Code | Error | Resolution |
+|------|-------|------------|
+| 400 | Invalid JSON format | Check schema compliance |
+| 401 | Invalid token | Regenerate production token |
+| 403 | IP not whitelisted | Add IP in IRIS portal |
+| 422 | Validation error | Fix invoice data (NTN, amounts) |
+| 500 | FBR system error | Retry after 5 minutes |
+| 503 | Service unavailable | Check FBR status page |
+
+**Dashboard Features**:
+- Real-time invoice count (daily/monthly/quarterly/yearly)
+- Invoice value graphs
+- Search by date range and invoice type
+- Export to PDF
+- Sales tax summary by period
+- Debit/credit note tracking
+
+**Compliance Requirements**:
+- Real-time submission (within 1 hour of invoice generation)
+- All sales tax registered persons must integrate
+- Sequential invoice numbering required
+- Retention: 7 years minimum
+- Monthly reconciliation with sales tax returns
+- Penalties: PKR 10,000-500,000 for non-compliance
+
+---
 
 **Sample ZATCA Invoice Data**:
 \`\`\`xml
@@ -939,6 +1157,17 @@ const taxPreview = await base44.functions.invoke('taxCalculationEngine', {
   currency: "EUR"
 });
 
+// Pakistan sales tax example
+const pakistanTax = await base44.functions.invoke('taxCalculationEngine', {
+  seller_country: "PK",
+  seller_ntn: "9876543-2",
+  buyer_country: "PK",
+  buyer_ntn: "1234567-8",
+  product_category: "services",
+  amount: 100000.00,
+  currency: "PKR"
+});
+
 console.log(taxPreview.data);
 /*
 {
@@ -971,6 +1200,7 @@ console.log(taxPreview.data);
 | **Saudi Arabia** | 6 years | XML + PDF with QR | ZATCA portal submission |
 | **Mexico** | 5 years | XML (CFDI) | SAT certification |
 | **Australia** | 5 years | PDF acceptable | ATO guidelines |
+| **Pakistan** | 7 years | JSON + PDF | PRAL/FBR IRIS portal submission |
 
 **FTS.Money Archive System**:
 - All invoices stored in AWS S3 (encrypted)
