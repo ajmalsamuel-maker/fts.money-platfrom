@@ -325,6 +325,8 @@ import GreenBondsMarketplace from './pages/GreenBondsMarketplace';
 import NFTAchievements from './pages/NFTAchievements';
 import NANOStaking from './pages/NANOStaking';
 import ProjectDAO from './pages/ProjectDAO';
+import MerchantFIXDashboard from './pages/MerchantFIXDashboard';
+import PlatformFIXManagement from './pages/PlatformFIXManagement';
 import __Layout from './Layout.jsx';
 
 
@@ -656,6 +658,8 @@ export const PAGES = {
     "NFTAchievements": NFTAchievements,
     "NANOStaking": NANOStaking,
     "ProjectDAO": ProjectDAO,
+    "MerchantFIXDashboard": MerchantFIXDashboard,
+    "PlatformFIXManagement": PlatformFIXManagement,
 }
 
 export const pagesConfig = {
