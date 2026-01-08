@@ -107,6 +107,14 @@ export default function FTSReporting() {
     const activePSPs = psps.filter(p => p.status === 'active').length;
     const activeSubscriptions = subscriptions.filter(s => s.status === 'active').length;
 
+    // Module metrics
+    const avgFIXScore = fixScores.length > 0 ? Math.round(fixScores.reduce((sum, f) => sum + (f.overall_score || 0), 0) / fixScores.length) : 0;
+    const totalRWAValue = rwaAssets.reduce((sum, a) => sum + (a.total_value || 0), 0);
+    const activeTaxCountries = taxRates.filter(t => t.is_active).length;
+    const esgScore = esgReports.length > 0 ? Math.round(esgReports.reduce((sum, r) => sum + (r.sustainability_score || 0), 0) / esgReports.length) : 0;
+    const invoiceCount = invoices.length;
+    const nanoTasksCount = nanoTasks.filter(t => t.status === 'active').length;
+
     // Revenue by PSP
     const revenueByPSP = psps.map(psp => ({
         name: psp.psp_code,
