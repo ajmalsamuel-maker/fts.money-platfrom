@@ -173,7 +173,7 @@ graph TB
 | **Security Testing** | Req 11 | Weekly | No (requires manual review) | High |
 | **Security Policy** | Req 12 | Monthly | No | Low |
 
-**Monitoring Backend**: `functions/continuousMonitoring.js` (scheduled task runs every 30 minutes)
+**Monitoring Backend**: functions/continuousMonitoring.js (scheduled task runs every 30 minutes)
 
 ---
 
