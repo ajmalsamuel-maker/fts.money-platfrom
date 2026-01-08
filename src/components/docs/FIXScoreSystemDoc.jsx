@@ -552,7 +552,7 @@ graph TB
 
 ### Accessing FIX Scores Programmatically
 
-**Entity**: \`FIXScore\`
+**Entity**: FIXScore
 
 **SDK Usage**:
 \`\`\`javascript

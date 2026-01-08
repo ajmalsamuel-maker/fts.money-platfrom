@@ -253,9 +253,9 @@ sequenceDiagram
 **Peppol Participant Identifiers**:
 - ISO 6523 ICD format
 - Examples:
-  - EU VAT: `0088:GB123456789` (VAT number)
-  - GLN: `0088:1234567890123` (Global Location Number)
-  - DUNS: `0060:123456789` (Dun & Bradstreet)
+  - EU VAT: 0088:GB123456789 (VAT number)
+  - GLN: 0088:1234567890123 (Global Location Number)
+  - DUNS: 0060:123456789 (Dun & Bradstreet)
 
 **Document Types Supported**:
 - Invoice (BIS Billing 3.0)
