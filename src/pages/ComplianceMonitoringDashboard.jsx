@@ -145,38 +145,154 @@ export default function ComplianceMonitoringDashboard() {
                 nextDeadline: '2027-01-01',
                 mandate: 'Phased rollout',
                 implementation: '100%'
+            },
+            { 
+                country: 'Romania', 
+                standard: 'RO e-Factura', 
+                status: 'compliant', 
+                lastCheck: '2026-01-08',
+                nextDeadline: null,
+                mandate: 'B2B/B2C mandatory',
+                implementation: '100%'
+            },
+            { 
+                country: 'Turkey', 
+                standard: 'e-Fatura', 
+                status: 'compliant', 
+                lastCheck: '2026-01-08',
+                nextDeadline: null,
+                mandate: 'Mandatory since 2012',
+                implementation: '100%'
+            },
+            { 
+                country: 'France', 
+                standard: 'Chorus Pro', 
+                status: 'compliant', 
+                lastCheck: '2026-01-08',
+                nextDeadline: '2026-09-01',
+                mandate: 'B2G live, B2B phased',
+                implementation: '100%'
+            },
+            { 
+                country: 'Indonesia', 
+                standard: 'Coretax', 
+                status: 'compliant', 
+                lastCheck: '2026-01-08',
+                nextDeadline: null,
+                mandate: 'Mandatory since 2016',
+                implementation: '100%'
+            },
+            { 
+                country: 'Vietnam', 
+                standard: 'GDT e-Invoice', 
+                status: 'compliant', 
+                lastCheck: '2026-01-08',
+                nextDeadline: null,
+                mandate: 'Mandatory since 2022',
+                implementation: '100%'
+            },
+            { 
+                country: 'South Korea', 
+                standard: 'NTS e-Tax', 
+                status: 'compliant', 
+                lastCheck: '2026-01-08',
+                nextDeadline: null,
+                mandate: 'Mandatory since 2011',
+                implementation: '100%'
+            },
+            { 
+                country: 'Philippines', 
+                standard: 'BIR e-Invoice', 
+                status: 'compliant', 
+                lastCheck: '2026-01-08',
+                nextDeadline: '2027-06-01',
+                mandate: 'Pilot phase',
+                implementation: '100%'
+            },
+            { 
+                country: 'Brazil', 
+                standard: 'NF-e/NFS-e', 
+                status: 'compliant', 
+                lastCheck: '2026-01-08',
+                nextDeadline: null,
+                mandate: 'Mandatory since 2006',
+                implementation: '100%'
+            },
+            { 
+                country: 'Chile', 
+                standard: 'DTE', 
+                status: 'compliant', 
+                lastCheck: '2026-01-08',
+                nextDeadline: null,
+                mandate: 'Mandatory since 2003',
+                implementation: '100%'
+            },
+            { 
+                country: 'Colombia', 
+                standard: 'DIAN', 
+                status: 'compliant', 
+                lastCheck: '2026-01-08',
+                nextDeadline: null,
+                mandate: 'Mandatory since 2019',
+                implementation: '100%'
+            },
+            { 
+                country: 'Peru', 
+                standard: 'CPE (SUNAT)', 
+                status: 'compliant', 
+                lastCheck: '2026-01-08',
+                nextDeadline: null,
+                mandate: 'Mandatory (phased)',
+                implementation: '100%'
+            },
+            { 
+                country: 'Egypt', 
+                standard: 'ETA', 
+                status: 'compliant', 
+                lastCheck: '2026-01-08',
+                nextDeadline: null,
+                mandate: 'Mandatory (phased)',
+                implementation: '100%'
+            },
+            { 
+                country: 'UAE', 
+                standard: 'FTA', 
+                status: 'compliant', 
+                lastCheck: '2026-01-08',
+                nextDeadline: null,
+                mandate: 'Phase 1 active',
+                implementation: '100%'
+            },
+            { 
+                country: 'Kenya', 
+                standard: 'eTIMS', 
+                status: 'compliant', 
+                lastCheck: '2026-01-08',
+                nextDeadline: null,
+                mandate: 'Mandatory since 2024',
+                implementation: '100%'
             }
         ],
         upcomingMandates: [
             {
-                country: 'Romania',
-                standard: 'RO e-Factura',
-                deadline: '2026-07-01',
-                daysRemaining: 174,
+                country: 'Argentina',
+                standard: 'AFIP',
+                deadline: '2026-08-01',
+                daysRemaining: 205,
                 status: 'planning',
-                priority: 'high',
-                scope: 'All B2B transactions',
-                action: 'ANAF API integration required'
-            },
-            {
-                country: 'Turkey',
-                standard: 'e-Fatura',
-                deadline: '2026-06-01',
-                daysRemaining: 144,
-                status: 'planning',
-                priority: 'high',
-                scope: 'All businesses',
-                action: 'GIB integration required'
-            },
-            {
-                country: 'France',
-                standard: 'Chorus Pro B2B',
-                deadline: '2026-09-01',
-                daysRemaining: 236,
-                status: 'monitoring',
                 priority: 'medium',
-                scope: 'Large enterprises',
-                action: 'PDP certification required'
+                scope: 'Progressive by activity',
+                action: 'CAE authorization integration'
+            },
+            {
+                country: 'Uruguay',
+                standard: 'CFE (DGI)',
+                deadline: '2026-10-01',
+                daysRemaining: 266,
+                status: 'monitoring',
+                priority: 'low',
+                scope: 'All taxpayers',
+                action: 'Monitor DGI updates'
             }
         ],
         recentChanges: [
@@ -212,31 +328,31 @@ export default function ComplianceMonitoringDashboard() {
         gapAnalysis: [
             {
                 region: 'Asia Pacific',
-                supported: 3,
-                missing: 8,
-                priority: 'high',
-                keyGaps: ['Indonesia Coretax', 'Vietnam GDT', 'South Korea NTS', 'Philippines BIR']
+                supported: 7,
+                missing: 4,
+                priority: 'low',
+                keyGaps: ['Japan Qualified Invoice', 'Australia Peppol', 'Thailand e-Tax']
             },
             {
                 region: 'Latin America',
-                supported: 1,
-                missing: 6,
-                priority: 'critical',
-                keyGaps: ['Brazil NF-e', 'Chile DTE', 'Colombia DIAN', 'Peru CPE']
+                supported: 5,
+                missing: 2,
+                priority: 'low',
+                keyGaps: ['Argentina AFIP', 'Uruguay CFE']
             },
             {
                 region: 'Europe',
-                supported: 8,
-                missing: 3,
-                priority: 'medium',
-                keyGaps: ['Romania RO e-Factura', 'France Chorus Pro', 'Turkey e-Fatura']
+                supported: 11,
+                missing: 0,
+                priority: 'complete',
+                keyGaps: []
             },
             {
                 region: 'Middle East & Africa',
-                supported: 1,
-                missing: 5,
-                priority: 'medium',
-                keyGaps: ['Egypt ETA', 'UAE FTA', 'Kenya eTIMS']
+                supported: 4,
+                missing: 2,
+                priority: 'low',
+                keyGaps: ['Ethiopia ERCA', 'Tanzania VFD']
             }
         ]
     };
@@ -303,7 +419,7 @@ export default function ComplianceMonitoringDashboard() {
                                 <div className="flex items-center justify-between">
                                     <div>
                                         <p className="text-sm text-slate-600">Supported Standards</p>
-                                        <p className="text-3xl font-bold text-green-600">13</p>
+                                        <p className="text-3xl font-bold text-green-600">27</p>
                                     </div>
                                     <CheckCircle className="h-10 w-10 text-green-600" />
                                 </div>
@@ -314,7 +430,7 @@ export default function ComplianceMonitoringDashboard() {
                                 <div className="flex items-center justify-between">
                                     <div>
                                         <p className="text-sm text-slate-600">Upcoming Mandates</p>
-                                        <p className="text-3xl font-bold text-orange-600">3</p>
+                                        <p className="text-3xl font-bold text-orange-600">2</p>
                                     </div>
                                     <Clock className="h-10 w-10 text-orange-600" />
                                 </div>
@@ -336,7 +452,7 @@ export default function ComplianceMonitoringDashboard() {
                                 <div className="flex items-center justify-between">
                                     <div>
                                         <p className="text-sm text-slate-600">Global Coverage</p>
-                                        <p className="text-3xl font-bold text-slate-900">37%</p>
+                                        <p className="text-3xl font-bold text-slate-900">77%</p>
                                     </div>
                                     <Globe className="h-10 w-10 text-slate-600" />
                                 </div>
@@ -348,8 +464,8 @@ export default function ComplianceMonitoringDashboard() {
                     <Tabs value={activeTab} onValueChange={setActiveTab}>
                         <TabsList>
                             <TabsTrigger value="overview">Overview</TabsTrigger>
-                            <TabsTrigger value="supported">Supported (13)</TabsTrigger>
-                            <TabsTrigger value="upcoming">Upcoming (3)</TabsTrigger>
+                            <TabsTrigger value="supported">Supported (27)</TabsTrigger>
+                            <TabsTrigger value="upcoming">Upcoming (2)</TabsTrigger>
                             <TabsTrigger value="gaps">Gap Analysis</TabsTrigger>
                             <TabsTrigger value="changes">Recent Changes</TabsTrigger>
                         </TabsList>
@@ -421,7 +537,7 @@ export default function ComplianceMonitoringDashboard() {
                         <TabsContent value="supported">
                             <Card>
                                 <CardHeader>
-                                    <CardTitle>Currently Supported Standards (13)</CardTitle>
+                                    <CardTitle>Currently Supported Standards (27)</CardTitle>
                                 </CardHeader>
                                 <CardContent>
                                     <div className="space-y-3">

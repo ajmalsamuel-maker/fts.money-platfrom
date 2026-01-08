@@ -192,6 +192,152 @@ const VALIDATION_RULES = {
             { rule: 'gib_validation', message: 'GIB validation required' },
             { rule: 'qr_code', message: 'QR code mandatory' }
         ]
+    },
+
+    // Indonesia - Coretax (e-Faktur)
+    'coretax_indonesia': {
+        required: ['NomorFaktur', 'TanggalFaktur', 'NPWP_Penjual', 'NPWP_Pembeli', 'JumlahDPP', 'JumlahPPN'],
+        formats: {
+            NPWP_Penjual: /^\d{15}$/,
+            NPWP_Pembeli: /^\d{15}$/,
+            NomorFaktur: /^\d{3}\.\d{3}-\d{2}\.\d{8}$/
+        },
+        business_rules: [
+            { rule: 'coretax_format', message: 'Must use Coretax XML format' },
+            { rule: 'ppn_11', message: 'PPN must be 11% for standard transactions' },
+            { rule: 'djp_approval', message: 'DJP approval number required' }
+        ]
+    },
+
+    // Vietnam - e-Invoice (GDT)
+    'gdt_vietnam': {
+        required: ['InvoiceNumber', 'InvoiceDate', 'SellerTaxCode', 'BuyerTaxCode', 'TotalAmount', 'VATAmount'],
+        formats: {
+            SellerTaxCode: /^\d{10}(-\d{3})?$/,
+            BuyerTaxCode: /^\d{10}(-\d{3})?$/,
+            InvoiceNumber: /^.{1,20}$/
+        },
+        business_rules: [
+            { rule: 'digital_signature', message: 'Digital signature mandatory' },
+            { rule: 'gdt_validation', message: 'Real-time GDT validation required' },
+            { rule: 'vat_10', message: 'VAT must be 10% for standard rate' }
+        ]
+    },
+
+    // South Korea - e-Tax Invoice (NTS)
+    'nts_korea': {
+        required: ['IssueNumber', 'IssueDate', 'SupplierTIN', 'BuyerTIN', 'TotalAmount', 'VATAmount'],
+        formats: {
+            SupplierTIN: /^\d{10}$/,
+            BuyerTIN: /^\d{10}$/,
+            IssueNumber: /^\d{24}$/
+        },
+        business_rules: [
+            { rule: 'nts_format', message: 'Must use NTS XML format' },
+            { rule: 'real_time_reporting', message: 'Real-time submission to NTS required' },
+            { rule: 'vat_10', message: 'VAT must be 10%' }
+        ]
+    },
+
+    // Philippines - e-Invoicing (BIR)
+    'bir_philippines': {
+        required: ['InvoiceNumber', 'IssueDate', 'SellerTIN', 'BuyerTIN', 'TotalSales', 'VATAmount'],
+        formats: {
+            SellerTIN: /^\d{3}-\d{3}-\d{3}-\d{3}$/,
+            BuyerTIN: /^\d{3}-\d{3}-\d{3}-\d{3}$/
+        },
+        business_rules: [
+            { rule: 'bir_format', message: 'Must use BIR XML format' },
+            { rule: 'vat_12', message: 'VAT must be 12%' },
+            { rule: 'bir_permit', message: 'ATP/PTU permit number required' }
+        ]
+    },
+
+    // Colombia - DIAN
+    'dian_colombia': {
+        required: ['InvoiceNumber', 'IssueDate', 'SupplierNIT', 'BuyerNIT', 'LineExtensionAmount', 'TaxAmount'],
+        formats: {
+            SupplierNIT: /^\d{9}-\d$/,
+            BuyerNIT: /^\d{9}-\d$/,
+            CUFE: /^[a-f0-9]{96}$/
+        },
+        business_rules: [
+            { rule: 'ubl_2_1', message: 'Must use UBL 2.1 XML format' },
+            { rule: 'cufe_generation', message: 'CUFE unique identifier required' },
+            { rule: 'dian_validation', message: 'Real-time DIAN validation required' }
+        ]
+    },
+
+    // Peru - CPE (SUNAT)
+    'sunat_peru': {
+        required: ['SerieNumero', 'FechaEmision', 'RUC_Emisor', 'RUC_Receptor', 'ImporteTotal'],
+        formats: {
+            RUC_Emisor: /^\d{11}$/,
+            RUC_Receptor: /^\d{11}$/,
+            SerieNumero: /^[A-Z]{1}\d{3}-\d{8}$/
+        },
+        business_rules: [
+            { rule: 'ubl_2_1', message: 'Must use UBL 2.1 XML format' },
+            { rule: 'sunat_ose', message: 'SUNAT OSE validation required' },
+            { rule: 'igv_18', message: 'IGV must be 18%' }
+        ]
+    },
+
+    // Egypt - ETA
+    'eta_egypt': {
+        required: ['InternalID', 'IssueDate', 'SellerTIN', 'BuyerTIN', 'TotalAmount', 'TaxAmount'],
+        formats: {
+            SellerTIN: /^\d{9}$/,
+            BuyerTIN: /^\d{9}$/,
+            UUID: /^[A-Z0-9]{8}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{12}$/
+        },
+        business_rules: [
+            { rule: 'digital_signature', message: 'Digital signature mandatory' },
+            { rule: 'eta_validation', message: 'ETA clearance required' },
+            { rule: 'vat_14', message: 'VAT must be 14%' }
+        ]
+    },
+
+    // UAE - FTA
+    'fta_uae': {
+        required: ['InvoiceNumber', 'IssueDate', 'SellerTRN', 'BuyerTRN', 'TotalAmount', 'VATAmount'],
+        formats: {
+            SellerTRN: /^\d{15}$/,
+            BuyerTRN: /^\d{15}$/
+        },
+        business_rules: [
+            { rule: 'ubl_2_1', message: 'Must use UBL 2.1 XML or PDF/A-3 format' },
+            { rule: 'vat_5', message: 'VAT must be 5%' },
+            { rule: 'qr_code', message: 'QR code recommended' }
+        ]
+    },
+
+    // Kenya - eTIMS
+    'etims_kenya': {
+        required: ['InvoiceNumber', 'IssueDate', 'SellerPIN', 'BuyerPIN', 'TotalAmount', 'VATAmount'],
+        formats: {
+            SellerPIN: /^[A-Z]\d{9}[A-Z]$/,
+            BuyerPIN: /^[A-Z]\d{9}[A-Z]$/
+        },
+        business_rules: [
+            { rule: 'json_format', message: 'Must use JSON format' },
+            { rule: 'real_time_transmission', message: 'Real-time transmission to KRA required' },
+            { rule: 'vat_16', message: 'VAT must be 16%' }
+        ]
+    },
+
+    // France - Chorus Pro
+    'chorus_france': {
+        required: ['InvoiceNumber', 'IssueDate', 'SellerSIRET', 'BuyerSIRET', 'TotalAmount'],
+        formats: {
+            SellerSIRET: /^\d{14}$/,
+            BuyerSIRET: /^\d{14}$/
+        },
+        business_rules: [
+            { rule: 'multiple_formats', message: 'UBL, CII, or Factur-X accepted' },
+            { rule: 'pdp_submission', message: 'Submit via PDP or direct to Chorus Pro' },
+            { rule: 'e_reporting', message: 'E-reporting to tax authority required' }
+        ]
     }
 };
 
