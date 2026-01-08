@@ -321,6 +321,10 @@ import ConsumerHome from './pages/ConsumerHome';
 import ConsumerLogin from './pages/ConsumerLogin';
 import CommunityLeaderboard from './pages/CommunityLeaderboard';
 import CommunityForum from './pages/CommunityForum';
+import GreenBondsMarketplace from './pages/GreenBondsMarketplace';
+import NFTAchievements from './pages/NFTAchievements';
+import NANOStaking from './pages/NANOStaking';
+import ProjectDAO from './pages/ProjectDAO';
 import __Layout from './Layout.jsx';
 
 
@@ -648,6 +652,10 @@ export const PAGES = {
     "ConsumerLogin": ConsumerLogin,
     "CommunityLeaderboard": CommunityLeaderboard,
     "CommunityForum": CommunityForum,
+    "GreenBondsMarketplace": GreenBondsMarketplace,
+    "NFTAchievements": NFTAchievements,
+    "NANOStaking": NANOStaking,
+    "ProjectDAO": ProjectDAO,
 }
 
 export const pagesConfig = {

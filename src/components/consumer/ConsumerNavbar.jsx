@@ -10,7 +10,7 @@ import {
     DropdownMenuTrigger,
     DropdownMenuSeparator 
 } from '@/components/ui/dropdown-menu';
-import { Leaf, User, LogOut, Wallet, TrendingUp, Trophy, MessageSquare } from 'lucide-react';
+import { Leaf, User, LogOut, Wallet, TrendingUp, Trophy, MessageSquare, Zap, Users } from 'lucide-react';
 import { FTS_LOGOS } from '@/components/community/FTSBrandColors';
 
 export default function ConsumerNavbar({ user }) {
@@ -64,6 +64,12 @@ export default function ConsumerNavbar({ user }) {
                         >
                             Community
                         </Link>
+                        <Link 
+                            to={createPageUrl('GreenBondsMarketplace')}
+                            className="text-slate-700 hover:text-blue-600 transition-colors"
+                        >
+                            Green Bonds
+                        </Link>
                     </div>
 
                     {/* User Menu */}
@@ -93,17 +99,41 @@ export default function ConsumerNavbar({ user }) {
                                     </Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem asChild>
-                                    <Link to={createPageUrl('CommunityForum')}>
-                                        <MessageSquare className="h-4 w-4 mr-2" />
-                                        Community
-                                    </Link>
-                                </DropdownMenuItem>
-                                <DropdownMenuItem asChild>
-                                    <Link to={createPageUrl('ConsumerProfile')}>
-                                        <User className="h-4 w-4 mr-2" />
-                                        Profile
-                                    </Link>
-                                </DropdownMenuItem>
+                                        <Link to={createPageUrl('CommunityForum')}>
+                                            <MessageSquare className="h-4 w-4 mr-2" />
+                                            Community
+                                        </Link>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem asChild>
+                                        <Link to={createPageUrl('GreenBondsMarketplace')}>
+                                            <TrendingUp className="h-4 w-4 mr-2" />
+                                            Green Bonds
+                                        </Link>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem asChild>
+                                        <Link to={createPageUrl('NFTAchievements')}>
+                                            <Trophy className="h-4 w-4 mr-2" />
+                                            NFT Achievements
+                                        </Link>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem asChild>
+                                        <Link to={createPageUrl('NANOStaking')}>
+                                            <Zap className="h-4 w-4 mr-2" />
+                                            Staking
+                                        </Link>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem asChild>
+                                        <Link to={createPageUrl('ProjectDAO')}>
+                                            <Users className="h-4 w-4 mr-2" />
+                                            DAO Governance
+                                        </Link>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem asChild>
+                                        <Link to={createPageUrl('ConsumerProfile')}>
+                                            <User className="h-4 w-4 mr-2" />
+                                            Profile
+                                        </Link>
+                                    </DropdownMenuItem>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem onClick={handleLogout} className="text-red-600">
                                     <LogOut className="h-4 w-4 mr-2" />
