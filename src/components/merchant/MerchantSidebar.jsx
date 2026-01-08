@@ -21,7 +21,8 @@ import {
     HelpCircle,
     Book,
     Bitcoin,
-    Key
+    Key,
+    Leaf
 } from 'lucide-react';
 
 const menuSections = [
@@ -75,6 +76,12 @@ const menuSections = [
             { label: 'Chargebacks', icon: AlertCircle, path: 'MerchantChargebackReport' },
             { label: 'Statements', icon: FileText, path: 'MerchantStatementReport' },
             { label: 'Batch Reports', icon: BarChart3, path: 'MerchantBatchReports' },
+        ]
+    },
+    {
+        title: 'Sustainability',
+        items: [
+            { label: 'Green Dashboard', icon: Leaf, path: 'GreenMerchantDashboard' },
         ]
     },
     {
