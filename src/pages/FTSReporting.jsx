@@ -254,80 +254,162 @@ export default function FTSReporting() {
                 </header>
 
                 <div className="p-6">
-                    {/* Key Metrics */}
-                    <div className="grid grid-cols-6 gap-4 mb-6">
-                        <Card className="bg-gradient-to-br from-blue-500 to-blue-600 text-white">
-                            <CardContent className="p-6">
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <p className="text-xs text-blue-100">Total Revenue</p>
-                                        <p className="text-3xl font-bold mt-1">${(totalRevenue / 1000000).toFixed(2)}M</p>
-                                        <p className="text-xs text-blue-100 mt-1">Lifetime</p>
+                    {/* PSP Metrics */}
+                    <div className="mb-6">
+                        <h3 className="text-sm font-semibold text-slate-900 mb-3">PSP Platform</h3>
+                        <div className="grid grid-cols-6 gap-4">
+                            <Card className="bg-gradient-to-br from-blue-500 to-blue-600 text-white">
+                                <CardContent className="p-6">
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <p className="text-xs text-blue-100">Total Revenue</p>
+                                            <p className="text-3xl font-bold mt-1">${(totalRevenue / 1000000).toFixed(2)}M</p>
+                                            <p className="text-xs text-blue-100 mt-1">Lifetime</p>
+                                        </div>
+                                        <DollarSign className="h-12 w-12 opacity-50" />
                                     </div>
-                                    <DollarSign className="h-12 w-12 opacity-50" />
-                                </div>
-                            </CardContent>
-                        </Card>
-                        <Card className="bg-gradient-to-br from-purple-500 to-purple-600 text-white">
-                            <CardContent className="p-6">
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <p className="text-xs text-purple-100">Monthly Revenue</p>
-                                        <p className="text-3xl font-bold mt-1">${(monthlyRevenue / 1000).toFixed(0)}k</p>
-                                        <p className="text-xs text-purple-100 mt-1">This month</p>
+                                </CardContent>
+                            </Card>
+                            <Card className="bg-gradient-to-br from-purple-500 to-purple-600 text-white">
+                                <CardContent className="p-6">
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <p className="text-xs text-purple-100">Monthly Revenue</p>
+                                            <p className="text-3xl font-bold mt-1">${(monthlyRevenue / 1000).toFixed(0)}k</p>
+                                            <p className="text-xs text-purple-100 mt-1">This month</p>
+                                        </div>
+                                        <TrendingUp className="h-12 w-12 opacity-50" />
                                     </div>
-                                    <TrendingUp className="h-12 w-12 opacity-50" />
-                                </div>
-                            </CardContent>
-                        </Card>
-                        <Card className="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white">
-                            <CardContent className="p-6">
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <p className="text-xs text-emerald-100">Active PSPs</p>
-                                        <p className="text-3xl font-bold mt-1">{activePSPs}</p>
-                                        <p className="text-xs text-emerald-100 mt-1">of {psps.length} total</p>
+                                </CardContent>
+                            </Card>
+                            <Card className="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white">
+                                <CardContent className="p-6">
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <p className="text-xs text-emerald-100">Active PSPs</p>
+                                            <p className="text-3xl font-bold mt-1">{activePSPs}</p>
+                                            <p className="text-xs text-emerald-100 mt-1">of {psps.length} total</p>
+                                        </div>
+                                        <Building2 className="h-12 w-12 opacity-50" />
                                     </div>
-                                    <Building2 className="h-12 w-12 opacity-50" />
-                                </div>
-                            </CardContent>
-                        </Card>
-                        <Card className="bg-gradient-to-br from-amber-500 to-amber-600 text-white">
-                            <CardContent className="p-6">
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <p className="text-xs text-amber-100">Total Merchants</p>
-                                        <p className="text-3xl font-bold mt-1">{totalMerchants.toLocaleString()}</p>
-                                        <p className="text-xs text-amber-100 mt-1">Across all PSPs</p>
+                                </CardContent>
+                            </Card>
+                            <Card className="bg-gradient-to-br from-amber-500 to-amber-600 text-white">
+                                <CardContent className="p-6">
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <p className="text-xs text-amber-100">Total Merchants</p>
+                                            <p className="text-3xl font-bold mt-1">{totalMerchants.toLocaleString()}</p>
+                                            <p className="text-xs text-amber-100 mt-1">Across all PSPs</p>
+                                        </div>
+                                        <Users className="h-12 w-12 opacity-50" />
                                     </div>
-                                    <Users className="h-12 w-12 opacity-50" />
-                                </div>
-                            </CardContent>
-                        </Card>
-                        <Card className="bg-gradient-to-br from-pink-500 to-pink-600 text-white">
-                            <CardContent className="p-6">
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <p className="text-xs text-pink-100">Subscriptions</p>
-                                        <p className="text-3xl font-bold mt-1">{activeSubscriptions}</p>
-                                        <p className="text-xs text-pink-100 mt-1">Active services</p>
+                                </CardContent>
+                            </Card>
+                            <Card className="bg-gradient-to-br from-pink-500 to-pink-600 text-white">
+                                <CardContent className="p-6">
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <p className="text-xs text-pink-100">Subscriptions</p>
+                                            <p className="text-3xl font-bold mt-1">{activeSubscriptions}</p>
+                                            <p className="text-xs text-pink-100 mt-1">Active services</p>
+                                        </div>
+                                        <Activity className="h-12 w-12 opacity-50" />
                                     </div>
-                                    <Activity className="h-12 w-12 opacity-50" />
-                                </div>
-                            </CardContent>
-                        </Card>
-                        <Card className="bg-gradient-to-br from-cyan-500 to-cyan-600 text-white">
-                            <CardContent className="p-6">
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <p className="text-xs text-cyan-100">Total Volume</p>
-                                        <p className="text-3xl font-bold mt-1">${(totalVolume / 1000000).toFixed(1)}M</p>
-                                        <p className="text-xs text-cyan-100 mt-1">Processed</p>
+                                </CardContent>
+                            </Card>
+                            <Card className="bg-gradient-to-br from-cyan-500 to-cyan-600 text-white">
+                                <CardContent className="p-6">
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <p className="text-xs text-cyan-100">Total Volume</p>
+                                            <p className="text-3xl font-bold mt-1">${(totalVolume / 1000000).toFixed(1)}M</p>
+                                            <p className="text-xs text-cyan-100 mt-1">Processed</p>
+                                        </div>
+                                        <BarChart3 className="h-12 w-12 opacity-50" />
                                     </div>
-                                    <BarChart3 className="h-12 w-12 opacity-50" />
-                                </div>
-                            </CardContent>
-                        </Card>
+                                </CardContent>
+                            </Card>
+                        </div>
+                    </div>
+
+                    {/* Module Metrics */}
+                    <div>
+                        <h3 className="text-sm font-semibold text-slate-900 mb-3">Other Modules</h3>
+                        <div className="grid grid-cols-6 gap-4">
+                            <Card className="bg-gradient-to-br from-indigo-500 to-indigo-600 text-white">
+                                <CardContent className="p-6">
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <p className="text-xs text-indigo-100">FIX Score</p>
+                                            <p className="text-3xl font-bold mt-1">{avgFIXScore}</p>
+                                            <p className="text-xs text-indigo-100 mt-1">Avg merchant</p>
+                                        </div>
+                                        <Trophy className="h-12 w-12 opacity-50" />
+                                    </div>
+                                </CardContent>
+                            </Card>
+                            <Card className="bg-gradient-to-br from-green-500 to-green-600 text-white">
+                                <CardContent className="p-6">
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <p className="text-xs text-green-100">RWA Value</p>
+                                            <p className="text-3xl font-bold mt-1">${(totalRWAValue / 1000000).toFixed(1)}M</p>
+                                            <p className="text-xs text-green-100 mt-1">Tokenized</p>
+                                        </div>
+                                        <Building2 className="h-12 w-12 opacity-50" />
+                                    </div>
+                                </CardContent>
+                            </Card>
+                            <Card className="bg-gradient-to-br from-orange-500 to-orange-600 text-white">
+                                <CardContent className="p-6">
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <p className="text-xs text-orange-100">Tax Countries</p>
+                                            <p className="text-3xl font-bold mt-1">{activeTaxCountries}</p>
+                                            <p className="text-xs text-orange-100 mt-1">Active rates</p>
+                                        </div>
+                                        <DollarSign className="h-12 w-12 opacity-50" />
+                                    </div>
+                                </CardContent>
+                            </Card>
+                            <Card className="bg-gradient-to-br from-teal-500 to-teal-600 text-white">
+                                <CardContent className="p-6">
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <p className="text-xs text-teal-100">ESG Score</p>
+                                            <p className="text-3xl font-bold mt-1">{esgScore}</p>
+                                            <p className="text-xs text-teal-100 mt-1">Sustainability</p>
+                                        </div>
+                                        <Leaf className="h-12 w-12 opacity-50" />
+                                    </div>
+                                </CardContent>
+                            </Card>
+                            <Card className="bg-gradient-to-br from-red-500 to-red-600 text-white">
+                                <CardContent className="p-6">
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <p className="text-xs text-red-100">E-Invoices</p>
+                                            <p className="text-3xl font-bold mt-1">{invoiceCount.toLocaleString()}</p>
+                                            <p className="text-xs text-red-100 mt-1">Processed</p>
+                                        </div>
+                                        <FileText className="h-12 w-12 opacity-50" />
+                                    </div>
+                                </CardContent>
+                            </Card>
+                            <Card className="bg-gradient-to-br from-violet-500 to-violet-600 text-white">
+                                <CardContent className="p-6">
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <p className="text-xs text-violet-100">Nano Tasks</p>
+                                            <p className="text-3xl font-bold mt-1">{nanoTasksCount}</p>
+                                            <p className="text-xs text-violet-100 mt-1">Active</p>
+                                        </div>
+                                        <Activity className="h-12 w-12 opacity-50" />
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </div>
                     </div>
 
                     <Tabs defaultValue="visualizations" className="space-y-6">
