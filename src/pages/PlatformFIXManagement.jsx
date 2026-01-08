@@ -35,29 +35,7 @@ export default function PlatformFIXManagement() {
     const { data: allScores = [], isLoading } = useQuery({
         queryKey: ['allFIXScores'],
         queryFn: () => base44.entities.FIXScore.list('-overall_score', 500),
-    });
-    
-    if (loading) {
-        return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
-    }
-    
-    if (!platformUser) {
-        return null;
-    }
-
-    if (loading) {
-        return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
-    }
-    
-    if (!platformUser) {
-        return null;
-    }
-
-    const filteredScores = allScores.filter(score => {
-        const matchesSearch = score.merchant_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                            score.merchant_email?.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesTier = tierFilter === 'all' || score.score_tier === tierFilter;
-        return matchesSearch && matchesTier;
+        enabled: !!platformUser
     });
 
     const recalculateScoreMutation = useMutation({
@@ -87,6 +65,21 @@ export default function PlatformFIXManagement() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['allFIXScores'] });
         }
+    });
+
+    if (loading) {
+        return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+    }
+    
+    if (!platformUser) {
+        return null;
+    }
+
+    const filteredScores = allScores.filter(score => {
+        const matchesSearch = score.merchant_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                            score.merchant_email?.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesTier = tierFilter === 'all' || score.score_tier === tierFilter;
+        return matchesSearch && matchesTier;
     });
 
     const stats = {
@@ -396,50 +389,6 @@ export default function PlatformFIXManagement() {
                     </TabsContent>
 
                     <TabsContent value="leaderboard" className="space-y-6">
-
-                {/* Filters */}
-                <Card>
-                    <CardContent className="p-4">
-                        <div className="flex gap-4">
-                            <div className="flex-1 relative">
-                                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
-                                <Input
-                                    placeholder="Search merchants..."
-                                    value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                    className="pl-10"
-                                />
-                            </div>
-                            <div className="flex gap-2">
-                                <Button 
-                                    variant={tierFilter === 'all' ? 'default' : 'outline'}
-                                    onClick={() => setTierFilter('all')}
-                                >
-                                    All
-                                </Button>
-                                <Button 
-                                    variant={tierFilter === 'diamond' ? 'default' : 'outline'}
-                                    onClick={() => setTierFilter('diamond')}
-                                >
-                                    Diamond
-                                </Button>
-                                <Button 
-                                    variant={tierFilter === 'platinum' ? 'default' : 'outline'}
-                                    onClick={() => setTierFilter('platinum')}
-                                >
-                                    Platinum
-                                </Button>
-                                <Button 
-                                    variant={tierFilter === 'gold' ? 'default' : 'outline'}
-                                    onClick={() => setTierFilter('gold')}
-                                >
-                                    Gold
-                                </Button>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-
                         {/* Filters */}
                         <Card>
                             <CardContent className="p-4">
