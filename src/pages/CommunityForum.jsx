@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import ConsumerNavbar from '@/components/consumer/ConsumerNavbar';
+import DiscordWidget from '@/components/community/DiscordWidget';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -60,7 +61,10 @@ export default function CommunityForum() {
         <>
             <ConsumerNavbar user={user} />
             <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-white p-6">
-                <div className="max-w-5xl mx-auto space-y-6">
+                <div className="max-w-7xl mx-auto">
+                    <div className="grid lg:grid-cols-3 gap-6">
+                        {/* Main Content */}
+                        <div className="lg:col-span-2 space-y-6">
                     <div className="flex justify-between items-center">
                         <div>
                             <h1 className="text-4xl font-bold text-slate-900" style={{ fontFamily: 'Montserrat, sans-serif' }}>Community Forum</h1>
