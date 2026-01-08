@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import ConsumerNavbar from '@/components/consumer/ConsumerNavbar';
 import { Card, CardContent } from '@/components/ui/card';
@@ -37,16 +36,16 @@ export default function ConsumerHome() {
                     </p>
                     <div className="flex justify-center gap-4 pt-6">
                         <Button size="lg" className="bg-green-600 hover:bg-green-700" asChild>
-                            <Link to={createPageUrl('NanoTaskMarketplace')}>
+                            <a href={createPageUrl('NanoTaskMarketplace')}>
                                 <Leaf className="h-5 w-5 mr-2" />
                                 Browse Tasks
-                            </Link>
+                            </a>
                         </Button>
                         {!user && (
                             <Button size="lg" variant="outline" asChild>
-                                <Link to={createPageUrl('ConsumerRegister')}>
+                                <a href={createPageUrl('ConsumerRegister')}>
                                     Get Started Free
-                                </Link>
+                                </a>
                             </Button>
                         )}
                     </div>
@@ -124,10 +123,10 @@ export default function ConsumerHome() {
                             Join thousands of people earning rewards while building a sustainable future.
                         </p>
                         <Button size="lg" className="bg-white text-green-600 hover:bg-slate-100" asChild>
-                            <Link to={createPageUrl('NanoTaskMarketplace')}>
+                            <a href={createPageUrl('NanoTaskMarketplace')}>
                                 Start Earning Now
                                 <ArrowRight className="h-5 w-5 ml-2" />
-                            </Link>
+                            </a>
                         </Button>
                     </CardContent>
                 </Card>
@@ -146,8 +145,8 @@ export default function ConsumerHome() {
                         <div>
                             <h4 className="font-semibold mb-4">Platform</h4>
                             <ul className="space-y-2 text-sm text-slate-400">
-                                <li><Link to={createPageUrl('NanoTaskMarketplace')}>Browse Tasks</Link></li>
-                                <li><Link to={createPageUrl('UserNanoHub')}>My Impact</Link></li>
+                                <li><a href={createPageUrl('NanoTaskMarketplace')}>Browse Tasks</a></li>
+                                <li><a href={createPageUrl('UserNanoHub')}>My Impact</a></li>
                             </ul>
                         </div>
                         <div>
