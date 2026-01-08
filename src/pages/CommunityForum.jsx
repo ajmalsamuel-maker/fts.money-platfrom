@@ -167,7 +167,13 @@ export default function CommunityForum() {
                         ))}
                     </div>
                 </div>
+
+                {/* Sidebar */}
+                <div className="space-y-6">
+                    <DiscordWidget />
+                </div>
             </div>
+        </div>
         </>
     );
 }
