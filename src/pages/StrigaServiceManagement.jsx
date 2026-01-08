@@ -19,6 +19,7 @@ export default function StrigaServiceManagement() {
     const { platformUser, loading: authLoading } = usePlatformAuth();
     const { t } = useI18n();
     const [selectedTab, setSelectedTab] = useState('overview');
+    const [copiedApiKey, setCopiedApiKey] = useState(false);
 
     // Fetch Crypto Gateway subscriptions
     const { data: subscriptions = [], isLoading: subsLoading } = useQuery({
