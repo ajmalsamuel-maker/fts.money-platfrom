@@ -11,6 +11,7 @@ import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
 import { base44 } from '@/api/base44Client';
 import CountryWorkflowGuide from '@/components/einvoicing/CountryWorkflowGuide';
 import AdvancedReportingDashboard from '@/components/einvoicing/AdvancedReportingDashboard';
+import { EINVOICING_STATISTICS } from '@/components/utils/globalEInvoicingRegistry';
 import { 
     AlertTriangle, 
     CheckCircle, 

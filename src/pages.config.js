@@ -319,6 +319,8 @@ import SubMerchants from './pages/SubMerchants';
 import Subscriptions from './pages/Subscriptions';
 import Support from './pages/Support';
 import SystemArchitectureDocumentation from './pages/SystemArchitectureDocumentation';
+import TaxAdvancedReports from './pages/TaxAdvancedReports';
+import TaxCalculationTester from './pages/TaxCalculationTester';
 import TaxManagement from './pages/TaxManagement';
 import TaxRateUpdateManager from './pages/TaxRateUpdateManager';
 import TenantManagement from './pages/TenantManagement';
@@ -338,8 +340,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import TaxAdvancedReports from './pages/TaxAdvancedReports';
-import TaxCalculationTester from './pages/TaxCalculationTester';
 import __Layout from './Layout.jsx';
 
 
@@ -665,6 +665,8 @@ export const PAGES = {
     "Subscriptions": Subscriptions,
     "Support": Support,
     "SystemArchitectureDocumentation": SystemArchitectureDocumentation,
+    "TaxAdvancedReports": TaxAdvancedReports,
+    "TaxCalculationTester": TaxCalculationTester,
     "TaxManagement": TaxManagement,
     "TaxRateUpdateManager": TaxRateUpdateManager,
     "TenantManagement": TenantManagement,
@@ -684,8 +686,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "TaxAdvancedReports": TaxAdvancedReports,
-    "TaxCalculationTester": TaxCalculationTester,
 }
 
 export const pagesConfig = {
