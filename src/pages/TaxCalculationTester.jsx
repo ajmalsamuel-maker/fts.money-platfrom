@@ -11,6 +11,54 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { base44 } from '@/api/base44Client';
 import { Calculator, Zap, Globe, Shield, TrendingUp, AlertCircle, CheckCircle } from 'lucide-react';
 
+const COUNTRIES = [
+    { code: 'US', name: 'United States' },
+    { code: 'GB', name: 'United Kingdom' },
+    { code: 'DE', name: 'Germany' },
+    { code: 'FR', name: 'France' },
+    { code: 'IT', name: 'Italy' },
+    { code: 'ES', name: 'Spain' },
+    { code: 'NL', name: 'Netherlands' },
+    { code: 'BE', name: 'Belgium' },
+    { code: 'IE', name: 'Ireland' },
+    { code: 'AT', name: 'Austria' },
+    { code: 'SE', name: 'Sweden' },
+    { code: 'DK', name: 'Denmark' },
+    { code: 'FI', name: 'Finland' },
+    { code: 'NO', name: 'Norway' },
+    { code: 'CH', name: 'Switzerland' },
+    { code: 'PL', name: 'Poland' },
+    { code: 'CZ', name: 'Czech Republic' },
+    { code: 'PT', name: 'Portugal' },
+    { code: 'GR', name: 'Greece' },
+    { code: 'CA', name: 'Canada' },
+    { code: 'AU', name: 'Australia' },
+    { code: 'NZ', name: 'New Zealand' },
+    { code: 'SG', name: 'Singapore' },
+    { code: 'HK', name: 'Hong Kong' },
+    { code: 'JP', name: 'Japan' },
+    { code: 'KR', name: 'South Korea' },
+    { code: 'CN', name: 'China' },
+    { code: 'IN', name: 'India' },
+    { code: 'AE', name: 'UAE' },
+    { code: 'SA', name: 'Saudi Arabia' },
+    { code: 'ZA', name: 'South Africa' },
+    { code: 'BR', name: 'Brazil' },
+    { code: 'MX', name: 'Mexico' },
+    { code: 'AR', name: 'Argentina' },
+    { code: 'CL', name: 'Chile' },
+    { code: 'CO', name: 'Colombia' },
+    { code: 'MY', name: 'Malaysia' },
+    { code: 'TH', name: 'Thailand' },
+    { code: 'ID', name: 'Indonesia' },
+    { code: 'PH', name: 'Philippines' },
+    { code: 'VN', name: 'Vietnam' },
+    { code: 'TR', name: 'Turkey' },
+    { code: 'RU', name: 'Russia' },
+    { code: 'IL', name: 'Israel' },
+    { code: 'EG', name: 'Egypt' },
+];
+
 export default function TaxCalculationTester() {
     const { platformUser, loading: authLoading } = usePlatformAuth();
     const [loading, setLoading] = useState(false);
@@ -73,22 +121,34 @@ export default function TaxCalculationTester() {
                                 <div className="grid md:grid-cols-2 gap-4">
                                     <div className="space-y-2">
                                         <Label>Seller Country *</Label>
-                                        <Input 
-                                            value={params.seller_country}
-                                            onChange={(e) => setParams({...params, seller_country: e.target.value.toUpperCase()})}
-                                            placeholder="US, GB, DE..."
-                                            maxLength={2}
-                                        />
+                                        <Select value={params.seller_country} onValueChange={(v) => setParams({...params, seller_country: v})}>
+                                            <SelectTrigger>
+                                                <SelectValue />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {COUNTRIES.map(country => (
+                                                    <SelectItem key={country.code} value={country.code}>
+                                                        {country.code} - {country.name}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
                                     </div>
 
                                     <div className="space-y-2">
                                         <Label>Buyer Country *</Label>
-                                        <Input 
-                                            value={params.buyer_country}
-                                            onChange={(e) => setParams({...params, buyer_country: e.target.value.toUpperCase()})}
-                                            placeholder="FR, SG, AU..."
-                                            maxLength={2}
-                                        />
+                                        <Select value={params.buyer_country} onValueChange={(v) => setParams({...params, buyer_country: v})}>
+                                            <SelectTrigger>
+                                                <SelectValue />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {COUNTRIES.map(country => (
+                                                    <SelectItem key={country.code} value={country.code}>
+                                                        {country.code} - {country.name}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
                                     </div>
 
                                     <div className="space-y-2">
