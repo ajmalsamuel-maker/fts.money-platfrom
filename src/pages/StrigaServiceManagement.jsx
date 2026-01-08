@@ -296,45 +296,14 @@ export default function StrigaServiceManagement() {
                                         Test Integration
                                     </Button>
 
-                                    <Dialog>
-                                        <DialogTrigger asChild>
-                                            <Button 
-                                                variant="outline" 
-                                                className="w-full justify-start"
-                                            >
-                                                <CreditCard className="w-4 h-4 mr-2" />
-                                                White-Label Configuration
-                                            </Button>
-                                        </DialogTrigger>
-                                        <DialogContent className="max-w-2xl">
-                                            <DialogHeader>
-                                                <DialogTitle>White-Label Configuration</DialogTitle>
-                                            </DialogHeader>
-                                            <div className="space-y-4">
-                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                    <div className="p-4 border border-slate-200 rounded-lg">
-                                                        <h4 className="font-semibold mb-2">Branding</h4>
-                                                        <ul className="space-y-2 text-sm text-slate-600">
-                                                            <li>• Custom logo upload</li>
-                                                            <li>• Color scheme customization</li>
-                                                            <li>• Domain white-labeling</li>
-                                                        </ul>
-                                                    </div>
-                                                    <div className="p-4 border border-slate-200 rounded-lg">
-                                                        <h4 className="font-semibold mb-2">Configuration</h4>
-                                                        <ul className="space-y-2 text-sm text-slate-600">
-                                                            <li>• API rate limits</li>
-                                                            <li>• Webhook endpoints</li>
-                                                            <li>• Security settings</li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                                <Button className="w-full">
-                                                    Contact Sales for White-Label Setup
-                                                </Button>
-                                            </div>
-                                        </DialogContent>
-                                    </Dialog>
+                                    <Button 
+                                        variant="outline" 
+                                        className="w-full justify-start"
+                                        onClick={() => window.location.href = createPageUrl('CryptoBankingVASPManagement')}
+                                    >
+                                        <CreditCard className="w-4 h-4 mr-2" />
+                                        White-Label Configuration
+                                    </Button>
                                 </CardContent>
                             </Card>
                         </TabsContent>
