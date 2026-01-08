@@ -13,7 +13,7 @@ The **FTS.Money Invoicing System** provides comprehensive global tax compliance 
 
 **Key Capabilities**:
 - ✅ **Automatic VAT calculation** - 150+ countries and 500+ tax jurisdictions
-- ✅ **Multi-standard e-invoicing** - Peppol, ZATCA, FatturaPA, CFDI, XRechnung, FacturaE
+- ✅ **Multi-standard e-invoicing** - Peppol, ZATCA, FatturaPA, CFDI, XRechnung, PRAL/FBR, FacturaE
 - ✅ **Real-time tax rate updates** - Synchronized with government databases
 - ✅ **CSRD compliance reporting** - ESG and sustainability tax reporting
 - ✅ **Multi-currency support** - 180+ currencies with exchange rates
@@ -1216,7 +1216,7 @@ console.log(taxPreview.data);
 The FTS.Money Invoicing & Tax Management System provides:
 
 ✅ **Global tax compliance** - 150+ countries supported  
-✅ **Multi-standard e-invoicing** - Peppol, ZATCA, FatturaPA, CFDI, XRechnung  
+✅ **Multi-standard e-invoicing** - Peppol, ZATCA, FatturaPA, CFDI, XRechnung, PRAL/FBR  
 ✅ **Automated VAT calculation** - Handles complex cross-border rules  
 ✅ **Blockchain verification** - Immutable invoice audit trail  
 ✅ **Three-tier invoicing** - Platform → PSP → Merchant → Customer  
