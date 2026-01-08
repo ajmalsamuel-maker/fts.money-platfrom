@@ -11,7 +11,7 @@ import { FTS_COLORS, FTS_LOGOS } from '@/components/community/FTSBrandColors';
 import { 
     LayoutDashboard, Building2, Globe, Users, Settings, LogOut,
     Rocket, FileText, DollarSign, ChevronDown, ChevronRight,
-    Code, GitBranch, Package, Briefcase, BarChart3, BookOpen, Wallet, Leaf, Sprout
+    Code, GitBranch, Package, Briefcase, BarChart3, BookOpen, Wallet, Leaf, Sprout, Trophy
 } from 'lucide-react';
 
 export default function CommunityPortalSidebarOptimized({ currentPage, userEmail }) {
@@ -102,6 +102,7 @@ export default function CommunityPortalSidebarOptimized({ currentPage, userEmail
             defaultOpen: false,
             items: [
                 { icon: BarChart3, label: 'Analytics', path: 'CommunityAnalytics' },
+                { icon: Trophy, label: 'FIX Leaderboard', path: 'CommunityFIXLeaderboard' },
                 { icon: FileText, label: 'Service Requests', path: 'MyServiceRequests' },
                 { icon: DollarSign, label: 'Billing', path: 'CommunityBilling' }
             ]
