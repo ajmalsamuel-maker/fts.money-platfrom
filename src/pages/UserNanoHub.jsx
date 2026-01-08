@@ -65,6 +65,7 @@ export default function UserNanoHub() {
 
     const balance = tokenBalance?.[0]?.balance || 0;
     const totalCO2 = completedTasks.reduce((sum, t) => sum + (t.carbon_impact || 0), 0);
+    const currentStreak = streaks?.[0];
 
     return (
         <>
@@ -101,6 +102,20 @@ export default function UserNanoHub() {
                         </CardContent>
                     </Card>
                 </div>
+
+                {/* Streak Tracker */}
+                <StreakTracker streak={currentStreak} />
+
+                {/* Badges & Achievements */}
+                <Card>
+                    <CardContent className="p-6 space-y-4">
+                        <div className="flex justify-between items-center">
+                            <h2 className="text-xl font-bold">Badges & Achievements</h2>
+                            <span className="text-sm text-slate-600">{achievements.length}/10 earned</span>
+                        </div>
+                        <BadgeDisplay achievements={achievements} compact={false} />
+                    </CardContent>
+                </Card>
 
                 <Card className="border-green-200">
                     <CardContent className="p-8 text-center space-y-6">
