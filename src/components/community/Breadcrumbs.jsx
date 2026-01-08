@@ -5,19 +5,19 @@ import { ChevronRight, Home } from 'lucide-react';
 
 const pageHierarchy = {
     'CommunityPortalDashboard': ['Dashboard'],
-    'LaunchServices': ['Get Started', 'Launch Services'],
-    'CommunityPSPProvisioning': ['Get Started', 'Launch PSP'],
-    'MyPSPInstances': ['My Services', 'PSP Instances'],
-    'MyAllServices': ['My Services', 'All Services'],
+    'LaunchServices': ['Launch Services'],
+    'CommunityPSPProvisioning': ['Launch Services', 'New Service'],
+    'MyPSPInstances': ['My Services'],
+    'MyAllServices': ['My Services'],
     'ISOGatewayLogin': ['My Services', 'ISO Gateway'],
     'OrchestrationLogin': ['My Services', 'Orchestration'],
-    'CommunityMarketplace': ['Explore', 'Marketplace'],
+    'CommunityMarketplace': ['Marketplace'],
     'MySubscriptions': ['My Services', 'Subscriptions'],
-    'CommunityBilling': ['Business & Operations', 'Billing'],
-    'CommunityAnalytics': ['Business & Operations', 'Analytics'],
-    'ServiceProviderRegistration': ['Provider Hub', 'Registration'],
+    'CommunityBilling': ['Billing'],
+    'CommunityAnalytics': ['Analytics'],
+    'ServiceProviderRegistration': ['Provider Hub'],
     'MyWholesaleOfferings': ['Provider Hub', 'My Offerings'],
-    'CommunityAccountSettings': ['Settings', 'Account']
+    'CommunityAccountSettings': ['Settings']
 };
 
 export default function Breadcrumbs({ currentPage }) {
