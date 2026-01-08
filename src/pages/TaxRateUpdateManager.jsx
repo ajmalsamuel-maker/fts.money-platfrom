@@ -34,6 +34,8 @@ export default function TaxRateUpdateManager() {
     const [validationResults, setValidationResults] = useState([]);
     const [syncSchedule, setSyncSchedule] = useState({ sync_enabled: false, sync_interval: 24, sync_unit: 'hours' });
     const [overrideForm, setOverrideForm] = useState({ country: '', override_type: 'standard_rate', value: '', reason: '' });
+    const [countrySearch, setCountrySearch] = useState('');
+    const [allCountryRules, setAllCountryRules] = useState([]);
 
     const [manualUpdate, setManualUpdate] = useState({
         country: '',
@@ -660,7 +662,7 @@ export default function TaxRateUpdateManager() {
                         <TabsContent value="details">
                             <Card>
                                 <CardHeader>
-                                    <CardTitle>Country Tax Details</CardTitle>
+                                    <CardTitle>Country Tax Details ({allCountryRules.length} countries)</CardTitle>
                                     <CardDescription>View granular rules: SEZs, tourism taxes, exemptions, digital vs physical goods</CardDescription>
                                 </CardHeader>
                                 <CardContent className="space-y-4">
@@ -668,160 +670,84 @@ export default function TaxRateUpdateManager() {
                                         <Input 
                                             placeholder="Search country (code or name)..."
                                             className="max-w-md"
+                                            value={countrySearch}
+                                            onChange={(e) => setCountrySearch(e.target.value)}
                                         />
                                     </div>
 
                                     <div className="grid gap-4 max-h-[600px] overflow-y-auto">
-                                        {/* Example country details - would be populated from tax rules */}
-                                        <Card className="border-blue-200">
-                                            <CardHeader className="pb-3">
-                                                <div className="flex justify-between items-start">
-                                                    <div>
-                                                        <CardTitle className="text-lg">United Arab Emirates (AE)</CardTitle>
-                                                        <CardDescription>VAT System - 5% Standard Rate</CardDescription>
+                                        {allCountryRules
+                                            .filter(country => 
+                                                !countrySearch || 
+                                                country.code.toLowerCase().includes(countrySearch.toLowerCase()) ||
+                                                (country.name && country.name.toLowerCase().includes(countrySearch.toLowerCase()))
+                                            )
+                                            .map((country) => (
+                                            <Card key={country.code} className="border-blue-200">
+                                                <CardHeader className="pb-3">
+                                                    <div className="flex justify-between items-start">
+                                                        <div>
+                                                            <CardTitle className="text-lg">{country.name || country.code} ({country.code})</CardTitle>
+                                                            <CardDescription>{country.type} - {country.standard}% Standard Rate</CardDescription>
+                                                        </div>
+                                                        <Badge className="bg-green-100 text-green-800">Active</Badge>
                                                     </div>
-                                                    <Badge className="bg-green-100 text-green-800">Active</Badge>
-                                                </div>
-                                            </CardHeader>
-                                            <CardContent className="space-y-3">
-                                                <div className="grid md:grid-cols-2 gap-4">
-                                                    <div>
-                                                        <Label className="text-xs text-slate-600">Digital Services</Label>
-                                                        <div className="text-sm font-medium">5%</div>
+                                                </CardHeader>
+                                                <CardContent className="space-y-3">
+                                                    <div className="grid md:grid-cols-2 gap-4">
+                                                        <div>
+                                                            <Label className="text-xs text-slate-600">Digital Services</Label>
+                                                            <div className="text-sm font-medium">{country.digital_services || country.standard}%</div>
+                                                        </div>
+                                                        <div>
+                                                            <Label className="text-xs text-slate-600">Physical Goods</Label>
+                                                            <div className="text-sm font-medium">{country.physical_goods || country.standard}%</div>
+                                                        </div>
+                                                        <div>
+                                                            <Label className="text-xs text-slate-600">Tourism Tax</Label>
+                                                            <div className="text-sm font-medium">{country.tourism_tax ? `${country.tourism_tax}%` : 'N/A'}</div>
+                                                        </div>
+                                                        <div>
+                                                            <Label className="text-xs text-slate-600">Reverse Charge B2B</Label>
+                                                            <div className="text-sm font-medium">{country.reverse_charge_b2b ? 'Yes' : 'No'}</div>
+                                                        </div>
                                                     </div>
-                                                    <div>
-                                                        <Label className="text-xs text-slate-600">Physical Goods</Label>
-                                                        <div className="text-sm font-medium">5%</div>
-                                                    </div>
-                                                    <div>
-                                                        <Label className="text-xs text-slate-600">Tourism Tax</Label>
-                                                        <div className="text-sm font-medium">10%</div>
-                                                    </div>
-                                                    <div>
-                                                        <Label className="text-xs text-slate-600">Reverse Charge B2B</Label>
-                                                        <div className="text-sm font-medium">No</div>
-                                                    </div>
-                                                </div>
 
-                                                <div>
-                                                    <Label className="text-xs text-slate-600 mb-2 block">Special Economic Zones (SEZ)</Label>
-                                                    <div className="flex flex-wrap gap-2">
-                                                        <Badge variant="outline">Free Zones (0%)</Badge>
-                                                        <Badge variant="outline">DIFC (0%)</Badge>
-                                                        <Badge variant="outline">ADGM (0%)</Badge>
-                                                    </div>
-                                                </div>
+                                                    {country.sez && country.sez.length > 0 && (
+                                                        <div>
+                                                            <Label className="text-xs text-slate-600 mb-2 block">Special Economic Zones (SEZ)</Label>
+                                                            <div className="flex flex-wrap gap-2">
+                                                                {country.sez.map((zone, idx) => (
+                                                                    <Badge key={idx} variant="outline">{zone}</Badge>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    )}
 
-                                                <div>
-                                                    <Label className="text-xs text-slate-600 mb-2 block">Exemptions</Label>
-                                                    <div className="flex flex-wrap gap-2">
-                                                        <Badge className="bg-purple-100 text-purple-800">Exports</Badge>
-                                                        <Badge className="bg-purple-100 text-purple-800">Health</Badge>
-                                                        <Badge className="bg-purple-100 text-purple-800">Education</Badge>
-                                                        <Badge className="bg-purple-100 text-purple-800">Residential Property</Badge>
-                                                    </div>
-                                                </div>
-                                            </CardContent>
-                                        </Card>
+                                                    {(country.exemptions || country.zero) && (
+                                                        <div>
+                                                            <Label className="text-xs text-slate-600 mb-2 block">Exemptions & Zero-Rated</Label>
+                                                            <div className="flex flex-wrap gap-2">
+                                                                {[...(country.exemptions || []), ...(country.zero || [])].map((item, idx) => (
+                                                                    <Badge key={idx} className="bg-purple-100 text-purple-800">{item}</Badge>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    )}
 
-                                        <Card className="border-blue-200">
-                                            <CardHeader className="pb-3">
-                                                <div className="flex justify-between items-start">
-                                                    <div>
-                                                        <CardTitle className="text-lg">Saudi Arabia (SA)</CardTitle>
-                                                        <CardDescription>VAT System - 15% Standard Rate</CardDescription>
-                                                    </div>
-                                                    <Badge className="bg-green-100 text-green-800">Active</Badge>
-                                                </div>
-                                            </CardHeader>
-                                            <CardContent className="space-y-3">
-                                                <div className="grid md:grid-cols-2 gap-4">
-                                                    <div>
-                                                        <Label className="text-xs text-slate-600">Digital Services</Label>
-                                                        <div className="text-sm font-medium">15%</div>
-                                                    </div>
-                                                    <div>
-                                                        <Label className="text-xs text-slate-600">Physical Goods</Label>
-                                                        <div className="text-sm font-medium">15%</div>
-                                                    </div>
-                                                    <div>
-                                                        <Label className="text-xs text-slate-600">Tourism Tax</Label>
-                                                        <div className="text-sm font-medium">0%</div>
-                                                    </div>
-                                                    <div>
-                                                        <Label className="text-xs text-slate-600">Reverse Charge B2B</Label>
-                                                        <div className="text-sm font-medium">No</div>
-                                                    </div>
-                                                </div>
-
-                                                <div>
-                                                    <Label className="text-xs text-slate-600 mb-2 block">Special Economic Zones (SEZ)</Label>
-                                                    <div className="flex flex-wrap gap-2">
-                                                        <Badge variant="outline">KAEC (0%)</Badge>
-                                                        <Badge variant="outline">NEOM (0%)</Badge>
-                                                    </div>
-                                                </div>
-
-                                                <div>
-                                                    <Label className="text-xs text-slate-600 mb-2 block">Zero-Rated Categories</Label>
-                                                    <div className="flex flex-wrap gap-2">
-                                                        <Badge className="bg-purple-100 text-purple-800">Exports</Badge>
-                                                        <Badge className="bg-purple-100 text-purple-800">Health</Badge>
-                                                        <Badge className="bg-purple-100 text-purple-800">Education</Badge>
-                                                        <Badge className="bg-purple-100 text-purple-800">Real Estate</Badge>
-                                                    </div>
-                                                </div>
-                                            </CardContent>
-                                        </Card>
-
-                                        <Card className="border-blue-200">
-                                            <CardHeader className="pb-3">
-                                                <div className="flex justify-between items-start">
-                                                    <div>
-                                                        <CardTitle className="text-lg">Singapore (SG)</CardTitle>
-                                                        <CardDescription>GST System - 9% Standard Rate</CardDescription>
-                                                    </div>
-                                                    <Badge className="bg-green-100 text-green-800">Active</Badge>
-                                                </div>
-                                            </CardHeader>
-                                            <CardContent className="space-y-3">
-                                                <div className="grid md:grid-cols-2 gap-4">
-                                                    <div>
-                                                        <Label className="text-xs text-slate-600">Digital Services</Label>
-                                                        <div className="text-sm font-medium">9%</div>
-                                                    </div>
-                                                    <div>
-                                                        <Label className="text-xs text-slate-600">Physical Goods</Label>
-                                                        <div className="text-sm font-medium">9%</div>
-                                                    </div>
-                                                    <div>
-                                                        <Label className="text-xs text-slate-600">Tourism Tax</Label>
-                                                        <div className="text-sm font-medium">N/A</div>
-                                                    </div>
-                                                    <div>
-                                                        <Label className="text-xs text-slate-600">Reverse Charge B2B</Label>
-                                                        <div className="text-sm font-medium">No</div>
-                                                    </div>
-                                                </div>
-
-                                                <div>
-                                                    <Label className="text-xs text-slate-600 mb-2 block">Special Economic Zones (SEZ)</Label>
-                                                    <div className="flex flex-wrap gap-2">
-                                                        <Badge variant="outline">Free Trade Zones (0%)</Badge>
-                                                    </div>
-                                                </div>
-
-                                                <div>
-                                                    <Label className="text-xs text-slate-600 mb-2 block">Zero-Rated & Exemptions</Label>
-                                                    <div className="flex flex-wrap gap-2">
-                                                        <Badge className="bg-purple-100 text-purple-800">Exports</Badge>
-                                                        <Badge className="bg-purple-100 text-purple-800">Financial Services</Badge>
-                                                        <Badge className="bg-purple-100 text-purple-800">Residential Property</Badge>
-                                                        <Badge className="bg-purple-100 text-purple-800">Investment Precious Metals</Badge>
-                                                    </div>
-                                                </div>
-                                            </CardContent>
-                                        </Card>
+                                                    {country.reduced && country.reduced.length > 0 && (
+                                                        <div>
+                                                            <Label className="text-xs text-slate-600 mb-2 block">Reduced Rates</Label>
+                                                            <div className="flex flex-wrap gap-2">
+                                                                {country.reduced.map((rate, idx) => (
+                                                                    <Badge key={idx} className="bg-blue-100 text-blue-800">{rate}%</Badge>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </CardContent>
+                                            </Card>
+                                        ))}
                                     </div>
                                 </CardContent>
                             </Card>

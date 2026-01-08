@@ -50,6 +50,9 @@ Deno.serve(async (req) => {
             case 'manual_override':
                 return Response.json(await manualOverride(base44, params));
             
+            case 'get_all_country_rules':
+                return Response.json(await getAllCountryRules());
+            
             default:
                 return Response.json({ error: 'Invalid action' }, { status: 400 });
         }
@@ -698,6 +701,31 @@ function calculateNextSync(interval, unit) {
     const multipliers = { minutes: 60000, hours: 3600000, days: 86400000 };
     const ms = interval * (multipliers[unit] || 3600000);
     return new Date(now.getTime() + ms).toISOString();
+}
+
+/**
+ * Get all country rules from tax engine
+ */
+async function getAllCountryRules() {
+    // Import tax rules from globalTaxCalculationEngine
+    const TAX_RULES = {
+        'AT': { name: 'Austria', type: 'VAT', standard: 20, reduced: [10, 13], digital_services: 20, physical_goods: 20, reverse_charge_b2b: true, tourism_tax: 3.2, exemptions: ['financial', 'insurance', 'gambling'], sez: ['Vienna International Centre'] },
+        'AE': { name: 'United Arab Emirates', type: 'VAT', standard: 5, reduced: [], zero: ['exports', 'health', 'education'], digital_services: 5, physical_goods: 5, tourism_tax: 10, sez: ['Free Zones (0%)', 'DIFC (0%)', 'ADGM (0%)'], exemptions: ['residential_property'] },
+        'SA': { name: 'Saudi Arabia', type: 'VAT', standard: 15, reduced: [], zero: ['exports', 'health', 'education', 'real_estate'], digital_services: 15, physical_goods: 15, sez: ['KAEC (0%)', 'NEOM (0%)'], tourism_tax: 0 },
+        'SG': { name: 'Singapore', type: 'GST', standard: 9, reduced: [], zero: ['exports', 'financial', 'residential_property'], digital_services: 9, physical_goods: 9, sez: ['Free Trade Zones (0%)'], exemptions: ['investment_precious_metals'] }
+        // Add more as needed - this is a simplified version
+    };
+
+    const countries = Object.entries(TAX_RULES).map(([code, rules]) => ({
+        code,
+        ...rules
+    }));
+
+    return {
+        success: true,
+        countries,
+        total: countries.length
+    };
 }
 
 /**
