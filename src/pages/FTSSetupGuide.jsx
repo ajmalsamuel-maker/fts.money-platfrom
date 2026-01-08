@@ -3,7 +3,7 @@ import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { GitBranch, Building2, Code, Wallet, Rocket, FileText, Globe } from 'lucide-react';
+import { GitBranch, Building2, Code, Wallet, Rocket, FileText, Globe, Trophy, Shield, Leaf } from 'lucide-react';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
@@ -33,34 +33,46 @@ export default function FTSSetupGuide() {
                     <p className="text-gray-600 mb-8">Complete setup instructions for all FTS.Money products and services</p>
 
                     <Tabs defaultValue="psp" className="mb-6">
-                        <TabsList className="grid grid-cols-7 gap-2 bg-white p-2 rounded-lg shadow h-auto">
+                        <TabsList className="grid grid-cols-10 gap-2 bg-white p-2 rounded-lg shadow h-auto">
                             <TabsTrigger value="psp" className="data-[state=active]:bg-emerald-50 data-[state=active]:text-emerald-700">
                                 <Building2 className="h-4 w-4 mr-1" />
-                                PSP Platform
+                                PSP
                             </TabsTrigger>
                             <TabsTrigger value="vasp" className="data-[state=active]:bg-cyan-50 data-[state=active]:text-cyan-700">
                                 <Wallet className="h-4 w-4 mr-1" />
-                                VASP / Crypto
+                                Crypto
                             </TabsTrigger>
                             <TabsTrigger value="iso" className="data-[state=active]:bg-indigo-50 data-[state=active]:text-indigo-700">
                                 <Code className="h-4 w-4 mr-1" />
-                                ISO Gateway
+                                ISO
                             </TabsTrigger>
                             <TabsTrigger value="orch" className="data-[state=active]:bg-purple-50 data-[state=active]:text-purple-700">
                                 <GitBranch className="h-4 w-4 mr-1" />
-                                Orchestration
+                                Orch
                             </TabsTrigger>
                             <TabsTrigger value="rwa" className="data-[state=active]:bg-amber-50 data-[state=active]:text-amber-700">
                                 <Rocket className="h-4 w-4 mr-1" />
-                                RWA Platform
+                                RWA
                             </TabsTrigger>
                             <TabsTrigger value="tax" className="data-[state=active]:bg-blue-50 data-[state=active]:text-blue-700">
                                 <FileText className="h-4 w-4 mr-1" />
-                                VAT/Tax
+                                Tax
                             </TabsTrigger>
                             <TabsTrigger value="einvoice" className="data-[state=active]:bg-teal-50 data-[state=active]:text-teal-700">
                                 <Globe className="h-4 w-4 mr-1" />
-                                E-Invoicing
+                                E-Invoice
+                            </TabsTrigger>
+                            <TabsTrigger value="compliance" className="data-[state=active]:bg-orange-50 data-[state=active]:text-orange-700">
+                                <FileText className="h-4 w-4 mr-1" />
+                                PCI/LEI
+                            </TabsTrigger>
+                            <TabsTrigger value="esg" className="data-[state=active]:bg-green-50 data-[state=active]:text-green-700">
+                                <FileText className="h-4 w-4 mr-1" />
+                                ESG
+                            </TabsTrigger>
+                            <TabsTrigger value="fix" className="data-[state=active]:bg-rose-50 data-[state=active]:text-rose-700">
+                                <Trophy className="h-4 w-4 mr-1" />
+                                FIX Score
                             </TabsTrigger>
                         </TabsList>
 
@@ -460,6 +472,211 @@ export default function FTSSetupGuide() {
                                 </CardContent>
                             </Card>
                         </TabsContent>
+
+                        {/* PCI/LEI Compliance Setup */}
+                        <TabsContent value="compliance">
+                            <Card className="mb-6">
+                                <CardHeader>
+                                    <CardTitle className="flex items-center gap-2">
+                                        <Shield className="h-6 w-6 text-orange-600" />
+                                        PCI DSS & LEI Compliance Setup
+                                        <Badge className="bg-orange-100 text-orange-700">Regulatory Compliance</Badge>
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent className="space-y-4">
+                                    <div className="p-4 bg-orange-50 rounded-lg">
+                                        <p className="font-medium text-orange-900 mb-2">🎯 Purpose:</p>
+                                        <p className="text-sm text-orange-800">PCI DSS continuous monitoring + LEI verification with grace period management</p>
+                                    </div>
+
+                                    <div>
+                                        <p className="font-medium mb-2">PCI Compliance Setup:</p>
+                                        <div className="space-y-3">
+                                            <div className="flex items-start gap-3">
+                                                <div className="w-6 h-6 rounded-full bg-orange-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">1</div>
+                                                <div>
+                                                    <p className="font-medium">Access PCI Dashboard (Platform Admin)</p>
+                                                    <p className="text-sm text-slate-600">Navigate to: <code className="bg-slate-100 px-2 py-0.5 rounded">Compliance → PCI Compliance Dashboard</code></p>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-start gap-3">
+                                                <div className="w-6 h-6 rounded-full bg-orange-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">2</div>
+                                                <div>
+                                                    <p className="font-medium">Continuous Monitoring</p>
+                                                    <p className="text-sm text-slate-600 space-y-1">
+                                                        <span className="block">• Real-time automated compliance checks</span>
+                                                        <span className="block">• Predictive analytics for violations</span>
+                                                        <span className="block">• Workflow-based remediation</span>
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-start gap-3">
+                                                <div className="w-6 h-6 rounded-full bg-orange-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">3</div>
+                                                <div>
+                                                    <p className="font-medium">QSA Portal Management</p>
+                                                    <p className="text-sm text-slate-600">
+                                                        URL: <code className="bg-slate-100 px-2 py-0.5 rounded">/QSAPortalLogin</code>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <p className="font-medium mb-2 mt-4">LEI Compliance Setup:</p>
+                                        <div className="space-y-3">
+                                            <div className="flex items-start gap-3">
+                                                <div className="w-6 h-6 rounded-full bg-orange-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">1</div>
+                                                <div>
+                                                    <p className="font-medium">Access LEI Dashboard</p>
+                                                    <p className="text-sm text-slate-600">Navigate to: <code className="bg-slate-100 px-2 py-0.5 rounded">Compliance → LEI Compliance Dashboard</code></p>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-start gap-3">
+                                                <div className="w-6 h-6 rounded-full bg-orange-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">2</div>
+                                                <div>
+                                                    <p className="font-medium">Track Verification Status</p>
+                                                    <p className="text-sm text-slate-600 space-y-1">
+                                                        <span className="block">• Monitor 90-day grace periods</span>
+                                                        <span className="block">• Manage entity LEIs</span>
+                                                        <span className="block">• vLEI credential tracking</span>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
+
+                        {/* ESG/Carbon Setup */}
+                        <TabsContent value="esg">
+                            <Card className="mb-6">
+                                <CardHeader>
+                                    <CardTitle className="flex items-center gap-2">
+                                        <Leaf className="h-6 w-6 text-green-600" />
+                                        ESG & Carbon Reporting Setup
+                                        <Badge className="bg-green-100 text-green-700">Sustainability</Badge>
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent className="space-y-4">
+                                    <div className="p-4 bg-green-50 rounded-lg">
+                                        <p className="font-medium text-green-900 mb-2">🎯 Purpose:</p>
+                                        <p className="text-sm text-green-800">Track carbon footprint, ESG scores, green merchant status, and CSRD compliance</p>
+                                    </div>
+
+                                    <div>
+                                        <p className="font-medium mb-2">ESG Setup Flow:</p>
+                                        <div className="space-y-3">
+                                            <div className="flex items-start gap-3">
+                                                <div className="w-6 h-6 rounded-full bg-green-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">1</div>
+                                                <div>
+                                                    <p className="font-medium">Access Carbon Dashboard (Platform Admin)</p>
+                                                    <p className="text-sm text-slate-600">Navigate to: <code className="bg-slate-100 px-2 py-0.5 rounded">Compliance → Carbon Dashboard</code></p>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-start gap-3">
+                                                <div className="w-6 h-6 rounded-full bg-green-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">2</div>
+                                                <div>
+                                                    <p className="font-medium">Enable Green Merchant Program</p>
+                                                    <p className="text-sm text-slate-600 space-y-1">
+                                                        <span className="block">• Set sustainability benchmarks</span>
+                                                        <span className="block">• Track certifications (B-Corp, Climate Neutral, etc.)</span>
+                                                        <span className="block">• Monitor merchant eco-scores</span>
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-start gap-3">
+                                                <div className="w-6 h-6 rounded-full bg-green-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">3</div>
+                                                <div>
+                                                    <p className="font-medium">Generate ESG Reports</p>
+                                                    <p className="text-sm text-slate-600">
+                                                        URL: <code className="bg-slate-100 px-2 py-0.5 rounded">/ESGReportingDashboard</code> - CSRD/GRI compliance
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
+
+                        {/* FIX Score Management Setup */}
+                        <TabsContent value="fix">
+                            <Card className="mb-6">
+                                <CardHeader>
+                                    <CardTitle className="flex items-center gap-2">
+                                        <Trophy className="h-6 w-6 text-rose-600" />
+                                        FIX Score Management Setup
+                                        <Badge className="bg-rose-100 text-rose-700">Merchant Scoring</Badge>
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent className="space-y-4">
+                                    <div className="p-4 bg-rose-50 rounded-lg">
+                                        <p className="font-medium text-rose-900 mb-2">🎯 Purpose:</p>
+                                        <p className="text-sm text-rose-800">Comprehensive merchant scoring: transaction volume, service adoption, ESG, compliance metrics</p>
+                                    </div>
+
+                                    <div>
+                                        <p className="font-medium mb-2">FIX Score Setup Flow:</p>
+                                        <div className="space-y-3">
+                                            <div className="flex items-start gap-3">
+                                                <div className="w-6 h-6 rounded-full bg-rose-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">1</div>
+                                                <div>
+                                                    <p className="font-medium">Access FIX Management Dashboard (Platform Admin)</p>
+                                                    <p className="text-sm text-slate-600">Navigate to: <code className="bg-slate-100 px-2 py-0.5 rounded">Overview & Insights → FIX Score Management</code></p>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-start gap-3">
+                                                <div className="w-6 h-6 rounded-full bg-rose-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">2</div>
+                                                <div>
+                                                    <p className="font-medium">Configure Algorithm Weights</p>
+                                                    <p className="text-sm text-slate-600 space-y-1">
+                                                        <span className="block">• Transaction Volume: 0-300 points</span>
+                                                        <span className="block">• Service Adoption: 0-250 points</span>
+                                                        <span className="block">• ESG Metrics: 0-250 points</span>
+                                                        <span className="block">• Compliance/Security: 0-200 points</span>
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-start gap-3">
+                                                <div className="w-6 h-6 rounded-full bg-rose-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">3</div>
+                                                <div>
+                                                    <p className="font-medium">Monitor & Manage Scores</p>
+                                                    <p className="text-sm text-slate-600 space-y-1">
+                                                        <span className="block">• View leaderboard & tier distribution</span>
+                                                        <span className="block">• Recalculate individual or all merchant scores</span>
+                                                        <span className="block">• Access analytics & trend reports</span>
+                                                        <span className="block">• View detailed score breakdowns per merchant</span>
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-start gap-3">
+                                                <div className="w-6 h-6 rounded-full bg-rose-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">4</div>
+                                                <div>
+                                                    <p className="font-medium">Score Tiers & Benefits</p>
+                                                    <p className="text-sm text-slate-600 space-y-1">
+                                                        <span className="block">• <strong>Bronze</strong> (0-299): Basic access</span>
+                                                        <span className="block">• <strong>Silver</strong> (300-499): Priority support, fee discounts</span>
+                                                        <span className="block">• <strong>Gold</strong> (500-699): Dedicated manager, 1.5x rewards</span>
+                                                        <span className="block">• <strong>Platinum</strong> (700-899): VIP support, 2x rewards</span>
+                                                        <span className="block">• <strong>Diamond</strong> (900-1000): White glove service, custom integrations</span>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
                     </Tabs>
 
                     <Card className="bg-gradient-to-br from-slate-50 to-slate-100 mt-8">
@@ -467,12 +684,13 @@ export default function FTSSetupGuide() {
                             <CardTitle>Quick Reference - All Login URLs</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="grid grid-cols-3 gap-6">
+                            <div className="grid grid-cols-4 gap-6">
                                 <div>
                                     <p className="font-medium text-sm mb-3 text-slate-700">Platform Administration</p>
                                     <div className="space-y-2 text-sm">
                                         <div><code className="bg-white px-2 py-1 rounded text-xs">/PlatformAdminLogin</code> <span className="text-slate-500">- Control Panel</span></div>
                                         <div><code className="bg-white px-2 py-1 rounded text-xs">/CommunityPortalLogin</code> <span className="text-slate-500">- Community</span></div>
+                                        <div><code className="bg-white px-2 py-1 rounded text-xs">/QSAPortalLogin</code> <span className="text-slate-500">- QSA Portal</span></div>
                                     </div>
                                 </div>
                                 <div>
@@ -481,14 +699,25 @@ export default function FTSSetupGuide() {
                                         <div><code className="bg-white px-2 py-1 rounded text-xs">/PSPLogin</code> <span className="text-slate-500">- PSP Platform</span></div>
                                         <div><code className="bg-white px-2 py-1 rounded text-xs">/ISOGatewayLogin</code> <span className="text-slate-500">- ISO Gateway</span></div>
                                         <div><code className="bg-white px-2 py-1 rounded text-xs">/OrchestrationLogin</code> <span className="text-slate-500">- Orchestration</span></div>
+                                        <div><code className="bg-white px-2 py-1 rounded text-xs">/MerchantLogin</code> <span className="text-slate-500">- Merchant Portal</span></div>
                                     </div>
                                 </div>
                                 <div>
                                     <p className="font-medium text-sm mb-3 text-slate-700">Advanced Services</p>
                                     <div className="space-y-2 text-sm">
                                         <div><code className="bg-white px-2 py-1 rounded text-xs">/CryptoGatewayLogin</code> <span className="text-slate-500">- VASP/Crypto</span></div>
-                                        <div><code className="bg-white px-2 py-1 rounded text-xs">/RWAProviderLogin</code> <span className="text-slate-500">- RWA Platform</span></div>
-                                        <div><code className="bg-white px-2 py-1 rounded text-xs">/MerchantLogin</code> <span className="text-slate-500">- Merchant Portal</span></div>
+                                        <div><code className="bg-white px-2 py-1 rounded text-xs">/RWAProviderLogin</code> <span className="text-slate-500">- RWA Provider</span></div>
+                                        <div><code className="bg-white px-2 py-1 rounded text-xs">/AssetIssuerLogin</code> <span className="text-slate-500">- Asset Issuer</span></div>
+                                        <div><code className="bg-white px-2 py-1 rounded text-xs">/InvestorLogin</code> <span className="text-slate-500">- RWA Investor</span></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p className="font-medium text-sm mb-3 text-slate-700">Reporting & Analytics</p>
+                                    <div className="space-y-2 text-sm">
+                                        <div><code className="bg-white px-2 py-1 rounded text-xs">/TaxManagement</code> <span className="text-slate-500">- Tax Config</span></div>
+                                        <div><code className="bg-white px-2 py-1 rounded text-xs">/EInvoicingDashboard</code> <span className="text-slate-500">- E-Invoicing</span></div>
+                                        <div><code className="bg-white px-2 py-1 rounded text-xs">/ESGReportingDashboard</code> <span className="text-slate-500">- ESG Reports</span></div>
+                                        <div><code className="bg-white px-2 py-1 rounded text-xs">/PCIComplianceDashboard</code> <span className="text-slate-500">- PCI Compliance</span></div>
                                     </div>
                                 </div>
                             </div>
