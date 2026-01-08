@@ -11,13 +11,15 @@ import {
     Trophy, TrendingUp, TrendingDown, Search, 
     Filter, Download, BarChart3 
 } from 'lucide-react';
-import { PERMISSIONS } from '@/components/auth/permissions';
-
 export default function PlatformFIXManagement() {
-    const { platformUser, loading } = usePlatformAuth([]);
+    const { platformUser, loading } = usePlatformAuth();
     
     if (loading) {
         return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+    }
+    
+    if (!platformUser) {
+        return null;
     }
     const [searchTerm, setSearchTerm] = useState('');
     const [tierFilter, setTierFilter] = useState('all');
