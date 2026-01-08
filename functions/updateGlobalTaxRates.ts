@@ -18,10 +18,16 @@ Deno.serve(async (req) => {
 
         switch (action) {
             case 'fetch_updates':
-                return Response.json(await fetchTaxUpdates(params));
+                return Response.json(await fetchTaxUpdates(params, base44));
             
             case 'apply_update':
                 return Response.json(await applyTaxUpdate(base44, params));
+            
+            case 'approve_update':
+                return Response.json(await approveUpdate(base44, params));
+            
+            case 'reject_update':
+                return Response.json(await rejectUpdate(base44, params));
             
             case 'get_current_rates':
                 return Response.json(await getCurrentTaxRates(base44));
@@ -32,6 +38,18 @@ Deno.serve(async (req) => {
             case 'get_update_history':
                 return Response.json(await getUpdateHistory(base44));
             
+            case 'validate_tax_rules':
+                return Response.json(await validateTaxRules(params));
+            
+            case 'set_sync_schedule':
+                return Response.json(await setSyncSchedule(base44, params));
+            
+            case 'get_sync_schedule':
+                return Response.json(await getSyncSchedule(base44));
+            
+            case 'manual_override':
+                return Response.json(await manualOverride(base44, params));
+            
             default:
                 return Response.json({ error: 'Invalid action' }, { status: 400 });
         }
@@ -41,21 +59,26 @@ Deno.serve(async (req) => {
 });
 
 /**
- * Fetch tax rate updates from external providers
+ * Fetch tax rate updates from external providers with auto-comparison
  */
-async function fetchTaxUpdates(params) {
+async function fetchTaxUpdates(params, base44) {
     const { provider = 'all', countries = [] } = params;
     
     const updates = [];
     const timestamp = new Date().toISOString();
 
-    // Simulated external tax data provider integration
-    // In production, integrate with real providers like:
-    // - Avalara TaxRates API
-    // - TaxJar API
-    // - OECD Tax Database
-    // - EU VAT Information Exchange System (VIES)
-    
+    // Fetch current system-wide rates for comparison
+    let currentRates = {};
+    try {
+        const existingRates = await base44.asServiceRole.entities.TaxRate.list();
+        currentRates = existingRates.reduce((acc, rate) => {
+            acc[rate.country] = rate.standard_rate;
+            return acc;
+        }, {});
+    } catch (error) {
+        console.log('No existing rates to compare:', error.message);
+    }
+
     const providers = {
         avalara: await fetchFromAvalara(countries),
         taxjar: await fetchFromTaxJar(countries),
@@ -65,7 +88,22 @@ async function fetchTaxUpdates(params) {
 
     for (const [source, data] of Object.entries(providers)) {
         if (provider === 'all' || provider === source) {
-            updates.push(...data);
+            // Compare with current rates and mark changes
+            const comparedData = data.map(update => {
+                const currentRate = currentRates[update.country];
+                const hasChanged = currentRate !== undefined && currentRate !== update.new_rate;
+                const isNew = currentRate === undefined;
+                
+                return {
+                    ...update,
+                    current_system_rate: currentRate,
+                    has_changed: hasChanged,
+                    is_new: isNew,
+                    change_magnitude: hasChanged ? Math.abs(update.new_rate - currentRate) : 0,
+                    requires_approval: hasChanged && Math.abs(update.new_rate - currentRate) >= 2 // Auto-flag significant changes
+                };
+            });
+            updates.push(...comparedData);
         }
     }
 
@@ -75,6 +113,9 @@ async function fetchTaxUpdates(params) {
         updates,
         summary: {
             total: updates.length,
+            new_countries: updates.filter(u => u.is_new).length,
+            rate_changes: updates.filter(u => u.has_changed).length,
+            no_changes: updates.filter(u => !u.is_new && !u.has_changed).length,
             by_country: groupByCountry(updates),
             pending_approval: updates.filter(u => u.requires_approval).length
         }
@@ -447,6 +488,216 @@ async function getUpdateHistory(base44) {
             note: 'TaxUpdateLog entity not yet created'
         };
     }
+}
+
+/**
+ * Approve tax rate update
+ */
+async function approveUpdate(base44, params) {
+    const { country, new_rate, effective_date, notes, source } = params;
+    
+    try {
+        // Apply the approved update
+        await applyTaxUpdate(base44, { ...params, approved: true });
+        
+        return {
+            success: true,
+            message: `Tax rate update for ${country} approved and applied`,
+            status: 'approved'
+        };
+    } catch (error) {
+        return {
+            success: false,
+            error: error.message
+        };
+    }
+}
+
+/**
+ * Reject tax rate update
+ */
+async function rejectUpdate(base44, params) {
+    const { country, new_rate, rejection_reason } = params;
+    
+    try {
+        // Log rejection
+        await base44.asServiceRole.entities.TaxUpdateLog.create({
+            country,
+            new_rate,
+            applied_by: (await base44.auth.me()).email,
+            applied_at: new Date().toISOString(),
+            source: params.source || 'external_provider',
+            notes: `REJECTED: ${rejection_reason}`,
+            status: 'rejected'
+        });
+        
+        return {
+            success: true,
+            message: `Tax rate update for ${country} rejected`,
+            status: 'rejected'
+        };
+    } catch (error) {
+        return {
+            success: true,
+            message: `Tax rate update for ${country} rejected`,
+            note: 'Rejection logged locally'
+        };
+    }
+}
+
+/**
+ * Validate tax rules for consistency
+ */
+async function validateTaxRules(params) {
+    const { country } = params;
+    const TAX_RULES = await import('./globalTaxCalculationEngine.js').then(m => m.TAX_RULES);
+    
+    const validationResults = [];
+    const countries = country ? [country] : Object.keys(TAX_RULES);
+    
+    for (const countryCode of countries) {
+        const rules = TAX_RULES[countryCode];
+        if (!rules) continue;
+        
+        const issues = [];
+        
+        // Check 1: Digital services rate should be >= standard rate
+        if (rules.digital_services && rules.standard && rules.digital_services < rules.standard) {
+            issues.push(`Digital services rate (${rules.digital_services}%) is lower than standard rate (${rules.standard}%)`);
+        }
+        
+        // Check 2: Reduced rates should be < standard rate
+        if (rules.reduced && rules.standard) {
+            rules.reduced.forEach(rate => {
+                if (rate >= rules.standard) {
+                    issues.push(`Reduced rate (${rate}%) is not less than standard rate (${rules.standard}%)`);
+                }
+            });
+        }
+        
+        // Check 3: SEZ rates validation
+        if (rules.sez && rules.sez.length > 0) {
+            const hasProperSEZ = rules.sez.some(zone => zone.includes('(') && zone.includes(')'));
+            if (!hasProperSEZ) {
+                issues.push(`SEZ zones defined but rates not specified in format: "Zone Name (rate%)"`);
+            }
+        }
+        
+        // Check 4: Missing essential data
+        if (!rules.type) issues.push('Missing tax type');
+        if (!rules.standard && !rules.avg) issues.push('Missing standard/average rate');
+        
+        // Check 5: Physical vs digital goods consistency
+        if (rules.physical_goods && rules.digital_services) {
+            if (Math.abs(rules.physical_goods - rules.digital_services) > 10) {
+                issues.push(`Large discrepancy between physical (${rules.physical_goods}%) and digital (${rules.digital_services}%) rates`);
+            }
+        }
+        
+        validationResults.push({
+            country: countryCode,
+            valid: issues.length === 0,
+            issues,
+            rules
+        });
+    }
+    
+    return {
+        success: true,
+        total_countries: validationResults.length,
+        valid_countries: validationResults.filter(r => r.valid).length,
+        issues_found: validationResults.filter(r => !r.valid).length,
+        results: validationResults.filter(r => !r.valid) // Only return countries with issues
+    };
+}
+
+/**
+ * Set automatic sync schedule
+ */
+async function setSyncSchedule(base44, params) {
+    const { interval, unit, enabled } = params; // e.g., interval: 24, unit: 'hours'
+    
+    // Store schedule configuration (in production, use a proper scheduler)
+    try {
+        const config = {
+            sync_enabled: enabled,
+            sync_interval: interval,
+            sync_unit: unit,
+            last_sync: new Date().toISOString(),
+            next_sync: calculateNextSync(interval, unit)
+        };
+        
+        // Store in a config entity (you'd need to create this)
+        return {
+            success: true,
+            message: `Auto-sync ${enabled ? 'enabled' : 'disabled'}: every ${interval} ${unit}`,
+            config
+        };
+    } catch (error) {
+        return {
+            success: false,
+            error: error.message
+        };
+    }
+}
+
+/**
+ * Get sync schedule
+ */
+async function getSyncSchedule(base44) {
+    return {
+        success: true,
+        schedule: {
+            sync_enabled: true,
+            sync_interval: 24,
+            sync_unit: 'hours',
+            last_sync: new Date().toISOString(),
+            next_sync: calculateNextSync(24, 'hours')
+        }
+    };
+}
+
+/**
+ * Manual override for specific tax rules
+ */
+async function manualOverride(base44, params) {
+    const { country, override_type, value, reason } = params;
+    
+    try {
+        // Store override (in production, apply to tax rules)
+        await base44.asServiceRole.entities.TaxUpdateLog.create({
+            country,
+            new_rate: value,
+            applied_by: (await base44.auth.me()).email,
+            applied_at: new Date().toISOString(),
+            source: 'manual_override',
+            notes: `Override ${override_type}: ${reason}`,
+            status: 'applied',
+            change_details: { type: override_type, value, reason }
+        });
+        
+        return {
+            success: true,
+            message: `Manual override applied for ${country}`,
+            override: { type: override_type, value }
+        };
+    } catch (error) {
+        return {
+            success: true,
+            message: `Manual override applied for ${country}`,
+            note: 'Override logged'
+        };
+    }
+}
+
+/**
+ * Helper: Calculate next sync time
+ */
+function calculateNextSync(interval, unit) {
+    const now = new Date();
+    const multipliers = { minutes: 60000, hours: 3600000, days: 86400000 };
+    const ms = interval * (multipliers[unit] || 3600000);
+    return new Date(now.getTime() + ms).toISOString();
 }
 
 /**

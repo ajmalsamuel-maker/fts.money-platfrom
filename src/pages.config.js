@@ -28,6 +28,13 @@ import BINTable from './pages/BINTable';
 import Balances from './pages/Balances';
 import BankMIDs from './pages/BankMIDs';
 import BlockchainConnectors from './pages/BlockchainConnectors';
+import BusinessEInvoiceLogin from './pages/BusinessEInvoiceLogin';
+import BusinessEInvoicePortal from './pages/BusinessEInvoicePortal';
+import BusinessEInvoiceRegister from './pages/BusinessEInvoiceRegister';
+import BusinessInvoiceCreate from './pages/BusinessInvoiceCreate';
+import BusinessInvoiceImport from './pages/BusinessInvoiceImport';
+import BusinessInvoiceList from './pages/BusinessInvoiceList';
+import BusinessOnboarding from './pages/BusinessOnboarding';
 import BuyRates from './pages/BuyRates';
 import CarbonDashboard from './pages/CarbonDashboard';
 import Chargebacks from './pages/Chargebacks';
@@ -82,6 +89,7 @@ import DatabaseSetup from './pages/DatabaseSetup';
 import DigitalIdentityWallet from './pages/DigitalIdentityWallet';
 import Disputes from './pages/Disputes';
 import Documentation from './pages/Documentation';
+import EInvoiceGenerator from './pages/EInvoiceGenerator';
 import EInvoicingDashboard from './pages/EInvoicingDashboard';
 import ESGReportingDashboard from './pages/ESGReportingDashboard';
 import EnhancedAuditLogs from './pages/EnhancedAuditLogs';
@@ -205,6 +213,7 @@ import MerchantVirtualTerminal from './pages/MerchantVirtualTerminal';
 import MerchantVirtualTerminals from './pages/MerchantVirtualTerminals';
 import MerchantWebhooks from './pages/MerchantWebhooks';
 import Merchants from './pages/Merchants';
+import PSPLogin from './pages/PSPLogin';
 import ModuleCatalogTest from './pages/ModuleCatalogTest';
 import MyAllServices from './pages/MyAllServices';
 import MyPSPInstances from './pages/MyPSPInstances';
@@ -240,7 +249,6 @@ import PSPEmpowermentRoadmap from './pages/PSPEmpowermentRoadmap';
 import PSPInstanceConfig from './pages/PSPInstanceConfig';
 import PSPInstanceManagement from './pages/PSPInstanceManagement';
 import PSPInvoiceAggregator from './pages/PSPInvoiceAggregator';
-import PSPLogin from './pages/PSPLogin';
 import PSPMerchantPricing from './pages/PSPMerchantPricing';
 import PSPOwnershipMigration from './pages/PSPOwnershipMigration';
 import PSPPasswordReset from './pages/PSPPasswordReset';
@@ -312,6 +320,7 @@ import Subscriptions from './pages/Subscriptions';
 import Support from './pages/Support';
 import SystemArchitectureDocumentation from './pages/SystemArchitectureDocumentation';
 import TaxManagement from './pages/TaxManagement';
+import TaxRateUpdateManager from './pages/TaxRateUpdateManager';
 import TenantManagement from './pages/TenantManagement';
 import TenantUserManagement from './pages/TenantUserManagement';
 import Terminals from './pages/Terminals';
@@ -329,15 +338,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import EInvoiceGenerator from './pages/EInvoiceGenerator';
-import BusinessEInvoicePortal from './pages/BusinessEInvoicePortal';
-import BusinessEInvoiceLogin from './pages/BusinessEInvoiceLogin';
-import BusinessOnboarding from './pages/BusinessOnboarding';
-import BusinessInvoiceImport from './pages/BusinessInvoiceImport';
-import BusinessInvoiceCreate from './pages/BusinessInvoiceCreate';
-import BusinessInvoiceList from './pages/BusinessInvoiceList';
-import BusinessEInvoiceRegister from './pages/BusinessEInvoiceRegister';
-import TaxRateUpdateManager from './pages/TaxRateUpdateManager';
 import __Layout from './Layout.jsx';
 
 
@@ -372,6 +372,13 @@ export const PAGES = {
     "Balances": Balances,
     "BankMIDs": BankMIDs,
     "BlockchainConnectors": BlockchainConnectors,
+    "BusinessEInvoiceLogin": BusinessEInvoiceLogin,
+    "BusinessEInvoicePortal": BusinessEInvoicePortal,
+    "BusinessEInvoiceRegister": BusinessEInvoiceRegister,
+    "BusinessInvoiceCreate": BusinessInvoiceCreate,
+    "BusinessInvoiceImport": BusinessInvoiceImport,
+    "BusinessInvoiceList": BusinessInvoiceList,
+    "BusinessOnboarding": BusinessOnboarding,
     "BuyRates": BuyRates,
     "CarbonDashboard": CarbonDashboard,
     "Chargebacks": Chargebacks,
@@ -426,6 +433,7 @@ export const PAGES = {
     "DigitalIdentityWallet": DigitalIdentityWallet,
     "Disputes": Disputes,
     "Documentation": Documentation,
+    "EInvoiceGenerator": EInvoiceGenerator,
     "EInvoicingDashboard": EInvoicingDashboard,
     "ESGReportingDashboard": ESGReportingDashboard,
     "EnhancedAuditLogs": EnhancedAuditLogs,
@@ -549,6 +557,7 @@ export const PAGES = {
     "MerchantVirtualTerminals": MerchantVirtualTerminals,
     "MerchantWebhooks": MerchantWebhooks,
     "Merchants": Merchants,
+    "PSPLogin": PSPLogin,
     "ModuleCatalogTest": ModuleCatalogTest,
     "MyAllServices": MyAllServices,
     "MyPSPInstances": MyPSPInstances,
@@ -584,7 +593,6 @@ export const PAGES = {
     "PSPInstanceConfig": PSPInstanceConfig,
     "PSPInstanceManagement": PSPInstanceManagement,
     "PSPInvoiceAggregator": PSPInvoiceAggregator,
-    "PSPLogin": PSPLogin,
     "PSPMerchantPricing": PSPMerchantPricing,
     "PSPOwnershipMigration": PSPOwnershipMigration,
     "PSPPasswordReset": PSPPasswordReset,
@@ -656,6 +664,7 @@ export const PAGES = {
     "Support": Support,
     "SystemArchitectureDocumentation": SystemArchitectureDocumentation,
     "TaxManagement": TaxManagement,
+    "TaxRateUpdateManager": TaxRateUpdateManager,
     "TenantManagement": TenantManagement,
     "TenantUserManagement": TenantUserManagement,
     "Terminals": Terminals,
@@ -673,15 +682,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "EInvoiceGenerator": EInvoiceGenerator,
-    "BusinessEInvoicePortal": BusinessEInvoicePortal,
-    "BusinessEInvoiceLogin": BusinessEInvoiceLogin,
-    "BusinessOnboarding": BusinessOnboarding,
-    "BusinessInvoiceImport": BusinessInvoiceImport,
-    "BusinessInvoiceCreate": BusinessInvoiceCreate,
-    "BusinessInvoiceList": BusinessInvoiceList,
-    "BusinessEInvoiceRegister": BusinessEInvoiceRegister,
-    "TaxRateUpdateManager": TaxRateUpdateManager,
 }
 
 export const pagesConfig = {

@@ -31,6 +31,9 @@ export default function TaxRateUpdateManager() {
     const [currentRates, setCurrentRates] = useState({});
     const [updateHistory, setUpdateHistory] = useState([]);
     const [lastSync, setLastSync] = useState(null);
+    const [validationResults, setValidationResults] = useState([]);
+    const [syncSchedule, setSyncSchedule] = useState({ sync_enabled: false, sync_interval: 24, sync_unit: 'hours' });
+    const [overrideForm, setOverrideForm] = useState({ country: '', override_type: 'standard_rate', value: '', reason: '' });
 
     const [manualUpdate, setManualUpdate] = useState({
         country: '',
@@ -79,19 +82,86 @@ export default function TaxRateUpdateManager() {
         }
     };
 
-    const applyUpdate = async (update) => {
+    const approveUpdate = async (update) => {
         setLoading(true);
         try {
             await base44.functions.invoke('updateGlobalTaxRates', {
-                action: 'apply_update',
+                action: 'approve_update',
                 ...update
             });
             await fetchUpdates();
             await fetchCurrentRates();
             await fetchHistory();
-            alert('Tax rate updated successfully and is now available system-wide!');
+            alert('Tax rate update approved and applied system-wide!');
         } catch (error) {
-            alert('Failed to apply update: ' + error.message);
+            alert('Failed to approve update: ' + error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const rejectUpdate = async (update) => {
+        const reason = prompt('Reason for rejection:');
+        if (!reason) return;
+
+        setLoading(true);
+        try {
+            await base44.functions.invoke('updateGlobalTaxRates', {
+                action: 'reject_update',
+                ...update,
+                rejection_reason: reason
+            });
+            await fetchUpdates();
+            await fetchHistory();
+            alert('Tax rate update rejected');
+        } catch (error) {
+            alert('Failed to reject update: ' + error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const validateTaxRules = async () => {
+        setLoading(true);
+        try {
+            const response = await base44.functions.invoke('updateGlobalTaxRates', {
+                action: 'validate_tax_rules'
+            });
+            setValidationResults(response.data.results || []);
+        } catch (error) {
+            console.error('Validation error:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const updateSyncSchedule = async () => {
+        setLoading(true);
+        try {
+            await base44.functions.invoke('updateGlobalTaxRates', {
+                action: 'set_sync_schedule',
+                ...syncSchedule
+            });
+            alert('Sync schedule updated successfully!');
+        } catch (error) {
+            alert('Failed to update schedule: ' + error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const submitOverride = async () => {
+        setLoading(true);
+        try {
+            await base44.functions.invoke('updateGlobalTaxRates', {
+                action: 'manual_override',
+                ...overrideForm
+            });
+            await fetchHistory();
+            alert('Manual override applied successfully!');
+            setOverrideForm({ country: '', override_type: 'standard_rate', value: '', reason: '' });
+        } catch (error) {
+            alert('Failed to apply override: ' + error.message);
         } finally {
             setLoading(false);
         }
@@ -258,6 +328,8 @@ export default function TaxRateUpdateManager() {
                             <TabsTrigger value="updates">Available Updates ({updates.length})</TabsTrigger>
                             <TabsTrigger value="current">Current Rates</TabsTrigger>
                             <TabsTrigger value="manual">Manual Update</TabsTrigger>
+                            <TabsTrigger value="validation">Validation & Overrides</TabsTrigger>
+                            <TabsTrigger value="schedule">Auto-Sync Schedule</TabsTrigger>
                             <TabsTrigger value="history">History ({updateHistory.length})</TabsTrigger>
                         </TabsList>
 
@@ -318,16 +390,39 @@ export default function TaxRateUpdateManager() {
                                                                     Rate: {update.old_rate}% → {update.new_rate}%
                                                                 </span>
                                                             )}
+                                                        {update.current_system_rate !== undefined && (
+                                                            <span className="text-xs text-slate-500">
+                                                                Current: {update.current_system_rate}%
+                                                            </span>
+                                                        )}
+                                                        {update.change_magnitude > 0 && (
+                                                            <Badge variant="outline" className="border-red-300 text-red-700">
+                                                                Change: {update.change_magnitude > 0 ? '+' : ''}{(update.new_rate - update.current_system_rate).toFixed(2)}%
+                                                            </Badge>
+                                                        )}
                                                         </div>
-                                                    </div>
-                                                    <Button 
-                                                        onClick={() => applyUpdate(update)}
+                                                        </div>
+                                                        <div className="flex gap-2">
+                                                        <Button 
+                                                        onClick={() => approveUpdate(update)}
                                                         disabled={loading}
                                                         size="sm"
-                                                    >
-                                                        Apply Update
-                                                    </Button>
-                                                </div>
+                                                        className="bg-green-600 hover:bg-green-700"
+                                                        >
+                                                        <CheckCircle className="h-3 w-3 mr-1" />
+                                                        Approve
+                                                        </Button>
+                                                        <Button 
+                                                        onClick={() => rejectUpdate(update)}
+                                                        disabled={loading}
+                                                        size="sm"
+                                                        variant="outline"
+                                                        className="border-red-300 text-red-700 hover:bg-red-50"
+                                                        >
+                                                        Reject
+                                                        </Button>
+                                                        </div>
+                                                        </div>
                                             </div>
                                         ))
                                     )}
@@ -455,6 +550,179 @@ export default function TaxRateUpdateManager() {
                                             Apply Manual Update
                                         </Button>
                                     </div>
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
+
+                        {/* Validation & Overrides */}
+                        <TabsContent value="validation" className="space-y-4">
+                            <div className="grid md:grid-cols-2 gap-4">
+                                {/* Validation */}
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>Tax Rules Validation</CardTitle>
+                                        <CardDescription>Check for consistency issues in tax rules</CardDescription>
+                                    </CardHeader>
+                                    <CardContent className="space-y-4">
+                                        <Button onClick={validateTaxRules} disabled={loading} className="w-full">
+                                            <Shield className="h-4 w-4 mr-2" />
+                                            Validate All Tax Rules
+                                        </Button>
+                                        
+                                        {validationResults.length > 0 && (
+                                            <div className="space-y-2 max-h-96 overflow-y-auto">
+                                                {validationResults.map((result, idx) => (
+                                                    <div key={idx} className="p-3 border rounded-lg bg-red-50">
+                                                        <div className="font-bold text-red-900 mb-2">{result.country}</div>
+                                                        <ul className="text-xs text-red-800 space-y-1">
+                                                            {result.issues.map((issue, i) => (
+                                                                <li key={i}>• {issue}</li>
+                                                            ))}
+                                                        </ul>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </CardContent>
+                                </Card>
+
+                                {/* Manual Override */}
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>Manual Rule Override</CardTitle>
+                                        <CardDescription>Fine-tune specific tax rules</CardDescription>
+                                    </CardHeader>
+                                    <CardContent className="space-y-4">
+                                        <div className="space-y-2">
+                                            <Label>Country Code</Label>
+                                            <Input 
+                                                value={overrideForm.country}
+                                                onChange={(e) => setOverrideForm({...overrideForm, country: e.target.value.toUpperCase()})}
+                                                placeholder="US, FR, SA..."
+                                                maxLength={2}
+                                            />
+                                        </div>
+                                        
+                                        <div className="space-y-2">
+                                            <Label>Override Type</Label>
+                                            <Select 
+                                                value={overrideForm.override_type}
+                                                onValueChange={(v) => setOverrideForm({...overrideForm, override_type: v})}
+                                            >
+                                                <SelectTrigger>
+                                                    <SelectValue />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="standard_rate">Standard Rate</SelectItem>
+                                                    <SelectItem value="digital_services">Digital Services Rate</SelectItem>
+                                                    <SelectItem value="physical_goods">Physical Goods Rate</SelectItem>
+                                                    <SelectItem value="tourism_tax">Tourism Tax</SelectItem>
+                                                    <SelectItem value="sez_rate">SEZ Rate</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <Label>Override Value</Label>
+                                            <Input 
+                                                type="number"
+                                                value={overrideForm.value}
+                                                onChange={(e) => setOverrideForm({...overrideForm, value: e.target.value})}
+                                                placeholder="15.00"
+                                                step="0.01"
+                                            />
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <Label>Reason</Label>
+                                            <Textarea 
+                                                value={overrideForm.reason}
+                                                onChange={(e) => setOverrideForm({...overrideForm, reason: e.target.value})}
+                                                placeholder="Reason for override..."
+                                                rows={3}
+                                            />
+                                        </div>
+
+                                        <Button 
+                                            onClick={submitOverride}
+                                            disabled={loading || !overrideForm.country || !overrideForm.value || !overrideForm.reason}
+                                            className="w-full"
+                                        >
+                                            Apply Override
+                                        </Button>
+                                    </CardContent>
+                                </Card>
+                            </div>
+                        </TabsContent>
+
+                        {/* Auto-Sync Schedule */}
+                        <TabsContent value="schedule">
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Automatic Sync Schedule</CardTitle>
+                                    <CardDescription>Configure automatic tax rate synchronization</CardDescription>
+                                </CardHeader>
+                                <CardContent className="max-w-2xl space-y-4">
+                                    <div className="flex items-center gap-4">
+                                        <div className="flex items-center space-x-2">
+                                            <input 
+                                                type="checkbox"
+                                                checked={syncSchedule.sync_enabled}
+                                                onChange={(e) => setSyncSchedule({...syncSchedule, sync_enabled: e.target.checked})}
+                                                className="h-4 w-4"
+                                            />
+                                            <Label>Enable Automatic Sync</Label>
+                                        </div>
+                                    </div>
+
+                                    <div className="grid md:grid-cols-2 gap-4">
+                                        <div className="space-y-2">
+                                            <Label>Sync Interval</Label>
+                                            <Input 
+                                                type="number"
+                                                value={syncSchedule.sync_interval}
+                                                onChange={(e) => setSyncSchedule({...syncSchedule, sync_interval: parseInt(e.target.value)})}
+                                                min="1"
+                                            />
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <Label>Time Unit</Label>
+                                            <Select 
+                                                value={syncSchedule.sync_unit}
+                                                onValueChange={(v) => setSyncSchedule({...syncSchedule, sync_unit: v})}
+                                            >
+                                                <SelectTrigger>
+                                                    <SelectValue />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="hours">Hours</SelectItem>
+                                                    <SelectItem value="days">Days</SelectItem>
+                                                    <SelectItem value="weeks">Weeks</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                    </div>
+
+                                    <Alert className="bg-blue-50 border-blue-200">
+                                        <Clock className="h-4 w-4 text-blue-600" />
+                                        <AlertDescription className="text-blue-800">
+                                            {syncSchedule.sync_enabled ? (
+                                                <>Tax rates will be automatically fetched and reviewed every {syncSchedule.sync_interval} {syncSchedule.sync_unit}. Changes will require admin approval before being applied.</>
+                                            ) : (
+                                                <>Automatic sync is disabled. Tax rates must be fetched manually.</>
+                                            )}
+                                        </AlertDescription>
+                                    </Alert>
+
+                                    <Button 
+                                        onClick={updateSyncSchedule}
+                                        disabled={loading}
+                                        className="w-full"
+                                    >
+                                        <RefreshCw className="h-4 w-4 mr-2" />
+                                        Save Schedule
+                                    </Button>
                                 </CardContent>
                             </Card>
                         </TabsContent>
