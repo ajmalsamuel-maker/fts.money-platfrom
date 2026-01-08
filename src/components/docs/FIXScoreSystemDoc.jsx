@@ -307,7 +307,7 @@ Example: Diamond merchant processing $1M/month at 2.7% base rate
 - On-demand when merchant completes ESG actions
 - Real-time preview in merchant dashboard
 
-**Calculation Backend Function**: `functions/calculateFIXScore.js`
+**Calculation Backend Function**: functions/calculateFIXScore.js
 
 \`\`\`mermaid
 sequenceDiagram
