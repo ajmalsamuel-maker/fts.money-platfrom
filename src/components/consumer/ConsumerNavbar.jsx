@@ -53,6 +53,30 @@ export default function ConsumerNavbar({ user }) {
                             My Impact
                         </Link>
                         <Link 
+                            to={createPageUrl('GreenBondsMarketplace')}
+                            className="text-slate-700 hover:text-blue-600 transition-colors"
+                        >
+                            Green Bonds
+                        </Link>
+                        <Link 
+                            to={createPageUrl('NFTAchievements')}
+                            className="text-slate-700 hover:text-blue-600 transition-colors"
+                        >
+                            NFTs
+                        </Link>
+                        <Link 
+                            to={createPageUrl('NANOStaking')}
+                            className="text-slate-700 hover:text-blue-600 transition-colors"
+                        >
+                            Staking
+                        </Link>
+                        <Link 
+                            to={createPageUrl('ProjectDAO')}
+                            className="text-slate-700 hover:text-blue-600 transition-colors"
+                        >
+                            DAO
+                        </Link>
+                        <Link 
                             to={createPageUrl('CommunityLeaderboard')}
                             className="text-slate-700 hover:text-blue-600 transition-colors font-medium"
                         >
@@ -63,12 +87,6 @@ export default function ConsumerNavbar({ user }) {
                             className="text-slate-700 hover:text-blue-600 transition-colors font-medium"
                         >
                             Community
-                        </Link>
-                        <Link 
-                            to={createPageUrl('GreenBondsMarketplace')}
-                            className="text-slate-700 hover:text-blue-600 transition-colors"
-                        >
-                            Green Bonds
                         </Link>
                     </div>
 
