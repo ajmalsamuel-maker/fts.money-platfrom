@@ -444,8 +444,11 @@ export default function FTSDocumentation() {
                                         </div>
                                     </CardHeader>
                                     <CardContent className="p-8 bg-white">
-                                        <div className="prose prose-slate max-w-none">
-                                            <ReactMarkdown
+                                       {doc.id === 'nano-sustainability' ? (
+                                           <doc.content />
+                                       ) : (
+                                       <div className="prose prose-slate max-w-none">
+                                           <ReactMarkdown
                                                 remarkPlugins={[remarkGfm]}
                                                 components={{
                                                     h1: ({ children }) => {
@@ -593,6 +596,7 @@ export default function FTSDocumentation() {
                                                 {doc.content}
                                             </ReactMarkdown>
                                         </div>
+                                        )}
                                     </CardContent>
                                 </Card>
                             </TabsContent>
