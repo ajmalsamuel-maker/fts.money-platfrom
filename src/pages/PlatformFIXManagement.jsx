@@ -14,7 +14,11 @@ import {
 import { PERMISSIONS } from '@/components/auth/permissions';
 
 export default function PlatformFIXManagement() {
-    const { platformUser } = usePlatformAuth([PERMISSIONS.ANALYTICS_VIEW]);
+    const { platformUser, loading } = usePlatformAuth([]);
+    
+    if (loading) {
+        return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+    }
     const [searchTerm, setSearchTerm] = useState('');
     const [tierFilter, setTierFilter] = useState('all');
 
