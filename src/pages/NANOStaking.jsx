@@ -99,9 +99,6 @@ export default function NANOStaking() {
                 <div className="max-w-7xl mx-auto space-y-8">
                     {/* Hero */}
                     <div className="text-center space-y-4">
-                        <Badge className="bg-gradient-to-r from-blue-600 to-cyan-500 text-white">
-                            Phase 3 - DeFi Staking
-                        </Badge>
                         <h1 className="text-5xl font-bold text-slate-900" style={{ fontFamily: 'Montserrat, sans-serif' }}>
                             Stake Your NANO Tokens
                         </h1>

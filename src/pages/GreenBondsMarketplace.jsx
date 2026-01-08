@@ -69,9 +69,6 @@ export default function GreenBondsMarketplace() {
                 <div className="max-w-7xl mx-auto space-y-8">
                     {/* Hero */}
                     <div className="text-center space-y-4">
-                        <Badge className="bg-gradient-to-r from-green-600 to-emerald-600 text-white">
-                            RWA Green Bonds - Phase 3
-                        </Badge>
                         <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
                             Green Bond Marketplace
                         </h1>

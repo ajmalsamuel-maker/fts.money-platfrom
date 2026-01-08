@@ -101,9 +101,6 @@ export default function ProjectDAO() {
                 <div className="max-w-7xl mx-auto space-y-8">
                     {/* Hero */}
                     <div className="text-center space-y-4">
-                        <Badge className="bg-gradient-to-r from-blue-600 to-cyan-500 text-white">
-                            Phase 3 - Project DAOs
-                        </Badge>
                         <h1 className="text-5xl font-bold text-slate-900" style={{ fontFamily: 'Montserrat, sans-serif' }}>
                             Green Project Governance
                         </h1>
