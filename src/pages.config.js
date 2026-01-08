@@ -313,6 +313,9 @@ import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
 import CarbonDashboard from './pages/CarbonDashboard';
+import NanoTaskMarketplace from './pages/NanoTaskMarketplace';
+import GreenMerchantDashboard from './pages/GreenMerchantDashboard';
+import ESGReportingDashboard from './pages/ESGReportingDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -632,6 +635,9 @@ export const PAGES = {
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
     "CarbonDashboard": CarbonDashboard,
+    "NanoTaskMarketplace": NanoTaskMarketplace,
+    "GreenMerchantDashboard": GreenMerchantDashboard,
+    "ESGReportingDashboard": ESGReportingDashboard,
 }
 
 export const pagesConfig = {
