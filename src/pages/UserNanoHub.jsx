@@ -103,6 +103,7 @@ export default function UserNanoHub() {
                         </Link>
                     </CardContent>
                 </Card>
+                </div>
             </div>
         </>
     );

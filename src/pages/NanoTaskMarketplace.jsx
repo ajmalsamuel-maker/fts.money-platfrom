@@ -267,6 +267,7 @@ export default function NanoTaskMarketplace() {
                         );
                     })}
                 </div>
+                </div>
             </div>
         </>
     );
