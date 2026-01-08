@@ -476,8 +476,15 @@ export default function FTSReporting() {
                                                 <SelectItem value="psp_performance">PSP Performance</SelectItem>
                                                 <SelectItem value="revenue">Revenue Analysis</SelectItem>
                                                 <SelectItem value="services">Service Subscriptions</SelectItem>
+                                                <SelectItem value="rwa">RWA Tokenization</SelectItem>
+                                                <SelectItem value="crypto">Crypto Banking / VASP</SelectItem>
+                                                <SelectItem value="iso">ISO Gateway</SelectItem>
+                                                <SelectItem value="orchestration">Orchestration</SelectItem>
+                                                <SelectItem value="tax">Tax Management</SelectItem>
+                                                <SelectItem value="einvoicing">E-Invoicing</SelectItem>
+                                                <SelectItem value="esg">ESG & Sustainability</SelectItem>
                                                 <SelectItem value="fix_score">FIX Score Management</SelectItem>
-                                                <SelectItem value="nano_marketplace">Nano Sustainability</SelectItem>
+                                                <SelectItem value="nano_marketplace">Nano Marketplace</SelectItem>
                                                 <SelectItem value="audit">Audit Trail</SelectItem>
                                             </SelectContent>
                                         </Select>
