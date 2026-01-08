@@ -319,6 +319,8 @@ import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
 import ConsumerHome from './pages/ConsumerHome';
 import ConsumerLogin from './pages/ConsumerLogin';
+import CommunityLeaderboard from './pages/CommunityLeaderboard';
+import CommunityForum from './pages/CommunityForum';
 import __Layout from './Layout.jsx';
 
 
@@ -644,6 +646,8 @@ export const PAGES = {
     "XeroIntegration": XeroIntegration,
     "ConsumerHome": ConsumerHome,
     "ConsumerLogin": ConsumerLogin,
+    "CommunityLeaderboard": CommunityLeaderboard,
+    "CommunityForum": CommunityForum,
 }
 
 export const pagesConfig = {

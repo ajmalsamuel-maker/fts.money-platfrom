@@ -10,7 +10,7 @@ import {
     DropdownMenuTrigger,
     DropdownMenuSeparator 
 } from '@/components/ui/dropdown-menu';
-import { Leaf, User, LogOut, Wallet, TrendingUp } from 'lucide-react';
+import { Leaf, User, LogOut, Wallet, TrendingUp, Trophy, MessageSquare } from 'lucide-react';
 import { FTS_LOGOS } from '@/components/community/FTSBrandColors';
 
 export default function ConsumerNavbar({ user }) {
@@ -54,6 +54,18 @@ export default function ConsumerNavbar({ user }) {
                             <TrendingUp className="inline h-4 w-4 mr-1" />
                             My Impact
                         </Link>
+                        <Link 
+                            to={createPageUrl('CommunityLeaderboard')}
+                            className="text-slate-700 hover:text-green-600 transition-colors font-medium"
+                        >
+                            Leaderboard
+                        </Link>
+                        <Link 
+                            to={createPageUrl('CommunityForum')}
+                            className="text-slate-700 hover:text-green-600 transition-colors font-medium"
+                        >
+                            Community
+                        </Link>
                     </div>
 
                     {/* User Menu */}
@@ -74,6 +86,18 @@ export default function ConsumerNavbar({ user }) {
                                     <Link to={createPageUrl('UserNanoHub')}>
                                         <Wallet className="h-4 w-4 mr-2" />
                                         My Impact Hub
+                                    </Link>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem asChild>
+                                    <Link to={createPageUrl('CommunityLeaderboard')}>
+                                        <Trophy className="h-4 w-4 mr-2" />
+                                        Leaderboard
+                                    </Link>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem asChild>
+                                    <Link to={createPageUrl('CommunityForum')}>
+                                        <MessageSquare className="h-4 w-4 mr-2" />
+                                        Community
                                     </Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem asChild>

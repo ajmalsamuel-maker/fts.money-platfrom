@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import ConsumerNavbar from '@/components/consumer/ConsumerNavbar';
+import BadgeDisplay from '@/components/consumer/BadgeDisplay';
+import StreakTracker from '@/components/consumer/StreakTracker';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Leaf, Zap, TrendingUp } from 'lucide-react';
@@ -46,6 +48,18 @@ export default function UserNanoHub() {
     const { data: completedTasks = [] } = useQuery({
         queryKey: ['taskCompletions', currentUser?.email],
         queryFn: () => base44.entities.TaskCompletion.filter({ user_email: currentUser?.email }),
+        enabled: !!currentUser?.email,
+    });
+
+    const { data: achievements = [] } = useQuery({
+        queryKey: ['achievements', currentUser?.email],
+        queryFn: () => base44.entities.UserAchievement.filter({ user_email: currentUser?.email }),
+        enabled: !!currentUser?.email,
+    });
+
+    const { data: streaks = [] } = useQuery({
+        queryKey: ['streaks', currentUser?.email],
+        queryFn: () => base44.entities.UserStreak.filter({ user_email: currentUser?.email }),
         enabled: !!currentUser?.email,
     });
 
