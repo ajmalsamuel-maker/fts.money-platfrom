@@ -97,15 +97,15 @@ export default function NanoTaskMarketplace() {
     return (
         <>
             <ConsumerNavbar user={currentUser} />
-            <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 p-6">
+            <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-white p-6">
                 <div className="max-w-7xl mx-auto space-y-6">
                 {/* Header */}
                 <div className="flex justify-between items-center">
                     <div>
-                        <h1 className="text-3xl font-bold text-slate-900">Nano Task Marketplace</h1>
+                        <h1 className="text-3xl font-bold text-slate-900" style={{ fontFamily: 'Montserrat, sans-serif' }}>Nano Task Marketplace</h1>
                         <p className="text-slate-600">Complete sustainable actions, earn NANO tokens</p>
                     </div>
-                    <Card className="bg-gradient-to-r from-green-600 to-emerald-600 text-white">
+                    <Card className="bg-gradient-to-r from-blue-600 to-cyan-500 text-white">
                         <CardContent className="p-4">
                             <div className="flex items-center gap-3">
                                 <Zap className="h-8 w-8" />
@@ -123,8 +123,8 @@ export default function NanoTaskMarketplace() {
                     <Card>
                         <CardContent className="p-4">
                             <div className="flex items-center gap-3">
-                                <div className="p-2 bg-green-100 rounded-lg">
-                                    <CheckCircle className="h-5 w-5 text-green-600" />
+                                <div className="p-2 bg-blue-100 rounded-lg">
+                                    <CheckCircle className="h-5 w-5 text-blue-600" />
                                 </div>
                                 <div>
                                     <p className="text-xs text-slate-600">Tasks Completed</p>
@@ -151,8 +151,8 @@ export default function NanoTaskMarketplace() {
                     <Card>
                         <CardContent className="p-4">
                             <div className="flex items-center gap-3">
-                                <div className="p-2 bg-purple-100 rounded-lg">
-                                    <Zap className="h-5 w-5 text-purple-600" />
+                                <div className="p-2 bg-cyan-100 rounded-lg">
+                                    <Zap className="h-5 w-5 text-cyan-600" />
                                 </div>
                                 <div>
                                     <p className="text-xs text-slate-600">Tokens Earned</p>
@@ -190,9 +190,9 @@ export default function NanoTaskMarketplace() {
                                             <span className="text-2xl">{taskTypeIcons[task.task_type]}</span>
                                             <CardTitle className="text-lg">{task.task_title}</CardTitle>
                                         </div>
-                                        <Badge className="bg-green-100 text-green-700">
-                                            +{task.reward_amount} NANO
-                                        </Badge>
+                                        <Badge className="bg-blue-100 text-blue-700">
+                                                            +{task.reward_amount} NANO
+                                                        </Badge>
                                     </div>
                                 </CardHeader>
                                 <CardContent className="space-y-4">
@@ -219,7 +219,7 @@ export default function NanoTaskMarketplace() {
                                     {!currentUser ? (
                                         <Button 
                                             onClick={() => window.location.href = createPageUrl('ConsumerLogin')}
-                                            className="w-full bg-green-600 hover:bg-green-700"
+                                            className="w-full bg-blue-600 hover:bg-blue-700"
                                         >
                                             Login to Start Task
                                         </Button>
@@ -231,7 +231,7 @@ export default function NanoTaskMarketplace() {
                                     ) : (
                                         <Dialog>
                                             <DialogTrigger asChild>
-                                                <Button className="w-full bg-green-600 hover:bg-green-700">
+                                                <Button className="w-full bg-blue-600 hover:bg-blue-700">
                                                     Start Task
                                                 </Button>
                                             </DialogTrigger>
@@ -242,8 +242,8 @@ export default function NanoTaskMarketplace() {
                                                 <div className="space-y-4">
                                                     <p className="text-sm text-slate-600">{task.task_description}</p>
                                                     
-                                                    <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-                                                        <p className="text-sm font-medium text-green-800">Verification Method: {task.verification_method}</p>
+                                                    <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                                                        <p className="text-sm font-medium text-blue-800">Verification Method: {task.verification_method}</p>
                                                     </div>
 
                                                     <Textarea 
@@ -253,7 +253,7 @@ export default function NanoTaskMarketplace() {
 
                                                     <Button 
                                                         onClick={() => handleTaskComplete(task)} 
-                                                        className="w-full bg-green-600 hover:bg-green-700"
+                                                        className="w-full bg-blue-600 hover:bg-blue-700"
                                                     >
                                                         <Upload className="h-4 w-4 mr-2" />
                                                         Submit for Verification

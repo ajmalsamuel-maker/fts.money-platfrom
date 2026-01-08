@@ -126,7 +126,7 @@ export default function NANOStaking() {
                                 <p className="text-sm opacity-90">Staked NANO</p>
                             </CardContent>
                         </Card>
-                        <Card className="bg-gradient-to-br from-green-600 to-emerald-600 text-white">
+                        <Card className="bg-gradient-to-br from-blue-600 to-cyan-500 text-white">
                             <CardContent className="p-6 text-center">
                                 <TrendingUp className="h-8 w-8 mx-auto mb-2" />
                                 <div className="text-3xl font-bold">{((staked * 0.25) / 12).toFixed(2)}</div>

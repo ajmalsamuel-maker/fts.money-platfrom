@@ -70,15 +70,15 @@ export default function UserNanoHub() {
     return (
         <>
             <ConsumerNavbar user={currentUser} />
-            <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 p-6">
+            <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-white p-6">
                 <div className="max-w-4xl mx-auto space-y-8">
                 <div className="text-center space-y-4">
-                    <h1 className="text-5xl font-bold text-green-800">Nano Sustainability Hub</h1>
+                    <h1 className="text-5xl font-bold text-blue-800" style={{ fontFamily: 'Montserrat, sans-serif' }}>Nano Sustainability Hub</h1>
                     <p className="text-xl text-slate-700">Complete tasks, earn tokens, save the planet</p>
                 </div>
 
                 <div className="grid md:grid-cols-3 gap-6">
-                    <Card className="bg-gradient-to-br from-green-600 to-emerald-600 text-white">
+                    <Card className="bg-gradient-to-br from-blue-600 to-cyan-500 text-white">
                         <CardContent className="p-6 text-center">
                             <Zap className="h-12 w-12 mx-auto mb-3" />
                             <p className="text-sm opacity-90 mb-2">Your Balance</p>
@@ -86,7 +86,7 @@ export default function UserNanoHub() {
                         </CardContent>
                     </Card>
 
-                    <Card className="bg-gradient-to-br from-blue-600 to-cyan-600 text-white">
+                    <Card className="bg-gradient-to-br from-cyan-500 to-blue-400 text-white">
                         <CardContent className="p-6 text-center">
                             <Leaf className="h-12 w-12 mx-auto mb-3" />
                             <p className="text-sm opacity-90 mb-2">CO₂ Offset</p>
@@ -94,7 +94,7 @@ export default function UserNanoHub() {
                         </CardContent>
                     </Card>
 
-                    <Card className="bg-gradient-to-br from-purple-600 to-pink-600 text-white">
+                    <Card className="bg-gradient-to-br from-blue-700 to-cyan-600 text-white">
                         <CardContent className="p-6 text-center">
                             <TrendingUp className="h-12 w-12 mx-auto mb-3" />
                             <p className="text-sm opacity-90 mb-2">Tasks Done</p>
@@ -117,15 +117,15 @@ export default function UserNanoHub() {
                     </CardContent>
                 </Card>
 
-                <Card className="border-green-200">
+                <Card className="border-blue-200">
                     <CardContent className="p-8 text-center space-y-6">
-                        <h2 className="text-2xl font-bold text-slate-900">Ready to Make an Impact?</h2>
+                        <h2 className="text-2xl font-bold text-slate-900" style={{ fontFamily: 'Montserrat, sans-serif' }}>Ready to Make an Impact?</h2>
                         <p className="text-slate-600 max-w-2xl mx-auto">
                             Browse available sustainability tasks, complete them, and earn NANO tokens. 
                             Each task helps offset carbon emissions and builds a greener future.
                         </p>
                         <Link to={createPageUrl('NanoTaskMarketplace')}>
-                            <Button size="lg" className="bg-green-600 hover:bg-green-700">
+                            <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
                                 <Leaf className="h-5 w-5 mr-2" />
                                 Browse Tasks
                             </Button>
