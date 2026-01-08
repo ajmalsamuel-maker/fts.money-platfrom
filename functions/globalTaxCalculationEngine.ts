@@ -241,6 +241,22 @@ function isEU(country) {
     return EU_COUNTRIES.includes(country);
 }
 
+// Product category tax mappings
+const PRODUCT_CATEGORIES = {
+    digital_services: { applies_buyer_location: true, often_exempt: false, luxury: false },
+    luxury_goods: { threshold: 1000, surcharge: 10, applies_buyer_location: false, often_exempt: false, luxury: true },
+    food: { uses_reduced_rate: true, often_exempt: false, luxury: false },
+    medicine: { uses_zero_rate: true, often_exempt: true, luxury: false },
+    books: { uses_reduced_rate: true, often_exempt: true, luxury: false },
+    education: { uses_zero_rate: true, often_exempt: true, luxury: false },
+    health_services: { uses_zero_rate: true, often_exempt: true, luxury: false },
+    financial_services: { uses_zero_rate: false, often_exempt: true, luxury: false },
+    real_estate: { uses_zero_rate: false, often_exempt: true, luxury: false },
+    agriculture: { uses_reduced_rate: true, often_exempt: false, luxury: false },
+    children_clothing: { uses_zero_rate: true, often_exempt: false, luxury: false },
+    newspapers: { uses_reduced_rate: true, often_exempt: false, luxury: false }
+};
+
 function calculateTax(params) {
     const {
         seller_country,
@@ -251,7 +267,9 @@ function calculateTax(params) {
         buyer_type = 'B2C', // B2B or B2C
         buyer_vat_number = null,
         seller_vat_number = null,
-        is_export = false
+        is_export = false,
+        sez_location = null, // Special Economic Zone
+        is_luxury = false
     } = params;
 
     // Validation
@@ -272,65 +290,135 @@ function calculateTax(params) {
     let taxJurisdiction = seller_country;
     let reverseCharge = false;
     let exemptReason = null;
+    let luxurySurcharge = 0;
+    let placeOfSupply = seller_country;
 
-    // Scenario 1: Export (zero-rated)
-    if (seller_country !== buyer_country && is_export) {
-        taxRate = 0;
-        exemptReason = 'Export - Zero-rated';
-    }
-    // Scenario 2: EU Intra-community supply (B2B with valid VAT)
-    else if (isEU(seller_country) && isEU(buyer_country) && seller_country !== buyer_country && buyer_type === 'B2B' && buyer_vat_number) {
-        taxRate = 0;
-        reverseCharge = true;
-        exemptReason = 'EU Intra-community supply - Reverse charge';
-    }
-    // Scenario 3: Digital services - apply buyer's country tax (if different)
-    else if (product_category === 'digital_services' && seller_country !== buyer_country) {
-        if (buyerRules && buyerRules.digital_services) {
-            taxRate = buyerRules.digital_services;
-            taxJurisdiction = buyer_country;
-            taxType = buyerRules.type;
-        } else {
-            taxRate = sellerRules.digital_services || sellerRules.standard;
+    // STEP 1: Check for SEZ (Special Economic Zone) - overrides most other rules
+    if (sez_location && sellerRules.sez) {
+        const sezMatch = sellerRules.sez.find(zone => 
+            zone.toLowerCase().includes(sez_location.toLowerCase())
+        );
+        if (sezMatch) {
+            // Extract rate from format "Zone Name (rate%)"
+            const rateMatch = sezMatch.match(/\((\d+(?:\.\d+)?)%?\)/);
+            if (rateMatch) {
+                taxRate = parseFloat(rateMatch[1]);
+                exemptReason = `SEZ: ${sezMatch}`;
+            }
         }
     }
-    // Scenario 4: Domestic B2B reverse charge (EU)
-    else if (seller_country === buyer_country && buyer_type === 'B2B' && sellerRules.reverse_charge_b2b && buyer_vat_number) {
-        // Some categories require reverse charge even domestically
-        if (['construction', 'scrap', 'emissions']) {
+
+    // STEP 2: Product category exemptions (if not already handled by SEZ)
+    if (!exemptReason && product_category) {
+        const categoryConfig = PRODUCT_CATEGORIES[product_category];
+        
+        // Check for category-specific exemptions
+        if (categoryConfig?.often_exempt) {
+            if (sellerRules.exemptions?.includes(product_category.replace('_services', '').replace('_', ''))) {
+                taxRate = 0;
+                exemptReason = `Exempt - ${product_category}`;
+            } else if (sellerRules.zero?.includes(product_category.replace('_services', '').replace('_', ''))) {
+                taxRate = 0;
+                exemptReason = `Zero-rated - ${product_category}`;
+            }
+        }
+
+        // Check for zero-rated categories
+        if (!exemptReason && categoryConfig?.uses_zero_rate) {
+            const categoryKey = product_category.replace('_services', '').replace('_', '');
+            if (sellerRules.zero?.includes(categoryKey)) {
+                taxRate = 0;
+                exemptReason = `Zero-rated - ${product_category}`;
+            }
+        }
+    }
+
+    // STEP 3: Cross-border transaction rules (if not already exempt)
+    if (!exemptReason) {
+        // Scenario 1: Export (zero-rated)
+        if (seller_country !== buyer_country && is_export) {
+            taxRate = 0;
+            exemptReason = 'Export - Zero-rated';
+        }
+        // Scenario 2: EU Intra-community B2B (reverse charge)
+        else if (isEU(seller_country) && isEU(buyer_country) && seller_country !== buyer_country && buyer_type === 'B2B' && buyer_vat_number) {
             taxRate = 0;
             reverseCharge = true;
-            exemptReason = 'Domestic reverse charge';
-        } else {
-            taxRate = sellerRules.standard;
+            placeOfSupply = buyer_country;
+            exemptReason = 'EU Intra-community B2B - Reverse charge applies in buyer country';
         }
-    }
-    // Scenario 5: Standard domestic transaction
-    else {
-        // Apply reduced rates for specific categories
-        if (product_category === 'food' && sellerRules.reduced && sellerRules.reduced.length > 0) {
-            taxRate = sellerRules.reduced[0];
-        } else if (product_category === 'medicine' && sellerRules.zero && sellerRules.zero.includes('health')) {
+        // Scenario 3: EU to Non-EU B2C digital services (VAT MOSS rules)
+        else if (isEU(seller_country) && !isEU(buyer_country) && buyer_type === 'B2C' && product_category === 'digital_services') {
+            // Place of supply = buyer's country
+            if (buyerRules) {
+                taxRate = buyerRules.digital_services || buyerRules.standard || 0;
+                taxJurisdiction = buyer_country;
+                placeOfSupply = buyer_country;
+                taxType = buyerRules.type;
+            } else {
+                taxRate = 0;
+                exemptReason = 'Non-EU B2C digital services - No tax info for buyer country';
+            }
+        }
+        // Scenario 4: Non-EU to EU B2C digital services (place of supply = buyer)
+        else if (!isEU(seller_country) && isEU(buyer_country) && buyer_type === 'B2C' && product_category === 'digital_services') {
+            taxRate = buyerRules.digital_services || buyerRules.standard;
+            taxJurisdiction = buyer_country;
+            placeOfSupply = buyer_country;
+            taxType = buyerRules.type;
+        }
+        // Scenario 5: Cross-border B2B outside EU
+        else if (seller_country !== buyer_country && buyer_type === 'B2B' && buyer_vat_number) {
+            // Most jurisdictions apply reverse charge for B2B imports
             taxRate = 0;
-            exemptReason = 'Zero-rated - Medicine';
-        } else if (product_category === 'books' && sellerRules.zero && sellerRules.zero.includes('books')) {
-            taxRate = 0;
-            exemptReason = 'Zero-rated - Books';
-        } else if (product_category === 'education' && sellerRules.zero && sellerRules.zero.includes('education')) {
-            taxRate = 0;
-            exemptReason = 'Zero-rated - Education';
-        } else {
+            reverseCharge = true;
+            placeOfSupply = buyer_country;
+            exemptReason = 'Cross-border B2B - Reverse charge (buyer liable in their country)';
+        }
+        // Scenario 6: Cross-border B2C physical goods
+        else if (seller_country !== buyer_country && buyer_type === 'B2C' && product_category !== 'digital_services') {
+            // For physical goods, generally seller country tax applies (origin principle)
+            // Unless amount exceeds distance selling threshold (EU: €10,000)
+            taxRate = sellerRules.physical_goods || sellerRules.standard;
+            placeOfSupply = seller_country;
+        }
+        // Scenario 7: Domestic B2B reverse charge (specific categories)
+        else if (seller_country === buyer_country && buyer_type === 'B2B' && sellerRules.reverse_charge_b2b && buyer_vat_number) {
+            // Categories that trigger domestic reverse charge
+            const reverseChargeCategories = ['construction', 'scrap', 'emissions', 'gas_electricity', 'mobile_phones', 'integrated_circuits'];
+            if (reverseChargeCategories.includes(product_category)) {
+                taxRate = 0;
+                reverseCharge = true;
+                exemptReason = `Domestic reverse charge - ${product_category}`;
+            } else {
+                taxRate = sellerRules.standard;
+            }
+        }
+        // Scenario 8: Standard domestic transaction
+        else if (seller_country === buyer_country) {
+            taxRate = determineDomesticRate(sellerRules, product_category, amount);
+            placeOfSupply = seller_country;
+        }
+        // Fallback: apply seller country standard rate
+        else {
             taxRate = sellerRules.standard;
         }
     }
 
-    taxAmount = (amount * taxRate) / 100;
+    // STEP 4: Apply luxury goods surcharge (if applicable)
+    if (is_luxury || (PRODUCT_CATEGORIES[product_category]?.luxury && amount >= (PRODUCT_CATEGORIES.luxury_goods?.threshold || 1000))) {
+        luxurySurcharge = (amount * (PRODUCT_CATEGORIES.luxury_goods?.surcharge || 10)) / 100;
+    }
+
+    taxAmount = (amount * taxRate) / 100 + luxurySurcharge;
 
     return {
         taxRate,
         taxAmount: parseFloat(taxAmount.toFixed(2)),
+        luxurySurcharge: parseFloat(luxurySurcharge.toFixed(2)),
         taxType,
         taxJurisdiction,
+        placeOfSupply,
         subtotal: parseFloat(amount.toFixed(2)),
         total: parseFloat((amount + taxAmount).toFixed(2)),
         currency,
@@ -341,9 +429,47 @@ function calculateTax(params) {
             buyer_country,
             buyer_type,
             product_category,
-            applicable_rule: exemptReason || `${taxType} ${taxRate}%`
+            sez_location,
+            is_luxury,
+            applicable_rule: exemptReason || `${taxType} ${taxRate}%`,
+            place_of_supply_rule: placeOfSupply === buyer_country ? 'Destination principle' : 'Origin principle'
         }
     };
+}
+
+/**
+ * Determine domestic tax rate based on product category
+ */
+function determineDomesticRate(rules, category, amount) {
+    const categoryConfig = PRODUCT_CATEGORIES[category];
+    
+    // Zero-rated categories
+    if (categoryConfig?.uses_zero_rate && rules.zero) {
+        const categoryKey = category.replace('_services', '').replace('_', '');
+        if (rules.zero.includes(categoryKey)) {
+            return 0;
+        }
+    }
+    
+    // Reduced rate categories
+    if (categoryConfig?.uses_reduced_rate && rules.reduced && rules.reduced.length > 0) {
+        // Use lowest reduced rate for essential goods
+        if (['food', 'medicine', 'books', 'newspapers'].includes(category)) {
+            return Math.min(...rules.reduced);
+        }
+        return rules.reduced[0];
+    }
+    
+    // Category-specific rates
+    if (category === 'digital_services' && rules.digital_services) {
+        return rules.digital_services;
+    }
+    if (category !== 'digital_services' && rules.physical_goods) {
+        return rules.physical_goods;
+    }
+    
+    // Default to standard rate
+    return rules.standard;
 }
 
 Deno.serve(async (req) => {
