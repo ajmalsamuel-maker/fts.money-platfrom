@@ -23,10 +23,12 @@ import {
     Package,
     FileText,
     Shield,
-    Leaf
+    Leaf,
+    Info
 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { getServicePricingTemplate, getServiceTierDefaults } from '@/components/pricing/ServicePricingTemplates';
 
 const TIER_ICONS = {
     starter: Zap,
