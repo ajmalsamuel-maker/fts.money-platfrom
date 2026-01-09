@@ -297,7 +297,7 @@ export default function PlatformPricingConfiguration() {
                                                 <p className="text-2xl font-bold text-slate-900">
                                                     {tier.tier_name === 'enterprise' && tier.setup_fee >= 10000
                                                         ? 'Custom'
-                                                        : `$${tier.setup_fee.toLocaleString()}`
+                                                        : `$${(tier.setup_fee || 0).toLocaleString()}`
                                                     }
                                                 </p>
                                             )}
@@ -319,7 +319,7 @@ export default function PlatformPricingConfiguration() {
                                                 <p className="text-xl font-semibold text-blue-600">
                                                     {tier.tier_name === 'enterprise' && tier.monthly_hosting_fee >= 5000
                                                         ? 'From $5K'
-                                                        : `$${tier.monthly_hosting_fee.toLocaleString()}/mo`
+                                                        : `$${(tier.monthly_hosting_fee || 0).toLocaleString()}/mo`
                                                     }
                                                 </p>
                                             )}
@@ -335,16 +335,16 @@ export default function PlatformPricingConfiguration() {
                                             <div className="flex items-center text-xs">
                                                 <Check className="h-3 w-3 text-emerald-600 mr-2" />
                                                 <span className="text-slate-600">
-                                                    {tier.transaction_fee_percentage}% + ${tier.transaction_fee_fixed}
+                                                    {tier.transaction_fee_percentage || 0}% + ${tier.transaction_fee_fixed || 0}
                                                 </span>
                                             </div>
                                             <div className="flex items-center text-xs">
                                                 <Check className="h-3 w-3 text-emerald-600 mr-2" />
-                                                <span className="text-slate-600">{tier.sla_uptime}% uptime</span>
+                                                <span className="text-slate-600">{tier.sla_uptime || 99.9}% uptime</span>
                                             </div>
                                             <div className="flex items-center text-xs">
                                                 <Check className="h-3 w-3 text-emerald-600 mr-2" />
-                                                <span className="text-slate-600 capitalize">{tier.support_level} support</span>
+                                                <span className="text-slate-600 capitalize">{tier.support_level || 'email'} support</span>
                                             </div>
                                         </div>
 
