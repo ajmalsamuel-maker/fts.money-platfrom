@@ -344,6 +344,10 @@ import XeroIntegration from './pages/XeroIntegration';
 import ServiceConfigurationHub from './pages/ServiceConfigurationHub';
 import ISOGatewayServiceConfig from './pages/ISOGatewayServiceConfig';
 import RWATokenizationServiceConfig from './pages/RWATokenizationServiceConfig';
+import CryptoVASPServiceConfig from './pages/CryptoVASPServiceConfig';
+import OrchestrationServiceConfig from './pages/OrchestrationServiceConfig';
+import TaxManagementServiceConfig from './pages/TaxManagementServiceConfig';
+import EInvoicingServiceConfig from './pages/EInvoicingServiceConfig';
 import __Layout from './Layout.jsx';
 
 
@@ -694,6 +698,10 @@ export const PAGES = {
     "ServiceConfigurationHub": ServiceConfigurationHub,
     "ISOGatewayServiceConfig": ISOGatewayServiceConfig,
     "RWATokenizationServiceConfig": RWATokenizationServiceConfig,
+    "CryptoVASPServiceConfig": CryptoVASPServiceConfig,
+    "OrchestrationServiceConfig": OrchestrationServiceConfig,
+    "TaxManagementServiceConfig": TaxManagementServiceConfig,
+    "EInvoicingServiceConfig": EInvoicingServiceConfig,
 }
 
 export const pagesConfig = {
