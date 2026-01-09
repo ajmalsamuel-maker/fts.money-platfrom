@@ -100,6 +100,19 @@ Deno.serve(async (req) => {
             return Response.json({ success: true });
         }
 
+        if (action === 'resetPassword') {
+            const { email, newPassword } = body;
+            const authUsers = await base44.asServiceRole.entities.AuthUser.filter({ email });
+            if (!authUsers || authUsers.length === 0) {
+                return Response.json({ success: false, message: 'User not found' });
+            }
+            const user = authUsers[0];
+            await base44.asServiceRole.entities.AuthUser.update(user.id, {
+                password_hash: newPassword
+            });
+            return Response.json({ success: true });
+        }
+
         return Response.json({ success: false, error: 'Invalid action' });
     } catch (error) {
         console.error('❌ Auth error:', error);
