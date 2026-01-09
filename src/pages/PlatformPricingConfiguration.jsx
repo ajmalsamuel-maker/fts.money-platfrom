@@ -158,7 +158,27 @@ export default function PlatformPricingConfiguration() {
 
     // Filter tiers by selected service
     const filteredTiers = tiers.filter(t => t.service_type === selectedService);
-    const displayTiers = filteredTiers.length > 0 ? filteredTiers : DEFAULT_TIERS.map(t => ({...t, service_type: selectedService}));
+    
+    // Get service pricing template
+    const serviceTemplate = getServicePricingTemplate(selectedService);
+    
+    // Use service-specific defaults if available, otherwise fall back to generic PSP defaults
+    const getDefaultTiersForService = () => {
+        if (!serviceTemplate) return DEFAULT_TIERS.map(t => ({...t, service_type: selectedService}));
+        
+        return Object.keys(serviceTemplate.tiers).map((tierName, idx) => {
+            const tierDefaults = serviceTemplate.tiers[tierName];
+            return {
+                tier_name: tierName,
+                service_type: selectedService,
+                display_name: tierName.charAt(0).toUpperCase() + tierName.slice(1),
+                ...tierDefaults,
+                sort_order: idx + 1
+            };
+        });
+    };
+    
+    const displayTiers = filteredTiers.length > 0 ? filteredTiers : getDefaultTiersForService();
 
     // Get service billing config status
     const serviceConfig = serviceBillingConfigs.find(s => s.service_type === selectedService);
