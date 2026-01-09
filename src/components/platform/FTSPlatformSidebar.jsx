@@ -96,7 +96,6 @@ const menuSections = [
         title: 'Services & Marketplace',
         defaultOpen: true,
         items: [
-            { label: 'Service Configuration Hub', description: 'Configure all services', path: 'ServiceConfigurationHub', icon: Settings, priority: true },
             { labelKey: 'serviceCatalog', descKey: 'serviceCatalogDesc', path: 'FTSServiceManager', icon: Package, priority: true },
             { label: 'Payment Providers', description: 'Provider pool', path: 'PaymentProviderManagement', icon: Database, priority: true },
             { labelKey: 'globalStandards', descKey: 'globalStandardsDesc', path: 'GlobalStandardsRegistry', icon: Globe, priority: true },
@@ -131,6 +130,7 @@ const menuSections = [
         title: 'Financial Operations',
         defaultOpen: true,
         items: [
+            { label: 'Service Configuration Hub', description: 'Configure all services', path: 'ServiceConfigurationHub', icon: Settings, priority: true },
             { label: 'Service Billing Config', description: 'Configure pricing & tiers', path: 'ServiceBillingConfiguration', icon: DollarSign, priority: true },
             { labelKey: 'serviceBilling', descKey: 'serviceBillingDesc', path: 'FTSServiceBilling', icon: FileText, priority: true },
             { label: 'Platform Billing', description: 'Invoice PSPs & Merchants', path: 'PlatformBillingPortal', icon: DollarSign, priority: true },
