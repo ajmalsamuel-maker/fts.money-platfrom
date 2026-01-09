@@ -221,6 +221,24 @@ export default function PlatformPricingConfiguration() {
                                 </Badge>
                             )}
                         </div>
+                        
+                        {/* Configuration Guidance */}
+                        {!isPricingComplete && (
+                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                                <div className="flex items-start gap-3">
+                                    <Zap className="h-5 w-5 text-blue-600 mt-0.5" />
+                                    <div>
+                                        <h3 className="font-semibold text-blue-900 mb-1">
+                                            Configure Tier Pricing for {serviceTypes.find(s => s.value === selectedService)?.label}
+                                        </h3>
+                                        <p className="text-sm text-blue-700">
+                                            Click "Edit" on any tier below to set setup fees, monthly hosting costs, and service-specific pricing. 
+                                            Save your changes to mark this service as configured.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     {/* Pricing Cards */}
