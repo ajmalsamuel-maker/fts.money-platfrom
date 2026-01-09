@@ -16,8 +16,17 @@ import {
     TrendingUp,
     Building2,
     Building,
-    Check
+    Check,
+    Wallet,
+    Code,
+    GitBranch,
+    Package,
+    FileText,
+    Shield,
+    Leaf
 } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const TIER_ICONS = {
     starter: Zap,
@@ -85,14 +94,34 @@ const DEFAULT_TIERS = [
     }
 ];
 
+const serviceTypes = [
+    { value: 'psp_payment_processing', label: 'PSP Payment Processing', icon: Building2 },
+    { value: 'crypto_vasp', label: 'Crypto Banking / VASP', icon: Wallet },
+    { value: 'iso_gateway', label: 'ISO Gateway', icon: Code },
+    { value: 'orchestration', label: 'Orchestration', icon: GitBranch },
+    { value: 'rwa_tokenization', label: 'RWA Tokenization', icon: Package },
+    { value: 'tax_management', label: 'Tax Management', icon: FileText },
+    { value: 'einvoicing', label: 'E-Invoicing', icon: FileText },
+    { value: 'nano_marketplace', label: 'NANO Marketplace', icon: Leaf },
+    { value: 'pci_compliance', label: 'PCI Compliance', icon: Shield },
+    { value: 'lei_compliance', label: 'LEI Compliance', icon: Shield },
+    { value: 'digital_identity', label: 'Digital Identity', icon: Shield }
+];
+
 export default function PlatformPricingConfiguration() {
     const { platformUser } = usePlatformAuth();
     const queryClient = useQueryClient();
     const [editingTier, setEditingTier] = useState(null);
+    const [selectedService, setSelectedService] = useState('psp_payment_processing');
 
     const { data: tiers = [], isLoading } = useQuery({
         queryKey: ['platform-pricing'],
         queryFn: () => base44.entities.PlatformPricingConfig.list('sort_order')
+    });
+
+    const { data: serviceBillingConfigs = [] } = useQuery({
+        queryKey: ['service-billing-configs'],
+        queryFn: () => base44.entities.ServiceBillingConfig.list()
     });
 
     const saveMutation = useMutation({
@@ -125,7 +154,13 @@ export default function PlatformPricingConfiguration() {
         }
     });
 
-    const displayTiers = tiers.length > 0 ? tiers : DEFAULT_TIERS;
+    // Filter tiers by selected service
+    const filteredTiers = tiers.filter(t => t.service_type === selectedService);
+    const displayTiers = filteredTiers.length > 0 ? filteredTiers : DEFAULT_TIERS.map(t => ({...t, service_type: selectedService}));
+
+    // Get service billing config status
+    const serviceConfig = serviceBillingConfigs.find(s => s.service_type === selectedService);
+    const isPricingComplete = serviceConfig?.platform_tiers_complete || false;
 
     return (
         <div className="flex h-screen bg-slate-50">
@@ -146,7 +181,7 @@ export default function PlatformPricingConfiguration() {
                                     Platform Pricing Configuration
                                 </h1>
                                 <p className="text-slate-600 mt-1">
-                                    Configure setup fees and monthly hosting costs for each PSP tier
+                                    Configure tier pricing for all FTS.Money services
                                 </p>
                             </div>
                             <Button
@@ -157,6 +192,34 @@ export default function PlatformPricingConfiguration() {
                                 <RefreshCw className="h-4 w-4 mr-2" />
                                 Reset to Defaults
                             </Button>
+                        </div>
+                        
+                        {/* Service Selector */}
+                        <div className="flex items-center gap-4 mb-6">
+                            <Label>Select Service:</Label>
+                            <Select value={selectedService} onValueChange={setSelectedService}>
+                                <SelectTrigger className="w-64">
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {serviceTypes.map(st => {
+                                        const Icon = st.icon;
+                                        return (
+                                            <SelectItem key={st.value} value={st.value}>
+                                                <div className="flex items-center gap-2">
+                                                    <Icon className="h-4 w-4" />
+                                                    {st.label}
+                                                </div>
+                                            </SelectItem>
+                                        );
+                                    })}
+                                </SelectContent>
+                            </Select>
+                            {!isPricingComplete && (
+                                <Badge className="bg-amber-100 text-amber-700">
+                                    Pricing Configuration Needed
+                                </Badge>
+                            )}
                         </div>
                     </div>
 
