@@ -341,6 +341,9 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
+import ServiceConfigurationHub from './pages/ServiceConfigurationHub';
+import ISOGatewayServiceConfig from './pages/ISOGatewayServiceConfig';
+import RWATokenizationServiceConfig from './pages/RWATokenizationServiceConfig';
 import __Layout from './Layout.jsx';
 
 
@@ -688,6 +691,9 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
+    "ServiceConfigurationHub": ServiceConfigurationHub,
+    "ISOGatewayServiceConfig": ISOGatewayServiceConfig,
+    "RWATokenizationServiceConfig": RWATokenizationServiceConfig,
 }
 
 export const pagesConfig = {
