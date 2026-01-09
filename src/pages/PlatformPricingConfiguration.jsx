@@ -326,26 +326,92 @@ export default function PlatformPricingConfiguration() {
                                         </div>
 
                                         <div className="pt-4 border-t space-y-2">
-                                            <div className="flex items-center text-xs">
-                                                <Check className="h-3 w-3 text-emerald-600 mr-2" />
-                                                <span className="text-slate-600">
-                                                    {tier.max_merchants ? `${tier.max_merchants} merchants` : 'Unlimited merchants'}
-                                                </span>
-                                            </div>
-                                            <div className="flex items-center text-xs">
-                                                <Check className="h-3 w-3 text-emerald-600 mr-2" />
-                                                <span className="text-slate-600">
-                                                    {tier.transaction_fee_percentage || 0}% + ${tier.transaction_fee_fixed || 0}
-                                                </span>
-                                            </div>
-                                            <div className="flex items-center text-xs">
-                                                <Check className="h-3 w-3 text-emerald-600 mr-2" />
-                                                <span className="text-slate-600">{tier.sla_uptime || 99.9}% uptime</span>
-                                            </div>
-                                            <div className="flex items-center text-xs">
-                                                <Check className="h-3 w-3 text-emerald-600 mr-2" />
-                                                <span className="text-slate-600 capitalize">{tier.support_level || 'email'} support</span>
-                                            </div>
+                                            {serviceTemplate ? (
+                                                // Display service-specific parameters
+                                                serviceTemplate.parameters.slice(0, 4).map(param => {
+                                                    const value = currentTier[param.key];
+                                                    let displayValue = value;
+                                                    
+                                                    if (param.type === 'currency') {
+                                                        displayValue = `$${(value || 0).toLocaleString()}`;
+                                                    } else if (param.type === 'percentage') {
+                                                        displayValue = `${(value || 0)}%`;
+                                                    } else if (param.type === 'boolean') {
+                                                        displayValue = value ? '✓ Included' : '✗ Not included';
+                                                    } else if (param.type === 'number') {
+                                                        displayValue = value === -1 ? 'Unlimited' : (value || 0).toLocaleString();
+                                                    } else if (param.type === 'array') {
+                                                        displayValue = Array.isArray(value) ? value.join(', ') : 'Not configured';
+                                                    }
+                                                    
+                                                    return (
+                                                        <div key={param.key}>
+                                                            {isEditing ? (
+                                                                <div className="space-y-1">
+                                                                    <Label className="text-xs text-slate-600">{param.label}</Label>
+                                                                    {param.type === 'boolean' ? (
+                                                                        <select
+                                                                            value={currentTier[param.key] ? 'true' : 'false'}
+                                                                            onChange={(e) => setEditingTier({
+                                                                                ...currentTier,
+                                                                                [param.key]: e.target.value === 'true'
+                                                                            })}
+                                                                            className="w-full px-2 py-1 text-xs border rounded"
+                                                                        >
+                                                                            <option value="true">Yes</option>
+                                                                            <option value="false">No</option>
+                                                                        </select>
+                                                                    ) : (
+                                                                        <Input
+                                                                            type={param.type === 'number' || param.type === 'currency' || param.type === 'percentage' ? 'number' : 'text'}
+                                                                            step={param.type === 'percentage' || param.type === 'currency' ? '0.01' : '1'}
+                                                                            value={currentTier[param.key] || ''}
+                                                                            onChange={(e) => setEditingTier({
+                                                                                ...currentTier,
+                                                                                [param.key]: param.type === 'number' || param.type === 'currency' || param.type === 'percentage' 
+                                                                                    ? parseFloat(e.target.value) 
+                                                                                    : e.target.value
+                                                                            })}
+                                                                            className="text-xs"
+                                                                        />
+                                                                    )}
+                                                                </div>
+                                                            ) : (
+                                                                <div className="flex items-center text-xs">
+                                                                    <Check className="h-3 w-3 text-emerald-600 mr-2 flex-shrink-0" />
+                                                                    <span className="text-slate-600">
+                                                                        {param.label}: <span className="font-medium">{displayValue}</span>
+                                                                    </span>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    );
+                                                })
+                                            ) : (
+                                                // Fallback to generic PSP parameters
+                                                <>
+                                                    <div className="flex items-center text-xs">
+                                                        <Check className="h-3 w-3 text-emerald-600 mr-2" />
+                                                        <span className="text-slate-600">
+                                                            {tier.max_merchants ? `${tier.max_merchants} merchants` : 'Unlimited merchants'}
+                                                        </span>
+                                                    </div>
+                                                    <div className="flex items-center text-xs">
+                                                        <Check className="h-3 w-3 text-emerald-600 mr-2" />
+                                                        <span className="text-slate-600">
+                                                            {tier.transaction_fee_percentage || 0}% + ${tier.transaction_fee_fixed || 0}
+                                                        </span>
+                                                    </div>
+                                                    <div className="flex items-center text-xs">
+                                                        <Check className="h-3 w-3 text-emerald-600 mr-2" />
+                                                        <span className="text-slate-600">{tier.sla_uptime || 99.9}% uptime</span>
+                                                    </div>
+                                                    <div className="flex items-center text-xs">
+                                                        <Check className="h-3 w-3 text-emerald-600 mr-2" />
+                                                        <span className="text-slate-600 capitalize">{tier.support_level || 'email'} support</span>
+                                                    </div>
+                                                </>
+                                            )}
                                         </div>
 
                                         <div className="pt-4">
