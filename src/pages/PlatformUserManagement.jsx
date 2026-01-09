@@ -128,17 +128,15 @@ export default function PlatformUserManagement() {
 
     const resetPasswordMutation = useMutation({
         mutationFn: async ({ email, password }) => {
-            // Update password directly via AuthUser entity
-            const authUsers = await base44.asServiceRole.entities.AuthUser.filter({ email });
-            if (!authUsers || authUsers.length === 0) {
-                throw new Error('User not found');
-            }
-            const user = authUsers[0];
-            await base44.asServiceRole.entities.AuthUser.update(user.id, {
-                ...user.data,
-                password_hash: password // Will be hashed by backend
+            const response = await base44.functions.invoke('platformAuthSimple', {
+                action: 'resetPassword',
+                email,
+                newPassword: password
             });
-            return { success: true };
+            if (!response.data?.success) {
+                throw new Error(response.data?.message || 'Failed to reset password');
+            }
+            return response.data;
         },
         onSuccess: () => {
             // Audit log
