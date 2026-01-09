@@ -308,6 +308,7 @@ import Reports from './pages/Reports';
 import ResourceOrchestration from './pages/ResourceOrchestration';
 import RolePermissionManagement from './pages/RolePermissionManagement';
 import SecurityManagement from './pages/SecurityManagement';
+import ServiceBillingConfiguration from './pages/ServiceBillingConfiguration';
 import ServiceProviderRegistration from './pages/ServiceProviderRegistration';
 import Settings from './pages/Settings';
 import Settlements from './pages/Settlements';
@@ -320,8 +321,8 @@ import Subscriptions from './pages/Subscriptions';
 import Support from './pages/Support';
 import SystemArchitectureDocumentation from './pages/SystemArchitectureDocumentation';
 import TaxAdvancedReports from './pages/TaxAdvancedReports';
-import TaxCalculationTester from './pages/TaxCalculationTester';
 import TaxManagement from './pages/TaxManagement';
+import TaxCalculationTester from './pages/TaxCalculationTester';
 import TaxRateUpdateManager from './pages/TaxRateUpdateManager';
 import TenantManagement from './pages/TenantManagement';
 import TenantUserManagement from './pages/TenantUserManagement';
@@ -340,7 +341,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import ServiceBillingConfiguration from './pages/ServiceBillingConfiguration';
 import __Layout from './Layout.jsx';
 
 
@@ -655,6 +655,7 @@ export const PAGES = {
     "ResourceOrchestration": ResourceOrchestration,
     "RolePermissionManagement": RolePermissionManagement,
     "SecurityManagement": SecurityManagement,
+    "ServiceBillingConfiguration": ServiceBillingConfiguration,
     "ServiceProviderRegistration": ServiceProviderRegistration,
     "Settings": Settings,
     "Settlements": Settlements,
@@ -667,8 +668,8 @@ export const PAGES = {
     "Support": Support,
     "SystemArchitectureDocumentation": SystemArchitectureDocumentation,
     "TaxAdvancedReports": TaxAdvancedReports,
-    "TaxCalculationTester": TaxCalculationTester,
     "TaxManagement": TaxManagement,
+    "TaxCalculationTester": TaxCalculationTester,
     "TaxRateUpdateManager": TaxRateUpdateManager,
     "TenantManagement": TenantManagement,
     "TenantUserManagement": TenantUserManagement,
@@ -687,7 +688,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "ServiceBillingConfiguration": ServiceBillingConfiguration,
 }
 
 export const pagesConfig = {

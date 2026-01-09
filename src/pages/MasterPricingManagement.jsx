@@ -35,6 +35,21 @@ import { toast } from 'sonner';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
+const serviceTypes = [
+    { value: 'psp_payment_processing', label: 'PSP Payment Processing' },
+    { value: 'crypto_vasp', label: 'Crypto Banking / VASP' },
+    { value: 'iso_gateway', label: 'ISO Gateway' },
+    { value: 'orchestration', label: 'Orchestration' },
+    { value: 'rwa_tokenization', label: 'RWA Tokenization' },
+    { value: 'tax_management', label: 'Tax Management' },
+    { value: 'einvoicing', label: 'E-Invoicing' },
+    { value: 'nano_marketplace', label: 'NANO Marketplace' },
+    { value: 'pci_compliance', label: 'PCI Compliance' },
+    { value: 'lei_compliance', label: 'LEI Compliance' },
+    { value: 'digital_identity', label: 'Digital Identity' },
+    { value: 'other', label: 'Other' }
+];
+
 const categories = [
     { value: 'payment_rail', label: 'Payment Rails' },
     { value: 'payout_route', label: 'Payout Routes' },
@@ -49,6 +64,16 @@ const categories = [
     { value: 'account_updater', label: 'Account Updater' },
     { value: 'instant_payment', label: 'Instant Payments' },
     { value: 'crypto_processing', label: 'Crypto Processing' },
+    { value: 'wallet_creation', label: 'Wallet Creation' },
+    { value: 'card_issuance', label: 'Card Issuance' },
+    { value: 'kyc_verification', label: 'KYC Verification' },
+    { value: 'iso_message_translation', label: 'ISO Message Translation' },
+    { value: 'routing_fee', label: 'Routing Fee' },
+    { value: 'token_deployment', label: 'Token Deployment' },
+    { value: 'custody_fee', label: 'Custody Fee' },
+    { value: 'tax_calculation', label: 'Tax Calculation' },
+    { value: 'einvoice_submission', label: 'E-Invoice Submission' },
+    { value: 'carbon_offset', label: 'Carbon Offset' },
     { value: 'data_storage', label: 'Data Storage' },
     { value: 'reporting', label: 'Reporting' },
     { value: 'webhook', label: 'Webhooks' },
@@ -68,6 +93,7 @@ export default function MasterPricingManagement() {
     const queryClient = useQueryClient();
     const { platformUser, loading } = usePlatformAuth();
     const [searchTerm, setSearchTerm] = useState('');
+    const [serviceTypeFilter, setServiceTypeFilter] = useState('all');
     const [categoryFilter, setCategoryFilter] = useState('all');
     const [statusFilter, setStatusFilter] = useState('all');
     const [showDialog, setShowDialog] = useState(false);
@@ -110,6 +136,11 @@ export default function MasterPricingManagement() {
     const { data: providerAgreements = [] } = useQuery({
         queryKey: ['provider-agreements'],
         queryFn: () => base44.entities.ProviderAgreement.list()
+    });
+
+    const { data: serviceBillingConfigs = [] } = useQuery({
+        queryKey: ['service-billing-configs'],
+        queryFn: () => base44.entities.ServiceBillingConfig.list()
     });
 
     const createMutation = useMutation({
@@ -227,9 +258,10 @@ export default function MasterPricingManagement() {
         const matchesSearch = !searchTerm || 
             item.item_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
             item.provider_name?.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesServiceType = serviceTypeFilter === 'all' || item.service_type === serviceTypeFilter;
         const matchesCategory = categoryFilter === 'all' || item.category === categoryFilter;
         const matchesStatus = statusFilter === 'all' || item.status === statusFilter;
-        return matchesSearch && matchesCategory && matchesStatus;
+        return matchesSearch && matchesServiceType && matchesCategory && matchesStatus;
     });
 
     const stats = {
@@ -462,11 +494,35 @@ export default function MasterPricingManagement() {
                         </Card>
                     )}
 
+                    {/* Service Billing Status Banner */}
+                    {serviceBillingConfigs.some(s => s.configuration_status !== 'complete') && (
+                        <Card className="mb-6 border-blue-300 bg-blue-50">
+                            <CardContent className="p-4">
+                                <div className="flex items-start gap-3">
+                                    <AlertCircle className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                                    <div className="flex-1">
+                                        <p className="font-semibold text-blue-900 mb-2">Service Pricing Configuration Required</p>
+                                        <div className="space-y-1">
+                                            {serviceBillingConfigs.filter(s => s.configuration_status !== 'complete').map(service => (
+                                                <div key={service.id} className="flex items-center justify-between text-sm">
+                                                    <span className="text-blue-800">{service.service_name}</span>
+                                                    <Badge className="bg-amber-100 text-amber-700">
+                                                        {service.configuration_status.replace(/_/g, ' ')}
+                                                    </Badge>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    )}
+
                     {/* Filters */}
                     <Card className="mb-6">
                         <CardContent className="p-4">
-                            <div className="flex gap-4">
-                                <div className="flex-1 relative">
+                            <div className="flex gap-4 flex-wrap">
+                                <div className="flex-1 min-w-[200px] relative">
                                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
                                     <Input
                                         placeholder="Search pricing items..."
@@ -475,8 +531,19 @@ export default function MasterPricingManagement() {
                                         className="pl-10"
                                     />
                                 </div>
+                                <Select value={serviceTypeFilter} onValueChange={setServiceTypeFilter}>
+                                    <SelectTrigger className="w-56">
+                                        <SelectValue placeholder="All Services" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">All Services</SelectItem>
+                                        {serviceTypes.map(st => (
+                                            <SelectItem key={st.value} value={st.value}>{st.label}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
                                 <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                                    <SelectTrigger className="w-64">
+                                    <SelectTrigger className="w-56">
                                         <SelectValue placeholder="All Categories" />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -512,6 +579,7 @@ export default function MasterPricingManagement() {
                                     <thead>
                                         <tr className="border-b border-slate-200">
                                             <th className="text-left py-3 px-4 font-semibold">Item</th>
+                                            <th className="text-left py-3 px-4 font-semibold">Service</th>
                                             <th className="text-left py-3 px-4 font-semibold">Source</th>
                                             <th className="text-left py-3 px-4 font-semibold">Category</th>
                                             <th className="text-left py-3 px-4 font-semibold">Provider</th>
@@ -530,6 +598,15 @@ export default function MasterPricingManagement() {
                                                         <p className="font-medium text-slate-900">{item.item_name}</p>
                                                         <p className="text-xs text-slate-500">{item.item_id}</p>
                                                     </div>
+                                                </td>
+                                                <td className="py-3 px-4">
+                                                    {item.service_type ? (
+                                                        <Badge className="bg-indigo-100 text-indigo-700">
+                                                            {serviceTypes.find(s => s.value === item.service_type)?.label || item.service_type}
+                                                        </Badge>
+                                                    ) : (
+                                                        <span className="text-xs text-slate-400">-</span>
+                                                    )}
                                                 </td>
                                                 <td className="py-3 px-4">
                                                     <Badge variant="outline" className={
@@ -676,6 +753,19 @@ export default function MasterPricingManagement() {
                     <div className="space-y-4">
                         <div className="grid grid-cols-2 gap-4">
                             <div>
+                                <Label>Service Type *</Label>
+                                <Select value={formData.service_type} onValueChange={(value) => setFormData({...formData, service_type: value})}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select service" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {serviceTypes.map(st => (
+                                            <SelectItem key={st.value} value={st.value}>{st.label}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div>
                                 <Label>Category *</Label>
                                 <Select value={formData.category} onValueChange={(value) => setFormData({...formData, category: value})}>
                                     <SelectTrigger>
@@ -688,14 +778,15 @@ export default function MasterPricingManagement() {
                                     </SelectContent>
                                 </Select>
                             </div>
-                            <div>
-                                <Label>Item Name *</Label>
-                                <Input
-                                    value={formData.item_name || ''}
-                                    onChange={(e) => setFormData({...formData, item_name: e.target.value})}
-                                    placeholder="e.g., Stripe Payment Processing"
-                                />
-                            </div>
+                        </div>
+
+                        <div>
+                            <Label>Item Name *</Label>
+                            <Input
+                                value={formData.item_name || ''}
+                                onChange={(e) => setFormData({...formData, item_name: e.target.value})}
+                                placeholder="e.g., Stripe Payment Processing"
+                            />
                         </div>
 
                         <div>
