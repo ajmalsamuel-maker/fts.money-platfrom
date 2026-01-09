@@ -43,7 +43,7 @@ export const SERVICE_PRICING_TEMPLATES = {
             enterprise: {
                 setup_fee: 25000,
                 monthly_hosting_fee: 4999,
-                max_merchants: -1, // unlimited
+                max_merchants: -1,
                 max_transactions_per_month: -1,
                 transaction_fee_percentage: 0.15,
                 transaction_fee_fixed: 0.03
@@ -482,7 +482,7 @@ export const SERVICE_PRICING_TEMPLATES = {
             { key: "w3c_did_support", label: "W3C DID Support", type: "boolean" },
             { key: "setup_fee", label: "Setup Fee", type: "currency" },
             { key: "monthly_subscription_fee", label: "Monthly Subscription", type: "currency" }
-        },
+        ],
         tiers: {
             starter: {
                 setup_fee: 1500,
