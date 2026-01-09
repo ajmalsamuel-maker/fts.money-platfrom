@@ -382,17 +382,48 @@ export default function PlatformPricingConfiguration() {
                         })}
                     </div>
 
-                    {/* Info Box */}
-                    <Card className="mt-8 bg-blue-50 border-blue-200">
-                        <CardContent className="pt-6">
-                            <h3 className="font-semibold text-blue-900 mb-2">About Platform Pricing</h3>
-                            <p className="text-sm text-blue-800 leading-relaxed">
-                                These pricing tiers are displayed during PSP provisioning and stored in each PSP's configuration. 
-                                Setup fees are one-time charges, while monthly hosting fees are recurring. Transaction fees are 
-                                applied per payment processed. Enterprise tier pricing is typically customized per client.
-                            </p>
-                        </CardContent>
-                    </Card>
+                    {/* Service-Specific Info */}
+                    {serviceTemplate && (
+                        <Card className="mt-8 bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
+                            <CardContent className="pt-6">
+                                <div className="flex items-start gap-3">
+                                    <Info className="h-5 w-5 text-blue-600 mt-1" />
+                                    <div>
+                                        <h3 className="font-semibold text-blue-900 mb-3">
+                                            {serviceTemplate.service_name} Pricing Model
+                                        </h3>
+                                        <div className="text-sm text-blue-800 space-y-2">
+                                            <p className="font-medium">
+                                                Pricing Model: <span className="text-blue-900">{serviceTemplate.pricing_model.replace(/_/g, ' ').toUpperCase()}</span>
+                                            </p>
+                                            <div>
+                                                <p className="font-medium mb-2">Key Pricing Parameters:</p>
+                                                <div className="grid grid-cols-2 gap-2">
+                                                    {serviceTemplate.parameters.slice(0, 6).map(param => (
+                                                        <div key={param.key} className="flex items-center gap-2 text-xs bg-white/50 px-2 py-1 rounded">
+                                                            <Check className="h-3 w-3 text-emerald-600" />
+                                                            <span>{param.label}</span>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                            <p className="pt-2 text-xs italic">
+                                                💡 Pricing templates are based on market research including competitors like {
+                                                    selectedService === 'iso_gateway' ? 'SWIFT, IXOPAY' :
+                                                    selectedService === 'orchestration' ? 'Spreedly, Primer, Gr4vy' :
+                                                    selectedService === 'rwa_tokenization' ? 'Polymath, Securitize, Tokeny' :
+                                                    selectedService === 'crypto_vasp' ? 'Striga, Fireblocks' :
+                                                    selectedService === 'tax_management' ? 'Avalara, TaxJar' :
+                                                    selectedService === 'einvoicing' ? 'Peppol Access Points, Edicom' :
+                                                    'industry standards'
+                                                }
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    )}
                 </div>
             </div>
         </div>
