@@ -181,7 +181,7 @@ const menuSections = [
                 id: 'integrations',
                 label: 'Financial Integrations',
                 items: [
-                    { labelKey: 'accounting', descKey: 'accountingDesc', path: 'XeroIntegration', icon: Zap, priority: true },
+                    { labelKey: 'accounting', descKey: 'accountingDesc', path: 'AccountingIntegrations', icon: Zap, priority: true },
                     { labelKey: 'customReports', descKey: 'customReportsDesc', path: 'FTSReporting', icon: FileText }
                 ]
             }

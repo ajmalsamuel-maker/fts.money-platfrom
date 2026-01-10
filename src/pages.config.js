@@ -351,6 +351,7 @@ import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
 import ServicePricingConfiguration from './pages/ServicePricingConfiguration';
+import AccountingIntegrations from './pages/AccountingIntegrations';
 import __Layout from './Layout.jsx';
 
 
@@ -708,6 +709,7 @@ export const PAGES = {
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
     "ServicePricingConfiguration": ServicePricingConfiguration,
+    "AccountingIntegrations": AccountingIntegrations,
 }
 
 export const pagesConfig = {
