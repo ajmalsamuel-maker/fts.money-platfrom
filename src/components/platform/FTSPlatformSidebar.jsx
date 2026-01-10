@@ -39,6 +39,22 @@ import {
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useI18n } from '@/components/i18n/I18nextProvider';
 
+// Flatten subsections for rendering
+const flattenMenuSections = (sections) => {
+    return sections.map(section => {
+        if (section.subsections) {
+            // Flatten subsections into items with group headers
+            const allItems = [];
+            section.subsections.forEach(subsection => {
+                allItems.push({ isSubsectionHeader: true, label: subsection.label, id: subsection.id });
+                allItems.push(...subsection.items);
+            });
+            return { ...section, items: allItems };
+        }
+        return section;
+    });
+};
+
 const menuSections = [
         {
             id: 'overview',
@@ -129,22 +145,45 @@ const menuSections = [
         id: 'financial',
         title: 'Financial Operations',
         defaultOpen: true,
-        items: [
-            { label: 'Service Configuration Hub', description: 'Configure all services', path: 'ServiceConfigurationHub', icon: Settings, priority: true },
-            { label: 'Service Billing Config', description: 'Configure pricing & tiers', path: 'ServiceBillingConfiguration', icon: DollarSign, priority: true },
-            { labelKey: 'serviceBilling', descKey: 'serviceBillingDesc', path: 'FTSServiceBilling', icon: FileText, priority: true },
-            { label: 'Platform Billing', description: 'Invoice PSPs & Merchants', path: 'PlatformBillingPortal', icon: DollarSign, priority: true },
-            { label: 'PSP Invoice Aggregator', description: 'View all merchant invoices', path: 'PSPInvoiceAggregator', icon: FileText, priority: true },
-            { labelKey: 'taxManagement', descKey: 'taxManagementDesc', path: 'TaxManagement', icon: FileText, priority: true },
-            { label: 'Tax Rate Updates', description: 'Auto-sync global tax rates', path: 'TaxRateUpdateManager', icon: RefreshCw, priority: true },
-            { label: 'Tax Reports & Analytics', description: 'Advanced tax reporting', path: 'TaxAdvancedReports', icon: BarChart3, priority: true },
-            { label: 'Tax Calculation Tester', description: 'Test complex tax scenarios', path: 'TaxCalculationTester', icon: Activity, priority: true },
-            { labelKey: 'eInvoicing', descKey: 'eInvoicingDesc', path: 'EInvoicingDashboard', icon: FileText, priority: true },
-            { label: 'E-Invoice Generator', description: 'Create & submit e-invoices', path: 'EInvoiceGenerator', icon: FileText, priority: true },
-            { labelKey: 'masterPricing', descKey: 'masterPricingDesc', path: 'MasterPricingManagement', icon: DollarSign },
-            { labelKey: 'platformPricing', descKey: 'platformPricingDesc', path: 'PlatformPricingConfiguration', icon: DollarSign },
-            { labelKey: 'customReports', descKey: 'customReportsDesc', path: 'FTSReporting', icon: FileText },
-            { labelKey: 'accounting', descKey: 'accountingDesc', path: 'XeroIntegration', icon: Zap }
+        subsections: [
+            {
+                id: 'pricing-config',
+                label: 'Pricing & Configuration',
+                items: [
+                    { label: 'Service Configuration Hub', description: 'Configure all services', path: 'ServiceConfigurationHub', icon: Settings, priority: true },
+                    { labelKey: 'masterPricing', descKey: 'masterPricingDesc', path: 'MasterPricingManagement', icon: DollarSign, priority: true },
+                    { labelKey: 'platformPricing', descKey: 'platformPricingDesc', path: 'PlatformPricingConfiguration', icon: DollarSign, priority: true }
+                ]
+            },
+            {
+                id: 'billing-invoicing',
+                label: 'Billing & Invoicing',
+                items: [
+                    { label: 'Platform Billing', description: 'Invoice PSPs & Merchants', path: 'PlatformBillingPortal', icon: DollarSign, priority: true },
+                    { label: 'PSP Invoice Aggregator', description: 'View all merchant invoices', path: 'PSPInvoiceAggregator', icon: FileText, priority: true },
+                    { labelKey: 'serviceBilling', descKey: 'serviceBillingDesc', path: 'FTSServiceBilling', icon: FileText }
+                ]
+            },
+            {
+                id: 'tax-compliance',
+                label: 'Tax & Compliance Operations',
+                items: [
+                    { labelKey: 'taxManagement', descKey: 'taxManagementDesc', path: 'TaxManagement', icon: FileText, priority: true },
+                    { label: 'Tax Rate Updates', description: 'Auto-sync global tax rates', path: 'TaxRateUpdateManager', icon: RefreshCw, priority: true },
+                    { labelKey: 'eInvoicing', descKey: 'eInvoicingDesc', path: 'EInvoicingDashboard', icon: FileText, priority: true },
+                    { label: 'E-Invoice Generator', description: 'Create & submit e-invoices', path: 'EInvoiceGenerator', icon: FileText, priority: true },
+                    { label: 'Tax Reports & Analytics', description: 'Advanced tax reporting', path: 'TaxAdvancedReports', icon: BarChart3 },
+                    { label: 'Tax Calculation Tester', description: 'Test complex tax scenarios', path: 'TaxCalculationTester', icon: Activity }
+                ]
+            },
+            {
+                id: 'integrations',
+                label: 'Financial Integrations',
+                items: [
+                    { labelKey: 'accounting', descKey: 'accountingDesc', path: 'XeroIntegration', icon: Zap, priority: true },
+                    { labelKey: 'customReports', descKey: 'customReportsDesc', path: 'FTSReporting', icon: FileText }
+                ]
+            }
         ]
     },
     {
@@ -227,6 +266,8 @@ const menuSections = [
     }
 ];
 
+const processedMenuSections = flattenMenuSections(menuSections);
+
 export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, isSuperAdmin }) {
     const { t } = useI18n();
     
@@ -291,7 +332,7 @@ export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, i
             {/* Menu */}
             <nav className="flex-1 overflow-y-auto p-3">
                 <div className="space-y-4">
-                    {menuSections.map((section) => {
+                    {processedMenuSections.map((section) => {
                         const isOpen = openSections.includes(section.id);
                         const hasCurrentPage = section.items.some(item => item.path === currentPage);
 
@@ -314,10 +355,21 @@ export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, i
                                         {isOpen ? '▼' : '▶'}
                                     </span>
                                 </button>
-                                
+
                                 {isOpen && (
                                     <div className="space-y-1 mt-1">
-                                        {section.items.filter(item => !item.superAdminOnly || isSuperAdmin).map((item) => {
+                                        {section.items.filter(item => !item.superAdminOnly || isSuperAdmin).map((item, idx) => {
+                                            // Render subsection header
+                                            if (item.isSubsectionHeader) {
+                                                return (
+                                                    <div key={item.id} className={cn("px-2 py-1.5", idx > 0 && "mt-3")}>
+                                                        <h4 className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">
+                                                            {item.label}
+                                                        </h4>
+                                                    </div>
+                                                );
+                                            }
+
                                             const Icon = item.icon;
                                             const isActive = currentPage === item.path;
                                             return (
