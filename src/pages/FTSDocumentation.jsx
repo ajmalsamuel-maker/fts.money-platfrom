@@ -53,6 +53,7 @@ import OperationalRunbooksDoc from '@/components/docs/OperationalRunbooksDoc';
 import UserJourneyMapsDoc from '@/components/docs/UserJourneyMapsDoc';
 import TroubleshootingGuide from '@/components/docs/TroubleshootingGuide';
 import MigrationGuidesDoc from '@/components/docs/MigrationGuidesDoc';
+import FTSBusinessPlan from '@/components/docs/FTSBusinessPlan';
 import MermaidDiagram from '@/components/docs/MermaidDiagram';
 import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 import ExportDialog from '@/components/docs/ExportDialog';
@@ -423,6 +424,13 @@ export default function FTSDocumentation() {
             id: 'advanced',
             title: '🔧 Advanced Topics',
             documents: [
+                {
+                    id: 'business-plan',
+                    title: 'FTS.Money Business Plan',
+                    icon: FileText,
+                    content: FTSBusinessPlan,
+                    description: 'Comprehensive business plan with SWOT, market analysis, GTM strategy, 5-year projections, budget & headcount'
+                },
                 {
                     id: 'verticals',
                     title: 'Vertical Solutions',
