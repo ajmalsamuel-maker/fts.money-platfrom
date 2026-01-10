@@ -34,7 +34,8 @@ import {
     Brain,
     Leaf,
     Trophy,
-    RefreshCw
+    RefreshCw,
+    Rocket
 } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useI18n } from '@/components/i18n/I18nextProvider';
@@ -112,6 +113,7 @@ const menuSections = [
         title: 'Services & Marketplace',
         defaultOpen: true,
         items: [
+            { label: 'Service Publication Manager', description: 'Go-to-Market rollout control', path: 'ServicePublicationManager', icon: Rocket, priority: true },
             { labelKey: 'serviceCatalog', descKey: 'serviceCatalogDesc', path: 'FTSServiceManager', icon: Package, priority: true },
             { label: 'Payment Providers', description: 'Provider pool', path: 'PaymentProviderManagement', icon: Database, priority: true },
             { labelKey: 'globalStandards', descKey: 'globalStandardsDesc', path: 'GlobalStandardsRegistry', icon: Globe, priority: true },

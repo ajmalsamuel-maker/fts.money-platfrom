@@ -9,6 +9,7 @@ import APIKeys from './pages/APIKeys';
 import APILogs from './pages/APILogs';
 import APMOnboarding from './pages/APMOnboarding';
 import AccountUpdater from './pages/AccountUpdater';
+import AccountingIntegrations from './pages/AccountingIntegrations';
 import AcquirerOnboarding from './pages/AcquirerOnboarding';
 import AdvancedReports from './pages/AdvancedReports';
 import Analytics from './pages/Analytics';
@@ -107,8 +108,8 @@ import FTSComplianceTesting from './pages/FTSComplianceTesting';
 import FTSDocumentation from './pages/FTSDocumentation';
 import FTSDomainManagement from './pages/FTSDomainManagement';
 import FTSFeeTemplates from './pages/FTSFeeTemplates';
-import FTSMoneyPlatform from './pages/FTSMoneyPlatform';
 import FTSFinancialRegistries from './pages/FTSFinancialRegistries';
+import FTSMoneyPlatform from './pages/FTSMoneyPlatform';
 import FTSPayoutRoutes from './pages/FTSPayoutRoutes';
 import FTSProductEcosystemReport from './pages/FTSProductEcosystemReport';
 import FTSProvisioningQueue from './pages/FTSProvisioningQueue';
@@ -315,6 +316,7 @@ import RolePermissionManagement from './pages/RolePermissionManagement';
 import SecurityManagement from './pages/SecurityManagement';
 import ServiceBillingConfiguration from './pages/ServiceBillingConfiguration';
 import ServiceConfigurationHub from './pages/ServiceConfigurationHub';
+import ServicePricingConfiguration from './pages/ServicePricingConfiguration';
 import ServiceProviderRegistration from './pages/ServiceProviderRegistration';
 import Settings from './pages/Settings';
 import Settlements from './pages/Settlements';
@@ -350,8 +352,7 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import ServicePricingConfiguration from './pages/ServicePricingConfiguration';
-import AccountingIntegrations from './pages/AccountingIntegrations';
+import ServicePublicationManager from './pages/ServicePublicationManager';
 import __Layout from './Layout.jsx';
 
 
@@ -367,6 +368,7 @@ export const PAGES = {
     "APILogs": APILogs,
     "APMOnboarding": APMOnboarding,
     "AccountUpdater": AccountUpdater,
+    "AccountingIntegrations": AccountingIntegrations,
     "AcquirerOnboarding": AcquirerOnboarding,
     "AdvancedReports": AdvancedReports,
     "Analytics": Analytics,
@@ -465,8 +467,8 @@ export const PAGES = {
     "FTSDocumentation": FTSDocumentation,
     "FTSDomainManagement": FTSDomainManagement,
     "FTSFeeTemplates": FTSFeeTemplates,
-    "FTSMoneyPlatform": FTSMoneyPlatform,
     "FTSFinancialRegistries": FTSFinancialRegistries,
+    "FTSMoneyPlatform": FTSMoneyPlatform,
     "FTSPayoutRoutes": FTSPayoutRoutes,
     "FTSProductEcosystemReport": FTSProductEcosystemReport,
     "FTSProvisioningQueue": FTSProvisioningQueue,
@@ -673,6 +675,7 @@ export const PAGES = {
     "SecurityManagement": SecurityManagement,
     "ServiceBillingConfiguration": ServiceBillingConfiguration,
     "ServiceConfigurationHub": ServiceConfigurationHub,
+    "ServicePricingConfiguration": ServicePricingConfiguration,
     "ServiceProviderRegistration": ServiceProviderRegistration,
     "Settings": Settings,
     "Settlements": Settlements,
@@ -708,8 +711,7 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "ServicePricingConfiguration": ServicePricingConfiguration,
-    "AccountingIntegrations": AccountingIntegrations,
+    "ServicePublicationManager": ServicePublicationManager,
 }
 
 export const pagesConfig = {
