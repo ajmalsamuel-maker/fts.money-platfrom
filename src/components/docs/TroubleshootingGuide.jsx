@@ -220,4 +220,4 @@ flowchart TD
 © 2026 FTS.Money. All rights reserved.
 `;
 
-export default UserJourneyMapsDoc;
+export default TroubleshootingGuide;
