@@ -152,7 +152,8 @@ const menuSections = [
                 items: [
                     { label: 'Service Configuration Hub', description: 'Configure all services', path: 'ServiceConfigurationHub', icon: Settings, priority: true },
                     { labelKey: 'masterPricing', descKey: 'masterPricingDesc', path: 'MasterPricingManagement', icon: DollarSign, priority: true },
-                    { labelKey: 'platformPricing', descKey: 'platformPricingDesc', path: 'PlatformPricingConfiguration', icon: DollarSign, priority: true }
+                    { labelKey: 'platformPricing', descKey: 'platformPricingDesc', path: 'PlatformPricingConfiguration', icon: DollarSign, priority: true },
+                    { label: 'Service Pricing Config', description: 'Tier pricing & FX spreads', path: 'ServicePricingConfiguration', icon: DollarSign, priority: true }
                 ]
             },
             {
@@ -161,8 +162,7 @@ const menuSections = [
                 items: [
                     { label: 'Unified Billing Dashboard', description: 'Real-time billing overview', path: 'UnifiedBillingDashboard', icon: Activity, priority: true },
                     { label: 'Usage Metering Engine', description: 'Track usage across services', path: 'UsageMeteringEngine', icon: Zap, priority: true },
-                    { label: 'Invoice Generation Center', description: 'Generate multi-service invoices', path: 'InvoiceGenerationCenter', icon: FileText, priority: true },
-                    { label: 'Service Pricing Config', description: 'Configure pricing tiers', path: 'ServicePricingConfiguration', icon: DollarSign, priority: true }
+                    { label: 'Invoice Generation Center', description: 'Generate multi-service invoices', path: 'InvoiceGenerationCenter', icon: FileText, priority: true }
                 ]
             },
             {
