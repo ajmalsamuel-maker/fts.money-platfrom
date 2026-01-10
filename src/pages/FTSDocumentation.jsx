@@ -18,7 +18,7 @@ import ProductEcosystemDoc from '@/components/docs/ProductEcosystemDoc';
 import VerticalSolutionsDoc from '@/components/docs/VerticalSolutionsDoc';
 import { RWATechnicalSpec } from '@/components/docs/RWATechnicalSpec';
 import CryptoBankingDoc from '@/components/docs/CryptoBankingDoc';
-import { RBACSystemDoc } from '@/components/docs/RBACSystemDoc';
+
 import { MerchantPortalDoc } from '@/components/docs/MerchantPortalDoc';
 import { VirtualTerminalDoc } from '@/components/docs/VirtualTerminalDoc';
 import VATTaxManagementDoc from '@/components/docs/VATTaxManagementDoc';
@@ -125,13 +125,7 @@ export default function FTSDocumentation() {
             content: RWATechnicalSpec,
             description: 'Real World Assets tokenization platform - complete technical specifications'
         },
-        {
-            id: 'rbac-system',
-            title: 'RBAC & Access Control',
-            icon: Shield,
-            content: RBACSystemDoc,
-            description: 'Role-Based Access Control system - multi-user permissions across all services'
-        },
+
         {
             id: 'merchant-portal',
             title: 'Merchant Portal',
