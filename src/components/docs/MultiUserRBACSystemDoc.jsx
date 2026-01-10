@@ -157,14 +157,14 @@ graph TB
 
 ### Permission Naming Convention
 
-**Format:** \`<resource>:<action>\`
+**Format:** resource:action
 
 **Examples:**
-- \`customer:create\` - Can create new customers
-- \`transaction:read\` - Can view transactions
-- \`api_key:delete\` - Can delete API keys
-- \`user:manage\` - Can manage user accounts
-- \`billing:update\` - Can modify billing settings
+- customer:create - Can create new customers
+- transaction:read - Can view transactions
+- api_key:delete - Can delete API keys
+- user:manage - Can manage user accounts
+- billing:update - Can modify billing settings
 
 ---
 
@@ -941,7 +941,8 @@ Deno.serve(async (req) => {
   const permissions = getRolePermissions(userRole);
   
   // Check permission for this action
-  if (!permissions.includes('connection:create')) {
+  const requiredPermission = 'connection:create';
+  if (!permissions.includes(requiredPermission)) {
     return Response.json({ 
       error: 'Forbidden: connection:create permission required' 
     }, { status: 403 });
