@@ -63,14 +63,390 @@ export default function FTSDocumentation() {
     const [activeTab, setActiveTab] = useState('overview');
     const [exportDialogOpen, setExportDialogOpen] = useState(false);
 
-    const documents = [
+    const documentCategories = [
         {
-            id: 'overview',
-            title: 'FTS.Money Platform Overview',
-            icon: BookOpen,
-            content: FTSOverviewDoc,
-            description: 'Complete platform architecture, market positioning, and roadmap'
+            id: 'getting-started',
+            title: '🚀 Getting Started',
+            documents: [
+                {
+                    id: 'overview',
+                    title: 'Platform Overview',
+                    icon: BookOpen,
+                    content: FTSOverviewDoc,
+                    description: 'Complete platform architecture, market positioning, and roadmap'
+                },
+                {
+                    id: 'architecture',
+                    title: 'Platform Architecture',
+                    icon: Code,
+                    content: ArchitectureDoc,
+                    description: 'Technical infrastructure, system design, and security architecture'
+                },
+                {
+                    id: 'products',
+                    title: 'Product Ecosystem',
+                    icon: FileText,
+                    content: ProductEcosystemDoc,
+                    description: 'Complete product portfolio, revenue models, and market analysis'
+                },
+                {
+                    id: 'auth-architecture',
+                    title: 'Authentication Architecture',
+                    icon: Lock,
+                    content: AuthenticationArchitectureDoc,
+                    description: 'Multi-portal auth systems, session management, password security, vLEI roadmap'
+                }
+            ]
         },
+        {
+            id: 'portal-guides',
+            title: '🏛️ Portal Guides',
+            documents: [
+                {
+                    id: 'control-panel',
+                    title: 'FTS Control Panel',
+                    icon: FileText,
+                    content: FTSControlPanelDoc,
+                    description: 'Platform administration and global infrastructure management'
+                },
+                {
+                    id: 'psp-portal',
+                    title: 'PSP Portal',
+                    icon: FileText,
+                    content: PSPPortalDoc,
+                    description: 'Payment Service Provider operations and management'
+                },
+                {
+                    id: 'community',
+                    title: 'Community Portal',
+                    icon: FileText,
+                    content: CommunityPortalDoc,
+                    description: 'Self-service payment infrastructure marketplace'
+                },
+                {
+                    id: 'merchant-portal',
+                    title: 'Merchant Portal',
+                    icon: FileText,
+                    content: MerchantPortalDoc,
+                    description: 'Self-service merchant portal - transactions, settlements, disputes, and analytics'
+                },
+                {
+                    id: 'virtual-terminal',
+                    title: 'Virtual Payment Terminal',
+                    icon: Code,
+                    content: VirtualTerminalDoc,
+                    description: 'Web-based payment terminal - MOTO, recurring, and card-not-present processing'
+                },
+                {
+                    id: 'platform-portals',
+                    title: 'All Portals Overview',
+                    icon: BookOpen,
+                    content: PlatformPortalsGuide,
+                    description: 'Complete guide to all FTS.Money portals - URLs, pages, features, and workflows'
+                }
+            ]
+        },
+        {
+            id: 'core-services',
+            title: '⚡ Core Services',
+            documents: [
+                {
+                    id: 'iso-gateway',
+                    title: 'ISO Gateway Service',
+                    icon: Code,
+                    content: ISOGatewayDoc,
+                    description: 'Message translation for ISO 8583, ISO 20022, and SWIFT MT'
+                },
+                {
+                    id: 'iso-gateway-portal',
+                    title: 'ISO Gateway Portal',
+                    icon: Code,
+                    content: ISOGatewayPortalGuide,
+                    description: 'Complete customer portal walkthrough - connection setup, message monitoring, routing rules'
+                },
+                {
+                    id: 'orchestration',
+                    title: 'Orchestration Service',
+                    icon: GitBranch,
+                    content: OrchestrationDoc,
+                    description: 'Intelligent payment routing and optimization'
+                },
+                {
+                    id: 'orchestration-portal',
+                    title: 'Orchestration Portal',
+                    icon: GitBranch,
+                    content: OrchestrationPortalGuide,
+                    description: 'Routing strategy configuration, processor management, performance analytics'
+                },
+                {
+                    id: 'crypto-banking',
+                    title: 'Crypto Banking Service',
+                    icon: Wallet,
+                    content: CryptoBankingDoc,
+                    description: 'Enterprise crypto banking infrastructure - wallets, IBANs, cards, compliance'
+                },
+                {
+                    id: 'crypto-gateway-portal',
+                    title: 'Crypto Gateway Portal',
+                    icon: Wallet,
+                    content: CryptoGatewayPortalGuide,
+                    description: 'Wallet/IBAN management, card issuance, KYC workflows, compliance monitoring'
+                },
+                {
+                    id: 'vasp-platform',
+                    title: 'VASP Platform',
+                    icon: Wallet,
+                    content: VASPPlatformDoc,
+                    description: 'Complete VASP infrastructure - wallets, IBANs, cards, compliance'
+                }
+            ]
+        },
+        {
+            id: 'rwa-platform',
+            title: '🏢 RWA Tokenization',
+            documents: [
+                {
+                    id: 'rwa-technical',
+                    title: 'RWA Technical Spec',
+                    icon: Code,
+                    content: RWATechnicalSpec,
+                    description: 'Real World Assets tokenization platform - complete technical specifications'
+                },
+                {
+                    id: 'rwa-provider-portal',
+                    title: 'RWA Provider Portal',
+                    icon: BookOpen,
+                    content: RWAProviderPortalGuide,
+                    description: 'White-label platform management, issuer onboarding, asset portfolio'
+                },
+                {
+                    id: 'rwa-issuer-portal',
+                    title: 'RWA Issuer Portal',
+                    icon: FileText,
+                    content: RWAIssuerPortalGuide,
+                    description: 'Asset tokenization wizard, investor management, dividend distribution'
+                },
+                {
+                    id: 'rwa-investor-portal',
+                    title: 'RWA Investor Portal',
+                    icon: Wallet,
+                    content: RWAInvestorPortalGuide,
+                    description: 'Asset marketplace, portfolio tracking, secondary trading, dividend history'
+                }
+            ]
+        },
+        {
+            id: 'financial-ops',
+            title: '💰 Financial Operations',
+            documents: [
+                {
+                    id: 'billing-invoicing',
+                    title: 'Billing & Invoicing System',
+                    icon: FileText,
+                    content: BillingInvoicingSystemDoc,
+                    description: 'Unified billing, usage metering, invoice generation, payment processing'
+                },
+                {
+                    id: 'vat-tax',
+                    title: 'VAT & Tax Management',
+                    icon: FileText,
+                    content: VATTaxManagementDoc,
+                    description: 'Global tax compliance, automated VAT calculation, and tax reporting'
+                },
+                {
+                    id: 'tax-management-complete',
+                    title: 'Tax Management Complete',
+                    icon: FileText,
+                    content: TaxManagementCompleteGuide,
+                    description: 'Global VAT/GST compliance, automated rate updates, real-time calculation'
+                },
+                {
+                    id: 'einvoicing',
+                    title: 'E-Invoicing System',
+                    icon: FileText,
+                    content: EInvoicingSystemDoc,
+                    description: 'Multi-standard electronic invoicing - Peppol, ZATCA, FatturaPA, CFDI'
+                },
+                {
+                    id: 'einvoicing-operations',
+                    title: 'E-Invoicing Operations',
+                    icon: FileText,
+                    content: EInvoicingOperationsGuide,
+                    description: 'Multi-standard invoicing, government submission, country workflows'
+                },
+                {
+                    id: 'invoicing-system',
+                    title: 'Global Invoicing & Tax',
+                    icon: FileText,
+                    content: InvoicingSystemDoc,
+                    description: 'Multi-standard e-invoicing and global VAT compliance'
+                }
+            ]
+        },
+        {
+            id: 'compliance-security',
+            title: '🛡️ Compliance & Security',
+            documents: [
+                {
+                    id: 'pci-dss-compliance',
+                    title: 'PCI DSS Level 1',
+                    icon: Shield,
+                    content: PCIDSSComplianceDoc,
+                    description: 'Comprehensive PCI DSS compliance management - continuous monitoring, predictive analytics'
+                },
+                {
+                    id: 'pci-advanced',
+                    title: 'PCI DSS Advanced Suite',
+                    icon: Shield,
+                    content: PCIAdvancedFeaturesDoc,
+                    description: 'AI-powered continuous monitoring, predictive analytics, workflow automation'
+                },
+                {
+                    id: 'qsa-portal-guide',
+                    title: 'QSA Portal Guide',
+                    icon: Shield,
+                    content: QSAPortalGuide,
+                    description: 'PCI DSS audit platform, evidence review, compliance scoring'
+                },
+                {
+                    id: 'digital-identity',
+                    title: 'Digital Identity & VCs',
+                    icon: Wallet,
+                    content: DigitalIdentityDoc,
+                    description: 'W3C Verifiable Credentials and DIDs - passwordless authentication'
+                },
+                {
+                    id: 'rbac-system',
+                    title: 'Multi-User RBAC System',
+                    icon: Shield,
+                    content: MultiUserRBACSystemDoc,
+                    description: 'Six-tier role hierarchy, permission matrices, user management'
+                }
+            ]
+        },
+        {
+            id: 'sustainability',
+            title: '🌱 Sustainability',
+            documents: [
+                {
+                    id: 'fix-score',
+                    title: 'FIX Score System',
+                    icon: Shield,
+                    content: FIXScoreSystemDoc,
+                    description: 'FTS Index merchant scoring algorithm - calculation methodology'
+                },
+                {
+                    id: 'nano-platform',
+                    title: 'NANO Platform',
+                    icon: FileText,
+                    content: NANOSustainabilityDoc,
+                    description: 'Complete NANO ecosystem - tasks, tokens, staking, NFTs, DAO governance'
+                },
+                {
+                    id: 'nano-sustainability',
+                    title: 'NANO Integration',
+                    icon: FileText,
+                    content: NanoSustainabilityIntegration,
+                    description: 'Strategic integration of gamified sustainability platform'
+                }
+            ]
+        },
+        {
+            id: 'developer-resources',
+            title: '👨‍💻 Developer Resources',
+            documents: [
+                {
+                    id: 'api-reference',
+                    title: 'API Reference',
+                    icon: Code,
+                    content: APIReferenceGuide,
+                    description: 'Complete REST API documentation - endpoints, authentication, examples'
+                },
+                {
+                    id: 'integration-patterns',
+                    title: 'Integration Patterns',
+                    icon: GitBranch,
+                    content: IntegrationPatternsDoc,
+                    description: 'Common integration scenarios, best practices, code examples'
+                },
+                {
+                    id: 'migration-guides',
+                    title: 'Migration Guides',
+                    icon: GitBranch,
+                    content: MigrationGuidesDoc,
+                    description: 'Migrate from Stripe, PayPal, legacy systems - zero-downtime strategies'
+                },
+                {
+                    id: 'troubleshooting',
+                    title: 'Troubleshooting',
+                    icon: Shield,
+                    content: TroubleshootingGuide,
+                    description: 'Common issues and solutions across all services'
+                }
+            ]
+        },
+        {
+            id: 'operations',
+            title: '⚙️ Operations',
+            documents: [
+                {
+                    id: 'operational-runbooks',
+                    title: 'Operational Runbooks',
+                    icon: Shield,
+                    content: OperationalRunbooksDoc,
+                    description: 'Daily ops checklists, incident response, escalation procedures'
+                },
+                {
+                    id: 'user-journeys',
+                    title: 'User Journey Maps',
+                    icon: BookOpen,
+                    content: UserJourneyMapsDoc,
+                    description: 'End-to-end workflows for PSP operators, merchants, ISO customers'
+                },
+                {
+                    id: 'service-publication',
+                    title: 'Service Publication',
+                    icon: GitBranch,
+                    content: ServicePublicationDoc,
+                    description: 'Phased rollout, soft launch, beta programs, version control'
+                },
+                {
+                    id: 'service-interoperability',
+                    title: 'Service Interoperability',
+                    icon: GitBranch,
+                    content: ServiceInteroperabilityDoc,
+                    description: 'How FTS services integrate to create unique composite solutions'
+                }
+            ]
+        },
+        {
+            id: 'advanced',
+            title: '🔧 Advanced Topics',
+            documents: [
+                {
+                    id: 'verticals',
+                    title: 'Vertical Solutions',
+                    icon: BookOpen,
+                    content: VerticalSolutionsDoc,
+                    description: 'Industry-specific payment solutions and implementations'
+                },
+                {
+                    id: 'documentation-gaps',
+                    title: 'Documentation Gap Analysis',
+                    icon: FileText,
+                    content: DocumentationGapAnalysis,
+                    description: 'Complete platform audit, identified gaps, and update roadmap'
+                }
+            ]
+        }
+    ];
+
+    // Flatten for legacy support
+    const documents = documentCategories.flatMap(cat => 
+        cat.documents.map(doc => ({ ...doc, category: cat.id }))
+    );
+
+    const [selectedCategory, setSelectedCategory] = useState('getting-started');
         {
             id: 'control-panel',
             title: 'FTS Control Panel',
@@ -575,23 +951,62 @@ export default function FTSDocumentation() {
                         <p className="text-slate-600">{t('platform:subMenuItems.documentationHubDesc')}</p>
                     </div>
 
-                    {/* Document Selector */}
-                    <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-                        <TabsList className="bg-white p-2 rounded-lg shadow h-auto flex-wrap justify-start">
-                            {documents.map((doc) => {
-                                const Icon = doc.icon;
-                                return (
-                                    <TabsTrigger
-                                        key={doc.id}
-                                        value={doc.id}
-                                        className="flex items-center gap-2"
-                                    >
-                                        <Icon className="h-4 w-4" />
-                                        {doc.title}
-                                    </TabsTrigger>
-                                );
-                            })}
-                        </TabsList>
+                    {/* Category Navigation */}
+                    <div className="grid grid-cols-12 gap-6">
+                        {/* Category Sidebar */}
+                        <div className="col-span-3 print-hide">
+                            <Card className="sticky top-6">
+                                <CardHeader>
+                                    <CardTitle className="text-lg">Documentation</CardTitle>
+                                </CardHeader>
+                                <CardContent className="p-0">
+                                    <nav className="space-y-1">
+                                        {documentCategories.map((category) => (
+                                            <div key={category.id}>
+                                                <button
+                                                    onClick={() => {
+                                                        setSelectedCategory(category.id);
+                                                        setActiveTab(category.documents[0].id);
+                                                    }}
+                                                    className={`w-full text-left px-4 py-2 text-sm font-medium transition-colors ${
+                                                        selectedCategory === category.id
+                                                            ? 'bg-blue-50 text-blue-700 border-l-2 border-blue-600'
+                                                            : 'text-slate-600 hover:bg-slate-50'
+                                                    }`}
+                                                >
+                                                    {category.title}
+                                                </button>
+                                                {selectedCategory === category.id && (
+                                                    <div className="ml-4 mt-1 space-y-1">
+                                                        {category.documents.map((doc) => {
+                                                            const Icon = doc.icon;
+                                                            return (
+                                                                <button
+                                                                    key={doc.id}
+                                                                    onClick={() => setActiveTab(doc.id)}
+                                                                    className={`w-full text-left px-3 py-2 text-sm flex items-center gap-2 transition-colors ${
+                                                                        activeTab === doc.id
+                                                                            ? 'bg-blue-50 text-blue-700 font-medium'
+                                                                            : 'text-slate-600 hover:bg-slate-50'
+                                                                    }`}
+                                                                >
+                                                                    <Icon className="h-3 w-3 flex-shrink-0" />
+                                                                    <span className="truncate">{doc.title}</span>
+                                                                </button>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </nav>
+                                </CardContent>
+                            </Card>
+                        </div>
+
+                        {/* Document Content */}
+                        <div className="col-span-9">
+                            <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
 
                         {documents.map((doc) => (
                             <TabsContent key={doc.id} value={doc.id}>
@@ -787,7 +1202,9 @@ export default function FTSDocumentation() {
                                 </Card>
                             </TabsContent>
                         ))}
-                    </Tabs>
+                            </Tabs>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
