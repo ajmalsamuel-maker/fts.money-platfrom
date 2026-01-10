@@ -162,9 +162,8 @@ const menuSections = [
                     { label: 'Unified Billing Dashboard', description: 'Real-time billing overview', path: 'UnifiedBillingDashboard', icon: Activity, priority: true },
                     { label: 'Usage Metering Engine', description: 'Track usage across services', path: 'UsageMeteringEngine', icon: Zap, priority: true },
                     { label: 'Invoice Generation Center', description: 'Generate multi-service invoices', path: 'InvoiceGenerationCenter', icon: FileText, priority: true },
-                    { label: 'Platform Billing', description: 'Legacy PSP/Merchant billing', path: 'PlatformBillingPortal', icon: DollarSign },
-                    { label: 'PSP Invoice Aggregator', description: 'View all merchant invoices', path: 'PSPInvoiceAggregator', icon: FileText },
-                    { labelKey: 'serviceBilling', descKey: 'serviceBillingDesc', path: 'FTSServiceBilling', icon: FileText }
+                    { label: 'Service Pricing Config', description: 'Configure pricing tiers', path: 'ServicePricingConfiguration', icon: DollarSign, priority: true },
+                    { label: 'PSP Invoice Aggregator', description: 'View all merchant invoices', path: 'PSPInvoiceAggregator', icon: FileText }
                 ]
             },
             {

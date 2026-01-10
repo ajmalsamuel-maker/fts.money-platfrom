@@ -277,7 +277,6 @@ import Payouts from './pages/Payouts';
 import PlatformAdminLogin from './pages/PlatformAdminLogin';
 import PlatformAdminRegister from './pages/PlatformAdminRegister';
 import PlatformAuditLogs from './pages/PlatformAuditLogs';
-import PlatformBillingPortal from './pages/PlatformBillingPortal';
 import PlatformFIXManagement from './pages/PlatformFIXManagement';
 import PlatformLanguageManagement from './pages/PlatformLanguageManagement';
 import PlatformPricingConfiguration from './pages/PlatformPricingConfiguration';
@@ -351,6 +350,7 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
+import ServicePricingConfiguration from './pages/ServicePricingConfiguration';
 import __Layout from './Layout.jsx';
 
 
@@ -634,7 +634,6 @@ export const PAGES = {
     "PlatformAdminLogin": PlatformAdminLogin,
     "PlatformAdminRegister": PlatformAdminRegister,
     "PlatformAuditLogs": PlatformAuditLogs,
-    "PlatformBillingPortal": PlatformBillingPortal,
     "PlatformFIXManagement": PlatformFIXManagement,
     "PlatformLanguageManagement": PlatformLanguageManagement,
     "PlatformPricingConfiguration": PlatformPricingConfiguration,
@@ -708,6 +707,7 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
+    "ServicePricingConfiguration": ServicePricingConfiguration,
 }
 
 export const pagesConfig = {
