@@ -1107,7 +1107,7 @@ The categories also differ in pricing models and commission structures. Payment 
 
 ## Revenue Model
 
-### Five Revenue Streams
+### Seven Revenue Streams
 
 Our revenue model is intentionally diversified to reduce risk and maximize lifetime value. Unlike single-product companies that rely entirely on one revenue stream, we capture value at multiple points in the customer journey.
 
@@ -1175,6 +1175,51 @@ FTS revenue share (25%): $81M/year
 - Training & consulting: $2K-10K
 - Annual estimate: $2M-5M
 
+**Stream 6: Unified Billing & Metering**
+
+\`\`\`
+Billing Infrastructure Revenue:
+  Setup Fees (per customer):    $500-$2,500
+  Monthly Metering SaaS:         $299-$999/month
+  Transaction Processing:        0.1% of invoiced amount
+  
+Per-Customer Annual Value:
+  Small (100 services):          $3,600 + $120 txn fees = $3,720
+  Medium (500 services):         $7,200 + $600 txn fees = $7,800
+  Large (2,000 services):        $12,000 + $2,400 txn fees = $14,400
+  
+Target Adoption:
+  Year 1: 20 customers
+  Year 3: 100 customers
+  Year 5: 300 customers
+  
+Revenue Projection:
+  Year 1: $144K ARR
+  Year 3: $780K ARR
+  Year 5: $2.4M ARR
+\`\`\`
+
+**Stream 7: FIX Score & NANO Platform**
+
+\`\`\`
+FIX Score Revenue (Merchant Incentive Program):
+  Merchant Subscriptions:        Free (builds loyalty)
+  PSP Premium Analytics:         $500/month per PSP
+  Leaderboard Sponsorships:      $2,000/month per sponsor
+  FIX Data Licensing:            $10K-50K per partner
+  
+NANO Platform Revenue:
+  Merchant Sponsorships:         $1,000-10,000/campaign
+  Transaction Fees:              1% of NANO token trades
+  Carbon Offset Commission:      15% of offset purchases
+  Premium Features:              $99-499/month
+  
+Combined Annual Potential:
+  Year 1: $360K (30 PSPs × $12K)
+  Year 3: $2.1M (100 PSPs, 500 merchants)
+  Year 5: $6.5M (300 PSPs, 2,000 merchants)
+\`\`\`
+
 ### Total Revenue Projection
 
 **Year 1 (10 PSPs):**
@@ -1189,9 +1234,11 @@ FTS revenue share (25%): $81M/year
 - Portal products: $120K
   - Merchant Portal premium: $60K
   - Virtual Terminal add-ons: $60K
+- Billing & metering: $144K
+- FIX Score & NANO: $360K
 - Marketplace commissions: $48K
 - Revenue share: $8M
-- **Total: $9.8M**
+- **Total: $10.3M**
 
 **Year 3 (50 PSPs):**
 - Platform subscriptions: $3.2M
@@ -1205,9 +1252,11 @@ FTS revenue share (25%): $81M/year
 - Portal products: $850K
   - Merchant Portal premium: $450K
   - Virtual Terminal add-ons: $400K
+- Billing & metering: $780K
+- FIX Score & NANO: $2.1M
 - Marketplace commissions: $240K
 - Revenue share: $40M
-- **Total: $50.8M**
+- **Total: $53.7M**
 
 **Year 5 (150 PSPs):**
 - Platform subscriptions: $9.5M
@@ -1221,9 +1270,11 @@ FTS revenue share (25%): $81M/year
 - Portal products: $2.8M
   - Merchant Portal premium: $1.5M
   - Virtual Terminal add-ons: $1.3M
+- Billing & metering: $2.4M
+- FIX Score & NANO: $6.5M
 - Marketplace commissions: $720K
 - Revenue share: $120M
-- **Total: $154M**
+- **Total: $163M**
 
 ---
 

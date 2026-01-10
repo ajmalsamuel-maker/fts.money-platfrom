@@ -1,4 +1,3 @@
-
 const FTSOverviewDoc = `# FTS.Money Platform Overview
 ## Enterprise Payment Infrastructure Ecosystem
 
@@ -25,6 +24,10 @@ FTS.Money is an **Enterprise Payment Infrastructure Provider** that delivers whi
 - ✅ **RWA Platform** - Real-world asset tokenization infrastructure (treasury bills, real estate, credit)
 - ✅ **VAT/Tax Management** - Global tax compliance with automated calculation and reporting
 - ✅ **E-Invoicing System** - Multi-standard electronic invoicing (Peppol, ZATCA, FatturaPA, CFDI)
+- ✅ **Service Publication Manager** - Phased rollout control, soft launch, beta programs, version management
+- ✅ **Unified Billing System** - Multi-service invoice consolidation, usage metering, automated collections
+- ✅ **FIX Score System** - Merchant performance scoring (0-1000) with tier benefits and incentives
+- ✅ **NANO Marketplace** - Gamified sustainability platform with carbon offsets and eco-rewards
 - ✅ **Service Marketplace** - 150+ pre-integrated payment providers and compliance services
 
 ### The Problem We Solve

@@ -15,11 +15,12 @@ const ArchitectureDoc = `# FTS.Money Platform Architecture
 3. [Multi-Tenancy Model](#multi-tenancy-model)
 4. [RBAC & Access Control](#rbac-access-control)
 5. [Portal Architecture](#portal-architecture)
-6. [Technology Stack](#technology-stack)
-7. [Infrastructure Components](#infrastructure-components)
-8. [Security Architecture](#security-architecture)
-9. [Performance & Scalability](#performance--scalability)
-10. [Disaster Recovery](#disaster-recovery)
+6. [Financial Operations Architecture](#financial-operations-architecture)
+7. [Technology Stack](#technology-stack)
+8. [Infrastructure Components](#infrastructure-components)
+9. [Security Architecture](#security-architecture)
+10. [Performance & Scalability](#performance--scalability)
+11. [Disaster Recovery](#disaster-recovery)
 
 ---
 
@@ -590,6 +591,198 @@ graph TB
 | **Crypto Gateway** | Digital asset processing | 5K txn/sec | 30-60s | 99.95% |
 | **Fraud Detection** | ML-powered risk scoring | 100K req/sec | <5ms | 99.99% |
 | **Compliance** | KYB/AML/Sanctions screening | 1K checks/sec | 2-5s | 99.9% |
+
+---
+
+## Financial Operations Architecture
+
+### Unified Billing & Metering System
+
+The platform now includes comprehensive billing infrastructure that consolidates all service usage into unified invoices with automated payment processing.
+
+\`\`\`mermaid
+graph TB
+    subgraph "Usage Metering Layer"
+        M1[Transaction Meters<br/>PSP payment processing]
+        M2[ISO Gateway Meters<br/>Message translation]
+        M3[Orchestration Meters<br/>Routing decisions]
+        M4[Crypto Gateway Meters<br/>Wallet/IBAN operations]
+        M5[RWA Platform Meters<br/>Asset tokenization]
+    end
+    
+    subgraph "Billing Engine"
+        METER[UsageMeter Entity<br/>Real-time counters]
+        RULES[BillingRule Entity<br/>Pricing logic]
+        INVOICE[ConsolidatedInvoice<br/>Multi-service invoices]
+    end
+    
+    subgraph "Payment Processing"
+        PAYMENT[PaymentStatus<br/>Collection tracking]
+        STRIPE[Stripe Integration<br/>Auto-charge]
+        XERO[Xero Integration<br/>Accounting sync]
+    end
+    
+    M1 --> METER
+    M2 --> METER
+    M3 --> METER
+    M4 --> METER
+    M5 --> METER
+    
+    METER --> RULES
+    RULES --> INVOICE
+    
+    INVOICE --> PAYMENT
+    PAYMENT --> STRIPE
+    PAYMENT --> XERO
+    
+    style METER fill:#3b82f6,color:#fff
+    style INVOICE fill:#10b981,color:#fff
+    style STRIPE fill:#8b5cf6,color:#fff
+\`\`\`
+
+**Key Components:**
+
+| Component | Purpose | Update Frequency | Storage |
+|-----------|---------|------------------|---------|
+| **UsageMeter** | Track usage per customer/service | Real-time | PostgreSQL |
+| **BillingRule** | Define pricing tiers & overage | Daily sync | PostgreSQL |
+| **ConsolidatedInvoice** | Generate multi-service invoices | Monthly | PostgreSQL + S3 |
+| **PaymentStatus** | Track payment attempts & status | On payment event | PostgreSQL |
+
+### Service Publication Architecture
+
+Phased rollout system enabling controlled service launches with soft launches, beta programs, and version management.
+
+\`\`\`mermaid
+stateDiagram-v2
+    [*] --> Draft
+    Draft --> Pending_Approval: Submit for review
+    Pending_Approval --> Soft_Launch: Approve
+    Pending_Approval --> Draft: Reject
+    
+    Soft_Launch --> Published: Go live
+    Published --> Unpublished: Pause
+    Unpublished --> Published: Resume
+    Published --> Archived: Deprecate
+    
+    note right of Draft
+        - Configure service
+        - Set pricing
+        - Define features
+    end note
+    
+    note right of Soft_Launch
+        - Beta customers only
+        - Limited visibility
+        - Feedback collection
+    end note
+    
+    note right of Published
+        - Public availability
+        - Full marketing
+        - New signups open
+    end note
+\`\`\`
+
+**Service Publication Flow:**
+
+\`\`\`mermaid
+sequenceDiagram
+    participant PM as Product Manager
+    participant Portal as Publication Manager
+    participant Review as Approval Workflow
+    participant Billing as Billing System
+    participant Catalog as Service Catalog
+    
+    PM->>Portal: Create service publication
+    Portal->>Portal: Configure pricing & features
+    Portal->>Review: Submit for approval
+    
+    Review->>Review: Check pricing configured
+    Review->>Review: Verify compliance ready
+    Review->>Review: Infrastructure provisioned
+    
+    alt Approved
+        Review->>Portal: Approve publication
+        Portal->>Billing: Enable billing rules
+        Portal->>Catalog: Add to catalog (beta visibility)
+        Portal->>PM: Soft launch ready
+        
+        PM->>Portal: Go live (publish)
+        Portal->>Catalog: Public visibility
+        Portal->>Catalog: Open new signups
+    else Rejected
+        Review->>Portal: Reject with notes
+        Portal->>PM: Fix issues
+    end
+\`\`\`
+
+### FIX Score Calculation Architecture
+
+Real-time merchant scoring system running on scheduled tasks with automated tier assignment.
+
+\`\`\`mermaid
+graph TB
+    subgraph "Score Calculation Engine"
+        SCHED[Scheduled Task<br/>Daily at 2am UTC]
+        FUNC[calculateFIXScore<br/>Backend function]
+        ENTITY[FIXScore Entity<br/>Score storage]
+    end
+    
+    subgraph "Data Sources"
+        TXN[Transaction Volume<br/>Last 30 days]
+        SVC[Service Adoption<br/>Active services count]
+        ESG[ESG Performance<br/>Carbon offset, NANO]
+        COMP[Compliance Score<br/>PCI, LEI, uptime]
+    end
+    
+    subgraph "Score Components"
+        S1[Transaction Score<br/>0-300 points]
+        S2[Service Score<br/>0-250 points]
+        S3[ESG Score<br/>0-250 points]
+        S4[Compliance Score<br/>0-200 points]
+    end
+    
+    subgraph "Tier Assignment"
+        T1[Diamond: 900-1000]
+        T2[Platinum: 750-899]
+        T3[Gold: 600-749]
+        T4[Silver: 400-599]
+        T5[Bronze: 0-399]
+    end
+    
+    SCHED --> FUNC
+    
+    TXN --> S1
+    SVC --> S2
+    ESG --> S3
+    COMP --> S4
+    
+    FUNC --> S1
+    FUNC --> S2
+    FUNC --> S3
+    FUNC --> S4
+    
+    S1 --> ENTITY
+    S2 --> ENTITY
+    S3 --> ENTITY
+    S4 --> ENTITY
+    
+    ENTITY --> T1
+    ENTITY --> T2
+    ENTITY --> T3
+    ENTITY --> T4
+    ENTITY --> T5
+    
+    style FUNC fill:#8b5cf6,color:#fff
+    style ENTITY fill:#10b981,color:#fff
+\`\`\`
+
+**Performance Specs:**
+- **Calculation Frequency:** Daily at 2am UTC
+- **Processing Time:** ~15 seconds per 1,000 merchants
+- **Data Retention:** Complete history for trend analysis
+- **Tier Benefits:** Auto-applied based on score
 
 ---
 
