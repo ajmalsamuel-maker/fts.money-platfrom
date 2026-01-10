@@ -28,12 +28,21 @@ import {
     ArrowUpDown,
     Download,
     RefreshCw,
-    Menu
+    Menu,
+    FileDown,
+    BarChart3,
+    Calendar as CalendarIcon
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { toast } from 'sonner';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
+import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { format } from 'date-fns';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 const serviceTypes = [
     { value: 'psp_payment_processing', label: 'PSP Payment Processing' },
@@ -100,6 +109,9 @@ export default function MasterPricingManagement() {
     const [editingItem, setEditingItem] = useState(null);
     const [formData, setFormData] = useState({});
     const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+    const [dateRange, setDateRange] = useState({ from: null, to: null });
+    const [customerSegmentFilter, setCustomerSegmentFilter] = useState('all');
+    const [serviceLineFilter, setServiceLineFilter] = useState('all');
 
     const { data: pricingItems = [] } = useQuery({
         queryKey: ['master-pricing'],
@@ -261,7 +273,19 @@ export default function MasterPricingManagement() {
         const matchesServiceType = serviceTypeFilter === 'all' || item.service_type === serviceTypeFilter;
         const matchesCategory = categoryFilter === 'all' || item.category === categoryFilter;
         const matchesStatus = statusFilter === 'all' || item.status === statusFilter;
-        return matchesSearch && matchesServiceType && matchesCategory && matchesStatus;
+        const matchesServiceLine = serviceLineFilter === 'all' || item.service_type === serviceLineFilter;
+        
+        // Date range filtering (if applicable)
+        let matchesDateRange = true;
+        if (dateRange.from && item.created_date) {
+            const itemDate = new Date(item.created_date);
+            matchesDateRange = itemDate >= dateRange.from;
+            if (dateRange.to) {
+                matchesDateRange = matchesDateRange && itemDate <= dateRange.to;
+            }
+        }
+        
+        return matchesSearch && matchesServiceType && matchesCategory && matchesStatus && matchesServiceLine && matchesDateRange;
     });
 
     const stats = {
@@ -315,6 +339,82 @@ export default function MasterPricingManagement() {
         setEditingItem(null);
     };
 
+    const exportToPDF = () => {
+        const doc = new jsPDF();
+        
+        doc.setFontSize(18);
+        doc.text('Master Pricing Report', 14, 22);
+        doc.setFontSize(11);
+        doc.text(`Generated: ${new Date().toLocaleDateString()}`, 14, 30);
+        
+        const tableData = filteredItems.map(item => [
+            item.item_name,
+            item.service_type || '-',
+            item.provider_name || '-',
+            `${item.buy_rate_percentage || 0}%`,
+            `${item.sell_rate_percentage || 0}%`,
+            `${item.margin_percentage?.toFixed(2) || 0}%`,
+            item.status
+        ]);
+        
+        doc.autoTable({
+            startY: 35,
+            head: [['Item', 'Service', 'Provider', 'Buy Rate', 'Sell Rate', 'Margin', 'Status']],
+            body: tableData,
+            theme: 'grid',
+            styles: { fontSize: 8 }
+        });
+        
+        doc.save(`master-pricing-${new Date().toISOString().split('T')[0]}.pdf`);
+        toast.success('PDF exported successfully');
+    };
+
+    const exportToCSV = () => {
+        const headers = ['Item', 'Service Type', 'Category', 'Provider', 'Buy Rate %', 'Buy Rate Fixed', 'Sell Rate %', 'Sell Rate Fixed', 'FX Spread %', 'Margin %', 'Status'];
+        const rows = filteredItems.map(item => [
+            item.item_name,
+            item.service_type || '',
+            item.category || '',
+            item.provider_name || '',
+            item.buy_rate_percentage || '',
+            item.buy_rate_fixed || '',
+            item.sell_rate_percentage || '',
+            item.sell_rate_fixed || '',
+            item.fx_spread_percentage || '',
+            item.margin_percentage?.toFixed(2) || '',
+            item.status
+        ]);
+        
+        const csv = [headers, ...rows].map(row => row.join(',')).join('\n');
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `master-pricing-${new Date().toISOString().split('T')[0]}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+        toast.success('CSV exported successfully');
+    };
+
+    // Chart data
+    const revenueByServiceChart = Object.entries(
+        filteredItems.reduce((acc, item) => {
+            const service = item.service_type || 'Other';
+            acc[service] = (acc[service] || 0) + (item.total_revenue || 0);
+            return acc;
+        }, {})
+    ).map(([name, value]) => ({ name, value }));
+
+    const marginTrendData = filteredItems.slice(0, 10).map((item, idx) => ({
+        name: item.item_name?.substring(0, 15) + '...',
+        margin: item.margin_percentage || 0,
+        revenue: item.total_revenue || 0
+    }));
+
+    const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16'];
+
     if (loading) return null;
 
     return (
@@ -356,31 +456,17 @@ export default function MasterPricingManagement() {
                     </div>
                     <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
                         <LanguageSwitcher variant="select" showLabel={false} />
-                        <Button variant="outline" className="gap-2">
-                            <Download className="h-4 w-4" />
-                            Export to Xero
+                        <Button variant="outline" size="sm" className="gap-2" onClick={exportToCSV}>
+                            <FileDown className="h-4 w-4" />
+                            CSV
                         </Button>
-                        <Button variant="outline" className="gap-2">
-                            <RefreshCw className="h-4 w-4" />
-                            Reconcile
+                        <Button variant="outline" size="sm" className="gap-2" onClick={exportToPDF}>
+                            <FileDown className="h-4 w-4" />
+                            PDF
                         </Button>
-                        <Button 
-                            onClick={async () => {
-                                const result = await base44.functions.invoke('migrateFeeTemplatesToMasterPricing');
-                                if (result.data.success) {
-                                    queryClient.invalidateQueries(['master-pricing']);
-                                    toast.success(`Migrated ${result.data.migrated} fee templates`);
-                                }
-                            }}
-                            variant="outline"
-                            className="gap-2"
-                        >
-                            <RefreshCw className="h-4 w-4" />
-                            Migrate Fee Templates
-                        </Button>
-                        <Button onClick={() => { resetForm(); setShowDialog(true); }} className="gap-2 bg-blue-600">
+                        <Button onClick={() => { resetForm(); setShowDialog(true); }} className="gap-2 bg-blue-600" size="sm">
                             <Plus className="h-4 w-4" />
-                            New Pricing Item
+                            New
                         </Button>
                     </div>
                 </header>
@@ -518,7 +604,7 @@ export default function MasterPricingManagement() {
                         </Card>
                     )}
 
-                    {/* Filters */}
+                    {/* Enhanced Filters */}
                     <Card className="mb-6">
                         <CardContent className="p-4">
                             <div className="flex gap-4 flex-wrap">
@@ -531,20 +617,40 @@ export default function MasterPricingManagement() {
                                         className="pl-10"
                                     />
                                 </div>
-                                <Select value={serviceTypeFilter} onValueChange={setServiceTypeFilter}>
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                        <Button variant="outline" className="w-56 justify-start text-left font-normal">
+                                            <CalendarIcon className="mr-2 h-4 w-4" />
+                                            {dateRange.from ? (
+                                                dateRange.to ? (
+                                                    `${format(dateRange.from, 'MMM d')} - ${format(dateRange.to, 'MMM d')}`
+                                                ) : format(dateRange.from, 'MMM d, yyyy')
+                                            ) : 'Date Range'}
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-auto p-0" align="start">
+                                        <Calendar
+                                            mode="range"
+                                            selected={dateRange}
+                                            onSelect={setDateRange}
+                                            numberOfMonths={2}
+                                        />
+                                    </PopoverContent>
+                                </Popover>
+                                <Select value={serviceLineFilter} onValueChange={setServiceLineFilter}>
                                     <SelectTrigger className="w-56">
-                                        <SelectValue placeholder="All Services" />
+                                        <SelectValue placeholder="Service Line" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="all">All Services</SelectItem>
+                                        <SelectItem value="all">All Service Lines</SelectItem>
                                         {serviceTypes.map(st => (
                                             <SelectItem key={st.value} value={st.value}>{st.label}</SelectItem>
                                         ))}
                                     </SelectContent>
                                 </Select>
                                 <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                                    <SelectTrigger className="w-56">
-                                        <SelectValue placeholder="All Categories" />
+                                    <SelectTrigger className="w-48">
+                                        <SelectValue placeholder="Category" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="all">All Categories</SelectItem>
@@ -554,8 +660,8 @@ export default function MasterPricingManagement() {
                                     </SelectContent>
                                 </Select>
                                 <Select value={statusFilter} onValueChange={setStatusFilter}>
-                                    <SelectTrigger className="w-48">
-                                        <SelectValue placeholder="All Status" />
+                                    <SelectTrigger className="w-40">
+                                        <SelectValue placeholder="Status" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="all">All Status</SelectItem>
@@ -564,9 +670,67 @@ export default function MasterPricingManagement() {
                                         <SelectItem value="pending_approval">Pending</SelectItem>
                                     </SelectContent>
                                 </Select>
+                                {(dateRange.from || serviceLineFilter !== 'all' || categoryFilter !== 'all' || statusFilter !== 'all') && (
+                                    <Button variant="ghost" size="sm" onClick={() => {
+                                        setDateRange({ from: null, to: null });
+                                        setServiceLineFilter('all');
+                                        setCategoryFilter('all');
+                                        setStatusFilter('all');
+                                    }}>
+                                        Clear Filters
+                                    </Button>
+                                )}
                             </div>
                         </CardContent>
                     </Card>
+
+                    {/* Analytics Charts */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="text-base">Revenue by Service Type</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <ResponsiveContainer width="100%" height={250}>
+                                    <PieChart>
+                                        <Pie
+                                            data={revenueByServiceChart}
+                                            cx="50%"
+                                            cy="50%"
+                                            labelLine={false}
+                                            label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                                            outerRadius={80}
+                                            fill="#8884d8"
+                                            dataKey="value"
+                                        >
+                                            {revenueByServiceChart.map((entry, index) => (
+                                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                            ))}
+                                        </Pie>
+                                        <Tooltip formatter={(value) => `$${(value / 1000).toFixed(1)}K`} />
+                                    </PieChart>
+                                </ResponsiveContainer>
+                            </CardContent>
+                        </Card>
+
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="text-base">Margin Analysis (Top 10 Items)</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <ResponsiveContainer width="100%" height={250}>
+                                    <BarChart data={marginTrendData}>
+                                        <CartesianGrid strokeDasharray="3 3" />
+                                        <XAxis dataKey="name" fontSize={10} angle={-45} textAnchor="end" height={80} />
+                                        <YAxis />
+                                        <Tooltip />
+                                        <Legend />
+                                        <Bar dataKey="margin" fill="#10b981" name="Margin %" />
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            </CardContent>
+                        </Card>
+                    </div>
 
                         {/* Pricing Table */}
                         <Card>
