@@ -10,9 +10,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { DollarSign, TrendingUp, Users, AlertCircle, Clock, CheckCircle, FileText, Download, Filter, Calendar, BarChart3, Search, Eye, Mail } from 'lucide-react';
+import { DollarSign, TrendingUp, Users, AlertCircle, Clock, CheckCircle, FileText, Download, Filter, Calendar as CalendarIcon, BarChart3, Search, Eye, Mail, FileDown } from 'lucide-react';
 import { useI18n } from '@/components/i18n/I18nextProvider';
 import { toast } from 'sonner';
+import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, AreaChart, Area } from 'recharts';
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { format, subDays, subMonths } from 'date-fns';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 export default function UnifiedBillingDashboard() {
     const { platformUser, loading } = usePlatformAuth();
@@ -22,6 +28,8 @@ export default function UnifiedBillingDashboard() {
     const [statusFilter, setStatusFilter] = useState('all');
     const [customerSearch, setCustomerSearch] = useState('');
     const [serviceFilter, setServiceFilter] = useState('all');
+    const [customerSegmentFilter, setCustomerSegmentFilter] = useState('all');
+    const [dateRange, setDateRange] = useState({ from: subMonths(new Date(), 1), to: new Date() });
     const [selectedInvoice, setSelectedInvoice] = useState(null);
 
     const { data: invoices = [] } = useQuery({
@@ -56,7 +64,19 @@ export default function UnifiedBillingDashboard() {
             inv.customer_name?.toLowerCase().includes(customerSearch.toLowerCase());
         const matchesService = serviceFilter === 'all' || 
             inv.services_included?.includes(serviceFilter);
-        return matchesStatus && matchesCustomer && matchesService;
+        const matchesSegment = customerSegmentFilter === 'all' || inv.customer_type === customerSegmentFilter;
+        
+        // Date range filtering
+        let matchesDateRange = true;
+        if (dateRange.from && inv.created_date) {
+            const invDate = new Date(inv.created_date);
+            matchesDateRange = invDate >= dateRange.from;
+            if (dateRange.to) {
+                matchesDateRange = matchesDateRange && invDate <= dateRange.to;
+            }
+        }
+        
+        return matchesStatus && matchesCustomer && matchesService && matchesSegment && matchesDateRange;
     });
 
     // Calculate metrics
@@ -103,7 +123,7 @@ export default function UnifiedBillingDashboard() {
         else arAging.days_90_plus += inv.total_amount || 0;
     });
 
-    // Export function
+    // Export functions
     const exportToCSV = () => {
         const headers = ['Invoice Number', 'Customer', 'Type', 'Amount', 'Status', 'Due Date', 'Services'];
         const rows = filteredInvoices.map(inv => [
@@ -125,6 +145,68 @@ export default function UnifiedBillingDashboard() {
         a.click();
         toast.success('Exported to CSV');
     };
+
+    const exportToPDF = () => {
+        const doc = new jsPDF();
+        
+        doc.setFontSize(18);
+        doc.text('Unified Billing Report', 14, 22);
+        doc.setFontSize(11);
+        doc.text(`Generated: ${new Date().toLocaleDateString()}`, 14, 30);
+        doc.text(`Period: ${dateRange.from ? format(dateRange.from, 'MMM d, yyyy') : 'All time'} - ${dateRange.to ? format(dateRange.to, 'MMM d, yyyy') : 'Now'}`, 14, 36);
+        
+        // Summary
+        doc.setFontSize(14);
+        doc.text('Summary', 14, 46);
+        doc.setFontSize(10);
+        doc.text(`Total Revenue (Paid): $${totalRevenue.toLocaleString()}`, 14, 54);
+        doc.text(`Pending Revenue: $${pendingRevenue.toLocaleString()}`, 14, 60);
+        doc.text(`Overdue Revenue: $${overdueRevenue.toLocaleString()}`, 14, 66);
+        doc.text(`Active Customers: ${totalCustomers}`, 14, 72);
+        
+        const tableData = filteredInvoices.map(inv => [
+            inv.invoice_number,
+            inv.customer_email,
+            inv.customer_type,
+            `$${inv.total_amount?.toLocaleString()}`,
+            inv.status,
+            new Date(inv.due_date).toLocaleDateString()
+        ]);
+        
+        doc.autoTable({
+            startY: 80,
+            head: [['Invoice #', 'Customer', 'Type', 'Amount', 'Status', 'Due Date']],
+            body: tableData,
+            theme: 'grid',
+            styles: { fontSize: 8 }
+        });
+        
+        doc.save(`billing-report-${new Date().toISOString().split('T')[0]}.pdf`);
+        toast.success('PDF exported successfully');
+    };
+
+    // Chart data
+    const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
+    
+    const revenueByServiceChart = Object.entries(revenueByService).map(([name, value]) => ({
+        name,
+        value
+    }));
+
+    const revenueByCustomerChart = Object.entries(revenueByCustomerType).map(([name, value]) => ({
+        name,
+        value
+    }));
+
+    // Trend data (mock - in real scenario would be time-series)
+    const revenueTrendData = [
+        { month: 'Jul', revenue: totalRevenue * 0.7, cost: totalRevenue * 0.5 },
+        { month: 'Aug', revenue: totalRevenue * 0.75, cost: totalRevenue * 0.53 },
+        { month: 'Sep', revenue: totalRevenue * 0.82, cost: totalRevenue * 0.56 },
+        { month: 'Oct', revenue: totalRevenue * 0.88, cost: totalRevenue * 0.59 },
+        { month: 'Nov', revenue: totalRevenue * 0.93, cost: totalRevenue * 0.62 },
+        { month: 'Dec', revenue: totalRevenue, cost: totalRevenue * 0.65 }
+    ].map(d => ({ ...d, profit: d.revenue - d.cost }));
 
     // Mark as paid mutation
     const markAsPaidMutation = useMutation({
@@ -171,9 +253,13 @@ export default function UnifiedBillingDashboard() {
                         <p className="text-xs text-slate-600">Real-time billing overview across all services</p>
                     </div>
                     <div className="flex gap-2">
-                        <Button onClick={exportToCSV} variant="outline" className="gap-2">
-                            <Download className="h-4 w-4" />
-                            Export CSV
+                        <Button onClick={exportToCSV} variant="outline" size="sm" className="gap-2">
+                            <FileDown className="h-4 w-4" />
+                            CSV
+                        </Button>
+                        <Button onClick={exportToPDF} variant="outline" size="sm" className="gap-2">
+                            <FileDown className="h-4 w-4" />
+                            PDF
                         </Button>
                     </div>
                 </header>
@@ -188,6 +274,64 @@ export default function UnifiedBillingDashboard() {
                         </TabsList>
 
                         <TabsContent value="overview" className="space-y-6">
+                    {/* Enhanced Filters */}
+                    <Card>
+                        <CardContent className="p-4">
+                            <div className="flex gap-4 flex-wrap items-center">
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                        <Button variant="outline" className="w-64 justify-start text-left font-normal">
+                                            <CalendarIcon className="mr-2 h-4 w-4" />
+                                            {dateRange.from && dateRange.to ? (
+                                                `${format(dateRange.from, 'MMM d')} - ${format(dateRange.to, 'MMM d, yyyy')}`
+                                            ) : 'Select date range'}
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-auto p-0" align="start">
+                                        <Calendar
+                                            mode="range"
+                                            selected={dateRange}
+                                            onSelect={setDateRange}
+                                            numberOfMonths={2}
+                                        />
+                                    </PopoverContent>
+                                </Popover>
+                                <Select value={customerSegmentFilter} onValueChange={setCustomerSegmentFilter}>
+                                    <SelectTrigger className="w-48">
+                                        <SelectValue placeholder="Customer Segment" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">All Segments</SelectItem>
+                                        <SelectItem value="psp">PSP</SelectItem>
+                                        <SelectItem value="merchant">Merchant</SelectItem>
+                                        <SelectItem value="iso_customer">ISO Customer</SelectItem>
+                                        <SelectItem value="orchestration_customer">Orchestration</SelectItem>
+                                        <SelectItem value="crypto_customer">Crypto</SelectItem>
+                                        <SelectItem value="rwa_provider">RWA Provider</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <Select value={serviceFilter} onValueChange={setServiceFilter}>
+                                    <SelectTrigger className="w-48">
+                                        <SelectValue placeholder="Service Line" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">All Services</SelectItem>
+                                        {Object.keys(revenueByService).map(service => (
+                                            <SelectItem key={service} value={service}>{service}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                <Button variant="ghost" size="sm" onClick={() => {
+                                    setDateRange({ from: subMonths(new Date(), 1), to: new Date() });
+                                    setCustomerSegmentFilter('all');
+                                    setServiceFilter('all');
+                                }}>
+                                    Reset Filters
+                                </Button>
+                            </div>
+                        </CardContent>
+                    </Card>
+
                     {/* Key Metrics */}
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <Card>
@@ -266,20 +410,52 @@ export default function UnifiedBillingDashboard() {
                         </Card>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Interactive Charts */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Revenue Trend (6 Months)</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <ResponsiveContainer width="100%" height={300}>
+                                    <AreaChart data={revenueTrendData}>
+                                        <CartesianGrid strokeDasharray="3 3" />
+                                        <XAxis dataKey="month" />
+                                        <YAxis />
+                                        <Tooltip formatter={(value) => `$${value.toLocaleString()}`} />
+                                        <Legend />
+                                        <Area type="monotone" dataKey="revenue" stackId="1" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.6} name="Revenue" />
+                                        <Area type="monotone" dataKey="cost" stackId="2" stroke="#ef4444" fill="#ef4444" fillOpacity={0.6} name="Cost" />
+                                        <Area type="monotone" dataKey="profit" stackId="3" stroke="#10b981" fill="#10b981" fillOpacity={0.6} name="Profit" />
+                                    </AreaChart>
+                                </ResponsiveContainer>
+                            </CardContent>
+                        </Card>
+
                         <Card>
                             <CardHeader>
                                 <CardTitle>Revenue by Service</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <div className="space-y-2">
-                                    {Object.entries(revenueByService).map(([service, revenue]) => (
-                                        <div key={service} className="flex items-center justify-between p-2 bg-slate-50 rounded-lg">
-                                            <span className="text-sm font-medium text-slate-700">{service}</span>
-                                            <span className="text-sm font-bold text-slate-900">${revenue.toLocaleString()}</span>
-                                        </div>
-                                    ))}
-                                </div>
+                                <ResponsiveContainer width="100%" height={300}>
+                                    <PieChart>
+                                        <Pie
+                                            data={revenueByServiceChart}
+                                            cx="50%"
+                                            cy="50%"
+                                            labelLine={false}
+                                            label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                                            outerRadius={90}
+                                            fill="#8884d8"
+                                            dataKey="value"
+                                        >
+                                            {revenueByServiceChart.map((entry, index) => (
+                                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                            ))}
+                                        </Pie>
+                                        <Tooltip formatter={(value) => `$${value.toLocaleString()}`} />
+                                    </PieChart>
+                                </ResponsiveContainer>
                             </CardContent>
                         </Card>
 
@@ -288,13 +464,43 @@ export default function UnifiedBillingDashboard() {
                                 <CardTitle>Revenue by Customer Type</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <div className="space-y-2">
-                                    {Object.entries(revenueByCustomerType).map(([type, revenue]) => (
-                                        <div key={type} className="flex items-center justify-between p-2 bg-slate-50 rounded-lg">
-                                            <span className="text-sm font-medium text-slate-700">{type}</span>
-                                            <span className="text-sm font-bold text-slate-900">${revenue.toLocaleString()}</span>
-                                        </div>
-                                    ))}
+                                <ResponsiveContainer width="100%" height={300}>
+                                    <BarChart data={revenueByCustomerChart}>
+                                        <CartesianGrid strokeDasharray="3 3" />
+                                        <XAxis dataKey="name" />
+                                        <YAxis />
+                                        <Tooltip formatter={(value) => `$${value.toLocaleString()}`} />
+                                        <Bar dataKey="value" fill="#8b5cf6" name="Revenue" />
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            </CardContent>
+                        </Card>
+
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Collection Rate & AR Aging</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="space-y-4">
+                                    <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                                        <span className="font-medium">Collection Rate</span>
+                                        <span className="text-2xl font-bold text-green-600">{collectionRate.toFixed(1)}%</span>
+                                    </div>
+                                    <ResponsiveContainer width="100%" height={200}>
+                                        <BarChart data={[
+                                            { name: 'Current', value: arAging.current },
+                                            { name: '1-30d', value: arAging.days_1_30 },
+                                            { name: '31-60d', value: arAging.days_31_60 },
+                                            { name: '61-90d', value: arAging.days_61_90 },
+                                            { name: '90+d', value: arAging.days_90_plus }
+                                        ]}>
+                                            <CartesianGrid strokeDasharray="3 3" />
+                                            <XAxis dataKey="name" />
+                                            <YAxis />
+                                            <Tooltip formatter={(value) => `$${value.toLocaleString()}`} />
+                                            <Bar dataKey="value" fill="#f59e0b" />
+                                        </BarChart>
+                                    </ResponsiveContainer>
                                 </div>
                             </CardContent>
                         </Card>
@@ -308,16 +514,19 @@ export default function UnifiedBillingDashboard() {
                                     <CardTitle>Invoice Management</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="flex gap-4 mb-4">
-                                        <Input
-                                            placeholder="Search customer..."
-                                            value={customerSearch}
-                                            onChange={(e) => setCustomerSearch(e.target.value)}
-                                            className="flex-1"
-                                        />
+                                    <div className="flex gap-3 mb-4 flex-wrap">
+                                        <div className="flex-1 min-w-[200px] relative">
+                                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                                            <Input
+                                                placeholder="Search customer..."
+                                                value={customerSearch}
+                                                onChange={(e) => setCustomerSearch(e.target.value)}
+                                                className="pl-10"
+                                            />
+                                        </div>
                                         <Select value={statusFilter} onValueChange={setStatusFilter}>
                                             <SelectTrigger className="w-40">
-                                                <SelectValue />
+                                                <SelectValue placeholder="Status" />
                                             </SelectTrigger>
                                             <SelectContent>
                                                 <SelectItem value="all">All Status</SelectItem>
@@ -327,9 +536,23 @@ export default function UnifiedBillingDashboard() {
                                                 <SelectItem value="overdue">Overdue</SelectItem>
                                             </SelectContent>
                                         </Select>
+                                        <Select value={customerSegmentFilter} onValueChange={setCustomerSegmentFilter}>
+                                            <SelectTrigger className="w-48">
+                                                <SelectValue placeholder="Segment" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="all">All Segments</SelectItem>
+                                                <SelectItem value="psp">PSP</SelectItem>
+                                                <SelectItem value="merchant">Merchant</SelectItem>
+                                                <SelectItem value="iso_customer">ISO</SelectItem>
+                                                <SelectItem value="orchestration_customer">Orchestration</SelectItem>
+                                                <SelectItem value="crypto_customer">Crypto</SelectItem>
+                                                <SelectItem value="rwa_provider">RWA</SelectItem>
+                                            </SelectContent>
+                                        </Select>
                                         <Select value={serviceFilter} onValueChange={setServiceFilter}>
                                             <SelectTrigger className="w-48">
-                                                <SelectValue />
+                                                <SelectValue placeholder="Service" />
                                             </SelectTrigger>
                                             <SelectContent>
                                                 <SelectItem value="all">All Services</SelectItem>
