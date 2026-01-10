@@ -182,7 +182,7 @@ export default function ServicePublicationManager() {
     if (loading) return null;
 
     return (
-        <div className="flex h-screen bg-slate-50">
+        <div className="flex h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/20">
             {mobileSidebarOpen && (
                 <div 
                     className="fixed inset-0 bg-black/50 z-40 lg:hidden"
@@ -203,7 +203,7 @@ export default function ServicePublicationManager() {
             </div>
 
             <div className="flex-1 overflow-auto">
-                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-6 sticky top-0 z-10">
+                <header className="h-16 bg-white/80 backdrop-blur-xl border-b border-slate-200/50 flex items-center justify-between px-4 md:px-6 sticky top-0 z-10 shadow-sm">
                     <div className="flex items-center gap-3 min-w-0 flex-1">
                         <Button
                             variant="ghost"
@@ -220,7 +220,7 @@ export default function ServicePublicationManager() {
                     </div>
                     <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
                         <LanguageSwitcher variant="select" showLabel={false} />
-                        <Button onClick={() => { setFormData({ version: 'v1.0' }); setCreateDialog(true); }} className="gap-2 bg-blue-600">
+                        <Button onClick={() => { setFormData({ version: 'v1.0' }); setCreateDialog(true); }} className="gap-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 shadow-lg hover:shadow-xl transition-all duration-200">
                             <Plus className="h-4 w-4" />
                             New Publication
                         </Button>
@@ -230,58 +230,73 @@ export default function ServicePublicationManager() {
                 <main className="p-6 space-y-6">
                     {/* Stats Overview */}
                     <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                        <Card>
-                            <CardContent className="p-4">
+                        <Card className="group hover:shadow-xl transition-all duration-300 border-slate-200/50 bg-gradient-to-br from-white to-slate-50/50 backdrop-blur-sm overflow-hidden relative">
+                            <div className="absolute inset-0 bg-gradient-to-br from-slate-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <CardContent className="p-4 relative">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-xs text-slate-600">Draft</p>
-                                        <p className="text-2xl font-bold text-slate-900">{stats.draft}</p>
+                                        <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Draft</p>
+                                        <p className="text-3xl font-bold text-slate-900 mt-1">{stats.draft}</p>
                                     </div>
-                                    <FileText className="h-8 w-8 text-slate-400" />
+                                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <FileText className="h-6 w-6 text-slate-600" />
+                                    </div>
                                 </div>
                             </CardContent>
                         </Card>
-                        <Card>
-                            <CardContent className="p-4">
+                        <Card className="group hover:shadow-xl transition-all duration-300 border-amber-200/50 bg-gradient-to-br from-white to-amber-50/30 backdrop-blur-sm overflow-hidden relative">
+                            <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <CardContent className="p-4 relative">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-xs text-slate-600">Pending</p>
-                                        <p className="text-2xl font-bold text-amber-600">{stats.pending}</p>
+                                        <p className="text-xs font-medium text-amber-600 uppercase tracking-wider">Pending</p>
+                                        <p className="text-3xl font-bold text-amber-700 mt-1">{stats.pending}</p>
                                     </div>
-                                    <Clock className="h-8 w-8 text-amber-600" />
+                                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-100 to-amber-200 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <Clock className="h-6 w-6 text-amber-600" />
+                                    </div>
                                 </div>
                             </CardContent>
                         </Card>
-                        <Card>
-                            <CardContent className="p-4">
+                        <Card className="group hover:shadow-xl transition-all duration-300 border-blue-200/50 bg-gradient-to-br from-white to-blue-50/30 backdrop-blur-sm overflow-hidden relative">
+                            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <CardContent className="p-4 relative">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-xs text-slate-600">Soft Launch</p>
-                                        <p className="text-2xl font-bold text-blue-600">{stats.softLaunch}</p>
+                                        <p className="text-xs font-medium text-blue-600 uppercase tracking-wider">Soft Launch</p>
+                                        <p className="text-3xl font-bold text-blue-700 mt-1">{stats.softLaunch}</p>
                                     </div>
-                                    <TestTube className="h-8 w-8 text-blue-600" />
+                                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <TestTube className="h-6 w-6 text-blue-600" />
+                                    </div>
                                 </div>
                             </CardContent>
                         </Card>
-                        <Card>
-                            <CardContent className="p-4">
+                        <Card className="group hover:shadow-xl transition-all duration-300 border-emerald-200/50 bg-gradient-to-br from-white to-emerald-50/30 backdrop-blur-sm overflow-hidden relative">
+                            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <CardContent className="p-4 relative">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-xs text-slate-600">Published</p>
-                                        <p className="text-2xl font-bold text-emerald-600">{stats.published}</p>
+                                        <p className="text-xs font-medium text-emerald-600 uppercase tracking-wider">Published</p>
+                                        <p className="text-3xl font-bold text-emerald-700 mt-1">{stats.published}</p>
                                     </div>
-                                    <Globe className="h-8 w-8 text-emerald-600" />
+                                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-100 to-emerald-200 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <Globe className="h-6 w-6 text-emerald-600" />
+                                    </div>
                                 </div>
                             </CardContent>
                         </Card>
-                        <Card>
-                            <CardContent className="p-4">
+                        <Card className="group hover:shadow-xl transition-all duration-300 border-purple-200/50 bg-gradient-to-br from-white to-purple-50/30 backdrop-blur-sm overflow-hidden relative">
+                            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <CardContent className="p-4 relative">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-xs text-slate-600">Subscriptions</p>
-                                        <p className="text-2xl font-bold text-purple-600">{stats.totalSubscriptions}</p>
+                                        <p className="text-xs font-medium text-purple-600 uppercase tracking-wider">Subscriptions</p>
+                                        <p className="text-3xl font-bold text-purple-700 mt-1">{stats.totalSubscriptions}</p>
                                     </div>
-                                    <Users className="h-8 w-8 text-purple-600" />
+                                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-100 to-purple-200 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <Users className="h-6 w-6 text-purple-600" />
+                                    </div>
                                 </div>
                             </CardContent>
                         </Card>
@@ -289,16 +304,21 @@ export default function ServicePublicationManager() {
 
                     {/* Approval Queue Alert */}
                     {stats.pending > 0 && canApprove && (
-                        <Card className="border-amber-300 bg-amber-50">
+                        <Card className="border-amber-300/50 bg-gradient-to-r from-amber-50 via-amber-50/80 to-orange-50/50 backdrop-blur-sm shadow-lg animate-in fade-in slide-in-from-top-4 duration-500">
                             <CardContent className="p-4">
                                 <div className="flex items-center gap-3">
-                                    <AlertCircle className="h-5 w-5 text-amber-600" />
-                                    <div>
+                                    <div className="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center animate-pulse">
+                                        <AlertCircle className="h-5 w-5 text-amber-600" />
+                                    </div>
+                                    <div className="flex-1">
                                         <p className="font-semibold text-amber-900">
                                             {stats.pending} service publication{stats.pending > 1 ? 's' : ''} awaiting approval
                                         </p>
                                         <p className="text-sm text-amber-700">Review and approve to enable soft launch</p>
                                     </div>
+                                    <Button size="sm" className="bg-amber-600 hover:bg-amber-700 shadow-md">
+                                        Review Now
+                                    </Button>
                                 </div>
                             </CardContent>
                         </Card>
@@ -326,8 +346,9 @@ export default function ServicePublicationManager() {
                                         const billingConfig = billingConfigs.find(c => c.service_type === pub.service_type);
 
                                         return (
-                                            <Card key={pub.id} className="hover:shadow-lg transition-shadow">
-                                                <CardHeader>
+                                            <Card key={pub.id} className="group hover:shadow-2xl transition-all duration-300 border-slate-200/50 bg-white/80 backdrop-blur-sm overflow-hidden">
+                                                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                                                <CardHeader className="relative">
                                                     <div className="flex items-start justify-between">
                                                         <div className="flex items-start gap-3">
                                                             <div className="text-3xl">{serviceType?.icon}</div>
@@ -335,12 +356,13 @@ export default function ServicePublicationManager() {
                                                                 <div className="flex items-center gap-2">
                                                                     <CardTitle className="text-lg">{pub.marketing_name}</CardTitle>
                                                                     <Badge variant="outline">{pub.version}</Badge>
-                                                                    <Badge className={
-                                                                        pub.publication_status === 'published' ? 'bg-emerald-100 text-emerald-700' :
-                                                                        pub.publication_status === 'soft_launch' ? 'bg-blue-100 text-blue-700' :
-                                                                        pub.publication_status === 'pending_approval' ? 'bg-amber-100 text-amber-700' :
-                                                                        'bg-slate-100 text-slate-700'
-                                                                    }>
+                                                                    <Badge className={cn(
+                                                                       "backdrop-blur-sm shadow-sm",
+                                                                       pub.publication_status === 'published' ? 'bg-emerald-500/20 text-emerald-700 border-emerald-300' :
+                                                                       pub.publication_status === 'soft_launch' ? 'bg-blue-500/20 text-blue-700 border-blue-300' :
+                                                                       pub.publication_status === 'pending_approval' ? 'bg-amber-500/20 text-amber-700 border-amber-300' :
+                                                                       'bg-slate-500/20 text-slate-700 border-slate-300'
+                                                                    )}>
                                                                         {pub.publication_status.replace(/_/g, ' ')}
                                                                     </Badge>
                                                                 </div>
@@ -363,7 +385,7 @@ export default function ServicePublicationManager() {
                                                         </div>
                                                     </div>
                                                 </CardHeader>
-                                                <CardContent>
+                                                <CardContent className="relative">
                                                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                                                         <div className="flex items-center gap-2">
                                                             {pub.pricing_configured ? (
@@ -401,7 +423,7 @@ export default function ServicePublicationManager() {
                                                                 size="sm" 
                                                                 onClick={() => requestApprovalMutation.mutate(pub.id)}
                                                                 disabled={!pub.pricing_configured || !pub.compliance_verified || !pub.infrastructure_ready}
-                                                                className="gap-2"
+                                                                className="gap-2 bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800 shadow-md"
                                                             >
                                                                 <Send className="h-3 w-3" />
                                                                 Request Approval
@@ -415,7 +437,7 @@ export default function ServicePublicationManager() {
                                                                     setSelectedPublication(pub);
                                                                     setApprovalDialog(true);
                                                                 }}
-                                                                className="gap-2 bg-emerald-600"
+                                                                className="gap-2 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 shadow-md hover:shadow-lg transition-all"
                                                             >
                                                                 <CheckCircle className="h-3 w-3" />
                                                                 Review & Approve
@@ -426,7 +448,7 @@ export default function ServicePublicationManager() {
                                                             <Button 
                                                                 size="sm" 
                                                                 onClick={() => publishMutation.mutate({ id: pub.id })}
-                                                                className="gap-2 bg-blue-600"
+                                                                className="gap-2 bg-gradient-to-r from-blue-600 via-blue-700 to-purple-600 hover:from-blue-700 hover:via-blue-800 hover:to-purple-700 shadow-md hover:shadow-xl transition-all animate-pulse"
                                                             >
                                                                 <Rocket className="h-3 w-3" />
                                                                 Publish to Community
