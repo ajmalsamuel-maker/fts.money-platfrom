@@ -77,6 +77,7 @@ import CryptoPortalManagement from './pages/CryptoPortalManagement';
 import CryptoSettings from './pages/CryptoSettings';
 import CryptoTransactions from './pages/CryptoTransactions';
 import CryptoUsers from './pages/CryptoUsers';
+import CryptoVASPServiceConfig from './pages/CryptoVASPServiceConfig';
 import CryptoVASPSettings from './pages/CryptoVASPSettings';
 import CryptoWallets from './pages/CryptoWallets';
 import CustomerAnalytics from './pages/CustomerAnalytics';
@@ -91,6 +92,7 @@ import Disputes from './pages/Disputes';
 import Documentation from './pages/Documentation';
 import EInvoiceGenerator from './pages/EInvoiceGenerator';
 import EInvoicingDashboard from './pages/EInvoicingDashboard';
+import EInvoicingServiceConfig from './pages/EInvoicingServiceConfig';
 import ESGReportingDashboard from './pages/ESGReportingDashboard';
 import EnhancedAuditLogs from './pages/EnhancedAuditLogs';
 import ExchangeIntegrations from './pages/ExchangeIntegrations';
@@ -105,8 +107,8 @@ import FTSComplianceTesting from './pages/FTSComplianceTesting';
 import FTSDocumentation from './pages/FTSDocumentation';
 import FTSDomainManagement from './pages/FTSDomainManagement';
 import FTSFeeTemplates from './pages/FTSFeeTemplates';
-import FTSFinancialRegistries from './pages/FTSFinancialRegistries';
 import FTSMoneyPlatform from './pages/FTSMoneyPlatform';
+import FTSFinancialRegistries from './pages/FTSFinancialRegistries';
 import FTSPayoutRoutes from './pages/FTSPayoutRoutes';
 import FTSProductEcosystemReport from './pages/FTSProductEcosystemReport';
 import FTSProvisioningQueue from './pages/FTSProvisioningQueue';
@@ -133,6 +135,7 @@ import ISOGatewayCustomerPortal from './pages/ISOGatewayCustomerPortal';
 import ISOGatewayCustomers from './pages/ISOGatewayCustomers';
 import ISOGatewayLogin from './pages/ISOGatewayLogin';
 import ISOGatewayRouting from './pages/ISOGatewayRouting';
+import ISOGatewayServiceConfig from './pages/ISOGatewayServiceConfig';
 import ISOGatewayTestConsole from './pages/ISOGatewayTestConsole';
 import ISOGatewayUserManagement from './pages/ISOGatewayUserManagement';
 import ISOMessageMonitor from './pages/ISOMessageMonitor';
@@ -213,7 +216,6 @@ import MerchantVirtualTerminal from './pages/MerchantVirtualTerminal';
 import MerchantVirtualTerminals from './pages/MerchantVirtualTerminals';
 import MerchantWebhooks from './pages/MerchantWebhooks';
 import Merchants from './pages/Merchants';
-import PSPLogin from './pages/PSPLogin';
 import ModuleCatalogTest from './pages/ModuleCatalogTest';
 import MyAllServices from './pages/MyAllServices';
 import MyPSPInstances from './pages/MyPSPInstances';
@@ -228,6 +230,7 @@ import OpenBankingConfiguration from './pages/OpenBankingConfiguration';
 import OrchestrationCustomers from './pages/OrchestrationCustomers';
 import OrchestrationLogin from './pages/OrchestrationLogin';
 import OrchestrationPortal from './pages/OrchestrationPortal';
+import OrchestrationServiceConfig from './pages/OrchestrationServiceConfig';
 import OrchestrationUserManagement from './pages/OrchestrationUserManagement';
 import PCIAuditReports from './pages/PCIAuditReports';
 import PCICompliance from './pages/PCICompliance';
@@ -249,6 +252,7 @@ import PSPEmpowermentRoadmap from './pages/PSPEmpowermentRoadmap';
 import PSPInstanceConfig from './pages/PSPInstanceConfig';
 import PSPInstanceManagement from './pages/PSPInstanceManagement';
 import PSPInvoiceAggregator from './pages/PSPInvoiceAggregator';
+import PSPLogin from './pages/PSPLogin';
 import PSPMerchantPricing from './pages/PSPMerchantPricing';
 import PSPOwnershipMigration from './pages/PSPOwnershipMigration';
 import PSPPasswordReset from './pages/PSPPasswordReset';
@@ -300,6 +304,7 @@ import RWAProviderIssuers from './pages/RWAProviderIssuers';
 import RWAProviderLogin from './pages/RWAProviderLogin';
 import RWAProviderSettings from './pages/RWAProviderSettings';
 import RWAProviderUserManagement from './pages/RWAProviderUserManagement';
+import RWATokenizationServiceConfig from './pages/RWATokenizationServiceConfig';
 import RWAWhiteLabelProvisioning from './pages/RWAWhiteLabelProvisioning';
 import RealTimeMonitor from './pages/RealTimeMonitor';
 import Reconciliation from './pages/Reconciliation';
@@ -309,6 +314,7 @@ import ResourceOrchestration from './pages/ResourceOrchestration';
 import RolePermissionManagement from './pages/RolePermissionManagement';
 import SecurityManagement from './pages/SecurityManagement';
 import ServiceBillingConfiguration from './pages/ServiceBillingConfiguration';
+import ServiceConfigurationHub from './pages/ServiceConfigurationHub';
 import ServiceProviderRegistration from './pages/ServiceProviderRegistration';
 import Settings from './pages/Settings';
 import Settlements from './pages/Settlements';
@@ -321,8 +327,9 @@ import Subscriptions from './pages/Subscriptions';
 import Support from './pages/Support';
 import SystemArchitectureDocumentation from './pages/SystemArchitectureDocumentation';
 import TaxAdvancedReports from './pages/TaxAdvancedReports';
-import TaxManagement from './pages/TaxManagement';
 import TaxCalculationTester from './pages/TaxCalculationTester';
+import TaxManagement from './pages/TaxManagement';
+import TaxManagementServiceConfig from './pages/TaxManagementServiceConfig';
 import TaxRateUpdateManager from './pages/TaxRateUpdateManager';
 import TenantManagement from './pages/TenantManagement';
 import TenantUserManagement from './pages/TenantUserManagement';
@@ -341,13 +348,9 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import ServiceConfigurationHub from './pages/ServiceConfigurationHub';
-import ISOGatewayServiceConfig from './pages/ISOGatewayServiceConfig';
-import RWATokenizationServiceConfig from './pages/RWATokenizationServiceConfig';
-import CryptoVASPServiceConfig from './pages/CryptoVASPServiceConfig';
-import OrchestrationServiceConfig from './pages/OrchestrationServiceConfig';
-import TaxManagementServiceConfig from './pages/TaxManagementServiceConfig';
-import EInvoicingServiceConfig from './pages/EInvoicingServiceConfig';
+import UnifiedBillingDashboard from './pages/UnifiedBillingDashboard';
+import UsageMeteringEngine from './pages/UsageMeteringEngine';
+import InvoiceGenerationCenter from './pages/InvoiceGenerationCenter';
 import __Layout from './Layout.jsx';
 
 
@@ -431,6 +434,7 @@ export const PAGES = {
     "CryptoSettings": CryptoSettings,
     "CryptoTransactions": CryptoTransactions,
     "CryptoUsers": CryptoUsers,
+    "CryptoVASPServiceConfig": CryptoVASPServiceConfig,
     "CryptoVASPSettings": CryptoVASPSettings,
     "CryptoWallets": CryptoWallets,
     "CustomerAnalytics": CustomerAnalytics,
@@ -445,6 +449,7 @@ export const PAGES = {
     "Documentation": Documentation,
     "EInvoiceGenerator": EInvoiceGenerator,
     "EInvoicingDashboard": EInvoicingDashboard,
+    "EInvoicingServiceConfig": EInvoicingServiceConfig,
     "ESGReportingDashboard": ESGReportingDashboard,
     "EnhancedAuditLogs": EnhancedAuditLogs,
     "ExchangeIntegrations": ExchangeIntegrations,
@@ -459,8 +464,8 @@ export const PAGES = {
     "FTSDocumentation": FTSDocumentation,
     "FTSDomainManagement": FTSDomainManagement,
     "FTSFeeTemplates": FTSFeeTemplates,
-    "FTSFinancialRegistries": FTSFinancialRegistries,
     "FTSMoneyPlatform": FTSMoneyPlatform,
+    "FTSFinancialRegistries": FTSFinancialRegistries,
     "FTSPayoutRoutes": FTSPayoutRoutes,
     "FTSProductEcosystemReport": FTSProductEcosystemReport,
     "FTSProvisioningQueue": FTSProvisioningQueue,
@@ -487,6 +492,7 @@ export const PAGES = {
     "ISOGatewayCustomers": ISOGatewayCustomers,
     "ISOGatewayLogin": ISOGatewayLogin,
     "ISOGatewayRouting": ISOGatewayRouting,
+    "ISOGatewayServiceConfig": ISOGatewayServiceConfig,
     "ISOGatewayTestConsole": ISOGatewayTestConsole,
     "ISOGatewayUserManagement": ISOGatewayUserManagement,
     "ISOMessageMonitor": ISOMessageMonitor,
@@ -567,7 +573,6 @@ export const PAGES = {
     "MerchantVirtualTerminals": MerchantVirtualTerminals,
     "MerchantWebhooks": MerchantWebhooks,
     "Merchants": Merchants,
-    "PSPLogin": PSPLogin,
     "ModuleCatalogTest": ModuleCatalogTest,
     "MyAllServices": MyAllServices,
     "MyPSPInstances": MyPSPInstances,
@@ -582,6 +587,7 @@ export const PAGES = {
     "OrchestrationCustomers": OrchestrationCustomers,
     "OrchestrationLogin": OrchestrationLogin,
     "OrchestrationPortal": OrchestrationPortal,
+    "OrchestrationServiceConfig": OrchestrationServiceConfig,
     "OrchestrationUserManagement": OrchestrationUserManagement,
     "PCIAuditReports": PCIAuditReports,
     "PCICompliance": PCICompliance,
@@ -603,6 +609,7 @@ export const PAGES = {
     "PSPInstanceConfig": PSPInstanceConfig,
     "PSPInstanceManagement": PSPInstanceManagement,
     "PSPInvoiceAggregator": PSPInvoiceAggregator,
+    "PSPLogin": PSPLogin,
     "PSPMerchantPricing": PSPMerchantPricing,
     "PSPOwnershipMigration": PSPOwnershipMigration,
     "PSPPasswordReset": PSPPasswordReset,
@@ -654,6 +661,7 @@ export const PAGES = {
     "RWAProviderLogin": RWAProviderLogin,
     "RWAProviderSettings": RWAProviderSettings,
     "RWAProviderUserManagement": RWAProviderUserManagement,
+    "RWATokenizationServiceConfig": RWATokenizationServiceConfig,
     "RWAWhiteLabelProvisioning": RWAWhiteLabelProvisioning,
     "RealTimeMonitor": RealTimeMonitor,
     "Reconciliation": Reconciliation,
@@ -663,6 +671,7 @@ export const PAGES = {
     "RolePermissionManagement": RolePermissionManagement,
     "SecurityManagement": SecurityManagement,
     "ServiceBillingConfiguration": ServiceBillingConfiguration,
+    "ServiceConfigurationHub": ServiceConfigurationHub,
     "ServiceProviderRegistration": ServiceProviderRegistration,
     "Settings": Settings,
     "Settlements": Settlements,
@@ -675,8 +684,9 @@ export const PAGES = {
     "Support": Support,
     "SystemArchitectureDocumentation": SystemArchitectureDocumentation,
     "TaxAdvancedReports": TaxAdvancedReports,
-    "TaxManagement": TaxManagement,
     "TaxCalculationTester": TaxCalculationTester,
+    "TaxManagement": TaxManagement,
+    "TaxManagementServiceConfig": TaxManagementServiceConfig,
     "TaxRateUpdateManager": TaxRateUpdateManager,
     "TenantManagement": TenantManagement,
     "TenantUserManagement": TenantUserManagement,
@@ -695,13 +705,9 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "ServiceConfigurationHub": ServiceConfigurationHub,
-    "ISOGatewayServiceConfig": ISOGatewayServiceConfig,
-    "RWATokenizationServiceConfig": RWATokenizationServiceConfig,
-    "CryptoVASPServiceConfig": CryptoVASPServiceConfig,
-    "OrchestrationServiceConfig": OrchestrationServiceConfig,
-    "TaxManagementServiceConfig": TaxManagementServiceConfig,
-    "EInvoicingServiceConfig": EInvoicingServiceConfig,
+    "UnifiedBillingDashboard": UnifiedBillingDashboard,
+    "UsageMeteringEngine": UsageMeteringEngine,
+    "InvoiceGenerationCenter": InvoiceGenerationCenter,
 }
 
 export const pagesConfig = {
