@@ -287,8 +287,8 @@ export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, i
     
     // Auto-open section containing current page
     React.useEffect(() => {
-        const currentSection = menuSections.find(section => 
-            section.items.some(item => item.path === currentPage)
+        const currentSection = processedMenuSections.find(section => 
+            section.items && section.items.some(item => item.path === currentPage)
         );
         if (currentSection && !openSections.includes(currentSection.id)) {
             setOpenSections(prev => [...prev, currentSection.id]);
@@ -334,7 +334,7 @@ export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, i
                 <div className="space-y-4">
                     {processedMenuSections.map((section) => {
                         const isOpen = openSections.includes(section.id);
-                        const hasCurrentPage = section.items.some(item => item.path === currentPage);
+                        const hasCurrentPage = section.items && section.items.some(item => item.path === currentPage);
 
                         return (
                             <div key={section.id}>
