@@ -47,6 +47,9 @@ import TaxManagementCompleteGuide from '@/components/docs/TaxManagementCompleteG
 import EInvoicingOperationsGuide from '@/components/docs/EInvoicingOperationsGuide';
 import QSAPortalGuide from '@/components/docs/QSAPortalGuide';
 import AuthenticationArchitectureDoc from '@/components/docs/AuthenticationArchitectureDoc';
+import APIReferenceGuide from '@/components/docs/APIReferenceGuide';
+import IntegrationPatternsDoc from '@/components/docs/IntegrationPatternsDoc';
+import OperationalRunbooksDoc from '@/components/docs/OperationalRunbooksDoc';
 import MermaidDiagram from '@/components/docs/MermaidDiagram';
 import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 import ExportDialog from '@/components/docs/ExportDialog';
@@ -331,6 +334,27 @@ export default function FTSDocumentation() {
             icon: Lock,
             content: AuthenticationArchitectureDoc,
             description: 'Multi-portal auth systems, session management, password security, vLEI roadmap'
+        },
+        {
+            id: 'api-reference',
+            title: 'API Reference Guide',
+            icon: Code,
+            content: APIReferenceGuide,
+            description: 'Complete REST API documentation - endpoints, authentication, request/response examples, error codes'
+        },
+        {
+            id: 'integration-patterns',
+            title: 'Integration Patterns',
+            icon: GitBranch,
+            content: IntegrationPatternsDoc,
+            description: 'Common integration scenarios, best practices, code examples, testing strategies'
+        },
+        {
+            id: 'operational-runbooks',
+            title: 'Operational Runbooks',
+            icon: Shield,
+            content: OperationalRunbooksDoc,
+            description: 'Daily ops checklists, incident response, escalation procedures, disaster recovery'
         }
     ];
 
