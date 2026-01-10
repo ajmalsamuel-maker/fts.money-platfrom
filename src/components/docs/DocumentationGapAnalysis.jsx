@@ -829,11 +829,11 @@ diagram_types_standards:
 
 | Column Type | Alignment | Example | Best For |
 |-------------|-----------|---------|----------|
-| Feature Names | Left | `**Dashboard**` | Readability |
-| Numeric Data | Right | `$10,000` | Financial data |
-| Status/Boolean | Center | `✅` `❌` | Quick scanning |
+| Feature Names | Left | Dashboard (bold) | Readability |
+| Numeric Data | Right | $10,000 | Financial data |
+| Status/Boolean | Center | ✅ ❌ | Quick scanning |
 | Descriptions | Left | Long text | Explanations |
-| Code Examples | Left monospace | \`code\` | Technical specs |
+| Code Examples | Left monospace | code | Technical specs |
 
 **Complex Table Example:**
 
