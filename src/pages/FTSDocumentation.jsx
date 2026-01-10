@@ -40,6 +40,11 @@ import DocumentationGapAnalysis from '@/components/docs/DocumentationGapAnalysis
 import ISOGatewayPortalGuide from '@/components/docs/ISOGatewayPortalGuide';
 import OrchestrationPortalGuide from '@/components/docs/OrchestrationPortalGuide';
 import CryptoGatewayPortalGuide from '@/components/docs/CryptoGatewayPortalGuide';
+import RWAProviderPortalGuide from '@/components/docs/RWAProviderPortalGuide';
+import RWAIssuerPortalGuide from '@/components/docs/RWAIssuerPortalGuide';
+import RWAInvestorPortalGuide from '@/components/docs/RWAInvestorPortalGuide';
+import TaxManagementCompleteGuide from '@/components/docs/TaxManagementCompleteGuide';
+import EInvoicingOperationsGuide from '@/components/docs/EInvoicingOperationsGuide';
 import MermaidDiagram from '@/components/docs/MermaidDiagram';
 import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 import ExportDialog from '@/components/docs/ExportDialog';
@@ -275,6 +280,41 @@ export default function FTSDocumentation() {
             icon: Wallet,
             content: CryptoGatewayPortalGuide,
             description: 'Wallet/IBAN management, card issuance, KYC workflows, compliance monitoring, LEI authentication'
+        },
+        {
+            id: 'rwa-provider-portal',
+            title: 'RWA Provider Portal Guide',
+            icon: BookOpen,
+            content: RWAProviderPortalGuide,
+            description: 'White-label platform management, issuer onboarding, asset portfolio, investor administration'
+        },
+        {
+            id: 'rwa-issuer-portal',
+            title: 'RWA Issuer Portal Guide',
+            icon: FileText,
+            content: RWAIssuerPortalGuide,
+            description: 'Asset tokenization wizard, investor management, dividend distribution, compliance reporting'
+        },
+        {
+            id: 'rwa-investor-portal',
+            title: 'RWA Investor Portal Guide',
+            icon: Wallet,
+            content: RWAInvestorPortalGuide,
+            description: 'Asset marketplace, portfolio tracking, secondary trading, dividend history'
+        },
+        {
+            id: 'tax-management-complete',
+            title: 'Tax Management Complete Guide',
+            icon: FileText,
+            content: TaxManagementCompleteGuide,
+            description: 'Global VAT/GST compliance, automated rate updates, real-time calculation, tax return automation'
+        },
+        {
+            id: 'einvoicing-operations',
+            title: 'E-Invoicing Operations Guide',
+            icon: FileText,
+            content: EInvoicingOperationsGuide,
+            description: 'Multi-standard invoicing, government submission, country workflows, daily operations checklist'
         }
     ];
 
