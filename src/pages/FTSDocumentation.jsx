@@ -33,6 +33,10 @@ import FIXScoreSystemDoc from '@/components/docs/FIXScoreSystemDoc';
 import NANOSustainabilityDoc from '@/components/docs/NANOSustainabilityDoc';
 import InvoicingSystemDoc from '@/components/docs/InvoicingSystemDoc';
 import PCIAdvancedFeaturesDoc from '@/components/docs/PCIAdvancedFeaturesDoc';
+import ServicePublicationDoc from '@/components/docs/ServicePublicationDoc';
+import BillingInvoicingSystemDoc from '@/components/docs/BillingInvoicingSystemDoc';
+import MultiUserRBACSystemDoc from '@/components/docs/MultiUserRBACSystemDoc';
+import DocumentationGapAnalysis from '@/components/docs/DocumentationGapAnalysis';
 import MermaidDiagram from '@/components/docs/MermaidDiagram';
 import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 import ExportDialog from '@/components/docs/ExportDialog';
@@ -225,6 +229,34 @@ export default function FTSDocumentation() {
             icon: Shield,
             content: PCIAdvancedFeaturesDoc,
             description: 'AI-powered continuous monitoring, predictive analytics, workflow automation, and QSA collaboration tools'
+        },
+        {
+            id: 'service-publication',
+            title: 'Service Publication System',
+            icon: GitBranch,
+            content: ServicePublicationDoc,
+            description: 'Phased rollout, soft launch, beta programs, version control, and grandfathered pricing management'
+        },
+        {
+            id: 'billing-invoicing',
+            title: 'Billing & Invoicing System',
+            icon: FileText,
+            content: BillingInvoicingSystemDoc,
+            description: 'Unified billing, usage metering, invoice generation, payment processing, and accounting integrations'
+        },
+        {
+            id: 'rbac-system',
+            title: 'Multi-User RBAC System',
+            icon: Shield,
+            content: MultiUserRBACSystemDoc,
+            description: 'Six-tier role hierarchy, permission matrices, user management across all services'
+        },
+        {
+            id: 'documentation-gaps',
+            title: 'Documentation Gap Analysis',
+            icon: FileText,
+            content: DocumentationGapAnalysis,
+            description: 'Complete platform audit, identified gaps, and documentation update roadmap'
         }
     ];
 
