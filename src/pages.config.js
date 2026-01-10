@@ -148,6 +148,7 @@ import InvestorMarketplace from './pages/InvestorMarketplace';
 import InvestorOnboarding from './pages/InvestorOnboarding';
 import InvestorPortfolio from './pages/InvestorPortfolio';
 import InvestorSettings from './pages/InvestorSettings';
+import InvoiceGenerationCenter from './pages/InvoiceGenerationCenter';
 import Invoices from './pages/Invoices';
 import Invoicing from './pages/Invoicing';
 import KongAPIIntegrationGuide from './pages/KongAPIIntegrationGuide';
@@ -338,6 +339,8 @@ import TermsOfService from './pages/TermsOfService';
 import TestPSPOwnership from './pages/TestPSPOwnership';
 import ThreeDSecure from './pages/ThreeDSecure';
 import Transactions from './pages/Transactions';
+import UnifiedBillingDashboard from './pages/UnifiedBillingDashboard';
+import UsageMeteringEngine from './pages/UsageMeteringEngine';
 import UsageMeteringSystem from './pages/UsageMeteringSystem';
 import UserManagement from './pages/UserManagement';
 import UserNanoHub from './pages/UserNanoHub';
@@ -348,9 +351,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import UnifiedBillingDashboard from './pages/UnifiedBillingDashboard';
-import UsageMeteringEngine from './pages/UsageMeteringEngine';
-import InvoiceGenerationCenter from './pages/InvoiceGenerationCenter';
 import __Layout from './Layout.jsx';
 
 
@@ -505,6 +505,7 @@ export const PAGES = {
     "InvestorOnboarding": InvestorOnboarding,
     "InvestorPortfolio": InvestorPortfolio,
     "InvestorSettings": InvestorSettings,
+    "InvoiceGenerationCenter": InvoiceGenerationCenter,
     "Invoices": Invoices,
     "Invoicing": Invoicing,
     "KongAPIIntegrationGuide": KongAPIIntegrationGuide,
@@ -695,6 +696,8 @@ export const PAGES = {
     "TestPSPOwnership": TestPSPOwnership,
     "ThreeDSecure": ThreeDSecure,
     "Transactions": Transactions,
+    "UnifiedBillingDashboard": UnifiedBillingDashboard,
+    "UsageMeteringEngine": UsageMeteringEngine,
     "UsageMeteringSystem": UsageMeteringSystem,
     "UserManagement": UserManagement,
     "UserNanoHub": UserNanoHub,
@@ -705,9 +708,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "UnifiedBillingDashboard": UnifiedBillingDashboard,
-    "UsageMeteringEngine": UsageMeteringEngine,
-    "InvoiceGenerationCenter": InvoiceGenerationCenter,
 }
 
 export const pagesConfig = {

@@ -11,9 +11,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
-import { FileText, Send, Eye, CheckCircle, Clock, Plus, Download, Calendar, Filter, Trash2, Mail } from 'lucide-react';
+import { FileText, Send, Eye, CheckCircle, Clock, Plus, Download, Calendar, Filter, Trash2, Mail, Settings } from 'lucide-react';
 import { useI18n } from '@/components/i18n/I18nextProvider';
 import { toast } from 'sonner';
+import InvoiceTemplateDesigner from '@/components/billing/InvoiceTemplateDesigner';
 
 export default function InvoiceGenerationCenter() {
     const { platformUser, loading } = usePlatformAuth();
@@ -23,6 +24,7 @@ export default function InvoiceGenerationCenter() {
     const [bulkAction, setBulkAction] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
     const [searchQuery, setSearchQuery] = useState('');
+    const [invoiceTemplate, setInvoiceTemplate] = useState(null);
 
     const { data: invoices = [] } = useQuery({
         queryKey: ['consolidated-invoices'],
@@ -332,9 +334,10 @@ export default function InvoiceGenerationCenter() {
                     </div>
 
                     <Tabs defaultValue="generate" className="space-y-6">
-                        <TabsList className="grid w-full grid-cols-2">
+                        <TabsList className="grid w-full grid-cols-3">
                             <TabsTrigger value="generate">Generate New</TabsTrigger>
                             <TabsTrigger value="manage">Manage Invoices</TabsTrigger>
+                            <TabsTrigger value="template">Invoice Template</TabsTrigger>
                         </TabsList>
 
                         <TabsContent value="generate" className="space-y-4">
@@ -579,6 +582,15 @@ export default function InvoiceGenerationCenter() {
                             </div>
                         </CardContent>
                     </Card>
+                        </TabsContent>
+
+                        <TabsContent value="template" className="space-y-4">
+                            <InvoiceTemplateDesigner 
+                                onSave={(template) => {
+                                    setInvoiceTemplate(template);
+                                    // In production, save to database
+                                }}
+                            />
                         </TabsContent>
                     </Tabs>
                 </div>

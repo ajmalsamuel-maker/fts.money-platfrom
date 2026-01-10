@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
+import { createPageUrl } from '@/utils';
+import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
+import { usePlatformAuth, PLATFORM_ROLES, getRoleLabel } from '@/components/auth/usePlatformAuth';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Building, FileText, Download, Filter, TrendingUp } from 'lucide-react';
+import { Building, FileText, Download, Filter, TrendingUp, ArrowLeft } from 'lucide-react';
 
 export default function PSPInvoiceAggregator() {
+    const { platformUser, loading } = usePlatformAuth();
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
     const [merchantFilter, setMerchantFilter] = useState('all');
@@ -53,14 +57,40 @@ export default function PSPInvoiceAggregator() {
         a.click();
     };
 
-    return (
-        <div className="p-6 max-w-7xl mx-auto">
-            <div className="mb-6">
-                <h1 className="text-3xl font-bold text-slate-900">Invoice Aggregator</h1>
-                <p className="text-slate-600">View and manage all merchant invoices across your PSP</p>
-            </div>
+    if (loading) {
+        return <div className="flex items-center justify-center h-screen">Loading...</div>;
+    }
 
-            <div className="grid grid-cols-5 gap-4 mb-6">
+    return (
+        <div className="flex h-screen bg-slate-50">
+            <FTSPlatformSidebar 
+                currentPage="PSPInvoiceAggregator"
+                userRole={getRoleLabel(platformUser?.platform_role)}
+                userEmail={platformUser?.email}
+                isSuperAdmin={platformUser?.platform_role === PLATFORM_ROLES.SUPER_ADMIN}
+            />
+
+            <div className="flex-1 overflow-auto">
+                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6">
+                    <div className="flex items-center gap-4">
+                        <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => window.history.back()}
+                        >
+                            <ArrowLeft className="h-4 w-4 mr-2" />
+                            Back
+                        </Button>
+                        <div>
+                            <h2 className="text-lg font-semibold text-slate-900">PSP Invoice Aggregator</h2>
+                            <p className="text-xs text-slate-600">View all merchant invoices</p>
+                        </div>
+                    </div>
+                </header>
+
+                <div className="p-6 space-y-6">
+
+            <div className="grid grid-cols-5 gap-4">
                 <Card>
                     <CardHeader className="pb-2">
                         <CardTitle className="text-sm text-slate-600">Total Invoices</CardTitle>
@@ -202,6 +232,8 @@ export default function PSPInvoiceAggregator() {
                     )}
                 </CardContent>
             </Card>
+                </div>
+            </div>
         </div>
     );
 }
