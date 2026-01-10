@@ -585,6 +585,7 @@ export default function MasterPricingManagement() {
                                             <th className="text-left py-3 px-4 font-semibold">Provider</th>
                                             <th className="text-right py-3 px-4 font-semibold">Buy Rate</th>
                                             <th className="text-right py-3 px-4 font-semibold">Sell Rate</th>
+                                            <th className="text-right py-3 px-4 font-semibold">FX Spread</th>
                                             <th className="text-right py-3 px-4 font-semibold">Margin</th>
                                             <th className="text-left py-3 px-4 font-semibold">Status</th>
                                             <th className="text-right py-3 px-4 font-semibold">Actions</th>
@@ -646,6 +647,15 @@ export default function MasterPricingManagement() {
                                                 <td className="py-3 px-4 text-right text-slate-900">
                                                     {item.sell_rate_percentage ? `${item.sell_rate_percentage}%` : '-'}
                                                     {item.sell_rate_fixed ? ` + $${item.sell_rate_fixed}` : ''}
+                                                </td>
+                                                <td className="py-3 px-4 text-right">
+                                                    {item.fx_spread_percentage ? (
+                                                        <span className="text-blue-600 font-medium">
+                                                            {item.fx_spread_percentage}%
+                                                        </span>
+                                                    ) : (
+                                                        <span className="text-slate-400">-</span>
+                                                    )}
                                                 </td>
                                                 <td className="py-3 px-4 text-right">
                                                     <span className={item.margin_percentage >= 0 ? 'text-emerald-600 font-medium' : 'text-red-600 font-medium'}>
@@ -869,7 +879,7 @@ export default function MasterPricingManagement() {
 
                         <div className="border-t pt-4">
                             <h4 className="font-semibold text-slate-900 mb-3">Sell Rates (What We Charge)</h4>
-                            <div className="grid grid-cols-2 gap-4 mb-4">
+                            <div className="grid grid-cols-3 gap-4 mb-4">
                                 <div>
                                     <Label>Rate Type</Label>
                                     <Select value={formData.sell_rate_type || 'percentage'} onValueChange={(value) => setFormData({...formData, sell_rate_type: value})}>
@@ -893,9 +903,19 @@ export default function MasterPricingManagement() {
                                         onChange={(e) => setFormData({...formData, revenue_per_transaction: parseFloat(e.target.value)})}
                                     />
                                 </div>
+                                <div>
+                                    <Label>FX Spread (%)</Label>
+                                    <Input
+                                        type="number"
+                                        step="0.01"
+                                        placeholder="e.g., 0.80 for 0.8%"
+                                        value={formData.fx_spread_percentage || ''}
+                                        onChange={(e) => setFormData({...formData, fx_spread_percentage: parseFloat(e.target.value)})}
+                                    />
+                                </div>
                             </div>
                             {formData.sell_rate_type !== 'tiered' && (
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-3 gap-4">
                                     <div>
                                         <Label>Percentage (%)</Label>
                                         <Input
@@ -912,6 +932,16 @@ export default function MasterPricingManagement() {
                                             step="0.01"
                                             value={formData.sell_rate_fixed || ''}
                                             onChange={(e) => setFormData({...formData, sell_rate_fixed: parseFloat(e.target.value)})}
+                                        />
+                                    </div>
+                                    <div>
+                                        <Label>FX Spread (%)</Label>
+                                        <Input
+                                            type="number"
+                                            step="0.01"
+                                            placeholder="e.g., 1.5"
+                                            value={formData.fx_spread_percentage || ''}
+                                            onChange={(e) => setFormData({...formData, fx_spread_percentage: parseFloat(e.target.value)})}
                                         />
                                     </div>
                                 </div>
@@ -1032,6 +1062,20 @@ export default function MasterPricingManagement() {
                                                             />
                                                         </div>
                                                         <div>
+                                                            <Label className="text-xs">FX Spread (%)</Label>
+                                                            <Input
+                                                                type="number"
+                                                                step="0.01"
+                                                                placeholder="0.00"
+                                                                value={tier.fx_spread_percentage || ''}
+                                                                onChange={(e) => {
+                                                                    const newTiers = [...formData.buy_rate_tiers];
+                                                                    newTiers[idx].fx_spread_percentage = parseFloat(e.target.value) || 0;
+                                                                    setFormData({ ...formData, buy_rate_tiers: newTiers });
+                                                                }}
+                                                            />
+                                                        </div>
+                                                        <div>
                                                             <Label className="text-xs">Volume Range</Label>
                                                             <div className="flex gap-1">
                                                                 <Input
@@ -1056,7 +1100,7 @@ export default function MasterPricingManagement() {
                                                                 />
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                        </div>
                                                 </div>
                                             ))}
                                             <Button
@@ -1193,6 +1237,20 @@ export default function MasterPricingManagement() {
                                                             />
                                                         </div>
                                                         <div>
+                                                            <Label className="text-xs">FX Spread (%)</Label>
+                                                            <Input
+                                                                type="number"
+                                                                step="0.01"
+                                                                placeholder="0.00"
+                                                                value={tier.fx_spread_percentage || ''}
+                                                                onChange={(e) => {
+                                                                    const newTiers = [...formData.sell_rate_tiers];
+                                                                    newTiers[idx].fx_spread_percentage = parseFloat(e.target.value) || 0;
+                                                                    setFormData({ ...formData, sell_rate_tiers: newTiers });
+                                                                }}
+                                                            />
+                                                        </div>
+                                                        <div>
                                                             <Label className="text-xs">Volume Range</Label>
                                                             <div className="flex gap-1">
                                                                 <Input
@@ -1217,7 +1275,7 @@ export default function MasterPricingManagement() {
                                                                 />
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                        </div>
                                                 </div>
                                             ))}
                                             <Button
