@@ -157,14 +157,14 @@ graph TB
 
 ### Permission Naming Convention
 
-**Format:** `<resource>:<action>`
+**Format:** \`<resource>:<action>\`
 
 **Examples:**
-- `customer:create` - Can create new customers
-- `transaction:read` - Can view transactions
-- `api_key:delete` - Can delete API keys
-- `user:manage` - Can manage user accounts
-- `billing:update` - Can modify billing settings
+- \`customer:create\` - Can create new customers
+- \`transaction:read\` - Can view transactions
+- \`api_key:delete\` - Can delete API keys
+- \`user:manage\` - Can manage user accounts
+- \`billing:update\` - Can modify billing settings
 
 ---
 
