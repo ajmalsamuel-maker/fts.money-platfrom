@@ -12,15 +12,19 @@ const APIReferenceGuide = `# FTS.Money API Reference Guide
 
 1. [Authentication](#authentication)
 2. [PSP Platform API](#psp-platform-api)
-3. [ISO Gateway API](#iso-gateway-api)
-4. [Orchestration API](#orchestration-api)
-5. [Crypto Gateway API](#crypto-gateway-api)
-6. [RWA Platform API](#rwa-platform-api)
-7. [Tax Calculation API](#tax-calculation-api)
-8. [E-Invoicing API](#e-invoicing-api)
-9. [Webhooks](#webhooks)
-10. [Error Codes](#error-codes)
-11. [Rate Limits](#rate-limits)
+3. [Merchant Management API](#merchant-management-api)
+4. [ISO Gateway API](#iso-gateway-api)
+5. [Orchestration API](#orchestration-api)
+6. [Crypto Gateway API](#crypto-gateway-api)
+7. [RWA Platform API](#rwa-platform-api)
+8. [Tax Calculation API](#tax-calculation-api)
+9. [E-Invoicing API](#e-invoicing-api)
+10. [Billing & Usage API](#billing--usage-api)
+11. [Webhooks](#webhooks)
+12. [Error Codes](#error-codes)
+13. [Rate Limits](#rate-limits)
+14. [Pagination](#pagination)
+15. [Idempotency](#idempotency)
 
 ---
 
@@ -354,16 +358,295 @@ webhook_events:
 
 ---
 
+## Merchant Management API
+
+### Create Merchant
+
+**POST** \`/v1/merchants\`
+
+Onboard a new merchant to your PSP platform.
+
+**Request:**
+\`\`\`json
+{
+  "business_name": "Acme Corporation",
+  "email": "billing@acme.com",
+  "website": "https://acme.com",
+  "business_type": "corporation",
+  "mcc": "5411",
+  "tax_id": "12-3456789",
+  "address": {
+    "line1": "123 Main Street",
+    "city": "San Francisco",
+    "state": "CA",
+    "postal_code": "94102",
+    "country": "US"
+  },
+  "contact_person": {
+    "name": "John Smith",
+    "email": "john@acme.com",
+    "phone": "+1-555-0123"
+  },
+  "processing_details": {
+    "expected_monthly_volume": 100000,
+    "average_transaction_size": 50,
+    "currencies": ["USD", "EUR"]
+  }
+}
+\`\`\`
+
+**Response:**
+\`\`\`json
+{
+  "merchant_id": "merch_abc123",
+  "status": "pending_verification",
+  "api_keys": {
+    "publishable_key": "pk_test_xyz789",
+    "secret_key": "sk_test_abc123"
+  },
+  "onboarding_url": "https://portal.fts.money/onboard/merch_abc123",
+  "created_at": "2026-01-10T14:30:00Z"
+}
+\`\`\`
+
+---
+
+## Billing & Usage API
+
+### Get Usage Metrics
+
+**GET** \`/v1/usage/current\`
+
+Retrieve current billing period usage.
+
+**Query Parameters:**
+- \`service_type\` - Filter by service (psp, iso_gateway, crypto, etc.)
+- \`metric_type\` - Metric to query (transactions, messages, api_calls)
+
+**Response:**
+\`\`\`json
+{
+  "billing_period": {
+    "start_date": "2026-01-01",
+    "end_date": "2026-01-31",
+    "days_remaining": 21
+  },
+  "usage": {
+    "psp_payment_processing": {
+      "transactions": {
+        "included": 10000,
+        "used": 7543,
+        "remaining": 2457,
+        "overage": 0
+      },
+      "estimated_charge": 499.00
+    },
+    "iso_gateway": {
+      "messages": {
+        "included": 100000,
+        "used": 125433,
+        "remaining": 0,
+        "overage": 25433
+      },
+      "overage_rate": 0.05,
+      "estimated_charge": 2499.00 + (25433 * 0.05)
+    }
+  },
+  "total_estimated": 3770.65,
+  "currency": "USD"
+}
+\`\`\`
+
+---
+
 ## Error Codes
 
-| Code | Message | Resolution |
-|------|---------|------------|
-| **400** | Bad Request | Check request format |
-| **401** | Unauthorized | Verify API key |
-| **403** | Forbidden | Check permissions |
-| **404** | Not Found | Verify resource ID |
-| **429** | Rate Limit | Reduce request rate |
-| **500** | Server Error | Contact support |
+### HTTP Status Codes
+
+| Code | Message | Description | Resolution |
+|------|---------|-------------|------------|
+| **200** | OK | Request succeeded | N/A |
+| **201** | Created | Resource created | N/A |
+| **400** | Bad Request | Invalid request format | Check JSON syntax, required fields |
+| **401** | Unauthorized | Invalid/missing API key | Verify \`Authorization\` header |
+| **403** | Forbidden | Insufficient permissions | Check API key scope |
+| **404** | Not Found | Resource doesn't exist | Verify resource ID |
+| **409** | Conflict | Resource already exists | Use PUT to update |
+| **422** | Validation Error | Business logic validation failed | Check error details |
+| **429** | Rate Limit | Too many requests | Wait before retrying |
+| **500** | Server Error | Internal server error | Retry, contact support |
+| **503** | Service Unavailable | Temporary outage | Check status.fts.money |
+
+### API Error Response Format
+
+\`\`\`json
+{
+  "error": {
+    "code": "validation_error",
+    "message": "Invalid merchant data",
+    "details": [
+      {
+        "field": "email",
+        "message": "Invalid email format"
+      },
+      {
+        "field": "tax_id",
+        "message": "Tax ID is required for US businesses"
+      }
+    ],
+    "request_id": "req_xyz789",
+    "documentation_url": "https://docs.fts.money/errors/validation_error"
+  }
+}
+\`\`\`
+
+---
+
+## Rate Limits
+
+### Rate Limit Tiers
+
+| Tier | Requests/Hour | Burst | Overage |
+|------|---------------|-------|---------|
+| **Test** | 1,000 | 100/min | Hard limit |
+| **Starter** | 5,000 | 200/min | Throttled |
+| **Professional** | 10,000 | 500/min | Throttled |
+| **Enterprise** | Custom | Custom | Never throttled |
+
+### Rate Limit Headers
+
+Every API response includes rate limit information:
+
+\`\`\`http
+X-RateLimit-Limit: 10000
+X-RateLimit-Remaining: 9847
+X-RateLimit-Reset: 1704937400
+X-RateLimit-Retry-After: 3600
+\`\`\`
+
+### Handling Rate Limits
+
+\`\`\`javascript
+async function apiCallWithRetry(endpoint, data, maxRetries = 3) {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer sk_live_...',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+      
+      if (response.status === 429) {
+        const retryAfter = response.headers.get('X-RateLimit-Retry-After');
+        await sleep(retryAfter * 1000);
+        continue;
+      }
+      
+      return await response.json();
+      
+    } catch (error) {
+      if (attempt === maxRetries) throw error;
+    }
+  }
+}
+\`\`\`
+
+---
+
+## Pagination
+
+### Cursor-Based Pagination
+
+All list endpoints support cursor-based pagination for consistent results.
+
+**Request:**
+\`\`\`bash
+GET /v1/transactions?limit=100&starting_after=txn_xyz789
+\`\`\`
+
+**Response:**
+\`\`\`json
+{
+  "data": [...],
+  "has_more": true,
+  "next_cursor": "txn_abc456"
+}
+\`\`\`
+
+### Pagination Best Practices
+
+\`\`\`javascript
+async function fetchAllTransactions() {
+  const allTransactions = [];
+  let cursor = null;
+  
+  do {
+    const params = new URLSearchParams({
+      limit: 100,
+      ...(cursor && { starting_after: cursor })
+    });
+    
+    const response = await fetch(
+      \`/v1/transactions?\${params}\`,
+      { headers: { 'Authorization': 'Bearer sk_live_...' } }
+    );
+    
+    const { data, has_more, next_cursor } = await response.json();
+    
+    allTransactions.push(...data);
+    cursor = has_more ? next_cursor : null;
+    
+  } while (cursor);
+  
+  return allTransactions;
+}
+\`\`\`
+
+---
+
+## Idempotency
+
+### Idempotent Requests
+
+Prevent duplicate operations by including an idempotency key.
+
+\`\`\`bash
+POST /v1/payments
+Idempotency-Key: order_12345_payment_attempt_1
+
+{
+  "amount": 9999,
+  "currency": "usd",
+  "description": "Order #12345"
+}
+\`\`\`
+
+**Behavior:**
+- First request: Processes payment, returns 201 Created
+- Duplicate request (same key): Returns original 201 response
+- Key expires after 24 hours
+
+\`\`\`javascript
+// Generate idempotency key
+import { randomUUID } from 'crypto';
+
+function createPayment(orderData) {
+  const idempotencyKey = \`order_\${orderData.id}_\${randomUUID()}\`;
+  
+  return fetch('/v1/payments', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer sk_live_...',
+      'Idempotency-Key': idempotencyKey,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(orderData)
+  });
+}
+\`\`\`
 
 ---
 

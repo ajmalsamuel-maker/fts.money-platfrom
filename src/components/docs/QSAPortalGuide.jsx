@@ -315,6 +315,189 @@ conversation:
 
 ---
 
+## Communication Tools
+
+### Secure Messaging
+
+**Message Types:**
+
+| Type | Usage | Response Time |
+|------|-------|---------------|
+| **Clarification Request** | Request additional evidence | 2 business days |
+| **Finding Discussion** | Discuss potential findings | 1 business day |
+| **Schedule Change** | Modify audit timeline | Same day |
+| **Urgent Issue** | Critical compliance issue | 4 hours |
+
+**Message Center Interface:**
+
+\`\`\`javascript
+// QSA sends message to merchant
+const message = {
+  recipient_id: "merchant_abc123",
+  subject: "Additional Evidence Required - Requirement 10.2",
+  message: "We need to review your log retention policies...",
+  priority: "high",
+  attachments: ["evidence_template.xlsx"],
+  require_response_by: "2026-01-15T17:00:00Z"
+};
+\`\`\`
+
+---
+
+## Testing & Validation
+
+### Control Testing Workflow
+
+\`\`\`mermaid
+flowchart TD
+    START[Select Control] --> PLAN[Plan Test Approach]
+    PLAN --> SELECT[Select Sample]
+    SELECT --> EXECUTE[Execute Test]
+    
+    EXECUTE --> OBSERVE[Observe Process]
+    OBSERVE --> DOCUMENT[Document Results]
+    DOCUMENT --> EVIDENCE[Collect Evidence]
+    
+    EVIDENCE --> EVAL{Evaluate Results}
+    
+    EVAL -->|Pass| PASS[Mark Control Effective]
+    EVAL -->|Fail| FAIL[Document Finding]
+    
+    FAIL --> SEVERITY{Assess Severity}
+    SEVERITY -->|High| CRITICAL[Critical Finding]
+    SEVERITY -->|Medium| MODERATE[Moderate Finding]
+    SEVERITY -->|Low| MINOR[Minor Observation]
+    
+    PASS --> NEXT{More Controls?}
+    CRITICAL --> NEXT
+    MODERATE --> NEXT
+    MINOR --> NEXT
+    
+    NEXT -->|Yes| START
+    NEXT -->|No| REPORT[Generate Report]
+    
+    style CRITICAL fill:#ef4444,color:#fff
+    style PASS fill:#10b981,color:#fff
+\`\`\`
+
+### Sample Selection Methods
+
+| Method | Use Case | Sample Size | Risk Level |
+|--------|----------|-------------|------------|
+| **Random** | Standard controls | 25 items | Low |
+| **Judgmental** | High-risk areas | 10-15 items | High |
+| **Stratified** | Multiple populations | 30+ items | Medium |
+| **Statistical** | Large volumes | Calculated | Variable |
+
+---
+
+## Compliance Tracking
+
+### Multi-Merchant Compliance Dashboard
+
+**Aggregated View:**
+
+\`\`\`
+┌─────────────────────────────────────────────────────────┐
+│ QSA Compliance Overview                                 │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│  Total Clients: 15                                      │
+│  ✅ Compliant: 12 (80%)                                 │
+│  ⚠️  In Progress: 2 (13%)                               │
+│  ❌ Non-Compliant: 1 (7%)                               │
+│                                                         │
+│  Upcoming Audits:                                       │
+│  • MerchantA - Jan 20, 2026                            │
+│  • MerchantB - Feb 5, 2026                             │
+│  • MerchantC - Feb 18, 2026                            │
+│                                                         │
+│  Expiring Certifications:                              │
+│  • MerchantD - Jan 31, 2026 (Renewal Required)        │
+│  • MerchantE - Mar 15, 2026                            │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+\`\`\`
+
+### Compliance Trends
+
+\`\`\`mermaid
+graph LR
+    Q1[Q1 2025<br/>85% Pass] --> Q2[Q2 2025<br/>88% Pass]
+    Q2 --> Q3[Q3 2025<br/>90% Pass]
+    Q3 --> Q4[Q4 2025<br/>92% Pass]
+    Q4 --> PROJ[Q1 2026<br/>95% Projected]
+    
+    style Q1 fill:#f59e0b
+    style Q2 fill:#3b82f6
+    style Q3 fill:#10b981
+    style Q4 fill:#10b981
+    style PROJ fill:#6366f1
+\`\`\`
+
+---
+
+## Risk Assessment
+
+### Risk Scoring Matrix
+
+**Inherent Risk Factors:**
+
+| Factor | Weight | Scoring Criteria |
+|--------|--------|------------------|
+| **Transaction Volume** | 25% | <$1M=1, $1M-$10M=2, $10M-$100M=3, >$100M=4 |
+| **Card Present %** | 15% | >80%=1, 50-80%=2, 20-50%=3, <20%=4 |
+| **E-commerce %** | 20% | <20%=1, 20-50%=2, 50-80%=3, >80%=4 |
+| **International %** | 15% | <10%=1, 10-30%=2, 30-60%=3, >60%=4 |
+| **Industry Type** | 25% | Low-risk=1, Medium=2, High-risk=3, Prohibited=4 |
+
+**Risk Score Calculation:**
+
+\`\`\`javascript
+function calculateRiskScore(merchant) {
+  const weights = {
+    transactionVolume: 0.25,
+    cardPresent: 0.15,
+    ecommerce: 0.20,
+    international: 0.15,
+    industryType: 0.25
+  };
+  
+  const scores = {
+    transactionVolume: getVolumeScore(merchant.monthlyVolume),
+    cardPresent: getChannelScore(merchant.cardPresentPercent),
+    ecommerce: getChannelScore(merchant.ecommercePercent),
+    international: getGeoScore(merchant.internationalPercent),
+    industryType: getIndustryScore(merchant.mcc)
+  };
+  
+  let weightedScore = 0;
+  for (const [factor, weight] of Object.entries(weights)) {
+    weightedScore += scores[factor] * weight;
+  }
+  
+  // Normalize to 0-100 scale
+  const riskScore = Math.round((weightedScore / 4) * 100);
+  
+  return {
+    score: riskScore,
+    tier: getRiskTier(riskScore),
+    factors: scores
+  };
+}
+\`\`\`
+
+**Risk Tier Definitions:**
+
+| Tier | Score Range | Audit Frequency | Sample Size | Documentation |
+|------|-------------|-----------------|-------------|---------------|
+| **Low** | 0-30 | Annual | Standard (25) | Basic |
+| **Medium** | 31-60 | Annual | Enhanced (35) | Detailed |
+| **High** | 61-85 | Semi-Annual | Extensive (50) | Comprehensive |
+| **Critical** | 86-100 | Quarterly | Full (100+) | Exhaustive |
+
+---
+
 **Document Information**
 - **Version:** 1.0
 - **Last Updated:** January 10, 2026

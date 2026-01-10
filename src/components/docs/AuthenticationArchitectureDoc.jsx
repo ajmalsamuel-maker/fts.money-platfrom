@@ -364,6 +364,344 @@ sequenceDiagram
 
 ---
 
+## Session Management
+
+### Session Architecture
+
+\`\`\`mermaid
+sequenceDiagram
+    participant Browser
+    participant App
+    participant Auth as Auth Service
+    participant Redis as Session Store
+    participant DB as Database
+    
+    Browser->>App: Login request
+    App->>Auth: Validate credentials
+    Auth->>DB: Verify user
+    DB-->>Auth: User data
+    
+    Auth->>Auth: Generate session token
+    Auth->>Redis: Store session
+    Redis-->>Auth: Confirmed
+    
+    Auth-->>App: Session token
+    App-->>Browser: Set session cookie
+    
+    Note over Browser,Redis: Subsequent requests
+    
+    Browser->>App: API request + cookie
+    App->>Redis: Validate session
+    Redis-->>App: Session data
+    App->>App: Authorize request
+    App-->>Browser: Response
+\`\`\`
+
+### Session Storage Schema
+
+\`\`\`javascript
+// Redis session structure
+const session = {
+  session_id: "sess_abc123xyz",
+  user_id: "user_789",
+  user_email: "admin@example.com",
+  portal_type: "platform_admin",
+  role: "super_admin",
+  permissions: ["*"],
+  created_at: 1704931200,
+  last_activity: 1704935600,
+  expires_at: 1704937400,
+  ip_address: "203.0.113.42",
+  user_agent: "Mozilla/5.0...",
+  metadata: {
+    login_method: "password",
+    mfa_verified: true
+  }
+};
+\`\`\`
+
+### Session Lifecycle
+
+| Event | Action | TTL Update |
+|-------|--------|------------|
+| **Login** | Create session | 30 min |
+| **API Request** | Refresh activity | Extend 30 min |
+| **Idle 30 min** | Warn user | No change |
+| **Idle 35 min** | Auto-logout | Delete session |
+| **Explicit Logout** | Immediate | Delete session |
+| **Password Change** | Invalidate all | Delete all sessions |
+
+---
+
+## Password Security
+
+### Password Policy
+
+\`\`\`yaml
+password_requirements:
+  minimum_length: 12
+  require_uppercase: true
+  require_lowercase: true
+  require_numbers: true
+  require_special_chars: true
+  
+  disallowed_patterns:
+    - sequential_characters: "12345", "abcde"
+    - repeated_characters: "aaaa", "1111"
+    - common_passwords: ["Password123!", "Admin2024!"]
+    - email_in_password: true
+    - name_in_password: true
+    
+  expiration:
+    admin_users: 90 days
+    regular_users: 180 days
+    service_accounts: Never
+    
+  history:
+    prevent_reuse: 5 passwords
+    minimum_age: 1 day
+\`\`\`
+
+### Password Hashing
+
+\`\`\`javascript
+// Backend: Hash password with Argon2id
+import { hash, verify } from '@node-rs/argon2';
+
+async function hashPassword(plaintext) {
+  return await hash(plaintext, {
+    memoryCost: 19456,      // 19 MiB
+    timeCost: 2,            // 2 iterations
+    parallelism: 1,         // 1 thread
+    outputLen: 32           // 32 bytes
+  });
+}
+
+async function verifyPassword(hash, plaintext) {
+  return await verify(hash, plaintext);
+}
+\`\`\`
+
+### Breach Detection
+
+\`\`\`mermaid
+flowchart TD
+    REG[User Registration] --> HASH[Hash Password]
+    HASH --> PREFIX[Extract Hash Prefix]
+    PREFIX --> API[Query HaveIBeenPwned API]
+    
+    API --> CHECK{Password Breached?}
+    CHECK -->|Yes| REJECT[Reject Password]
+    CHECK -->|No| ACCEPT[Accept Password]
+    
+    REJECT --> NOTIFY[Notify User]
+    NOTIFY --> SUGGEST[Suggest Strong Password]
+    
+    ACCEPT --> STORE[Store in Database]
+    
+    style REJECT fill:#ef4444,color:#fff
+    style ACCEPT fill:#10b981,color:#fff
+\`\`\`
+
+---
+
+## Multi-Factor Authentication
+
+### MFA Methods Supported
+
+| Method | Security | Setup Time | User Friction | Cost |
+|--------|----------|------------|---------------|------|
+| **SMS OTP** | Medium | 30 sec | Low | $0.01/SMS |
+| **Email OTP** | Low | 10 sec | Very Low | Free |
+| **TOTP (Authenticator)** | High | 2 min | Medium | Free |
+| **WebAuthn (FIDO2)** | Very High | 1 min | Low | Free |
+| **Backup Codes** | Medium | 30 sec | N/A | Free |
+
+### TOTP Implementation
+
+\`\`\`javascript
+// Generate TOTP secret
+import { authenticator } from 'otplib';
+
+function setupTOTP(userEmail) {
+  const secret = authenticator.generateSecret();
+  
+  const otpauth = authenticator.keyuri(
+    userEmail,
+    'FTS.Money',
+    secret
+  );
+  
+  return {
+    secret,
+    qrCode: generateQRCode(otpauth),
+    backupCodes: generateBackupCodes()
+  };
+}
+
+function verifyTOTP(secret, token) {
+  return authenticator.verify({
+    token,
+    secret
+  });
+}
+\`\`\`
+
+### MFA Enforcement Policy
+
+\`\`\`yaml
+mfa_requirements:
+  platform_admin:
+    mandatory: true
+    methods: ["totp", "webauthn"]
+    grace_period: 0 days
+    
+  psp_owner:
+    mandatory: true
+    methods: ["totp", "sms", "webauthn"]
+    grace_period: 7 days
+    
+  psp_admin:
+    mandatory: true
+    methods: ["totp", "sms"]
+    grace_period: 14 days
+    
+  merchant:
+    mandatory: false
+    methods: ["sms", "email"]
+    recommended: true
+\`\`\`
+
+---
+
+## API Authentication
+
+### API Key Types
+
+\`\`\`mermaid
+graph TB
+    subgraph "API Key Hierarchy"
+        MASTER[Master Key<br/>Full Access]
+        READ[Read-Only Key<br/>GET requests]
+        WRITE[Write Key<br/>POST/PUT]
+        RESTRICTED[Restricted Key<br/>Specific resources]
+    end
+    
+    MASTER --> READ
+    MASTER --> WRITE
+    MASTER --> RESTRICTED
+    
+    style MASTER fill:#ef4444,color:#fff
+    style READ fill:#3b82f6,color:#fff
+    style WRITE fill:#f59e0b,color:#fff
+    style RESTRICTED fill:#10b981,color:#fff
+\`\`\`
+
+### API Key Generation
+
+\`\`\`javascript
+// Generate cryptographically secure API key
+import { randomBytes } from 'crypto';
+
+function generateAPIKey(type = 'live') {
+  const prefix = type === 'live' ? 'sk_live_' : 'sk_test_';
+  const randomPart = randomBytes(24).toString('base64url');
+  
+  const apiKey = prefix + randomPart;
+  
+  // Store hash in database
+  const hash = await hashAPIKey(apiKey);
+  
+  await db.apiKeys.create({
+    key_hash: hash,
+    key_prefix: apiKey.substring(0, 12),
+    created_at: new Date(),
+    expires_at: null,
+    permissions: ['*']
+  });
+  
+  // Return plaintext once (never stored)
+  return apiKey;
+}
+\`\`\`
+
+---
+
+## vLEI Migration Roadmap
+
+### Phase 1: Foundation (Q2 2026)
+
+\`\`\`yaml
+phase_1_foundation:
+  milestone_1:
+    title: "vLEI Integration Research"
+    duration: 4 weeks
+    tasks:
+      - Research GLEIF Trust Framework
+      - Evaluate vLEI providers
+      - Design integration architecture
+      - Cost analysis
+      
+  milestone_2:
+    title: "Pilot Program"
+    duration: 6 weeks
+    tasks:
+      - Select 5 pilot customers
+      - Implement basic vLEI verification
+      - Test authentication flows
+      - Gather feedback
+\`\`\`
+
+### Phase 2: Platform Integration (Q3 2026)
+
+\`\`\`mermaid
+gantt
+    title vLEI Migration Timeline
+    dateFormat YYYY-MM-DD
+    
+    section Research
+    vLEI evaluation :2026-04-01, 4w
+    Architecture design :2026-04-29, 2w
+    
+    section Pilot
+    Pilot implementation :2026-05-13, 6w
+    Testing & feedback :2026-06-24, 2w
+    
+    section Rollout
+    Platform integration :2026-07-08, 8w
+    Merchant migration :2026-09-02, 12w
+    Full deployment :milestone, 2026-11-25, 0d
+\`\`\`
+
+### vLEI Authentication Flow
+
+\`\`\`mermaid
+sequenceDiagram
+    participant User
+    participant FTS as FTS.Money
+    participant Wallet as vLEI Wallet
+    participant GLEIF as GLEIF Registry
+    
+    User->>FTS: Initiate login
+    FTS->>FTS: Generate challenge
+    FTS->>User: Display QR code
+    
+    User->>Wallet: Scan QR code
+    Wallet->>User: Request biometric
+    User->>Wallet: Provide biometric
+    
+    Wallet->>Wallet: Sign challenge
+    Wallet->>FTS: Submit signed credential
+    
+    FTS->>GLEIF: Verify credential
+    GLEIF-->>FTS: Verification result
+    
+    FTS->>FTS: Create session
+    FTS-->>User: Login success
+\`\`\`
+
+---
+
 **Document Information**
 - **Version:** 1.0
 - **Last Updated:** January 10, 2026
