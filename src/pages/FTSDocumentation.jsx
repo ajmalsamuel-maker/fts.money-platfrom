@@ -50,6 +50,9 @@ import AuthenticationArchitectureDoc from '@/components/docs/AuthenticationArchi
 import APIReferenceGuide from '@/components/docs/APIReferenceGuide';
 import IntegrationPatternsDoc from '@/components/docs/IntegrationPatternsDoc';
 import OperationalRunbooksDoc from '@/components/docs/OperationalRunbooksDoc';
+import UserJourneyMapsDoc from '@/components/docs/UserJourneyMapsDoc';
+import TroubleshootingGuide from '@/components/docs/TroubleshootingGuide';
+import MigrationGuidesDoc from '@/components/docs/MigrationGuidesDoc';
 import MermaidDiagram from '@/components/docs/MermaidDiagram';
 import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 import ExportDialog from '@/components/docs/ExportDialog';
@@ -355,6 +358,27 @@ export default function FTSDocumentation() {
             icon: Shield,
             content: OperationalRunbooksDoc,
             description: 'Daily ops checklists, incident response, escalation procedures, disaster recovery'
+        },
+        {
+            id: 'user-journeys',
+            title: 'User Journey Maps',
+            icon: BookOpen,
+            content: UserJourneyMapsDoc,
+            description: 'End-to-end workflows for PSP operators, merchants, ISO customers, crypto users, RWA issuers, investors'
+        },
+        {
+            id: 'troubleshooting',
+            title: 'Troubleshooting Guide',
+            icon: Shield,
+            content: TroubleshootingGuide,
+            description: 'Common issues and solutions across all services - payment processing, API, auth, settlement, crypto'
+        },
+        {
+            id: 'migration-guides',
+            title: 'Migration Guides',
+            icon: GitBranch,
+            content: MigrationGuidesDoc,
+            description: 'Migrate from Stripe, PayPal, legacy systems - zero-downtime strategies, API compatibility, data migration'
         }
     ];
 
