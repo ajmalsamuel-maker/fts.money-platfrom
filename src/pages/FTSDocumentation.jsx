@@ -37,6 +37,9 @@ import ServicePublicationDoc from '@/components/docs/ServicePublicationDoc';
 import BillingInvoicingSystemDoc from '@/components/docs/BillingInvoicingSystemDoc';
 import MultiUserRBACSystemDoc from '@/components/docs/MultiUserRBACSystemDoc';
 import DocumentationGapAnalysis from '@/components/docs/DocumentationGapAnalysis';
+import ISOGatewayPortalGuide from '@/components/docs/ISOGatewayPortalGuide';
+import OrchestrationPortalGuide from '@/components/docs/OrchestrationPortalGuide';
+import CryptoGatewayPortalGuide from '@/components/docs/CryptoGatewayPortalGuide';
 import MermaidDiagram from '@/components/docs/MermaidDiagram';
 import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 import ExportDialog from '@/components/docs/ExportDialog';
@@ -251,6 +254,27 @@ export default function FTSDocumentation() {
             icon: FileText,
             content: DocumentationGapAnalysis,
             description: 'Complete platform audit, identified gaps, and documentation update roadmap'
+        },
+        {
+            id: 'iso-gateway-portal',
+            title: 'ISO Gateway Portal Guide',
+            icon: Code,
+            content: ISOGatewayPortalGuide,
+            description: 'Complete customer portal walkthrough - connection setup, message monitoring, routing rules, test console'
+        },
+        {
+            id: 'orchestration-portal',
+            title: 'Orchestration Portal Guide',
+            icon: GitBranch,
+            content: OrchestrationPortalGuide,
+            description: 'Routing strategy configuration, processor management, performance analytics, cost optimization'
+        },
+        {
+            id: 'crypto-gateway-portal',
+            title: 'Crypto Gateway Portal Guide',
+            icon: Wallet,
+            content: CryptoGatewayPortalGuide,
+            description: 'Wallet/IBAN management, card issuance, KYC workflows, compliance monitoring, LEI authentication'
         }
     ];
 

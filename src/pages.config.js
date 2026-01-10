@@ -318,6 +318,7 @@ import ServiceBillingConfiguration from './pages/ServiceBillingConfiguration';
 import ServiceConfigurationHub from './pages/ServiceConfigurationHub';
 import ServicePricingConfiguration from './pages/ServicePricingConfiguration';
 import ServiceProviderRegistration from './pages/ServiceProviderRegistration';
+import ServicePublicationManager from './pages/ServicePublicationManager';
 import Settings from './pages/Settings';
 import Settlements from './pages/Settlements';
 import SmartOrchestration from './pages/SmartOrchestration';
@@ -352,7 +353,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import ServicePublicationManager from './pages/ServicePublicationManager';
 import __Layout from './Layout.jsx';
 
 
@@ -677,6 +677,7 @@ export const PAGES = {
     "ServiceConfigurationHub": ServiceConfigurationHub,
     "ServicePricingConfiguration": ServicePricingConfiguration,
     "ServiceProviderRegistration": ServiceProviderRegistration,
+    "ServicePublicationManager": ServicePublicationManager,
     "Settings": Settings,
     "Settlements": Settlements,
     "SmartOrchestration": SmartOrchestration,
@@ -711,7 +712,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "ServicePublicationManager": ServicePublicationManager,
 }
 
 export const pagesConfig = {
