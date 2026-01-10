@@ -45,6 +45,8 @@ import RWAIssuerPortalGuide from '@/components/docs/RWAIssuerPortalGuide';
 import RWAInvestorPortalGuide from '@/components/docs/RWAInvestorPortalGuide';
 import TaxManagementCompleteGuide from '@/components/docs/TaxManagementCompleteGuide';
 import EInvoicingOperationsGuide from '@/components/docs/EInvoicingOperationsGuide';
+import QSAPortalGuide from '@/components/docs/QSAPortalGuide';
+import AuthenticationArchitectureDoc from '@/components/docs/AuthenticationArchitectureDoc';
 import MermaidDiagram from '@/components/docs/MermaidDiagram';
 import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 import ExportDialog from '@/components/docs/ExportDialog';
@@ -315,6 +317,20 @@ export default function FTSDocumentation() {
             icon: FileText,
             content: EInvoicingOperationsGuide,
             description: 'Multi-standard invoicing, government submission, country workflows, daily operations checklist'
+        },
+        {
+            id: 'qsa-portal-guide',
+            title: 'QSA Portal Guide',
+            icon: Shield,
+            content: QSAPortalGuide,
+            description: 'PCI DSS audit platform, evidence review, compliance scoring, report generation'
+        },
+        {
+            id: 'auth-architecture',
+            title: 'Authentication Architecture',
+            icon: Lock,
+            content: AuthenticationArchitectureDoc,
+            description: 'Multi-portal auth systems, session management, password security, vLEI roadmap'
         }
     ];
 

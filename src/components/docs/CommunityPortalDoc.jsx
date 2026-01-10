@@ -16,8 +16,9 @@ const CommunityPortalDoc = `# Community Portal Documentation
 4. [ISO Gateway Service](#iso-gateway-service)
 5. [Orchestration Service](#orchestration-service)
 6. [Service Marketplace](#service-marketplace)
-7. [Billing & Subscriptions](#billing--subscriptions)
-8. [Support & Resources](#support--resources)
+7. [FIX Score & Sustainability](#fix-score--sustainability)
+8. [Billing & Subscriptions](#billing--subscriptions)
+9. [Support & Resources](#support--resources)
 
 ---
 
@@ -1154,6 +1155,86 @@ Analytics:
   
 Total Monthly Cost: $816/month
 \`\`\`
+
+---
+
+## FIX Score & Sustainability
+
+### FTS Index (FIX) Merchant Scoring
+
+The FTS Index (FIX) is a merchant performance scoring system (0-1000 points) that rewards sustainable, high-performing merchants with exclusive benefits.
+
+**FIX Score Components:**
+
+\`\`\`mermaid
+graph TB
+    FIX[FIX Score<br/>0-1000 points] --> T[Transaction Score<br/>300 points]
+    FIX --> S[Service Adoption<br/>250 points]
+    FIX --> E[ESG Performance<br/>250 points]
+    FIX --> C[Compliance<br/>200 points]
+    
+    T --> T1[Volume: 150pts]
+    T --> T2[Count: 100pts]
+    T --> T3[Growth: 50pts]
+    
+    S --> S1[Services active: 150pts]
+    S --> S2[Integration depth: 100pts]
+    
+    E --> E1[Carbon offset: 100pts]
+    E --> E2[NANO tasks: 100pts]
+    E --> E3[Green investments: 50pts]
+    
+    C --> C1[PCI DSS: 100pts]
+    C --> C2[LEI verified: 100pts]
+    
+    style FIX fill:#f59e0b,color:#fff
+    style E fill:#10b981,color:#fff
+\`\`\`
+
+**FIX Score Tiers & Benefits:**
+
+| Tier | Score Range | Fee Discount | Benefits |
+|------|-------------|--------------|----------|
+| **Diamond** | 900-1000 | 25% | Featured listing, priority support, exclusive events |
+| **Platinum** | 750-899 | 15% | Featured listing, priority support |
+| **Gold** | 600-749 | 10% | Featured listing |
+| **Silver** | 400-599 | 5% | Standard benefits |
+| **Bronze** | 0-399 | 0% | Basic access |
+
+### NANO Sustainability Marketplace
+
+**What is NANO?**
+
+NANO is a gamified sustainability rewards platform where users earn tokens for eco-friendly actions (planting trees, using public transport, recycling). Merchants can sponsor tasks to drive engagement.
+
+**Merchant Benefits:**
+
+\`\`\`yaml
+nano_merchant_sponsorship:
+  sponsor_task_types:
+    - tree_planting: "Sponsor 100 tree plantings → +50 FIX points"
+    - public_transport: "Reward public transport users → +25 FIX points"
+    - plastic_reduction: "Incentivize reusable bags → +15 FIX points"
+    
+  sponsorship_costs:
+    small_campaign: "$500 (1,000 tasks)"
+    medium_campaign: "$2,500 (5,000 tasks)"
+    large_campaign: "$10,000 (25,000 tasks)"
+    
+  roi_benefits:
+    - brand_awareness: "Featured in NANO marketplace"
+    - customer_acquisition: "Drive traffic to merchant"
+    - fix_score_boost: "Earn ESG performance points"
+    - community_goodwill: "Positive brand association"
+\`\`\`
+
+**Community Leaderboard:**
+
+View top-performing merchants based on FIX scores:
+- Global leaderboard (all merchants)
+- Industry-specific leaderboards
+- Regional rankings
+- Sustainability champions
 
 ---
 

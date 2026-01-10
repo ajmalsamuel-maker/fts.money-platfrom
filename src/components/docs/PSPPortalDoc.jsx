@@ -19,7 +19,9 @@ const PSPPortalDoc = `# PSP Portal Documentation
 7. [Risk & Fraud Management](#risk--fraud-management)
 8. [Financial Operations](#financial-operations)
 9. [Reporting & Analytics](#reporting--analytics)
-10. [Compliance & Security](#compliance--security)
+10. [Service Marketplace](#service-marketplace)
+11. [Multi-User Management](#multi-user-management)
+12. [Compliance & Security](#compliance--security)
 
 ---
 
@@ -1486,6 +1488,168 @@ Smart PSPs review key reports daily (settlement reconciliation, fraud alerts), w
 │                                            │
 │  [Cancel]  [Preview]  [Save & Run]        │
 └────────────────────────────────────────────┘
+\`\`\`
+
+---
+
+## Service Marketplace
+
+### Enabling Additional Services
+
+The Service Marketplace gives you access to 150+ pre-integrated services that expand your PSP's capabilities. All services are white-labeled under your brand - your merchants never know you're using third-party infrastructure.
+
+**Available Services:**
+
+\`\`\`mermaid
+graph TB
+    MARKET[Service Marketplace] --> CRYPTO[Crypto Gateway<br/>$2,500/mo]
+    MARKET --> ISO[ISO Gateway<br/>$499-$2,499/mo]
+    MARKET --> ORCH[Orchestration<br/>$299-$1,999/mo]
+    MARKET --> KYC[KYC/AML Tools<br/>$149-$499/mo]
+    MARKET --> FRAUD[Fraud Detection<br/>$1,000/mo]
+    MARKET --> PAY[Payout Routes<br/>Usage-based]
+    
+    CRYPTO --> C1[Multi-chain wallets]
+    CRYPTO --> C2[Virtual IBANs]
+    CRYPTO --> C3[Card issuance]
+    
+    ISO --> I1[8583 ↔ 20022]
+    ISO --> I2[Legacy integration]
+    
+    ORCH --> O1[Smart routing]
+    ORCH --> O2[Cost optimization]
+    
+    style CRYPTO fill:#3b82f6,color:#fff
+    style ISO fill:#10b981,color:#fff
+    style ORCH fill:#8b5cf6,color:#fff
+\`\`\`
+
+**Activation Process:**
+
+\`\`\`yaml
+service_activation_flow:
+  step_1:
+    action: "Navigate to Settings → Service Marketplace"
+    duration: "30 seconds"
+    
+  step_2:
+    action: "Browse or search for service"
+    duration: "2 minutes"
+    
+  step_3:
+    action: "Review pricing and features"
+    duration: "5 minutes"
+    
+  step_4:
+    action: "Click 'Enable Service'"
+    duration: "Instant"
+    
+  step_5:
+    action: "Configure white-label settings"
+    duration: "10 minutes"
+    
+  step_6:
+    action: "Test in sandbox environment"
+    duration: "30 minutes"
+    
+  step_7:
+    action: "Enable for merchants"
+    duration: "Instant"
+    
+  total_time: "~1 hour from browse to production"
+\`\`\`
+
+---
+
+## Multi-User Management
+
+### Team Collaboration & RBAC
+
+As your PSP grows, you'll need multiple team members with different access levels. The multi-user system provides a 6-tier role hierarchy with granular permissions.
+
+**Role Hierarchy:**
+
+| Role | Access Level | Use Cases | Permissions |
+|------|-------------|-----------|-------------|
+| **Owner** | 100% | CEO, Founder | All features + billing + team management |
+| **Administrator** | 90% | COO, Operations Director | All except billing and user deletion |
+| **Developer** | 70% | Engineering Lead | API keys, webhooks, integrations, logs |
+| **Operations** | 60% | Daily operators | Merchants, transactions, refunds, reports |
+| **Analyst** | 40% | Business analysts | Read-only + export reports |
+| **Viewer** | 20% | Auditors, board | Dashboard and reports only |
+
+**Permission Matrix:**
+
+\`\`\`yaml
+permissions_by_role:
+  owner:
+    - dashboard:view
+    - merchants:create,read,update,delete
+    - transactions:read,refund,void
+    - settlements:read
+    - reports:view,export
+    - settings:update
+    - users:create,read,update,delete
+    - billing:view,update
+    - api_keys:create,read,revoke
+    
+  administrator:
+    - dashboard:view
+    - merchants:create,read,update,delete
+    - transactions:read,refund,void
+    - settlements:read
+    - reports:view,export
+    - settings:update
+    - users:create,read,update
+    - api_keys:create,read,revoke
+    
+  operations:
+    - dashboard:view
+    - merchants:read,update
+    - transactions:read,refund
+    - settlements:read
+    - reports:view,export
+    
+  analyst:
+    - dashboard:view
+    - merchants:read
+    - transactions:read
+    - reports:view,export
+    
+  viewer:
+    - dashboard:view
+    - reports:view
+\`\`\`
+
+**User Invitation Flow:**
+
+\`\`\`mermaid
+sequenceDiagram
+    participant Owner
+    participant Portal as PSP Portal
+    participant Email
+    participant NewUser as New Team Member
+    
+    Owner->>Portal: Navigate to User Management
+    Portal->>Owner: Show user list + invite button
+    
+    Owner->>Portal: Click "Invite User"
+    Portal->>Owner: Display invite form
+    
+    Owner->>Portal: Enter email + select role
+    Portal->>Portal: Validate email
+    
+    Portal->>Email: Send invitation
+    Email->>NewUser: Invitation email
+    
+    NewUser->>Portal: Click invitation link
+    Portal->>NewUser: Set password form
+    
+    NewUser->>Portal: Create password
+    Portal->>Portal: Hash password, activate user
+    
+    Portal->>NewUser: Redirect to PSP Portal
+    NewUser->>Portal: Access with assigned permissions
 \`\`\`
 
 ---
