@@ -79,6 +79,7 @@ export default function FTSDocumentation() {
     const { t } = useI18n();
     const [activeTab, setActiveTab] = useState('overview');
     const [exportDialogOpen, setExportDialogOpen] = useState(false);
+    const [openCategories, setOpenCategories] = useState(['getting-started']);
 
     const documentCategories = [
         {
@@ -787,44 +788,59 @@ export default function FTSDocumentation() {
                                 </CardHeader>
                                 <CardContent className="p-0">
                                     <nav className="space-y-1">
-                                        {documentCategories.map((category) => (
-                                            <div key={category.id}>
-                                                <button
-                                                    onClick={() => {
-                                                        setSelectedCategory(category.id);
-                                                        setActiveTab(category.documents[0].id);
+                                        {documentCategories.map((category) => {
+                                            const isOpen = openCategories.includes(category.id);
+                                            return (
+                                                <Collapsible
+                                                    key={category.id}
+                                                    open={isOpen}
+                                                    onOpenChange={(open) => {
+                                                        if (open) {
+                                                            setOpenCategories([...openCategories, category.id]);
+                                                            setSelectedCategory(category.id);
+                                                        } else {
+                                                            setOpenCategories(openCategories.filter(id => id !== category.id));
+                                                        }
                                                     }}
-                                                    className={`w-full text-left px-4 py-2 text-sm font-medium transition-colors ${
-                                                        selectedCategory === category.id
-                                                            ? 'bg-blue-50 text-blue-700 border-l-2 border-blue-600'
-                                                            : 'text-slate-600 hover:bg-slate-50'
-                                                    }`}
                                                 >
-                                                    {category.title}
-                                                </button>
-                                                {selectedCategory === category.id && (
-                                                    <div className="ml-4 mt-1 space-y-1">
-                                                        {category.documents.map((doc) => {
-                                                            const Icon = doc.icon;
-                                                            return (
-                                                                <button
-                                                                    key={doc.id}
-                                                                    onClick={() => setActiveTab(doc.id)}
-                                                                    className={`w-full text-left px-3 py-2 text-sm flex items-center gap-2 transition-colors ${
-                                                                        activeTab === doc.id
-                                                                            ? 'bg-blue-50 text-blue-700 font-medium'
-                                                                            : 'text-slate-600 hover:bg-slate-50'
-                                                                    }`}
-                                                                >
-                                                                    <Icon className="h-3 w-3 flex-shrink-0" />
-                                                                    <span className="truncate">{doc.title}</span>
-                                                                </button>
-                                                            );
-                                                        })}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        ))}
+                                                    <CollapsibleTrigger asChild>
+                                                        <button
+                                                            className={`w-full text-left px-4 py-2 text-sm font-medium transition-colors flex items-center justify-between ${
+                                                                selectedCategory === category.id
+                                                                    ? 'bg-blue-50 text-blue-700 border-l-2 border-blue-600'
+                                                                    : 'text-slate-600 hover:bg-slate-50'
+                                                            }`}
+                                                        >
+                                                            <span>{category.title}</span>
+                                                            <span className="text-xs">
+                                                                {isOpen ? '▼' : '▶'}
+                                                            </span>
+                                                        </button>
+                                                    </CollapsibleTrigger>
+                                                    <CollapsibleContent>
+                                                        <div className="ml-4 mt-1 space-y-1">
+                                                            {category.documents.map((doc) => {
+                                                                const Icon = doc.icon;
+                                                                return (
+                                                                    <button
+                                                                        key={doc.id}
+                                                                        onClick={() => setActiveTab(doc.id)}
+                                                                        className={`w-full text-left px-3 py-2 text-sm flex items-center gap-2 transition-colors ${
+                                                                            activeTab === doc.id
+                                                                                ? 'bg-blue-50 text-blue-700 font-medium'
+                                                                                : 'text-slate-600 hover:bg-slate-50'
+                                                                        }`}
+                                                                    >
+                                                                        <Icon className="h-3 w-3 flex-shrink-0" />
+                                                                        <span className="truncate">{doc.title}</span>
+                                                                    </button>
+                                                                );
+                                                            })}
+                                                        </div>
+                                                    </CollapsibleContent>
+                                                </Collapsible>
+                                            );
+                                        })}
                                     </nav>
                                 </CardContent>
                             </Card>
