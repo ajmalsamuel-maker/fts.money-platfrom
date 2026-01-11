@@ -1,9 +1,9 @@
 const CommunityPortalDoc = `# Community Portal Documentation
 ## Self-Service Payment Infrastructure Marketplace
 
-**Version:** 1.0  
+**Version:** 2.0  
 **Classification:** Public - Community Users  
-**Last Updated:** December 26, 2025  
+**Last Updated:** January 11, 2026  
 **Document Owner:** FTS.Money Community Team
 
 ---
@@ -13,12 +13,18 @@ const CommunityPortalDoc = `# Community Portal Documentation
 1. [Welcome to FTS.Money Community](#welcome)
 2. [Getting Started](#getting-started)
 3. [PSP Provisioning](#psp-provisioning)
-4. [ISO Gateway Service](#iso-gateway-service)
-5. [Orchestration Service](#orchestration-service)
-6. [Service Marketplace](#service-marketplace)
-7. [FIX Score & Sustainability](#fix-score--sustainability)
-8. [Billing & Subscriptions](#billing--subscriptions)
-9. [Support & Resources](#support--resources)
+4. [Crypto Banking / VASP](#crypto-banking-vasp)
+5. [ISO Gateway Service](#iso-gateway-service)
+6. [Orchestration Service](#orchestration-service)
+7. [RWA Tokenization Platform](#rwa-tokenization-platform)
+8. [VAT/Tax Management Service](#vat-tax-management-service)
+9. [E-Invoicing Service](#e-invoicing-service)
+10. [PCI Compliance Suite](#pci-compliance-suite)
+11. [Digital Identity Service](#digital-identity-service)
+12. [Service Marketplace](#service-marketplace)
+13. [FIX Score & Sustainability](#fix-score--sustainability)
+14. [Billing & Subscriptions](#billing--subscriptions)
+15. [Support & Resources](#support--resources)
 
 ---
 
@@ -38,32 +44,24 @@ Whether you're building a PSP, connecting legacy systems, or optimizing payment 
 
 \`\`\`mermaid
 mindmap
-  root((Community<br/>Portal))
-    PSP Launch
-      Choose Tier
-      Configure
-      Deploy 24-48h
-      Go Live
-    Crypto Gateway
-      Multi-Chain Wallets
-      Virtual IBANs
-      Card Issuing
-      EU Compliant
-    ISO Gateway
-      Legacy Systems
-      8583 & 20022
-      SWIFT MT
-      Message Translation
-    Orchestration
-      Smart Routing
-      Multi-Processor
-      Cost Optimization
-      Failover
-    Marketplace
-      150+ Services
-      Payment Providers
-      Compliance Tools
-      One-Click Integration
+  root((Community<br/>Portal<br/>All FTS Services))
+    Payment Infrastructure
+      PSP Platform
+      ISO Gateway
+      Orchestration
+    Digital Assets
+      Crypto VASP
+      RWA Tokenization
+    Financial Compliance
+      VAT Tax Management
+      E-Invoicing
+      PCI Suite
+    Platform Services
+      Service Marketplace
+      Unified Billing
+      Digital Identity
+      NANO Sustainability
+      FIX Score
 \`\`\`
 
 ### Who is This For?
@@ -915,6 +913,207 @@ ROI Calculation:
 
 ---
 
+## Crypto Banking / VASP
+
+### What is Crypto Banking (VASP)?
+
+The **FTS.Money Crypto Banking Service** (also called VASP - Virtual Asset Service Provider) provides enterprise-grade crypto infrastructure including multi-chain wallets, virtual IBANs, card issuance, and full regulatory compliance.
+
+**Deployment Options:**
+
+1. **Standalone VASP Service** - Launch your own crypto banking platform via Community Portal
+2. **Embedded in PSP** - Add crypto banking to existing PSP via Service Marketplace
+
+### Core Capabilities
+
+\`\`\`mermaid
+graph TB
+    subgraph "Crypto Banking Infrastructure"
+        W[Multi-Chain Wallets]
+        I[Virtual IBANs]
+        C[Card Issuance]
+        K[KYC/AML Engine]
+    end
+    
+    subgraph "Supported Chains"
+        W1[Bitcoin]
+        W2[Ethereum]
+        W3[USDC/USDT]
+        W4[Lightning Network]
+    end
+    
+    subgraph "Banking Rails"
+        I1[SEPA Accounts]
+        I2[SEPA Instant]
+        I3[Direct Bank Integration]
+    end
+    
+    subgraph "Card Services"
+        C1[Virtual Visa Cards]
+        C2[Physical Cards]
+        C3[Crypto-to-Fiat]
+    end
+    
+    subgraph "Compliance"
+        K1[VASP Licensed EU]
+        K2[MiCA Ready]
+        K3[Travel Rule]
+    end
+    
+    W --> W1
+    W --> W2
+    W --> W3
+    W --> W4
+    
+    I --> I1
+    I --> I2
+    I --> I3
+    
+    C --> C1
+    C --> C2
+    C --> C3
+    
+    K --> K1
+    K --> K2
+    K --> K3
+    
+    style W fill:#f59e0b,color:#fff
+    style I fill:#3b82f6,color:#fff
+    style C fill:#8b5cf6,color:#fff
+    style K fill:#10b981,color:#fff
+\`\`\`
+
+### Provisioning Your VASP
+
+**Step 1: Choose Your Model**
+
+| Model | Description | Best For | Time to Launch |
+|-------|-------------|----------|----------------|
+| **White-Label VASP** | Full crypto banking platform with your branding | Crypto exchanges, neobanks | 5-7 days |
+| **Embedded Module** | Add crypto to existing PSP/fintech | Payment companies adding crypto | 2-3 days |
+| **API-Only Integration** | Backend infrastructure, build your own UI | Developer-first companies | 1-2 days |
+
+**Step 2: Configure Services**
+
+\`\`\`yaml
+vasp_configuration:
+  wallet_services:
+    enabled_chains:
+      - bitcoin: true
+      - ethereum: true
+      - polygon: true
+      - usdc_stablecoin: true
+      - usdt_stablecoin: true
+    
+    wallet_types:
+      - custodial: true  # FTS holds private keys
+      - non_custodial: false  # User controls keys
+    
+    transaction_limits:
+      daily_limit_usd: 50000
+      single_transaction_max: 10000
+      kyc_tier_1_limit: 1000  # Unverified
+      kyc_tier_2_limit: 10000  # Basic KYC
+      kyc_tier_3_limit: 50000  # Full KYC
+  
+  iban_services:
+    enabled_countries: ["EU", "UK", "EEA"]
+    currencies: ["EUR", "GBP"]
+    instant_payments: true
+    
+  card_issuance:
+    virtual_cards: true
+    physical_cards: true
+    spend_controls:
+      - daily_limit
+      - merchant_category_restrictions
+      - geographic_restrictions
+    
+  compliance:
+    kyc_provider: "Sumsub"
+    aml_monitoring: "continuous"
+    travel_rule_threshold: 1000  # USD
+    sanctions_screening: "real_time"
+\`\`\`
+
+**Step 3: KYC/AML Setup**
+
+Your VASP customers must complete identity verification:
+
+\`\`\`mermaid
+sequenceDiagram
+    participant User
+    participant VASP as Your VASP Platform
+    participant KYC as KYC Engine
+    participant Wallet as Wallet Manager
+    
+    User->>VASP: Sign Up
+    VASP->>User: Request identity documents
+    User->>KYC: Submit ID + selfie
+    
+    KYC->>KYC: Verify document authenticity
+    KYC->>KYC: Liveness detection
+    KYC->>KYC: Sanctions screening
+    
+    alt KYC Approved
+        KYC-->>VASP: Verified (Tier 2)
+        VASP->>Wallet: Create wallets
+        Wallet-->>User: BTC, ETH, USDC wallets ready
+        VASP->>User: Virtual IBAN assigned
+    else KYC Rejected
+        KYC-->>VASP: Failed verification
+        VASP-->>User: Request additional documents
+    end
+\`\`\`
+
+### Pricing
+
+| Component | Starter | Professional | Enterprise |
+|-----------|---------|--------------|------------|
+| **Monthly Fee** | $2,500 | $5,000 | Custom |
+| **Setup Fee** | $5,000 | Waived | Waived |
+| **KYC per user** | $5.00 | $3.00 | $2.00 |
+| **Wallet creation** | $1.00 | $0.50 | $0.25 |
+| **Virtual IBAN** | $10/month | $8/month | $5/month |
+| **Virtual card** | $8.00 | $5.00 | $3.00 |
+| **Physical card** | $20.00 | $15.00 | $10.00 |
+| **Crypto transaction** | 1.5% | 1.2% | 0.8% |
+| **Exchange fee** | 1.2% | 1.0% | 0.7% |
+| **Bank transfer fee** | $2.50 | $1.50 | $1.00 |
+
+**Example Monthly Cost:**
+\`\`\`
+VASP Platform - Professional Tier
+
+Monthly Subscription:              $5,000
+Users: 500 × $3 KYC:              $1,500
+Wallets: 500 × $0.50:               $250
+Virtual IBANs: 200 × $8:          $1,600
+Virtual Cards: 150 × $5:            $750
+Crypto Txns: $500K × 1.2%:        $6,000
+                              ──────────
+Total:                           $15,100/month
+\`\`\`
+
+### Use Cases
+
+**Cryptocurrency Exchanges:**
+- Fiat on/off-ramps via SEPA
+- Card withdrawals for users
+- Multi-chain wallet infrastructure
+
+**Neobanks:**
+- Add crypto to traditional banking
+- Crypto-backed cards
+- Investment products
+
+**DeFi Platforms:**
+- Bridge to traditional finance
+- Regulatory compliant gateway
+- Institutional access
+
+---
+
 ## Crypto Gateway Service
 
 ### What is Crypto Gateway?
@@ -1038,6 +1237,682 @@ Benefit: White-labeled crypto without building infrastructure
 2. Contact sales: crypto@fts.money
 3. Provision your account (48 hours)
 4. Access dedicated Crypto Gateway Portal
+
+---
+
+## RWA Tokenization Platform
+
+### What is RWA Tokenization?
+
+**Real World Asset (RWA) Tokenization** enables financial institutions to convert traditional assets (real estate, treasury bills, private credit) into blockchain tokens, unlocking 24/7 trading, fractional ownership, and automated compliance.
+
+### Launch Your RWA Platform
+
+Via Community Portal, you can launch a **White-Label RWA Tokenization Platform** for your institution:
+
+\`\`\`mermaid
+graph TB
+    subgraph "RWA Provider Portal"
+        P[Your White-Label Platform]
+        P1[Issuer Onboarding]
+        P2[Asset Management]
+        P3[Investor Portal]
+    end
+    
+    subgraph "Asset Types Supported"
+        A1[Real Estate<br/>Properties, REITs]
+        A2[Treasury Bills<br/>Government bonds]
+        A3[Private Credit<br/>Loan portfolios]
+        A4[Corporate Bonds<br/>Fixed income]
+        A5[Commodities<br/>Gold, silver]
+    end
+    
+    subgraph "Investor Features"
+        I1[Asset Marketplace]
+        I2[Portfolio Tracking]
+        I3[Dividend Distribution]
+        I4[Secondary Trading]
+    end
+    
+    subgraph "Compliance & Custody"
+        C1[Fireblocks Custody]
+        C2[T-REX Standard]
+        C3[Securities Laws]
+        C4[Investor KYC/AML]
+    end
+    
+    P --> P1
+    P --> P2
+    P --> P3
+    
+    P1 --> A1
+    P1 --> A2
+    P1 --> A3
+    P1 --> A4
+    P1 --> A5
+    
+    P3 --> I1
+    P3 --> I2
+    P3 --> I3
+    P3 --> I4
+    
+    P2 --> C1
+    P2 --> C2
+    P2 --> C3
+    P2 --> C4
+    
+    style P fill:#ec4899,color:#fff
+    style C1 fill:#10b981,color:#fff
+\`\`\`
+
+### Provisioning Workflow
+
+**Step 1: Platform Setup**
+
+\`\`\`yaml
+rwa_provider_configuration:
+  provider_info:
+    company_name: "Your Asset Management Co"
+    provider_code: "yourassetmgmt"
+    lei: "REQUIRED - Legal Entity Identifier"
+    license_type: "SEC registered, FINRA member, etc."
+    jurisdiction: "Primary regulatory jurisdiction"
+    
+  custom_branding:
+    domain: "tokenize.yourassetmgmt.com"
+    logo_url: "Your logo"
+    primary_color: "#1E40AF"
+    company_name: "Your brand"
+    
+  blockchain_configuration:
+    networks: ["ethereum", "polygon", "base"]
+    factory_deployment: "automatic"
+    custody_provider: "Fireblocks"
+\`\`\`
+
+**Step 2: Asset Issuer Onboarding**
+
+Your platform will onboard asset issuers (companies tokenizing assets):
+
+\`\`\`mermaid
+sequenceDiagram
+    participant Issuer as Asset Issuer
+    participant Platform as Your RWA Platform
+    participant KYB as KYB Engine
+    participant Smart as Smart Contract Factory
+    
+    Issuer->>Platform: Apply to tokenize asset
+    Platform->>KYB: Run 10-step KYB + asset due diligence
+    
+    KYB->>KYB: Verify LEI (required)
+    KYB->>KYB: Check securities license
+    KYB->>KYB: Verify asset legitimacy
+    KYB->>KYB: Review legal opinion
+    
+    alt Approved
+        KYB-->>Platform: Issuer verified
+        Platform->>Smart: Deploy token contract
+        Smart-->>Platform: Token address
+        Platform->>Issuer: Platform access granted
+        Issuer->>Issuer: Configure asset details
+        Issuer->>Platform: Publish to marketplace
+    else Rejected
+        KYB-->>Platform: Verification failed
+        Platform-->>Issuer: Rejection notice
+    end
+\`\`\`
+
+**Step 3: Investor Onboarding**
+
+\`\`\`yaml
+investor_kyc_flow:
+  tier_1_basic:
+    requirements:
+      - email_verification
+      - phone_verification
+    limits:
+      - investment_max: "$1,000"
+      - kyc_deadline: "7 days"
+    
+  tier_2_verified:
+    requirements:
+      - government_id
+      - proof_of_address
+      - selfie_liveness
+    limits:
+      - investment_max: "$50,000"
+      - accredited_investor: false
+    
+  tier_3_accredited:
+    requirements:
+      - tier_2_complete
+      - income_verification: "$200K+ annual"
+      - or_net_worth: "$1M+"
+      - cpa_letter_or_tax_returns
+    limits:
+      - investment_max: "Unlimited"
+      - private_placements: true
+\`\`\`
+
+### Pricing
+
+| Feature | Starter | Professional | Enterprise |
+|---------|---------|--------------|------------|
+| **Monthly Platform Fee** | $15,000 | $25,000 | Custom |
+| **Setup Fee** | $25,000 | Waived | Waived |
+| **Asset Tokenization** | $5,000/asset | $3,000/asset | $2,000/asset |
+| **Smart Contract Audit** | $15,000 | $10,000 | Included |
+| **Investor KYC** | $10/investor | $7/investor | $5/investor |
+| **Trading Fee** | 0.5% | 0.3% | 0.2% |
+| **Dividend Distribution** | $500/event | $300/event | $200/event |
+| **Custody Fee** | 0.5% AUM/year | 0.3% AUM/year | 0.2% AUM/year |
+
+**Example Business Case:**
+\`\`\`
+Fund Manager Tokenizing $100M Real Estate Portfolio
+
+Setup Costs:
+  Platform setup:                   Waived (Professional)
+  10 properties × $3,000:            $30,000
+  Smart contract audit:              $10,000
+  Legal opinion:                     $25,000 (external)
+  Total Setup:                       $65,000
+
+Monthly Operating Costs:
+  Platform fee:                      $25,000
+  500 investors × $7 KYC:             $3,500
+  Custody (0.3% of $100M):           $25,000/month
+  Monthly Total:                     $53,500
+
+Revenue Potential:
+  Trading fees (0.3% on $5M/month):  $15,000
+  Management fee (2% AUM):          $166,667/month
+  Performance fee (20% gains):       Variable
+
+Net Monthly: $128,167 (excluding performance fees)
+Annual Revenue: $1.54M
+\`\`\`
+
+---
+
+## VAT/Tax Management Service
+
+### What is VAT/Tax Management?
+
+Global tax compliance is complex - 60+ countries with different VAT/GST rates, rules, and reporting requirements. The **FTS.Money Tax Management Service** automates calculation, reporting, and government submission.
+
+### Key Features
+
+\`\`\`mermaid
+graph TB
+    subgraph "Tax Engine Capabilities"
+        T1[Real-Time Calculation]
+        T2[Multi-Jurisdiction]
+        T3[Automated Rate Updates]
+        T4[Tax Reporting]
+    end
+    
+    subgraph "Supported Tax Systems"
+        S1[EU VAT<br/>27 countries]
+        S2[UK VAT]
+        S3[GCC VAT<br/>UAE, Saudi, etc.]
+        S4[GST India]
+        S5[Sales Tax US]
+    end
+    
+    subgraph "Integration Points"
+        I1[E-Commerce Checkout]
+        I2[Payment Processing]
+        I3[E-Invoicing]
+        I4[Accounting Systems]
+    end
+    
+    T1 --> S1
+    T1 --> S2
+    T1 --> S3
+    T1 --> S4
+    T1 --> S5
+    
+    T2 --> I1
+    T3 --> I2
+    T4 --> I3
+    T4 --> I4
+    
+    style T1 fill:#10b981,color:#fff
+    style S1 fill:#3b82f6,color:#fff
+\`\`\`
+
+### How It Works
+
+**Real-Time Tax Calculation:**
+
+\`\`\`javascript
+// Example: Calculate tax at checkout
+const taxCalculation = await fts.tax.calculate({
+  customer_location: "DE", // Germany
+  merchant_location: "US",
+  items: [
+    { description: "SaaS subscription", amount: 99.00, category: "digital_service" },
+    { description: "Physical product", amount: 299.00, category: "goods" }
+  ]
+});
+
+/* Response:
+{
+  "subtotal": 398.00,
+  "tax_breakdown": [
+    {
+      "jurisdiction": "DE",
+      "tax_type": "VAT",
+      "rate": 19,
+      "amount": 18.81,
+      "applies_to": "SaaS subscription (MOSS/OSS digital services)"
+    },
+    {
+      "jurisdiction": "DE", 
+      "tax_type": "Import VAT",
+      "rate": 19,
+      "amount": 56.81,
+      "applies_to": "Physical product"
+    }
+  ],
+  "total_tax": 75.62,
+  "total": 473.62,
+  "compliance_notes": "B2C cross-border - MOSS reporting required"
+}
+*/
+\`\`\`
+
+### Provisioning Tax Service
+
+**Step 1: Subscribe via Community Portal**
+
+\`\`\`yaml
+tax_service_subscription:
+  tiers:
+    growth:
+      monthly_fee: $499
+      included_calculations: 10000
+      countries: 60+
+      reporting: "automated"
+      
+    professional:
+      monthly_fee: $999
+      included_calculations: 100000
+      countries: 60+
+      reporting: "automated + filing assistance"
+      
+    enterprise:
+      monthly_fee: $2499
+      included_calculations: unlimited
+      countries: 60+
+      reporting: "white-glove service"
+\`\`\`
+
+**Step 2: Configure Tax Rules**
+
+\`\`\`yaml
+tax_configuration:
+  business_profile:
+    primary_jurisdiction: "US"
+    business_type: "SaaS"
+    vat_registered_countries: ["US", "UK", "DE", "FR"]
+    
+  product_categories:
+    - name: "Digital Services"
+      tax_treatment: "destination_based_vat"
+      category_code: "UNSPSC_81112000"
+      
+    - name: "Physical Goods"
+      tax_treatment: "origin_based + import_vat"
+      category_code: "UNSPSC_43230000"
+  
+  reporting_schedule:
+    eu_vat_return: "quarterly"
+    uk_vat_return: "quarterly"
+    us_sales_tax: "monthly"
+\`\`\`
+
+### Automated Tax Rate Updates
+
+The system automatically synchronizes global tax rates daily from official sources (government APIs, OECD, EU VIES), ensuring compliance without manual monitoring.
+
+---
+
+## E-Invoicing Service
+
+### What is E-Invoicing?
+
+**Electronic Invoicing (E-Invoicing)** is government-mandated digital invoice submission replacing paper/PDF invoices. Over 60 countries now require e-invoicing for B2B/B2G transactions.
+
+### Supported Standards
+
+\`\`\`mermaid
+graph TB
+    subgraph "Global E-Invoicing Standards"
+        E[FTS E-Invoice Engine]
+    end
+    
+    subgraph "Europe"
+        EU1[Peppol BIS<br/>Pan-European]
+        EU2[FatturaPA<br/>Italy]
+        EU3[Facturae<br/>Spain]
+    end
+    
+    subgraph "Middle East"
+        ME1[ZATCA<br/>Saudi Arabia]
+        ME2[e-Invoice<br/>UAE]
+    end
+    
+    subgraph "Americas"
+        AM1[CFDI<br/>Mexico]
+        AM2[NFe<br/>Brazil]
+        AM3[SII<br/>Chile]
+    end
+    
+    subgraph "Asia Pacific"
+        AP1[InvoiceNow<br/>Singapore]
+        AP2[e-Invoice<br/>Malaysia]
+        AP3[E-Tax<br/>South Korea]
+    end
+    
+    E --> EU1
+    E --> EU2
+    E --> EU3
+    E --> ME1
+    E --> ME2
+    E --> AM1
+    E --> AM2
+    E --> AM3
+    E --> AP1
+    E --> AP2
+    E --> AP3
+    
+    style E fill:#8b5cf6,color:#fff
+    style EU1 fill:#3b82f6,color:#fff
+    style ME1 fill:#f59e0b,color:#fff
+\`\`\`
+
+### How It Works
+
+**Invoice Generation & Submission Flow:**
+
+\`\`\`mermaid
+sequenceDiagram
+    participant Business
+    participant EInv as E-Invoice Engine
+    participant Validator as Validation Engine
+    participant Gov as Government Portal
+    participant Customer
+    
+    Business->>EInv: Create invoice
+    EInv->>EInv: Map to country standard
+    EInv->>Validator: Validate XML/JSON structure
+    
+    alt Valid
+        Validator-->>EInv: Validation passed
+        EInv->>Gov: Submit to government
+        Gov->>Gov: Process and sign
+        Gov-->>EInv: Invoice UUID + QR code
+        EInv->>Customer: Send invoice (email/portal)
+        EInv-->>Business: Submission successful
+    else Invalid
+        Validator-->>EInv: Errors found
+        EInv-->>Business: Fix validation errors
+    end
+\`\`\`
+
+### Provisioning E-Invoicing
+
+**Step 1: Subscribe**
+
+\`\`\`yaml
+einvoicing_subscription:
+  tiers:
+    starter:
+      monthly_fee: $299
+      included_invoices: 1000
+      countries: 10
+      
+    professional:
+      monthly_fee: $999
+      included_invoices: 10000
+      countries: 60+
+      
+    enterprise:
+      monthly_fee: $2999
+      included_invoices: unlimited
+      countries: 60+
+      government_api_integration: true
+\`\`\`
+
+**Step 2: Configure Country Settings**
+
+\`\`\`yaml
+country_configuration:
+  saudi_arabia_zatca:
+    enabled: true
+    vat_number: "300000000000003"
+    crn: "1234567890"
+    certificate: "upload_zatca_cert.pem"
+    environment: "production"
+    
+  italy_fatturapa:
+    enabled: true
+    vat_number: "IT12345678901"
+    sdi_code: "SUBM70N"
+    pec_email: "invoices@pec.yourcompany.it"
+    
+  mexico_cfdi:
+    enabled: true
+    rfc: "XAXX010101000"
+    certificate: "upload_sat_cert.cer"
+    private_key: "upload_sat_key.key"
+\`\`\`
+
+### Pricing
+
+\`\`\`
+E-Invoicing Service Pricing
+
+Setup Fee: $2,500 (includes country integration setup)
+
+Monthly Fees by Tier:
+  Starter:       $299 (1,000 invoices, 10 countries)
+  Professional:  $999 (10,000 invoices, 60+ countries)
+  Enterprise:  $2,999 (unlimited invoices, white-glove)
+
+Per-Invoice Overage:
+  $0.10 - $0.50 depending on country complexity
+
+Example (Professional, 12,000 invoices):
+  Monthly subscription:          $999
+  Overage: 2,000 × $0.15:        $300
+  Total:                       $1,299/month
+\`\`\`
+
+---
+
+## PCI Compliance Suite
+
+### What is PCI DSS Compliance?
+
+**PCI DSS (Payment Card Industry Data Security Standard)** is mandatory for any business processing, storing, or transmitting card data. The FTS.Money **PCI Compliance Suite** automates continuous monitoring, evidence collection, and audit preparation.
+
+### Service Components
+
+\`\`\`mermaid
+graph TB
+    subgraph "PCI Compliance Suite"
+        P[PCI Dashboard]
+        P1[Continuous Monitoring]
+        P2[Predictive Analytics]
+        P3[Workflow Automation]
+        P4[QSA Portal]
+    end
+    
+    subgraph "Monitoring Checks"
+        M1[Vulnerability Scans<br/>Daily]
+        M2[Network Tests<br/>Weekly]
+        M3[Log Reviews<br/>Real-time]
+        M4[Access Control<br/>Continuous]
+    end
+    
+    subgraph "AI Features"
+        A1[Gap Prediction<br/>30-day forecast]
+        A2[Risk Scoring<br/>ML-powered]
+        A3[Auto-Remediation<br/>Workflows]
+    end
+    
+    subgraph "Audit Support"
+        Q1[Evidence Vault<br/>Organized storage]
+        Q2[QSA Collaboration<br/>Secure portal]
+        Q3[ROC Generation<br/>Automated]
+    end
+    
+    P --> P1
+    P --> P2
+    P --> P3
+    P --> P4
+    
+    P1 --> M1
+    P1 --> M2
+    P1 --> M3
+    P1 --> M4
+    
+    P2 --> A1
+    P2 --> A2
+    P2 --> A3
+    
+    P4 --> Q1
+    P4 --> Q2
+    P4 --> Q3
+    
+    style P fill:#ef4444,color:#fff
+    style P2 fill:#8b5cf6,color:#fff
+    style P4 fill:#10b981,color:#fff
+\`\`\`
+
+### Provisioning PCI Suite
+
+**Available via Community Portal:**
+
+\`\`\`yaml
+pci_compliance_service:
+  subscription_tiers:
+    professional:
+      monthly_fee: $1,999
+      features:
+        - continuous_monitoring
+        - requirements_tracker
+        - evidence_vault
+        - quarterly_reports
+        
+    enterprise:
+      monthly_fee: $4,999
+      features:
+        - everything_in_professional
+        - predictive_analytics
+        - workflow_automation
+        - qsa_portal_access
+        - dedicated_compliance_manager
+\`\`\`
+
+### What You Get
+
+- **12 PCI DSS Requirements Tracking** - Complete coverage with automated evidence collection
+- **Continuous Monitoring** - Real-time compliance checks (network scans, log analysis, access reviews)
+- **Predictive Analytics** - AI forecasts compliance gaps 30 days in advance
+- **QSA Portal** - Secure collaboration with external auditors
+- **Automated Reporting** - Generate compliance reports for management/board
+
+---
+
+## Digital Identity Service
+
+### What is Digital Identity?
+
+**W3C Verifiable Credentials and Decentralized Identifiers (DIDs)** enable passwordless authentication, portable identity, and privacy-preserving verification.
+
+### Use Cases from Community Portal
+
+\`\`\`mermaid
+graph TB
+    subgraph "Identity Applications"
+        A[Digital Identity Service]
+    end
+    
+    subgraph "Authentication"
+        A1[Passwordless Login<br/>WebAuthn + VCs]
+        A2[Multi-Portal SSO<br/>One identity everywhere]
+    end
+    
+    subgraph "Verification"
+        V1[KYC Credentials<br/>Reusable identity]
+        V2[Accredited Investor<br/>Proof without sharing data]
+        V3[Business Verification<br/>LEI credentials]
+    end
+    
+    subgraph "Privacy"
+        P1[Selective Disclosure<br/>Share only what's needed]
+        P2[Zero-Knowledge Proofs<br/>Prove without revealing]
+    end
+    
+    A --> A1
+    A --> A2
+    A --> V1
+    A --> V2
+    A --> V3
+    A --> P1
+    A --> P2
+    
+    style A fill:#06b6d4,color:#fff
+    style V1 fill:#10b981,color:#fff
+\`\`\`
+
+### Provisioning Digital Identity
+
+**Available as Add-On Service:**
+
+\`\`\`yaml
+digital_identity_service:
+  subscription:
+    monthly_fee: $299
+    included_verifications: 5000
+    overage: $0.02/verification
+    
+  features:
+    - credential_issuance: "Issue VCs to users"
+    - credential_verification: "Verify VCs from others"
+    - did_management: "Decentralized identifiers"
+    - selective_disclosure: "Privacy-preserving"
+    
+  use_cases:
+    - passwordless_authentication
+    - kyc_credential_reuse
+    - cross_platform_identity
+    - regulatory_compliance
+\`\`\`
+
+**Integration Example:**
+
+\`\`\`javascript
+// Issue KYC credential to verified customer
+const credential = await fts.identity.issueCredential({
+  type: "KYCVerificationCredential",
+  subject: {
+    did: "did:web:customer.example.com",
+    email: "customer@example.com",
+    kycLevel: "tier_3_accredited",
+    verifiedAt: "2026-01-11T10:00:00Z"
+  },
+  issuer: "did:web:fts.money",
+  expiryDate: "2027-01-11T10:00:00Z"
+});
+
+// Customer can now present this credential to other platforms
+// without repeating full KYC process
+\`\`\`
 
 ---
 
@@ -1417,13 +2292,13 @@ The Community Portal is your launchpad for building payment infrastructure. Whet
 
 **Document Information**
 
-- **Version:** 1.0
-- **Last Updated:** December 26, 2025
+- **Version:** 2.0
+- **Last Updated:** January 11, 2026
 - **Status:** Active
 - **Classification:** Public
 - **Owner:** Community Team
 - **Contact:** community@fts.money
 
-© 2025 FTS.Money. All rights reserved.`;
+© 2026 FTS.Money. All rights reserved.`;
 
 export default CommunityPortalDoc;
