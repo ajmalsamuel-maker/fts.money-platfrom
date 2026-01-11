@@ -45,57 +45,37 @@ The FTS.Money VAT & Tax Management System is a comprehensive, globally-compliant
 
 ### Tax System Types by Region
 
-\`\`\`mermaid
-graph TB
-    subgraph "European Union - VAT"
-        EU[EU VAT Directive<br/>Harmonized System]
-        EU1[Standard Rate: 15-27%<br/>Reduced: 5-12%]
-        EU2[MOSS/OSS System<br/>Digital Services]
-        EU3[Reverse Charge<br/>B2B Services]
-        EU4[Intra-EU Supply<br/>Zero-Rated]
-    end
-    
-    subgraph "United Kingdom - VAT"
-        UK[UK VAT Act<br/>Post-Brexit]
-        UK1[Standard: 20%<br/>Reduced: 5%<br/>Zero: 0%]
-        UK2[Digital Services Tax<br/>2% on revenues]
-        UK3[Making Tax Digital<br/>MTD Mandate]
-    end
-    
-    subgraph "GCC Countries - VAT"
-        GCC[GCC VAT Agreement<br/>2016]
-        GCC1[Standard: 5-15%<br/>Zero for exports]
-        GCC2[KSA: 15%<br/>UAE: 5%<br/>Bahrain: 10%]
-    end
-    
-    subgraph "Asia-Pacific - GST"
-        APAC[Various GST Systems]
-        APAC1[Singapore: 9%<br/>Australia: 10%<br/>India: 5-28%]
-        APAC2[Malaysia: 0% currently<br/>Indonesia: 11%]
-    end
-    
-    subgraph "Americas - Sales Tax/VAT"
-        AMER[Mixed Systems]
-        AMER1[US: State sales tax<br/>0-10.25%]
-        AMER2[Canada: GST+PST<br/>5-15%]
-        AMER3[Mexico: IVA 16%<br/>Brazil: ICMS varies]
-    end
-    
-    subgraph "FTS.Money Tax Engine"
-        FTS[Unified Tax Platform<br/>100+ Jurisdictions]
-    end
-    
-    EU --> FTS
-    UK --> FTS
-    GCC --> FTS
-    APAC --> FTS
-    AMER --> FTS
-    
-    FTS --> AUTO[Automated Calculation<br/>Real-Time Compliance]
-    
-    style FTS fill:#10b981,color:#fff
-    style AUTO fill:#2563eb,color:#fff
-\`\`\`
+The FTS.Money Tax Engine supports unified tax calculation across all major global tax systems:
+
+**European Union (VAT)**
+- Harmonized VAT system under EU VAT Directive
+- Standard rates: 15-27% (most common: 19-23%)
+- MOSS/OSS system for digital services
+- Reverse charge for B2B services
+- Intra-EU supplies zero-rated with valid VAT number
+
+**United Kingdom (VAT)**
+- Post-Brexit VAT system
+- Standard: 20%, Reduced: 5%, Zero-rate: 0%
+- Digital Services Tax (2% on revenues >£500M)
+- Making Tax Digital (MTD) mandatory filing
+
+**GCC Countries (VAT)**
+- Unified GCC VAT Agreement (2016)
+- Rates: KSA 15%, UAE 5%, Bahrain 10%
+- Zero-rating for exports
+- E-invoicing requirements (especially KSA ZATCA)
+
+**Asia-Pacific (GST)**
+- Various GST implementations
+- Singapore: 9%, Australia: 10%, India: 5-28% (tiered)
+- Malaysia: SST system, Indonesia: 11%
+
+**Americas (Mixed Systems)**
+- US: State-level sales tax (0-10.25%)
+- Canada: Federal GST (5%) + Provincial PST/HST
+- Mexico: IVA 16%
+- Brazil: Complex ICMS system (varies by state)
 
 ### Major VAT Systems Comparison
 
@@ -458,41 +438,21 @@ async function determineJurisdiction(transaction) {
 
 **EU One-Stop Shop (OSS) for Digital Services:**
 
-\`\`\`mermaid
-flowchart TD
-    A[EU Merchant Sells Digital Service] --> B{Customer Location}
-    
-    B -->|EU Country| C{Quarterly Revenue Check}
-    B -->|Non-EU| D[Domestic Rate Only]
-    
-    C -->|Below €10,000 threshold| E[Home Country Rate<br/>Simplification]
-    C -->|Above €10,000 threshold| F[Destination Country Rate<br/>OSS Registration]
-    
-    E --> G[Charge Home Country VAT]
-    G --> H[File Domestic VAT Return]
-    
-    F --> I[Charge Destination VAT]
-    I --> J{Per Country}
-    J -->|Germany| K[19% German VAT]
-    J -->|France| L[20% French VAT]
-    J -->|Spain| M[21% Spanish VAT]
-    J -->|Other EU| N[Local Rate]
-    
-    K --> O[Aggregate All EU Sales]
-    L --> O
-    M --> O
-    N --> O
-    
-    O --> P[File Single OSS Return]
-    P --> Q[Submit to Home Country Tax Office]
-    Q --> R[Tax Office Distributes to Member States]
-    
-    D --> S[No EU VAT]
-    
-    style F fill:#2563eb,color:#fff
-    style P fill:#10b981,color:#fff
-    style R fill:#8b5cf6,color:#fff
-\`\`\`
+The OSS system simplifies VAT compliance for EU digital service providers:
+
+**Process Flow:**
+1. **Customer Location Check**: Determine if customer is in EU or non-EU
+2. **Threshold Assessment**: Check if annual EU sales exceed €10,000
+   - Below threshold: Charge home country VAT rate
+   - Above threshold: Must use destination country rates
+3. **Rate Application**:
+   - Germany: 19% VAT
+   - France: 20% VAT
+   - Spain: 21% VAT
+   - Other EU countries: Respective local rates
+4. **Aggregation**: Collect all EU sales data by member state and rate
+5. **Filing**: Submit single quarterly OSS return to home country tax office
+6. **Distribution**: Tax office automatically distributes VAT to respective member states
 
 **OSS Registration & Filing:**
 
@@ -673,42 +633,21 @@ async function shouldApplyReverseCharge(transaction) {
 
 **Handling Transactions with Multiple VAT Rates:**
 
-\`\`\`mermaid
-flowchart TD
-    A[Transaction with Multiple Line Items] --> B{Analyze Each Line}
-    
-    B --> C[Line 1: Software License<br/>€1,000]
-    B --> D[Line 2: Training Services<br/>€500]
-    B --> E[Line 3: Hardware<br/>€200]
-    
-    C --> F{Classify Line 1}
-    F --> G[UNSPSC: 81111500<br/>Digital Service]
-    G --> H[Standard Rate: 19%<br/>€190 VAT]
-    
-    D --> I{Classify Line 2}
-    I --> J[UNSPSC: 81111503<br/>Training Service]
-    J --> K[Reduced Rate: 7%<br/>€35 VAT]
-    
-    E --> L{Classify Line 3}
-    L --> M[Physical Goods<br/>Tangible Property]
-    M --> N[Standard Rate: 19%<br/>€38 VAT]
-    
-    H --> O[Aggregate VAT by Rate]
-    K --> O
-    N --> O
-    
-    O --> P[VAT Summary]
-    P --> Q[19% rate: €1,200 → €228]
-    P --> R[7% rate: €500 → €35]
-    
-    Q --> S[Total Transaction]
-    R --> S
-    
-    S --> T[Subtotal: €1,700<br/>VAT: €263<br/>Total: €1,963]
-    
-    style O fill:#2563eb,color:#fff
-    style T fill:#10b981,color:#fff
-\`\`\`
+When a transaction contains items subject to different VAT rates, each line item is processed separately:
+
+**Example Transaction:**
+- Line 1: Software License (€1,000) → UNSPSC 81111500 (Digital Service) → 19% standard rate → €190 VAT
+- Line 2: Training Services (€500) → UNSPSC 81111503 (Training) → 7% reduced rate → €35 VAT
+- Line 3: Hardware (€200) → Physical goods → 19% standard rate → €38 VAT
+
+**Aggregation by Rate:**
+- 19% rate: €1,200 taxable → €228 VAT
+- 7% rate: €500 taxable → €35 VAT
+
+**Transaction Summary:**
+- Subtotal: €1,700
+- Total VAT: €263
+- Total Amount: €1,963
 
 **Multi-Rate Invoice XML:**
 
@@ -838,57 +777,33 @@ POST /api/v1/tax/calculate
 
 **Automated VAT Return Generation:**
 
-\`\`\`mermaid
-sequenceDiagram
-    participant System as Tax System
-    participant DB as Transaction Database
-    participant Report as Report Generator
-    participant Review as Human Review
-    participant Submit as Tax Authority
-    
-    Note over System: End of VAT Period (Month/Quarter)
-    
-    System->>DB: Query All Transactions for Period
-    DB-->>System: Transaction Dataset
-    
-    System->>System: Filter by Jurisdiction
-    System->>System: Aggregate by Tax Rate
-    System->>System: Calculate Totals
-    
-    System->>Report: Generate VAT Return
-    Report->>Report: Format for Tax Authority
-    Report->>Report: Apply Country Template
-    Report->>Report: Include Supporting Schedules
-    
-    Report-->>Review: Draft VAT Return
-    
-    Review->>Review: Validate Calculations
-    Review->>Review: Check for Anomalies
-    Review->>Review: Verify Exemptions
-    
-    alt Issues Found
-        Review->>System: Request Corrections
-        System->>DB: Update Transaction Classifications
-        DB-->>System: Updated Data
-        System->>Report: Regenerate Return
-        Report-->>Review: Updated Draft
-    end
-    
-    Review->>Review: Approve Return
-    Review->>Submit: File VAT Return
-    
-    alt Electronic Filing
-        Submit->>Submit: Submit via Government Portal
-        Submit-->>Review: Confirmation Number
-    else Manual Filing
-        Submit->>Submit: Generate PDF for Upload
-        Submit-->>Review: Ready for Manual Submission
-    end
-    
-    Review->>System: Mark Period as Filed
-    System->>System: Store Filed Return
-    System->>System: Update Compliance Dashboard
-\`\`\`
+The VAT return automation process follows these steps:
+
+1. **End of Period Trigger**: System detects end of VAT period (monthly/quarterly)
+2. **Data Collection**: Query all transactions from database for the period
+3. **Processing**:
+   - Filter transactions by jurisdiction
+   - Aggregate by tax rate
+   - Calculate totals for each box/field
+4. **Report Generation**:
+   - Format data for specific tax authority requirements
+   - Apply country-specific template
+   - Include supporting schedules and breakdowns
+5. **Human Review**:
+   - Validate calculations
+   - Check for anomalies
+   - Verify exemptions and special cases
+6. **Corrections** (if needed):
+   - Update transaction classifications
+   - Regenerate return with corrected data
+7. **Approval & Submission**:
+   - Approve finalized return
+   - Submit electronically via government portal (or generate PDF for manual filing)
+   - Receive confirmation number
+8. **Record Keeping**:
+   - Mark period as filed
+   - Store filed return
+   - Update compliance dashboard
 
 **VAT Return Template (UK Example):**
 
