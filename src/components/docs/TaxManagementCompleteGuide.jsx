@@ -65,51 +65,25 @@ The FTS.Money Tax Management System provides **fully automated, globally complia
 ### Tax Calculation Flow
 
 \`\`\`mermaid
-graph TB
-    subgraph "Input Layer"
-        TXN[Transaction Data]
-        MERCH[Merchant Profile]
-        CUST[Customer Location]
-    end
+graph LR
+    A[Transaction Input] --> B[Jurisdiction<br/>Determinator]
+    C[Merchant Profile] --> B
+    D[Customer Location] --> B
     
-    subgraph "Tax Engine"
-        JURIS[Jurisdiction Determinator<br/>Where to tax?]
-        CLASS[Service Classifier<br/>What tax category?]
-        RATE[Rate Calculator<br/>Which rate applies?]
-        RULE[Rule Engine<br/>Special rules (MOSS, reverse charge)]
-    end
+    B --> E[Service<br/>Classifier]
+    E --> F[Rate<br/>Calculator]
+    F --> G[Rule<br/>Engine]
     
-    subgraph "Data Sources"
-        DB_RATE[(TaxRate Entity<br/>170+ countries)]
-        DB_JURIS[(TaxJurisdiction<br/>Rules & thresholds)]
-        CONFIG[(TaxConfiguration<br/>Service mappings)]
-    end
+    H[(Tax Rates<br/>Database)] --> F
+    I[(Tax Rules<br/>Database)] --> G
     
-    subgraph "Output"
-        RESULT[Tax Breakdown<br/>Amount, rate, jurisdiction]
-        INVOICE[Tax Invoice<br/>Compliant formatting]
-        REPORT[Tax Return Data<br/>Aggregated for filing]
-    end
+    G --> J[Tax Result]
+    J --> K[Invoice]
+    J --> L[Report Data]
     
-    TXN --> JURIS
-    MERCH --> JURIS
-    CUST --> JURIS
-    
-    JURIS --> CLASS
-    CLASS --> DB_RATE
-    CLASS --> CONFIG
-    
-    CLASS --> RATE
-    RATE --> RULE
-    RULE --> DB_JURIS
-    
-    RULE --> RESULT
-    RESULT --> INVOICE
-    RESULT --> REPORT
-    
-    style JURIS fill:#3b82f6,color:#fff
-    style RATE fill:#10b981,color:#fff
-    style RESULT fill:#8b5cf6,color:#fff
+    style B fill:#3b82f6
+    style F fill:#10b981
+    style J fill:#8b5cf6
 \`\`\`
 
 ---
