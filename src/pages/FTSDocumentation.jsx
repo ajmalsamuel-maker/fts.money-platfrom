@@ -820,15 +820,17 @@ export default function FTSDocumentation() {
                     }
                 }
             `}</style>
-            <div className="flex h-screen bg-slate-50">
-                <FTSPlatformSidebar 
-                    currentPage="FTSDocumentation"
-                    userEmail={platformUser?.email}
-                    userRole={platformUser?.platform_role}
-                    isSuperAdmin={platformUser?.platform_role === 'super_admin'}
-                />
+            <div className="flex flex-col md:flex-row h-screen bg-slate-50">
+                <div className="hidden md:block">
+                    <FTSPlatformSidebar 
+                        currentPage="FTSDocumentation"
+                        userEmail={platformUser?.email}
+                        userRole={platformUser?.platform_role}
+                        isSuperAdmin={platformUser?.platform_role === 'super_admin'}
+                    />
+                </div>
 
-                <div className="flex-1 overflow-auto">
+                <div className="flex-1 overflow-auto w-full">
                 <div className="p-4 md:p-6">
                     {/* Header with Mobile Menu Toggle */}
                     <div className="mb-6 print-hide">
@@ -991,41 +993,41 @@ export default function FTSDocumentation() {
                                                 remarkPlugins={[remarkGfm]}
                                                 components={{
                                                     h1: ({ children }) => {
-                                                        const id = String(children).toLowerCase().replace(/[^a-z0-9]+/g, '-');
-                                                        return (
-                                                            <h1 id={id} className="text-4xl font-bold mb-4 text-slate-900 border-b pb-2 scroll-mt-6">
-                                                                {children}
-                                                            </h1>
-                                                        );
+                                                       const id = String(children).toLowerCase().replace(/[^a-z0-9]+/g, '-');
+                                                       return (
+                                                           <h1 id={id} className="text-2xl md:text-4xl font-bold mb-3 md:mb-4 text-slate-900 border-b pb-2 scroll-mt-6 break-words">
+                                                               {children}
+                                                           </h1>
+                                                       );
                                                     },
                                                     h2: ({ children }) => {
-                                                        const id = String(children).toLowerCase().replace(/[^a-z0-9]+/g, '-');
-                                                        return (
-                                                            <h2 id={id} className="text-3xl font-bold mt-8 mb-4 text-slate-800 scroll-mt-6">
-                                                                {children}
-                                                            </h2>
-                                                        );
+                                                       const id = String(children).toLowerCase().replace(/[^a-z0-9]+/g, '-');
+                                                       return (
+                                                           <h2 id={id} className="text-xl md:text-3xl font-bold mt-6 md:mt-8 mb-3 md:mb-4 text-slate-800 scroll-mt-6 break-words">
+                                                               {children}
+                                                           </h2>
+                                                       );
                                                     },
                                                     h3: ({ children }) => {
-                                                        const id = String(children).toLowerCase().replace(/[^a-z0-9]+/g, '-');
-                                                        return (
-                                                            <h3 id={id} className="text-2xl font-semibold mt-6 mb-3 text-slate-700 scroll-mt-6">
-                                                                {children}
-                                                            </h3>
-                                                        );
+                                                       const id = String(children).toLowerCase().replace(/[^a-z0-9]+/g, '-');
+                                                       return (
+                                                           <h3 id={id} className="text-lg md:text-2xl font-semibold mt-4 md:mt-6 mb-2 md:mb-3 text-slate-700 scroll-mt-6 break-words">
+                                                               {children}
+                                                           </h3>
+                                                       );
                                                     },
                                                     h4: ({ children }) => {
-                                                        const id = String(children).toLowerCase().replace(/[^a-z0-9]+/g, '-');
-                                                        return (
-                                                            <h4 id={id} className="text-xl font-semibold mt-4 mb-2 text-slate-700 scroll-mt-6">
-                                                                {children}
-                                                            </h4>
-                                                        );
+                                                       const id = String(children).toLowerCase().replace(/[^a-z0-9]+/g, '-');
+                                                       return (
+                                                           <h4 id={id} className="text-base md:text-xl font-semibold mt-3 md:mt-4 mb-2 text-slate-700 scroll-mt-6 break-words">
+                                                               {children}
+                                                           </h4>
+                                                       );
                                                     },
                                                     p: ({ children }) => (
-                                                        <p className="mb-4 text-slate-600 leading-relaxed">
-                                                            {children}
-                                                        </p>
+                                                       <p className="mb-3 md:mb-4 text-sm md:text-base text-slate-600 leading-relaxed break-words">
+                                                           {children}
+                                                       </p>
                                                     ),
                                                     ul: ({ children }) => (
                                                         <ul className="list-disc pl-6 mb-4 space-y-2">
@@ -1064,19 +1066,21 @@ export default function FTSDocumentation() {
                                                         }
 
                                                         return (
-                                                            <pre className="bg-slate-900 text-slate-100 p-4 rounded-lg overflow-x-auto mb-4">
-                                                                <code className="text-sm font-mono">
-                                                                    {children}
-                                                                </code>
-                                                            </pre>
+                                                           <pre className="bg-slate-900 text-slate-100 p-3 md:p-4 rounded-lg overflow-x-auto mb-4 -mx-4 md:mx-0">
+                                                               <code className="text-xs md:text-sm font-mono block">
+                                                                   {children}
+                                                               </code>
+                                                           </pre>
                                                         );
                                                     },
                                                     table: ({ children }) => (
-                                                        <div className="overflow-x-auto mb-4">
-                                                            <table className="min-w-full border border-slate-200">
-                                                                {children}
-                                                            </table>
-                                                        </div>
+                                                       <div className="overflow-x-auto mb-4 -mx-4 md:mx-0">
+                                                           <div className="inline-block min-w-full align-middle">
+                                                               <table className="min-w-full border border-slate-200 text-sm">
+                                                                   {children}
+                                                               </table>
+                                                           </div>
+                                                       </div>
                                                     ),
                                                     thead: ({ children }) => (
                                                         <thead className="bg-slate-50">
@@ -1084,14 +1088,14 @@ export default function FTSDocumentation() {
                                                         </thead>
                                                     ),
                                                     th: ({ children }) => (
-                                                        <th className="border border-slate-200 px-4 py-2 text-left font-semibold text-slate-700">
-                                                            {children}
-                                                        </th>
+                                                       <th className="border border-slate-200 px-2 md:px-4 py-2 text-left font-semibold text-slate-700 text-xs md:text-sm">
+                                                           {children}
+                                                       </th>
                                                     ),
                                                     td: ({ children }) => (
-                                                        <td className="border border-slate-200 px-4 py-2 text-slate-600">
-                                                            {children}
-                                                        </td>
+                                                       <td className="border border-slate-200 px-2 md:px-4 py-2 text-slate-600 text-xs md:text-sm">
+                                                           {children}
+                                                       </td>
                                                     ),
                                                     blockquote: ({ children }) => (
                                                         <blockquote className="border-l-4 border-blue-500 pl-4 my-4 italic text-slate-600">
