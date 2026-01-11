@@ -186,24 +186,24 @@ sequenceDiagram
 Merchants can sponsor custom NANO tasks to drive foot traffic, increase brand awareness, and demonstrate sustainability commitment.
 
 \`\`\`mermaid
-graph LR
-    subgraph "Merchant Campaign Setup"
+graph TB
+    subgraph Setup["Merchant Campaign Setup"]
         MERCHANT[Green Merchant] --> CREATE[Create Sponsored Task]
         CREATE --> CONFIG[Configure Task]
         CONFIG --> BUDGET[Set Budget]
         BUDGET --> LAUNCH[Launch Campaign]
     end
     
-    subgraph "Task Configuration"
-        TITLE[Task Title<br/>"Visit Eco Store"]
-        DESC[Description<br/>"Shop sustainable products"]
-        REWARD[NANO Reward<br/>100 NANO per visit]
-        DISCOUNT[Merchant Discount<br/>10% off purchase]
-        MAX[Max Completions<br/>500 tasks]
-        VERIFY[Verification<br/>QR code at checkout]
+    subgraph Config["Task Configuration"]
+        TITLE["Task Title: Visit Eco Store"]
+        DESC["Description: Shop sustainable products"]
+        REWARD["NANO Reward: 100 per visit"]
+        DISCOUNT["Merchant Discount: 10% off"]
+        MAX["Max Completions: 500 tasks"]
+        VERIFY["Verification: QR code"]
     end
     
-    subgraph "User Experience"
+    subgraph Experience["User Experience"]
         USER[Consumer] --> DISCOVER[Discover Task]
         DISCOVER --> COMPLETE[Complete Action]
         COMPLETE --> SCAN[Scan QR Code]
@@ -212,13 +212,6 @@ graph LR
     end
     
     LAUNCH --> DISCOVER
-    
-    TITLE --> CONFIG
-    DESC --> CONFIG
-    REWARD --> CONFIG
-    DISCOUNT --> CONFIG
-    MAX --> CONFIG
-    VERIFY --> CONFIG
     
     style MERCHANT fill:#10b981,color:#fff
     style EARN fill:#f59e0b,color:#fff
