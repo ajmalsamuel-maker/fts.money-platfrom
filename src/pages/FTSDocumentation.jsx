@@ -54,6 +54,22 @@ import UserJourneyMapsDoc from '@/components/docs/UserJourneyMapsDoc';
 import TroubleshootingGuide from '@/components/docs/TroubleshootingGuide';
 import MigrationGuidesDoc from '@/components/docs/MigrationGuidesDoc';
 import FTSBusinessPlan from '@/components/docs/FTSBusinessPlan';
+import PSPProvisioningSOPs from '@/components/docs/PSPProvisioningSOPs';
+import MultiServiceCustomerSuccessSOPs from '@/components/docs/MultiServiceCustomerSuccessSOPs';
+import PartnerResellerManagementSOPs from '@/components/docs/PartnerResellerManagementSOPs';
+import CryptoVASPOperationsSOPs from '@/components/docs/CryptoVASPOperationsSOPs';
+import ISOGatewayOperationsSOPs from '@/components/docs/ISOGatewayOperationsSOPs';
+import RWATokenizationOperationsSOPs from '@/components/docs/RWATokenizationOperationsSOPs';
+import TaxEInvoicingOperationsSOPs from '@/components/docs/TaxEInvoicingOperationsSOPs';
+import PlatformInfrastructureSOPs from '@/components/docs/PlatformInfrastructureSOPs';
+import SecurityComplianceOperationsSOPs from '@/components/docs/SecurityComplianceOperationsSOPs';
+import BillingRevenueOperationsSOPs from '@/components/docs/BillingRevenueOperationsSOPs';
+import ComplianceRiskManagementSOPs from '@/components/docs/ComplianceRiskManagementSOPs';
+import BusinessContinuityDRSOPs from '@/components/docs/BusinessContinuityDRSOPs';
+import OrchestrationOperationsSOPs from '@/components/docs/OrchestrationOperationsSOPs';
+import MarketingLeadGenSOPs from '@/components/docs/MarketingLeadGenSOPs';
+import ProductManagementSOPs from '@/components/docs/ProductManagementSOPs';
+import HumanResourcesSOPs from '@/components/docs/HumanResourcesSOPs';
 import MermaidDiagram from '@/components/docs/MermaidDiagram';
 import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 import ExportDialog from '@/components/docs/ExportDialog';
@@ -390,6 +406,118 @@ export default function FTSDocumentation() {
             id: 'operations',
             title: '⚙️ Operations',
             documents: [
+                {
+                    id: 'psp-provisioning-sops',
+                    title: 'PSP Provisioning & Onboarding SOPs',
+                    icon: FileText,
+                    content: PSPProvisioningSOPs,
+                    description: '24-hour PSP deployment procedures - sales, onboarding, provisioning, go-live protocols'
+                },
+                {
+                    id: 'customer-success-sops',
+                    title: 'Customer Success Operations SOPs',
+                    icon: FileText,
+                    content: MultiServiceCustomerSuccessSOPs,
+                    description: 'Multi-service support, TAM engagement, QBRs, upsell/cross-sell, churn prevention'
+                },
+                {
+                    id: 'partner-management-sops',
+                    title: 'Partner & Reseller Management SOPs',
+                    icon: FileText,
+                    content: PartnerResellerManagementSOPs,
+                    description: 'Partner onboarding, enablement, co-marketing, commission processing'
+                },
+                {
+                    id: 'crypto-vasp-sops',
+                    title: 'Crypto VASP Operations SOPs',
+                    icon: Wallet,
+                    content: CryptoVASPOperationsSOPs,
+                    description: 'Striga integration, wallet provisioning, IBAN setup, crypto KYC/AML, Travel Rule'
+                },
+                {
+                    id: 'iso-gateway-sops',
+                    title: 'ISO Gateway Operations SOPs',
+                    icon: Code,
+                    content: ISOGatewayOperationsSOPs,
+                    description: 'Message translation setup, monitoring, routing, error handling, performance optimization'
+                },
+                {
+                    id: 'rwa-operations-sops',
+                    title: 'RWA Tokenization Operations SOPs',
+                    icon: FileText,
+                    content: RWATokenizationOperationsSOPs,
+                    description: 'Asset issuer onboarding, tokenization workflow, investor KYC, smart contract deployment'
+                },
+                {
+                    id: 'tax-einvoicing-sops',
+                    title: 'Tax & E-Invoicing Operations SOPs',
+                    icon: FileText,
+                    content: TaxEInvoicingOperationsSOPs,
+                    description: 'Tax rate management, real-time calculation, e-invoice generation, government submission'
+                },
+                {
+                    id: 'platform-infrastructure-sops',
+                    title: 'Platform Infrastructure & DevOps SOPs',
+                    icon: Code,
+                    content: PlatformInfrastructureSOPs,
+                    description: '24/7 monitoring, deployment procedures, database operations, auto-scaling, incident response'
+                },
+                {
+                    id: 'security-compliance-sops',
+                    title: 'Security & Compliance Operations SOPs',
+                    icon: Shield,
+                    content: SecurityComplianceOperationsSOPs,
+                    description: 'Fraud detection, incident response, access control, vulnerability management, PCI DSS, AML'
+                },
+                {
+                    id: 'billing-revenue-sops',
+                    title: 'Billing & Revenue Operations SOPs',
+                    icon: FileText,
+                    content: BillingRevenueOperationsSOPs,
+                    description: 'Usage metering, invoice generation, payment processing, revenue recognition, collections'
+                },
+                {
+                    id: 'compliance-risk-sops',
+                    title: 'Compliance & Risk Management SOPs',
+                    icon: Shield,
+                    content: ComplianceRiskManagementSOPs,
+                    description: 'Enterprise risk assessment, vendor risk, regulatory examinations, audit coordination'
+                },
+                {
+                    id: 'business-continuity-sops',
+                    title: 'Business Continuity & DR SOPs',
+                    icon: Shield,
+                    content: BusinessContinuityDRSOPs,
+                    description: 'BCP activation, disaster recovery, data center failover, crisis communication, testing'
+                },
+                {
+                    id: 'orchestration-sops',
+                    title: 'Payment Orchestration Operations SOPs',
+                    icon: GitBranch,
+                    content: OrchestrationOperationsSOPs,
+                    description: 'Multi-processor routing, optimization, failover management, cost analysis'
+                },
+                {
+                    id: 'marketing-leadgen-sops',
+                    title: 'Marketing & Lead Generation SOPs',
+                    icon: FileText,
+                    content: MarketingLeadGenSOPs,
+                    description: 'Content strategy, SEO, demand generation, campaign management, MQL handoff'
+                },
+                {
+                    id: 'product-management-sops',
+                    title: 'Product Management SOPs',
+                    icon: Code,
+                    content: ProductManagementSOPs,
+                    description: 'Product lifecycle, roadmap planning, sprint management, API versioning, release procedures'
+                },
+                {
+                    id: 'human-resources-sops',
+                    title: 'Human Resources SOPs',
+                    icon: FileText,
+                    content: HumanResourcesSOPs,
+                    description: 'Employee onboarding/offboarding, performance reviews, compliance training, incident reporting'
+                },
                 {
                     id: 'operational-runbooks',
                     title: 'Operational Runbooks',
