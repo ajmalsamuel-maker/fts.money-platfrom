@@ -29,7 +29,7 @@ import ServiceInteroperabilityDoc from '@/components/docs/ServiceInteroperabilit
 import { PCIDSSComplianceDoc } from '@/components/docs/PCIDSSComplianceDoc';
 import { DigitalIdentityDoc } from '@/components/docs/DigitalIdentityDoc';
 import { PlatformPortalsGuide } from '@/components/docs/PlatformPortalsGuide';
-import NanoSustainabilityIntegration from '@/components/docs/NanoSustainabilityIntegration';
+import NANOSustainabilityIntegrationDoc from '@/components/docs/NANOSustainabilityIntegrationDoc';
 import FIXScoreSystemDoc from '@/components/docs/FIXScoreSystemDoc';
 import NANOSustainabilityDoc from '@/components/docs/NANOSustainabilityDoc';
 import InvoicingSystemDoc from '@/components/docs/InvoicingSystemDoc';
@@ -421,8 +421,8 @@ export default function FTSDocumentation() {
                     id: 'nano-sustainability',
                     title: 'NANO Integration',
                     icon: FileText,
-                    content: NanoSustainabilityIntegration,
-                    description: 'Strategic integration of gamified sustainability platform'
+                    content: NANOSustainabilityIntegrationDoc,
+                    description: 'Strategic integration of gamified sustainability platform - market analysis, tokenomics, revenue projections'
                 }
             ]
         },
@@ -944,9 +944,6 @@ export default function FTSDocumentation() {
                                         </div>
                                     </CardHeader>
                                     <CardContent className="p-8 bg-white">
-                                       {doc.id === 'nano-sustainability' ? (
-                                           <doc.content />
-                                       ) : (
                                        <div className="prose prose-slate max-w-none">
                                            <ReactMarkdown
                                                 remarkPlugins={[remarkGfm]}
@@ -1096,7 +1093,6 @@ export default function FTSDocumentation() {
                                                 {doc.content}
                                             </ReactMarkdown>
                                         </div>
-                                        )}
                                     </CardContent>
                                 </Card>
                             </TabsContent>
