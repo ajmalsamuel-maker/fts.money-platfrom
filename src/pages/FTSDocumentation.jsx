@@ -157,6 +157,55 @@ export default function FTSDocumentation() {
                     description: 'Web-based payment terminal - MOTO, recurring, and card-not-present processing'
                 },
                 {
+                    id: 'iso-gateway-portal-guide',
+                    title: 'ISO Gateway Portal',
+                    icon: Code,
+                    content: ISOGatewayPortalGuide,
+                    description: 'Message translation portal - API keys, connections, routing, real-time monitoring'
+                },
+                {
+                    id: 'orchestration-portal-guide',
+                    title: 'Orchestration Portal',
+                    icon: GitBranch,
+                    content: OrchestrationPortalGuide,
+                    description: 'Payment routing portal - processor management, routing strategies, cost optimization'
+                },
+                {
+                    id: 'crypto-gateway-portal-guide',
+                    title: 'Crypto Gateway Portal',
+                    icon: Wallet,
+                    content: CryptoGatewayPortalGuide,
+                    description: 'Crypto banking portal - wallets, IBANs, cards, KYC/AML, compliance monitoring'
+                },
+                {
+                    id: 'rwa-provider-portal-guide',
+                    title: 'RWA Provider Portal',
+                    icon: BookOpen,
+                    content: RWAProviderPortalGuide,
+                    description: 'White-label RWA platform - issuer management, asset portfolio, investor administration'
+                },
+                {
+                    id: 'rwa-issuer-portal-guide',
+                    title: 'RWA Issuer Portal',
+                    icon: FileText,
+                    content: RWAIssuerPortalGuide,
+                    description: 'Asset tokenization - tokenization wizard, investor management, dividend distribution'
+                },
+                {
+                    id: 'rwa-investor-portal-guide',
+                    title: 'RWA Investor Portal',
+                    icon: Wallet,
+                    content: RWAInvestorPortalGuide,
+                    description: 'Investor portal - marketplace, portfolio tracking, secondary trading, dividends'
+                },
+                {
+                    id: 'qsa-portal-guide',
+                    title: 'QSA Portal',
+                    icon: Shield,
+                    content: QSAPortalGuide,
+                    description: 'PCI DSS audit platform - evidence review, compliance scoring, QSA workflows'
+                },
+                {
                     id: 'platform-portals',
                     title: 'All Portals Overview',
                     icon: BookOpen,
@@ -177,13 +226,6 @@ export default function FTSDocumentation() {
                     description: 'Message translation for ISO 8583, ISO 20022, and SWIFT MT'
                 },
                 {
-                    id: 'iso-gateway-portal',
-                    title: 'ISO Gateway Portal',
-                    icon: Code,
-                    content: ISOGatewayPortalGuide,
-                    description: 'Complete customer portal walkthrough - connection setup, message monitoring, routing rules'
-                },
-                {
                     id: 'orchestration',
                     title: 'Orchestration Service',
                     icon: GitBranch,
@@ -191,25 +233,11 @@ export default function FTSDocumentation() {
                     description: 'Intelligent payment routing and optimization'
                 },
                 {
-                    id: 'orchestration-portal',
-                    title: 'Orchestration Portal',
-                    icon: GitBranch,
-                    content: OrchestrationPortalGuide,
-                    description: 'Routing strategy configuration, processor management, performance analytics'
-                },
-                {
                     id: 'crypto-banking',
                     title: 'Crypto Banking Service',
                     icon: Wallet,
                     content: CryptoBankingDoc,
                     description: 'Enterprise crypto banking infrastructure - wallets, IBANs, cards, compliance'
-                },
-                {
-                    id: 'crypto-gateway-portal',
-                    title: 'Crypto Gateway Portal',
-                    icon: Wallet,
-                    content: CryptoGatewayPortalGuide,
-                    description: 'Wallet/IBAN management, card issuance, KYC workflows, compliance monitoring'
                 },
                 {
                     id: 'vasp-platform',
