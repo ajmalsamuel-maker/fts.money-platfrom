@@ -163,18 +163,18 @@ Enterprises need payment infrastructure but face:
 ### API Architecture
 
 **RESTful APIs:**
-- Base URL: `https://api.fts.money/v1/`
+- Base URL: https://api.fts.money/v1/
 - Authentication: API key + HMAC signature
 - Rate limiting: 1,000 requests/minute (configurable by tier)
 - Webhook support for real-time event notifications
 
 **Key Endpoints:**
-- `/payments/process` - Process payment transactions
-- `/merchants` - Merchant lifecycle management
-- `/settlements` - Settlement reporting and reconciliation
-- `/iso/translate` - ISO message format translation
-- `/crypto/wallets` - Crypto wallet operations
-- `/tax/calculate` - Real-time tax calculation
+- /payments/process - Process payment transactions
+- /merchants - Merchant lifecycle management
+- /settlements - Settlement reporting and reconciliation
+- /iso/translate - ISO message format translation
+- /crypto/wallets - Crypto wallet operations
+- /tax/calculate - Real-time tax calculation
 
 **SDK Support:**
 - JavaScript/TypeScript, Python, PHP, Java, Go
