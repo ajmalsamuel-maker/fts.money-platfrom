@@ -234,17 +234,52 @@ export default function FTSDocumentation() {
                 },
                 {
                     id: 'crypto-banking',
-                    title: 'Crypto Banking Service',
+                    title: 'Crypto Banking (VASP)',
                     icon: Wallet,
                     content: CryptoBankingDoc,
                     description: 'Enterprise crypto banking infrastructure - wallets, IBANs, cards, compliance'
                 },
                 {
-                    id: 'vasp-platform',
-                    title: 'VASP Platform',
-                    icon: Wallet,
-                    content: VASPPlatformDoc,
-                    description: 'Complete VASP infrastructure - wallets, IBANs, cards, compliance'
+                    id: 'rwa-tokenization',
+                    title: 'RWA Tokenization',
+                    icon: FileText,
+                    content: RWATechnicalSpec,
+                    description: 'Real World Assets tokenization - smart contracts, investor management, compliance'
+                },
+                {
+                    id: 'tax-management',
+                    title: 'Tax Management (VAT/GST)',
+                    icon: FileText,
+                    content: TaxManagementCompleteGuide,
+                    description: 'Global VAT/GST compliance, automated rate updates, real-time calculation'
+                },
+                {
+                    id: 'einvoicing-service',
+                    title: 'E-Invoicing Service',
+                    icon: FileText,
+                    content: EInvoicingOperationsGuide,
+                    description: 'Multi-standard e-invoicing - Peppol, ZATCA, FatturaPA, CFDI, government submission'
+                },
+                {
+                    id: 'pci-compliance',
+                    title: 'PCI DSS Compliance',
+                    icon: Shield,
+                    content: PCIDSSComplianceDoc,
+                    description: 'PCI DSS Level 1 compliance management, continuous monitoring, QSA coordination'
+                },
+                {
+                    id: 'digital-identity-service',
+                    title: 'Digital Identity (LEI/vLEI)',
+                    icon: Lock,
+                    content: DigitalIdentityDoc,
+                    description: 'W3C Verifiable Credentials, DIDs, LEI verification, passwordless authentication'
+                },
+                {
+                    id: 'nano-sustainability-service',
+                    title: 'NANO Sustainability',
+                    icon: FileText,
+                    content: NANOSustainabilityDoc,
+                    description: 'Gamified sustainability platform - carbon tracking, eco-tasks, token rewards, NFT achievements'
                 }
             ]
         },
