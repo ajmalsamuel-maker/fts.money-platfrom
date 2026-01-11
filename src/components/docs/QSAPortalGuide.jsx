@@ -108,23 +108,23 @@ qsa_access_policies:
 
 \`\`\`mermaid
 graph TB
-    subgraph "Current Engagement"
-        E1[PSP: GlobalPay Solutions<br/>Audit Type: Full ROC]
-        E2[Scope: Level 1<br/>300M+ txn/year]
-        E3[Status: In Progress<br/>Day 12 of 45]
+    subgraph Engagement["Current Engagement"]
+        E1["PSP: GlobalPay Solutions<br/>Audit Type: Full ROC"]
+        E2["Scope: Level 1<br/>300M+ txn/year"]
+        E3["Status: In Progress<br/>Day 12 of 45"]
     end
     
-    subgraph "Audit Progress"
-        P1[Requirements Tested<br/>89 / 382 (23%)]
-        P2[Evidence Reviewed<br/>156 / 450 (35%)]
-        P3[Findings Identified<br/>12 open]
-        P4[Completion: 28%]
+    subgraph Progress["Audit Progress"]
+        P1["Requirements Tested<br/>89 / 382 - 23%"]
+        P2["Evidence Reviewed<br/>156 / 450 - 35%"]
+        P3["Findings Identified<br/>12 open"]
+        P4["Completion: 28%"]
     end
     
-    subgraph "Quick Actions"
-        A1[Review Evidence Queue<br/>23 pending]
-        A2[Complete Audit Tasks<br/>8 assigned to you]
-        A3[Upload Report Draft<br/>Section 3.2 ready]
+    subgraph Actions["Quick Actions"]
+        A1["Review Evidence Queue<br/>23 pending"]
+        A2["Complete Audit Tasks<br/>8 assigned to you"]
+        A3["Upload Report Draft<br/>Section 3.2 ready"]
     end
     
     style E1 fill:#3b82f6,color:#fff
@@ -498,9 +498,30 @@ function calculateRiskScore(merchant) {
 
 ---
 
+**Portal Features Summary:**
+
+✅ **Read-Only Access** - Secure evidence vault with immutable audit trail  
+✅ **Task Management** - Audit engagement tracking and assignment  
+✅ **Evidence Review** - Document verification, control testing results  
+✅ **Report Upload** - ROC and AOC submission workflow  
+✅ **Secure Messaging** - Communicate with PSP/merchant compliance teams  
+✅ **Compliance Scoring** - Real-time PCI DSS requirement tracking  
+✅ **Multi-Client Dashboard** - Manage multiple audit engagements  
+
+**Navigation Menu:**
+- Dashboard (current engagements, audit progress)
+- Audit Tasks (assigned tasks, evidence requests)
+- Evidence Vault (document review, approval)
+- Findings (identified issues, remediation tracking)
+- Reports (upload ROC/AOC, compliance certificates)
+- Messages (secure communication with clients)
+- Settings (notification preferences, password)
+
+---
+
 **Document Information**
-- **Version:** 1.0
-- **Last Updated:** January 10, 2026
+- **Version:** 2.0
+- **Last Updated:** January 11, 2026
 
 © 2026 FTS.Money. All rights reserved.
 `;
