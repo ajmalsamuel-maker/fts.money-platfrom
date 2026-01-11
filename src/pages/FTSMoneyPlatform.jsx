@@ -155,27 +155,24 @@ export default function FTSMoneyPlatform() {
     }, { activeRegions: new Set(), providers: new Set(), totalInstances: 0, totalCPU: 0, totalMemory: 0, totalStorage: 0 });
 
     return (
-        <div className="flex h-screen bg-slate-50">
+        <div className="flex flex-col md:flex-row h-screen bg-slate-50">
             {/* Mobile Sidebar Overlay */}
             {mobileSidebarOpen && (
                 <div 
-                    className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+                    className="fixed inset-0 bg-black/50 z-40 md:hidden"
                     onClick={() => setMobileSidebarOpen(false)}
                 />
             )}
             
             {/* Sidebar */}
-            <div className={cn(
-                "fixed lg:static inset-y-0 left-0 z-50 lg:z-auto transition-transform duration-300",
-                mobileSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
-            )}>
-                <FTSPlatformSidebar 
-                    currentPage="FTSMoneyPlatform" 
-                    userRole={getRoleLabel(platformUser?.platform_role)} 
-                    userEmail={platformUser?.email}
-                    isSuperAdmin={platformUser?.platform_role === PLATFORM_ROLES.SUPER_ADMIN}
-                />
-            </div>
+            <FTSPlatformSidebar 
+                currentPage="FTSMoneyPlatform" 
+                userRole={getRoleLabel(platformUser?.platform_role)} 
+                userEmail={platformUser?.email}
+                isSuperAdmin={platformUser?.platform_role === PLATFORM_ROLES.SUPER_ADMIN}
+                mobileMenuOpen={mobileSidebarOpen}
+                setMobileMenuOpen={setMobileSidebarOpen}
+            />
             <UnifiedCommandPalette 
                 open={commandPaletteOpen} 
                 onOpenChange={setCommandPaletteOpen}
@@ -190,7 +187,7 @@ export default function FTSMoneyPlatform() {
                         <Button
                             variant="ghost"
                             size="icon"
-                            className="lg:hidden"
+                            className="md:hidden"
                             onClick={() => setMobileSidebarOpen(true)}
                         >
                             <Menu className="h-5 w-5" />

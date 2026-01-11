@@ -418,25 +418,22 @@ export default function MasterPricingManagement() {
     if (loading) return null;
 
     return (
-        <div className="flex h-screen bg-slate-50">
+        <div className="flex flex-col md:flex-row h-screen bg-slate-50">
             {mobileSidebarOpen && (
                 <div 
-                    className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+                    className="fixed inset-0 bg-black/50 z-40 md:hidden"
                     onClick={() => setMobileSidebarOpen(false)}
                 />
             )}
             
-            <div className={cn(
-                "fixed lg:static inset-y-0 left-0 z-50 lg:z-auto transition-transform duration-300",
-                mobileSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
-            )}>
-                <FTSPlatformSidebar 
-                    currentPage="MasterPricingManagement" 
-                    userRole={platformUser?.platform_role}
-                    userEmail={platformUser?.email}
-                    isSuperAdmin={platformUser?.platform_role === 'super_admin'}
-                />
-            </div>
+            <FTSPlatformSidebar 
+                currentPage="MasterPricingManagement" 
+                userRole={platformUser?.platform_role}
+                userEmail={platformUser?.email}
+                isSuperAdmin={platformUser?.platform_role === 'super_admin'}
+                mobileMenuOpen={mobileSidebarOpen}
+                setMobileMenuOpen={setMobileSidebarOpen}
+            />
 
             <div className="flex-1 overflow-auto">
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-6 sticky top-0 z-10">
@@ -444,7 +441,7 @@ export default function MasterPricingManagement() {
                         <Button
                             variant="ghost"
                             size="icon"
-                            className="lg:hidden flex-shrink-0"
+                            className="md:hidden flex-shrink-0"
                             onClick={() => setMobileSidebarOpen(true)}
                         >
                             <Menu className="h-5 w-5" />

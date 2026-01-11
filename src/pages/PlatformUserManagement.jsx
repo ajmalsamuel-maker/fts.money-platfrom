@@ -16,7 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Users, UserPlus, Shield, Mail, Trash2, Ban, CheckCircle, Key } from 'lucide-react';
+import { Users, UserPlus, Shield, Mail, Trash2, Ban, CheckCircle, Key, Menu } from 'lucide-react';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
@@ -32,6 +32,7 @@ export default function PlatformUserManagement() {
     const [deleteUser, setDeleteUser] = useState(null);
     const [resetPasswordUser, setResetPasswordUser] = useState(null);
     const [newPassword, setNewPassword] = useState('');
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [inviteForm, setInviteForm] = useState({
         email: '',
         full_name: '',
@@ -179,25 +180,44 @@ export default function PlatformUserManagement() {
     }
 
     return (
-        <div className="flex h-screen bg-slate-50">
+        <div className="flex flex-col md:flex-row h-screen bg-slate-50">
+            {mobileMenuOpen && (
+                <div 
+                    className="fixed inset-0 bg-black/50 z-40 md:hidden"
+                    onClick={() => setMobileMenuOpen(false)}
+                />
+            )}
+            
             <FTSPlatformSidebar 
                 currentPage="PlatformUserManagement" 
                 userRole={getRoleLabel(platformUser?.platform_role)} 
                 userEmail={platformUser?.email}
                 isSuperAdmin={platformUser?.platform_role === PLATFORM_ROLES.SUPER_ADMIN}
+                mobileMenuOpen={mobileMenuOpen}
+                setMobileMenuOpen={setMobileMenuOpen}
             />
 
-            <div className="flex-1 overflow-auto">
-                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
-                    <div>
-                        <h2 className="text-lg font-semibold text-slate-900">{t('platform:pages.platformUsers.title')}</h2>
-                        <p className="text-xs text-slate-600">{t('platform:pages.platformUsers.subtitle')}</p>
+            <div className="flex-1 overflow-auto w-full">
+                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-6 sticky top-0 z-10">
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="md:hidden flex-shrink-0"
+                            onClick={() => setMobileMenuOpen(true)}
+                        >
+                            <Menu className="h-5 w-5" />
+                        </Button>
+                        <div className="min-w-0">
+                            <h2 className="text-base md:text-lg font-semibold text-slate-900 truncate">{t('platform:pages.platformUsers.title')}</h2>
+                            <p className="text-xs text-slate-600 truncate hidden sm:block">{t('platform:pages.platformUsers.subtitle')}</p>
+                        </div>
                     </div>
-                    <div className="flex items-center gap-3">
-                        <LanguageSwitcher variant="select" showLabel={true} />
-                        <div className="text-right mr-2">
+                    <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
+                        <LanguageSwitcher variant="select" showLabel={false} />
+                        <div className="text-right mr-2 hidden lg:block">
                             <p className="text-xs text-slate-600">{t('common:labels.loggedInAs')}</p>
-                            <p className="text-sm font-medium text-slate-900">{platformUser?.email}</p>
+                            <p className="text-sm font-medium text-slate-900 truncate max-w-[150px]">{platformUser?.email}</p>
                             <Badge className="mt-1 bg-blue-600 text-white text-xs">
                                 {getRoleLabel(platformUser?.platform_role)}
                             </Badge>
@@ -275,10 +295,10 @@ export default function PlatformUserManagement() {
                         </div>
                         </header>
 
-                <div className="p-6">
+                <div className="p-4 md:p-6">
                     <Card className="bg-white border-slate-200">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
+                            <CardTitle className="flex items-center gap-2 text-base md:text-lg">
                                 <Users className="h-5 w-5" />
                                 {t('platform:pages.platformUsers.platformUsers')} ({users.length})
                             </CardTitle>
@@ -286,7 +306,7 @@ export default function PlatformUserManagement() {
                         <CardContent>
                             <div className="space-y-3">
                                 {users.map((user) => (
-                                    <div key={user.id} className="flex items-center justify-between p-4 border border-slate-200 rounded-lg">
+                                    <div key={user.id} className="flex flex-col md:flex-row md:items-center justify-between p-4 border border-slate-200 rounded-lg gap-3">
                                         <div className="flex items-center gap-4">
                                             <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
                                                 <Shield className="h-5 w-5 text-blue-600" />
@@ -296,7 +316,7 @@ export default function PlatformUserManagement() {
                                                     <p className="text-sm text-slate-600">{user.email}</p>
                                                 </div>
                                         </div>
-                                        <div className="flex items-center gap-3">
+                                        <div className="flex flex-wrap items-center gap-2 md:gap-3">
                                             <Select
                                                 value={user.platform_role}
                                                 onValueChange={(v) => {
@@ -308,7 +328,7 @@ export default function PlatformUserManagement() {
                                                 }}
                                                 disabled={!canEditUser(user) || user.email === platformUser?.email}
                                             >
-                                                <SelectTrigger className="w-40">
+                                                <SelectTrigger className="w-full md:w-40">
                                                     <SelectValue />
                                                 </SelectTrigger>
                                                 <SelectContent>
