@@ -349,13 +349,6 @@ export default function FTSDocumentation() {
                     description: 'AI-powered continuous monitoring, predictive analytics, workflow automation'
                 },
                 {
-                    id: 'qsa-portal-guide',
-                    title: 'QSA Portal Guide',
-                    icon: Shield,
-                    content: QSAPortalGuide,
-                    description: 'PCI DSS audit platform, evidence review, compliance scoring'
-                },
-                {
                     id: 'digital-identity',
                     title: 'Digital Identity & VCs',
                     icon: Wallet,
