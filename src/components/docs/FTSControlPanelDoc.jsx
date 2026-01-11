@@ -1,9 +1,9 @@
 const FTSControlPanelDoc = `# FTS Control Panel - Complete Platform Administration Guide
 ## Enterprise Payment Infrastructure Management
 
-**Version:** 2.0  
+**Version:** 3.0  
 **Classification:** Internal - Platform Administrators  
-**Last Updated:** January 5, 2026  
+**Last Updated:** January 11, 2026  
 **Document Owner:** FTS.Money Platform Team
 
 ---
@@ -1166,37 +1166,824 @@ async function verifyVLEISession(sessionToken) {
 \`\`\`markdown
 Platform Administrator Daily Checklist
 
-□ Morning Review (09:00):
-  □ Check overnight provisioning queue (new PSPs, services)
-  □ Review system health dashboard (all services green?)
-  □ Verify backup completion (database, file storage)
-  □ Check security alerts (failed logins, suspicious activity)
-  □ Review compliance grace period expirations (LEI renewals due)
+□ Morning Review (06:00-09:00):
+  □ Check overnight provisioning queue (new PSPs, VASP, ISO, RWA customers)
+  □ Review system health dashboard (all 13 services operational?)
+  □ Verify backup completion (database, file storage, blockchain snapshots)
+  □ Check security alerts (failed logins, suspicious activity, DDoS attempts)
+  □ Review compliance grace period expirations (LEI renewals, PCI certs)
+  □ Verify overnight scheduled tasks executed successfully
+  □ Check global tax rate updates (synchronized from external sources)
+  □ Review customer support escalations from overnight shift
   
-□ Financial Monitoring (11:00):
-  □ Verify daily revenue vs projections
-  □ Check failed payment methods (customer billing)
-  □ Review reconciliation exceptions
-  □ Monitor marketplace service usage
+□ Financial Monitoring (09:00-11:00):
+  □ Verify daily revenue vs projections (all services)
+  □ Check failed payment methods (customer billing, auto-charge failures)
+  □ Review reconciliation exceptions (Stripe, Xero, bank transfers)
+  □ Monitor marketplace service usage (detect anomalies)
+  □ Review usage metering accuracy (spot-check 10 random customers)
+  □ Check invoice generation queue (monthly billing cycle)
+  □ Monitor FX rate fluctuations (crypto gateway impact)
+  □ Verify settlement batches processed correctly
   
-□ Compliance & Security (14:00):
-  □ Review new KYB/KYC submissions
-  □ Check sanctions list updates (OFAC, UN, EU)
-  □ Monitor PEP screening alerts
-  □ Verify LEI/vLEI credential status checks
-  □ Review adverse media alerts
+□ Service Operations (11:00-13:00):
+  □ PSP Platform: Review new merchant onboarding queue
+  □ VASP Platform: Check wallet provisioning requests (Striga API health)
+  □ ISO Gateway: Monitor message translation throughput and errors
+  □ Orchestration: Review routing decisions, failover events
+  □ RWA Platform: Check asset tokenization requests, investor KYC queue
+  □ Tax Management: Verify calculation accuracy (spot-check invoices)
+  □ E-Invoicing: Monitor government API submission status (60+ countries)
+  □ PCI Compliance: Review continuous monitoring alerts
+  □ Service Marketplace: Check new provider integration requests
   
-□ Infrastructure (16:00):
-  □ Check auto-scaling events (unusual spikes?)
-  □ Review cloud cost optimization opportunities
-  □ Monitor database performance (slow queries?)
-  □ Verify disaster recovery replication health
+□ Compliance & Security (13:00-15:00):
+  □ Review new KYB/KYC submissions (10-step verification)
+  □ Check sanctions list updates (OFAC, UN, EU - daily sync)
+  □ Monitor PEP screening alerts (high-risk customer reviews)
+  □ Verify LEI/vLEI credential status checks (expiry monitoring)
+  □ Review adverse media alerts (automated screening results)
+  □ Check Travel Rule compliance (crypto transfers >$1K)
+  □ Audit QSA portal access logs (PCI auditor activity)
+  □ Review AML suspicious activity reports (SARs)
+  □ Verify data retention policies executed (GDPR compliance)
+  □ Check SSL certificate expiration dates (90-day alerts)
   
-□ End-of-Day (18:00):
-  □ Generate daily operational report
-  □ Update incident log (if any issues)
-  □ Prepare tomorrow's deployment schedule
-  □ Review overnight maintenance windows
+□ Infrastructure & Performance (15:00-17:00):
+  □ Check auto-scaling events (unusual spikes? cost optimization?)
+  □ Review cloud cost optimization opportunities (idle resources)
+  □ Monitor database performance (slow queries? replication lag?)
+  □ Verify disaster recovery replication health (RTO/RPO targets)
+  □ Review CDN cache hit rates (Cloudflare performance)
+  □ Check API gateway rate limits (throttled customers?)
+  □ Monitor Redis cluster health (eviction rates, memory pressure)
+  □ Review TimescaleDB query performance (analytics dashboards)
+  □ Verify blockchain node synchronization (RWA platform)
+  □ Check container health (ECS task failures, restart loops)
+  
+□ Customer Success & Support (17:00-18:00):
+  □ Review critical support tickets (SLA breaches?)
+  □ Check customer satisfaction scores (CSAT, NPS)
+  □ Monitor community forum activity (unanswered questions)
+  □ Review feature requests and product feedback
+  □ Check documentation page views (identify gaps)
+  □ Verify onboarding completion rates (drop-off points?)
+  
+□ End-of-Day (18:00-19:00):
+  □ Generate daily operational report (all KPIs)
+  □ Update incident log (if any issues occurred)
+  □ Prepare tomorrow's deployment schedule (maintenance windows)
+  □ Review overnight maintenance windows (database patches, etc.)
+  □ Handoff to overnight on-call engineer (critical alerts)
+  □ Update platform status page (status.fts.money)
+  □ Send executive daily summary email
+\`\`\`
+
+### Weekly Operations Checklist
+
+\`\`\`markdown
+Platform Administrator Weekly Checklist (Every Monday, 09:00)
+
+□ Strategic Review:
+  □ Review week-over-week growth metrics (all services)
+  □ Analyze customer churn (cancellations, downgrades)
+  □ Check new service activation trends
+  □ Review sales pipeline (Community Portal signups → paid conversions)
+  
+□ Financial Operations:
+  □ Review weekly revenue report (vs targets)
+  □ Analyze marketplace commission trends
+  □ Check provider payment reconciliation (payouts to Stripe, etc.)
+  □ Review pricing optimization opportunities
+  □ Monitor customer payment health (upcoming failures)
+  
+□ Infrastructure Planning:
+  □ Review capacity forecast (next 30 days)
+  □ Plan infrastructure scaling (database upgrades, ECS tasks)
+  □ Analyze cost trends (AWS, Cloudflare, third-party APIs)
+  □ Review disaster recovery test results
+  
+□ Compliance & Audit:
+  □ Generate weekly compliance summary report
+  □ Review all KYB/KYC approvals/rejections from past week
+  □ Check regulatory updates (new laws, guidance)
+  □ Verify all customer LEI statuses current
+  □ Review PCI DSS continuous monitoring trends
+  
+□ Product & Documentation:
+  □ Review customer feature requests (prioritize backlog)
+  □ Check documentation accuracy (update if stale)
+  □ Review API changelog (breaking changes communicated?)
+  □ Monitor third-party service updates (Striga, payment processors)
+  
+□ Team Coordination:
+  □ Monday morning all-hands standup
+  □ Review on-call incidents from past week
+  □ Plan deployments for the week
+  □ Assign high-priority tasks
+\`\`\`
+
+### Monthly Operations Checklist
+
+\`\`\`markdown
+Platform Administrator Monthly Checklist (1st of Month, All Day)
+
+□ Billing Cycle Operations (Priority):
+  □ Generate all consolidated invoices (automated, verify completion)
+  □ Send invoices to all customers via email + portal
+  □ Process auto-charge payments (Stripe, wire transfers)
+  □ Monitor payment failures (retry logic, dunning emails)
+  □ Sync invoices to Xero (accounting integration)
+  □ Generate monthly revenue report for finance team
+  
+□ Compliance & Regulatory:
+  □ Generate monthly compliance report (all services)
+  □ Review all high-risk customer accounts (enhanced monitoring)
+  □ Run global sanctions list update (monthly full refresh)
+  □ Verify PCI DSS compliance status (all PSPs)
+  □ Review LEI expiration alerts (next 90 days)
+  □ Submit regulatory reports (where required)
+  
+□ Infrastructure & Performance:
+  □ Monthly infrastructure cost analysis (vs budget)
+  □ Review database growth trends (plan storage expansion)
+  □ Analyze API performance trends (latency, error rates)
+  □ Run disaster recovery drill (restore test)
+  □ Review security incident log (patterns, trends)
+  □ Conduct vulnerability scan (automated + manual review)
+  
+□ Customer Success:
+  □ Generate monthly usage reports for enterprise customers
+  □ Review customer health scores (churn risk)
+  □ Send usage recommendations (cost optimization)
+  □ Check NPS survey responses (identify detractors)
+  □ Review support ticket trends (product issues)
+  
+□ Product & Roadmap:
+  □ Review monthly product metrics (feature adoption)
+  □ Analyze service activation trends (which services growing?)
+  □ Review competitive landscape (new features needed?)
+  □ Plan next month's product releases
+  □ Update public roadmap (transparent communication)
+\`\`\`
+
+### Quarterly Operations Checklist
+
+\`\`\`markdown
+Platform Administrator Quarterly Checklist (Every Q)
+
+□ Strategic Business Review:
+  □ Quarterly Business Review (QBR) with executive team
+  □ Review OKRs (Objectives and Key Results)
+  □ Analyze market trends and competitive positioning
+  □ Customer growth analysis (cohort retention, LTV)
+  □ Financial performance vs annual targets
+  
+□ Compliance & Audit:
+  □ Quarterly PCI DSS self-assessment questionnaire (SAQ)
+  □ External penetration testing (required for Level 1)
+  □ Vulnerability assessment and remediation
+  □ ISO 27001 compliance review
+  □ Data protection impact assessment (GDPR)
+  □ Review all high-risk customer accounts
+  
+□ Infrastructure & Security:
+  □ Infrastructure capacity planning review (next 6 months)
+  □ Security incident post-mortems (lessons learned)
+  □ Disaster recovery full failover test
+  □ Review third-party vendor risk assessments
+  □ Update business continuity plan
+  
+□ Customer Success:
+  □ Host quarterly customer webinars (product updates)
+  □ Send customer satisfaction surveys (CSAT, NPS)
+  □ Review customer success metrics (time-to-value, adoption)
+  □ Identify upsell/cross-sell opportunities
+  □ Review churned customers (exit interviews)
+\`\`\`
+
+### Annual Operations Checklist
+
+\`\`\`markdown
+Platform Administrator Annual Checklist (December/January)
+
+□ Compliance & Certification:
+  □ Annual PCI DSS Level 1 audit (QSA engagement)
+  □ ISO 27001 certification renewal
+  □ SOC 2 Type II audit
+  □ Regulatory license renewals
+  □ Update compliance documentation (all policies)
+  
+□ Financial Planning:
+  □ Annual budget planning (next fiscal year)
+  □ Revenue forecasting (service growth projections)
+  □ Infrastructure cost modeling (3-year plan)
+  □ Vendor contract renewals (negotiate pricing)
+  □ Review insurance policies (cyber, E&O, D&O)
+  
+□ Strategic Planning:
+  □ Annual product roadmap planning
+  □ Market expansion analysis (new geographies)
+  □ Technology stack evaluation (upgrade cycles)
+  □ Partnership strategy review
+  □ Competitive analysis deep dive
+  
+□ Team & Organization:
+  □ Annual performance reviews (all staff)
+  □ Organizational structure review (headcount planning)
+  □ Training and development plans
+  □ Succession planning (key roles)
+  □ Compensation benchmarking
+\`\`\`
+
+### Incident Response Procedures
+
+\`\`\`yaml
+incident_severity_levels:
+  P0_critical:
+    definition: "Complete service outage affecting all customers"
+    examples:
+      - Database primary failure (no automatic failover)
+      - Payment processor down (all transactions failing)
+      - Security breach detected (data exfiltration)
+      - DDoS attack overwhelming infrastructure
+    response_time: "Immediate (5 minutes)"
+    escalation: "Page CTO + CEO immediately"
+    communication: "Status page update every 15 minutes"
+    
+  P1_high:
+    definition: "Major degradation affecting multiple customers"
+    examples:
+      - Single region outage (multi-region still operational)
+      - Critical service down (PSP, VASP, ISO Gateway)
+      - Payment processor degraded (high error rates)
+      - Database replica lag exceeding 60 seconds
+    response_time: "15 minutes"
+    escalation: "Page on-call engineering lead"
+    communication: "Status page update + affected customer emails"
+    
+  P2_medium:
+    definition: "Isolated issues affecting individual customers"
+    examples:
+      - Single PSP instance errors
+      - API rate limiting issues
+      - Merchant portal slowness
+      - Failed scheduled task
+    response_time: "1 hour"
+    escalation: "Assign to on-call engineer"
+    communication: "Support ticket + internal Slack"
+    
+  P3_low:
+    definition: "Non-critical issues, degraded performance"
+    examples:
+      - Slow dashboard loading
+      - Non-critical feature bug
+      - Documentation error
+    response_time: "4 hours"
+    escalation: "Add to sprint backlog"
+    communication: "Internal tracking only"
+
+incident_response_workflow:
+  step_1_detection:
+    - automated_monitoring: "CloudWatch, Sentry, PagerDuty"
+    - customer_reports: "Support tickets, emails"
+    - manual_observation: "Platform admin notices issue"
+    
+  step_2_triage:
+    - assess_severity: "P0 to P3"
+    - identify_scope: "How many customers affected?"
+    - determine_impact: "Revenue impact? Data loss risk?"
+    
+  step_3_response:
+    - assemble_team: "On-call + specialists"
+    - create_war_room: "Slack channel + video call"
+    - update_status_page: "Transparent communication"
+    - begin_investigation: "Check logs, metrics, recent changes"
+    
+  step_4_mitigation:
+    - implement_workaround: "Restore service quickly"
+    - or_rollback: "Revert recent deployment"
+    - or_failover: "Switch to backup system"
+    
+  step_5_resolution:
+    - identify_root_cause: "Why did this happen?"
+    - implement_permanent_fix: "Prevent recurrence"
+    - test_thoroughly: "Verify fix works"
+    - deploy_to_production: "Staged rollout"
+    
+  step_6_post_mortem:
+    - within_48_hours: "Write incident report"
+    - blameless_culture: "Focus on systems, not people"
+    - action_items: "Preventive measures"
+    - share_learnings: "Update runbooks"
+
+example_p0_incident:
+  title: "Database Primary Failure - No Automatic Failover"
+  timeline:
+    - "00:00 - Monitoring detects primary DB offline"
+    - "00:02 - PagerDuty pages on-call DBA + CTO"
+    - "00:05 - Status page updated: 'Investigating payment processing issues'"
+    - "00:07 - War room established (Slack + Zoom)"
+    - "00:10 - Manual failover initiated to standby replica"
+    - "00:15 - Database primary restored, accepting write traffic"
+    - "00:18 - Payment processing resumed"
+    - "00:20 - Status page updated: 'Systems operational'"
+    - "00:30 - Customer email: 'Service restored, apologize for disruption'"
+    - "48h later - Post-mortem published with action items"
+  
+  root_cause: "AWS RDS automatic failover bug (rare race condition)"
+  fix: "Implemented custom health check + auto-failover script"
+  prevention: "Added CloudWatch alarm for failover failures"
+\`\`\`
+
+### Performance Monitoring & SLA Tracking
+
+\`\`\`yaml
+sla_tracking_dashboard:
+  uptime_monitoring:
+    measurement_method: "External synthetic monitoring (Pingdom, UptimeRobot)"
+    check_frequency: "30 seconds from 10 global locations"
+    
+    sla_targets:
+      enterprise: 99.99% # 4.32 minutes downtime/month allowed
+      professional: 99.95% # 21.6 minutes/month
+      growth: 99.9% # 43.2 minutes/month
+      starter: 99.5% # 3.6 hours/month
+    
+    breach_response:
+      - automatic_status_page_update
+      - incident_created_in_pagerduty
+      - customer_notification_if_breach_exceeds_15min
+      - sla_credit_calculation: "Pro-rated refund"
+      
+  performance_targets:
+    api_latency:
+      p50: "<50ms"
+      p95: "<100ms"
+      p99: "<200ms"
+      p99_9: "<500ms"
+      measurement: "Application Performance Monitoring (APM)"
+      
+    transaction_success_rate:
+      target: ">98%"
+      measurement: "Approved / Total (excluding fraud blocks)"
+      alert_threshold: "<95%"
+      
+    payment_processor_uptime:
+      per_processor: ">99.5%"
+      aggregate_via_orchestration: ">99.99%"
+      
+  monthly_sla_report:
+    generated: "5th of following month"
+    includes:
+      - uptime_percentage_per_customer
+      - sla_credits_issued: "Auto-calculated"
+      - incident_summary: "P0, P1 incidents"
+      - performance_trends: "Latency, error rates"
+    distribution:
+      - sent_to_customer_admin_email
+      - posted_to_customer_portal
+      - filed_in_compliance_archive
+\`\`\`
+
+### Capacity Planning & Forecasting
+
+\`\`\`yaml
+capacity_planning_process:
+  weekly_forecasting:
+    inputs:
+      - current_transaction_volume: "Last 7 days"
+      - growth_rate: "Week-over-week % change"
+      - upcoming_customer_launches: "Sales pipeline"
+      - seasonal_patterns: "Historical trends"
+      
+    outputs:
+      - projected_tps_next_week
+      - projected_tps_next_month
+      - resource_requirements: "ECS tasks, database IOPS"
+      - estimated_cost_impact
+      
+  monthly_capacity_review:
+    database_growth:
+      - current_size: "Total GB used"
+      - growth_rate: "GB/month"
+      - projected_capacity: "6-month forecast"
+      - action_trigger: "When 80% full → expand storage"
+      
+    compute_resources:
+      - average_cpu_utilization: "Target 60-70%"
+      - peak_cpu_utilization: "Should not exceed 85%"
+      - memory_utilization: "Target 70-80%"
+      - scale_up_trigger: "Sustained >75% for 3+ days"
+      
+    network_bandwidth:
+      - current_data_transfer: "TB/month"
+      - projected_growth: "Based on customer adds"
+      - cost_optimization: "CDN cache hit rate improvement"
+      
+  annual_infrastructure_planning:
+    multi_year_forecast:
+      year_1: "Current trajectory + 20% buffer"
+      year_2: "Conservative growth (50% increase)"
+      year_3: "Aggressive growth (100% increase)"
+      
+    major_upgrades:
+      - database_instance_upgrades
+      - multi_region_expansion: "Add EU region (GDPR)"
+      - blockchain_node_infrastructure: "RWA scale-up"
+      - ml_infrastructure: "Fraud detection, AI features"
+\`\`\`
+
+### Change Management & Deployment
+
+\`\`\`yaml
+deployment_procedures:
+  change_windows:
+    standard_maintenance:
+      schedule: "Tuesday/Thursday 02:00-04:00 UTC"
+      notification: "72 hours advance via email + status page"
+      approval: "Platform admin"
+      
+    emergency_hotfix:
+      schedule: "Immediate (no window)"
+      notification: "Real-time status page updates"
+      approval: "CTO or on-call lead"
+      
+    major_release:
+      schedule: "Monthly, first Saturday 06:00-10:00 UTC"
+      notification: "2 weeks advance"
+      approval: "CTO + product lead"
+      
+  deployment_strategy:
+    blue_green_deployment:
+      - deploy_to_green_environment
+      - run_automated_tests
+      - route_1_percent_traffic: "Canary deployment"
+      - monitor_error_rates_15_minutes
+      - if_success_route_100_percent
+      - if_failure_instant_rollback
+      
+    database_migrations:
+      - always_backward_compatible
+      - run_in_transaction: "All or nothing"
+      - zero_downtime_required: "Use online schema changes"
+      - test_on_staging_first: "Identical data volume"
+      
+    rollback_procedures:
+      - maintain_previous_2_versions: "Quick rollback"
+      - automated_rollback_triggers:
+          - error_rate_exceeds_1_percent
+          - latency_p99_exceeds_500ms
+          - failed_health_checks
+      - manual_rollback_time: "<5 minutes"
+      
+  release_checklist:
+    pre_deployment:
+      - code_review_approved
+      - automated_tests_passing: "100% unit + integration"
+      - staging_environment_tested
+      - database_migration_tested
+      - rollback_plan_documented
+      - customer_communication_drafted
+      
+    during_deployment:
+      - monitor_real_time_metrics
+      - watch_error_logs
+      - verify_health_checks
+      - test_critical_user_journeys
+      - confirm_database_migration_success
+      
+    post_deployment:
+      - verify_all_services_operational
+      - check_customer_reported_issues
+      - update_status_page: "Maintenance complete"
+      - send_release_notes_to_customers
+      - update_internal_documentation
+      - schedule_post_deployment_review: "Next day"
+\`\`\`
+
+### Operational Metrics & KPIs
+
+\`\`\`yaml
+platform_health_kpis:
+  customer_metrics:
+    total_customers: 438
+    growth_rate: "+12% MoM"
+    churn_rate: "<2% target"
+    
+  service_adoption:
+    psp_instances: 247
+    vasp_customers: 89
+    iso_gateway_customers: 34
+    orchestration_customers: 56
+    rwa_providers: 12
+    
+  transaction_metrics:
+    total_volume_daily: "$125M"
+    total_count_daily: "2.8M transactions"
+    average_transaction_size: "$44.64"
+    success_rate: "98.4%"
+    
+  technical_performance:
+    api_uptime: "99.98%"
+    p99_latency: "185ms"
+    error_rate: "0.08%"
+    throughput_peak: "12,500 TPS"
+    
+  financial_health:
+    monthly_recurring_revenue: "$2.1M"
+    annual_run_rate: "$25.2M"
+    gross_margin: "78%"
+    customer_acquisition_cost: "$4,200"
+    customer_lifetime_value: "$156,000"
+    
+  operational_efficiency:
+    provisioning_time_p95: "46 minutes"
+    support_first_response: "12 minutes avg"
+    incident_mttr: "18 minutes (P0), 2.4 hours (P1)"
+    deployment_frequency: "14 per month"
+    deployment_success_rate: "98.6%"
+\`\`\`
+
+---
+
+## User Journeys - Platform Administrator
+
+### Journey 1: Morning Platform Health Review
+
+\`\`\`mermaid
+sequenceDiagram
+    participant Admin as Platform Admin
+    participant Dashboard as Control Panel
+    participant Monitoring as Monitoring System
+    participant Queue as Provisioning Queue
+    participant Compliance as Compliance Engine
+    
+    Admin->>Dashboard: Login at 09:00
+    Dashboard->>Monitoring: Fetch overnight metrics
+    Monitoring-->>Dashboard: All systems green
+    
+    Dashboard->>Queue: Check provisioning queue
+    Queue-->>Dashboard: 3 new PSPs, 1 VASP, 2 ISO customers
+    
+    Dashboard->>Compliance: Check LEI expiration alerts
+    Compliance-->>Dashboard: 12 customers renewing in 30 days
+    
+    Dashboard-->>Admin: Display summary
+    Admin->>Admin: Review overnight activity log
+    Admin->>Admin: Prioritize today's tasks
+\`\`\`
+
+### Journey 2: Provisioning New PSP Customer
+
+\`\`\`mermaid
+sequenceDiagram
+    participant Customer as Community User
+    participant Community as Community Portal
+    participant Queue as Provisioning Queue
+    participant Admin as Platform Admin
+    participant KYB as KYB Engine
+    participant Provisioner as Auto Provisioner
+    
+    Customer->>Community: Request PSP Launch
+    Community->>Community: Collect business info
+    Community->>Queue: Submit to queue
+    Queue->>Admin: New request notification
+    
+    Admin->>Queue: Review request
+    Queue->>KYB: Initiate KYB verification
+    KYB->>KYB: Run 10-step verification
+    
+    alt KYB Approved (Score < 30)
+        KYB-->>Queue: Auto-approved
+        Queue->>Provisioner: Begin provisioning
+        Provisioner->>Provisioner: Create tenant schema
+        Provisioner->>Provisioner: Deploy infrastructure
+        Provisioner->>Provisioner: Configure subdomain
+        Provisioner-->>Queue: Provisioning complete (45 min)
+        Queue->>Customer: Send welcome email + credentials
+    else KYB Needs Review (Score 30-40)
+        KYB-->>Queue: Manual review required
+        Queue->>Admin: Review flagged items
+        Admin->>Admin: Evaluate risk
+        Admin->>Queue: Approve or reject
+    else KYB Rejected (Score > 40)
+        KYB-->>Queue: Auto-rejected
+        Queue->>Customer: Rejection notice + appeal process
+    end
+\`\`\`
+
+### Journey 3: Handling P0 Critical Incident
+
+\`\`\`mermaid
+sequenceDiagram
+    participant Monitor as Monitoring
+    participant PagerDuty as PagerDuty
+    participant Admin as On-Call Admin
+    participant Team as Engineering Team
+    participant StatusPage as Status Page
+    participant Customers
+    
+    Monitor->>Monitor: Detect database primary failure
+    Monitor->>PagerDuty: Trigger P0 alert
+    PagerDuty->>Admin: Page immediately
+    PagerDuty->>Team: Page CTO + DBA lead
+    
+    Admin->>StatusPage: Update: Investigating
+    StatusPage->>Customers: Email notification
+    
+    Admin->>Team: Create war room (Slack + Zoom)
+    Team->>Team: Diagnose issue (5 min)
+    Team->>Team: Initiate manual failover (2 min)
+    Team->>Monitor: Verify standby promoted
+    
+    Monitor-->>Team: Database operational
+    Team->>Admin: Service restored
+    
+    Admin->>StatusPage: Update: Resolved
+    StatusPage->>Customers: Resolution email
+    
+    Note over Team: Total downtime: 15 minutes
+    
+    Team->>Team: Schedule post-mortem (24h)
+    Team->>Team: Write incident report (48h)
+    Team->>Team: Implement preventive measures
+\`\`\`
+
+### Journey 4: Monthly Billing Cycle Execution
+
+\`\`\`mermaid
+sequenceDiagram
+    participant Schedule as Scheduled Task
+    participant Billing as Billing Engine
+    participant Meters as Usage Meters
+    participant Invoice as Invoice Generator
+    participant Payment as Payment Processor
+    participant Xero as Xero Integration
+    participant Customer
+    
+    Note over Schedule: 1st of month, 00:00 UTC
+    
+    Schedule->>Billing: Trigger monthly billing
+    Billing->>Meters: Fetch all usage data (last month)
+    Meters-->>Billing: Usage by customer/service
+    
+    Billing->>Billing: Apply pricing rules
+    Billing->>Invoice: Generate invoices (438 customers)
+    Invoice->>Invoice: Create PDF documents
+    
+    Invoice->>Customer: Email invoice + PDF
+    Invoice->>Payment: Post to customer portals
+    
+    Payment->>Payment: Process auto-charge (Stripe)
+    
+    alt Payment Successful
+        Payment->>Xero: Sync invoice + payment
+        Payment->>Customer: Payment confirmation
+    else Payment Failed
+        Payment->>Payment: Retry in 3 days
+        Payment->>Customer: Payment failed notice
+    end
+    
+    Billing->>Billing: Generate billing summary report
+    Billing->>Admin: Email monthly revenue summary
+\`\`\`
+
+---
+
+## Menu Structure & Navigation
+
+### FTS Control Panel - Complete Menu Map
+
+\`\`\`yaml
+control_panel_menu_structure:
+  overview_insights:
+    - Platform Dashboard (FTSMoneyPlatform)
+    - FIX Score Management (PlatformFIXManagement)
+    - System Health (FTSSystemHealth)
+    - Revenue Dashboard (FTSRevenue)
+    - Platform Analytics (FTSAnalytics)
+    - Setup Guide (FTSSetupGuide)
+    - Custom Reports (FTSReporting)
+    
+  psp_operations:
+    - PSP Management (PSPProvisioning)
+    - Provisioning Queue (FTSProvisioningQueue)
+    - PSP Administrators (PlatformUserManagement)
+    - Resource Orchestration (ResourceOrchestration)
+    
+  crypto_banking_vasp:
+    - VASP Management (CryptoBankingVASPManagement)
+    - Crypto Customers (CryptoGatewayCustomers)
+    - Crypto Transactions (CryptoGatewayTransactions)
+    - Wallets & IBANs (CryptoBankingWallets)
+    - Compliance & KYC (CryptoBankingCompliance)
+    - Striga Settings (StrigaServiceManagement)
+    
+  rwa_tokenization_platform:
+    - RWA Dashboard (RWAPlatform)
+    - RWA Providers (RWAWhiteLabelProvisioning)
+    - Asset Issuers (RWAPlatformIssuers)
+    - Tokenized Assets (RWAPlatformAssets)
+    - Investors (RWAPlatformInvestors)
+    - RWA Analytics (RWAPlatformAnalytics)
+    
+  services_marketplace:
+    - Service Publication Manager (ServicePublicationManager)
+    - Service Catalog (FTSServiceManager)
+    - Payment Providers (PaymentProviderManagement)
+    - Global Standards Registry (GlobalStandardsRegistry)
+    - ISO Gateway Customers (ISOGatewayCustomers)
+    - ISO Connections (ISOGatewayConnections)
+    - ISO Test Console (ISOGatewayTestConsole)
+    - ISO Message Monitor (ISOMessageMonitor)
+    - Orchestration Customers (OrchestrationCustomers)
+    - Payout Routes (FTSPayoutRoutes)
+    - Service Providers (FTSServiceProviders)
+    - Wholesale Marketplace (PSPWholesaleMarketplace)
+    
+  user_access_management:
+    - Platform Admins (PlatformUserManagement)
+    - Community Users (CommunityUserManagement)
+    - ISO Gateway Users (ISOGatewayUserManagement)
+    - Orchestration Users (OrchestrationUserManagement)
+    - Crypto Banking Users (CryptoGatewayUserManagement)
+    - RWA Platform Users (RWAProviderUserManagement)
+    - Role & Permissions (RolePermissionManagement)
+    - Client Accounts (FTSClients)
+    - Tenant Management (TenantManagement) # Super admin only
+    
+  financial_operations:
+    pricing_configuration:
+      - Service Configuration Hub (ServiceConfigurationHub)
+      - Master Pricing (MasterPricingManagement)
+      - Platform Pricing (PlatformPricingConfiguration)
+      - Service Pricing Config (ServicePricingConfiguration)
+      
+    billing_invoicing:
+      - Unified Billing Dashboard (UnifiedBillingDashboard)
+      - Usage Metering Engine (UsageMeteringEngine)
+      - Invoice Generation Center (InvoiceGenerationCenter)
+      
+    tax_compliance_operations:
+      - Tax Management (TaxManagement)
+      - Tax Rate Updates (TaxRateUpdateManager)
+      - E-Invoicing Dashboard (EInvoicingDashboard)
+      - E-Invoice Generator (EInvoiceGenerator)
+      - Tax Reports & Analytics (TaxAdvancedReports)
+      - Tax Calculation Tester (TaxCalculationTester)
+      
+    financial_integrations:
+      - Accounting Integrations (AccountingIntegrations)
+      - Custom Reports (FTSReporting)
+      
+  compliance_security:
+    - E-Invoicing Compliance (ComplianceMonitoringDashboard)
+    - LEI Dashboard (LEIComplianceDashboard)
+    - Carbon Dashboard (CarbonDashboard)
+    - ESG Reporting (ESGReportingDashboard)
+    - Compliance Testing (FTSComplianceTesting)
+    - Platform Audit Logs (PlatformAuditLogs)
+    - Access Logs (EnhancedAuditLogs)
+    - Policy Management (FTSCompliance)
+    - Workflows (WorkflowManagement)
+    - Data Retention (DataRetentionManagement)
+    
+  infrastructure:
+    - Kong Gateway Setup (KongGatewaySetup)
+    - Kong API Keys (KongAPIKeyManagement)
+    - Kong API Integration (KongAPIIntegrationGuide)
+    - Domain Management (FTSDomainManagement)
+    - API Gateway Config (APIGatewayConfiguration)
+    - Blockchain Integration (FTSBlockchainIntegration)
+    
+  pci_dss_compliance:
+    - PCI Dashboard (PCIComplianceDashboard)
+    - Continuous Monitoring (PCIContinuousMonitoring)
+    - Predictive Analytics (PCIPredictiveAnalytics)
+    - Workflow Automation (PCIWorkflowManager)
+    - Advanced Reporting (PCIReportingDashboard)
+    - Requirements Tracker (PCIRequirementsTracker)
+    - Evidence Vault (PCIEvidenceVault)
+    - Control Testing (PCIControlTesting)
+    - Policy Library (PCIPolicyLibrary)
+    - Gap Analysis (PCIGapAnalysis)
+    - Audit Reports (PCIAuditReports)
+    - QSA User Management (QSAUserManagement)
+    
+  digital_identity:
+    - Identity Wallet (DigitalIdentityWallet)
+    - Credential Presentation (CredentialPresentation)
+    
+  settings_resources:
+    - Platform Config (FTSSettings)
+    - Multilingual System (PlatformLanguageManagement)
+    - AI Translation Studio (AITranslationStudio)
+    - Advanced Tools (ModuleCatalogTest)
+    - LEI Phase 1 Testing (LEIPhase1Testing)
+    
+  documentation:
+    - Documentation Hub (FTSDocumentation)
 \`\`\`
 
 ---
@@ -1214,8 +2001,8 @@ The FTS Control Panel provides comprehensive administration capabilities across 
 ---
 
 **Document Information:**
-- **Version:** 2.0
-- **Last Updated:** January 5, 2026
+- **Version:** 3.0
+- **Last Updated:** January 11, 2026
 - **Classification:** Internal - Platform Administrators
 
 © 2026 FTS.Money. Internal use only.`;
