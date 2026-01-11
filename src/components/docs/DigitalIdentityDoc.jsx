@@ -1,6 +1,13 @@
 export const DigitalIdentityDoc = `
 # Digital Identity & Verifiable Credentials System
 
+**Version:** 2.0  
+**Last Updated:** January 11, 2026  
+**Classification:** Technical Documentation  
+**Document Owner:** FTS.Money Identity Team
+
+---
+
 ## Executive Summary
 
 The FTS.Money Digital Identity System implements W3C Verifiable Credentials (VC) and Decentralized Identifiers (DID) standards to provide secure, privacy-preserving, and user-controlled digital identity management. This comprehensive platform enables passwordless authentication, credential verification, and selective disclosure for financial services and beyond.
@@ -891,4 +898,14 @@ The FTS.Money Digital Identity System provides a standards-compliant, secure, an
 - Reduced onboarding time by 95%
 
 For implementation support and integration guidance, contact the FTS.Money identity team.
+
+---
+
+**Document Information**
+- **Version:** 2.0
+- **Last Updated:** January 11, 2026
+- **Owner:** Identity Team
+- **Contact:** identity@fts.money
+
+© 2026 FTS.Money. All rights reserved.
 `;
