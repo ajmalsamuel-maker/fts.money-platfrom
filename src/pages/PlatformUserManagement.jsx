@@ -61,15 +61,17 @@ export default function PlatformUserManagement() {
 
     const inviteMutation = useMutation({
         mutationFn: async (userData) => {
-            // Create user directly via AuthUser entity
-            const newUser = await base44.asServiceRole.entities.AuthUser.create({
+            const response = await base44.functions.invoke('platformAuthSimple', {
+                action: 'register',
                 email: userData.email,
                 full_name: userData.full_name,
-                password_hash: userData.password, // Will be hashed by backend
-                platform_role: userData.role,
-                account_type: 'platform_admin'
+                password: userData.password,
+                role: userData.role
             });
-            return { success: true, user: newUser };
+            if (!response.data?.success) {
+                throw new Error(response.data?.error || 'Failed to create user');
+            }
+            return response.data;
         },
         onSuccess: (data) => {
             queryClient.invalidateQueries(['platform-users']);
@@ -92,7 +94,14 @@ export default function PlatformUserManagement() {
 
     const deleteMutation = useMutation({
         mutationFn: async (userId) => {
-            await base44.asServiceRole.entities.AuthUser.delete(userId);
+            const response = await base44.functions.invoke('platformAuthSimple', {
+                action: 'deleteUser',
+                userId
+            });
+            if (!response.data?.success) {
+                throw new Error(response.data?.error || 'Failed to delete user');
+            }
+            return response.data;
         },
         onSuccess: () => {
             queryClient.invalidateQueries(['platform-users']);
@@ -108,12 +117,14 @@ export default function PlatformUserManagement() {
 
     const updateRoleMutation = useMutation({
         mutationFn: async ({ userId, role, oldRole }) => {
-            const authUser = await base44.asServiceRole.entities.AuthUser.filter({ id: userId });
-            const user = authUser[0];
-            await base44.asServiceRole.entities.AuthUser.update(userId, {
-                ...user.data,
-                platform_role: role
+            const response = await base44.functions.invoke('platformAuthSimple', {
+                action: 'updateRole',
+                userId,
+                role
             });
+            if (!response.data?.success) {
+                throw new Error(response.data?.error || 'Failed to update role');
+            }
             return { user: users.find(u => u.id === userId), oldRole, newRole: role };
         },
         onSuccess: (data) => {
