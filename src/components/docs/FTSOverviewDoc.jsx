@@ -88,10 +88,10 @@ Building the complete FTS.Money service ecosystem from scratch would require mas
 
 | Tier | Services Included | Monthly Cost | Setup Fee | Annual Cost | 3-Year TCO |
 |------|------------------|--------------|-----------|-------------|------------|
-| **Starter** | • PSP Platform<br>• Service Marketplace<br>• Basic Billing | $499 | $2,500 | $8,488 | $28,000 |
-| **Growth** | • PSP Platform<br>• ISO Gateway OR Orchestration<br>• Tax Management<br>• E-Invoicing<br>• Service Marketplace<br>• Unified Billing | $2,499 | $2,500 | $32,488 | $100,000 |
-| **Professional** | • PSP Platform<br>• Crypto VASP<br>• ISO Gateway<br>• Orchestration<br>• Tax Management<br>• E-Invoicing<br>• PCI Compliance Suite<br>• Service Marketplace<br>• Unified Billing | $9,999 | Waived | $119,988 | $360,000 |
-| **Enterprise** | **ALL 11 SERVICES:**<br>• PSP Platform<br>• Crypto VASP<br>• ISO Gateway<br>• Orchestration Engine<br>• RWA Tokenization<br>• Tax Management<br>• E-Invoicing<br>• PCI Compliance Suite<br>• Unified Billing<br>• Digital Identity<br>• NANO Sustainability<br>• Service Marketplace<br>• FIX Score System | $35,000 | Waived | $420,000 | $1,260,000 |
+| **Starter** | 3 services: PSP Platform, Service Marketplace, Basic Billing | $499 | $2,500 | $8,488 | $28,000 |
+| **Growth** | 6 services: PSP + (ISO Gateway OR Orchestration) + Tax Management + E-Invoicing + Marketplace + Unified Billing | $2,499 | $2,500 | $32,488 | $100,000 |
+| **Professional** | 9 services: PSP + Crypto VASP + ISO Gateway + Orchestration + Tax + E-Invoicing + PCI Suite + Marketplace + Billing | $9,999 | Waived | $119,988 | $360,000 |
+| **Enterprise** | All 13 services: Complete platform access including RWA Tokenization, Digital Identity, NANO Sustainability, FIX Score | $35,000 | Waived | $420,000 | $1,260,000 |
 
 **Savings Example (Enterprise Customer):**
 - Traditional build cost: **$140M-$280M** (3 years)
@@ -126,6 +126,81 @@ Enterprises need payment infrastructure but face:
 - Payment processors expanding service offerings
 - Fund managers adding crypto/RWA services
 - Enterprises building embedded finance products
+
+---
+
+## Technical Architecture Overview
+
+### Technology Stack
+
+**Frontend:**
+- React 18 + TypeScript for all portal interfaces
+- Tailwind CSS for responsive UI design
+- WebSocket connections for real-time transaction monitoring
+
+**Backend:**
+- Go/Fiber for high-performance payment processor (10,000+ TPS)
+- Node.js for business logic and integrations
+- Deno for serverless functions and edge computing
+
+**Data & Storage:**
+- PostgreSQL for transactional data (multi-tenant isolation)
+- Redis Cluster for caching and session management
+- TimescaleDB for time-series analytics
+- Elasticsearch for transaction search and logging
+
+**Infrastructure:**
+- AWS ECS (Elastic Container Service) for payment processor
+- Cloudflare WAF/CDN for DDoS protection and global edge caching
+- Multi-AZ deployment with automatic failover (99.99% uptime SLA)
+
+**Security & Compliance:**
+- PCI DSS Level 1 certified infrastructure
+- End-to-end TLS 1.3 encryption
+- Tokenization for sensitive card data
+- Hardware Security Modules (HSMs) for key management
+
+### API Architecture
+
+**RESTful APIs:**
+- Base URL: `https://api.fts.money/v1/`
+- Authentication: API key + HMAC signature
+- Rate limiting: 1,000 requests/minute (configurable by tier)
+- Webhook support for real-time event notifications
+
+**Key Endpoints:**
+- `/payments/process` - Process payment transactions
+- `/merchants` - Merchant lifecycle management
+- `/settlements` - Settlement reporting and reconciliation
+- `/iso/translate` - ISO message format translation
+- `/crypto/wallets` - Crypto wallet operations
+- `/tax/calculate` - Real-time tax calculation
+
+**SDK Support:**
+- JavaScript/TypeScript, Python, PHP, Java, Go
+- Mobile SDKs: iOS (Swift), Android (Kotlin)
+
+### Integration Methods
+
+1. **Direct API Integration** - RESTful APIs with comprehensive documentation
+2. **Hosted Checkout** - Pre-built payment pages (PCI-compliant)
+3. **JavaScript SDK** - Client-side payment form integration
+4. **Webhooks** - Real-time event notifications (HMAC-verified)
+5. **Batch Processing** - Bulk operations via CSV/JSON upload
+
+### Performance Metrics
+
+- **Transaction Latency:** P95 < 200ms, P99 < 500ms
+- **Throughput:** 10,000+ transactions per second
+- **Availability:** 99.99% uptime SLA
+- **Data Retention:** 7 years (PCI/regulatory compliance)
+
+### Deployment Models
+
+1. **SaaS Multi-Tenant** - Shared infrastructure (fastest deployment)
+2. **Dedicated Environment** - Isolated cloud resources (enterprise customers)
+3. **Hybrid** - Sensitive data on-premise, processing in cloud
+4. **On-Premise** - Full self-hosted deployment (available for Enterprise tier)
 
 ---
 
