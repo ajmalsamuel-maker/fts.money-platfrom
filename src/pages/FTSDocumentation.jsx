@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { Download, FileText, BookOpen, Code, GitBranch, Wallet, Shield, Printer, Lock } from 'lucide-react';
+import { Download, FileText, BookOpen, Code, GitBranch, Wallet, Shield, Printer, Lock, Menu, X } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
@@ -81,6 +81,7 @@ export default function FTSDocumentation() {
     const [activeTab, setActiveTab] = useState('overview');
     const [exportDialogOpen, setExportDialogOpen] = useState(false);
     const [openCategories, setOpenCategories] = useState(['getting-started']);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     const documentCategories = [
         {
@@ -828,20 +829,55 @@ export default function FTSDocumentation() {
                 />
 
                 <div className="flex-1 overflow-auto">
-                <div className="p-6">
-                    {/* Header */}
+                <div className="p-4 md:p-6">
+                    {/* Header with Mobile Menu Toggle */}
                     <div className="mb-6 print-hide">
-                        <h1 className="text-3xl font-bold text-slate-900 mb-2">{t('platform:subMenuItems.documentationHub')}</h1>
-                        <p className="text-slate-600">{t('platform:subMenuItems.documentationHubDesc')}</p>
+                        <div className="flex items-center justify-between gap-4">
+                            <div className="flex-1">
+                                <h1 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2">{t('platform:subMenuItems.documentationHub')}</h1>
+                                <p className="text-sm md:text-base text-slate-600">{t('platform:subMenuItems.documentationHubDesc')}</p>
+                            </div>
+                            <Button
+                                variant="outline"
+                                size="icon"
+                                className="md:hidden"
+                                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                            >
+                                {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+                            </Button>
+                        </div>
                     </div>
 
                     {/* Category Navigation */}
-                    <div className="grid grid-cols-12 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+                        {/* Mobile Menu Overlay */}
+                        {mobileMenuOpen && (
+                            <div 
+                                className="fixed inset-0 bg-black/50 z-40 md:hidden"
+                                onClick={() => setMobileMenuOpen(false)}
+                            />
+                        )}
+                        
                         {/* Category Sidebar */}
-                        <div className="col-span-3 print-hide">
-                            <Card className="sticky top-6">
+                        <div className={`
+                            fixed md:static inset-y-0 left-0 z-50 w-80 md:w-auto
+                            md:col-span-3 print-hide
+                            transform transition-transform duration-200 ease-in-out
+                            ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+                        `}>
+                            <Card className="h-full md:h-auto md:sticky md:top-6 overflow-y-auto">
                                 <CardHeader>
-                                    <CardTitle className="text-lg">Documentation</CardTitle>
+                                    <div className="flex items-center justify-between">
+                                        <CardTitle className="text-lg">Documentation</CardTitle>
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="md:hidden"
+                                            onClick={() => setMobileMenuOpen(false)}
+                                        >
+                                            <X className="h-4 w-4" />
+                                        </Button>
+                                    </div>
                                 </CardHeader>
                                 <CardContent className="p-0">
                                     <nav className="space-y-1">
@@ -881,7 +917,10 @@ export default function FTSDocumentation() {
                                                                 return (
                                                                     <button
                                                                         key={doc.id}
-                                                                        onClick={() => setActiveTab(doc.id)}
+                                                                        onClick={() => {
+                                                                            setActiveTab(doc.id);
+                                                                            setMobileMenuOpen(false);
+                                                                        }}
                                                                         className={`w-full text-left px-3 py-2 text-sm flex items-center gap-2 transition-colors ${
                                                                             activeTab === doc.id
                                                                                 ? 'bg-blue-50 text-blue-700 font-medium'
@@ -904,47 +943,50 @@ export default function FTSDocumentation() {
                         </div>
 
                         {/* Document Content */}
-                        <div className="col-span-9">
+                        <div className="col-span-1 md:col-span-9">
                             <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
 
                         {documents.map((doc) => (
                             <TabsContent key={doc.id} value={doc.id}>
                                 <Card>
                                     <CardHeader className="border-b bg-white print-hide">
-                                       <div className="flex items-start justify-between">
-                                           <div>
-                                               <CardTitle className="text-2xl">{doc.title}</CardTitle>
-                                               <p className="text-sm text-slate-600 mt-1">{doc.description}</p>
-                                           </div>
-                                           <div className="flex gap-2">
+                                      <div className="flex flex-col md:flex-row items-start justify-between gap-4">
+                                          <div className="flex-1">
+                                              <CardTitle className="text-xl md:text-2xl">{doc.title}</CardTitle>
+                                              <p className="text-sm text-slate-600 mt-1">{doc.description}</p>
+                                          </div>
+                                          <div className="flex flex-wrap gap-2 w-full md:w-auto">
                                                <Button
                                                    onClick={() => setExportDialogOpen(true)}
-                                                   className="gap-2 bg-blue-600 hover:bg-blue-700 text-white"
+                                                   className="gap-2 bg-blue-600 hover:bg-blue-700 text-white flex-1 md:flex-none"
+                                                   size="sm"
                                                >
                                                    <Download className="h-4 w-4" />
-                                                   Export
+                                                   <span className="hidden sm:inline">Export</span>
                                                </Button>
                                                <Button
                                                    onClick={() => downloadMarkdown(doc)}
                                                    variant="outline"
-                                                   className="gap-2"
+                                                   className="gap-2 flex-1 md:flex-none"
+                                                   size="sm"
                                                >
                                                    <FileText className="h-4 w-4" />
-                                                   Markdown
+                                                   <span className="hidden sm:inline">Markdown</span>
                                                </Button>
                                                <Button
                                                    onClick={printDocument}
                                                    variant="outline"
-                                                   className="gap-2"
+                                                   className="gap-2 flex-1 md:flex-none"
+                                                   size="sm"
                                                >
                                                    <Printer className="h-4 w-4" />
-                                                   Print
+                                                   <span className="hidden sm:inline">Print</span>
                                                </Button>
                                            </div>
                                         </div>
                                     </CardHeader>
-                                    <CardContent className="p-8 bg-white">
-                                       <div className="prose prose-slate max-w-none">
+                                    <CardContent className="p-4 md:p-8 bg-white">
+                                      <div className="prose prose-slate max-w-none prose-sm md:prose-base">
                                            <ReactMarkdown
                                                 remarkPlugins={[remarkGfm]}
                                                 components={{
