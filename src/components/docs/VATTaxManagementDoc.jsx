@@ -118,38 +118,31 @@ graph TB
 ### Tax Calculation Flow
 
 \`\`\`mermaid
-graph TD
-    A[Transaction Input] --> B[Gather Transaction Data]
-    B --> C[Determine Jurisdiction]
+sequenceDiagram
+    participant Input as Transaction
+    participant Resolver as Jurisdiction Resolver
+    participant Rates as Tax Rate DB
+    participant Calculator as Tax Calculator
+    participant Validator as Validator
+    participant Output as Tax Result
     
-    C --> D{Customer Type}
-    D -->|B2C| E[Customer Location]
-    D -->|B2B| F[Check VAT Number]
+    Input->>Resolver: Transaction details
+    Note over Resolver: Customer location<br/>Merchant location<br/>Service type
     
-    E --> G[Load Tax Rates]
-    F --> H{Valid VAT?}
-    H -->|Yes| I[Reverse Charge Check]
-    H -->|No| E
+    Resolver->>Resolver: Determine jurisdiction
+    Resolver->>Rates: Get applicable rate
+    Rates-->>Resolver: Tax rate & category
     
-    I -->|Apply| J[0% VAT with RC Code]
-    I -->|Not Apply| G
+    Resolver->>Calculator: Jurisdiction + Rate
+    Calculator->>Calculator: Calculate tax amount
+    Calculator->>Calculator: Apply rounding rules
     
-    G --> K[Apply Tax Category]
-    J --> L[Calculate Tax]
-    K --> L
+    Calculator->>Validator: Validate calculation
+    Validator->>Validator: Check VAT number
+    Validator->>Validator: Verify amounts
     
-    L --> M[Validate Calculation]
-    M --> N[Round Amount]
-    N --> O[Generate Output]
-    
-    O --> P[Tax Amount]
-    O --> Q[Category Code]
-    O --> R[Audit Trail]
-    
-    style C fill:#2563eb,color:#fff
-    style L fill:#10b981,color:#fff
-    style M fill:#f59e0b,color:#fff
-    style P fill:#8b5cf6,color:#fff
+    Validator->>Output: Tax breakdown
+    Output-->>Input: Tax amount, category, audit log
 \`\`\`
 
 ---
