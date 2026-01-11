@@ -1,6 +1,13 @@
 export const PCIDSSComplianceDoc = `
 # PCI DSS Level 1 Compliance Management System
 
+**Version:** 2.0  
+**Last Updated:** January 11, 2026  
+**Classification:** Technical Documentation  
+**Document Owner:** FTS.Money Compliance Team
+
+---
+
 ## Executive Summary
 
 The FTS.Money PCI DSS Level 1 Compliance Management System provides enterprise-grade tools for achieving and maintaining Payment Card Industry Data Security Standard compliance. This comprehensive platform automates compliance monitoring, evidence collection, risk assessment, and reporting for organizations processing over 6 million card transactions annually.
@@ -788,4 +795,14 @@ The FTS.Money PCI DSS Compliance Management System provides a comprehensive, aut
 - Automated workflow orchestration
 
 For implementation guidance, contact the FTS.Money compliance team.
+
+---
+
+**Document Information**
+- **Version:** 2.0
+- **Last Updated:** January 11, 2026
+- **Owner:** Compliance Team
+- **Contact:** compliance@fts.money
+
+© 2026 FTS.Money. All rights reserved.
 `;

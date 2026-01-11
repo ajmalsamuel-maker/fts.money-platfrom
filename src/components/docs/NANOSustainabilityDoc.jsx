@@ -1,9 +1,10 @@
 const NANOSustainabilityDoc = `# NANO Sustainability Platform
 ## Gamified Environmental Action & Carbon Offset System
 
-**Version:** 1.0  
-**Last Updated:** January 8, 2026  
-**Classification:** Public Documentation
+**Version:** 2.0  
+**Last Updated:** January 11, 2026  
+**Classification:** Public Documentation  
+**Document Owner:** FTS.Money Sustainability Team
 
 ---
 
@@ -1037,8 +1038,8 @@ The NANO Sustainability Platform creates a **self-reinforcing ecosystem** where:
 ---
 
 **Document Information**
-- **Version:** 1.0
-- **Last Updated:** January 8, 2026
+- **Version:** 2.0
+- **Last Updated:** January 11, 2026
 - **Owner:** FTS.Money Sustainability Team
 - **Contact:** sustainability@fts.money
 

@@ -1,7 +1,7 @@
 export const RWATechnicalSpec = `# FTS.Money RWA Platform - Technical Specifications
-**Version:** 1.0  
-**Date:** December 2025  
-**Status:** Design Phase
+**Version:** 2.0  
+**Last Updated:** January 11, 2026  
+**Status:** Active
 
 ---
 
@@ -1676,7 +1676,13 @@ sequenceDiagram
 
 ---
 
-**End of Technical Specifications**
+---
 
-*For questions or clarifications, contact: engineering@fts.money*
+**Document Information**
+- **Version:** 2.0
+- **Last Updated:** January 11, 2026
+- **Owner:** RWA Engineering Team
+- **Contact:** engineering@fts.money
+
+© 2026 FTS.Money. All rights reserved.
 `;
