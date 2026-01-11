@@ -117,33 +117,16 @@ graph TB
 
 ### Tax Calculation Flow
 
-\`\`\`mermaid
-sequenceDiagram
-    participant Input as Transaction
-    participant Resolver as Jurisdiction Resolver
-    participant Rates as Tax Rate DB
-    participant Calculator as Tax Calculator
-    participant Validator as Validator
-    participant Output as Tax Result
-    
-    Input->>Resolver: Transaction details
-    Note over Resolver: Customer location<br/>Merchant location<br/>Service type
-    
-    Resolver->>Resolver: Determine jurisdiction
-    Resolver->>Rates: Get applicable rate
-    Rates-->>Resolver: Tax rate & category
-    
-    Resolver->>Calculator: Jurisdiction + Rate
-    Calculator->>Calculator: Calculate tax amount
-    Calculator->>Calculator: Apply rounding rules
-    
-    Calculator->>Validator: Validate calculation
-    Validator->>Validator: Check VAT number
-    Validator->>Validator: Verify amounts
-    
-    Validator->>Output: Tax breakdown
-    Output-->>Input: Tax amount, category, audit log
-\`\`\`
+The tax calculation engine processes transactions through the following stages:
+
+1. **Input Collection**: Gather transaction data (amount, customer location, merchant location, service type)
+2. **Jurisdiction Determination**: Analyze customer type (B2B/B2C), locations, and service classification
+3. **Rate Lookup**: Query tax rates from database based on jurisdiction and date
+4. **Special Rules**: Apply MOSS/OSS, reverse charge, or exemptions as needed
+5. **Calculation**: Compute tax amount using appropriate rates and categories
+6. **Validation**: Verify VAT numbers (if B2B), check calculation correctness
+7. **Rounding**: Apply country-specific rounding rules
+8. **Output**: Generate tax breakdown with amount, category code, and audit trail
 
 ---
 
