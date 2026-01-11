@@ -94,6 +94,14 @@ Deno.serve(async (req) => {
             return Response.json({ success: true });
         }
 
+        if (action === 'updateRole') {
+            const { userId, role } = body;
+            await base44.asServiceRole.entities.AuthUser.update(userId, {
+                platform_role: role
+            });
+            return Response.json({ success: true });
+        }
+
         if (action === 'deleteUser') {
             const { userId } = body;
             await base44.asServiceRole.entities.AuthUser.delete(userId);
