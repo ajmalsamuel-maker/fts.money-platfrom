@@ -1,8 +1,8 @@
 const CryptoGatewayPortalGuide = `# Crypto Gateway Customer Portal - Complete User Guide
 ## Enterprise Crypto Banking Infrastructure Portal Documentation
 
-**Version:** 1.0  
-**Last Updated:** January 10, 2026  
+**Version:** 2.0  
+**Last Updated:** January 11, 2026  
 **Classification:** Customer Documentation  
 **Portal URL:** \`/CryptoGatewayDashboard\`
 
@@ -989,9 +989,35 @@ monthly_usage:
 
 ---
 
+**Portal Features Summary:**
+
+✅ **Multi-Chain Wallets** - BTC, ETH, USDT, USDC across 7+ blockchains  
+✅ **Virtual IBANs** - EUR/GBP bank accounts with SEPA integration  
+✅ **Card Issuance** - Virtual and physical Visa/Mastercard cards  
+✅ **KYC/AML Engine** - 5-tier verification (Email → vLEI)  
+✅ **LEI Authentication** - Institutional instant verification  
+✅ **Compliance Monitoring** - Real-time sanctions, Travel Rule, transaction monitoring  
+✅ **On/Off-Ramp** - Fiat-to-crypto and crypto-to-fiat conversion  
+✅ **Multi-User RBAC** - 6-tier role hierarchy  
+
+**Navigation Menu:**
+- Dashboard (AUM, transactions, compliance)
+- Wallets (multi-chain wallet management)
+- IBANs (virtual bank accounts)
+- Cards (card issuance and management)
+- Transactions (deposit, withdrawal, transfer history)
+- Users (customer KYC management)
+- Compliance (AML monitoring, Travel Rule)
+- Analytics (asset breakdown, KYC status, trends)
+- Settings (API keys, webhooks, limits)
+
+**Powered by:** Striga (Licensed EMI, PCI DSS certified)
+
+---
+
 **Document Information**
-- **Version:** 1.0
-- **Last Updated:** January 10, 2026
+- **Version:** 2.0
+- **Last Updated:** January 11, 2026
 - **Owner:** Product Documentation Team
 - **Contact:** docs@fts.money
 

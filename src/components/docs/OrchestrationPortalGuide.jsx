@@ -1,8 +1,8 @@
 const OrchestrationPortalGuide = `# Orchestration Customer Portal - Complete User Guide
 ## Payment Routing & Optimization Service Portal Documentation
 
-**Version:** 1.0  
-**Last Updated:** January 10, 2026  
+**Version:** 2.0  
+**Last Updated:** January 11, 2026  
 **Classification:** Customer Documentation  
 **Portal URL:** \`/OrchestrationPortal\`
 
@@ -835,9 +835,32 @@ monthly_usage:
 
 ---
 
+**Portal Features Summary:**
+
+✅ **Processor Management** - Connect unlimited payment processors  
+✅ **Routing Strategies** - Cost, success rate, performance, geographic optimization  
+✅ **Cascading Failover** - Up to 4 levels of automatic retry  
+✅ **Real-Time Analytics** - Live success rates, cost analysis, latency tracking  
+✅ **Rule Builder** - Visual routing rule configuration  
+✅ **API Integration** - RESTful API with comprehensive docs  
+✅ **Webhook Events** - route.completed, route.failed, processor.down  
+✅ **Multi-User RBAC** - 6-tier role hierarchy with granular permissions  
+
+**Navigation Menu:**
+- Dashboard (KPIs and metrics)
+- Payment Routing (configure payment rules)
+- Payout Routing (configure payout rules)
+- Execution Logs (routing history)
+- Processors (manage payment processors)
+- Settings (API keys, webhooks, notifications)
+
+**Cost Savings:** Average 15-30% reduction in processing costs with 7-11% authorization rate improvement through intelligent routing.
+
+---
+
 **Document Information**
-- **Version:** 1.0
-- **Last Updated:** January 10, 2026
+- **Version:** 2.0
+- **Last Updated:** January 11, 2026
 - **Owner:** Product Documentation Team
 - **Contact:** docs@fts.money
 

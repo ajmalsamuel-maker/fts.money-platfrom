@@ -1,8 +1,8 @@
 const ISOGatewayPortalGuide = `# ISO Gateway Customer Portal - Complete User Guide
 ## Message Translation Service Portal Documentation
 
-**Version:** 1.0  
-**Last Updated:** January 10, 2026  
+**Version:** 2.0  
+**Last Updated:** January 11, 2026  
 **Classification:** Customer Documentation  
 **Portal URL:** \`/ISOGatewayCustomerPortal\`
 
@@ -1029,9 +1029,31 @@ usage_summary:
 
 ---
 
+**Portal Features Summary:**
+
+✅ **API Key Management** - Self-service generation with environment separation  
+✅ **Connection Setup** - 6 translation paths (8583↔20022↔MT)  
+✅ **Real-Time Monitoring** - Live message logs with <5s refresh  
+✅ **Routing Configuration** - Orchestration integration for intelligent routing  
+✅ **Webhook Integration** - Event-driven notifications  
+✅ **Multi-User RBAC** - 6-tier role hierarchy (Owner to Viewer)  
+✅ **Test Console** - Sandbox environment with sample messages  
+✅ **Compliance Features** - LEI enrichment, sanctions screening  
+
+**Navigation Menu:**
+- Dashboard (main metrics)
+- API Keys (credential management)
+- Connections (endpoint configuration)
+- Message Logs (real-time monitoring)
+- Routing Rules (if orchestration enabled)
+- Documentation (quick start guides)
+- Settings (webhooks, notifications)
+
+---
+
 **Document Information**
-- **Version:** 1.0
-- **Last Updated:** January 10, 2026
+- **Version:** 2.0
+- **Last Updated:** January 11, 2026
 - **Owner:** Product Documentation Team
 - **Contact:** docs@fts.money
 

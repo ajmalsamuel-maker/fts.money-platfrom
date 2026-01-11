@@ -1,8 +1,8 @@
 const RWAProviderPortalGuide = `# RWA Provider Portal - Complete User Guide
 ## White-Label Tokenization Platform Management
 
-**Version:** 1.0  
-**Last Updated:** January 10, 2026  
+**Version:** 2.0  
+**Last Updated:** January 11, 2026  
 **Classification:** Customer Documentation  
 **Portal URL:** \`/RWAProviderDashboard\`
 
@@ -527,9 +527,32 @@ monthly_revenue_breakdown:
 
 ---
 
+**Portal Features Summary:**
+
+✅ **White-Label Platform** - Fully branded tokenization infrastructure  
+✅ **Issuer Onboarding** - 10-step KYB + LEI verification  
+✅ **Asset Portfolio** - Multi-asset class support (real estate, T-bills, credit)  
+✅ **Investor Administration** - 3-tier KYC (Retail, Accredited, Institutional)  
+✅ **Smart Contract Deployment** - ERC-1400 security tokens on Polygon/Ethereum  
+✅ **Secondary Market** - P2P trading with automated settlement  
+✅ **Dividend Automation** - Scheduled distributions with tax reporting  
+✅ **Multi-User RBAC** - 6-tier role hierarchy  
+
+**Navigation Menu:**
+- Dashboard (platform metrics, AUM, issuers)
+- Issuers (manage asset issuers)
+- Assets (tokenized asset portfolio)
+- Investors (investor KYC and portfolios)
+- Analytics (performance, revenue, growth trends)
+- Settings (white-label branding, blockchain config, team management)
+
+**Revenue Model:** 60-80% gross margins on platform fees, 70-90% on ongoing revenue.
+
+---
+
 **Document Information**
-- **Version:** 1.0
-- **Last Updated:** January 10, 2026
+- **Version:** 2.0
+- **Last Updated:** January 11, 2026
 - **Owner:** Product Documentation Team
 
 © 2026 FTS.Money. All rights reserved.

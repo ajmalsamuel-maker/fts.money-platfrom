@@ -1,8 +1,8 @@
 const RWAIssuerPortalGuide = `# Asset Issuer Portal - Complete User Guide
 ## Tokenize and Manage Your Assets
 
-**Version:** 1.0  
-**Last Updated:** January 10, 2026  
+**Version:** 2.0  
+**Last Updated:** January 11, 2026  
 **Classification:** Customer Documentation  
 **Portal URL:** \`/AssetIssuerDashboard\`
 
@@ -262,9 +262,32 @@ compliance_checks:
 
 ---
 
+**Portal Features Summary:**
+
+✅ **Asset Tokenization Wizard** - 5-step process with smart contract deployment  
+✅ **Investor Management** - KYC workflows, accreditation verification  
+✅ **Dividend Distribution** - Automated payments to all token holders  
+✅ **Compliance Dashboard** - Transfer restrictions, jurisdiction rules  
+✅ **Secondary Market** - Enable peer-to-peer trading for liquidity  
+✅ **Reporting Tools** - Regulatory filings, investor registries  
+✅ **Blockchain Integration** - Polygon, Ethereum, Base, Avalanche  
+
+**Navigation Menu:**
+- Dashboard (asset overview, investor count, total value)
+- Assets (my tokenized assets)
+- Tokenize (create new security token)
+- Investors (investor management and KYC)
+- Dividends (schedule and track distributions)
+- Compliance (regulatory filings, transfer rules)
+- Settings (account, notifications)
+
+**Supported Assets:** Real estate, treasury bills, private credit, private equity, commodities, revenue streams.
+
+---
+
 **Document Information**
-- **Version:** 1.0
-- **Last Updated:** January 10, 2026
+- **Version:** 2.0
+- **Last Updated:** January 11, 2026
 
 © 2026 FTS.Money. All rights reserved.
 `;
