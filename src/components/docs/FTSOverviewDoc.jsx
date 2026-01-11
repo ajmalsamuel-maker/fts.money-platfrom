@@ -1,9 +1,9 @@
 const FTSOverviewDoc = `# FTS.Money Platform Overview
 ## Enterprise Payment Infrastructure Ecosystem
 
-**Version:** 3.0  
+**Version:** 3.1  
 **Classification:** Public - Business & Technical  
-**Last Updated:** January 5, 2026  
+**Last Updated:** January 11, 2026  
 **Document Owner:** FTS.Money Product Team
 
 ---
@@ -66,7 +66,25 @@ Building the complete FTS.Money service ecosystem from scratch would require mas
 
 #### FTS.Money Alternative: 99.5% Cost Reduction
 
-**Instead of building, use FTS.Money:**
+**Our Services Explained:**
+
+1. **PSP Platform** - Complete payment service provider infrastructure with merchant onboarding, transaction processing, settlements, and dispute management
+2. **Crypto VASP** - Virtual Asset Service Provider infrastructure with multi-chain wallets, virtual IBANs, card issuance, and regulatory compliance
+3. **ISO Gateway** - Real-time message translation between ISO 8583, ISO 20022, and SWIFT MT standards for legacy system integration
+4. **Orchestration Engine** - Intelligent payment routing across multiple processors with cost optimization, success rate enhancement, and automatic failover
+5. **RWA Tokenization** - Real-world asset tokenization platform for treasury bills, real estate, and private credit with securities compliance
+6. **Tax Management** - Global VAT/GST compliance with automated rate updates, real-time calculation, and multi-jurisdiction reporting
+7. **E-Invoicing** - Multi-standard electronic invoicing supporting Peppol, ZATCA (Saudi), FatturaPA (Italy), CFDI (Mexico) and 60+ countries
+8. **PCI Compliance Suite** - PCI DSS Level 1 compliance management with continuous monitoring, predictive analytics, and workflow automation
+9. **Unified Billing** - Multi-service invoice consolidation, usage metering, automated collections, and revenue recognition
+10. **Digital Identity** - W3C Verifiable Credentials and DIDs for passwordless authentication and KYC verification
+11. **NANO Sustainability** - Gamified eco-platform with carbon offsets, green bonds, and merchant ESG scoring
+12. **Service Marketplace** - 150+ pre-integrated payment providers, KYC/AML services, fraud detection, and developer tools
+13. **FIX Score System** - Merchant performance scoring (0-1000 points) with tier benefits, fee discounts, and priority support
+
+---
+
+**Subscription Pricing by Tier:**
 
 | Tier | Services Included | Monthly Cost | Setup Fee | Annual Cost | 3-Year TCO |
 |------|------------------|--------------|-----------|-------------|------------|
@@ -115,7 +133,7 @@ Enterprises need payment infrastructure but face:
 
 ---
 
-*Document Version: 3.0 | Last Updated: 2026-01-05*  
+*Document Version: 3.1 | Last Updated: 2026-01-11*  
 *See full 15,000+ word document in platform for exhaustive technical specifications, architecture diagrams, API references, and deployment guides.*
 
 © 2026 FTS.Money. All rights reserved.`;
