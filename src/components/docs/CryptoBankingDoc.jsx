@@ -1,9 +1,9 @@
 const CryptoBankingDoc = `# FTS.Money Crypto Banking Service
 ## Enterprise Crypto Banking Infrastructure
 
-**Version:** 1.0  
+**Version:** 2.0  
 **Classification:** Internal - Platform & Service Documentation  
-**Last Updated:** December 28, 2025  
+**Last Updated:** January 11, 2026  
 **Document Owner:** FTS.Money Platform Team
 
 ---
@@ -809,11 +809,11 @@ The FTS.Money Crypto Banking Service provides enterprise-grade crypto financial 
 
 **Document Information**
 
-- **Version:** 1.0
-- **Last Updated:** December 28, 2025
+- **Version:** 2.0
+- **Last Updated:** January 11, 2026
 - **Owner:** Platform Team
 - **Contact:** platform-admin@fts.money
 
-© 2025 FTS.Money. All rights reserved.`;
+© 2026 FTS.Money. All rights reserved.`;
 
 export default CryptoBankingDoc;

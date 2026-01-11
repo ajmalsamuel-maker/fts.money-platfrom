@@ -1,9 +1,9 @@
 const OrchestrationDoc = `# Payment Orchestration Service Documentation
 ## Intelligent Payment Routing & Optimization Platform
 
-**Version:** 1.0  
+**Version:** 2.0  
 **Classification:** Technical - Orchestration Customers  
-**Last Updated:** December 26, 2025  
+**Last Updated:** January 11, 2026  
 **Document Owner:** FTS.Money Orchestration Team
 
 ---
@@ -1226,13 +1226,13 @@ Payment Orchestration is essential for modern payment operations, delivering hig
 
 **Document Information**
 
-- **Version:** 1.0
-- **Last Updated:** December 26, 2025
+- **Version:** 2.0
+- **Last Updated:** January 11, 2026
 - **Status:** Active
 - **Classification:** Technical
 - **Owner:** Orchestration Team
 - **Contact:** orchestration@fts.money
 
-© 2025 FTS.Money. All rights reserved.`;
+© 2026 FTS.Money. All rights reserved.`;
 
 export default OrchestrationDoc;

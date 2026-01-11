@@ -1,9 +1,9 @@
 const ISOGatewayDoc = `# ISO Gateway Service Documentation
 ## Enterprise Message Translation & Routing Platform
 
-**Version:** 1.0  
+**Version:** 2.0  
 **Classification:** Technical - ISO Gateway Customers  
-**Last Updated:** December 26, 2025  
+**Last Updated:** January 11, 2026  
 **Document Owner:** FTS.Money ISO Gateway Team
 
 ---
@@ -1400,13 +1400,13 @@ The ISO Gateway Service bridges the gap between legacy and modern payment system
 
 **Document Information**
 
-- **Version:** 1.0
-- **Last Updated:** December 26, 2025
+- **Version:** 2.0
+- **Last Updated:** January 11, 2026
 - **Status:** Active
 - **Classification:** Technical
 - **Owner:** ISO Gateway Team
 - **Contact:** iso-gateway@fts.money
 
-© 2025 FTS.Money. All rights reserved.`;
+© 2026 FTS.Money. All rights reserved.`;
 
 export default ISOGatewayDoc;
