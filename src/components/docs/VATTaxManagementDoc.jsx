@@ -118,42 +118,38 @@ graph TB
 ### Tax Calculation Flow
 
 \`\`\`mermaid
-flowchart TD
-    A[Transaction Input] --> B[Gather Data]
-    B --> C[Customer Location & Type]
-    B --> D[Merchant Location]
-    B --> E[Service Classification]
+graph TD
+    A[Transaction Input] --> B[Gather Transaction Data]
+    B --> C[Determine Jurisdiction]
     
-    C --> F[Jurisdiction Resolver]
-    D --> F
-    E --> F
+    C --> D{Customer Type}
+    D -->|B2C| E[Customer Location]
+    D -->|B2B| F[Check VAT Number]
     
-    F --> G[Determine Tax Jurisdiction]
-    G --> H[Load Tax Rates]
-    H --> I[Apply Tax Category]
+    E --> G[Load Tax Rates]
+    F --> H{Valid VAT?}
+    H -->|Yes| I[Reverse Charge Check]
+    H -->|No| E
     
-    I --> J{Special Rules?}
-    J -->|MOSS/OSS| K[Apply OSS Rules]
-    J -->|Reverse Charge| L[Apply Reverse Charge]
-    J -->|Standard| M[Apply Standard Rate]
+    I -->|Apply| J[0% VAT with RC Code]
+    I -->|Not Apply| G
     
-    K --> N[Calculate Tax Amount]
-    L --> N
-    M --> N
+    G --> K[Apply Tax Category]
+    J --> L[Calculate Tax]
+    K --> L
     
-    N --> O[Validate VAT Numbers]
-    O --> P[Round Per Country Rules]
-    P --> Q[Generate Tax Breakdown]
+    L --> M[Validate Calculation]
+    M --> N[Round Amount]
+    N --> O[Generate Output]
     
-    Q --> R[Tax Amount]
-    Q --> S[Tax Category Code]
-    Q --> T[Jurisdiction Info]
-    Q --> U[Audit Log]
+    O --> P[Tax Amount]
+    O --> Q[Category Code]
+    O --> R[Audit Trail]
     
-    style F fill:#2563eb,color:#fff
-    style N fill:#10b981,color:#fff
-    style O fill:#f59e0b,color:#fff
-    style R fill:#8b5cf6,color:#fff
+    style C fill:#2563eb,color:#fff
+    style L fill:#10b981,color:#fff
+    style M fill:#f59e0b,color:#fff
+    style P fill:#8b5cf6,color:#fff
 \`\`\`
 
 ---
