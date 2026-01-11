@@ -119,45 +119,45 @@ graph TB
 
 \`\`\`mermaid
 graph TB
-    subgraph "Input Layer - Transaction Data"
-        IN1[Payment Transaction<br/>Amount, Currency, Parties]
-        IN2[Service Classification<br/>UNSPSC/UN CPC Code]
-        IN3[Customer Data<br/>Location, Type, VAT Number]
-        IN4[Merchant Data<br/>Location, Registration, Category]
+    subgraph Input["Input Layer - Transaction Data"]
+        IN1["Payment Transaction<br/>Amount, Currency, Parties"]
+        IN2["Service Classification<br/>UNSPSC/UN CPC Code"]
+        IN3["Customer Data<br/>Location, Type, VAT Number"]
+        IN4["Merchant Data<br/>Location, Registration, Category"]
     end
     
-    subgraph "Tax Configuration Layer"
-        CFG1[Jurisdiction Database<br/>100+ Countries]
-        CFG2[Tax Rate Repository<br/>Standard/Reduced/Zero]
-        CFG3[Tax Category Rules<br/>UNCL5305 Mapping]
-        CFG4[Service Classification<br/>UNSPSC/CPC Database]
-        CFG5[Special Rules Engine<br/>MOSS/OSS/Reverse Charge]
+    subgraph Config["Tax Configuration Layer"]
+        CFG1["Jurisdiction Database<br/>100+ Countries"]
+        CFG2["Tax Rate Repository<br/>Standard/Reduced/Zero"]
+        CFG3["Tax Category Rules<br/>UNCL5305 Mapping"]
+        CFG4["Service Classification<br/>UNSPSC/CPC Database"]
+        CFG5["Special Rules Engine<br/>MOSS/OSS/Reverse Charge"]
     end
     
-    subgraph "Tax Calculation Engine"
-        CALC1[Jurisdiction Resolver<br/>Supply Location Logic]
-        CALC2[Rate Determiner<br/>Apply Rate Rules]
-        CALC3[Category Classifier<br/>Service Type Mapping]
-        CALC4[Special Rules Processor<br/>B2B/B2C/Digital]
-        CALC5[Mathematical Calculator<br/>Precise Arithmetic]
-        CALC6[Rounding Engine<br/>Country-Specific Rules]
+    subgraph Engine["Tax Calculation Engine"]
+        CALC1["Jurisdiction Resolver<br/>Supply Location Logic"]
+        CALC2["Rate Determiner<br/>Apply Rate Rules"]
+        CALC3["Category Classifier<br/>Service Type Mapping"]
+        CALC4["Special Rules Processor<br/>B2B/B2C/Digital"]
+        CALC5["Mathematical Calculator<br/>Precise Arithmetic"]
+        CALC6["Rounding Engine<br/>Country-Specific Rules"]
     end
     
-    subgraph "Validation & Compliance Layer"
-        VAL1[VAT Number Validator<br/>VIES Integration]
-        VAL2[Threshold Monitor<br/>Registration Limits]
-        VAL3[Exemption Validator<br/>Justification Check]
-        VAL4[Rate Change Detector<br/>Government Updates]
-        VAL5[Compliance Reporter<br/>Audit Logs]
+    subgraph Validation["Validation & Compliance Layer"]
+        VAL1["VAT Number Validator<br/>VIES Integration"]
+        VAL2["Threshold Monitor<br/>Registration Limits"]
+        VAL3["Exemption Validator<br/>Justification Check"]
+        VAL4["Rate Change Detector<br/>Government Updates"]
+        VAL5["Compliance Reporter<br/>Audit Logs"]
     end
     
-    subgraph "Output Layer"
-        OUT1[Tax Amount<br/>Precise to 2 Decimals]
-        OUT2[Tax Breakdown<br/>Multi-Rate Splits]
-        OUT3[Tax Category Code<br/>UNCL5305]
-        OUT4[Jurisdiction Info<br/>Where Tax Applied]
-        OUT5[Calculation Log<br/>Audit Trail]
-        OUT6[Invoice Data<br/>For E-Invoicing]
+    subgraph Output["Output Layer"]
+        OUT1["Tax Amount<br/>Precise to 2 Decimals"]
+        OUT2["Tax Breakdown<br/>Multi-Rate Splits"]
+        OUT3["Tax Category Code<br/>UNCL5305"]
+        OUT4["Jurisdiction Info<br/>Where Tax Applied"]
+        OUT5["Calculation Log<br/>Audit Trail"]
+        OUT6["Invoice Data<br/>For E-Invoicing"]
     end
     
     IN1 --> CALC1
@@ -1122,8 +1122,13 @@ async function processPaymentWithTax(checkoutData) {
 
 ---
 
-*Document Version: 3.0 | Last Updated: 2026-01-05*  
-*Classification: Public - Technical Documentation*
+---
+
+**Document Information**
+- **Version:** 3.0
+- **Last Updated:** January 11, 2026
+- **Owner:** Tax Operations Team
+- **Contact:** tax@fts.money
 
 © 2026 FTS.Money. All rights reserved.
 `;

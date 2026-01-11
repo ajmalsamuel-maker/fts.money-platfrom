@@ -3,6 +3,13 @@ import MermaidDiagram from './MermaidDiagram';
 
 const EInvoicingSystemDoc = `# E-Invoicing System - Complete Technical Specification
 
+**Version:** 2.0  
+**Last Updated:** January 11, 2026  
+**Classification:** Technical Documentation  
+**Document Owner:** E-Invoicing Team
+
+---
+
 ## Executive Summary
 
 The FTS.Money E-Invoicing System is a comprehensive, multi-standard electronic invoicing platform that enables Payment Service Providers, merchants, and enterprises to generate, validate, sign, and submit compliant electronic invoices to government tax authorities worldwide. The system supports 8+ international e-invoicing standards, handles complex VAT scenarios, integrates with payment processing, and provides complete audit trails for regulatory compliance.
@@ -2154,8 +2161,13 @@ The FTS.Money E-Invoicing System provides comprehensive, multi-standard electron
 
 ---
 
-*Document Version: 2.0 | Last Updated: 2026-01-05*  
-*Classification: Public - Technical Documentation*
+---
+
+**Document Information**
+- **Version:** 2.0
+- **Last Updated:** January 11, 2026
+- **Owner:** E-Invoicing Team
+- **Contact:** einvoicing@fts.money
 
 © 2026 FTS.Money. All rights reserved.
 `;

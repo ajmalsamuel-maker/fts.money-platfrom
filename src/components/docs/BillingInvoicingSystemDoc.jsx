@@ -1,9 +1,10 @@
 const BillingInvoicingSystemDoc = `# Unified Billing & Invoicing System
 ## Multi-Service Revenue Operations Platform
 
-**Version:** 1.0  
-**Last Updated:** January 10, 2026  
-**Classification:** Internal - Finance & Operations Teams
+**Version:** 2.0  
+**Last Updated:** January 11, 2026  
+**Classification:** Internal - Finance & Operations Teams  
+**Document Owner:** Finance Operations Team
 
 ---
 
@@ -1301,8 +1302,8 @@ The Unified Billing & Invoicing System consolidates all FTS.Money service billin
 ---
 
 **Document Information**
-- **Version:** 1.0
-- **Last Updated:** January 10, 2026
+- **Version:** 2.0
+- **Last Updated:** January 11, 2026
 - **Owner:** Finance Operations Team
 - **Contact:** finance@fts.money
 

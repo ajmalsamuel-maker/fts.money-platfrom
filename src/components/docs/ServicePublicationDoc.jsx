@@ -1,9 +1,10 @@
 const ServicePublicationDoc = `# Service Publication & Go-to-Market Management System
 ## Phased Rollout, Soft Launch, and Version Control
 
-**Version:** 1.0  
-**Last Updated:** January 10, 2026  
-**Classification:** Internal - Platform & Product Teams
+**Version:** 2.0  
+**Last Updated:** January 11, 2026  
+**Classification:** Internal - Platform & Product Teams  
+**Document Owner:** Product & Platform Teams
 
 ---
 
@@ -973,8 +974,8 @@ The Service Publication & Go-to-Market Management System provides FTS.Money with
 ---
 
 **Document Information**
-- **Version:** 1.0
-- **Last Updated:** January 10, 2026
+- **Version:** 2.0
+- **Last Updated:** January 11, 2026
 - **Owner:** Product & Platform Teams
 - **Contact:** product@fts.money, platform@fts.money
 
