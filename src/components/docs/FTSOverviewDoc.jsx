@@ -68,12 +68,12 @@ Building the complete FTS.Money service ecosystem from scratch would require mas
 
 **Instead of building, use FTS.Money:**
 
-| Deployment Model | Monthly Cost | Setup Fee | Annual Cost | 3-Year TCO |
-|-----------------|--------------|-----------|-------------|------------|
-| **Starter** (PSP Core) | $499 | $2,500 | $8,488 | $28,000 |
-| **Growth** (PSP + 2 services) | $2,499 | $2,500 | $32,488 | $100,000 |
-| **Professional** (PSP + 5 services) | $9,999 | Waived | $119,988 | $360,000 |
-| **Enterprise** (Full Platform - 11 services) | $35,000 | Waived | $420,000 | $1,260,000 |
+| Tier | Services Included | Monthly Cost | Setup Fee | Annual Cost | 3-Year TCO |
+|------|------------------|--------------|-----------|-------------|------------|
+| **Starter** | • PSP Platform<br>• Service Marketplace<br>• Basic Billing | $499 | $2,500 | $8,488 | $28,000 |
+| **Growth** | • PSP Platform<br>• ISO Gateway OR Orchestration<br>• Tax Management<br>• E-Invoicing<br>• Service Marketplace<br>• Unified Billing | $2,499 | $2,500 | $32,488 | $100,000 |
+| **Professional** | • PSP Platform<br>• Crypto VASP<br>• ISO Gateway<br>• Orchestration<br>• Tax Management<br>• E-Invoicing<br>• PCI Compliance Suite<br>• Service Marketplace<br>• Unified Billing | $9,999 | Waived | $119,988 | $360,000 |
+| **Enterprise** | **ALL 11 SERVICES:**<br>• PSP Platform<br>• Crypto VASP<br>• ISO Gateway<br>• Orchestration Engine<br>• RWA Tokenization<br>• Tax Management<br>• E-Invoicing<br>• PCI Compliance Suite<br>• Unified Billing<br>• Digital Identity<br>• NANO Sustainability<br>• Service Marketplace<br>• FIX Score System | $35,000 | Waived | $420,000 | $1,260,000 |
 
 **Savings Example (Enterprise Customer):**
 - Traditional build cost: **$140M-$280M** (3 years)
