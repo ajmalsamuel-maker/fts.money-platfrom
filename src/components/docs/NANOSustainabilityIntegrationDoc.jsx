@@ -11,8 +11,8 @@ const NANOSustainabilityIntegrationDoc = `# NANO Sustainability Platform Integra
 ## Table of Contents
 
 1. [Executive Summary](#executive-summary)
-2. [Strategic Vision](#strategic-vision)
-3. [Platform Integration Architecture](#platform-integration-architecture)
+2. [System Architecture](#system-architecture)
+3. [Integration Strategy](#integration-strategy)
 4. [Token Economics & Blockchain Strategy](#token-economics)
 5. [Revenue Models & Financial Projections](#revenue-models)
 6. [Market Analysis & Competitive Positioning](#market-analysis)
@@ -25,46 +25,6 @@ const NANOSustainabilityIntegrationDoc = `# NANO Sustainability Platform Integra
 
 ## Executive Summary
 
-### The Opportunity
-
-**Concept:** Integrate gamified sustainability platform (Nano) with FTS.Money's payment infrastructure to create a comprehensive ecosystem that rewards eco-friendly actions with seamless payments, merchant partnerships, and tokenized carbon credits.
-
-**Market Size:**
-
-| Market Segment | Current Size (2026) | 2030 Projection | CAGR |
-|----------------|---------------------|-----------------|------|
-| **Green Fintech** | $42B | $127B | 18% |
-| **Carbon Credit Market** | $12B | $50B (voluntary) | 32% |
-| **Gametech in Finance** | $11.9B | $28B | 24% |
-| **ESG Tech Platforms** | $8.3B | $22B | 21% |
-
-**Market Opportunity:** $127B green fintech market by 2030, with 73% of Gen Z preferring sustainable brands.
-
----
-
-## Document Information
-
-**Version:** 1.0  
-**Last Updated:** January 11, 2026  
-**Classification:** Strategic Analysis  
-**Document Owner:** FTS.Money Strategy Team
-
----
-
-## Table of Contents
-
-1. [Executive Summary](#executive-summary)
-2. [System Architecture](#system-architecture)
-3. [Integration Strategy](#integration-strategy)
-4. [Revenue Models](#revenue-models)
-5. [Implementation Roadmap](#implementation-roadmap)
-6. [Market Analysis](#market-analysis)
-7. [Go-to-Market Strategy](#go-to-market-strategy)
-
----
-
-## Executive Summary
-
 ### Strategic Vision
 
 The NANO Sustainability Platform Integration represents FTS.Money's strategic entry into the **$127B green fintech market** by combining 2Cimple's gamified sustainability platform (Nano) with FTS.Money's enterprise payment infrastructure. This creates the world's first **full-stack sustainable payment ecosystem** that incentivizes eco-friendly actions through tokenization, real-time carbon tracking, and merchant rewards programs.
@@ -72,12 +32,12 @@ The NANO Sustainability Platform Integration represents FTS.Money's strategic en
 ### Market Opportunity
 
 | Market Segment | Current Size | 2030 Projection | CAGR | FTS.Money Opportunity |
-|----------------|-------------|----------------|------|
+|----------------|-------------|----------------|------|----------------------|
 | **Green Fintech** | $42B (2025) | $127B (2030) | 18% | Primary market |
 | **Carbon Credits (Voluntary)** | $2B (2025) | $50B (2030) | 32% | Marketplace revenue |
 | **Gametech in Finance** | $7.2B (2025) | $11.9B (2026) | 24% | User acquisition |
-| **RWA Tokenization** | $16B (2025) | $16T by 2030 | Green bonds segment |
-| **ESG Reporting Software** | $4.8B (2025) | $12.3B (2030) | CSRD compliance market |
+| **RWA Tokenization** | $16B (2025) | $16T by 2030 | 15% | Green bonds segment |
+| **ESG Reporting Software** | $4.8B (2025) | $12.3B (2030) | 20% | CSRD compliance market |
 
 ### Strategic Rationale
 
@@ -812,14 +772,16 @@ rwa_revenue_model:
 
 ### Total Addressable Market (TAM)
 
-\`\`\`mermaid
-pie title Green Fintech Market Segments (2030 - $127B Total)
-    "ESG Reporting Software" : 22
-    "Carbon Credit Marketplaces" : 18
-    "Green Banking/Payments" : 35
-    "Impact Investing Platforms" : 15
-    "Sustainability Analytics" : 10
-\`\`\`
+**Green Fintech Market Segments (2030 - $127B Total)**
+
+| Segment | Market Size | Percentage | FTS.Money Relevance |
+|---------|------------|------------|---------------------|
+| **Green Banking/Payments** | $44B | 35% | Primary market |
+| **ESG Reporting Software** | $28B | 22% | Enterprise revenue |
+| **Carbon Credit Marketplaces** | $23B | 18% | Marketplace platform |
+| **Impact Investing Platforms** | $19B | 15% | RWA green bonds |
+| **Sustainability Analytics** | $13B | 10% | Dashboard & APIs |
+| **Total** | **$127B** | **100%** | Full-stack coverage |
 
 **FTS.Money Target Markets:**
 
@@ -832,25 +794,18 @@ pie title Green Fintech Market Segments (2030 - $127B Total)
 
 ### Competitive Landscape Matrix
 
-\`\`\`mermaid
-quadrantChart
-    title Competitive Positioning: Sustainability × Payments Integration
-    x-axis Low Payment Integration --> High Payment Integration
-    y-axis Low Sustainability Features --> High Sustainability Features
-    quadrant-1 Market Leaders
-    quadrant-2 Sustainability Specialists
-    quadrant-3 Traditional Players
-    quadrant-4 Payment Innovators
-    
-    Aspiration: [0.4, 0.75]
-    Mastercard Carbon: [0.75, 0.45]
-    Klima DAO: [0.3, 0.85]
-    Cogo: [0.55, 0.65]
-    Tomorrow Bank: [0.6, 0.7]
-    FTS.Money + Nano: [0.9, 0.95]
-    Stripe Climate: [0.8, 0.5]
-    PayPal: [0.85, 0.25]
-\`\`\`
+**Positioning: Sustainability Features vs Payment Integration**
+
+| Competitor | Payment Integration | Sustainability Features | Quadrant | Position |
+|-----------|--------------------|-----------------------|----------|----------|
+| **FTS.Money + Nano** | High (90%) | High (95%) | Market Leader | Top Right |
+| **PayPal** | High (85%) | Low (25%) | Payment Innovator | Bottom Right |
+| **Stripe Climate** | High (80%) | Medium (50%) | Payment Innovator | Middle Right |
+| **Aspiration** | Medium (40%) | High (75%) | Sustainability Specialist | Top Left |
+| **Klima DAO** | Low (30%) | High (85%) | Sustainability Specialist | Top Left |
+| **Tomorrow Bank** | Medium (60%) | High (70%) | Market Leader | Top Middle |
+| **Mastercard Carbon** | High (75%) | Medium (45%) | Payment Innovator | Middle Right |
+| **Cogo** | Medium (55%) | High (65%) | Sustainability Specialist | Top Middle |
 
 **Competitive Analysis:**
 
@@ -1404,42 +1359,16 @@ graph TD
 
 ### System Component Diagram
 
-\`\`\`mermaid
-C4Context
-    title System Context Diagram - NANO Sustainability Platform
-    
-    Person(consumer, "Consumer", "Eco-conscious individual")
-    Person(merchant, "Merchant", "Green-certified business")
-    Person(psp, "PSP", "Payment service provider")
-    
-    System_Boundary(fts, "FTS.Money Platform") {
-        System(nano_api, "NANO API", "Task verification & rewards")
-        System(carbon_engine, "Carbon Tracking Engine", "MCC-based CO₂ calculation")
-        System(payment_core, "Payment Core", "Transaction processing")
-        System(esg_reports, "ESG Reporting", "CSRD-compliant reports")
-        System(marketplace, "Carbon Marketplace", "CRBN trading")
-        System(rwa_platform, "RWA Platform", "Green bond tokenization")
-    }
-    
-    System_Ext(nano_app, "NANO Mobile App", "iOS/Android gamification app")
-    System_Ext(blockchain, "Polygon Network", "CRBN/NANO tokens")
-    System_Ext(verifiers, "Carbon Verifiers", "Verra, Gold Standard")
-    
-    Rel(consumer, nano_app, "Completes tasks")
-    Rel(nano_app, nano_api, "Submits verification")
-    Rel(nano_api, blockchain, "Mints tokens")
-    
-    Rel(merchant, payment_core, "Processes payments")
-    Rel(payment_core, carbon_engine, "Calculates CO₂")
-    Rel(merchant, esg_reports, "Views impact")
-    
-    Rel(psp, payment_core, "Manages merchants")
-    Rel(psp, marketplace, "Facilitates carbon trading")
-    
-    Rel(carbon_engine, verifiers, "Validates offsets")
-    Rel(marketplace, blockchain, "Records trades")
-    Rel(rwa_platform, blockchain, "Tokenizes bonds")
-\`\`\`
+**Component Architecture Overview:**
+
+| Layer | Components | Description | Technology |
+|-------|-----------|-------------|------------|
+| **Consumer** | NANO Mobile App, Web App | iOS/Android gamification | React Native, PWA |
+| **Integration** | NANO API, Webhooks | Task verification & rewards | REST API, JWT auth |
+| **Core Services** | Carbon Engine, Payment Core, ESG Reports | MCC-based CO₂, transaction processing, compliance | PostgreSQL, Node.js |
+| **Blockchain** | Polygon Network | CRBN/NANO tokens, NFTs | ERC-20, ERC-721 |
+| **External** | Carbon Verifiers, Oracles | Verra, Gold Standard, Chainlink | API integrations |
+| **Distribution** | PSP Network, Merchant Portal, Community Portal | B2B2C channels | React, TypeScript |
 
 ### Database Schema (Core Tables)
 
