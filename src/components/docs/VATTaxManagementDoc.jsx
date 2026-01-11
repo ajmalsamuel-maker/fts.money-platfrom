@@ -115,85 +115,45 @@ graph TB
 
 ## System Architecture
 
-### Complete Tax Engine Architecture
+### Tax Calculation Flow
 
 \`\`\`mermaid
-graph TB
-    subgraph Input["Input Layer - Transaction Data"]
-        IN1["Payment Transaction<br/>Amount, Currency, Parties"]
-        IN2["Service Classification<br/>UNSPSC/UN CPC Code"]
-        IN3["Customer Data<br/>Location, Type, VAT Number"]
-        IN4["Merchant Data<br/>Location, Registration, Category"]
-    end
+flowchart TD
+    A[Transaction Input] --> B[Gather Data]
+    B --> C[Customer Location & Type]
+    B --> D[Merchant Location]
+    B --> E[Service Classification]
     
-    subgraph Config["Tax Configuration Layer"]
-        CFG1["Jurisdiction Database<br/>100+ Countries"]
-        CFG2["Tax Rate Repository<br/>Standard/Reduced/Zero"]
-        CFG3["Tax Category Rules<br/>UNCL5305 Mapping"]
-        CFG4["Service Classification<br/>UNSPSC/CPC Database"]
-        CFG5["Special Rules Engine<br/>MOSS/OSS/Reverse Charge"]
-    end
+    C --> F[Jurisdiction Resolver]
+    D --> F
+    E --> F
     
-    subgraph Engine["Tax Calculation Engine"]
-        CALC1["Jurisdiction Resolver<br/>Supply Location Logic"]
-        CALC2["Rate Determiner<br/>Apply Rate Rules"]
-        CALC3["Category Classifier<br/>Service Type Mapping"]
-        CALC4["Special Rules Processor<br/>B2B/B2C/Digital"]
-        CALC5["Mathematical Calculator<br/>Precise Arithmetic"]
-        CALC6["Rounding Engine<br/>Country-Specific Rules"]
-    end
+    F --> G[Determine Tax Jurisdiction]
+    G --> H[Load Tax Rates]
+    H --> I[Apply Tax Category]
     
-    subgraph Validation["Validation & Compliance Layer"]
-        VAL1["VAT Number Validator<br/>VIES Integration"]
-        VAL2["Threshold Monitor<br/>Registration Limits"]
-        VAL3["Exemption Validator<br/>Justification Check"]
-        VAL4["Rate Change Detector<br/>Government Updates"]
-        VAL5["Compliance Reporter<br/>Audit Logs"]
-    end
+    I --> J{Special Rules?}
+    J -->|MOSS/OSS| K[Apply OSS Rules]
+    J -->|Reverse Charge| L[Apply Reverse Charge]
+    J -->|Standard| M[Apply Standard Rate]
     
-    subgraph Output["Output Layer"]
-        OUT1["Tax Amount<br/>Precise to 2 Decimals"]
-        OUT2["Tax Breakdown<br/>Multi-Rate Splits"]
-        OUT3["Tax Category Code<br/>UNCL5305"]
-        OUT4["Jurisdiction Info<br/>Where Tax Applied"]
-        OUT5["Calculation Log<br/>Audit Trail"]
-        OUT6["Invoice Data<br/>For E-Invoicing"]
-    end
+    K --> N[Calculate Tax Amount]
+    L --> N
+    M --> N
     
-    IN1 --> CALC1
-    IN2 --> CALC3
-    IN3 --> CALC1
-    IN4 --> CALC1
+    N --> O[Validate VAT Numbers]
+    O --> P[Round Per Country Rules]
+    P --> Q[Generate Tax Breakdown]
     
-    CALC1 --> CFG1
-    CALC2 --> CFG2
-    CALC3 --> CFG3
-    CALC3 --> CFG4
-    CALC4 --> CFG5
+    Q --> R[Tax Amount]
+    Q --> S[Tax Category Code]
+    Q --> T[Jurisdiction Info]
+    Q --> U[Audit Log]
     
-    CALC1 --> CALC2
-    CALC2 --> CALC3
-    CALC3 --> CALC4
-    CALC4 --> CALC5
-    CALC5 --> CALC6
-    
-    CALC6 --> VAL1
-    VAL1 --> VAL2
-    VAL2 --> VAL3
-    VAL3 --> VAL4
-    VAL4 --> VAL5
-    
-    VAL5 --> OUT1
-    VAL5 --> OUT2
-    VAL5 --> OUT3
-    VAL5 --> OUT4
-    VAL5 --> OUT5
-    VAL5 --> OUT6
-    
-    style CALC1 fill:#2563eb,color:#fff
-    style CALC5 fill:#10b981,color:#fff
-    style VAL1 fill:#f59e0b,color:#fff
-    style OUT1 fill:#8b5cf6,color:#fff
+    style F fill:#2563eb,color:#fff
+    style N fill:#10b981,color:#fff
+    style O fill:#f59e0b,color:#fff
+    style R fill:#8b5cf6,color:#fff
 \`\`\`
 
 ---
