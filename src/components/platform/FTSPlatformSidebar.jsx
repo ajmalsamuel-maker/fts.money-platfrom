@@ -35,7 +35,9 @@ import {
     Leaf,
     Trophy,
     RefreshCw,
-    Rocket
+    Rocket,
+    Menu,
+    X
 } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useI18n } from '@/components/i18n/I18nextProvider';
@@ -271,7 +273,7 @@ const menuSections = [
 
 const processedMenuSections = flattenMenuSections(menuSections);
 
-export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, isSuperAdmin }) {
+export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, isSuperAdmin, mobileMenuOpen, setMobileMenuOpen }) {
     const { t } = useI18n();
     
     // FORCE RESET: Clear ALL cached sidebar state
@@ -307,14 +309,24 @@ export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, i
     };
     
     return (
-        <aside className="w-64 bg-white border-r border-slate-200 flex flex-col h-screen" style={{ width: '256px' }}>
+        <aside className={cn(
+            "fixed md:static inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200 flex flex-col h-screen",
+            "transform transition-transform duration-200 ease-in-out",
+            mobileMenuOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+        )} style={{ width: '256px' }}>
             {/* Logo */}
-            <div className="h-16 flex items-center justify-center border-b border-slate-200 px-3 py-2" style={{ height: '64px' }}>
+            <div className="h-16 flex items-center justify-between border-b border-slate-200 px-3 py-2" style={{ height: '64px' }}>
                 <img 
                     src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6931510c4507988f66a42ca8/865871aa1_FTSMoney-primary-logo-RGB.jpg"
                     alt="FTS.Money"
-                    className="w-full h-auto max-h-16 object-contain"
+                    className="h-auto max-h-16 object-contain flex-1"
                 />
+                <button
+                    onClick={() => setMobileMenuOpen && setMobileMenuOpen(false)}
+                    className="md:hidden ml-2 p-1 hover:bg-slate-100 rounded"
+                >
+                    <X className="h-5 w-5 text-slate-600" />
+                </button>
             </div>
 
             {/* User Info */}
@@ -379,6 +391,7 @@ export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, i
                                                 <a
                                                     key={item.path}
                                                     href={createPageUrl(item.path)}
+                                                    onClick={() => setMobileMenuOpen && setMobileMenuOpen(false)}
                                                     className={cn(
                                                         "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group",
                                                         isActive
