@@ -1,9 +1,9 @@
 const ArchitectureDoc = `# FTS.Money Platform Architecture
 ## Complete Technical Infrastructure & System Design
 
-**Version:** 3.0  
+**Version:** 3.1  
 **Classification:** Internal - Technical Teams  
-**Last Updated:** December 29, 2025  
+**Last Updated:** January 11, 2026  
 **Document Owner:** FTS.Money Platform Engineering
 
 ---
@@ -537,7 +537,73 @@ graph LR
 
 ## Core Services Architecture
 
-**Service Layer Components:**
+### Platform Services Overview
+
+FTS.Money provides **13 distinct services** that can be deployed independently or as integrated suites. Each service is architecturally isolated but shares common infrastructure for authentication, billing, and compliance.
+
+\`\`\`mermaid
+graph TB
+    subgraph "Payment Services"
+        PSP[PSP Platform<br/>Full payment processing]
+        ISO[ISO Gateway<br/>Message translation]
+        ORCH[Orchestration<br/>Smart routing]
+    end
+    
+    subgraph "Digital Asset Services"
+        CRYPTO[Crypto VASP<br/>Wallets, IBANs, Cards]
+        RWA[RWA Platform<br/>Asset tokenization]
+    end
+    
+    subgraph "Financial Compliance"
+        TAX[Tax Management<br/>Global VAT/GST]
+        EINV[E-Invoicing<br/>Multi-standard]
+        PCI[PCI Compliance<br/>Level 1 suite]
+    end
+    
+    subgraph "Platform Infrastructure"
+        BILL[Unified Billing<br/>Multi-service invoices]
+        MARKET[Service Marketplace<br/>150+ integrations]
+        DID[Digital Identity<br/>W3C credentials]
+    end
+    
+    subgraph "Sustainability & Scoring"
+        NANO[NANO Platform<br/>Eco-rewards]
+        FIX[FIX Score<br/>Merchant rating]
+    end
+    
+    PSP --> ORCH
+    PSP --> ISO
+    PSP --> CRYPTO
+    ORCH --> PSP
+    
+    CRYPTO --> RWA
+    
+    TAX --> EINV
+    EINV --> TAX
+    
+    BILL --> PSP
+    BILL --> CRYPTO
+    BILL --> ISO
+    BILL --> ORCH
+    BILL --> RWA
+    BILL --> TAX
+    BILL --> EINV
+    
+    MARKET --> PSP
+    MARKET --> CRYPTO
+    
+    FIX --> PSP
+    FIX --> NANO
+    
+    style PSP fill:#3b82f6,color:#fff
+    style CRYPTO fill:#8b5cf6,color:#fff
+    style RWA fill:#ec4899,color:#fff
+    style BILL fill:#10b981,color:#fff
+\`\`\`
+
+### Service Layer Components
+
+Each service runs as an isolated microservice with its own customer portal, authentication system, and data storage.
 
 \`\`\`mermaid
 graph TB
@@ -555,14 +621,35 @@ graph TB
         ORCH4[Failover Logic]
     end
     
-    subgraph "Crypto Gateway"
+    subgraph "Crypto Gateway (VASP)"
         CRYPTO1[Blockchain Connectors]
         CRYPTO2[Wallet Manager]
         CRYPTO3[Exchange APIs]
         CRYPTO4[Compliance Layer]
     end
     
-    APP[Payment Processor] --> ISO1
+    subgraph "RWA Platform"
+        RWA1[Token Factory]
+        RWA2[Investor KYC]
+        RWA3[Dividend Engine]
+        RWA4[Securities Compliance]
+    end
+    
+    subgraph "Tax Management"
+        TAX1[Rate Sync Engine]
+        TAX2[Calculation API]
+        TAX3[Multi-Jurisdiction]
+        TAX4[Reporting Engine]
+    end
+    
+    subgraph "E-Invoicing"
+        EINV1[Standard Mapper]
+        EINV2[Government APIs]
+        EINV3[Validation Engine]
+        EINV4[Submission Queue]
+    end
+    
+    APP[Core Platform] --> ISO1
     ISO1 --> ISO2
     ISO2 --> ISO3
     ISO3 --> ISO4
@@ -577,20 +664,187 @@ graph TB
     CRYPTO2 --> CRYPTO3
     CRYPTO3 --> CRYPTO4
     
+    APP --> RWA1
+    RWA1 --> RWA2
+    RWA2 --> RWA3
+    RWA3 --> RWA4
+    
+    APP --> TAX1
+    TAX1 --> TAX2
+    TAX2 --> TAX3
+    TAX3 --> TAX4
+    
+    APP --> EINV1
+    EINV1 --> EINV2
+    EINV2 --> EINV3
+    EINV3 --> EINV4
+    
     ISO4 --> EXT1[Payment Networks]
     ORCH4 --> EXT2[Payment Processors]
     CRYPTO4 --> EXT3[Crypto Exchanges]
+    RWA4 --> EXT4[Blockchain Networks]
+    TAX4 --> EXT5[Tax Authorities]
+    EINV4 --> EXT6[Government Portals]
 \`\`\`
 
-**Service Specifications:**
+### Service Specifications
 
-| Service | Purpose | Throughput | Latency | Availability |
-|---------|---------|------------|---------|--------------|
-| **ISO Gateway** | Message translation (8583, 20022, MT) | 10K msg/sec | <10ms | 99.99% |
-| **Orchestration** | Intelligent routing & failover | 50K txn/sec | <15ms | 99.99% |
-| **Crypto Gateway** | Digital asset processing | 5K txn/sec | 30-60s | 99.95% |
-| **Fraud Detection** | ML-powered risk scoring | 100K req/sec | <5ms | 99.99% |
-| **Compliance** | KYB/AML/Sanctions screening | 1K checks/sec | 2-5s | 99.9% |
+| Service | Purpose | Throughput | Latency | Availability | Customer Portal |
+|---------|---------|------------|---------|--------------|----------------|
+| **PSP Platform** | Full payment processing stack | 100K txn/sec | <100ms | 99.99% | PSP Portal |
+| **ISO Gateway** | Message translation (8583, 20022, MT) | 10K msg/sec | <10ms | 99.99% | ISO Gateway Portal |
+| **Orchestration** | Intelligent routing & failover | 50K txn/sec | <15ms | 99.99% | Orchestration Portal |
+| **Crypto VASP** | Digital asset banking | 5K txn/sec | 30-60s | 99.95% | Crypto Gateway Portal |
+| **RWA Platform** | Asset tokenization | 1K assets/day | 5-10min | 99.9% | RWA Provider/Issuer/Investor Portals |
+| **Tax Management** | Global VAT/GST calculation | 50K calc/sec | <50ms | 99.99% | Tax Admin Portal |
+| **E-Invoicing** | Multi-standard submission | 10K invoices/day | 5-30s | 99.9% | E-Invoice Portal |
+| **PCI Compliance** | Continuous monitoring | N/A | Real-time | 99.99% | PCI Dashboard + QSA Portal |
+| **Unified Billing** | Multi-service invoicing | 100K meters/day | <100ms | 99.99% | Billing Dashboard |
+| **Service Marketplace** | Pre-integrated providers | 150+ services | <1s | 99.99% | Marketplace Portal |
+| **Digital Identity** | W3C verifiable credentials | 10K verifications/sec | <200ms | 99.99% | Identity Wallet |
+| **NANO Platform** | Gamified sustainability | 50K tasks/day | <500ms | 99.9% | NANO Hub |
+| **FIX Score** | Merchant performance rating | Daily batch | N/A | 99.9% | FIX Dashboard |
+
+### Service Authentication Architecture
+
+Each service maintains its own authentication system with isolated user databases:
+
+\`\`\`mermaid
+graph TB
+    subgraph "Platform Admin"
+        PA[Platform Admin Portal]
+        PAU[Platform User Entity]
+        PAA[functions/platformAuthSimple]
+    end
+    
+    subgraph "Community"
+        COM[Community Portal]
+        CU[Community User Entity]
+        CA[functions/communityAuth]
+    end
+    
+    subgraph "PSP Operations"
+        PSP[PSP Portal]
+        PU[AppUser (staff) Entity]
+        PPA[functions/pspAuth]
+    end
+    
+    subgraph "Merchant Self-Service"
+        MER[Merchant Portal]
+        MU[MerchantUser Entity]
+        MA[functions/merchantAuth]
+    end
+    
+    subgraph "ISO Gateway"
+        ISOP[ISO Gateway Portal]
+        IU[ISOGatewayUser Entity]
+        IA[functions/isoGatewayAuth]
+    end
+    
+    subgraph "Orchestration"
+        ORCHP[Orchestration Portal]
+        OU[OrchestrationUser Entity]
+        OA[functions/orchestrationAuth]
+    end
+    
+    subgraph "Crypto Banking"
+        CRYPTOP[Crypto Gateway Portal]
+        CRU[CryptoGatewayUser Entity]
+        CRA[functions/cryptoGatewayAuth]
+    end
+    
+    subgraph "RWA Platform"
+        RWAP[RWA Provider Portal]
+        RU[RWAProviderUser Entity]
+        RA[functions/rwaProviderAuth]
+        
+        ISSP[Asset Issuer Portal]
+        IU2[AssetIssuer Entity]
+        IAA[functions/assetIssuerAuth]
+        
+        INVP[Investor Portal]
+        INU[RWAInvestor Entity]
+        INA[functions/investorAuth]
+    end
+    
+    subgraph "PCI Compliance"
+        QSAP[QSA Portal]
+        QU[QSAUser Entity]
+        QA[functions/qsaAuth]
+    end
+    
+    PA --> PAU
+    PAU --> PAA
+    
+    COM --> CU
+    CU --> CA
+    
+    PSP --> PU
+    PU --> PPA
+    
+    MER --> MU
+    MU --> MA
+    
+    ISOP --> IU
+    IU --> IA
+    
+    ORCHP --> OU
+    OU --> OA
+    
+    CRYPTOP --> CRU
+    CRU --> CRA
+    
+    RWAP --> RU
+    RU --> RA
+    
+    ISSP --> IU2
+    IU2 --> IAA
+    
+    INVP --> INU
+    INU --> INA
+    
+    QSAP --> QU
+    QU --> QA
+    
+    style PA fill:#e0f2fe
+    style COM fill:#dbeafe
+    style PSP fill:#bfdbfe
+    style MER fill:#dcfce7
+    style ISOP fill:#fef3c7
+    style ORCHP fill:#fed7aa
+    style CRYPTOP fill:#ddd6fe
+    style RWAP fill:#fbcfe8
+    style QSAP fill:#fecaca
+\`\`\`
+
+### Inter-Service Communication
+
+Services communicate through:
+
+1. **Direct API Calls** - Synchronous RESTful APIs for real-time operations
+2. **Event Streaming** - Kafka for asynchronous event propagation
+3. **Shared Database** - Common entities for cross-service data (Master Pricing, Service Catalog)
+4. **Message Queues** - SQS for background processing and webhooks
+
+\`\`\`mermaid
+sequenceDiagram
+    participant PSP as PSP Platform
+    participant ORCH as Orchestration
+    participant ISO as ISO Gateway
+    participant BILL as Billing
+    participant KAFKA as Event Bus
+    
+    PSP->>ORCH: Route payment request
+    ORCH->>ISO: Translate message (if needed)
+    ISO-->>ORCH: Translated message
+    ORCH-->>PSP: Routed transaction
+    
+    PSP->>KAFKA: Publish transaction.completed
+    
+    KAFKA->>BILL: Consume event
+    BILL->>BILL: Meter usage (PSP + Orchestration + ISO)
+    BILL->>BILL: Update ConsolidatedInvoice
+\`\`\`
 
 ---
 
@@ -1331,13 +1585,13 @@ FTS.Money's architecture provides:
 
 **Document Information**
 
-- **Version:** 2.0
-- **Last Updated:** December 26, 2025
+- **Version:** 3.1
+- **Last Updated:** January 11, 2026
 - **Status:** Active
 - **Classification:** Internal - Technical Teams
 - **Owner:** Platform Engineering
 - **Contact:** engineering@fts.money
 
-© 2025 FTS.Money. Internal use only.`;
+© 2026 FTS.Money. Internal use only.`;
 
 export default ArchitectureDoc;
