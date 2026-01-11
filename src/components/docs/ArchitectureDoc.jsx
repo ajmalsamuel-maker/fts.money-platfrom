@@ -44,21 +44,22 @@ Our architecture is battle-tested and designed for:
 
 Our architectural decisions are driven by three core principles: efficiency, security, and scalability. Rather than building isolated systems for each customer, we've created a sophisticated multi-tenant architecture that shares infrastructure while maintaining strict data isolation.
 
-This approach allows us to offer enterprise-grade payment processing at a fraction of the traditional cost, while maintaining the highest security standards. Every component is designed with multi-tenancy in mind, from the database layer to the API gateway.
+This approach allows us to offer enterprise-grade payment processing, crypto banking, asset tokenization, tax compliance, and e-invoicing at a fraction of the traditional cost, while maintaining the highest security standards. Every component is designed with multi-tenancy in mind, from the database layer to the API gateway.
 
 **Multi-Tenant by Design:**
-- Single codebase serves all PSPs
-- Logical data isolation per tenant
+- Single codebase serves all PSPs, Crypto VASPs, RWA Providers, and service customers
+- Logical data isolation per tenant (PSP, ISO Gateway, Orchestration, Crypto, RWA)
 - Shared infrastructure with security boundaries
-- Independent scaling per PSP instance
+- Independent scaling per service instance
+- Service-specific portals with isolated authentication
 
-**Standards-First:**
-- ISO 8583 (card processing)
-- ISO 20022 (banking messages)
-- ISO 23257 (cryptocurrency/DLT)
-- ISO 24165 (digital token identifiers)
-- ISO 27001 (information security)
-- PCI DSS Level 1 (payment card compliance)
+**Standards-First Compliance:**
+- **Payment Standards:** ISO 8583 (card processing), ISO 20022 (banking messages)
+- **Digital Assets:** ISO 23257 (cryptocurrency/DLT), ISO 24165 (digital token identifiers)
+- **Tax & Invoicing:** Peppol, ZATCA, FatturaPA, CFDI (60+ country standards)
+- **Securities:** T-REX (ERC-3643) for tokenized assets, KYC/AML requirements
+- **Security:** ISO 27001 (information security), PCI DSS Level 1 (payment card compliance)
+- **Identity:** W3C Verifiable Credentials, DIDs (Decentralized Identifiers)
 
 ---
 
@@ -709,112 +710,46 @@ graph TB
 
 Each service maintains its own authentication system with isolated user databases:
 
+| Portal | User Entity | Auth Function | Session Key |
+|--------|-------------|---------------|-------------|
+| **Platform Admin** | Platform User | platformAuthSimple | platform_admin_session |
+| **Community** | Community User | communityAuth | community_session |
+| **PSP Operations** | AppUser (staff) | pspAuth | staff_session |
+| **Merchant Self-Service** | MerchantUser | merchantAuth | merchantSession |
+| **ISO Gateway** | ISOGatewayUser | isoGatewayAuth | iso_gateway_session |
+| **Orchestration** | OrchestrationUser | orchestrationAuth | orchestration_session |
+| **Crypto Banking** | CryptoGatewayUser | cryptoGatewayAuth | crypto_gateway_session |
+| **RWA Provider** | RWAProviderUser | rwaProviderAuth | rwa_provider_session |
+| **Asset Issuer** | AssetIssuer | assetIssuerAuth | asset_issuer_session |
+| **RWA Investor** | RWAInvestor | investorAuth | rwa_investor_session |
+| **PCI QSA** | QSAUser | qsaAuth | qsa_session |
+
+**Authentication Flow:**
+
 \`\`\`mermaid
-graph TB
-    subgraph "Platform Admin"
-        PA[Platform Admin Portal]
-        PAU[Platform User Entity]
-        PAA[functions/platformAuthSimple]
+sequenceDiagram
+    participant User
+    participant Portal
+    participant AuthFn as Auth Function
+    participant DB as User Database
+    participant Session as Session Storage
+    
+    User->>Portal: Enter credentials
+    Portal->>AuthFn: POST /auth/login
+    AuthFn->>DB: Query user by email
+    DB-->>AuthFn: User record
+    AuthFn->>AuthFn: Verify password hash
+    
+    alt Valid Credentials
+        AuthFn->>Session: Create session
+        Session-->>AuthFn: Session token
+        AuthFn-->>Portal: Success + token
+        Portal->>Session: Store in localStorage
+        Portal-->>User: Redirect to dashboard
+    else Invalid Credentials
+        AuthFn-->>Portal: Error 401
+        Portal-->>User: Show error message
     end
-    
-    subgraph "Community"
-        COM[Community Portal]
-        CU[Community User Entity]
-        CA[functions/communityAuth]
-    end
-    
-    subgraph "PSP Operations"
-        PSP[PSP Portal]
-        PU[AppUser (staff) Entity]
-        PPA[functions/pspAuth]
-    end
-    
-    subgraph "Merchant Self-Service"
-        MER[Merchant Portal]
-        MU[MerchantUser Entity]
-        MA[functions/merchantAuth]
-    end
-    
-    subgraph "ISO Gateway"
-        ISOP[ISO Gateway Portal]
-        IU[ISOGatewayUser Entity]
-        IA[functions/isoGatewayAuth]
-    end
-    
-    subgraph "Orchestration"
-        ORCHP[Orchestration Portal]
-        OU[OrchestrationUser Entity]
-        OA[functions/orchestrationAuth]
-    end
-    
-    subgraph "Crypto Banking"
-        CRYPTOP[Crypto Gateway Portal]
-        CRU[CryptoGatewayUser Entity]
-        CRA[functions/cryptoGatewayAuth]
-    end
-    
-    subgraph "RWA Platform"
-        RWAP[RWA Provider Portal]
-        RU[RWAProviderUser Entity]
-        RA[functions/rwaProviderAuth]
-        
-        ISSP[Asset Issuer Portal]
-        IU2[AssetIssuer Entity]
-        IAA[functions/assetIssuerAuth]
-        
-        INVP[Investor Portal]
-        INU[RWAInvestor Entity]
-        INA[functions/investorAuth]
-    end
-    
-    subgraph "PCI Compliance"
-        QSAP[QSA Portal]
-        QU[QSAUser Entity]
-        QA[functions/qsaAuth]
-    end
-    
-    PA --> PAU
-    PAU --> PAA
-    
-    COM --> CU
-    CU --> CA
-    
-    PSP --> PU
-    PU --> PPA
-    
-    MER --> MU
-    MU --> MA
-    
-    ISOP --> IU
-    IU --> IA
-    
-    ORCHP --> OU
-    OU --> OA
-    
-    CRYPTOP --> CRU
-    CRU --> CRA
-    
-    RWAP --> RU
-    RU --> RA
-    
-    ISSP --> IU2
-    IU2 --> IAA
-    
-    INVP --> INU
-    INU --> INA
-    
-    QSAP --> QU
-    QU --> QA
-    
-    style PA fill:#e0f2fe
-    style COM fill:#dbeafe
-    style PSP fill:#bfdbfe
-    style MER fill:#dcfce7
-    style ISOP fill:#fef3c7
-    style ORCHP fill:#fed7aa
-    style CRYPTOP fill:#ddd6fe
-    style RWAP fill:#fbcfe8
-    style QSAP fill:#fecaca
 \`\`\`
 
 ### Inter-Service Communication
