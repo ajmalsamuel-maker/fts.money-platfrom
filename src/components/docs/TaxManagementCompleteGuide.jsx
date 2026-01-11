@@ -1,8 +1,8 @@
 const TaxManagementCompleteGuide = `# Tax Management System - Complete Operations Guide
 ## Global VAT/GST Compliance & Automation
 
-**Version:** 1.0  
-**Last Updated:** January 10, 2026  
+**Version:** 2.0  
+**Last Updated:** January 11, 2026  
 **Classification:** Technical Documentation  
 **Service Type:** Tax Management & Compliance
 
@@ -382,8 +382,8 @@ compliance_alerts:
 ---
 
 **Document Information**
-- **Version:** 1.0
-- **Last Updated:** January 10, 2026
+- **Version:** 2.0
+- **Last Updated:** January 11, 2026
 
 © 2026 FTS.Money. All rights reserved.
 `;
