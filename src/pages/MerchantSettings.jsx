@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import MerchantSidebar from '@/components/merchant/MerchantSidebar';
 import MerchantTopBar from '@/components/merchant/MerchantTopBar';
 import TimezoneSettings from '@/components/settings/TimezoneSettings';
+import SettlementMethodsSelector from '@/components/merchant/SettlementMethodsSelector';
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -91,6 +92,13 @@ export default function MerchantSettings() {
                             <h1 className="text-2xl font-bold text-slate-900">Settings</h1>
                             <p className="text-sm text-slate-500 mt-1">Configure your merchant portal preferences</p>
                         </div>
+
+                        <SettlementMethodsSelector 
+                            merchant={merchant}
+                            onUpdate={(updated) => {
+                                queryClient.invalidateQueries({ queryKey: ['merchant'] });
+                            }}
+                        />
 
                         <TimezoneSettings
                             currentCountry={merchant?.country || 'US'}
