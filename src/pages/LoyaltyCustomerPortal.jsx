@@ -9,28 +9,28 @@ import CustomerPortalSidebar from '@/components/loyalty/CustomerPortalSidebar';
 import { Trophy, Users, Activity, Plus, Menu } from 'lucide-react';
 
 export default function LoyaltyCustomerPortal() {
-    const sessionData = localStorage.getItem('loyalty_customer_session');
-    const [session] = useState(() => sessionData ? JSON.parse(sessionData) : null);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    
+    const sessionData = localStorage.getItem('loyalty_customer_session');
+    const session = sessionData ? JSON.parse(sessionData) : null;
 
     React.useEffect(() => {
-        if (!session || !session.id || !session.admin_email) {
+        if (!session || !session.admin_email) {
             window.location.href = '/LoyaltyCustomerLogin';
         }
-    }, [session]);
+    }, []);
+
+    if (!session || !session.admin_email) {
+        return null;
+    }
 
     const { data: programs = [], isLoading } = useQuery({
-        queryKey: ['my-programs', session?.admin_email],
-        queryFn: () => base44.entities.LoyaltyProgram.filter({ admin_email: session.admin_email }),
-        enabled: !!(session?.admin_email)
+        queryKey: ['my-programs', session.admin_email],
+        queryFn: () => base44.entities.LoyaltyProgram.filter({ admin_email: session.admin_email })
     });
 
     const totalTokensIssued = programs.reduce((sum, p) => sum + (p.total_tokens_issued || 0), 0);
     const totalParticipants = programs.reduce((sum, p) => sum + (p.total_participants || 0), 0);
-
-    if (!session) {
-        return null;
-    }
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/20 to-blue-50/30">
