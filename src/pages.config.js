@@ -368,6 +368,7 @@ import LoyaltyImpactIndex from './pages/LoyaltyImpactIndex';
 import LoyaltyAchievements from './pages/LoyaltyAchievements';
 import LoyaltyTierManagement from './pages/LoyaltyTierManagement';
 import LoyaltyImpactKPIs from './pages/LoyaltyImpactKPIs';
+import LoyaltySubscriptionBilling from './pages/LoyaltySubscriptionBilling';
 import __Layout from './Layout.jsx';
 
 
@@ -742,6 +743,7 @@ export const PAGES = {
     "LoyaltyAchievements": LoyaltyAchievements,
     "LoyaltyTierManagement": LoyaltyTierManagement,
     "LoyaltyImpactKPIs": LoyaltyImpactKPIs,
+    "LoyaltySubscriptionBilling": LoyaltySubscriptionBilling,
 }
 
 export const pagesConfig = {

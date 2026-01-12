@@ -49,6 +49,9 @@ export default function LoyaltyCustomerPortal() {
                     <a href="/LoyaltyCustomerPortal" className="block px-3 py-2 rounded-lg bg-purple-50 text-purple-700 font-medium">
                         <Activity className="h-4 w-4 inline mr-2" />Overview
                     </a>
+                    <a href="/LoyaltySubscriptionBilling" className="block px-3 py-2 rounded-lg hover:bg-slate-50">
+                        <Activity className="h-4 w-4 inline mr-2" />Subscription & Billing
+                    </a>
                     <a href="/LoyaltyLeaderboards" className="block px-3 py-2 rounded-lg hover:bg-slate-50">
                         <Trophy className="h-4 w-4 inline mr-2" />Leaderboards
                     </a>
