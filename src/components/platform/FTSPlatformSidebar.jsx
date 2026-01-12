@@ -37,7 +37,8 @@ import {
     RefreshCw,
     Rocket,
     Menu,
-    X
+    X,
+    Target
 } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useI18n } from '@/components/i18n/I18nextProvider';
@@ -255,6 +256,15 @@ const menuSections = [
         items: [
             { label: 'Identity Wallet', description: 'Verifiable credentials', path: 'DigitalIdentityWallet', icon: Wallet, priority: true },
             { label: 'Credential Presentation', description: 'Share credentials', path: 'CredentialPresentation', icon: Shield, priority: true }
+        ]
+    },
+    {
+        id: 'loyalty-platform',
+        title: 'Loyalty & Impact Platform',
+        defaultOpen: true,
+        items: [
+            { label: 'Loyalty Dashboard', description: 'White-label loyalty engine', path: 'LoyaltyPlatformDashboard', icon: Trophy, priority: true },
+            { label: 'Customer Onboarding', description: 'Onboard new organizations', path: 'LoyaltyCustomerOnboarding', icon: Plus, priority: true }
         ]
     },
     {
