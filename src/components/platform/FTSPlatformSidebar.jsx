@@ -258,6 +258,16 @@ const menuSections = [
         ]
     },
     {
+        id: 'loyalty-platform',
+        title: 'Loyalty & Impact Platform',
+        defaultOpen: true,
+        items: [
+            { label: 'Loyalty Dashboard', description: 'White-label loyalty engine', path: 'LoyaltyPlatformDashboard', icon: Trophy, priority: true },
+            { label: 'Customer Onboarding', description: 'Onboard new organizations', path: 'LoyaltyCustomerOnboarding', icon: Plus, priority: true },
+            { label: 'Customer Portal Login', description: 'Customer access', path: 'LoyaltyCustomerLogin', icon: Users }
+        ]
+    },
+    {
         id: 'resources',
         title: 'Settings & Resources',
         defaultOpen: false,
