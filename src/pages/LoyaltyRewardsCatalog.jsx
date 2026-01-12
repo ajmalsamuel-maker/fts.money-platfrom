@@ -40,7 +40,13 @@ export default function LoyaltyRewardsCatalog() {
         queryFn: () => base44.entities.LoyaltyProgram.filter({ admin_email: session.admin_email })
     });
 
-    const [selectedProgram, setSelectedProgram] = useState(programs[0]?.id || '');
+    const [selectedProgram, setSelectedProgram] = useState('');
+
+    React.useEffect(() => {
+        if (programs.length > 0 && !selectedProgram) {
+            setSelectedProgram(programs[0].id);
+        }
+    }, [programs, selectedProgram]);
 
     const { data: rewards = [] } = useQuery({
         queryKey: ['rewards', selectedProgram],
