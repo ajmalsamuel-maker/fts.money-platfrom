@@ -13,14 +13,16 @@ export default function LoyaltyCustomerPortal() {
     const [session] = useState(() => sessionData ? JSON.parse(sessionData) : null);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-    if (!session || !session.id || !session.admin_email) {
-        window.location.href = '/LoyaltyCustomerLogin';
-        return null;
-    }
+    React.useEffect(() => {
+        if (!session || !session.id || !session.admin_email) {
+            window.location.href = '/LoyaltyCustomerLogin';
+        }
+    }, [session]);
 
-    const { data: programs = [] } = useQuery({
-        queryKey: ['my-programs', session.admin_email],
-        queryFn: () => base44.entities.LoyaltyProgram.filter({ admin_email: session.admin_email })
+    const { data: programs = [], isLoading } = useQuery({
+        queryKey: ['my-programs', session?.admin_email],
+        queryFn: () => base44.entities.LoyaltyProgram.filter({ admin_email: session.admin_email }),
+        enabled: !!(session?.admin_email)
     });
 
     const totalTokensIssued = programs.reduce((sum, p) => sum + (p.total_tokens_issued || 0), 0);
