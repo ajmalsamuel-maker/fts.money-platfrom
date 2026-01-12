@@ -82,8 +82,8 @@ export default function LoyaltyImpactIndex() {
     const latestIndex = indices[0];
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/20 to-blue-50/30">
-            <aside className={cn("fixed md:static inset-y-0 left-0 z-50 w-64 bg-white border-r flex flex-col h-screen transform transition-transform",
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/20 to-blue-50/30 flex">
+            <aside className={cn("fixed md:relative inset-y-0 left-0 z-50 w-64 bg-white border-r flex flex-col h-screen md:h-auto transform transition-transform",
                 mobileMenuOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0")}>
                 <div className="h-16 flex items-center justify-between border-b px-4">
                     <div className="flex items-center gap-2">
