@@ -10,18 +10,24 @@ import { cn } from "@/lib/utils";
 export default function LoyaltyTierManagement() {
     const [session] = useState(() => JSON.parse(localStorage.getItem('loyalty_customer_session') || '{}'));
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-    if (!session.id) {
-        window.location.href = '/LoyaltyCustomerLogin';
-        return null;
-    }
+    const [selectedProgram, setSelectedProgram] = useState('');
 
     const { data: programs = [] } = useQuery({
-        queryKey: ['my-programs', session.admin_email],
-        queryFn: () => base44.entities.LoyaltyProgram.filter({ admin_email: session.admin_email })
+        queryKey: ['my-programs', session?.admin_email],
+        queryFn: () => base44.entities.LoyaltyProgram.filter({ admin_email: session.admin_email }),
+        enabled: !!(session?.admin_email)
     });
 
-    const [selectedProgram, setSelectedProgram] = useState(programs[0]?.id || '');
+    React.useEffect(() => {
+        if (!session.id || !session.admin_email) {
+            window.location.href = '/LoyaltyCustomerLogin';
+        }
+        if (programs.length > 0 && !selectedProgram) {
+            setSelectedProgram(programs[0].id);
+        }
+    }, [programs]);
+
+    if (!session?.id) return null;
 
     const { data: participants = [] } = useQuery({
         queryKey: ['participants', selectedProgram],
