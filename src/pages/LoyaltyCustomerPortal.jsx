@@ -28,6 +28,10 @@ export default function LoyaltyCustomerPortal() {
     const totalTokensIssued = programs.reduce((sum, p) => sum + (p.total_tokens_issued || 0), 0);
     const totalParticipants = programs.reduce((sum, p) => sum + (p.total_participants || 0), 0);
 
+    if (!session) {
+        return null;
+    }
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/20 to-blue-50/30">
             <CustomerPortalSidebar 
