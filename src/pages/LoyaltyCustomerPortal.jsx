@@ -4,6 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import WalletWidget from '@/components/loyalty/WalletWidget';
 import { Trophy, Users, Activity, Settings, LogOut, Plus, Menu, X, Target } from 'lucide-react';
 import { cn } from "@/lib/utils";
 
@@ -80,6 +81,14 @@ export default function LoyaltyCustomerPortal() {
                 </header>
 
                 <div className="p-4 md:p-6 space-y-6">
+                    {/* Wallet Widget */}
+                    {programs.length > 0 && programs[0].blockchain_network && (
+                        <WalletWidget 
+                            programId={programs[0].id}
+                            participantId={session.admin_email}
+                        />
+                    )}
+
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <Card>
                             <CardContent className="p-6">
