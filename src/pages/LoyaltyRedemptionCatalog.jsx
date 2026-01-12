@@ -18,19 +18,19 @@ export default function LoyaltyRedemptionCatalog() {
     const [loadingSuggestions, setLoadingSuggestions] = useState(false);
     const queryClient = useQueryClient();
 
+    React.useEffect(() => {
+        if (!session?.admin_email) {
+            window.location.href = '/LoyaltyCustomerLogin';
+        }
+    }, [session?.admin_email]);
+
     const { data: programs = [] } = useQuery({
         queryKey: ['my-programs', session?.admin_email],
         queryFn: () => base44.entities.LoyaltyProgram.filter({ admin_email: session.admin_email }),
         enabled: !!(session?.admin_email)
     });
 
-    React.useEffect(() => {
-        if (!session.id || !session.admin_email) {
-            window.location.href = '/LoyaltyCustomerLogin';
-        }
-    }, []);
-
-    if (!session?.id) return null;
+    if (!session?.admin_email) return null;
 
     const { data: participants = [] } = useQuery({
         queryKey: ['participants', session.admin_email],

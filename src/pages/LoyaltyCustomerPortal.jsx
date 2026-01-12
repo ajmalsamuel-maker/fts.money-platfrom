@@ -14,19 +14,19 @@ export default function LoyaltyCustomerPortal() {
     const sessionData = localStorage.getItem('loyalty_customer_session');
     const session = sessionData ? JSON.parse(sessionData) : null;
 
+    React.useEffect(() => {
+        if (!session?.admin_email) {
+            window.location.href = '/LoyaltyCustomerLogin';
+        }
+    }, [session?.admin_email]);
+
     const { data: programs = [], isLoading } = useQuery({
         queryKey: ['my-programs', session?.admin_email],
         queryFn: () => base44.entities.LoyaltyProgram.filter({ admin_email: session.admin_email }),
         enabled: !!(session?.admin_email)
     });
 
-    React.useEffect(() => {
-        if (!session || !session.admin_email) {
-            window.location.href = '/LoyaltyCustomerLogin';
-        }
-    }, []);
-
-    if (!session || !session.admin_email) {
+    if (!session?.admin_email) {
         return null;
     }
 
