@@ -159,14 +159,21 @@ import LEIComplianceDashboard from './pages/LEIComplianceDashboard';
 import LEIGLEIFTestReport from './pages/LEIGLEIFTestReport';
 import LEIPhase1Testing from './pages/LEIPhase1Testing';
 import LaunchServices from './pages/LaunchServices';
+import LoyaltyAchievements from './pages/LoyaltyAchievements';
 import LoyaltyChallenges from './pages/LoyaltyChallenges';
 import LoyaltyCustomerLogin from './pages/LoyaltyCustomerLogin';
 import LoyaltyCustomerOnboarding from './pages/LoyaltyCustomerOnboarding';
 import LoyaltyCustomerPortal from './pages/LoyaltyCustomerPortal';
+import LoyaltyEarningRules from './pages/LoyaltyEarningRules';
+import LoyaltyImpactIndex from './pages/LoyaltyImpactIndex';
+import LoyaltyImpactKPIs from './pages/LoyaltyImpactKPIs';
 import LoyaltyLeaderboards from './pages/LoyaltyLeaderboards';
 import LoyaltyPlatformDashboard from './pages/LoyaltyPlatformDashboard';
 import LoyaltyRedemptionApprovals from './pages/LoyaltyRedemptionApprovals';
 import LoyaltyRedemptionCatalog from './pages/LoyaltyRedemptionCatalog';
+import LoyaltyRewardsCatalog from './pages/LoyaltyRewardsCatalog';
+import LoyaltySubscriptionBilling from './pages/LoyaltySubscriptionBilling';
+import LoyaltyTierManagement from './pages/LoyaltyTierManagement';
 import LoyaltyTokenManager from './pages/LoyaltyTokenManager';
 import MIDPricingConfiguration from './pages/MIDPricingConfiguration';
 import MIDRouting from './pages/MIDRouting';
@@ -205,8 +212,8 @@ import MerchantOnboarding from './pages/MerchantOnboarding';
 import MerchantOnboardingWorkflows from './pages/MerchantOnboardingWorkflows';
 import MerchantOperators from './pages/MerchantOperators';
 import MerchantPaymentLinks from './pages/MerchantPaymentLinks';
-import MerchantPayoutPricing from './pages/MerchantPayoutPricing';
 import MerchantPayouts from './pages/MerchantPayouts';
+import MerchantPayoutPricing from './pages/MerchantPayoutPricing';
 import MerchantPortal from './pages/MerchantPortal';
 import MerchantPortalBuilder from './pages/MerchantPortalBuilder';
 import MerchantPricing from './pages/MerchantPricing';
@@ -362,13 +369,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import LoyaltyEarningRules from './pages/LoyaltyEarningRules';
-import LoyaltyRewardsCatalog from './pages/LoyaltyRewardsCatalog';
-import LoyaltyImpactIndex from './pages/LoyaltyImpactIndex';
-import LoyaltyAchievements from './pages/LoyaltyAchievements';
-import LoyaltyTierManagement from './pages/LoyaltyTierManagement';
-import LoyaltyImpactKPIs from './pages/LoyaltyImpactKPIs';
-import LoyaltySubscriptionBilling from './pages/LoyaltySubscriptionBilling';
 import __Layout from './Layout.jsx';
 
 
@@ -534,14 +534,21 @@ export const PAGES = {
     "LEIGLEIFTestReport": LEIGLEIFTestReport,
     "LEIPhase1Testing": LEIPhase1Testing,
     "LaunchServices": LaunchServices,
+    "LoyaltyAchievements": LoyaltyAchievements,
     "LoyaltyChallenges": LoyaltyChallenges,
     "LoyaltyCustomerLogin": LoyaltyCustomerLogin,
     "LoyaltyCustomerOnboarding": LoyaltyCustomerOnboarding,
     "LoyaltyCustomerPortal": LoyaltyCustomerPortal,
+    "LoyaltyEarningRules": LoyaltyEarningRules,
+    "LoyaltyImpactIndex": LoyaltyImpactIndex,
+    "LoyaltyImpactKPIs": LoyaltyImpactKPIs,
     "LoyaltyLeaderboards": LoyaltyLeaderboards,
     "LoyaltyPlatformDashboard": LoyaltyPlatformDashboard,
     "LoyaltyRedemptionApprovals": LoyaltyRedemptionApprovals,
     "LoyaltyRedemptionCatalog": LoyaltyRedemptionCatalog,
+    "LoyaltyRewardsCatalog": LoyaltyRewardsCatalog,
+    "LoyaltySubscriptionBilling": LoyaltySubscriptionBilling,
+    "LoyaltyTierManagement": LoyaltyTierManagement,
     "LoyaltyTokenManager": LoyaltyTokenManager,
     "MIDPricingConfiguration": MIDPricingConfiguration,
     "MIDRouting": MIDRouting,
@@ -580,8 +587,8 @@ export const PAGES = {
     "MerchantOnboardingWorkflows": MerchantOnboardingWorkflows,
     "MerchantOperators": MerchantOperators,
     "MerchantPaymentLinks": MerchantPaymentLinks,
-    "MerchantPayoutPricing": MerchantPayoutPricing,
     "MerchantPayouts": MerchantPayouts,
+    "MerchantPayoutPricing": MerchantPayoutPricing,
     "MerchantPortal": MerchantPortal,
     "MerchantPortalBuilder": MerchantPortalBuilder,
     "MerchantPricing": MerchantPricing,
@@ -737,13 +744,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "LoyaltyEarningRules": LoyaltyEarningRules,
-    "LoyaltyRewardsCatalog": LoyaltyRewardsCatalog,
-    "LoyaltyImpactIndex": LoyaltyImpactIndex,
-    "LoyaltyAchievements": LoyaltyAchievements,
-    "LoyaltyTierManagement": LoyaltyTierManagement,
-    "LoyaltyImpactKPIs": LoyaltyImpactKPIs,
-    "LoyaltySubscriptionBilling": LoyaltySubscriptionBilling,
 }
 
 export const pagesConfig = {

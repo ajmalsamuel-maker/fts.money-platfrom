@@ -3,15 +3,17 @@ import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import WalletWidget from '@/components/loyalty/WalletWidget';
 import CustomerPortalSidebar from '@/components/loyalty/CustomerPortalSidebar';
 import { Trophy, Users, Activity, Plus, Menu } from 'lucide-react';
 
 export default function LoyaltyCustomerPortal() {
-    const [session] = useState(() => JSON.parse(localStorage.getItem('loyalty_customer_session') || '{}'));
+    const sessionData = localStorage.getItem('loyalty_customer_session');
+    const [session] = useState(() => sessionData ? JSON.parse(sessionData) : null);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-    if (!session.id) {
+    if (!session || !session.admin_email) {
         window.location.href = '/LoyaltyCustomerLogin';
         return null;
     }
