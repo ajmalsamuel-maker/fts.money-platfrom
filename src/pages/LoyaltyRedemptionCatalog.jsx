@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Trophy, Users, Activity, Settings, LogOut, Menu, X, Target, ShoppingBag, Clock, CheckCircle2, XCircle, Package } from 'lucide-react';
+import { Trophy, Users, Activity, Settings, LogOut, Menu, X, Target, ShoppingBag, Clock, CheckCircle2, XCircle, Package, Sparkles } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { toast } from 'sonner';
 
@@ -14,6 +14,8 @@ export default function LoyaltyRedemptionCatalog() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [selectedReward, setSelectedReward] = useState(null);
     const [redeemDialog, setRedeemDialog] = useState(false);
+    const [aiSuggestions, setAiSuggestions] = useState([]);
+    const [loadingSuggestions, setLoadingSuggestions] = useState(false);
     const queryClient = useQueryClient();
 
     if (!session.id) {
@@ -24,6 +26,19 @@ export default function LoyaltyRedemptionCatalog() {
     const { data: programs = [] } = useQuery({
         queryKey: ['my-programs', session.admin_email],
         queryFn: () => base44.entities.LoyaltyProgram.filter({ admin_email: session.admin_email })
+    });
+
+    const { data: participants = [] } = useQuery({
+        queryKey: ['participants', session.admin_email],
+        queryFn: async () => {
+            const programIds = programs.map(p => p.id);
+            if (programIds.length === 0) return [];
+            const allParts = await Promise.all(
+                programIds.map(id => base44.entities.LoyaltyParticipant.filter({ program_id: id, participant_email: session.admin_email }))
+            );
+            return allParts.flat();
+        },
+        enabled: programs.length > 0
     });
 
     const { data: allOptions = [] } = useQuery({
@@ -74,6 +89,24 @@ export default function LoyaltyRedemptionCatalog() {
             redemption_option_id: selectedReward.id,
             participant_email: session.admin_email
         });
+    };
+
+    const loadAISuggestions = async () => {
+        if (participants.length === 0 || programs.length === 0) return;
+        
+        setLoadingSuggestions(true);
+        try {
+            const response = await base44.functions.invoke('suggestPersonalizedRewards', {
+                participant_id: participants[0].id,
+                program_id: programs[0].id
+            });
+            setAiSuggestions(response.data.suggestions || []);
+            toast.success('AI recommendations loaded!');
+        } catch (error) {
+            toast.error('Failed to load suggestions');
+        } finally {
+            setLoadingSuggestions(false);
+        }
     };
 
     const getStatusBadge = (status) => {
@@ -151,10 +184,57 @@ export default function LoyaltyRedemptionCatalog() {
                 </header>
 
                 <div className="p-4 md:p-6 space-y-6">
+                    {/* AI Suggestions */}
+                    {aiSuggestions.length > 0 && (
+                        <Card className="border-purple-200 bg-purple-50/50">
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2">
+                                    <Sparkles className="h-5 w-5 text-purple-600" />
+                                    AI Recommended For You
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    {aiSuggestions.slice(0, 3).map(suggestion => {
+                                        const reward = allOptions.find(r => r.id === suggestion.reward_id);
+                                        if (!reward) return null;
+                                        return (
+                                            <Card key={suggestion.reward_id} className="bg-white border-purple-200 hover:shadow-lg transition-shadow cursor-pointer" onClick={() => {
+                                                setSelectedReward(reward);
+                                                setRedeemDialog(true);
+                                            }}>
+                                                <CardContent className="p-4">
+                                                    <div className="flex items-start justify-between mb-2">
+                                                        <Sparkles className="h-6 w-6 text-purple-600" />
+                                                        <Badge className="bg-purple-100 text-purple-800">{suggestion.relevance_score}% match</Badge>
+                                                    </div>
+                                                    <h3 className="font-semibold mb-1">{reward.reward_name}</h3>
+                                                    <p className="text-xs text-purple-700 mb-2">{suggestion.personalized_reason}</p>
+                                                    <p className="text-sm font-bold text-purple-600">{reward.points_required.toLocaleString()} tokens</p>
+                                                </CardContent>
+                                            </Card>
+                                        );
+                                    })}
+                                </div>
+                            </CardContent>
+                        </Card>
+                    )}
+
                     {/* Available Rewards */}
                     <Card>
                         <CardHeader>
-                            <CardTitle>Available Rewards</CardTitle>
+                            <div className="flex items-center justify-between">
+                                <CardTitle>Available Rewards</CardTitle>
+                                <Button 
+                                    variant="outline" 
+                                    size="sm" 
+                                    onClick={loadAISuggestions}
+                                    disabled={loadingSuggestions}
+                                >
+                                    <Sparkles className="h-4 w-4 mr-2" />
+                                    {loadingSuggestions ? 'Loading...' : 'Get AI Suggestions'}
+                                </Button>
+                            </div>
                         </CardHeader>
                         <CardContent>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

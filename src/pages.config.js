@@ -365,6 +365,9 @@ import XeroIntegration from './pages/XeroIntegration';
 import LoyaltyEarningRules from './pages/LoyaltyEarningRules';
 import LoyaltyRewardsCatalog from './pages/LoyaltyRewardsCatalog';
 import LoyaltyImpactIndex from './pages/LoyaltyImpactIndex';
+import LoyaltyAchievements from './pages/LoyaltyAchievements';
+import LoyaltyTierManagement from './pages/LoyaltyTierManagement';
+import LoyaltyImpactKPIs from './pages/LoyaltyImpactKPIs';
 import __Layout from './Layout.jsx';
 
 
@@ -736,6 +739,9 @@ export const PAGES = {
     "LoyaltyEarningRules": LoyaltyEarningRules,
     "LoyaltyRewardsCatalog": LoyaltyRewardsCatalog,
     "LoyaltyImpactIndex": LoyaltyImpactIndex,
+    "LoyaltyAchievements": LoyaltyAchievements,
+    "LoyaltyTierManagement": LoyaltyTierManagement,
+    "LoyaltyImpactKPIs": LoyaltyImpactKPIs,
 }
 
 export const pagesConfig = {
