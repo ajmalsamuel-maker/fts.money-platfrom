@@ -59,6 +59,18 @@ export default function LoyaltyCustomerOnboarding() {
                 status: 'active'
             });
 
+            // Create FTS billing subscription
+            await base44.entities.ServiceSubscription.create({
+                customer_code: formData.customer_code,
+                service_type: 'loyalty_platform',
+                subscription_tier: formData.subscription_tier,
+                monthly_fee: tierConfig.fee,
+                billing_cycle: 'monthly',
+                status: 'trial',
+                start_date: new Date().toISOString(),
+                auto_renew: true
+            });
+
             return customer;
         },
         onSuccess: () => {
