@@ -4,11 +4,12 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Wallet, Copy, ExternalLink, Coins, TrendingUp, TrendingDown, RefreshCw } from 'lucide-react';
+import { Wallet, Copy, ExternalLink, Coins, TrendingUp, TrendingDown, RefreshCw, Activity, ArrowUp, ArrowDown } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function WalletWidget({ programId, participantId }) {
     const [refreshing, setRefreshing] = useState(false);
+    const [showHistory, setShowHistory] = useState(false);
 
     // Fetch token balances
     const { data: balances, isLoading, refetch } = useQuery({
@@ -33,6 +34,19 @@ export default function WalletWidget({ programId, participantId }) {
         enabled: !!programId
     });
 
+    // Fetch transaction history
+    const { data: transactions = [] } = useQuery({
+        queryKey: ['tokenTransactions', programId, participantId],
+        queryFn: async () => {
+            const results = await base44.entities.TokenTransaction.filter({
+                program_id: programId,
+                participant_id: participantId
+            });
+            return results.sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
+        },
+        enabled: !!programId && !!participantId && showHistory
+    });
+
     const handleCopyAddress = (address) => {
         navigator.clipboard.writeText(address);
         toast.success('Wallet address copied!');
@@ -43,6 +57,12 @@ export default function WalletWidget({ programId, participantId }) {
         await refetch();
         setRefreshing(false);
         toast.success('Balance refreshed');
+    };
+
+    const getTransactionIcon = (type) => {
+        if (type === 'earn' || type === 'bonus' || type === 'mint') return <ArrowUp className="h-4 w-4 text-green-600" />;
+        if (type === 'redeem' || type === 'burn') return <ArrowDown className="h-4 w-4 text-red-600" />;
+        return <Activity className="h-4 w-4 text-blue-600" />;
     };
 
     if (isLoading) {
@@ -91,14 +111,23 @@ export default function WalletWidget({ programId, participantId }) {
                         <Wallet className="w-5 h-5 text-indigo-600" />
                         <CardTitle>Blockchain Wallet</CardTitle>
                     </div>
-                    <Button 
-                        variant="ghost" 
-                        size="icon"
-                        onClick={handleRefresh}
-                        disabled={refreshing}
-                    >
-                        <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
-                    </Button>
+                    <div className="flex gap-2">
+                        <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => setShowHistory(!showHistory)}
+                        >
+                            {showHistory ? 'Hide History' : 'View History'}
+                        </Button>
+                        <Button 
+                            variant="ghost" 
+                            size="icon"
+                            onClick={handleRefresh}
+                            disabled={refreshing}
+                        >
+                            <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+                        </Button>
+                    </div>
                 </div>
                 {token?.is_blockchain_enabled && (
                     <Badge variant="secondary" className="w-fit">
@@ -145,6 +174,43 @@ export default function WalletWidget({ programId, participantId }) {
                         </div>
                     </div>
                 </div>
+
+                {/* Transaction History */}
+                {showHistory && (
+                    <div className="border-t pt-4">
+                        <h4 className="font-semibold mb-3 flex items-center gap-2">
+                            <Activity className="h-4 w-4" />
+                            Transaction History
+                        </h4>
+                        {transactions.length === 0 ? (
+                            <p className="text-sm text-slate-500 text-center py-4">No transactions yet</p>
+                        ) : (
+                            <div className="space-y-2 max-h-64 overflow-y-auto">
+                                {transactions.slice(0, 20).map(tx => (
+                                    <div key={tx.id} className="flex items-center justify-between py-2 border-b last:border-0">
+                                        <div className="flex items-center gap-3">
+                                            {getTransactionIcon(tx.transaction_type)}
+                                            <div>
+                                                <p className="text-sm font-medium">{tx.description || tx.transaction_type}</p>
+                                                <p className="text-xs text-slate-500">
+                                                    {new Date(tx.created_date).toLocaleDateString()} {new Date(tx.created_date).toLocaleTimeString()}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div className="text-right">
+                                            <p className={`font-semibold ${tx.amount > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                                {tx.amount > 0 ? '+' : ''}{tx.amount.toLocaleString()}
+                                            </p>
+                                            <p className="text-xs text-slate-500">
+                                                Balance: {tx.balance_after.toLocaleString()}
+                                            </p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                )}
 
                 {/* Wallet Address */}
                 {balance.wallet_address && (
