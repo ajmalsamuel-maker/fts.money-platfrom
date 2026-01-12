@@ -70,6 +70,7 @@ export default {
       "infrastructure": "Infrastructure",
       "documentation": "Documentation",
       "identity": "Digital Identity",
+      "loyalty-platform": "Loyalty & Impact Platform",
       "resources": "Settings & Resources"
   },
   "pages": {
