@@ -9,8 +9,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { Trophy, Menu, X, Plus, Pencil, Trash2, Package } from 'lucide-react';
-import { cn } from "@/lib/utils";
+import CustomerPortalSidebar from '@/components/loyalty/CustomerPortalSidebar';
+import { Menu, Plus, Pencil, Trash2, Package } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function LoyaltyRewardsCatalog() {
@@ -115,34 +115,12 @@ export default function LoyaltyRewardsCatalog() {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/20 to-blue-50/30">
-            <aside className={cn("fixed md:static inset-y-0 left-0 z-50 w-64 bg-white border-r flex flex-col h-screen transform transition-transform",
-                mobileMenuOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0")}>
-                <div className="h-16 flex items-center justify-between border-b px-4">
-                    <div className="flex items-center gap-2">
-                        <Trophy className="h-6 w-6 text-purple-600" />
-                        <span className="font-bold">Loyalty Portal</span>
-                    </div>
-                    <button onClick={() => setMobileMenuOpen(false)} className="md:hidden">
-                        <X className="h-5 w-5" />
-                    </button>
-                </div>
-
-                <div className="p-4 border-b bg-purple-50">
-                    <p className="text-xs text-slate-600">Organization</p>
-                    <p className="font-semibold">{session.organization_name}</p>
-                    <Badge className="mt-2 capitalize">{session.subscription_tier}</Badge>
-                </div>
-
-                <nav className="flex-1 p-4 space-y-2">
-                    <a href="/LoyaltyCustomerPortal" className="block px-3 py-2 rounded-lg hover:bg-slate-50">Overview</a>
-                    <a href="/LoyaltyEarningRules" className="block px-3 py-2 rounded-lg hover:bg-slate-50">Earning Rules</a>
-                    <a href="/LoyaltyRewardsCatalog" className="block px-3 py-2 rounded-lg bg-purple-50 text-purple-700 font-medium">
-                        <Package className="h-4 w-4 inline mr-2" />Rewards Catalog
-                    </a>
-                    <a href="/LoyaltyChallenges" className="block px-3 py-2 rounded-lg hover:bg-slate-50">Challenges</a>
-                    <a href="/LoyaltyImpactIndex" className="block px-3 py-2 rounded-lg hover:bg-slate-50">Impact Index</a>
-                </nav>
-            </aside>
+            <CustomerPortalSidebar 
+                session={session}
+                currentPage="/LoyaltyRewardsCatalog"
+                mobileMenuOpen={mobileMenuOpen}
+                setMobileMenuOpen={setMobileMenuOpen}
+            />
 
             {mobileMenuOpen && <div className="fixed inset-0 bg-black/50 z-40 md:hidden" onClick={() => setMobileMenuOpen(false)} />}
 
