@@ -360,6 +360,8 @@ import XeroIntegration from './pages/XeroIntegration';
 import LoyaltyLeaderboards from './pages/LoyaltyLeaderboards';
 import LoyaltyChallenges from './pages/LoyaltyChallenges';
 import LoyaltyTokenManager from './pages/LoyaltyTokenManager';
+import LoyaltyRedemptionCatalog from './pages/LoyaltyRedemptionCatalog';
+import LoyaltyRedemptionApprovals from './pages/LoyaltyRedemptionApprovals';
 import __Layout from './Layout.jsx';
 
 
@@ -726,6 +728,8 @@ export const PAGES = {
     "LoyaltyLeaderboards": LoyaltyLeaderboards,
     "LoyaltyChallenges": LoyaltyChallenges,
     "LoyaltyTokenManager": LoyaltyTokenManager,
+    "LoyaltyRedemptionCatalog": LoyaltyRedemptionCatalog,
+    "LoyaltyRedemptionApprovals": LoyaltyRedemptionApprovals,
 }
 
 export const pagesConfig = {
