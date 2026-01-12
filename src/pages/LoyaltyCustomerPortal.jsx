@@ -14,6 +14,12 @@ export default function LoyaltyCustomerPortal() {
     const sessionData = localStorage.getItem('loyalty_customer_session');
     const session = sessionData ? JSON.parse(sessionData) : null;
 
+    const { data: programs = [], isLoading } = useQuery({
+        queryKey: ['my-programs', session?.admin_email],
+        queryFn: () => base44.entities.LoyaltyProgram.filter({ admin_email: session.admin_email }),
+        enabled: !!(session?.admin_email)
+    });
+
     React.useEffect(() => {
         if (!session || !session.admin_email) {
             window.location.href = '/LoyaltyCustomerLogin';
@@ -23,11 +29,6 @@ export default function LoyaltyCustomerPortal() {
     if (!session || !session.admin_email) {
         return null;
     }
-
-    const { data: programs = [], isLoading } = useQuery({
-        queryKey: ['my-programs', session.admin_email],
-        queryFn: () => base44.entities.LoyaltyProgram.filter({ admin_email: session.admin_email })
-    });
 
     const totalTokensIssued = programs.reduce((sum, p) => sum + (p.total_tokens_issued || 0), 0);
     const totalParticipants = programs.reduce((sum, p) => sum + (p.total_participants || 0), 0);
