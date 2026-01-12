@@ -30,7 +30,7 @@ export default function LoyaltyRewardsCatalog() {
     });
     const queryClient = useQueryClient();
 
-    if (!session || !session.admin_email) {
+    if (!session || !session.id || !session.admin_email) {
         window.location.href = '/LoyaltyCustomerLogin';
         return null;
     }

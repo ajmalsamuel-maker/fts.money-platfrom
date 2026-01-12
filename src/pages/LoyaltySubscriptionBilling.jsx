@@ -14,7 +14,7 @@ export default function LoyaltySubscriptionBilling() {
     const [session] = useState(() => sessionData ? JSON.parse(sessionData) : null);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-    if (!session || !session.admin_email) {
+    if (!session || !session.id || !session.admin_email) {
         window.location.href = '/LoyaltyCustomerLogin';
         return null;
     }

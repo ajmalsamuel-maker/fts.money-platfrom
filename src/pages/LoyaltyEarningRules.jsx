@@ -27,7 +27,7 @@ export default function LoyaltyEarningRules() {
     });
     const queryClient = useQueryClient();
 
-    if (!session || !session.admin_email) {
+    if (!session || !session.id || !session.admin_email) {
         window.location.href = '/LoyaltyCustomerLogin';
         return null;
     }
