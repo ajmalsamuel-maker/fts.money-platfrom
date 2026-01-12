@@ -10,10 +10,11 @@ import { Menu, CreditCard, FileText, TrendingUp, Users, Activity, Download, Aler
 import moment from 'moment';
 
 export default function LoyaltySubscriptionBilling() {
-    const [session] = useState(() => JSON.parse(localStorage.getItem('loyalty_customer_session') || '{}'));
+    const sessionData = localStorage.getItem('loyalty_customer_session');
+    const [session] = useState(() => sessionData ? JSON.parse(sessionData) : null);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-    if (!session.id) {
+    if (!session || !session.admin_email) {
         window.location.href = '/LoyaltyCustomerLogin';
         return null;
     }

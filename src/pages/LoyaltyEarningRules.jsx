@@ -12,7 +12,8 @@ import { Menu, Plus, Pencil, Trash2, Settings } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function LoyaltyEarningRules() {
-    const [session] = useState(() => JSON.parse(localStorage.getItem('loyalty_customer_session') || '{}'));
+    const sessionData = localStorage.getItem('loyalty_customer_session');
+    const [session] = useState(() => sessionData ? JSON.parse(sessionData) : null);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [ruleDialog, setRuleDialog] = useState(false);
     const [editingRule, setEditingRule] = useState(null);
@@ -26,7 +27,7 @@ export default function LoyaltyEarningRules() {
     });
     const queryClient = useQueryClient();
 
-    if (!session.id) {
+    if (!session || !session.admin_email) {
         window.location.href = '/LoyaltyCustomerLogin';
         return null;
     }

@@ -14,7 +14,8 @@ import { Menu, Plus, Pencil, Trash2, Package } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function LoyaltyRewardsCatalog() {
-    const [session] = useState(() => JSON.parse(localStorage.getItem('loyalty_customer_session') || '{}'));
+    const sessionData = localStorage.getItem('loyalty_customer_session');
+    const [session] = useState(() => sessionData ? JSON.parse(sessionData) : null);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [rewardDialog, setRewardDialog] = useState(false);
     const [editingReward, setEditingReward] = useState(null);
@@ -29,7 +30,7 @@ export default function LoyaltyRewardsCatalog() {
     });
     const queryClient = useQueryClient();
 
-    if (!session.id) {
+    if (!session || !session.admin_email) {
         window.location.href = '/LoyaltyCustomerLogin';
         return null;
     }
