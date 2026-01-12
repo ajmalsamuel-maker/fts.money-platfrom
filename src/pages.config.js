@@ -359,6 +359,7 @@ import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
 import LoyaltyLeaderboards from './pages/LoyaltyLeaderboards';
 import LoyaltyChallenges from './pages/LoyaltyChallenges';
+import LoyaltyTokenManager from './pages/LoyaltyTokenManager';
 import __Layout from './Layout.jsx';
 
 
@@ -724,6 +725,7 @@ export const PAGES = {
     "XeroIntegration": XeroIntegration,
     "LoyaltyLeaderboards": LoyaltyLeaderboards,
     "LoyaltyChallenges": LoyaltyChallenges,
+    "LoyaltyTokenManager": LoyaltyTokenManager,
 }
 
 export const pagesConfig = {

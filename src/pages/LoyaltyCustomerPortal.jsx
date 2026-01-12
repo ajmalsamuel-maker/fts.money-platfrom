@@ -55,6 +55,9 @@ export default function LoyaltyCustomerPortal() {
                     <a href="/LoyaltyChallenges" className="block px-3 py-2 rounded-lg hover:bg-slate-50">
                         <Target className="h-4 w-4 inline mr-2" />Challenges
                     </a>
+                    <a href="/LoyaltyTokenManager" className="block px-3 py-2 rounded-lg hover:bg-slate-50">
+                        <Activity className="h-4 w-4 inline mr-2" />Blockchain Tokens
+                    </a>
                     <a href="#settings" className="block px-3 py-2 rounded-lg hover:bg-slate-50">
                         <Settings className="h-4 w-4 inline mr-2" />Settings
                     </a>
