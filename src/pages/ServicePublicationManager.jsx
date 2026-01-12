@@ -48,6 +48,7 @@ const SERVICE_TYPES = [
     { value: 'rwa_tokenization', label: 'RWA Tokenization', icon: '🏛️' },
     { value: 'tax_management', label: 'Tax Management', icon: '📊' },
     { value: 'einvoicing', label: 'E-Invoicing', icon: '📄' },
+    { value: 'loyalty_platform', label: 'Loyalty & Impact Platform', icon: '🏆' },
     { value: 'pci_compliance', label: 'PCI Compliance', icon: '🔒' },
     { value: 'lei_compliance', label: 'LEI Compliance', icon: '🆔' },
     { value: 'digital_identity', label: 'Digital Identity', icon: '👤' }

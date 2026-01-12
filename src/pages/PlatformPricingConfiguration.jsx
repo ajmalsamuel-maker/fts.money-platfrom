@@ -24,7 +24,8 @@ import {
     FileText,
     Shield,
     Leaf,
-    Info
+    Info,
+    Trophy
 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -104,6 +105,7 @@ const serviceTypes = [
     { value: 'rwa_tokenization', label: 'RWA Tokenization', icon: Package },
     { value: 'tax_management', label: 'Tax Management', icon: FileText },
     { value: 'einvoicing', label: 'E-Invoicing', icon: FileText },
+    { value: 'loyalty_platform', label: 'Loyalty & Impact Platform', icon: Trophy },
     { value: 'nano_marketplace', label: 'NANO Marketplace', icon: Leaf },
     { value: 'pci_compliance', label: 'PCI Compliance', icon: Shield },
     { value: 'lei_compliance', label: 'LEI Compliance', icon: Shield },
