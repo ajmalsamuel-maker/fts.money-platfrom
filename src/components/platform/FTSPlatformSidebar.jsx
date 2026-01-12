@@ -287,16 +287,18 @@ const processedMenuSections = flattenMenuSections(menuSections);
 export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, isSuperAdmin, mobileMenuOpen, setMobileMenuOpen }) {
     const { t } = useI18n();
     
-    // FORCE RESET: Clear ALL cached sidebar state
-    React.useEffect(() => {
-        localStorage.removeItem('ftsPlatformSidebarSections');
-        localStorage.removeItem('ftsSidebarVersion');
-    }, []);
-
-    // Open sections marked with defaultOpen: true
-    const [openSections, setOpenSections] = React.useState(() => 
-        processedMenuSections.filter(s => s.defaultOpen).map(s => s.id)
-    );
+    // Initialize from localStorage or default to just 'overview'
+    const [openSections, setOpenSections] = React.useState(() => {
+        const saved = localStorage.getItem('ftsPlatformSidebarSections');
+        if (saved) {
+            try {
+                return JSON.parse(saved);
+            } catch {
+                return ['overview'];
+            }
+        }
+        return ['overview'];
+    });
     
     // Persist open sections to localStorage
     React.useEffect(() => {
