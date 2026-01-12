@@ -20,7 +20,7 @@ export default function CustomerPortalSidebar({ session, currentPage, mobileMenu
     ];
 
     return (
-        <aside className={cn("fixed md:static inset-y-0 left-0 z-50 w-64 bg-white border-r flex flex-col h-screen transform transition-transform",
+        <aside className={cn("fixed md:relative inset-y-0 left-0 z-50 w-64 bg-white border-r flex flex-col h-screen md:h-auto transform transition-transform",
             mobileMenuOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0")}>
             <div className="h-16 flex items-center justify-between border-b px-4">
                 <div className="flex items-center gap-2">
