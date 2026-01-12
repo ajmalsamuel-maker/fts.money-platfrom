@@ -34,8 +34,8 @@ export default function CustomerPortalSidebar({ session, currentPage, mobileMenu
 
             <div className="p-4 border-b bg-purple-50">
                 <p className="text-xs text-slate-600">Organization</p>
-                <p className="font-semibold">{session.organization_name}</p>
-                <Badge className="mt-2 capitalize">{session.subscription_tier}</Badge>
+                <p className="font-semibold">{session?.organization_name || 'Organization'}</p>
+                <Badge className="mt-2 capitalize">{session?.subscription_tier || 'tier'}</Badge>
             </div>
 
             <nav className="flex-1 p-4 space-y-2">
