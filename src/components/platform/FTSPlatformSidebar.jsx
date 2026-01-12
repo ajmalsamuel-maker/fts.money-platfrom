@@ -264,8 +264,7 @@ const menuSections = [
         defaultOpen: true,
         items: [
             { label: 'Loyalty Dashboard', description: 'White-label loyalty engine', path: 'LoyaltyPlatformDashboard', icon: Trophy, priority: true },
-            { label: 'Customer Onboarding', description: 'Onboard new organizations', path: 'LoyaltyCustomerOnboarding', icon: Plus, priority: true },
-            { label: 'Customer Portal Login', description: 'Customer access', path: 'LoyaltyCustomerLogin', icon: Users }
+            { label: 'Customer Onboarding', description: 'Onboard new organizations', path: 'LoyaltyCustomerOnboarding', icon: Plus, priority: true }
         ]
     },
     {
