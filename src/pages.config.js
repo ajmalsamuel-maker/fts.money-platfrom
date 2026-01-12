@@ -353,6 +353,10 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
+import LoyaltyPlatformDashboard from './pages/LoyaltyPlatformDashboard';
+import LoyaltyCustomerOnboarding from './pages/LoyaltyCustomerOnboarding';
+import LoyaltyCustomerLogin from './pages/LoyaltyCustomerLogin';
+import LoyaltyCustomerPortal from './pages/LoyaltyCustomerPortal';
 import __Layout from './Layout.jsx';
 
 
@@ -712,6 +716,10 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
+    "LoyaltyPlatformDashboard": LoyaltyPlatformDashboard,
+    "LoyaltyCustomerOnboarding": LoyaltyCustomerOnboarding,
+    "LoyaltyCustomerLogin": LoyaltyCustomerLogin,
+    "LoyaltyCustomerPortal": LoyaltyCustomerPortal,
 }
 
 export const pagesConfig = {

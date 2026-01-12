@@ -19,7 +19,8 @@ import {
     GitBranch,
     Wallet,
     Briefcase,
-    Building2
+    Building2,
+    Menu
 } from 'lucide-react';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
@@ -29,6 +30,7 @@ export default function FTSAnalytics() {
     const navigate = useNavigate();
     const { platformUser, loading } = usePlatformAuth();
     const { t } = useI18n();
+    const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
     
     const { data: psps = [] } = useQuery({
         queryKey: ['provisioned-psps'],
@@ -78,25 +80,44 @@ export default function FTSAnalytics() {
     }
 
     return (
-        <div className="flex h-screen bg-slate-50">
+        <div className="flex flex-col md:flex-row h-screen bg-slate-50">
+            {mobileMenuOpen && (
+                <div 
+                    className="fixed inset-0 bg-black/50 z-40 md:hidden"
+                    onClick={() => setMobileMenuOpen(false)}
+                />
+            )}
+            
             <FTSPlatformSidebar 
                 currentPage="FTSAnalytics" 
                 userRole={getRoleLabel(platformUser?.platform_role)} 
                 userEmail={platformUser?.email}
                 isSuperAdmin={platformUser?.platform_role === PLATFORM_ROLES.SUPER_ADMIN}
+                mobileMenuOpen={mobileMenuOpen}
+                setMobileMenuOpen={setMobileMenuOpen}
             />
 
-            <div className="flex-1 overflow-auto">
-                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
-                    <div>
-                        <h2 className="text-lg font-semibold text-slate-900">{t('platform:pages.analytics.title')}</h2>
-                        <p className="text-xs text-slate-600">{t('platform:pages.analytics.subtitle')}</p>
+            <div className="flex-1 overflow-auto w-full">
+                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-6 sticky top-0 z-10">
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="md:hidden flex-shrink-0"
+                            onClick={() => setMobileMenuOpen(true)}
+                        >
+                            <Menu className="h-5 w-5" />
+                        </Button>
+                        <div className="min-w-0">
+                            <h2 className="text-base md:text-lg font-semibold text-slate-900 truncate">{t('platform:pages.analytics.title')}</h2>
+                            <p className="text-xs text-slate-600 truncate hidden sm:block">{t('platform:pages.analytics.subtitle')}</p>
+                        </div>
                     </div>
-                    <div className="flex items-center gap-4">
-                        <LanguageSwitcher variant="select" showLabel={true} />
-                        <div className="text-right">
+                    <div className="flex items-center gap-2 md:gap-4 flex-shrink-0">
+                        <LanguageSwitcher variant="select" showLabel={false} />
+                        <div className="text-right hidden lg:block">
                             <p className="text-xs text-slate-600">{t('platform:dashboard.loggedInAs')}</p>
-                            <p className="text-sm font-medium text-slate-900">{platformUser?.email}</p>
+                            <p className="text-sm font-medium text-slate-900 truncate max-w-[150px]">{platformUser?.email}</p>
                             <Badge className="mt-1 bg-blue-600 text-white text-xs">
                                 {getRoleLabel(platformUser?.platform_role)}
                             </Badge>
