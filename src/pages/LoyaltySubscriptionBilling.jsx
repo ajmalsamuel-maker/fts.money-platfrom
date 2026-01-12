@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import CustomerPortalSidebar from '@/components/loyalty/CustomerPortalSidebar';
-import { Menu, CreditCard, FileText, TrendingUp, Users, Activity, Download, AlertCircle } from 'lucide-react';
+import { Menu, CreditCard, FileText, TrendingUp, Users, Activity, Download, AlertCircle, Trophy } from 'lucide-react';
 import moment from 'moment';
 
 export default function LoyaltySubscriptionBilling() {
