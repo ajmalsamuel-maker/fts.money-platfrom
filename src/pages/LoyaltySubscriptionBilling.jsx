@@ -14,14 +14,18 @@ export default function LoyaltySubscriptionBilling() {
     const [session] = useState(() => sessionData ? JSON.parse(sessionData) : null);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-    if (!session || !session.id || !session.admin_email) {
-        window.location.href = '/LoyaltyCustomerLogin';
-        return null;
-    }
+    React.useEffect(() => {
+        if (!session || !session.id || !session.admin_email) {
+            window.location.href = '/LoyaltyCustomerLogin';
+        }
+    }, [session]);
+
+    if (!session) return null;
 
     const { data: programs = [] } = useQuery({
-        queryKey: ['my-programs', session.admin_email],
-        queryFn: () => base44.entities.LoyaltyProgram.filter({ admin_email: session.admin_email })
+        queryKey: ['my-programs', session?.admin_email],
+        queryFn: () => base44.entities.LoyaltyProgram.filter({ admin_email: session.admin_email }),
+        enabled: !!(session?.admin_email)
     });
 
     const { data: participants = [] } = useQuery({
@@ -38,19 +42,21 @@ export default function LoyaltySubscriptionBilling() {
     });
 
     const { data: subscriptions = [] } = useQuery({
-        queryKey: ['subscriptions', session.customer_code],
+        queryKey: ['subscriptions', session?.customer_code],
         queryFn: () => base44.entities.ServiceSubscription.filter({ 
             customer_code: session.customer_code,
             service_type: 'loyalty_platform'
-        })
+        }),
+        enabled: !!(session?.customer_code)
     });
 
     const { data: invoices = [] } = useQuery({
-        queryKey: ['invoices', session.customer_code],
+        queryKey: ['invoices', session?.customer_code],
         queryFn: async () => {
             const results = await base44.entities.ConsolidatedInvoice.filter({ customer_code: session.customer_code });
             return results.sort((a, b) => b.invoice_date.localeCompare(a.invoice_date));
-        }
+        },
+        enabled: !!(session?.customer_code)
     });
 
     const { data: usageMeters = [] } = useQuery({

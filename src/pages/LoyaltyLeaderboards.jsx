@@ -18,14 +18,18 @@ export default function LoyaltyLeaderboards() {
     const [activityTypeFilter, setActivityTypeFilter] = useState('all');
     const [tierFilter, setTierFilter] = useState('all');
 
-    if (!session.id) {
-        window.location.href = '/LoyaltyCustomerLogin';
-        return null;
-    }
+    React.useEffect(() => {
+        if (!session.id || !session.admin_email) {
+            window.location.href = '/LoyaltyCustomerLogin';
+        }
+    }, [session]);
+
+    if (!session.id) return null;
 
     const { data: programs = [] } = useQuery({
-        queryKey: ['my-programs', session.admin_email],
-        queryFn: () => base44.entities.LoyaltyProgram.filter({ admin_email: session.admin_email })
+        queryKey: ['my-programs', session?.admin_email],
+        queryFn: () => base44.entities.LoyaltyProgram.filter({ admin_email: session.admin_email }),
+        enabled: !!(session?.admin_email)
     });
 
     const programId = selectedProgram || programs[0]?.id;
