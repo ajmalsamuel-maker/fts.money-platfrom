@@ -159,10 +159,15 @@ import LEIComplianceDashboard from './pages/LEIComplianceDashboard';
 import LEIGLEIFTestReport from './pages/LEIGLEIFTestReport';
 import LEIPhase1Testing from './pages/LEIPhase1Testing';
 import LaunchServices from './pages/LaunchServices';
+import LoyaltyChallenges from './pages/LoyaltyChallenges';
 import LoyaltyCustomerLogin from './pages/LoyaltyCustomerLogin';
 import LoyaltyCustomerOnboarding from './pages/LoyaltyCustomerOnboarding';
 import LoyaltyCustomerPortal from './pages/LoyaltyCustomerPortal';
+import LoyaltyLeaderboards from './pages/LoyaltyLeaderboards';
 import LoyaltyPlatformDashboard from './pages/LoyaltyPlatformDashboard';
+import LoyaltyRedemptionApprovals from './pages/LoyaltyRedemptionApprovals';
+import LoyaltyRedemptionCatalog from './pages/LoyaltyRedemptionCatalog';
+import LoyaltyTokenManager from './pages/LoyaltyTokenManager';
 import MIDPricingConfiguration from './pages/MIDPricingConfiguration';
 import MIDRouting from './pages/MIDRouting';
 import MarketAnalysis from './pages/MarketAnalysis';
@@ -357,11 +362,9 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import LoyaltyLeaderboards from './pages/LoyaltyLeaderboards';
-import LoyaltyChallenges from './pages/LoyaltyChallenges';
-import LoyaltyTokenManager from './pages/LoyaltyTokenManager';
-import LoyaltyRedemptionCatalog from './pages/LoyaltyRedemptionCatalog';
-import LoyaltyRedemptionApprovals from './pages/LoyaltyRedemptionApprovals';
+import LoyaltyEarningRules from './pages/LoyaltyEarningRules';
+import LoyaltyRewardsCatalog from './pages/LoyaltyRewardsCatalog';
+import LoyaltyImpactIndex from './pages/LoyaltyImpactIndex';
 import __Layout from './Layout.jsx';
 
 
@@ -527,10 +530,15 @@ export const PAGES = {
     "LEIGLEIFTestReport": LEIGLEIFTestReport,
     "LEIPhase1Testing": LEIPhase1Testing,
     "LaunchServices": LaunchServices,
+    "LoyaltyChallenges": LoyaltyChallenges,
     "LoyaltyCustomerLogin": LoyaltyCustomerLogin,
     "LoyaltyCustomerOnboarding": LoyaltyCustomerOnboarding,
     "LoyaltyCustomerPortal": LoyaltyCustomerPortal,
+    "LoyaltyLeaderboards": LoyaltyLeaderboards,
     "LoyaltyPlatformDashboard": LoyaltyPlatformDashboard,
+    "LoyaltyRedemptionApprovals": LoyaltyRedemptionApprovals,
+    "LoyaltyRedemptionCatalog": LoyaltyRedemptionCatalog,
+    "LoyaltyTokenManager": LoyaltyTokenManager,
     "MIDPricingConfiguration": MIDPricingConfiguration,
     "MIDRouting": MIDRouting,
     "MarketAnalysis": MarketAnalysis,
@@ -725,11 +733,9 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "LoyaltyLeaderboards": LoyaltyLeaderboards,
-    "LoyaltyChallenges": LoyaltyChallenges,
-    "LoyaltyTokenManager": LoyaltyTokenManager,
-    "LoyaltyRedemptionCatalog": LoyaltyRedemptionCatalog,
-    "LoyaltyRedemptionApprovals": LoyaltyRedemptionApprovals,
+    "LoyaltyEarningRules": LoyaltyEarningRules,
+    "LoyaltyRewardsCatalog": LoyaltyRewardsCatalog,
+    "LoyaltyImpactIndex": LoyaltyImpactIndex,
 }
 
 export const pagesConfig = {

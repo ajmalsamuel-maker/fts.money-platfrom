@@ -52,6 +52,12 @@ export default function LoyaltyCustomerPortal() {
                     <a href="/LoyaltyLeaderboards" className="block px-3 py-2 rounded-lg hover:bg-slate-50">
                         <Trophy className="h-4 w-4 inline mr-2" />Leaderboards
                     </a>
+                    <a href="/LoyaltyEarningRules" className="block px-3 py-2 rounded-lg hover:bg-slate-50">
+                        <Activity className="h-4 w-4 inline mr-2" />Earning Rules
+                    </a>
+                    <a href="/LoyaltyRewardsCatalog" className="block px-3 py-2 rounded-lg hover:bg-slate-50">
+                        <Activity className="h-4 w-4 inline mr-2" />Rewards Catalog
+                    </a>
                     <a href="/LoyaltyChallenges" className="block px-3 py-2 rounded-lg hover:bg-slate-50">
                         <Target className="h-4 w-4 inline mr-2" />Challenges
                     </a>
@@ -63,6 +69,9 @@ export default function LoyaltyCustomerPortal() {
                     </a>
                     <a href="/LoyaltyTokenManager" className="block px-3 py-2 rounded-lg hover:bg-slate-50">
                         <Activity className="h-4 w-4 inline mr-2" />Blockchain Tokens
+                    </a>
+                    <a href="/LoyaltyImpactIndex" className="block px-3 py-2 rounded-lg hover:bg-slate-50">
+                        <Activity className="h-4 w-4 inline mr-2" />Impact Index
                     </a>
                     <a href="#settings" className="block px-3 py-2 rounded-lg hover:bg-slate-50">
                         <Settings className="h-4 w-4 inline mr-2" />Settings
