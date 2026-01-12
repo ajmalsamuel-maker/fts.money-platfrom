@@ -159,6 +159,10 @@ import LEIComplianceDashboard from './pages/LEIComplianceDashboard';
 import LEIGLEIFTestReport from './pages/LEIGLEIFTestReport';
 import LEIPhase1Testing from './pages/LEIPhase1Testing';
 import LaunchServices from './pages/LaunchServices';
+import LoyaltyCustomerLogin from './pages/LoyaltyCustomerLogin';
+import LoyaltyCustomerOnboarding from './pages/LoyaltyCustomerOnboarding';
+import LoyaltyCustomerPortal from './pages/LoyaltyCustomerPortal';
+import LoyaltyPlatformDashboard from './pages/LoyaltyPlatformDashboard';
 import MIDPricingConfiguration from './pages/MIDPricingConfiguration';
 import MIDRouting from './pages/MIDRouting';
 import MarketAnalysis from './pages/MarketAnalysis';
@@ -353,10 +357,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import LoyaltyPlatformDashboard from './pages/LoyaltyPlatformDashboard';
-import LoyaltyCustomerOnboarding from './pages/LoyaltyCustomerOnboarding';
-import LoyaltyCustomerLogin from './pages/LoyaltyCustomerLogin';
-import LoyaltyCustomerPortal from './pages/LoyaltyCustomerPortal';
 import __Layout from './Layout.jsx';
 
 
@@ -522,6 +522,10 @@ export const PAGES = {
     "LEIGLEIFTestReport": LEIGLEIFTestReport,
     "LEIPhase1Testing": LEIPhase1Testing,
     "LaunchServices": LaunchServices,
+    "LoyaltyCustomerLogin": LoyaltyCustomerLogin,
+    "LoyaltyCustomerOnboarding": LoyaltyCustomerOnboarding,
+    "LoyaltyCustomerPortal": LoyaltyCustomerPortal,
+    "LoyaltyPlatformDashboard": LoyaltyPlatformDashboard,
     "MIDPricingConfiguration": MIDPricingConfiguration,
     "MIDRouting": MIDRouting,
     "MarketAnalysis": MarketAnalysis,
@@ -716,10 +720,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "LoyaltyPlatformDashboard": LoyaltyPlatformDashboard,
-    "LoyaltyCustomerOnboarding": LoyaltyCustomerOnboarding,
-    "LoyaltyCustomerLogin": LoyaltyCustomerLogin,
-    "LoyaltyCustomerPortal": LoyaltyCustomerPortal,
 }
 
 export const pagesConfig = {
