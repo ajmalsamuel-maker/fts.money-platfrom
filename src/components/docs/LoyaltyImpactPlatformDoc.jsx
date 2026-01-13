@@ -396,13 +396,8 @@ Platform sends real-time events to your webhook endpoint:
 ### 5-Step Setup
 
 **Step 1: Create Program**
-```json
-POST /programs
-{
-  "program_name": "Green Rewards",
-  "program_type": "points_based"
-}
-```
+- Create loyalty program with name and type
+- POST /programs endpoint
 
 **Step 2: Define Earning Rules**
 - Set points per purchase
