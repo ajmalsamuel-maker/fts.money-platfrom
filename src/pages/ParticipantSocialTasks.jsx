@@ -13,7 +13,7 @@ import { toast } from 'sonner';
 export default function ParticipantSocialTasks() {
     const [session] = useState(() => JSON.parse(localStorage.getItem('participant_session') || '{}'));
     const [sidebarOpen, setSidebarOpen] = useState(true);
-    const [expandedMenus, setExpandedMenus] = useState({ social: true });
+    const [expandedMenus, setExpandedMenus] = useState({ earn: true, social: true });
     const [searchParams] = useSearchParams();
     const queryClient = useQueryClient();
     const filterParam = searchParams.get('filter') || 'all';
