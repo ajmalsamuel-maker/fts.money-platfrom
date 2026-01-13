@@ -7,7 +7,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Trophy, Users, Activity, Settings, LogOut, Menu, X, Target, Coins, Rocket, ExternalLink, Copy, TrendingUp } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
+import { Trophy, Users, Activity, Settings, LogOut, Menu, X, Target, Coins, Rocket, ExternalLink, Copy, TrendingUp, Shield, Lock, Zap, Clock, FileText, AlertCircle } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { toast } from 'sonner';
 
@@ -16,6 +19,49 @@ export default function LoyaltyTokenManager() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [deployDialog, setDeployDialog] = useState(false);
     const [selectedProgram, setSelectedProgram] = useState(null);
+    const [contractConfig, setContractConfig] = useState({
+        // Basic Info
+        token_name: '',
+        token_symbol: '',
+        initial_supply: 1000000,
+        max_supply: 0,
+        decimals: 18,
+        
+        // Features
+        mintable: true,
+        burnable: true,
+        pausable: true,
+        freezable: false,
+        
+        // Access Control
+        owner_can_mint: true,
+        owner_can_burn: true,
+        owner_can_pause: true,
+        multi_sig_required: false,
+        required_signatures: 2,
+        
+        // Transfer Controls
+        transfer_restrictions: false,
+        whitelist_enabled: false,
+        blacklist_enabled: false,
+        max_transaction_amount: 0,
+        cooldown_period: 0,
+        
+        // Tokenomics
+        transfer_fee_enabled: false,
+        transfer_fee_percentage: 0,
+        fee_recipient: '',
+        reflection_enabled: false,
+        
+        // Vesting
+        vesting_enabled: false,
+        vesting_schedules: [],
+        
+        // Metadata
+        contract_description: '',
+        website_url: '',
+        documentation_url: ''
+    });
     const queryClient = useQueryClient();
 
     if (!session.id) {
@@ -58,13 +104,14 @@ export default function LoyaltyTokenManager() {
 
     const handleDeploy = (e) => {
         e.preventDefault();
-        const formData = new FormData(e.target);
         deployMutation.mutate({
             program_id: selectedProgram,
-            token_name: formData.get('token_name'),
-            token_symbol: formData.get('token_symbol'),
-            initial_supply: parseInt(formData.get('initial_supply'))
+            ...contractConfig
         });
+    };
+    
+    const updateConfig = (field, value) => {
+        setContractConfig(prev => ({ ...prev, [field]: value }));
     };
 
     const copyAddress = (address) => {
@@ -134,39 +181,367 @@ export default function LoyaltyTokenManager() {
                                 <Rocket className="h-4 w-4 mr-2" />Deploy Token
                             </Button>
                         </DialogTrigger>
-                        <DialogContent>
+                        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
                             <DialogHeader>
-                                <DialogTitle>Deploy Loyalty Token</DialogTitle>
+                                <DialogTitle>Smart Contract Builder</DialogTitle>
+                                <p className="text-sm text-slate-600">Configure your loyalty token smart contract</p>
                             </DialogHeader>
-                            <form onSubmit={handleDeploy} className="space-y-4">
-                                <div>
-                                    <Label>Select Program</Label>
-                                    <select 
-                                        className="w-full p-2 border rounded-md"
-                                        onChange={(e) => setSelectedProgram(e.target.value)}
-                                        required
-                                    >
-                                        <option value="">Choose a program</option>
-                                        {programs.filter(p => !tokens.find(t => t.program_id === p.id)).map(p => (
-                                            <option key={p.id} value={p.id}>{p.program_name}</option>
-                                        ))}
-                                    </select>
+                            <form onSubmit={handleDeploy}>
+                                <Tabs defaultValue="basic" className="w-full">
+                                    <TabsList className="grid w-full grid-cols-5">
+                                        <TabsTrigger value="basic">Basic</TabsTrigger>
+                                        <TabsTrigger value="features">Features</TabsTrigger>
+                                        <TabsTrigger value="access">Access</TabsTrigger>
+                                        <TabsTrigger value="tokenomics">Tokenomics</TabsTrigger>
+                                        <TabsTrigger value="metadata">Metadata</TabsTrigger>
+                                    </TabsList>
+
+                                    {/* Basic Configuration */}
+                                    <TabsContent value="basic" className="space-y-4">
+                                        <div>
+                                            <Label>Select Program</Label>
+                                            <select 
+                                                className="w-full p-2 border rounded-md"
+                                                onChange={(e) => setSelectedProgram(e.target.value)}
+                                                required
+                                            >
+                                                <option value="">Choose a program</option>
+                                                {programs.filter(p => !tokens.find(t => t.program_id === p.id)).map(p => (
+                                                    <option key={p.id} value={p.id}>{p.program_name}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div>
+                                                <Label>Token Name</Label>
+                                                <Input 
+                                                    value={contractConfig.token_name}
+                                                    onChange={(e) => updateConfig('token_name', e.target.value)}
+                                                    placeholder="RunMiles Token" 
+                                                    required 
+                                                />
+                                            </div>
+                                            <div>
+                                                <Label>Token Symbol</Label>
+                                                <Input 
+                                                    value={contractConfig.token_symbol}
+                                                    onChange={(e) => updateConfig('token_symbol', e.target.value)}
+                                                    placeholder="RUN" 
+                                                    required 
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div>
+                                                <Label>Initial Supply</Label>
+                                                <Input 
+                                                    value={contractConfig.initial_supply}
+                                                    onChange={(e) => updateConfig('initial_supply', parseInt(e.target.value))}
+                                                    type="number" 
+                                                    required 
+                                                />
+                                            </div>
+                                            <div>
+                                                <Label>Max Supply (0 = unlimited)</Label>
+                                                <Input 
+                                                    value={contractConfig.max_supply}
+                                                    onChange={(e) => updateConfig('max_supply', parseInt(e.target.value))}
+                                                    type="number" 
+                                                />
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <Label>Decimals</Label>
+                                            <Input 
+                                                value={contractConfig.decimals}
+                                                onChange={(e) => updateConfig('decimals', parseInt(e.target.value))}
+                                                type="number"
+                                                min="0"
+                                                max="18"
+                                            />
+                                            <p className="text-xs text-slate-500 mt-1">Standard is 18 (like ETH)</p>
+                                        </div>
+                                    </TabsContent>
+
+                                    {/* Features */}
+                                    <TabsContent value="features" className="space-y-4">
+                                        <div className="space-y-4">
+                                            <div className="flex items-center justify-between p-3 border rounded-lg">
+                                                <div className="flex items-center gap-3">
+                                                    <Coins className="h-5 w-5 text-purple-600" />
+                                                    <div>
+                                                        <Label>Mintable</Label>
+                                                        <p className="text-xs text-slate-500">Allow creating new tokens</p>
+                                                    </div>
+                                                </div>
+                                                <Switch 
+                                                    checked={contractConfig.mintable}
+                                                    onCheckedChange={(checked) => updateConfig('mintable', checked)}
+                                                />
+                                            </div>
+
+                                            <div className="flex items-center justify-between p-3 border rounded-lg">
+                                                <div className="flex items-center gap-3">
+                                                    <Zap className="h-5 w-5 text-orange-600" />
+                                                    <div>
+                                                        <Label>Burnable</Label>
+                                                        <p className="text-xs text-slate-500">Allow destroying tokens</p>
+                                                    </div>
+                                                </div>
+                                                <Switch 
+                                                    checked={contractConfig.burnable}
+                                                    onCheckedChange={(checked) => updateConfig('burnable', checked)}
+                                                />
+                                            </div>
+
+                                            <div className="flex items-center justify-between p-3 border rounded-lg">
+                                                <div className="flex items-center gap-3">
+                                                    <Lock className="h-5 w-5 text-blue-600" />
+                                                    <div>
+                                                        <Label>Pausable</Label>
+                                                        <p className="text-xs text-slate-500">Ability to pause all transfers</p>
+                                                    </div>
+                                                </div>
+                                                <Switch 
+                                                    checked={contractConfig.pausable}
+                                                    onCheckedChange={(checked) => updateConfig('pausable', checked)}
+                                                />
+                                            </div>
+
+                                            <div className="flex items-center justify-between p-3 border rounded-lg">
+                                                <div className="flex items-center gap-3">
+                                                    <AlertCircle className="h-5 w-5 text-red-600" />
+                                                    <div>
+                                                        <Label>Freezable Accounts</Label>
+                                                        <p className="text-xs text-slate-500">Freeze specific addresses</p>
+                                                    </div>
+                                                </div>
+                                                <Switch 
+                                                    checked={contractConfig.freezable}
+                                                    onCheckedChange={(checked) => updateConfig('freezable', checked)}
+                                                />
+                                            </div>
+                                        </div>
+                                    </TabsContent>
+
+                                    {/* Access Control */}
+                                    <TabsContent value="access" className="space-y-4">
+                                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                                            <div className="flex gap-2">
+                                                <Shield className="h-5 w-5 text-blue-600 mt-0.5" />
+                                                <div>
+                                                    <h4 className="font-semibold text-sm text-blue-900">Access Control Settings</h4>
+                                                    <p className="text-xs text-blue-700">Define who can perform critical operations</p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-3">
+                                            <div className="flex items-center justify-between p-3 border rounded-lg">
+                                                <Label>Owner Can Mint</Label>
+                                                <Switch 
+                                                    checked={contractConfig.owner_can_mint}
+                                                    onCheckedChange={(checked) => updateConfig('owner_can_mint', checked)}
+                                                />
+                                            </div>
+
+                                            <div className="flex items-center justify-between p-3 border rounded-lg">
+                                                <Label>Owner Can Burn</Label>
+                                                <Switch 
+                                                    checked={contractConfig.owner_can_burn}
+                                                    onCheckedChange={(checked) => updateConfig('owner_can_burn', checked)}
+                                                />
+                                            </div>
+
+                                            <div className="flex items-center justify-between p-3 border rounded-lg">
+                                                <Label>Owner Can Pause</Label>
+                                                <Switch 
+                                                    checked={contractConfig.owner_can_pause}
+                                                    onCheckedChange={(checked) => updateConfig('owner_can_pause', checked)}
+                                                />
+                                            </div>
+
+                                            <div className="border rounded-lg p-3 space-y-3">
+                                                <div className="flex items-center justify-between">
+                                                    <Label>Multi-Signature Required</Label>
+                                                    <Switch 
+                                                        checked={contractConfig.multi_sig_required}
+                                                        onCheckedChange={(checked) => updateConfig('multi_sig_required', checked)}
+                                                    />
+                                                </div>
+                                                {contractConfig.multi_sig_required && (
+                                                    <div>
+                                                        <Label>Required Signatures</Label>
+                                                        <Input 
+                                                            type="number"
+                                                            min="2"
+                                                            value={contractConfig.required_signatures}
+                                                            onChange={(e) => updateConfig('required_signatures', parseInt(e.target.value))}
+                                                        />
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </TabsContent>
+
+                                    {/* Tokenomics */}
+                                    <TabsContent value="tokenomics" className="space-y-4">
+                                        <div className="space-y-4">
+                                            <div className="border rounded-lg p-4 space-y-3">
+                                                <div className="flex items-center justify-between">
+                                                    <div>
+                                                        <Label>Transfer Fee</Label>
+                                                        <p className="text-xs text-slate-500">Charge fee on each transfer</p>
+                                                    </div>
+                                                    <Switch 
+                                                        checked={contractConfig.transfer_fee_enabled}
+                                                        onCheckedChange={(checked) => updateConfig('transfer_fee_enabled', checked)}
+                                                    />
+                                                </div>
+                                                {contractConfig.transfer_fee_enabled && (
+                                                    <>
+                                                        <div>
+                                                            <Label>Fee Percentage</Label>
+                                                            <Input 
+                                                                type="number"
+                                                                step="0.1"
+                                                                min="0"
+                                                                max="10"
+                                                                value={contractConfig.transfer_fee_percentage}
+                                                                onChange={(e) => updateConfig('transfer_fee_percentage', parseFloat(e.target.value))}
+                                                            />
+                                                        </div>
+                                                        <div>
+                                                            <Label>Fee Recipient Address</Label>
+                                                            <Input 
+                                                                placeholder="0x..."
+                                                                value={contractConfig.fee_recipient}
+                                                                onChange={(e) => updateConfig('fee_recipient', e.target.value)}
+                                                            />
+                                                        </div>
+                                                    </>
+                                                )}
+                                            </div>
+
+                                            <div className="border rounded-lg p-4 space-y-3">
+                                                <div className="flex items-center justify-between">
+                                                    <div>
+                                                        <Label>Transfer Restrictions</Label>
+                                                        <p className="text-xs text-slate-500">Limit who can transfer</p>
+                                                    </div>
+                                                    <Switch 
+                                                        checked={contractConfig.transfer_restrictions}
+                                                        onCheckedChange={(checked) => updateConfig('transfer_restrictions', checked)}
+                                                    />
+                                                </div>
+                                                {contractConfig.transfer_restrictions && (
+                                                    <>
+                                                        <div className="flex items-center justify-between">
+                                                            <Label className="text-sm">Whitelist Mode</Label>
+                                                            <Switch 
+                                                                checked={contractConfig.whitelist_enabled}
+                                                                onCheckedChange={(checked) => updateConfig('whitelist_enabled', checked)}
+                                                            />
+                                                        </div>
+                                                        <div className="flex items-center justify-between">
+                                                            <Label className="text-sm">Blacklist Mode</Label>
+                                                            <Switch 
+                                                                checked={contractConfig.blacklist_enabled}
+                                                                onCheckedChange={(checked) => updateConfig('blacklist_enabled', checked)}
+                                                            />
+                                                        </div>
+                                                        <div>
+                                                            <Label>Max Transaction Amount (0 = no limit)</Label>
+                                                            <Input 
+                                                                type="number"
+                                                                value={contractConfig.max_transaction_amount}
+                                                                onChange={(e) => updateConfig('max_transaction_amount', parseInt(e.target.value))}
+                                                            />
+                                                        </div>
+                                                        <div>
+                                                            <Label>Cooldown Period (seconds)</Label>
+                                                            <Input 
+                                                                type="number"
+                                                                value={contractConfig.cooldown_period}
+                                                                onChange={(e) => updateConfig('cooldown_period', parseInt(e.target.value))}
+                                                            />
+                                                        </div>
+                                                    </>
+                                                )}
+                                            </div>
+
+                                            <div className="flex items-center justify-between p-3 border rounded-lg">
+                                                <div>
+                                                    <Label>Reflection Mechanism</Label>
+                                                    <p className="text-xs text-slate-500">Reward holders on each transaction</p>
+                                                </div>
+                                                <Switch 
+                                                    checked={contractConfig.reflection_enabled}
+                                                    onCheckedChange={(checked) => updateConfig('reflection_enabled', checked)}
+                                                />
+                                            </div>
+                                        </div>
+                                    </TabsContent>
+
+                                    {/* Metadata */}
+                                    <TabsContent value="metadata" className="space-y-4">
+                                        <div>
+                                            <Label>Contract Description</Label>
+                                            <Textarea 
+                                                placeholder="Describe the purpose of this token..."
+                                                rows={4}
+                                                value={contractConfig.contract_description}
+                                                onChange={(e) => updateConfig('contract_description', e.target.value)}
+                                            />
+                                        </div>
+                                        <div>
+                                            <Label>Website URL</Label>
+                                            <Input 
+                                                type="url"
+                                                placeholder="https://yourprogram.com"
+                                                value={contractConfig.website_url}
+                                                onChange={(e) => updateConfig('website_url', e.target.value)}
+                                            />
+                                        </div>
+                                        <div>
+                                            <Label>Documentation URL</Label>
+                                            <Input 
+                                                type="url"
+                                                placeholder="https://docs.yourprogram.com"
+                                                value={contractConfig.documentation_url}
+                                                onChange={(e) => updateConfig('documentation_url', e.target.value)}
+                                            />
+                                        </div>
+
+                                        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                                            <div className="flex gap-2">
+                                                <FileText className="h-5 w-5 text-yellow-600 mt-0.5" />
+                                                <div>
+                                                    <h4 className="font-semibold text-sm text-yellow-900">Contract Summary</h4>
+                                                    <ul className="text-xs text-yellow-800 mt-2 space-y-1">
+                                                        <li>• Token: {contractConfig.token_symbol || 'N/A'}</li>
+                                                        <li>• Supply: {contractConfig.initial_supply.toLocaleString()} (Max: {contractConfig.max_supply || 'Unlimited'})</li>
+                                                        <li>• Features: {[
+                                                            contractConfig.mintable && 'Mintable',
+                                                            contractConfig.burnable && 'Burnable',
+                                                            contractConfig.pausable && 'Pausable'
+                                                        ].filter(Boolean).join(', ') || 'Standard'}</li>
+                                                        <li>• Multi-sig: {contractConfig.multi_sig_required ? 'Yes' : 'No'}</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </TabsContent>
+                                </Tabs>
+
+                                <div className="flex gap-3 mt-6">
+                                    <Button type="button" variant="outline" className="flex-1" onClick={() => setDeployDialog(false)}>
+                                        Cancel
+                                    </Button>
+                                    <Button type="submit" className="flex-1 bg-gradient-to-r from-purple-600 to-indigo-600" disabled={deployMutation.isPending}>
+                                        {deployMutation.isPending ? 'Deploying Contract...' : 'Deploy Smart Contract'}
+                                    </Button>
                                 </div>
-                                <div>
-                                    <Label>Token Name</Label>
-                                    <Input name="token_name" placeholder="RunMiles Token" required />
-                                </div>
-                                <div>
-                                    <Label>Token Symbol</Label>
-                                    <Input name="token_symbol" placeholder="RUN" required />
-                                </div>
-                                <div>
-                                    <Label>Initial Supply</Label>
-                                    <Input name="initial_supply" type="number" defaultValue="1000000" required />
-                                </div>
-                                <Button type="submit" className="w-full" disabled={deployMutation.isPending}>
-                                    {deployMutation.isPending ? 'Deploying...' : 'Deploy Contract'}
-                                </Button>
                             </form>
                         </DialogContent>
                     </Dialog>
