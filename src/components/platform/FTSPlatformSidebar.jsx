@@ -419,6 +419,17 @@ export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, i
                                 {isOpen && (
                                     <div className="space-y-1 mt-1">
                                         {section.items.filter(item => !item.superAdminOnly || isSuperAdmin).map((item, idx) => {
+                                            // Render nested subsection header
+                                            if (item.isNestedSubsectionHeader) {
+                                                return (
+                                                    <div key={item.id} className={cn("px-4 py-1.5", idx > 0 && "mt-2")}>
+                                                        <h5 className="text-[9px] font-semibold uppercase tracking-wider text-slate-400">
+                                                            {item.label}
+                                                        </h5>
+                                                    </div>
+                                                );
+                                            }
+
                                             // Render subsection header
                                             if (item.isSubsectionHeader) {
                                                 return (
