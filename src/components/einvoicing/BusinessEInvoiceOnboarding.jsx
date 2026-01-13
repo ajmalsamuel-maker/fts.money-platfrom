@@ -222,17 +222,33 @@ export default function BusinessEInvoiceOnboarding({ onSuccess }) {
                             </Select>
                         </div>
                         <div>
-                            <Label>Tax ID</Label>
-                            <Input
-                                value={orgData.tax_id}
-                                onChange={(e) => setOrgData({...orgData, tax_id: e.target.value})}
-                                placeholder="VAT/Tax ID"
-                            />
-                        </div>
-                        <div className="flex gap-3 pt-4">
-                            <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
-                            <Button onClick={handleNextFromOrgInfo} className="bg-blue-600">Next</Button>
-                        </div>
+                                            <Label>Tax ID</Label>
+                                            <Input
+                                                value={orgData.tax_id}
+                                                onChange={(e) => setOrgData({...orgData, tax_id: e.target.value})}
+                                                placeholder="VAT/Tax ID"
+                                            />
+                                        </div>
+                                        <div>
+                                            <Label>Tax Submission Standards *</Label>
+                                            <Select value={orgData.tax_submission_standards} onValueChange={(value) => setOrgData({...orgData, tax_submission_standards: value})}>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select standard" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="PEPPOL">PEPPOL</SelectItem>
+                                                    <SelectItem value="UBL">UBL 2.1</SelectItem>
+                                                    <SelectItem value="SAF-T">SAF-T</SelectItem>
+                                                    <SelectItem value="XRechnung">XRechnung</SelectItem>
+                                                    <SelectItem value="FatturaPA">FatturaPA</SelectItem>
+                                                    <SelectItem value="other">Other</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                        <div className="flex gap-3 pt-4">
+                                            <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
+                                            <Button onClick={handleNextFromOrgInfo} className="bg-blue-600">Next</Button>
+                                        </div>
                     </div>
                 )}
 
