@@ -10,7 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Edit2, Trash2, Building2, Mail, Globe, Copy, Check, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
-import OnboardingWizard from '@/components/einvoicing/BusinessEInvoiceOnboarding.js';
+import OnboardingWizard from '@/components/einvoicing/BusinessEInvoiceOnboarding';
 
 export default function BusinessEInvoiceManagement() {
     const [searchTerm, setSearchTerm] = useState('');
