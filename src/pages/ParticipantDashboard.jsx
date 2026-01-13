@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Coins, Gift, Target, TrendingUp, LogOut, Menu, X, HelpCircle, Flame } from 'lucide-react';
 import { cn } from "@/lib/utils";
+import ParticipantSidebar from '@/components/participant/ParticipantSidebar';
 
 export default function ParticipantDashboard() {
     const [session] = useState(() => JSON.parse(localStorage.getItem('participant_session') || '{}'));
