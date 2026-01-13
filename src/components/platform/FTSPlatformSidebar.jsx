@@ -178,6 +178,7 @@ const menuSections = [
                     { label: 'Tax Rate Updates', description: 'Auto-sync global tax rates', path: 'TaxRateUpdateManager', icon: RefreshCw, priority: true },
                     { labelKey: 'eInvoicing', descKey: 'eInvoicingDesc', path: 'EInvoicingDashboard', icon: FileText, priority: true },
                     { label: 'E-Invoice Generator', description: 'Create & submit e-invoices', path: 'EInvoiceGenerator', icon: FileText, priority: true },
+                    { label: 'Business E-Invoicing', description: 'Manage white-label org instances', path: 'BusinessEInvoicePortal', icon: FileText, priority: true },
                     { label: 'Tax Reports & Analytics', description: 'Advanced tax reporting', path: 'TaxAdvancedReports', icon: BarChart3 },
                     { label: 'Tax Calculation Tester', description: 'Test complex tax scenarios', path: 'TaxCalculationTester', icon: Activity }
                 ]
