@@ -91,30 +91,30 @@ export default function ParticipantSocialTasks() {
                 </div>
 
                 <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
-                    <a href="/ParticipantDashboard" className={cn("flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 whitespace-nowrap", !sidebarOpen && "justify-center")}>
+                    <Link to="/ParticipantDashboard" className={cn("flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 whitespace-nowrap", !sidebarOpen && "justify-center")}>
                         <span className="font-medium text-sm">📊</span>
                         {sidebarOpen && <span>Dashboard</span>}
-                    </a>
-                    <a href="/ParticipantActivities" className={cn("flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 whitespace-nowrap", !sidebarOpen && "justify-center")}>
+                    </Link>
+                    <Link to="/ParticipantActivities" className={cn("flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 whitespace-nowrap", !sidebarOpen && "justify-center")}>
                         <span className="font-medium text-sm">📈</span>
                         {sidebarOpen && <span>Activities</span>}
-                    </a>
-                    <a href="/ParticipantRewards" className={cn("flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 whitespace-nowrap", !sidebarOpen && "justify-center")}>
+                    </Link>
+                    <Link to="/ParticipantRewards" className={cn("flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 whitespace-nowrap", !sidebarOpen && "justify-center")}>
                         <span className="font-medium text-sm">🎁</span>
                         {sidebarOpen && <span>Rewards</span>}
-                    </a>
-                    <a href="/ParticipantChallenges" className={cn("flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 whitespace-nowrap", !sidebarOpen && "justify-center")}>
+                    </Link>
+                    <Link to="/ParticipantChallenges" className={cn("flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 whitespace-nowrap", !sidebarOpen && "justify-center")}>
                         <span className="font-medium text-sm">🎯</span>
                         {sidebarOpen && <span>Challenges</span>}
-                    </a>
-                    <a href="/ParticipantSocialTasks" className={cn("flex items-center gap-3 px-3 py-2 rounded-lg bg-purple-50 text-purple-700 font-medium whitespace-nowrap", !sidebarOpen && "justify-center")}>
+                    </Link>
+                    <Link to="/ParticipantSocialTasks" className={cn("flex items-center gap-3 px-3 py-2 rounded-lg bg-purple-50 text-purple-700 font-medium whitespace-nowrap", !sidebarOpen && "justify-center")}>
                         <Flame className="h-4 w-4" />
                         {sidebarOpen && <span>Social</span>}
-                    </a>
-                    <a href="/ParticipantHelp" className={cn("flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 whitespace-nowrap", !sidebarOpen && "justify-center")}>
+                    </Link>
+                    <Link to="/ParticipantHelp" className={cn("flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 whitespace-nowrap", !sidebarOpen && "justify-center")}>
                         <span className="font-medium text-sm">❓</span>
                         {sidebarOpen && <span>Help</span>}
-                    </a>
+                    </Link>
                 </nav>
 
                 <div className="p-4 border-t flex-shrink-0">
