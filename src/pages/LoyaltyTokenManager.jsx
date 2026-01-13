@@ -10,8 +10,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { Trophy, Users, Activity, Settings, LogOut, Menu, X, Target, Coins, Rocket, ExternalLink, Copy, TrendingUp, Shield, Lock, Zap, Clock, FileText, AlertCircle } from 'lucide-react';
-import { cn } from "@/lib/utils";
+import CustomerPortalSidebar from '@/components/loyalty/CustomerPortalSidebar';
+import { Menu, Coins, Rocket, ExternalLink, Copy, TrendingUp, Shield, Lock, Zap, Activity, FileText, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function LoyaltyTokenManager() {
@@ -120,54 +120,17 @@ export default function LoyaltyTokenManager() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/20 to-blue-50/30">
-            <aside className={cn("fixed md:static inset-y-0 left-0 z-50 w-64 bg-white border-r flex flex-col h-screen transform transition-transform",
-                mobileMenuOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0")}>
-                <div className="h-16 flex items-center justify-between border-b px-4">
-                    <div className="flex items-center gap-2">
-                        <Trophy className="h-6 w-6 text-purple-600" />
-                        <span className="font-bold">Loyalty Portal</span>
-                    </div>
-                    <button onClick={() => setMobileMenuOpen(false)} className="md:hidden">
-                        <X className="h-5 w-5" />
-                    </button>
-                </div>
-
-                <div className="p-4 border-b bg-purple-50">
-                    <p className="text-xs text-slate-600">Organization</p>
-                    <p className="font-semibold">{session.organization_name}</p>
-                    <Badge className="mt-2 capitalize">{session.subscription_tier}</Badge>
-                </div>
-
-                <nav className="flex-1 p-4 space-y-2">
-                    <a href="/LoyaltyCustomerPortal" className="block px-3 py-2 rounded-lg hover:bg-slate-50">
-                        <Activity className="h-4 w-4 inline mr-2" />Overview
-                    </a>
-                    <a href="/LoyaltyLeaderboards" className="block px-3 py-2 rounded-lg hover:bg-slate-50">
-                        <Trophy className="h-4 w-4 inline mr-2" />Leaderboards
-                    </a>
-                    <a href="/LoyaltyChallenges" className="block px-3 py-2 rounded-lg hover:bg-slate-50">
-                        <Target className="h-4 w-4 inline mr-2" />Challenges
-                    </a>
-                    <a href="/LoyaltyTokenManager" className="block px-3 py-2 rounded-lg bg-purple-50 text-purple-700 font-medium">
-                        <Coins className="h-4 w-4 inline mr-2" />Blockchain Tokens
-                    </a>
-                    <a href="#settings" className="block px-3 py-2 rounded-lg hover:bg-slate-50">
-                        <Settings className="h-4 w-4 inline mr-2" />Settings
-                    </a>
-                </nav>
-
-                <div className="p-4 border-t">
-                    <Button onClick={() => { localStorage.removeItem('loyalty_customer_session'); window.location.href = '/LoyaltyCustomerLogin'; }} 
-                        variant="outline" className="w-full text-red-600">
-                        <LogOut className="h-4 w-4 mr-2" />Logout
-                    </Button>
-                </div>
-            </aside>
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/20 to-blue-50/30 flex">
+            <CustomerPortalSidebar 
+                session={session}
+                currentPage="/LoyaltyTokenManager"
+                mobileMenuOpen={mobileMenuOpen}
+                setMobileMenuOpen={setMobileMenuOpen}
+            />
 
             {mobileMenuOpen && <div className="fixed inset-0 bg-black/50 z-40 md:hidden" onClick={() => setMobileMenuOpen(false)} />}
 
-            <div className="md:ml-64">
+            <div className="flex-1">
                 <header className="h-16 bg-white/80 backdrop-blur-xl border-b flex items-center justify-between px-4 md:px-6 sticky top-0 z-10">
                     <div className="flex items-center gap-3">
                         <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setMobileMenuOpen(true)}>
