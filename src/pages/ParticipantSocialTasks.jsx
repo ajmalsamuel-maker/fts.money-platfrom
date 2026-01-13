@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Menu, X, LogOut, ArrowLeft, Flame, ChevronLeft, ChevronRight } from 'lucide-react';
+import { LogOut, Flame, ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import SocialTaskCard from '@/components/social/SocialTaskCard';
 import SocialLeaderboard from '@/components/social/SocialLeaderboard';
