@@ -13,6 +13,14 @@ import RedemptionManagementHub from '../components/partner/RedemptionManagementH
 import OfferManagement from '../components/partner/OfferManagement';
 import MultiLocationManager from '../components/partner/MultiLocationManager';
 import FinancialSettlement from '../components/partner/FinancialSettlement';
+import CustomerInsights from '../components/partner/CustomerInsights';
+import MarketingTools from '../components/partner/MarketingTools';
+import POSIntegration from '../components/partner/POSIntegration';
+import HongKongFeatures from '../components/partner/HongKongFeatures';
+import SupportTraining from '../components/partner/SupportTraining';
+import SecurityVerification from '../components/partner/SecurityVerification';
+import GamificationEngagement from '../components/partner/GamificationEngagement';
+import SmartFeatures from '../components/partner/SmartFeatures';
 
 export default function PartnerDashboard() {
     const [session] = useState(() => JSON.parse(localStorage.getItem('partner_session') || '{}'));
@@ -113,31 +121,21 @@ export default function PartnerDashboard() {
 
                 <div className="p-4 md:p-6 space-y-6">
                     <Tabs defaultValue="overview" className="w-full">
-                        <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6">
-                            <TabsTrigger value="overview" className="text-xs md:text-sm">
-                                <ShoppingBag className="h-4 w-4 mr-1" />
-                                Overview
-                            </TabsTrigger>
-                            <TabsTrigger value="analytics" className="text-xs md:text-sm">
-                                <BarChart3 className="h-4 w-4 mr-1" />
-                                Analytics
-                            </TabsTrigger>
-                            <TabsTrigger value="redemptions" className="text-xs md:text-sm">
-                                <QrCode className="h-4 w-4 mr-1" />
-                                Redemptions
-                            </TabsTrigger>
-                            <TabsTrigger value="offers" className="text-xs md:text-sm">
-                                <Gift className="h-4 w-4 mr-1" />
-                                Offers
-                            </TabsTrigger>
-                            <TabsTrigger value="locations" className="text-xs md:text-sm">
-                                <MapPin className="h-4 w-4 mr-1" />
-                                Locations
-                            </TabsTrigger>
-                            <TabsTrigger value="financials" className="text-xs md:text-sm">
-                                <DollarSign className="h-4 w-4 mr-1" />
-                                Financials
-                            </TabsTrigger>
+                        <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6 overflow-x-auto">
+                            <TabsTrigger value="overview" className="text-xs">Overview</TabsTrigger>
+                            <TabsTrigger value="analytics" className="text-xs">Analytics</TabsTrigger>
+                            <TabsTrigger value="redemptions" className="text-xs">Redemptions</TabsTrigger>
+                            <TabsTrigger value="offers" className="text-xs">Offers</TabsTrigger>
+                            <TabsTrigger value="locations" className="text-xs">Locations</TabsTrigger>
+                            <TabsTrigger value="financials" className="text-xs">Financials</TabsTrigger>
+                            <TabsTrigger value="customers" className="text-xs">Customers</TabsTrigger>
+                            <TabsTrigger value="marketing" className="text-xs">Marketing</TabsTrigger>
+                            <TabsTrigger value="pos" className="text-xs">API/POS</TabsTrigger>
+                            <TabsTrigger value="localization" className="text-xs">HK Settings</TabsTrigger>
+                            <TabsTrigger value="support" className="text-xs">Support</TabsTrigger>
+                            <TabsTrigger value="security" className="text-xs">Security</TabsTrigger>
+                            <TabsTrigger value="gamification" className="text-xs">Leaderboard</TabsTrigger>
+                            <TabsTrigger value="ai" className="text-xs">AI Insights</TabsTrigger>
                         </TabsList>
 
                         <TabsContent value="overview" className="space-y-6">
@@ -220,6 +218,38 @@ export default function PartnerDashboard() {
 
                         <TabsContent value="financials">
                             <FinancialSettlement partnerId={session.id} programId={session.program_id} partnerData={session} />
+                        </TabsContent>
+
+                        <TabsContent value="customers">
+                            <CustomerInsights partnerId={session.id} programId={session.program_id} />
+                        </TabsContent>
+
+                        <TabsContent value="marketing">
+                            <MarketingTools partnerId={session.id} partnerData={session} />
+                        </TabsContent>
+
+                        <TabsContent value="pos">
+                            <POSIntegration partnerId={session.id} />
+                        </TabsContent>
+
+                        <TabsContent value="localization">
+                            <HongKongFeatures partnerId={session.id} />
+                        </TabsContent>
+
+                        <TabsContent value="support">
+                            <SupportTraining partnerId={session.id} />
+                        </TabsContent>
+
+                        <TabsContent value="security">
+                            <SecurityVerification partnerId={session.id} />
+                        </TabsContent>
+
+                        <TabsContent value="gamification">
+                            <GamificationEngagement partnerId={session.id} partnerData={session} />
+                        </TabsContent>
+
+                        <TabsContent value="ai">
+                            <SmartFeatures partnerId={session.id} programId={session.program_id} />
                         </TabsContent>
                     </Tabs>
                 </div>
