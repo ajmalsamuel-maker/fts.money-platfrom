@@ -4,7 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Coins, Gift, Target, TrendingUp, Menu } from 'lucide-react';
+import { Trophy, Coins, Gift, Target, TrendingUp, LogOut, Menu, X, HelpCircle, Flame } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import ParticipantSidebar from '@/components/participant/ParticipantSidebar';
 
@@ -41,7 +41,7 @@ export default function ParticipantDashboard() {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-slate-50 flex">
-            <ParticipantSidebar />
+            <ParticipantSidebar mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} session={session} />
 
             {mobileMenuOpen && <div className="fixed inset-0 bg-black/50 z-40 md:hidden" onClick={() => setMobileMenuOpen(false)} />}
 
