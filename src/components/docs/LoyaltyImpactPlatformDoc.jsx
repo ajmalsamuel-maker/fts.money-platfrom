@@ -489,22 +489,103 @@ Annual Revenue: $150,000 per 1,000 members
 
 ---
 
+## Platform Portal Ecosystem
+
+The Loyalty & IMPACT Platform integrates seamlessly with FTS.Money's complete portal infrastructure:
+
+### Merchant Portal
+**Purpose**: Complete loyalty program management and operations
+- Program creation and configuration
+- Member management and segmentation
+- Challenge creation and management
+- Real-time analytics and reporting
+- Financial management and payouts
+- Compliance and audit logs
+- Team member access control
+
+### Customer Portal
+**Purpose**: Member engagement and self-service
+- Account management and profile
+- Point balance and tier tracking
+- Challenge discovery and participation
+- Leaderboard browsing
+- Redemption catalog and requests
+- Impact tracking and carbon offsets
+- Social features and community
+
+### Admin Portal
+**Purpose**: Platform-wide administration
+- Multi-merchant management
+- Service configuration
+- User and role management
+- Compliance monitoring
+- System health and performance
+- Financial reconciliation
+- Advanced reporting and analytics
+
+### API Portal
+**Purpose**: Developer integration and monitoring
+- API key management
+- Integration documentation
+- Webhook configuration
+- Rate limit monitoring
+- Real-time usage analytics
+- Integration testing tools
+- Support and technical resources
+
+---
+
+## Advanced Features
+
+### Multi-Currency Support
+- Support for 150+ currencies
+- Real-time FX conversion
+- Regional pricing strategies
+- Tax calculation per jurisdiction
+
+### Advanced Analytics
+- Cohort analysis and segmentation
+- Predictive churn modeling
+- Lifetime value projections
+- Campaign ROI tracking
+- A/B testing framework
+
+### Blockchain Integration
+- ERC-20 token deployment
+- Smart contract automation
+- Cross-chain tokenization
+- DeFi integration options
+- Walletconnect support
+
+### Integrations
+- Payment processors (Stripe, PayPal)
+- Email platforms (SendGrid, Mailchimp)
+- SMS providers (Twilio, AWS SNS)
+- CRM systems (Salesforce, HubSpot)
+- Analytics tools (Google Analytics, Mixpanel)
+- E-commerce platforms (Shopify, WooCommerce)
+
+---
+
 ## Roadmap
 
 **Q1 2026**:
 - ✅ Core platform live
 - 🔨 Mobile app (iOS/Android)
 - 🔨 Enhanced analytics
+- 🔨 Multi-currency support
 
 **Q2 2026**:
 - 📋 NFT marketplace for badges
 - 📋 Cross-brand loyalty partnerships
 - 📋 Advanced ML predictions
+- 📋 Voice-activated redemption
 
 **Q3 2026**:
-- 📋 Voice-activated redemption
 - 📋 AR badge experience
 - 📋 Subscription billing integration
+- 📋 Advanced workflow automation
+- 📋 White-label mobile apps
 
 ---
 
