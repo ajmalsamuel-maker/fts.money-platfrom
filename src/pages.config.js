@@ -29,6 +29,8 @@ import BINTable from './pages/BINTable';
 import Balances from './pages/Balances';
 import BankMIDs from './pages/BankMIDs';
 import BlockchainConnectors from './pages/BlockchainConnectors';
+import BlockchainNetworkDashboard from './pages/BlockchainNetworkDashboard';
+import BlockchainProcessFlow from './pages/BlockchainProcessFlow';
 import BusinessEInvoiceLogin from './pages/BusinessEInvoiceLogin';
 import BusinessEInvoicePortal from './pages/BusinessEInvoicePortal';
 import BusinessEInvoiceRegister from './pages/BusinessEInvoiceRegister';
@@ -161,6 +163,7 @@ import LEIPhase1Testing from './pages/LEIPhase1Testing';
 import LaunchServices from './pages/LaunchServices';
 import LoyaltyAchievements from './pages/LoyaltyAchievements';
 import LoyaltyChallenges from './pages/LoyaltyChallenges';
+import LoyaltyCustomerBlockchain from './pages/LoyaltyCustomerBlockchain';
 import LoyaltyCustomerLogin from './pages/LoyaltyCustomerLogin';
 import LoyaltyCustomerOnboarding from './pages/LoyaltyCustomerOnboarding';
 import LoyaltyCustomerPortal from './pages/LoyaltyCustomerPortal';
@@ -212,8 +215,8 @@ import MerchantOnboarding from './pages/MerchantOnboarding';
 import MerchantOnboardingWorkflows from './pages/MerchantOnboardingWorkflows';
 import MerchantOperators from './pages/MerchantOperators';
 import MerchantPaymentLinks from './pages/MerchantPaymentLinks';
-import MerchantPayouts from './pages/MerchantPayouts';
 import MerchantPayoutPricing from './pages/MerchantPayoutPricing';
+import MerchantPayouts from './pages/MerchantPayouts';
 import MerchantPortal from './pages/MerchantPortal';
 import MerchantPortalBuilder from './pages/MerchantPortalBuilder';
 import MerchantPricing from './pages/MerchantPricing';
@@ -294,6 +297,7 @@ import Payouts from './pages/Payouts';
 import PlatformAdminLogin from './pages/PlatformAdminLogin';
 import PlatformAdminRegister from './pages/PlatformAdminRegister';
 import PlatformAuditLogs from './pages/PlatformAuditLogs';
+import PlatformBlockchainProvisioning from './pages/PlatformBlockchainProvisioning';
 import PlatformFIXManagement from './pages/PlatformFIXManagement';
 import PlatformLanguageManagement from './pages/PlatformLanguageManagement';
 import PlatformPricingConfiguration from './pages/PlatformPricingConfiguration';
@@ -369,10 +373,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import PlatformBlockchainProvisioning from './pages/PlatformBlockchainProvisioning';
-import LoyaltyCustomerBlockchain from './pages/LoyaltyCustomerBlockchain';
-import BlockchainProcessFlow from './pages/BlockchainProcessFlow';
-import BlockchainNetworkDashboard from './pages/BlockchainNetworkDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -408,6 +408,8 @@ export const PAGES = {
     "Balances": Balances,
     "BankMIDs": BankMIDs,
     "BlockchainConnectors": BlockchainConnectors,
+    "BlockchainNetworkDashboard": BlockchainNetworkDashboard,
+    "BlockchainProcessFlow": BlockchainProcessFlow,
     "BusinessEInvoiceLogin": BusinessEInvoiceLogin,
     "BusinessEInvoicePortal": BusinessEInvoicePortal,
     "BusinessEInvoiceRegister": BusinessEInvoiceRegister,
@@ -540,6 +542,7 @@ export const PAGES = {
     "LaunchServices": LaunchServices,
     "LoyaltyAchievements": LoyaltyAchievements,
     "LoyaltyChallenges": LoyaltyChallenges,
+    "LoyaltyCustomerBlockchain": LoyaltyCustomerBlockchain,
     "LoyaltyCustomerLogin": LoyaltyCustomerLogin,
     "LoyaltyCustomerOnboarding": LoyaltyCustomerOnboarding,
     "LoyaltyCustomerPortal": LoyaltyCustomerPortal,
@@ -591,8 +594,8 @@ export const PAGES = {
     "MerchantOnboardingWorkflows": MerchantOnboardingWorkflows,
     "MerchantOperators": MerchantOperators,
     "MerchantPaymentLinks": MerchantPaymentLinks,
-    "MerchantPayouts": MerchantPayouts,
     "MerchantPayoutPricing": MerchantPayoutPricing,
+    "MerchantPayouts": MerchantPayouts,
     "MerchantPortal": MerchantPortal,
     "MerchantPortalBuilder": MerchantPortalBuilder,
     "MerchantPricing": MerchantPricing,
@@ -673,6 +676,7 @@ export const PAGES = {
     "PlatformAdminLogin": PlatformAdminLogin,
     "PlatformAdminRegister": PlatformAdminRegister,
     "PlatformAuditLogs": PlatformAuditLogs,
+    "PlatformBlockchainProvisioning": PlatformBlockchainProvisioning,
     "PlatformFIXManagement": PlatformFIXManagement,
     "PlatformLanguageManagement": PlatformLanguageManagement,
     "PlatformPricingConfiguration": PlatformPricingConfiguration,
@@ -748,10 +752,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "PlatformBlockchainProvisioning": PlatformBlockchainProvisioning,
-    "LoyaltyCustomerBlockchain": LoyaltyCustomerBlockchain,
-    "BlockchainProcessFlow": BlockchainProcessFlow,
-    "BlockchainNetworkDashboard": BlockchainNetworkDashboard,
 }
 
 export const pagesConfig = {
