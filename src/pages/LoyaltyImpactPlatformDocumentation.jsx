@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Download, Copy, ChevronDown, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
-import Mermaid from '@/components/utils/mermaidRenderer';
+import MermaidRenderer from '@/components/utils/MermaidRenderer';
 
 export default function LoyaltyImpactPlatformDocumentation() {
     const [expandedSections, setExpandedSections] = useState({});
@@ -141,7 +141,7 @@ export default function LoyaltyImpactPlatformDocumentation() {
                                 <div>
                                     <h3 className="font-semibold mb-3">High-Level Architecture Diagram</h3>
                                     <div className="bg-slate-50 p-4 rounded-lg border border-slate-200 overflow-x-auto">
-                                        <Mermaid chart={`
+                                        <MermaidRenderer chart={`
 graph TB
     subgraph Client["Client Layer"]
         WEB["Web Portal"]
@@ -405,7 +405,7 @@ graph TB
                                 <div>
                                     <h3 className="font-semibold mb-3">5.1 Member Enrollment Flow</h3>
                                     <div className="bg-slate-50 p-4 rounded-lg border border-slate-200 overflow-x-auto">
-                                        <Mermaid chart={`
+                                        <MermaidRenderer chart={`
 sequenceDiagram
     participant Member as Member/Customer
     participant Portal as Web Portal
@@ -432,7 +432,7 @@ sequenceDiagram
                                 <div>
                                     <h3 className="font-semibold mb-3">5.2 Point Earning Flow</h3>
                                     <div className="bg-slate-50 p-4 rounded-lg border border-slate-200 overflow-x-auto">
-                                        <Mermaid chart={`
+                                        <MermaidRenderer chart={`
 sequenceDiagram
     participant Customer as Customer
     participant Merchant as Merchant System
@@ -461,7 +461,7 @@ sequenceDiagram
                                 <div>
                                     <h3 className="font-semibold mb-3">5.3 Redemption Flow</h3>
                                     <div className="bg-slate-50 p-4 rounded-lg border border-slate-200 overflow-x-auto">
-                                        <Mermaid chart={`
+                                        <MermaidRenderer chart={`
 sequenceDiagram
     participant Member as Member Portal
     participant API as Redemption API
@@ -497,7 +497,7 @@ sequenceDiagram
                                 <div>
                                     <h3 className="font-semibold mb-3">5.4 Tier Progression Flow</h3>
                                     <div className="bg-slate-50 p-4 rounded-lg border border-slate-200 overflow-x-auto">
-                                        <Mermaid chart={`
+                                        <MermaidRenderer chart={`
 graph TD
     A["Member Earns Points"] --> B{"Lifetime Points >= Tier Threshold?"}
     B -->|No| C["Stay in Current Tier"]
@@ -521,7 +521,7 @@ graph TD
                                 <div>
                                     <h3 className="font-semibold mb-3">5.5 Challenge Completion Flow</h3>
                                     <div className="bg-slate-50 p-4 rounded-lg border border-slate-200 overflow-x-auto">
-                                        <Mermaid chart={`
+                                        <MermaidRenderer chart={`
 sequenceDiagram
     participant Member as Member
     participant App as Mobile App
