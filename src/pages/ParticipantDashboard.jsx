@@ -74,6 +74,15 @@ export default function ParticipantDashboard() {
                     <a href="/ParticipantHelp" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50">
                         <HelpCircle className="h-4 w-4" />Help & FAQ
                     </a>
+                    <a href="/CompanyAccountSetup" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50">
+                        <Trophy className="h-4 w-4" />Company Account
+                    </a>
+                    <a href="/CompanyDashboard" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50">
+                        <TrendingUp className="h-4 w-4" />Company Dashboard
+                    </a>
+                    <a href="/CompanyLeaderboard" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50">
+                        <Coins className="h-4 w-4" />Leaderboard
+                    </a>
                 </nav>
 
                 <div className="p-4 border-t">
