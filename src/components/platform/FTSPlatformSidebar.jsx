@@ -452,7 +452,8 @@ export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, i
                                                     href={createPageUrl(item.path)}
                                                     onClick={() => setMobileMenuOpen && setMobileMenuOpen(false)}
                                                     className={cn(
-                                                        "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group",
+                                                        "flex items-center gap-3 py-2.5 rounded-lg transition-all group",
+                                                        item.isNestedItem ? "px-6" : "px-3",
                                                         isActive
                                                             ? "bg-gradient-to-r from-blue-50 to-cyan-50 text-blue-700"
                                                             : "text-slate-700 hover:bg-slate-50"
