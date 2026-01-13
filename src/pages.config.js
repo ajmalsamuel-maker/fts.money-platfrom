@@ -298,7 +298,6 @@ import ParticipantHelp from './pages/ParticipantHelp';
 import ParticipantLogin from './pages/ParticipantLogin';
 import ParticipantRegister from './pages/ParticipantRegister';
 import ParticipantRewards from './pages/ParticipantRewards';
-import ParticipantSocialTasks from './pages/ParticipantSocialTasks';
 import PartnerDashboard from './pages/PartnerDashboard';
 import PartnerLogin from './pages/PartnerLogin';
 import PaymentGateways from './pages/PaymentGateways';
@@ -388,6 +387,7 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
+import ParticipantSocialTasks from './pages/ParticipantSocialTasks';
 import __Layout from './Layout.jsx';
 
 
@@ -692,7 +692,6 @@ export const PAGES = {
     "ParticipantLogin": ParticipantLogin,
     "ParticipantRegister": ParticipantRegister,
     "ParticipantRewards": ParticipantRewards,
-    "ParticipantSocialTasks": ParticipantSocialTasks,
     "PartnerDashboard": PartnerDashboard,
     "PartnerLogin": PartnerLogin,
     "PaymentGateways": PaymentGateways,
@@ -782,6 +781,7 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
+    "ParticipantSocialTasks": ParticipantSocialTasks,
 }
 
 export const pagesConfig = {
