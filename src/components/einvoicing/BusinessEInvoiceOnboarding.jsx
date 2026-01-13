@@ -11,6 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Plus, Check, AlertCircle, Lock } from 'lucide-react';
 import { toast } from 'sonner';
+import { COUNTRIES } from '@/components/utils/countries';
 
 const STEP_1_ORG_INFO = 'org_info';
 const STEP_2_LEI = 'lei';
