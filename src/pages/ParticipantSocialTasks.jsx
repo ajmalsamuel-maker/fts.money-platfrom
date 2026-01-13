@@ -192,10 +192,12 @@ export default function ParticipantSocialTasks() {
                 <div className="p-4 md:p-6 max-w-6xl mx-auto space-y-6">
                     {/* Active Tasks */}
                     <div>
-                        <h2 className="text-xl font-bold mb-4 text-slate-900">Available Tasks</h2>
+                        <h2 className="text-xl font-bold mb-4 text-slate-900">
+                            {filterParam === 'all' ? 'Available Tasks' : `${filterParam.replace('_', ' ').toUpperCase()} Tasks`}
+                        </h2>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {socialTasks.length > 0 ? (
-                                socialTasks.map(task => (
+                            {filteredTasks.length > 0 ? (
+                                filteredTasks.map(task => (
                                     <SocialTaskCard
                                         key={task.id}
                                         task={task}
