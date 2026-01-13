@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,8 +7,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ShoppingBag } from 'lucide-react';
 import { toast } from 'sonner';
+import { createPageUrl } from '@/utils';
 
 export default function PartnerLogin() {
+    const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
@@ -24,7 +27,7 @@ export default function PartnerLogin() {
             if (partners.length > 0 && password) {
                 localStorage.setItem('partner_session', JSON.stringify(partners[0]));
                 toast.success('Login successful!');
-                window.location.href = '/PartnerDashboard';
+                navigate(createPageUrl('PartnerDashboard'));
             } else {
                 toast.error('Invalid email or password');
             }
@@ -57,7 +60,7 @@ export default function PartnerLogin() {
                         <Button type="submit" className="w-full bg-gradient-to-r from-green-600 to-blue-600" disabled={loading}>
                             {loading ? 'Signing in...' : 'Sign In'}
                         </Button>
-                        <Button type="button" variant="link" className="w-full" onClick={() => window.location.href = '/PartnerRegister'}>
+                        <Button type="button" variant="link" className="w-full" onClick={() => navigate(createPageUrl('PartnerRegister'))}>
                             Become a Partner
                         </Button>
                     </form>

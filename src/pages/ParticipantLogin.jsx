@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,8 +7,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Trophy } from 'lucide-react';
 import { toast } from 'sonner';
+import { createPageUrl } from '@/utils';
 
 export default function ParticipantLogin() {
+    const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
@@ -24,7 +27,7 @@ export default function ParticipantLogin() {
             if (participants.length > 0) {
                 // In production, verify password hash
                 localStorage.setItem('participant_session', JSON.stringify(participants[0]));
-                window.location.href = '/ParticipantDashboard';
+                navigate(createPageUrl('ParticipantDashboard'));
             } else {
                 toast.error('Invalid credentials');
             }
@@ -57,7 +60,7 @@ export default function ParticipantLogin() {
                         <Button type="submit" className="w-full bg-gradient-to-r from-purple-600 to-blue-600" disabled={loading}>
                             {loading ? 'Signing in...' : 'Sign In'}
                         </Button>
-                        <Button type="button" variant="link" className="w-full" onClick={() => window.location.href = '/ParticipantRegister'}>
+                        <Button type="button" variant="link" className="w-full" onClick={() => navigate(createPageUrl('ParticipantRegister'))}>
                             Don't have an account? Register
                         </Button>
                     </form>
