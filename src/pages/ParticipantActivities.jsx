@@ -4,7 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Trophy, TrendingUp, Menu, X, LogOut, CheckCircle2 } from 'lucide-react';
+import { Trophy, TrendingUp, Menu, X, LogOut, CheckCircle2, HelpCircle, Gift, Target } from 'lucide-react';
 import { cn } from "@/lib/utils";
 
 export default function ParticipantActivities() {
@@ -51,7 +51,10 @@ export default function ParticipantActivities() {
                         <TrendingUp className="h-4 w-4" />Redeem Rewards
                     </a>
                     <a href="/ParticipantChallenges" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50">
-                        <TrendingUp className="h-4 w-4" />Challenges
+                        <Target className="h-4 w-4" />Challenges
+                    </a>
+                    <a href="/ParticipantHelp" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50">
+                        <HelpCircle className="h-4 w-4" />Help & FAQ
                     </a>
                 </nav>
 

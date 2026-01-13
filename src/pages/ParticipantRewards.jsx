@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Gift, Coins, ShoppingBag, Menu, X, Trophy, TrendingUp, Target, LogOut } from 'lucide-react';
+import { Gift, Coins, ShoppingBag, Menu, X, Trophy, TrendingUp, Target, LogOut, HelpCircle } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { toast } from 'sonner';
 
@@ -98,6 +98,9 @@ export default function ParticipantRewards() {
                     </a>
                     <a href="/ParticipantChallenges" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50">
                         <Target className="h-4 w-4" />Challenges
+                    </a>
+                    <a href="/ParticipantHelp" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50">
+                        <HelpCircle className="h-4 w-4" />Help & FAQ
                     </a>
                 </nav>
 

@@ -8,8 +8,6 @@ import { Label } from "@/components/ui/label";
 import { Trophy } from 'lucide-react';
 import { toast } from 'sonner';
 import { createPageUrl } from '@/utils';
-import ParticipantFAQ from '@/components/participant/ParticipantFAQ';
-
 export default function ParticipantLogin() {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
@@ -68,9 +66,6 @@ export default function ParticipantLogin() {
                 </CardContent>
             </Card>
             
-            <div className="w-full max-w-md">
-                <ParticipantFAQ />
-            </div>
         </div>
     );
 }
