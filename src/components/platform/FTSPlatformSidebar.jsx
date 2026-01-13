@@ -51,7 +51,18 @@ const flattenMenuSections = (sections) => {
             const allItems = [];
             section.subsections.forEach(subsection => {
                 allItems.push({ isSubsectionHeader: true, label: subsection.label, id: subsection.id });
-                allItems.push(...subsection.items);
+                if (subsection.items) {
+                    allItems.push(...subsection.items);
+                }
+                // Handle nested subsections
+                if (subsection.subsections) {
+                    subsection.subsections.forEach(nestedSub => {
+                        allItems.push({ isNestedSubsectionHeader: true, label: nestedSub.label, id: nestedSub.id, parentId: subsection.id });
+                        if (nestedSub.items) {
+                            allItems.push(...nestedSub.items);
+                        }
+                    });
+                }
             });
             return { ...section, items: allItems };
         }
