@@ -13,7 +13,15 @@ import { toast } from 'sonner';
 export default function ParticipantSocialTasks() {
     const [session] = useState(() => JSON.parse(localStorage.getItem('participant_session') || '{}'));
     const [sidebarOpen, setSidebarOpen] = useState(true);
+    const [expandedMenus, setExpandedMenus] = useState({ social: true });
     const queryClient = useQueryClient();
+
+    const toggleMenu = (menu) => {
+        setExpandedMenus(prev => ({
+            ...prev,
+            [menu]: !prev[menu]
+        }));
+    };
 
     if (!session.id) {
         window.location.href = '/ParticipantLogin';
