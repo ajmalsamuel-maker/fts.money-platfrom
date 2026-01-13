@@ -49,19 +49,24 @@ export default function BusinessEInvoiceOnboarding({ onSuccess }) {
             const now = new Date();
             const gracePeriodEnd = new Date(now.getTime() + data.grace_period_days * 24 * 60 * 60 * 1000);
             
-            return base44.entities.CompanyAccount.create({
-                ...orgData,
-                lei_status: data.lei ? 'verified' : 'grace_period',
+            return base44.entities.BusinessEInvoicingOrganization.create({
+                org_name: orgData.org_name,
+                business_email: orgData.business_email,
+                country: orgData.country,
+                tax_id: orgData.tax_id,
                 lei: data.lei || null,
+                lei_status: data.lei ? 'verified' : 'grace_period',
                 grace_period_end: data.lei ? null : gracePeriodEnd.toISOString(),
                 kyb_status: 'pending',
                 aml_status: 'pending',
+                admin_email: adminData.admin_email,
+                status: 'onboarding',
                 onboarding_step: STEP_4_ADMIN,
                 portal_url: `${window.location.origin}/BusinessEInvoicePortal?org=${orgData.org_name.toLowerCase().replace(/\s+/g, '-')}`
             });
         },
         onSuccess: (org) => {
-            setOrgData({ org_id: org.id });
+            setOrgData({ ...orgData, org_id: org.id });
             setStep(STEP_4_ADMIN);
         },
         onError: (err) => toast.error('Failed to create organization: ' + err.message)
