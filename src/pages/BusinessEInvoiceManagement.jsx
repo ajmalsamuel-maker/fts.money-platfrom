@@ -24,6 +24,7 @@ export default function BusinessEInvoiceManagement() {
         business_email: '',
         country: '',
         tax_id: '',
+        tax_submission_standards: '',
         status: 'active'
     });
 
