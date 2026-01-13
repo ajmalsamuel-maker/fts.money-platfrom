@@ -270,13 +270,7 @@ const menuSections = [
                     { labelKey: 'documentationHub', descKey: 'documentationHubDesc', path: 'FTSDocumentation', icon: BookOpen, priority: true }
                 ],
                 subsections: [
-                    {
-                        id: 'sustainability',
-                        label: 'Sustainability',
-                        items: [
-                            { label: 'Loyalty & IMPACT Platform', description: 'Complete platform documentation', path: 'LoyaltyImpactPlatformDocumentation', icon: Leaf, priority: true }
-                        ]
-                    }
+
                 ]
             }
         ]
