@@ -32,6 +32,7 @@ import BlockchainConnectors from './pages/BlockchainConnectors';
 import BlockchainNetworkDashboard from './pages/BlockchainNetworkDashboard';
 import BlockchainProcessFlow from './pages/BlockchainProcessFlow';
 import BusinessEInvoiceLogin from './pages/BusinessEInvoiceLogin';
+import BusinessEInvoiceManagement from './pages/BusinessEInvoiceManagement';
 import BusinessEInvoicePortal from './pages/BusinessEInvoicePortal';
 import BusinessEInvoiceRegister from './pages/BusinessEInvoiceRegister';
 import BusinessInvoiceCreate from './pages/BusinessInvoiceCreate';
@@ -388,7 +389,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import BusinessEInvoiceManagement from './pages/BusinessEInvoiceManagement';
 import __Layout from './Layout.jsx';
 
 
@@ -427,6 +427,7 @@ export const PAGES = {
     "BlockchainNetworkDashboard": BlockchainNetworkDashboard,
     "BlockchainProcessFlow": BlockchainProcessFlow,
     "BusinessEInvoiceLogin": BusinessEInvoiceLogin,
+    "BusinessEInvoiceManagement": BusinessEInvoiceManagement,
     "BusinessEInvoicePortal": BusinessEInvoicePortal,
     "BusinessEInvoiceRegister": BusinessEInvoiceRegister,
     "BusinessInvoiceCreate": BusinessInvoiceCreate,
@@ -783,7 +784,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "BusinessEInvoiceManagement": BusinessEInvoiceManagement,
 }
 
 export const pagesConfig = {

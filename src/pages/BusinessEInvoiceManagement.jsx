@@ -30,7 +30,7 @@ export default function BusinessEInvoiceManagement() {
     // Fetch organizations
     const { data: organizations = [], isLoading } = useQuery({
         queryKey: ['businessEInvoicingOrgs'],
-        queryFn: () => base44.entities.CompanyAccount.list('-created_date', 100),
+        queryFn: () => base44.entities.BusinessEInvoicingOrganization.list('-created_date', 100),
     });
 
     // Create organization
