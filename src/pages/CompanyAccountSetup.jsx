@@ -6,8 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Building2, ArrowRight } from 'lucide-react';
+import { Building2, ArrowRight, Trophy, TrendingUp, Gift, Target, HelpCircle, Coins, LogOut, Menu, X, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
+import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 
 export default function CompanyAccountSetup() {
     const [session] = useState(() => JSON.parse(localStorage.getItem('participant_session') || '{}'));
