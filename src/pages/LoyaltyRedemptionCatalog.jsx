@@ -5,8 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Trophy, Users, Activity, Settings, LogOut, Menu, X, Target, ShoppingBag, Clock, CheckCircle2, XCircle, Package, Sparkles } from 'lucide-react';
-import { cn } from "@/lib/utils";
+import CustomerPortalSidebar from '@/components/loyalty/CustomerPortalSidebar';
+import { Menu, ShoppingBag, Package, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function LoyaltyRedemptionCatalog() {
@@ -96,7 +96,10 @@ export default function LoyaltyRedemptionCatalog() {
     };
 
     const loadAISuggestions = async () => {
-        if (participants.length === 0 || programs.length === 0) return;
+        if (participants.length === 0 || programs.length === 0) {
+            toast.error('No participant data available');
+            return;
+        }
         
         setLoadingSuggestions(true);
         try {
@@ -104,10 +107,11 @@ export default function LoyaltyRedemptionCatalog() {
                 participant_id: participants[0].id,
                 program_id: programs[0].id
             });
-            setAiSuggestions(response.data.suggestions || []);
+            setAiSuggestions(response.data?.suggestions || []);
             toast.success('AI recommendations loaded!');
         } catch (error) {
-            toast.error('Failed to load suggestions');
+            toast.error('AI suggestion feature not configured yet');
+            console.error(error);
         } finally {
             setLoadingSuggestions(false);
         }
@@ -128,52 +132,12 @@ export default function LoyaltyRedemptionCatalog() {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/20 to-blue-50/30 flex">
-            <aside className={cn("fixed md:relative inset-y-0 left-0 z-50 w-64 bg-white border-r flex flex-col h-screen md:h-auto transform transition-transform",
-                mobileMenuOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0")}>
-                <div className="h-16 flex items-center justify-between border-b px-4">
-                    <div className="flex items-center gap-2">
-                        <Trophy className="h-6 w-6 text-purple-600" />
-                        <span className="font-bold">Loyalty Portal</span>
-                    </div>
-                    <button onClick={() => setMobileMenuOpen(false)} className="md:hidden">
-                        <X className="h-5 w-5" />
-                    </button>
-                </div>
-
-                <div className="p-4 border-b bg-purple-50">
-                    <p className="text-xs text-slate-600">Organization</p>
-                    <p className="font-semibold">{session.organization_name}</p>
-                    <Badge className="mt-2 capitalize">{session.subscription_tier}</Badge>
-                </div>
-
-                <nav className="flex-1 p-4 space-y-2">
-                    <a href="/LoyaltyCustomerPortal" className="block px-3 py-2 rounded-lg hover:bg-slate-50">
-                        <Activity className="h-4 w-4 inline mr-2" />Overview
-                    </a>
-                    <a href="/LoyaltyLeaderboards" className="block px-3 py-2 rounded-lg hover:bg-slate-50">
-                        <Trophy className="h-4 w-4 inline mr-2" />Leaderboards
-                    </a>
-                    <a href="/LoyaltyChallenges" className="block px-3 py-2 rounded-lg hover:bg-slate-50">
-                        <Target className="h-4 w-4 inline mr-2" />Challenges
-                    </a>
-                    <a href="/LoyaltyRedemptionCatalog" className="block px-3 py-2 rounded-lg bg-purple-50 text-purple-700 font-medium">
-                        <ShoppingBag className="h-4 w-4 inline mr-2" />Redemption Catalog
-                    </a>
-                    <a href="/LoyaltyTokenManager" className="block px-3 py-2 rounded-lg hover:bg-slate-50">
-                        <Activity className="h-4 w-4 inline mr-2" />Blockchain Tokens
-                    </a>
-                    <a href="#settings" className="block px-3 py-2 rounded-lg hover:bg-slate-50">
-                        <Settings className="h-4 w-4 inline mr-2" />Settings
-                    </a>
-                </nav>
-
-                <div className="p-4 border-t">
-                    <Button onClick={() => { localStorage.removeItem('loyalty_customer_session'); window.location.href = '/LoyaltyCustomerLogin'; }} 
-                        variant="outline" className="w-full text-red-600">
-                        <LogOut className="h-4 w-4 mr-2" />Logout
-                    </Button>
-                </div>
-            </aside>
+            <CustomerPortalSidebar 
+                session={session}
+                currentPage="/LoyaltyRedemptionCatalog"
+                mobileMenuOpen={mobileMenuOpen}
+                setMobileMenuOpen={setMobileMenuOpen}
+            />
 
             {mobileMenuOpen && <div className="fixed inset-0 bg-black/50 z-40 md:hidden" onClick={() => setMobileMenuOpen(false)} />}
 
