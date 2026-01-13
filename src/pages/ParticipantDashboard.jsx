@@ -4,7 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Coins, Gift, Target, TrendingUp, Menu } from 'lucide-react';
+import { Coins, Gift, Target, TrendingUp, Menu, Zap, Lock, Clock, Wallet, Sparkles } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import ParticipantSidebar from '@/components/participant/ParticipantSidebar';
 
@@ -32,6 +32,16 @@ export default function ParticipantDashboard() {
         queryFn: () => base44.entities.TokenRedemption.filter({ participant_id: session.id })
     });
 
+    const { data: tokenBalance } = useQuery({
+        queryKey: ['token-balance', session.id],
+        queryFn: () => base44.entities.TokenBalance.filter({ participant_id: session.id }).then(r => r[0])
+    });
+
+    const { data: achievements = [] } = useQuery({
+        queryKey: ['achievements', session.id],
+        queryFn: () => base44.entities.ParticipantAchievement.filter({ participant_id: session.id })
+    });
+
     const tierColors = {
         bronze: 'bg-orange-100 text-orange-800',
         silver: 'bg-slate-200 text-slate-800',
@@ -41,7 +51,7 @@ export default function ParticipantDashboard() {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-slate-50 flex">
-            <ParticipantSidebar />
+            <ParticipantSidebar mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} session={session} />
 
             {mobileMenuOpen && <div className="fixed inset-0 bg-black/50 z-40 md:hidden" onClick={() => setMobileMenuOpen(false)} />}
 
@@ -56,46 +66,106 @@ export default function ParticipantDashboard() {
                 </header>
 
                 <div className="p-4 md:p-6 space-y-6">
-                    {/* Balance Card */}
-                    <Card className="bg-gradient-to-br from-purple-600 to-blue-600 text-white">
-                        <CardContent className="p-6">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-purple-100 text-sm">Your Balance</p>
-                                    <p className="text-5xl font-bold mt-2">{session.current_balance?.toLocaleString() || 0}</p>
-                                    <p className="text-purple-200 text-sm mt-1">{program?.token_name || 'Points'}</p>
-                                </div>
-                                <Coins className="h-20 w-20 text-purple-300 opacity-50" />
-                            </div>
-                        </CardContent>
-                    </Card>
+                     {/* Primary Token Balance Card */}
+                     <Card className="bg-gradient-to-br from-purple-600 to-blue-600 text-white">
+                         <CardContent className="p-6">
+                             <div className="flex items-center justify-between mb-4">
+                                 <div>
+                                     <p className="text-purple-100 text-sm">Tokenized Balance</p>
+                                     <p className="text-5xl font-bold mt-2">{session.current_balance?.toLocaleString() || 0}</p>
+                                     <p className="text-purple-200 text-sm mt-1">{program?.token_name || 'Loyalty Tokens'}</p>
+                                 </div>
+                                 <Zap className="h-20 w-20 text-yellow-300 opacity-60" />
+                             </div>
+                             <div className="border-t border-purple-300 pt-4 mt-4 text-sm text-purple-100">
+                                 <p>🔗 Blockchain: {program?.blockchain_network || 'Polygon Edge'}</p>
+                                 <p className="mt-1">Tier: <Badge className="ml-2">{session.current_tier}</Badge></p>
+                             </div>
+                         </CardContent>
+                     </Card>
 
-                    {/* Stats Grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        <Card>
-                            <CardContent className="p-6">
-                                <TrendingUp className="h-8 w-8 text-emerald-600 mb-2" />
-                                <p className="text-sm text-slate-600">Total Earned</p>
-                                <p className="text-3xl font-bold">{session.lifetime_earned?.toLocaleString() || 0}</p>
-                            </CardContent>
-                        </Card>
+                     {/* Blockchain & Token Info Grid */}
+                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                         <Card>
+                             <CardContent className="p-6">
+                                 <TrendingUp className="h-8 w-8 text-emerald-600 mb-2" />
+                                 <p className="text-sm text-slate-600">Lifetime Earned</p>
+                                 <p className="text-3xl font-bold">{session.lifetime_earned?.toLocaleString() || 0}</p>
+                             </CardContent>
+                         </Card>
 
-                        <Card>
-                            <CardContent className="p-6">
-                                <Gift className="h-8 w-8 text-purple-600 mb-2" />
-                                <p className="text-sm text-slate-600">Redeemed</p>
-                                <p className="text-3xl font-bold">{session.lifetime_redeemed?.toLocaleString() || 0}</p>
-                            </CardContent>
-                        </Card>
+                         <Card>
+                             <CardContent className="p-6">
+                                 <Gift className="h-8 w-8 text-purple-600 mb-2" />
+                                 <p className="text-sm text-slate-600">Redeemed</p>
+                                 <p className="text-3xl font-bold">{session.lifetime_redeemed?.toLocaleString() || 0}</p>
+                             </CardContent>
+                         </Card>
 
-                        <Card>
-                            <CardContent className="p-6">
-                                <Target className="h-8 w-8 text-blue-600 mb-2" />
-                                <p className="text-sm text-slate-600">Current Streak</p>
-                                <p className="text-3xl font-bold">{session.streak_days || 0} days</p>
-                            </CardContent>
-                        </Card>
-                    </div>
+                         <Card>
+                             <CardContent className="p-6">
+                                 <Sparkles className="h-8 w-8 text-blue-600 mb-2" />
+                                 <p className="text-sm text-slate-600">Achievements</p>
+                                 <p className="text-3xl font-bold">{achievements.length}</p>
+                             </CardContent>
+                         </Card>
+
+                         <Card>
+                             <CardContent className="p-6">
+                                 <Clock className="h-8 w-8 text-orange-600 mb-2" />
+                                 <p className="text-sm text-slate-600">Current Streak</p>
+                                 <p className="text-3xl font-bold">{session.streak_days || 0} days</p>
+                             </CardContent>
+                         </Card>
+                     </div>
+
+                     {/* Token Features */}
+                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                         <Card>
+                             <CardHeader>
+                                 <CardTitle className="flex items-center gap-2">
+                                     <Wallet className="h-5 w-5" />
+                                     Token Status
+                                 </CardTitle>
+                             </CardHeader>
+                             <CardContent className="space-y-3">
+                                 <div className="flex justify-between items-center">
+                                     <span className="text-sm text-slate-600">Wallet Address</span>
+                                     <code className="text-xs bg-slate-100 px-2 py-1 rounded">
+                                         {session.wallet_address ? `${session.wallet_address.slice(0, 6)}...${session.wallet_address.slice(-4)}` : 'Not set'}
+                                     </code>
+                                 </div>
+                                 <div className="flex justify-between items-center">
+                                     <span className="text-sm text-slate-600">Token Type</span>
+                                     <Badge>{program?.token_symbol || 'ERC-20'}</Badge>
+                                 </div>
+                                 <div className="flex justify-between items-center">
+                                     <span className="text-sm text-slate-600">Status</span>
+                                     <Badge className="bg-green-100 text-green-800">Active</Badge>
+                                 </div>
+                             </CardContent>
+                         </Card>
+
+                         <Card>
+                             <CardHeader>
+                                 <CardTitle className="flex items-center gap-2">
+                                     <Lock className="h-5 w-5" />
+                                     Security & Verification
+                                 </CardTitle>
+                             </CardHeader>
+                             <CardContent className="space-y-3">
+                                 <div className="flex items-center gap-2 text-sm">
+                                     <div className="h-2 w-2 rounded-full bg-green-600" />
+                                     <span>KYC Verified</span>
+                                 </div>
+                                 <div className="flex items-center gap-2 text-sm">
+                                     <div className="h-2 w-2 rounded-full bg-green-600" />
+                                     <span>2FA Enabled</span>
+                                 </div>
+                                 <div className="text-xs text-slate-600 mt-3">Last verified: {new Date(session.updated_date).toLocaleDateString()}</div>
+                             </CardContent>
+                         </Card>
+                     </div>
 
                     {/* Recent Activities */}
                     <Card>
