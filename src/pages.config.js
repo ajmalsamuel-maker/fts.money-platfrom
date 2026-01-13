@@ -370,6 +370,7 @@ import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
 import PlatformBlockchainProvisioning from './pages/PlatformBlockchainProvisioning';
+import LoyaltyCustomerBlockchain from './pages/LoyaltyCustomerBlockchain';
 import __Layout from './Layout.jsx';
 
 
@@ -746,6 +747,7 @@ export const PAGES = {
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
     "PlatformBlockchainProvisioning": PlatformBlockchainProvisioning,
+    "LoyaltyCustomerBlockchain": LoyaltyCustomerBlockchain,
 }
 
 export const pagesConfig = {
