@@ -4,7 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { TrendingUp, Menu, CheckCircle2 } from 'lucide-react';
+import { Trophy, TrendingUp, Menu, X, LogOut, CheckCircle2, HelpCircle, Gift, Target } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import ParticipantSidebar from '@/components/participant/ParticipantSidebar';
 
