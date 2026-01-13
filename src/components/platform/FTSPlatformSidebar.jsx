@@ -71,7 +71,8 @@ const menuSections = [
                 { labelKey: 'revenueDashboard', descKey: 'revenueDashboardDesc', path: 'FTSRevenue', icon: BarChart3, priority: true },
                 { labelKey: 'platformAnalytics', descKey: 'platformAnalyticsDesc', path: 'FTSAnalytics', icon: BarChart3 },
                 { labelKey: 'setupGuide', descKey: 'setupGuideDesc', path: 'FTSSetupGuide', icon: BookOpen },
-                { label: 'Custom Reports', description: 'Report builder', path: 'FTSReporting', icon: FileText }
+                { label: 'Custom Reports', description: 'Report builder', path: 'FTSReporting', icon: FileText },
+                { label: 'Business E-Invoicing', description: 'Manage white-label org instances', path: 'BusinessEInvoiceManagement', icon: FileText, priority: true }
             ]
         },
     {
