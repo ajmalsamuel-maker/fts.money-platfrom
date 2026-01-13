@@ -98,7 +98,7 @@ export default function ParticipantSocialTasks() {
                     </button>
                 </div>
 
-                <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+                <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
                     <Link to="/ParticipantDashboard" className={cn("flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 whitespace-nowrap", !sidebarOpen && "justify-center")}>
                         <span className="font-medium text-sm">📊</span>
                         {sidebarOpen && <span>Dashboard</span>}
@@ -115,10 +115,42 @@ export default function ParticipantSocialTasks() {
                         <span className="font-medium text-sm">🎯</span>
                         {sidebarOpen && <span>Challenges</span>}
                     </Link>
-                    <Link to="/ParticipantSocialTasks" className={cn("flex items-center gap-3 px-3 py-2 rounded-lg bg-purple-50 text-purple-700 font-medium whitespace-nowrap", !sidebarOpen && "justify-center")}>
-                        <Flame className="h-4 w-4" />
-                        {sidebarOpen && <span>Social</span>}
-                    </Link>
+
+                    {/* Social Menu with Submenus */}
+                    <div>
+                        <button onClick={() => toggleMenu('social')} className={cn("w-full flex items-center gap-3 px-3 py-2 rounded-lg bg-purple-50 text-purple-700 font-medium hover:bg-purple-100 whitespace-nowrap", !sidebarOpen && "justify-center")}>
+                            <Flame className="h-4 w-4" />
+                            {sidebarOpen && (
+                                <>
+                                    <span>Social Tasks</span>
+                                    <ChevronDown className={cn("h-4 w-4 ml-auto transition-transform", expandedMenus.social && "rotate-180")} />
+                                </>
+                            )}
+                        </button>
+                        {sidebarOpen && expandedMenus.social && (
+                            <div className="space-y-1 mt-1 pl-4 border-l-2 border-purple-200">
+                                <Link to="/ParticipantSocialTasks?filter=all" className="flex items-center gap-2 px-3 py-1.5 rounded text-sm hover:bg-slate-100">
+                                    🌍 All Tasks
+                                </Link>
+                                <Link to="/ParticipantSocialTasks?filter=invite" className="flex items-center gap-2 px-3 py-1.5 rounded text-sm hover:bg-slate-100">
+                                    👥 Invite Friends
+                                </Link>
+                                <Link to="/ParticipantSocialTasks?filter=referral" className="flex items-center gap-2 px-3 py-1.5 rounded text-sm hover:bg-slate-100">
+                                    🔗 Referrals
+                                </Link>
+                                <Link to="/ParticipantSocialTasks?filter=social_share" className="flex items-center gap-2 px-3 py-1.5 rounded text-sm hover:bg-slate-100">
+                                    📢 Share
+                                </Link>
+                                <Link to="/ParticipantSocialTasks?filter=community_post" className="flex items-center gap-2 px-3 py-1.5 rounded text-sm hover:bg-slate-100">
+                                    💬 Community
+                                </Link>
+                                <Link to="/ParticipantSocialTasks?filter=engagement" className="flex items-center gap-2 px-3 py-1.5 rounded text-sm hover:bg-slate-100">
+                                    ⭐ Engagement
+                                </Link>
+                            </div>
+                        )}
+                    </div>
+
                     <Link to="/ParticipantHelp" className={cn("flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 whitespace-nowrap", !sidebarOpen && "justify-center")}>
                         <span className="font-medium text-sm">❓</span>
                         {sidebarOpen && <span>Help</span>}
