@@ -59,7 +59,8 @@ const flattenMenuSections = (sections) => {
                     subsection.subsections.forEach(nestedSub => {
                         allItems.push({ isNestedSubsectionHeader: true, label: nestedSub.label, id: nestedSub.id, parentId: subsection.id });
                         if (nestedSub.items) {
-                            allItems.push(...nestedSub.items);
+                            // Mark items as nested so they get extra indentation
+                            allItems.push(...nestedSub.items.map(item => ({ ...item, isNestedItem: true })));
                         }
                     });
                 }
