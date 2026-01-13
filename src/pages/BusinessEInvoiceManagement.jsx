@@ -8,8 +8,9 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Edit2, Trash2, Building2, Mail, Globe, Copy } from 'lucide-react';
+import { Plus, Edit2, Trash2, Building2, Mail, Globe, Copy, Check, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
+import OnboardingWizard from '@/components/einvoicing/BusinessEInvoiceOnboarding';
 
 export default function BusinessEInvoiceManagement() {
     const [searchTerm, setSearchTerm] = useState('');
