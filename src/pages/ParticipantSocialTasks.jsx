@@ -75,66 +75,65 @@ export default function ParticipantSocialTasks() {
     return (
         <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 flex">
             {/* Sidebar */}
-            <aside className={cn("fixed md:relative inset-y-0 left-0 z-50 w-64 bg-white border-r flex flex-col h-screen transform transition-transform shadow-xl md:shadow-none",
-                mobileMenuOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0")}>
-                <div className="h-16 flex items-center justify-between border-b px-4 bg-gradient-to-r from-indigo-600 to-purple-600">
-                    <div className="flex items-center gap-2 text-white">
-                        <Flame className="h-6 w-6" />
-                        <span className="font-bold text-sm">Participant Hub</span>
-                    </div>
-                    <button onClick={() => setMobileMenuOpen(false)} className="md:hidden text-white">
-                        <X className="h-5 w-5" />
+            <aside className={cn("relative bg-white border-r flex flex-col h-screen transition-all duration-300 shadow-lg",
+                sidebarOpen ? "w-64" : "w-20")}>
+                <div className="h-16 flex items-center justify-between border-b px-4 bg-gradient-to-r from-indigo-600 to-purple-600 flex-shrink-0">
+                    {sidebarOpen && (
+                        <div className="flex items-center gap-2 text-white">
+                            <Flame className="h-6 w-6" />
+                            <span className="font-bold text-sm">Participant</span>
+                        </div>
+                    )}
+                    <button onClick={() => setSidebarOpen(!sidebarOpen)} className="text-white hover:bg-purple-700 p-1 rounded">
+                        {sidebarOpen ? <ChevronLeft className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
                     </button>
                 </div>
 
-                <nav className="flex-1 p-4 space-y-2">
-                    <a href="/ParticipantDashboard" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50">
-                        Dashboard
+                <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+                    <a href="/ParticipantDashboard" className={cn("flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 whitespace-nowrap", !sidebarOpen && "justify-center")}>
+                        <span className="font-medium text-sm">📊</span>
+                        {sidebarOpen && <span>Dashboard</span>}
                     </a>
-                    <a href="/ParticipantActivities" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50">
-                        My Activities
+                    <a href="/ParticipantActivities" className={cn("flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 whitespace-nowrap", !sidebarOpen && "justify-center")}>
+                        <span className="font-medium text-sm">📈</span>
+                        {sidebarOpen && <span>Activities</span>}
                     </a>
-                    <a href="/ParticipantRewards" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50">
-                        Redeem Rewards
+                    <a href="/ParticipantRewards" className={cn("flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 whitespace-nowrap", !sidebarOpen && "justify-center")}>
+                        <span className="font-medium text-sm">🎁</span>
+                        {sidebarOpen && <span>Rewards</span>}
                     </a>
-                    <a href="/ParticipantChallenges" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50">
-                        Challenges
+                    <a href="/ParticipantChallenges" className={cn("flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 whitespace-nowrap", !sidebarOpen && "justify-center")}>
+                        <span className="font-medium text-sm">🎯</span>
+                        {sidebarOpen && <span>Challenges</span>}
                     </a>
-                    <a href="/ParticipantSocialTasks" className="flex items-center gap-3 px-3 py-2 rounded-lg bg-purple-50 text-purple-700 font-medium">
-                        Social Tasks
+                    <a href="/ParticipantSocialTasks" className={cn("flex items-center gap-3 px-3 py-2 rounded-lg bg-purple-50 text-purple-700 font-medium whitespace-nowrap", !sidebarOpen && "justify-center")}>
+                        <Flame className="h-4 w-4" />
+                        {sidebarOpen && <span>Social</span>}
                     </a>
-                    <a href="/ParticipantHelp" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50">
-                        Help & FAQ
+                    <a href="/ParticipantHelp" className={cn("flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 whitespace-nowrap", !sidebarOpen && "justify-center")}>
+                        <span className="font-medium text-sm">❓</span>
+                        {sidebarOpen && <span>Help</span>}
                     </a>
                 </nav>
 
-                <div className="p-4 border-t">
+                <div className="p-4 border-t flex-shrink-0">
                     <Button onClick={() => { 
                         localStorage.removeItem('participant_session'); 
                         window.location.href = '/ParticipantLogin'; 
-                    }} variant="outline" className="w-full text-red-600">
-                        <LogOut className="h-4 w-4 mr-2" />Logout
+                    }} variant="outline" className={cn("w-full text-red-600 text-xs", !sidebarOpen && "p-2")}>
+                        <LogOut className="h-4 w-4" />
+                        {sidebarOpen && <span className="ml-2">Logout</span>}
                     </Button>
                 </div>
             </aside>
 
-            {mobileMenuOpen && <div className="fixed inset-0 bg-black/50 z-40 md:hidden" onClick={() => setMobileMenuOpen(false)} />}
-
             {/* Main Content */}
             <div className="flex-1 overflow-y-auto">
                 <header className="h-16 bg-white/80 backdrop-blur-xl border-b flex items-center justify-between px-4 md:px-6 sticky top-0 z-10">
-                    <div className="flex items-center gap-3">
-                        <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setMobileMenuOpen(true)}>
-                            <Menu className="h-5 w-5" />
-                        </Button>
-                        <a href="/ParticipantDashboard" className="text-slate-600 hover:text-slate-900">
-                            <ArrowLeft className="h-4 w-4" />
-                        </a>
-                        <h1 className="text-lg font-semibold flex items-center gap-2">
-                            <Flame className="h-5 w-5 text-orange-500" />
-                            Social Tasks
-                        </h1>
-                    </div>
+                    <h1 className="text-lg font-semibold flex items-center gap-2">
+                        <Flame className="h-5 w-5 text-orange-500" />
+                        Social Tasks
+                    </h1>
                     <div className="text-right">
                         <p className="text-sm font-semibold text-indigo-600">
                             {session.current_balance?.toLocaleString() || 0} pts
