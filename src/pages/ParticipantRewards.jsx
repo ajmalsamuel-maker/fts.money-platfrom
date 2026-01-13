@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Gift, Coins, ShoppingBag, Menu, X, Trophy } from 'lucide-react';
+import { Gift, Coins, ShoppingBag, Menu, X, Trophy, TrendingUp, Target, LogOut } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { toast } from 'sonner';
 
@@ -90,10 +90,25 @@ export default function ParticipantRewards() {
                     <a href="/ParticipantDashboard" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50">
                         <Trophy className="h-4 w-4" />Dashboard
                     </a>
+                    <a href="/ParticipantActivities" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50">
+                        <TrendingUp className="h-4 w-4" />My Activities
+                    </a>
                     <a href="/ParticipantRewards" className="flex items-center gap-3 px-3 py-2 rounded-lg bg-purple-50 text-purple-700 font-medium">
                         <Gift className="h-4 w-4" />Redeem Rewards
                     </a>
+                    <a href="/ParticipantChallenges" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50">
+                        <Target className="h-4 w-4" />Challenges
+                    </a>
                 </nav>
+
+                <div className="p-4 border-t">
+                    <Button onClick={() => { 
+                        localStorage.removeItem('participant_session'); 
+                        window.location.href = '/ParticipantLogin'; 
+                    }} variant="outline" className="w-full text-red-600">
+                        <LogOut className="h-4 w-4 mr-2" />Logout
+                    </Button>
+                </div>
             </aside>
 
             {mobileMenuOpen && <div className="fixed inset-0 bg-black/50 z-40 md:hidden" onClick={() => setMobileMenuOpen(false)} />}
