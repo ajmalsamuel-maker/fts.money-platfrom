@@ -238,6 +238,8 @@ export default function CompanyAccountSetup() {
                     </form>
                 </CardContent>
             </Card>
+                </div>
+            </div>
         </div>
     );
 }
