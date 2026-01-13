@@ -113,7 +113,7 @@ export default function BusinessEInvoiceOnboarding({ onSuccess }) {
 
     const resetForm = () => {
         setStep(STEP_1_ORG_INFO);
-        setOrgData({ org_name: '', business_email: '', country: '', tax_id: '' });
+        setOrgData({ org_name: '', business_email: '', country: '', tax_id: '', tax_submission_standards: '' });
         setLei('');
         setGracePeriodDays(30);
         setAmlKybData({ director_name: '', director_email: '', beneficial_owner: '', aml_approved: false, kyb_approved: false });
