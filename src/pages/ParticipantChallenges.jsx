@@ -4,8 +4,9 @@ import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Trophy, Target, Menu, X, LogOut, TrendingUp, Calendar, HelpCircle, Gift } from 'lucide-react';
+import { Target, Menu, Calendar } from 'lucide-react';
 import { cn } from "@/lib/utils";
+import ParticipantSidebar from '@/components/participant/ParticipantSidebar';
 
 export default function ParticipantChallenges() {
     const [session] = useState(() => JSON.parse(localStorage.getItem('participant_session') || '{}'));
