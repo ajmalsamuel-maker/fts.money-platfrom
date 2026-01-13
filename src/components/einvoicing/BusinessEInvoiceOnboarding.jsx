@@ -203,19 +203,12 @@ export default function BusinessEInvoiceOnboarding({ onSuccess }) {
                                 <SelectTrigger>
                                     <SelectValue placeholder="Select country" />
                                 </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="IT">Italy</SelectItem>
-                                    <SelectItem value="DE">Germany</SelectItem>
-                                    <SelectItem value="FR">France</SelectItem>
-                                    <SelectItem value="ES">Spain</SelectItem>
-                                    <SelectItem value="NL">Netherlands</SelectItem>
-                                    <SelectItem value="BE">Belgium</SelectItem>
-                                    <SelectItem value="AT">Austria</SelectItem>
-                                    <SelectItem value="PL">Poland</SelectItem>
-                                    <SelectItem value="PT">Portugal</SelectItem>
-                                    <SelectItem value="GB">United Kingdom</SelectItem>
-                                    <SelectItem value="SE">Sweden</SelectItem>
-                                    <SelectItem value="DK">Denmark</SelectItem>
+                                <SelectContent className="max-h-48">
+                                    {COUNTRIES.map(country => (
+                                        <SelectItem key={country.code} value={country.code}>
+                                            {country.name}
+                                        </SelectItem>
+                                    ))}
                                 </SelectContent>
                             </Select>
                         </div>
