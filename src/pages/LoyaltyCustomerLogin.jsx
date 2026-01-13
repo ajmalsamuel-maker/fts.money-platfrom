@@ -42,7 +42,7 @@ export default function LoyaltyCustomerLogin() {
                     <div className="mx-auto mb-4 w-16 h-16 bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl flex items-center justify-center">
                         <Trophy className="h-8 w-8 text-white" />
                     </div>
-                    <CardTitle>Loyalty Customer Portal</CardTitle>
+                    <CardTitle>Impact Loyalty Cloud</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={handleLogin} className="space-y-4">

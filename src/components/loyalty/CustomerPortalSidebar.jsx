@@ -75,6 +75,13 @@ export default function CustomerPortalSidebar({ session, currentPage, mobileMenu
             path: '/LoyaltySubscriptionBilling',
             icon: CreditCard,
             standalone: true
+        },
+        {
+            id: 'settings',
+            label: 'Settings',
+            path: '/LoyaltyPortalSettings',
+            icon: Settings,
+            standalone: true
         }
     ];
 
@@ -150,7 +157,7 @@ export default function CustomerPortalSidebar({ session, currentPage, mobileMenu
             <div className="h-16 flex items-center justify-between border-b px-4 bg-gradient-to-r from-purple-600 to-blue-600">
                 <div className="flex items-center gap-2 text-white">
                     <Trophy className="h-6 w-6" />
-                    <span className="font-bold">Loyalty Cloud</span>
+                    <span className="font-bold text-sm">Impact Loyalty Cloud</span>
                 </div>
                 <button onClick={() => setMobileMenuOpen(false)} className="md:hidden text-white">
                     <X className="h-5 w-5" />

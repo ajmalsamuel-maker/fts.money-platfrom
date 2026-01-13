@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import WalletWidget from '@/components/loyalty/WalletWidget';
 import CustomerPortalSidebar from '@/components/loyalty/CustomerPortalSidebar';
-import { Trophy, Users, Activity, Plus, Menu } from 'lucide-react';
+import { Trophy, Users, Activity, Plus, Menu, Target, TrendingUp, Heart, Leaf } from 'lucide-react';
 
 export default function LoyaltyCustomerPortal() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -63,28 +63,121 @@ export default function LoyaltyCustomerPortal() {
                         />
                     )}
 
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        <Card>
+                    {/* Impact Metrics Grid */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
                             <CardContent className="p-6">
                                 <Trophy className="h-8 w-8 text-purple-600 mb-2" />
-                                <p className="text-sm text-slate-600">Programs</p>
-                                <p className="text-3xl font-bold">{programs.length}</p>
+                                <p className="text-sm text-slate-600 font-medium">Active Programs</p>
+                                <p className="text-3xl font-bold text-purple-700">{programs.length}</p>
                             </CardContent>
                         </Card>
 
-                        <Card>
+                        <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
                             <CardContent className="p-6">
                                 <Users className="h-8 w-8 text-blue-600 mb-2" />
-                                <p className="text-sm text-slate-600">Participants</p>
-                                <p className="text-3xl font-bold">{totalParticipants.toLocaleString()}</p>
+                                <p className="text-sm text-slate-600 font-medium">Total Participants</p>
+                                <p className="text-3xl font-bold text-blue-700">{totalParticipants.toLocaleString()}</p>
                             </CardContent>
                         </Card>
 
-                        <Card>
+                        <Card className="bg-gradient-to-br from-emerald-50 to-emerald-100 border-emerald-200">
                             <CardContent className="p-6">
                                 <Activity className="h-8 w-8 text-emerald-600 mb-2" />
-                                <p className="text-sm text-slate-600">Tokens Issued</p>
-                                <p className="text-3xl font-bold">{(totalTokensIssued / 1000).toFixed(1)}K</p>
+                                <p className="text-sm text-slate-600 font-medium">Tokens Issued</p>
+                                <p className="text-3xl font-bold text-emerald-700">{(totalTokensIssued / 1000).toFixed(1)}K</p>
+                            </CardContent>
+                        </Card>
+
+                        <Card className="bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200">
+                            <CardContent className="p-6">
+                                <TrendingUp className="h-8 w-8 text-orange-600 mb-2" />
+                                <p className="text-sm text-slate-600 font-medium">Impact Score</p>
+                                <p className="text-3xl font-bold text-orange-700">124</p>
+                            </CardContent>
+                        </Card>
+                    </div>
+
+                    {/* Impact Overview Cards */}
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                        <Card className="border-l-4 border-l-green-500">
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2 text-base">
+                                    <Leaf className="h-5 w-5 text-green-600" />
+                                    Social Impact
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <p className="text-sm text-slate-600 mb-3">Track your organization's social impact through loyalty programs</p>
+                                <div className="space-y-2 text-sm">
+                                    <div className="flex justify-between">
+                                        <span className="text-slate-600">Community Engagement</span>
+                                        <span className="font-semibold">85%</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-slate-600">Volunteer Hours</span>
+                                        <span className="font-semibold">1,240 hrs</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-slate-600">Lives Impacted</span>
+                                        <span className="font-semibold">5,600</span>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        <Card className="border-l-4 border-l-blue-500">
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2 text-base">
+                                    <Target className="h-5 w-5 text-blue-600" />
+                                    Engagement Metrics
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <p className="text-sm text-slate-600 mb-3">Monitor participant engagement and activity trends</p>
+                                <div className="space-y-2 text-sm">
+                                    <div className="flex justify-between">
+                                        <span className="text-slate-600">Active Rate</span>
+                                        <span className="font-semibold text-green-600">↑ 23%</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-slate-600">Avg. Activities/User</span>
+                                        <span className="font-semibold">12.4</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-slate-600">Retention Rate</span>
+                                        <span className="font-semibold">78%</span>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        <Card className="border-l-4 border-l-purple-500">
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2 text-base">
+                                    <Heart className="h-5 w-5 text-purple-600" />
+                                    Impact Index (IMI)
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <p className="text-sm text-slate-600 mb-3">Measure your overall impact across key dimensions</p>
+                                <div className="space-y-2 text-sm">
+                                    <div className="flex justify-between">
+                                        <span className="text-slate-600">Overall IMI Score</span>
+                                        <span className="font-bold text-purple-600">124</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-slate-600">Miles Index</span>
+                                        <span className="font-semibold">130</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-slate-600">Inclusion Index</span>
+                                        <span className="font-semibold">118</span>
+                                    </div>
+                                </div>
+                                <Button variant="link" className="p-0 mt-2 text-purple-600" onClick={() => window.location.href = '/LoyaltyImpactIndex'}>
+                                    View Full Report →
+                                </Button>
                             </CardContent>
                         </Card>
                     </div>
