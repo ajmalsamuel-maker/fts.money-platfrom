@@ -92,10 +92,8 @@ export default function BusinessEInvoiceOnboarding({ onSuccess }) {
     const createAdminMutation = useMutation({
         mutationFn: async () => {
             const pwd = Math.random().toString(36).slice(-12);
-            const response = await base44.entities.CompanyAccount.update(orgData.org_id, {
-                admin_email: adminData.admin_email,
+            const response = await base44.entities.BusinessEInvoicingOrganization.update(orgData.org_id, {
                 admin_name: adminData.admin_name,
-                admin_password_hash: btoa(pwd),
                 status: 'active',
                 onboarding_step: 'completed'
             });
