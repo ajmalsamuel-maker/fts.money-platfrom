@@ -71,6 +71,9 @@ export default function ParticipantDashboard() {
                     <a href="/ParticipantChallenges" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50">
                         <Target className="h-4 w-4" />Challenges
                     </a>
+                    <a href="/ParticipantSocialTasks" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50">
+                        <Flame className="h-4 w-4" />Social Tasks
+                    </a>
                     <a href="/ParticipantHelp" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50">
                         <HelpCircle className="h-4 w-4" />Help & FAQ
                     </a>
