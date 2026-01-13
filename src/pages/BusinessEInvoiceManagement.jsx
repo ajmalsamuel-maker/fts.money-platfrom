@@ -111,6 +111,15 @@ export default function BusinessEInvoiceManagement() {
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
             <div className="max-w-7xl mx-auto">
+                {/* Breadcrumbs */}
+                <div className="flex items-center gap-2 text-sm text-slate-600 mb-6">
+                    <a href={createPageUrl('FTSMoneyPlatform')} className="hover:text-blue-600">Platform</a>
+                    <ChevronRight className="h-4 w-4" />
+                    <a href={createPageUrl('FTSMoneyPlatform')} className="hover:text-blue-600">Financial Operations</a>
+                    <ChevronRight className="h-4 w-4" />
+                    <span className="text-slate-900 font-medium">Business E-Invoicing</span>
+                </div>
+
                 {/* Header */}
                 <div className="flex items-center justify-between mb-8">
                     <div>
