@@ -261,6 +261,15 @@ export default function BusinessEInvoiceOnboarding({ onSuccess }) {
                             </div>
                         )}
 
+                        {lei && (
+                            <Alert>
+                                <Check className="h-4 w-4 text-green-600" />
+                                <AlertDescription className="text-green-700">
+                                    LEI will be verified in the next step
+                                </AlertDescription>
+                            </Alert>
+                        )}
+
                         <div className="flex gap-3 pt-4">
                             <Button variant="outline" onClick={() => setStep(STEP_1_ORG_INFO)}>Back</Button>
                             <Button onClick={handleNextFromLei} className="bg-blue-600" disabled={verifyLeiMutation.isPending}>
