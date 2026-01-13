@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 
 export default function CompanyAccountSetup() {
     const [session] = useState(() => JSON.parse(localStorage.getItem('participant_session') || '{}'));
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [formData, setFormData] = useState({
         company_name: '',
         company_email: '',
@@ -24,6 +25,13 @@ export default function CompanyAccountSetup() {
     });
     const [step, setStep] = useState('info');
     const queryClient = useQueryClient();
+
+    const tierColors = {
+        bronze: 'bg-orange-100 text-orange-800',
+        silver: 'bg-slate-200 text-slate-800',
+        gold: 'bg-yellow-100 text-yellow-800',
+        platinum: 'bg-purple-100 text-purple-800'
+    };
 
     if (!session.id) {
         window.location.href = '/ParticipantLogin';
