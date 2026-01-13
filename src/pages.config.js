@@ -374,6 +374,12 @@ import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
 import LoyaltyPortalSettings from './pages/LoyaltyPortalSettings';
+import ParticipantLogin from './pages/ParticipantLogin';
+import ParticipantRegister from './pages/ParticipantRegister';
+import ParticipantDashboard from './pages/ParticipantDashboard';
+import ParticipantRewards from './pages/ParticipantRewards';
+import PartnerLogin from './pages/PartnerLogin';
+import PartnerDashboard from './pages/PartnerDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -754,6 +760,12 @@ export const PAGES = {
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
     "LoyaltyPortalSettings": LoyaltyPortalSettings,
+    "ParticipantLogin": ParticipantLogin,
+    "ParticipantRegister": ParticipantRegister,
+    "ParticipantDashboard": ParticipantDashboard,
+    "ParticipantRewards": ParticipantRewards,
+    "PartnerLogin": PartnerLogin,
+    "PartnerDashboard": PartnerDashboard,
 }
 
 export const pagesConfig = {
