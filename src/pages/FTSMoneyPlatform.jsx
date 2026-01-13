@@ -408,65 +408,7 @@ export default function FTSMoneyPlatform() {
                                  </CardContent>
                              </Card>
 
-                             {/* E-Invoicing VAT/TAX Management */}
-                             <Card className="border-2 border-orange-200 hover:border-orange-400 hover:shadow-lg transition-all group">
-                                 <CardContent className="p-4">
-                                     <div className="flex items-center gap-2 mb-3">
-                                         <div className="w-8 h-8 rounded-lg bg-orange-100 flex items-center justify-center">
-                                             <Receipt className="h-5 w-5 text-orange-600" />
-                                         </div>
-                                         <div>
-                                             <p className="font-semibold text-slate-900 text-sm">E-Invoicing & VAT</p>
-                                             <Badge variant="outline" className="text-xs">
-                                                 {invoices.filter(i => i.status === 'submitted').length} Pending
-                                             </Badge>
-                                         </div>
-                                     </div>
-                                     <div className="space-y-2 mb-3">
-                                         <div className="flex justify-between text-xs">
-                                             <span className="text-slate-600">Invoices</span>
-                                             <span className="font-semibold">{invoices.length}</span>
-                                         </div>
-                                         <div className="flex justify-between text-xs">
-                                             <span className="text-slate-600">Service</span>
-                                             <span className="font-semibold text-emerald-600">Live</span>
-                                         </div>
-                                     </div>
-                                     <Button size="sm" className="w-full text-xs h-7 bg-orange-600 hover:bg-orange-700" onClick={() => window.location.href = createPageUrl('TaxManagement')}>
-                                         {t('common:actions.manage')}
-                                     </Button>
-                                 </CardContent>
-                             </Card>
 
-                             {/* Impact Loyalty Program */}
-                             <Card className="border-2 border-rose-200 hover:border-rose-400 hover:shadow-lg transition-all group">
-                                 <CardContent className="p-4">
-                                     <div className="flex items-center gap-2 mb-3">
-                                         <div className="w-8 h-8 rounded-lg bg-rose-100 flex items-center justify-center">
-                                             <Trophy className="h-5 w-5 text-rose-600" />
-                                         </div>
-                                         <div>
-                                             <p className="font-semibold text-slate-900 text-sm">Impact Loyalty</p>
-                                             <Badge variant="outline" className="text-xs">
-                                                 {loyaltyPrograms.filter(p => p.status === 'active').length} {t('platform:dashboard.active')}
-                                             </Badge>
-                                         </div>
-                                     </div>
-                                     <div className="space-y-2 mb-3">
-                                         <div className="flex justify-between text-xs">
-                                             <span className="text-slate-600">Programs</span>
-                                             <span className="font-semibold">{loyaltyPrograms.length}</span>
-                                         </div>
-                                         <div className="flex justify-between text-xs">
-                                             <span className="text-slate-600">Total Participants</span>
-                                             <span className="font-semibold">{loyaltyPrograms.reduce((sum, p) => sum + (p.total_participants || 0), 0).toLocaleString()}</span>
-                                         </div>
-                                     </div>
-                                     <Button size="sm" className="w-full text-xs h-7 bg-rose-600 hover:bg-rose-700" onClick={() => window.location.href = createPageUrl('LoyaltyPlatformDashboard')}>
-                                         {t('common:actions.manage')}
-                                     </Button>
-                                 </CardContent>
-                             </Card>
                             </div>
                             </div>
 
