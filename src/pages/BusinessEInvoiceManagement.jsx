@@ -182,6 +182,22 @@ export default function BusinessEInvoiceManagement() {
                                 />
                             </div>
                             <div>
+                                <Label>Tax Submission Standards</Label>
+                                <Select value={formData.tax_submission_standards} onValueChange={(value) => setFormData({...formData, tax_submission_standards: value})}>
+                                    <SelectTrigger>
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="PEPPOL">PEPPOL</SelectItem>
+                                        <SelectItem value="UBL">UBL 2.1</SelectItem>
+                                        <SelectItem value="SAF-T">SAF-T</SelectItem>
+                                        <SelectItem value="XRechnung">XRechnung</SelectItem>
+                                        <SelectItem value="FatturaPA">FatturaPA</SelectItem>
+                                        <SelectItem value="other">Other</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div>
                                 <Label>Status</Label>
                                 <Select value={formData.status} onValueChange={(value) => setFormData({...formData, status: value})}>
                                     <SelectTrigger>
