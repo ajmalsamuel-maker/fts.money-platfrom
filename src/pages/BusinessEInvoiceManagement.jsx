@@ -188,13 +188,12 @@ export default function BusinessEInvoiceManagement() {
                                     <SelectTrigger>
                                         <SelectValue />
                                     </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="PEPPOL">PEPPOL</SelectItem>
-                                        <SelectItem value="UBL">UBL 2.1</SelectItem>
-                                        <SelectItem value="SAF-T">SAF-T</SelectItem>
-                                        <SelectItem value="XRechnung">XRechnung</SelectItem>
-                                        <SelectItem value="FatturaPA">FatturaPA</SelectItem>
-                                        <SelectItem value="other">Other</SelectItem>
+                                    <SelectContent className="max-h-48">
+                                        {Object.values(GLOBAL_EINVOICING_STANDARDS).map((standard) => (
+                                            <SelectItem key={standard.code} value={standard.code}>
+                                                {standard.name} ({standard.format})
+                                            </SelectItem>
+                                        ))}
                                     </SelectContent>
                                 </Select>
                             </div>
