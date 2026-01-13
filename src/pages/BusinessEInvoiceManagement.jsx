@@ -141,6 +141,63 @@ export default function BusinessEInvoiceManagement() {
                     />
                 </div>
 
+                {/* Edit Dialog */}
+                <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+                    <DialogContent className="max-w-md">
+                        <DialogHeader>
+                            <DialogTitle>{editingOrg ? 'Edit Organization' : 'Add Organization'}</DialogTitle>
+                        </DialogHeader>
+                        <form onSubmit={handleSubmit} className="space-y-4">
+                            <div>
+                                <Label>Organization Name</Label>
+                                <Input
+                                    value={formData.org_name}
+                                    onChange={(e) => setFormData({...formData, org_name: e.target.value})}
+                                    disabled={editingOrg ? true : false}
+                                />
+                            </div>
+                            <div>
+                                <Label>Business Email</Label>
+                                <Input
+                                    type="email"
+                                    value={formData.business_email}
+                                    onChange={(e) => setFormData({...formData, business_email: e.target.value})}
+                                />
+                            </div>
+                            <div>
+                                <Label>Country</Label>
+                                <Input
+                                    value={formData.country}
+                                    onChange={(e) => setFormData({...formData, country: e.target.value})}
+                                />
+                            </div>
+                            <div>
+                                <Label>Tax ID</Label>
+                                <Input
+                                    value={formData.tax_id}
+                                    onChange={(e) => setFormData({...formData, tax_id: e.target.value})}
+                                />
+                            </div>
+                            <div>
+                                <Label>Status</Label>
+                                <Select value={formData.status} onValueChange={(value) => setFormData({...formData, status: value})}>
+                                    <SelectTrigger>
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="active">Active</SelectItem>
+                                        <SelectItem value="inactive">Inactive</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div className="flex gap-3 pt-4">
+                                <Button type="button" variant="outline" onClick={() => setOpenDialog(false)}>Cancel</Button>
+                                <Button type="submit" className="bg-blue-600">{editingOrg ? 'Update' : 'Create'}</Button>
+                            </div>
+                        </form>
+                    </DialogContent>
+                </Dialog>
+
                 {/* Organizations Grid */}
                 {isLoading ? (
                     <div className="text-center py-12">Loading...</div>
