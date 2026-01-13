@@ -99,6 +99,7 @@ export default function BusinessEInvoiceManagement() {
             business_email: org.business_email || '',
             country: org.country || '',
             tax_id: org.tax_id || '',
+            tax_submission_standards: org.tax_submission_standards || '',
             status: org.status || 'active'
         });
         setOpenDialog(true);
