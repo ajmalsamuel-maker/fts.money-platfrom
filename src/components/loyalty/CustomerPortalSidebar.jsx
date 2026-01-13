@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Trophy, Users, Gift, Settings, LogOut, Target, CreditCard, X, LayoutDashboard, TrendingUp, Award, Coins, ShieldCheck, ChevronDown, ChevronRight } from 'lucide-react';
+import { Trophy, Users, Gift, Settings, LogOut, Target, CreditCard, X, LayoutDashboard, TrendingUp, Award, Coins, ShieldCheck, ChevronDown, ChevronRight, Shield } from 'lucide-react';
 import { cn } from "@/lib/utils";
 
 export default function CustomerPortalSidebar({ session, currentPage, mobileMenuOpen, setMobileMenuOpen }) {
@@ -21,6 +21,13 @@ export default function CustomerPortalSidebar({ session, currentPage, mobileMenu
             label: 'Overview',
             path: '/LoyaltyCustomerPortal',
             icon: LayoutDashboard,
+            standalone: true
+        },
+        {
+            id: 'blockchain',
+            label: 'Blockchain Config',
+            path: '/LoyaltyCustomerBlockchain',
+            icon: Shield,
             standalone: true
         },
         {
