@@ -172,6 +172,7 @@ import LoyaltyImpactIndex from './pages/LoyaltyImpactIndex';
 import LoyaltyImpactKPIs from './pages/LoyaltyImpactKPIs';
 import LoyaltyLeaderboards from './pages/LoyaltyLeaderboards';
 import LoyaltyPlatformDashboard from './pages/LoyaltyPlatformDashboard';
+import LoyaltyPortalSettings from './pages/LoyaltyPortalSettings';
 import LoyaltyRedemptionApprovals from './pages/LoyaltyRedemptionApprovals';
 import LoyaltyRedemptionCatalog from './pages/LoyaltyRedemptionCatalog';
 import LoyaltyRewardsCatalog from './pages/LoyaltyRewardsCatalog';
@@ -286,6 +287,14 @@ import PSPUserManagement from './pages/PSPUserManagement';
 import PSPUserManual from './pages/PSPUserManual';
 import PSPWholesaleBrowse from './pages/PSPWholesaleBrowse';
 import PSPWholesaleMarketplace from './pages/PSPWholesaleMarketplace';
+import ParticipantActivities from './pages/ParticipantActivities';
+import ParticipantChallenges from './pages/ParticipantChallenges';
+import ParticipantDashboard from './pages/ParticipantDashboard';
+import ParticipantLogin from './pages/ParticipantLogin';
+import ParticipantRegister from './pages/ParticipantRegister';
+import ParticipantRewards from './pages/ParticipantRewards';
+import PartnerDashboard from './pages/PartnerDashboard';
+import PartnerLogin from './pages/PartnerLogin';
 import PaymentGateways from './pages/PaymentGateways';
 import PaymentLinks from './pages/PaymentLinks';
 import PaymentMethods from './pages/PaymentMethods';
@@ -373,15 +382,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import LoyaltyPortalSettings from './pages/LoyaltyPortalSettings';
-import ParticipantLogin from './pages/ParticipantLogin';
-import ParticipantRegister from './pages/ParticipantRegister';
-import ParticipantDashboard from './pages/ParticipantDashboard';
-import ParticipantRewards from './pages/ParticipantRewards';
-import PartnerLogin from './pages/PartnerLogin';
-import PartnerDashboard from './pages/PartnerDashboard';
-import ParticipantActivities from './pages/ParticipantActivities';
-import ParticipantChallenges from './pages/ParticipantChallenges';
 import __Layout from './Layout.jsx';
 
 
@@ -560,6 +560,7 @@ export const PAGES = {
     "LoyaltyImpactKPIs": LoyaltyImpactKPIs,
     "LoyaltyLeaderboards": LoyaltyLeaderboards,
     "LoyaltyPlatformDashboard": LoyaltyPlatformDashboard,
+    "LoyaltyPortalSettings": LoyaltyPortalSettings,
     "LoyaltyRedemptionApprovals": LoyaltyRedemptionApprovals,
     "LoyaltyRedemptionCatalog": LoyaltyRedemptionCatalog,
     "LoyaltyRewardsCatalog": LoyaltyRewardsCatalog,
@@ -674,6 +675,14 @@ export const PAGES = {
     "PSPUserManual": PSPUserManual,
     "PSPWholesaleBrowse": PSPWholesaleBrowse,
     "PSPWholesaleMarketplace": PSPWholesaleMarketplace,
+    "ParticipantActivities": ParticipantActivities,
+    "ParticipantChallenges": ParticipantChallenges,
+    "ParticipantDashboard": ParticipantDashboard,
+    "ParticipantLogin": ParticipantLogin,
+    "ParticipantRegister": ParticipantRegister,
+    "ParticipantRewards": ParticipantRewards,
+    "PartnerDashboard": PartnerDashboard,
+    "PartnerLogin": PartnerLogin,
     "PaymentGateways": PaymentGateways,
     "PaymentLinks": PaymentLinks,
     "PaymentMethods": PaymentMethods,
@@ -761,15 +770,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "LoyaltyPortalSettings": LoyaltyPortalSettings,
-    "ParticipantLogin": ParticipantLogin,
-    "ParticipantRegister": ParticipantRegister,
-    "ParticipantDashboard": ParticipantDashboard,
-    "ParticipantRewards": ParticipantRewards,
-    "PartnerLogin": PartnerLogin,
-    "PartnerDashboard": PartnerDashboard,
-    "ParticipantActivities": ParticipantActivities,
-    "ParticipantChallenges": ParticipantChallenges,
 }
 
 export const pagesConfig = {
