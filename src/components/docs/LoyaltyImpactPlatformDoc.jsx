@@ -201,21 +201,20 @@ graph TB
     LAUNCH --> DISCOVER[Members Discover]
     
     DISCOVER --> COMPLETE[Complete Actions]
-    COMPLETE --> VERIFY[Verification]
+    COMPLETE --> VERIFY{Verification Type}
     
-    alt Auto-Verify
-        VERIFY --> AUTO[AI Validation]
-        AUTO --> REWARD[Award Points/Badge]
-    else Manual Review
-        VERIFY --> MANUAL[Admin Review]
-        MANUAL --> REWARD
-    end
+    VERIFY -->|Auto-Verify| AUTO[AI Validation]
+    VERIFY -->|Manual Review| MANUAL[Admin Review]
+    
+    AUTO --> REWARD[Award Points/Badge]
+    MANUAL --> REWARD
     
     REWARD --> NOTIFY[Notify Member]
     NOTIFY --> LEADERBOARD[Update Leaderboard]
     
     style LAUNCH fill:#10b981,color:#fff
     style REWARD fill:#f59e0b,color:#fff
+    style VERIFY fill:#3b82f6,color:#fff
 \`\`\`
 
 **Challenge Types**:
