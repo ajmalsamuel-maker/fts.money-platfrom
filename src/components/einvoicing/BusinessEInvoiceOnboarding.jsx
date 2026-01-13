@@ -25,7 +25,8 @@ export default function BusinessEInvoiceOnboarding({ onSuccess }) {
         org_name: '',
         business_email: '',
         country: '',
-        tax_id: ''
+        tax_id: '',
+        tax_submission_standards: ''
     });
     const [lei, setLei] = useState('');
     const [gracePeriodDays, setGracePeriodDays] = useState(30);
