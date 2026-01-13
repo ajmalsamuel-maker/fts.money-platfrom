@@ -4,8 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ShoppingBag, CheckCircle2, Package, TrendingUp, Menu, X, LogOut, BarChart3, QrCode, Gift, MapPin, DollarSign } from 'lucide-react';
+import { ShoppingBag, CheckCircle2, Package, TrendingUp, Menu, X, LogOut, BarChart3, QrCode, Gift, MapPin, DollarSign, Users, Megaphone, Code, Globe, HelpCircle, Shield, Trophy, Sparkles, ChevronRight } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { toast } from 'sonner';
 import PartnerAnalyticsDashboard from '../components/partner/PartnerAnalyticsDashboard';
@@ -25,6 +24,12 @@ import SmartFeatures from '../components/partner/SmartFeatures';
 export default function PartnerDashboard() {
     const [session] = useState(() => JSON.parse(localStorage.getItem('partner_session') || '{}'));
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [currentView, setCurrentView] = useState('overview');
+    const [expandedSection, setExpandedSection] = useState(null);
+
+    const toggleSection = (section) => {
+        setExpandedSection(expandedSection === section ? null : section);
+    };
     const queryClient = useQueryClient();
 
     if (!session.id) {
@@ -92,11 +97,159 @@ export default function PartnerDashboard() {
                     <Badge className="mt-2 capitalize">{session.status}</Badge>
                 </div>
 
-                <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
-                    <p className="text-xs text-gray-500 px-3 mb-2">MAIN MENU</p>
-                    <a href="/PartnerDashboard" className="flex items-center gap-3 px-3 py-2 rounded-lg bg-green-50 text-green-700 font-medium">
-                        <ShoppingBag className="h-4 w-4" />Dashboard
-                    </a>
+                <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+                    {/* Overview */}
+                    <button
+                        onClick={() => setCurrentView('overview')}
+                        className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                            currentView === 'overview' ? 'bg-green-50 text-green-700' : 'text-gray-700 hover:bg-gray-50'
+                        }`}
+                    >
+                        <ShoppingBag className="h-4 w-4" />
+                        <span>Overview</span>
+                    </button>
+
+                    {/* Operations Section */}
+                    <div className="pt-3">
+                        <p className="text-xs font-semibold text-gray-500 px-3 mb-2">OPERATIONS</p>
+                        <button
+                            onClick={() => setCurrentView('redemptions')}
+                            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                                currentView === 'redemptions' ? 'bg-green-50 text-green-700' : 'text-gray-700 hover:bg-gray-50'
+                            }`}
+                        >
+                            <QrCode className="h-4 w-4" />
+                            <span>Redemptions</span>
+                        </button>
+                        <button
+                            onClick={() => setCurrentView('offers')}
+                            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                                currentView === 'offers' ? 'bg-green-50 text-green-700' : 'text-gray-700 hover:bg-gray-50'
+                            }`}
+                        >
+                            <Gift className="h-4 w-4" />
+                            <span>Manage Offers</span>
+                        </button>
+                        <button
+                            onClick={() => setCurrentView('locations')}
+                            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                                currentView === 'locations' ? 'bg-green-50 text-green-700' : 'text-gray-700 hover:bg-gray-50'
+                            }`}
+                        >
+                            <MapPin className="h-4 w-4" />
+                            <span>Locations</span>
+                        </button>
+                    </div>
+
+                    {/* Analytics & Insights Section */}
+                    <div className="pt-3">
+                        <p className="text-xs font-semibold text-gray-500 px-3 mb-2">ANALYTICS & INSIGHTS</p>
+                        <button
+                            onClick={() => setCurrentView('analytics')}
+                            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                                currentView === 'analytics' ? 'bg-green-50 text-green-700' : 'text-gray-700 hover:bg-gray-50'
+                            }`}
+                        >
+                            <BarChart3 className="h-4 w-4" />
+                            <span>Performance</span>
+                        </button>
+                        <button
+                            onClick={() => setCurrentView('customers')}
+                            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                                currentView === 'customers' ? 'bg-green-50 text-green-700' : 'text-gray-700 hover:bg-gray-50'
+                            }`}
+                        >
+                            <Users className="h-4 w-4" />
+                            <span>Customer Insights</span>
+                        </button>
+                        <button
+                            onClick={() => setCurrentView('ai')}
+                            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                                currentView === 'ai' ? 'bg-green-50 text-green-700' : 'text-gray-700 hover:bg-gray-50'
+                            }`}
+                        >
+                            <Sparkles className="h-4 w-4" />
+                            <span>AI Insights</span>
+                        </button>
+                    </div>
+
+                    {/* Business Section */}
+                    <div className="pt-3">
+                        <p className="text-xs font-semibold text-gray-500 px-3 mb-2">BUSINESS</p>
+                        <button
+                            onClick={() => setCurrentView('financials')}
+                            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                                currentView === 'financials' ? 'bg-green-50 text-green-700' : 'text-gray-700 hover:bg-gray-50'
+                            }`}
+                        >
+                            <DollarSign className="h-4 w-4" />
+                            <span>Financials</span>
+                        </button>
+                        <button
+                            onClick={() => setCurrentView('marketing')}
+                            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                                currentView === 'marketing' ? 'bg-green-50 text-green-700' : 'text-gray-700 hover:bg-gray-50'
+                            }`}
+                        >
+                            <Megaphone className="h-4 w-4" />
+                            <span>Marketing</span>
+                        </button>
+                        <button
+                            onClick={() => setCurrentView('gamification')}
+                            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                                currentView === 'gamification' ? 'bg-green-50 text-green-700' : 'text-gray-700 hover:bg-gray-50'
+                            }`}
+                        >
+                            <Trophy className="h-4 w-4" />
+                            <span>Leaderboard</span>
+                        </button>
+                    </div>
+
+                    {/* Settings Section */}
+                    <div className="pt-3">
+                        <p className="text-xs font-semibold text-gray-500 px-3 mb-2">SETTINGS</p>
+                        <button
+                            onClick={() => setCurrentView('pos')}
+                            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                                currentView === 'pos' ? 'bg-green-50 text-green-700' : 'text-gray-700 hover:bg-gray-50'
+                            }`}
+                        >
+                            <Code className="h-4 w-4" />
+                            <span>API & POS</span>
+                        </button>
+                        <button
+                            onClick={() => setCurrentView('localization')}
+                            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                                currentView === 'localization' ? 'bg-green-50 text-green-700' : 'text-gray-700 hover:bg-gray-50'
+                            }`}
+                        >
+                            <Globe className="h-4 w-4" />
+                            <span>HK Settings</span>
+                        </button>
+                        <button
+                            onClick={() => setCurrentView('security')}
+                            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                                currentView === 'security' ? 'bg-green-50 text-green-700' : 'text-gray-700 hover:bg-gray-50'
+                            }`}
+                        >
+                            <Shield className="h-4 w-4" />
+                            <span>Security</span>
+                        </button>
+                    </div>
+
+                    {/* Support Section */}
+                    <div className="pt-3 pb-4">
+                        <p className="text-xs font-semibold text-gray-500 px-3 mb-2">SUPPORT</p>
+                        <button
+                            onClick={() => setCurrentView('support')}
+                            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                                currentView === 'support' ? 'bg-green-50 text-green-700' : 'text-gray-700 hover:bg-gray-50'
+                            }`}
+                        >
+                            <HelpCircle className="h-4 w-4" />
+                            <span>Help & Training</span>
+                        </button>
+                    </div>
                 </nav>
 
                 <div className="p-4 border-t">
@@ -120,25 +273,9 @@ export default function PartnerDashboard() {
                 </header>
 
                 <div className="p-4 md:p-6 space-y-6">
-                    <Tabs defaultValue="overview" className="w-full">
-                        <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6 overflow-x-auto">
-                            <TabsTrigger value="overview" className="text-xs">Overview</TabsTrigger>
-                            <TabsTrigger value="analytics" className="text-xs">Analytics</TabsTrigger>
-                            <TabsTrigger value="redemptions" className="text-xs">Redemptions</TabsTrigger>
-                            <TabsTrigger value="offers" className="text-xs">Offers</TabsTrigger>
-                            <TabsTrigger value="locations" className="text-xs">Locations</TabsTrigger>
-                            <TabsTrigger value="financials" className="text-xs">Financials</TabsTrigger>
-                            <TabsTrigger value="customers" className="text-xs">Customers</TabsTrigger>
-                            <TabsTrigger value="marketing" className="text-xs">Marketing</TabsTrigger>
-                            <TabsTrigger value="pos" className="text-xs">API/POS</TabsTrigger>
-                            <TabsTrigger value="localization" className="text-xs">HK Settings</TabsTrigger>
-                            <TabsTrigger value="support" className="text-xs">Support</TabsTrigger>
-                            <TabsTrigger value="security" className="text-xs">Security</TabsTrigger>
-                            <TabsTrigger value="gamification" className="text-xs">Leaderboard</TabsTrigger>
-                            <TabsTrigger value="ai" className="text-xs">AI Insights</TabsTrigger>
-                        </TabsList>
-
-                        <TabsContent value="overview" className="space-y-6">
+                    {/* Overview */}
+                    {currentView === 'overview' && (
+                        <div className="space-y-6">
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                 <Card>
                                     <CardContent className="p-6">
@@ -198,60 +335,73 @@ export default function PartnerDashboard() {
                                     )}
                                 </CardContent>
                             </Card>
-                        </TabsContent>
+                        </div>
+                    )}
 
-                        <TabsContent value="analytics">
-                            <PartnerAnalyticsDashboard partnerId={session.id} programId={session.program_id} />
-                        </TabsContent>
+                    {/* Analytics */}
+                    {currentView === 'analytics' && (
+                        <PartnerAnalyticsDashboard partnerId={session.id} programId={session.program_id} />
+                    )}
 
-                        <TabsContent value="redemptions">
-                            <RedemptionManagementHub partnerId={session.id} programId={session.program_id} />
-                        </TabsContent>
+                    {/* Redemptions */}
+                    {currentView === 'redemptions' && (
+                        <RedemptionManagementHub partnerId={session.id} programId={session.program_id} />
+                    )}
 
-                        <TabsContent value="offers">
-                            <OfferManagement partnerId={session.id} programId={session.program_id} />
-                        </TabsContent>
+                    {/* Offers */}
+                    {currentView === 'offers' && (
+                        <OfferManagement partnerId={session.id} programId={session.program_id} />
+                    )}
 
-                        <TabsContent value="locations">
-                            <MultiLocationManager partnerId={session.id} programId={session.program_id} partnerData={session} />
-                        </TabsContent>
+                    {/* Locations */}
+                    {currentView === 'locations' && (
+                        <MultiLocationManager partnerId={session.id} programId={session.program_id} partnerData={session} />
+                    )}
 
-                        <TabsContent value="financials">
-                            <FinancialSettlement partnerId={session.id} programId={session.program_id} partnerData={session} />
-                        </TabsContent>
+                    {/* Financials */}
+                    {currentView === 'financials' && (
+                        <FinancialSettlement partnerId={session.id} programId={session.program_id} partnerData={session} />
+                    )}
 
-                        <TabsContent value="customers">
-                            <CustomerInsights partnerId={session.id} programId={session.program_id} />
-                        </TabsContent>
+                    {/* Customers */}
+                    {currentView === 'customers' && (
+                        <CustomerInsights partnerId={session.id} programId={session.program_id} />
+                    )}
 
-                        <TabsContent value="marketing">
-                            <MarketingTools partnerId={session.id} partnerData={session} />
-                        </TabsContent>
+                    {/* Marketing */}
+                    {currentView === 'marketing' && (
+                        <MarketingTools partnerId={session.id} partnerData={session} />
+                    )}
 
-                        <TabsContent value="pos">
-                            <POSIntegration partnerId={session.id} />
-                        </TabsContent>
+                    {/* POS */}
+                    {currentView === 'pos' && (
+                        <POSIntegration partnerId={session.id} />
+                    )}
 
-                        <TabsContent value="localization">
-                            <HongKongFeatures partnerId={session.id} />
-                        </TabsContent>
+                    {/* Localization */}
+                    {currentView === 'localization' && (
+                        <HongKongFeatures partnerId={session.id} />
+                    )}
 
-                        <TabsContent value="support">
-                            <SupportTraining partnerId={session.id} />
-                        </TabsContent>
+                    {/* Support */}
+                    {currentView === 'support' && (
+                        <SupportTraining partnerId={session.id} />
+                    )}
 
-                        <TabsContent value="security">
-                            <SecurityVerification partnerId={session.id} />
-                        </TabsContent>
+                    {/* Security */}
+                    {currentView === 'security' && (
+                        <SecurityVerification partnerId={session.id} />
+                    )}
 
-                        <TabsContent value="gamification">
-                            <GamificationEngagement partnerId={session.id} partnerData={session} />
-                        </TabsContent>
+                    {/* Gamification */}
+                    {currentView === 'gamification' && (
+                        <GamificationEngagement partnerId={session.id} partnerData={session} />
+                    )}
 
-                        <TabsContent value="ai">
-                            <SmartFeatures partnerId={session.id} programId={session.program_id} />
-                        </TabsContent>
-                    </Tabs>
+                    {/* AI */}
+                    {currentView === 'ai' && (
+                        <SmartFeatures partnerId={session.id} programId={session.program_id} />
+                    )}
                 </div>
             </div>
         </div>
