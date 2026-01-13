@@ -417,6 +417,9 @@ export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, i
                                                 );
                                             }
 
+                                            // Skip if no path (safety check)
+                                            if (!item.path) return null;
+
                                             const Icon = item.icon;
                                             const isActive = currentPage === item.path;
                                             return (
