@@ -220,6 +220,7 @@ const menuSections = [
             { labelKey: 'domainManagement', descKey: 'domainManagementDesc', path: 'FTSDomainManagement', icon: Globe },
             { labelKey: 'apiGatewayConfig', descKey: 'apiGatewayConfigDesc', path: 'APIGatewayConfiguration', icon: Zap },
             { label: 'Blockchain Provisioning', description: 'Permissioned chains per customer', path: 'PlatformBlockchainProvisioning', icon: Shield, priority: true },
+            { label: 'Blockchain Network Dashboard', description: 'Monitor chain performance', path: 'BlockchainNetworkDashboard', icon: Activity, priority: true },
             { label: 'Blockchain Process Flow', description: 'Detailed provisioning workflow', path: 'BlockchainProcessFlow', icon: GitBranch, priority: true },
             { labelKey: 'blockchain', descKey: 'blockchainDesc', path: 'FTSBlockchainIntegration', icon: Globe }
         ]

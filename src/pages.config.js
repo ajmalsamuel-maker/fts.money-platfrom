@@ -372,6 +372,7 @@ import XeroIntegration from './pages/XeroIntegration';
 import PlatformBlockchainProvisioning from './pages/PlatformBlockchainProvisioning';
 import LoyaltyCustomerBlockchain from './pages/LoyaltyCustomerBlockchain';
 import BlockchainProcessFlow from './pages/BlockchainProcessFlow';
+import BlockchainNetworkDashboard from './pages/BlockchainNetworkDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -750,6 +751,7 @@ export const PAGES = {
     "PlatformBlockchainProvisioning": PlatformBlockchainProvisioning,
     "LoyaltyCustomerBlockchain": LoyaltyCustomerBlockchain,
     "BlockchainProcessFlow": BlockchainProcessFlow,
+    "BlockchainNetworkDashboard": BlockchainNetworkDashboard,
 }
 
 export const pagesConfig = {
