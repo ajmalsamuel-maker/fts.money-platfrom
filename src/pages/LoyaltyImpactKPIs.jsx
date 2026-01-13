@@ -6,9 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Badge } from "@/components/ui/badge";
-import { Trophy, Menu, X, Plus, TrendingUp, Target } from 'lucide-react';
-import { cn } from "@/lib/utils";
+import CustomerPortalSidebar from '@/components/loyalty/CustomerPortalSidebar';
+import { Menu, Plus, TrendingUp, Target } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function LoyaltyImpactKPIs() {
@@ -70,37 +69,17 @@ export default function LoyaltyImpactKPIs() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/20 to-blue-50/30">
-            <aside className={cn("fixed md:static inset-y-0 left-0 z-50 w-64 bg-white border-r flex flex-col h-screen transform transition-transform",
-                mobileMenuOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0")}>
-                <div className="h-16 flex items-center justify-between border-b px-4">
-                    <div className="flex items-center gap-2">
-                        <Trophy className="h-6 w-6 text-purple-600" />
-                        <span className="font-bold">Loyalty Portal</span>
-                    </div>
-                    <button onClick={() => setMobileMenuOpen(false)} className="md:hidden">
-                        <X className="h-5 w-5" />
-                    </button>
-                </div>
-
-                <div className="p-4 border-b bg-purple-50">
-                    <p className="text-xs text-slate-600">Organization</p>
-                    <p className="font-semibold">{session.organization_name}</p>
-                    <Badge className="mt-2 capitalize">{session.subscription_tier}</Badge>
-                </div>
-
-                <nav className="flex-1 p-4 space-y-2">
-                    <a href="/LoyaltyCustomerPortal" className="block px-3 py-2 rounded-lg hover:bg-slate-50">Overview</a>
-                    <a href="/LoyaltyImpactIndex" className="block px-3 py-2 rounded-lg hover:bg-slate-50">Impact Index</a>
-                    <a href="/LoyaltyImpactKPIs" className="block px-3 py-2 rounded-lg bg-purple-50 text-purple-700 font-medium">
-                        <Target className="h-4 w-4 inline mr-2" />Impact KPIs
-                    </a>
-                </nav>
-            </aside>
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/20 to-blue-50/30 flex">
+            <CustomerPortalSidebar 
+                session={session}
+                currentPage="/LoyaltyImpactKPIs"
+                mobileMenuOpen={mobileMenuOpen}
+                setMobileMenuOpen={setMobileMenuOpen}
+            />
 
             {mobileMenuOpen && <div className="fixed inset-0 bg-black/50 z-40 md:hidden" onClick={() => setMobileMenuOpen(false)} />}
 
-            <div className="md:ml-64">
+            <div className="flex-1">
                 <header className="h-16 bg-white/80 backdrop-blur-xl border-b flex items-center justify-between px-4 md:px-6 sticky top-0 z-10">
                     <div className="flex items-center gap-3">
                         <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setMobileMenuOpen(true)}>
