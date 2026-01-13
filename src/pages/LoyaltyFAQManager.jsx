@@ -15,7 +15,7 @@ import { toast } from 'sonner';
 import CustomerPortalSidebar from '@/components/loyalty/CustomerPortalSidebar';
 
 export default function LoyaltyFAQManager() {
-    const [session] = useState(() => JSON.parse(localStorage.getItem('loyalty_session') || '{}'));
+    const [session] = useState(() => JSON.parse(localStorage.getItem('loyalty_customer_session') || '{}'));
     const [dialogOpen, setDialogOpen] = useState(false);
     const [editingFAQ, setEditingFAQ] = useState(null);
     const [formData, setFormData] = useState({
