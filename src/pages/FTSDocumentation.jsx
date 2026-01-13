@@ -32,6 +32,7 @@ import { PlatformPortalsGuide } from '@/components/docs/PlatformPortalsGuide';
 import NANOSustainabilityIntegrationDoc from '@/components/docs/NANOSustainabilityIntegrationDoc';
 import FIXScoreSystemDoc from '@/components/docs/FIXScoreSystemDoc';
 import NANOSustainabilityDoc from '@/components/docs/NANOSustainabilityDoc';
+import LoyaltyImpactPlatformDoc from '@/components/docs/LoyaltyImpactPlatformDoc';
 import InvoicingSystemDoc from '@/components/docs/InvoicingSystemDoc';
 import PCIAdvancedFeaturesDoc from '@/components/docs/PCIAdvancedFeaturesDoc';
 import ServicePublicationDoc from '@/components/docs/ServicePublicationDoc';
