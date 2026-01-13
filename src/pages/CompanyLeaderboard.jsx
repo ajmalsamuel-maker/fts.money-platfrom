@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Trophy, Medal, TrendingUp, Menu, X, LogOut } from 'lucide-react';
+import { Trophy, Medal, TrendingUp, Menu, X, LogOut, Building2, Gift, Target, HelpCircle, Coins, ChevronRight } from 'lucide-react';
 import { cn } from "@/lib/utils";
 
 export default function CompanyLeaderboard() {
