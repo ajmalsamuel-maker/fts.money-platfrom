@@ -12,6 +12,7 @@ import { Plus, Edit2, Trash2, Building2, Mail, Globe, Copy, Check, AlertCircle, 
 import { toast } from 'sonner';
 import OnboardingWizard from '@/components/einvoicing/BusinessEInvoiceOnboarding';
 import { createPageUrl } from '@/utils';
+import { GLOBAL_EINVOICING_STANDARDS } from '@/components/utils/globalEInvoicingRegistry';
 
 export default function BusinessEInvoiceManagement() {
     const [searchTerm, setSearchTerm] = useState('');
