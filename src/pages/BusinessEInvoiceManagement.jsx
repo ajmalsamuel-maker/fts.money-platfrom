@@ -35,7 +35,7 @@ export default function BusinessEInvoiceManagement() {
 
     // Create organization
     const createMutation = useMutation({
-        mutationFn: (data) => base44.entities.CompanyAccount.create({
+        mutationFn: (data) => base44.entities.BusinessEInvoicingOrganization.create({
             ...data,
             portal_url: `${window.location.origin}/BusinessEInvoicePortal?org=${data.org_name.toLowerCase().replace(/\s+/g, '-')}`
         }),
@@ -50,7 +50,7 @@ export default function BusinessEInvoiceManagement() {
 
     // Update organization
     const updateMutation = useMutation({
-        mutationFn: (data) => base44.entities.CompanyAccount.update(editingOrg.id, data),
+        mutationFn: (data) => base44.entities.BusinessEInvoicingOrganization.update(editingOrg.id, data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['businessEInvoicingOrgs'] });
             setOpenDialog(false);
@@ -63,7 +63,7 @@ export default function BusinessEInvoiceManagement() {
 
     // Delete organization
     const deleteMutation = useMutation({
-        mutationFn: (id) => base44.entities.CompanyAccount.delete(id),
+        mutationFn: (id) => base44.entities.BusinessEInvoicingOrganization.delete(id),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['businessEInvoicingOrgs'] });
             toast.success('Organization deleted');
