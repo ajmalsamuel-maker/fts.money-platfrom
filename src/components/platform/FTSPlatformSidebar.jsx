@@ -219,6 +219,7 @@ const menuSections = [
             { labelKey: 'kongAPIIntegration', descKey: 'kongAPIIntegrationDesc', path: 'KongAPIIntegrationGuide', icon: Code, priority: true },
             { labelKey: 'domainManagement', descKey: 'domainManagementDesc', path: 'FTSDomainManagement', icon: Globe },
             { labelKey: 'apiGatewayConfig', descKey: 'apiGatewayConfigDesc', path: 'APIGatewayConfiguration', icon: Zap },
+            { label: 'Blockchain Provisioning', description: 'Permissioned chains per customer', path: 'PlatformBlockchainProvisioning', icon: Shield, priority: true },
             { labelKey: 'blockchain', descKey: 'blockchainDesc', path: 'FTSBlockchainIntegration', icon: Globe }
         ]
     },
