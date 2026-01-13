@@ -48,15 +48,32 @@ export default function CompanyDashboard() {
                 </div>
 
                 <nav className="flex-1 p-4 space-y-2">
-                    <a href="/CompanyDashboard" className="flex items-center gap-3 px-3 py-2 rounded-lg bg-indigo-50 text-indigo-700 font-medium">
-                        <Building2 className="h-4 w-4" />Dashboard
+                    <a href="/ParticipantDashboard" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50">
+                        <Trophy className="h-4 w-4" />Dashboard
                     </a>
-                    <a href="/CompanyLeaderboard" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50">
-                        <Trophy className="h-4 w-4" />Leaderboard
+                    <a href="/ParticipantActivities" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50">
+                        <TrendingUp className="h-4 w-4" />My Activities
                     </a>
-                    <a href="/CompanyTeam" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50">
-                        <Users className="h-4 w-4" />Team Members
+                    <a href="/ParticipantRewards" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50">
+                        <Gift className="h-4 w-4" />Redeem Rewards
                     </a>
+                    <a href="/ParticipantChallenges" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50">
+                        <Target className="h-4 w-4" />Challenges
+                    </a>
+                    <a href="/ParticipantHelp" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50">
+                        <HelpCircle className="h-4 w-4" />Help & FAQ
+                    </a>
+                    <div className="border-t pt-2 mt-2">
+                        <a href="/CompanyAccountSetup" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50">
+                            <Building2 className="h-4 w-4" />Company Account
+                        </a>
+                        <a href="/CompanyDashboard" className="flex items-center gap-3 px-3 py-2 rounded-lg bg-purple-50 text-purple-700 font-medium">
+                            <TrendingUp className="h-4 w-4" />Company Dashboard
+                        </a>
+                        <a href="/CompanyLeaderboard" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50">
+                            <Coins className="h-4 w-4" />Leaderboard
+                        </a>
+                    </div>
                 </nav>
 
                 <div className="p-4 border-t">
