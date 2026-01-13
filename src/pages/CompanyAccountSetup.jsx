@@ -68,8 +68,83 @@ export default function CompanyAccountSetup() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4">
-            <Card className="max-w-2xl w-full">
+        <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-slate-50 flex">
+            {/* Sidebar */}
+            <aside className={cn("fixed md:relative inset-y-0 left-0 z-50 w-64 bg-white border-r flex flex-col h-screen transform transition-transform",
+                mobileMenuOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0")}>
+                <div className="h-16 flex items-center justify-between border-b px-4 bg-gradient-to-r from-purple-600 to-blue-600">
+                    <div className="flex items-center gap-2 text-white">
+                        <Trophy className="h-6 w-6" />
+                        <span className="font-bold text-sm">My Rewards</span>
+                    </div>
+                    <button onClick={() => setMobileMenuOpen(false)} className="md:hidden text-white">
+                        <X className="h-5 w-5" />
+                    </button>
+                </div>
+
+                <div className="p-4 border-b bg-purple-50">
+                    <p className="text-xs text-slate-600">Welcome</p>
+                    <p className="font-semibold">{session.full_name}</p>
+                    <Badge className={cn("mt-2 capitalize", tierColors[session.current_tier])}>{session.current_tier} Tier</Badge>
+                </div>
+
+                <nav className="flex-1 p-4 space-y-2">
+                    <a href="/ParticipantDashboard" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50">
+                        <Trophy className="h-4 w-4" />Dashboard
+                    </a>
+                    <a href="/ParticipantActivities" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50">
+                        <TrendingUp className="h-4 w-4" />My Activities
+                    </a>
+                    <a href="/ParticipantRewards" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50">
+                        <Gift className="h-4 w-4" />Redeem Rewards
+                    </a>
+                    <a href="/ParticipantChallenges" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50">
+                        <Target className="h-4 w-4" />Challenges
+                    </a>
+                    <a href="/ParticipantHelp" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50">
+                        <HelpCircle className="h-4 w-4" />Help & FAQ
+                    </a>
+                    <div className="border-t pt-2 mt-2">
+                        <a href="/CompanyAccountSetup" className="flex items-center gap-3 px-3 py-2 rounded-lg bg-purple-50 text-purple-700 font-medium">
+                            <Building2 className="h-4 w-4" />Company Account
+                        </a>
+                        <a href="/CompanyDashboard" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50">
+                            <TrendingUp className="h-4 w-4" />Company Dashboard
+                        </a>
+                        <a href="/CompanyLeaderboard" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50">
+                            <Coins className="h-4 w-4" />Leaderboard
+                        </a>
+                    </div>
+                </nav>
+
+                <div className="p-4 border-t">
+                    <Button onClick={() => { 
+                        localStorage.removeItem('participant_session'); 
+                        window.location.href = '/ParticipantLogin'; 
+                    }} variant="outline" className="w-full text-red-600">
+                        <LogOut className="h-4 w-4 mr-2" />Logout
+                    </Button>
+                </div>
+            </aside>
+
+            {mobileMenuOpen && <div className="fixed inset-0 bg-black/50 z-40 md:hidden" onClick={() => setMobileMenuOpen(false)} />}
+
+            <div className="flex-1">
+                <header className="h-16 bg-white/80 backdrop-blur-xl border-b flex items-center justify-between px-4 md:px-6 sticky top-0 z-10">
+                    <div className="flex items-center gap-3">
+                        <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setMobileMenuOpen(true)}>
+                            <Menu className="h-5 w-5" />
+                        </Button>
+                        <div className="flex items-center gap-2 text-sm">
+                            <a href="/ParticipantDashboard" className="text-slate-600 hover:text-slate-900">Dashboard</a>
+                            <ChevronRight className="h-4 w-4 text-slate-400" />
+                            <span className="text-slate-900 font-medium">Create Company Account</span>
+                        </div>
+                    </div>
+                </header>
+
+                <div className="p-4 md:p-6">
+            <Card className="max-w-2xl">
                 <CardHeader className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
                     <div className="flex items-center gap-3">
                         <Building2 className="h-8 w-8" />
