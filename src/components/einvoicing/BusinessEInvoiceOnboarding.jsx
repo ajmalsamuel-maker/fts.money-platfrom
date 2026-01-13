@@ -372,7 +372,7 @@ export default function BusinessEInvoiceOnboarding({ onSuccess }) {
                                     />
                                 </div>
                                 <div className="flex gap-3 pt-4">
-                                    <Button variant="outline" onClick={() => setStep(STEP_3_AML_KYB)}>Back</Button>
+                                    <Button variant="outline" onClick={() => setStep(orgData.lei_status === 'grace_period' ? STEP_2_LEI : STEP_3_AML_KYB)}>Back</Button>
                                     <Button onClick={handleCreateAdmin} className="bg-blue-600" disabled={createAdminMutation.isPending}>
                                         Create Organization & Admin
                                     </Button>
