@@ -89,11 +89,17 @@ export default function CompanyDashboard() {
             {mobileMenuOpen && <div className="fixed inset-0 bg-black/50 z-40 md:hidden" onClick={() => setMobileMenuOpen(false)} />}
 
             <div className="flex-1 overflow-y-auto">
-                <header className="h-16 bg-white/80 backdrop-blur-xl border-b flex items-center px-6 sticky top-0 z-10">
-                    <Button variant="ghost" size="icon" className="md:hidden mr-4" onClick={() => setMobileMenuOpen(true)}>
-                        <Menu className="h-5 w-5" />
-                    </Button>
-                    <h1 className="text-lg font-semibold">{company?.company_name || 'Loading...'}</h1>
+                <header className="h-16 bg-white/80 backdrop-blur-xl border-b flex items-center justify-between px-4 md:px-6 sticky top-0 z-10">
+                    <div className="flex items-center gap-3">
+                        <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setMobileMenuOpen(true)}>
+                            <Menu className="h-5 w-5" />
+                        </Button>
+                        <div className="flex items-center gap-2 text-sm">
+                            <a href="/ParticipantDashboard" className="text-slate-600 hover:text-slate-900">Dashboard</a>
+                            <ChevronRight className="h-4 w-4 text-slate-400" />
+                            <span className="text-slate-900 font-medium">Company Dashboard</span>
+                        </div>
+                    </div>
                 </header>
 
                 <div className="p-6 max-w-6xl mx-auto">
