@@ -83,6 +83,11 @@ export default function ParticipantSocialTasks() {
         return completedActivities.some(activity => activity.activity_type === taskId);
     };
 
+    const filteredTasks = useMemo(() => {
+        if (filterParam === 'all') return socialTasks;
+        return socialTasks.filter(task => task.task_type === filterParam);
+    }, [socialTasks, filterParam]);
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 flex">
             {/* Sidebar */}
