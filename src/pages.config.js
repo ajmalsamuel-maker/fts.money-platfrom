@@ -54,6 +54,9 @@ import CommunityPortalDashboard from './pages/CommunityPortalDashboard';
 import CommunityPortalLogin from './pages/CommunityPortalLogin';
 import CommunityProductCatalog from './pages/CommunityProductCatalog';
 import CommunityUserManagement from './pages/CommunityUserManagement';
+import CompanyAccountSetup from './pages/CompanyAccountSetup';
+import CompanyDashboard from './pages/CompanyDashboard';
+import CompanyLeaderboard from './pages/CompanyLeaderboard';
 import Compliance from './pages/Compliance';
 import ComplianceFramework from './pages/ComplianceFramework';
 import ComplianceMonitoringDashboard from './pages/ComplianceMonitoringDashboard';
@@ -384,9 +387,7 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import CompanyAccountSetup from './pages/CompanyAccountSetup';
-import CompanyDashboard from './pages/CompanyDashboard';
-import CompanyLeaderboard from './pages/CompanyLeaderboard';
+import ParticipantSocialTasks from './pages/ParticipantSocialTasks';
 import __Layout from './Layout.jsx';
 
 
@@ -447,6 +448,9 @@ export const PAGES = {
     "CommunityPortalLogin": CommunityPortalLogin,
     "CommunityProductCatalog": CommunityProductCatalog,
     "CommunityUserManagement": CommunityUserManagement,
+    "CompanyAccountSetup": CompanyAccountSetup,
+    "CompanyDashboard": CompanyDashboard,
+    "CompanyLeaderboard": CompanyLeaderboard,
     "Compliance": Compliance,
     "ComplianceFramework": ComplianceFramework,
     "ComplianceMonitoringDashboard": ComplianceMonitoringDashboard,
@@ -777,9 +781,7 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "CompanyAccountSetup": CompanyAccountSetup,
-    "CompanyDashboard": CompanyDashboard,
-    "CompanyLeaderboard": CompanyLeaderboard,
+    "ParticipantSocialTasks": ParticipantSocialTasks,
 }
 
 export const pagesConfig = {
