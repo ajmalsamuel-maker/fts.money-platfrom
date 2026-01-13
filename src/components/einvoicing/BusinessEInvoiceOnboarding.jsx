@@ -121,8 +121,8 @@ export default function BusinessEInvoiceOnboarding({ onSuccess }) {
     };
 
     const handleNextFromOrgInfo = () => {
-        if (!orgData.org_name || !orgData.business_email || !orgData.country) {
-            toast.error('Please fill required fields');
+        if (!orgData.org_name || !orgData.business_email || !orgData.country || !adminData.admin_email) {
+            toast.error('Please fill all required fields');
             return;
         }
         setStep(STEP_2_LEI);
