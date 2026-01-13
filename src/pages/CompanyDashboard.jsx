@@ -4,7 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Building2, Users, TrendingUp, Trophy, LogOut, Menu, X } from 'lucide-react';
+import { Building2, Users, TrendingUp, Trophy, LogOut, Menu, X, ChevronRight, Gift, Target, HelpCircle, Coins } from 'lucide-react';
 import { cn } from "@/lib/utils";
 
 export default function CompanyDashboard() {
