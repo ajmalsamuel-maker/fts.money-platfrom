@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,7 +9,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Trophy, Target, Calendar, Award, Plus, Menu, X, Zap } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Switch } from "@/components/ui/switch";
+import CustomerPortalSidebar from '@/components/loyalty/CustomerPortalSidebar';
+import { Trophy, Target, Calendar, Award, Plus, Menu, Users2, Zap, Gift, Coins } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { toast } from 'sonner';
 
@@ -26,6 +29,14 @@ export default function LoyaltyChallenges() {
         challenge_type: 'activity_count',
         target_value: 5,
         bonus_points: 100,
+        bonus_nft: '',
+        difficulty_level: 'medium',
+        is_team_based: false,
+        team_size: 4,
+        entry_fee_points: 0,
+        max_participants: null,
+        prize_pool: {},
+        recurrence: 'none',
         start_date: new Date().toISOString().split('T')[0],
         end_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
     });
@@ -109,35 +120,12 @@ export default function LoyaltyChallenges() {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/20 to-blue-50/30 flex">
-            <aside className={cn("fixed md:relative inset-y-0 left-0 z-50 w-64 bg-white border-r flex flex-col h-screen md:h-auto transform transition-transform",
-                mobileMenuOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0")}>
-                <div className="h-16 flex items-center justify-between border-b px-4">
-                    <div className="flex items-center gap-2">
-                        <Trophy className="h-6 w-6 text-purple-600" />
-                        <span className="font-bold">Challenges</span>
-                    </div>
-                    <button onClick={() => setMobileMenuOpen(false)} className="md:hidden">
-                        <X className="h-5 w-5" />
-                    </button>
-                </div>
-
-                <div className="p-4 border-b bg-purple-50">
-                    <p className="text-xs text-slate-600">Organization</p>
-                    <p className="font-semibold">{session.organization_name}</p>
-                </div>
-
-                <nav className="flex-1 p-4 space-y-2">
-                    <a href="/LoyaltyCustomerPortal" className="block px-3 py-2 rounded-lg hover:bg-slate-50">
-                        Dashboard
-                    </a>
-                    <a href="/LoyaltyLeaderboards" className="block px-3 py-2 rounded-lg hover:bg-slate-50">
-                        Leaderboards
-                    </a>
-                    <a href="/LoyaltyChallenges" className="block px-3 py-2 rounded-lg bg-purple-50 text-purple-700 font-medium">
-                        Challenges
-                    </a>
-                </nav>
-            </aside>
+            <CustomerPortalSidebar 
+                session={session}
+                currentPage="/LoyaltyChallenges"
+                mobileMenuOpen={mobileMenuOpen}
+                setMobileMenuOpen={setMobileMenuOpen}
+            />
 
             {mobileMenuOpen && <div className="fixed inset-0 bg-black/50 z-40 md:hidden" onClick={() => setMobileMenuOpen(false)} />}
 
@@ -159,78 +147,162 @@ export default function LoyaltyChallenges() {
                                 Create Challenge
                             </Button>
                         </DialogTrigger>
-                        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
                             <DialogHeader>
                                 <DialogTitle>Create New Challenge</DialogTitle>
+                                <CardDescription>Build engaging challenges with prizes and team features</CardDescription>
                             </DialogHeader>
-                            <div className="space-y-4">
-                                <div>
-                                    <Label>Program</Label>
-                                    <Select value={newChallenge.program_id} onValueChange={(v) => setNewChallenge({...newChallenge, program_id: v})}>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Select program" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {programs.map(p => (
-                                                <SelectItem key={p.id} value={p.id}>{p.program_name}</SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                </div>
+                            <Tabs defaultValue="basic" className="w-full">
+                                <TabsList className="grid w-full grid-cols-4">
+                                    <TabsTrigger value="basic">Basic</TabsTrigger>
+                                    <TabsTrigger value="mechanics">Mechanics</TabsTrigger>
+                                    <TabsTrigger value="prizes">Prizes</TabsTrigger>
+                                    <TabsTrigger value="advanced">Advanced</TabsTrigger>
+                                </TabsList>
 
-                                <div>
-                                    <Label>Challenge Name</Label>
-                                    <Input value={newChallenge.challenge_name} onChange={(e) => setNewChallenge({...newChallenge, challenge_name: e.target.value})} 
-                                        placeholder="5 Activities This Week" />
-                                </div>
-
-                                <div>
-                                    <Label>Description</Label>
-                                    <Textarea value={newChallenge.challenge_description} onChange={(e) => setNewChallenge({...newChallenge, challenge_description: e.target.value})} 
-                                        placeholder="Complete 5 activities this week to earn bonus points!" rows={3} />
-                                </div>
-
-                                <div>
-                                    <Label>Challenge Type</Label>
-                                    <Select value={newChallenge.challenge_type} onValueChange={(v) => setNewChallenge({...newChallenge, challenge_type: v})}>
-                                        <SelectTrigger>
-                                            <SelectValue />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="activity_count">Complete X Activities</SelectItem>
-                                            <SelectItem value="points_target">Earn X Points</SelectItem>
-                                            <SelectItem value="streak">Maintain X Day Streak</SelectItem>
-                                            <SelectItem value="specific_activity">Complete Specific Activity</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-4">
+                                <TabsContent value="basic" className="space-y-4 mt-4">
                                     <div>
-                                        <Label>Target Value</Label>
-                                        <Input type="number" value={newChallenge.target_value} onChange={(e) => setNewChallenge({...newChallenge, target_value: Number(e.target.value)})} />
+                                        <Label>Challenge Name</Label>
+                                        <Input value={newChallenge.challenge_name} onChange={(e) => setNewChallenge({...newChallenge, challenge_name: e.target.value})} 
+                                            placeholder="30-Day Fitness Sprint" required />
                                     </div>
+                                    <div>
+                                        <Label>Description</Label>
+                                        <Textarea value={newChallenge.challenge_description} onChange={(e) => setNewChallenge({...newChallenge, challenge_description: e.target.value})} 
+                                            placeholder="Complete 30 workouts in 30 days!" rows={3} />
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <Label>Start Date</Label>
+                                            <Input type="date" value={newChallenge.start_date} onChange={(e) => setNewChallenge({...newChallenge, start_date: e.target.value})} />
+                                        </div>
+                                        <div>
+                                            <Label>End Date</Label>
+                                            <Input type="date" value={newChallenge.end_date} onChange={(e) => setNewChallenge({...newChallenge, end_date: e.target.value})} />
+                                        </div>
+                                    </div>
+                                </TabsContent>
+
+                                <TabsContent value="mechanics" className="space-y-4 mt-4">
+                                    <div>
+                                        <Label>Challenge Type</Label>
+                                        <Select value={newChallenge.challenge_type} onValueChange={(v) => setNewChallenge({...newChallenge, challenge_type: v})}>
+                                            <SelectTrigger>
+                                                <SelectValue />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="activity_count">Activity Count</SelectItem>
+                                                <SelectItem value="points_target">Points Target</SelectItem>
+                                                <SelectItem value="streak">Streak Maintenance</SelectItem>
+                                                <SelectItem value="specific_activity">Specific Activity</SelectItem>
+                                                <SelectItem value="distance_goal">Distance Goal</SelectItem>
+                                                <SelectItem value="time_goal">Time Goal</SelectItem>
+                                                <SelectItem value="team_challenge">Team Challenge</SelectItem>
+                                                <SelectItem value="social_challenge">Social Challenge</SelectItem>
+                                                <SelectItem value="sustainability_goal">Sustainability Goal</SelectItem>
+                                                <SelectItem value="learning_path">Learning Path</SelectItem>
+                                                <SelectItem value="habit_building">Habit Building</SelectItem>
+                                                <SelectItem value="competition">Competition</SelectItem>
+                                                <SelectItem value="collaborative">Collaborative Goal</SelectItem>
+                                                <SelectItem value="progressive">Progressive Challenge</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <Label>Target Value</Label>
+                                            <Input type="number" value={newChallenge.target_value} onChange={(e) => setNewChallenge({...newChallenge, target_value: Number(e.target.value)})} />
+                                        </div>
+                                        <div>
+                                            <Label>Difficulty</Label>
+                                            <Select value={newChallenge.difficulty_level} onValueChange={(v) => setNewChallenge({...newChallenge, difficulty_level: v})}>
+                                                <SelectTrigger>
+                                                    <SelectValue />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="easy">🟢 Easy</SelectItem>
+                                                    <SelectItem value="medium">🟡 Medium</SelectItem>
+                                                    <SelectItem value="hard">🟠 Hard</SelectItem>
+                                                    <SelectItem value="expert">🔴 Expert</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center justify-between p-3 border rounded-lg">
+                                        <div>
+                                            <Label>Team-Based Challenge</Label>
+                                            <p className="text-xs text-slate-500">Require teams to compete</p>
+                                        </div>
+                                        <Switch 
+                                            checked={newChallenge.is_team_based}
+                                            onCheckedChange={(checked) => setNewChallenge({...newChallenge, is_team_based: checked})}
+                                        />
+                                    </div>
+                                    {newChallenge.is_team_based && (
+                                        <div>
+                                            <Label>Team Size</Label>
+                                            <Input type="number" value={newChallenge.team_size} onChange={(e) => setNewChallenge({...newChallenge, team_size: Number(e.target.value)})} />
+                                        </div>
+                                    )}
+                                </TabsContent>
+
+                                <TabsContent value="prizes" className="space-y-4 mt-4">
                                     <div>
                                         <Label>Bonus Points</Label>
                                         <Input type="number" value={newChallenge.bonus_points} onChange={(e) => setNewChallenge({...newChallenge, bonus_points: Number(e.target.value)})} />
-                                    </div>
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <Label>Start Date</Label>
-                                        <Input type="date" value={newChallenge.start_date} onChange={(e) => setNewChallenge({...newChallenge, start_date: e.target.value})} />
+                                        <p className="text-xs text-slate-500 mt-1">Points awarded to all completers</p>
                                     </div>
                                     <div>
-                                        <Label>End Date</Label>
-                                        <Input type="date" value={newChallenge.end_date} onChange={(e) => setNewChallenge({...newChallenge, end_date: e.target.value})} />
+                                        <Label>Bonus NFT Contract (optional)</Label>
+                                        <Input value={newChallenge.bonus_nft} onChange={(e) => setNewChallenge({...newChallenge, bonus_nft: e.target.value})} placeholder="0x..." />
+                                        <p className="text-xs text-slate-500 mt-1">Mint completion NFT badge</p>
                                     </div>
-                                </div>
+                                    <div>
+                                        <Label>Prize Pool (JSON)</Label>
+                                        <Textarea 
+                                            placeholder='{"1st": {"points": 1000, "nft": true}, "2nd": {"points": 500}, "3rd": {"points": 250}}'
+                                            value={JSON.stringify(newChallenge.prize_pool, null, 2)}
+                                            onChange={(e) => {
+                                                try {
+                                                    setNewChallenge({...newChallenge, prize_pool: JSON.parse(e.target.value)});
+                                                } catch {}
+                                            }}
+                                            rows={4}
+                                            className="font-mono text-xs"
+                                        />
+                                    </div>
+                                </TabsContent>
 
-                                <Button onClick={() => createChallengeMutation.mutate()} className="w-full bg-purple-600" disabled={createChallengeMutation.isPending}>
-                                    {createChallengeMutation.isPending ? 'Creating...' : 'Create Challenge'}
-                                </Button>
-                            </div>
+                                <TabsContent value="advanced" className="space-y-4 mt-4">
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <Label>Entry Fee (points)</Label>
+                                            <Input type="number" value={newChallenge.entry_fee_points} onChange={(e) => setNewChallenge({...newChallenge, entry_fee_points: Number(e.target.value)})} />
+                                        </div>
+                                        <div>
+                                            <Label>Max Participants</Label>
+                                            <Input type="number" value={newChallenge.max_participants || ''} onChange={(e) => setNewChallenge({...newChallenge, max_participants: e.target.value ? Number(e.target.value) : null})} placeholder="Unlimited" />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <Label>Recurrence</Label>
+                                        <Select value={newChallenge.recurrence} onValueChange={(v) => setNewChallenge({...newChallenge, recurrence: v})}>
+                                            <SelectTrigger>
+                                                <SelectValue />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="none">One-Time</SelectItem>
+                                                <SelectItem value="daily">Daily</SelectItem>
+                                                <SelectItem value="weekly">Weekly</SelectItem>
+                                                <SelectItem value="monthly">Monthly</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                </TabsContent>
+                            </Tabs>
+                            <Button onClick={() => createChallengeMutation.mutate()} className="w-full bg-gradient-to-r from-purple-600 to-blue-600 mt-6" disabled={createChallengeMutation.isPending}>
+                                {createChallengeMutation.isPending ? 'Creating...' : 'Create Challenge'}
+                            </Button>
                         </DialogContent>
                     </Dialog>
                 </header>

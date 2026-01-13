@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import CustomerPortalSidebar from '@/components/loyalty/CustomerPortalSidebar';
-import { Menu, Plus, Pencil, Trash2, Package } from 'lucide-react';
+import { Menu, Plus, Pencil, Trash2, Package, Gift, Zap, CreditCard, Image } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function LoyaltyRewardsCatalog() {
@@ -26,6 +28,14 @@ export default function LoyaltyRewardsCatalog() {
         monetary_value: 0,
         description: '',
         inventory_available: -1,
+        fulfillment_method: 'manual',
+        fulfillment_config: {},
+        tier_restricted: false,
+        allowed_tiers: [],
+        image_url: '',
+        terms_conditions: '',
+        expires_days: null,
+        max_per_user: null,
         is_active: true
     });
     const queryClient = useQueryClient();
@@ -91,6 +101,14 @@ export default function LoyaltyRewardsCatalog() {
             monetary_value: 0,
             description: '',
             inventory_available: -1,
+            fulfillment_method: 'manual',
+            fulfillment_config: {},
+            tier_restricted: false,
+            allowed_tiers: [],
+            image_url: '',
+            terms_conditions: '',
+            expires_days: null,
+            max_per_user: null,
             is_active: true
         });
     };
@@ -104,6 +122,14 @@ export default function LoyaltyRewardsCatalog() {
             monetary_value: reward.monetary_value || 0,
             description: reward.description || '',
             inventory_available: reward.inventory_available,
+            fulfillment_method: reward.fulfillment_method || 'manual',
+            fulfillment_config: reward.fulfillment_config || {},
+            tier_restricted: reward.tier_restricted || false,
+            allowed_tiers: reward.allowed_tiers || [],
+            image_url: reward.image_url || '',
+            terms_conditions: reward.terms_conditions || '',
+            expires_days: reward.expires_days || null,
+            max_per_user: reward.max_per_user || null,
             is_active: reward.is_active
         });
         setRewardDialog(true);
@@ -215,52 +241,189 @@ export default function LoyaltyRewardsCatalog() {
             </div>
 
             <Dialog open={rewardDialog} onOpenChange={setRewardDialog}>
-                <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
+                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
                     <DialogHeader>
                         <DialogTitle>{editingReward ? 'Edit' : 'Create'} Reward</DialogTitle>
+                        <CardDescription>Configure reward details and fulfillment automation</CardDescription>
                     </DialogHeader>
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        <div>
-                            <Label>Reward Name</Label>
-                            <Input value={formData.reward_name} onChange={(e) => setFormData({...formData, reward_name: e.target.value})} placeholder="e.g., VIP Meet & Greet" required />
-                        </div>
-                        <div>
-                            <Label>Reward Type</Label>
-                            <Select value={formData.reward_type} onValueChange={(v) => setFormData({...formData, reward_type: v})}>
-                                <SelectTrigger>
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="experience">Experience</SelectItem>
-                                    <SelectItem value="merchandise">Merchandise</SelectItem>
-                                    <SelectItem value="discount">Discount</SelectItem>
-                                    <SelectItem value="donation">Donation</SelectItem>
-                                    <SelectItem value="service">Service</SelectItem>
-                                    <SelectItem value="access">Access</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div>
-                            <Label>Description</Label>
-                            <Textarea value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} placeholder="Describe the reward..." rows={3} />
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <Label>Tokens Required</Label>
-                                <Input type="number" value={formData.points_required} onChange={(e) => setFormData({...formData, points_required: Number(e.target.value)})} required />
-                            </div>
-                            <div>
-                                <Label>Value (optional)</Label>
-                                <Input type="number" value={formData.monetary_value} onChange={(e) => setFormData({...formData, monetary_value: Number(e.target.value)})} placeholder="0" />
-                            </div>
-                        </div>
-                        <div>
-                            <Label>Inventory (-1 = unlimited)</Label>
-                            <Input type="number" value={formData.inventory_available} onChange={(e) => setFormData({...formData, inventory_available: Number(e.target.value)})} />
-                        </div>
-                        <div className="flex gap-3">
+                    <form onSubmit={handleSubmit}>
+                        <Tabs defaultValue="basic" className="w-full">
+                            <TabsList className="grid w-full grid-cols-4">
+                                <TabsTrigger value="basic">Basic Info</TabsTrigger>
+                                <TabsTrigger value="fulfillment">Fulfillment</TabsTrigger>
+                                <TabsTrigger value="restrictions">Restrictions</TabsTrigger>
+                                <TabsTrigger value="display">Display</TabsTrigger>
+                            </TabsList>
+
+                            <TabsContent value="basic" className="space-y-4 mt-4">
+                                <div>
+                                    <Label>Reward Name</Label>
+                                    <Input value={formData.reward_name} onChange={(e) => setFormData({...formData, reward_name: e.target.value})} placeholder="$50 Amazon Gift Card" required />
+                                </div>
+                                <div>
+                                    <Label>Reward Type</Label>
+                                    <Select value={formData.reward_type} onValueChange={(v) => setFormData({...formData, reward_type: v})}>
+                                        <SelectTrigger>
+                                            <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent className="max-h-80">
+                                            <SelectItem value="experience">Experience</SelectItem>
+                                            <SelectItem value="merchandise">Merchandise</SelectItem>
+                                            <SelectItem value="discount">Discount Code</SelectItem>
+                                            <SelectItem value="donation">Charity Donation</SelectItem>
+                                            <SelectItem value="service">Service</SelectItem>
+                                            <SelectItem value="access">VIP Access</SelectItem>
+                                            <SelectItem value="digital_goods">Digital Goods</SelectItem>
+                                            <SelectItem value="subscription">Subscription</SelectItem>
+                                            <SelectItem value="gift_card">Gift Card</SelectItem>
+                                            <SelectItem value="cash_back">Cash Back</SelectItem>
+                                            <SelectItem value="crypto">Cryptocurrency</SelectItem>
+                                            <SelectItem value="nft">NFT</SelectItem>
+                                            <SelectItem value="travel">Travel & Hotels</SelectItem>
+                                            <SelectItem value="wellness">Wellness & Spa</SelectItem>
+                                            <SelectItem value="training">Training & Courses</SelectItem>
+                                            <SelectItem value="consultation">1-on-1 Consultation</SelectItem>
+                                            <SelectItem value="membership">Premium Membership</SelectItem>
+                                            <SelectItem value="event_ticket">Event Tickets</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div>
+                                    <Label>Description</Label>
+                                    <Textarea value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} placeholder="Detailed reward description..." rows={4} />
+                                </div>
+                                <div className="grid grid-cols-3 gap-4">
+                                    <div>
+                                        <Label>Tokens Required</Label>
+                                        <Input type="number" value={formData.points_required} onChange={(e) => setFormData({...formData, points_required: Number(e.target.value)})} required />
+                                    </div>
+                                    <div>
+                                        <Label>USD Value</Label>
+                                        <Input type="number" value={formData.monetary_value} onChange={(e) => setFormData({...formData, monetary_value: Number(e.target.value)})} placeholder="0" />
+                                    </div>
+                                    <div>
+                                        <Label>Inventory</Label>
+                                        <Input type="number" value={formData.inventory_available} onChange={(e) => setFormData({...formData, inventory_available: Number(e.target.value)})} placeholder="-1 = unlimited" />
+                                    </div>
+                                </div>
+                            </TabsContent>
+
+                            <TabsContent value="fulfillment" className="space-y-4 mt-4">
+                                <div>
+                                    <Label>Fulfillment Method</Label>
+                                    <Select value={formData.fulfillment_method} onValueChange={(v) => setFormData({...formData, fulfillment_method: v})}>
+                                        <SelectTrigger>
+                                            <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent className="max-h-80">
+                                            <SelectItem value="manual">Manual Processing</SelectItem>
+                                            <SelectItem value="email_delivery">Email Delivery</SelectItem>
+                                            <SelectItem value="api_integration">API Integration</SelectItem>
+                                            <SelectItem value="physical_shipping">Physical Shipping</SelectItem>
+                                            <SelectItem value="digital_download">Digital Download</SelectItem>
+                                            <SelectItem value="blockchain_transfer">Blockchain Transfer</SelectItem>
+                                            <SelectItem value="instant_discount_code">Instant Discount Code</SelectItem>
+                                            <SelectItem value="stripe_payout">Stripe Payout</SelectItem>
+                                            <SelectItem value="paypal_payout">PayPal Payout</SelectItem>
+                                            <SelectItem value="gift_card_api">Gift Card API</SelectItem>
+                                            <SelectItem value="nft_mint">NFT Mint</SelectItem>
+                                            <SelectItem value="webhook">Custom Webhook</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                    <p className="text-xs text-slate-500 mt-1">
+                                        {formData.fulfillment_method === 'stripe_payout' && '💳 Automatically send cash via Stripe'}
+                                        {formData.fulfillment_method === 'gift_card_api' && '🎁 Integrated with Tango Card, Tremendous, etc.'}
+                                        {formData.fulfillment_method === 'nft_mint' && '🎨 Mint NFT on redemption'}
+                                        {formData.fulfillment_method === 'blockchain_transfer' && '⛓️ Transfer tokens on-chain'}
+                                    </p>
+                                </div>
+
+                                {['api_integration', 'webhook', 'gift_card_api', 'stripe_payout', 'blockchain_transfer'].includes(formData.fulfillment_method) && (
+                                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                                        <Label className="text-sm font-semibold mb-2 block">Integration Config</Label>
+                                        <Textarea 
+                                            placeholder='{"api_key": "...", "endpoint": "...", "contract_address": "..."}'
+                                            value={JSON.stringify(formData.fulfillment_config, null, 2)}
+                                            onChange={(e) => {
+                                                try {
+                                                    setFormData({...formData, fulfillment_config: JSON.parse(e.target.value)});
+                                                } catch {}
+                                            }}
+                                            rows={4}
+                                            className="font-mono text-xs"
+                                        />
+                                    </div>
+                                )}
+                            </TabsContent>
+
+                            <TabsContent value="restrictions" className="space-y-4 mt-4">
+                                <div className="flex items-center justify-between p-3 border rounded-lg">
+                                    <div>
+                                        <Label>Tier Restricted</Label>
+                                        <p className="text-xs text-slate-500">Limit to specific membership tiers</p>
+                                    </div>
+                                    <Switch 
+                                        checked={formData.tier_restricted}
+                                        onCheckedChange={(checked) => setFormData({...formData, tier_restricted: checked})}
+                                    />
+                                </div>
+
+                                {formData.tier_restricted && (
+                                    <div>
+                                        <Label>Allowed Tiers (select multiple)</Label>
+                                        <div className="grid grid-cols-2 gap-2 mt-2">
+                                            {['bronze', 'silver', 'gold', 'platinum'].map(tier => (
+                                                <Button
+                                                    key={tier}
+                                                    type="button"
+                                                    variant={formData.allowed_tiers.includes(tier) ? 'default' : 'outline'}
+                                                    size="sm"
+                                                    onClick={() => {
+                                                        const tiers = formData.allowed_tiers.includes(tier)
+                                                            ? formData.allowed_tiers.filter(t => t !== tier)
+                                                            : [...formData.allowed_tiers, tier];
+                                                        setFormData({...formData, allowed_tiers: tiers});
+                                                    }}
+                                                    className="capitalize"
+                                                >
+                                                    {tier}
+                                                </Button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <Label>Expiry (days)</Label>
+                                        <Input type="number" value={formData.expires_days || ''} onChange={(e) => setFormData({...formData, expires_days: e.target.value ? Number(e.target.value) : null})} placeholder="Never expires" />
+                                    </div>
+                                    <div>
+                                        <Label>Max Per User</Label>
+                                        <Input type="number" value={formData.max_per_user || ''} onChange={(e) => setFormData({...formData, max_per_user: e.target.value ? Number(e.target.value) : null})} placeholder="Unlimited" />
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <Label>Terms & Conditions</Label>
+                                    <Textarea value={formData.terms_conditions} onChange={(e) => setFormData({...formData, terms_conditions: e.target.value})} placeholder="Terms and conditions..." rows={3} />
+                                </div>
+                            </TabsContent>
+
+                            <TabsContent value="display" className="space-y-4 mt-4">
+                                <div>
+                                    <Label>Reward Image URL</Label>
+                                    <Input value={formData.image_url} onChange={(e) => setFormData({...formData, image_url: e.target.value})} placeholder="https://..." />
+                                </div>
+                                {formData.image_url && (
+                                    <img src={formData.image_url} alt="Preview" className="w-full h-48 object-cover rounded-lg" onError={(e) => e.target.style.display = 'none'} />
+                                )}
+                            </TabsContent>
+                        </Tabs>
+
+                        <div className="flex gap-3 mt-6">
                             <Button type="button" variant="outline" onClick={() => setRewardDialog(false)} className="flex-1">Cancel</Button>
-                            <Button type="submit" className="flex-1 bg-purple-600">{editingReward ? 'Update' : 'Create'}</Button>
+                            <Button type="submit" className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600">{editingReward ? 'Update' : 'Create'} Reward</Button>
                         </div>
                     </form>
                 </DialogContent>

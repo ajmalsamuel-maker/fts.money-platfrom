@@ -4,13 +4,22 @@ import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Trophy, Menu, X, Crown, Star, Award, Users } from 'lucide-react';
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import CustomerPortalSidebar from '@/components/loyalty/CustomerPortalSidebar';
+import { Trophy, Menu, Crown, Star, Award, Users, Gift, Zap, Sparkles } from 'lucide-react';
 import { cn } from "@/lib/utils";
+import { toast } from 'sonner';
 
 export default function LoyaltyTierManagement() {
     const [session] = useState(() => JSON.parse(localStorage.getItem('loyalty_customer_session') || '{}'));
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [selectedProgram, setSelectedProgram] = useState('');
+    const [editDialog, setEditDialog] = useState(false);
+    const [editingTier, setEditingTier] = useState(null);
 
     React.useEffect(() => {
         if (!session?.admin_email) {
@@ -51,64 +60,55 @@ export default function LoyaltyTierManagement() {
             key: 'bronze', 
             color: 'bg-orange-100 text-orange-800 border-orange-300', 
             icon: Star, 
+            threshold: 0,
+            multiplier: 1.0,
             description: 'Entry level - welcome bonus',
-            benefits: ['1x points earning rate', 'Basic rewards access', 'Community access']
+            benefits: ['1x points earning rate', 'Basic rewards access', 'Community access', 'Standard support'],
+            perks: ['Monthly newsletter', 'Basic analytics dashboard']
         },
         { 
             name: 'Silver', 
             key: 'silver', 
             color: 'bg-slate-200 text-slate-800 border-slate-400', 
             icon: Award, 
+            threshold: 500,
+            multiplier: 1.25,
             description: '500+ lifetime points',
-            benefits: ['1.25x points earning rate', 'Priority rewards', 'Event early access']
+            benefits: ['1.25x points earning rate', 'Priority rewards', 'Event early access', 'Priority support'],
+            perks: ['Exclusive challenges', 'Monthly bonus opportunities', 'Birthday rewards']
         },
         { 
             name: 'Gold', 
             key: 'gold', 
             color: 'bg-yellow-100 text-yellow-800 border-yellow-400', 
             icon: Trophy, 
+            threshold: 2000,
+            multiplier: 1.5,
             description: '2,000+ lifetime points',
-            benefits: ['1.5x points earning rate', 'Premium rewards', 'VIP experiences', 'Personal dashboard']
+            benefits: ['1.5x points earning rate', 'Premium rewards', 'VIP experiences', 'Personal dashboard', 'Concierge support'],
+            perks: ['Free reward shipping', 'Early product access', 'Quarterly bonus', 'Partner discounts']
         },
         { 
             name: 'Platinum', 
             key: 'platinum', 
             color: 'bg-purple-100 text-purple-800 border-purple-400', 
             icon: Crown, 
+            threshold: 10000,
+            multiplier: 2.0,
             description: '10,000+ lifetime points',
-            benefits: ['2x points earning rate', 'Exclusive rewards', 'Impact allocation', 'Founder events']
+            benefits: ['2x points earning rate', 'Exclusive rewards', 'Impact allocation', 'Founder events', 'Dedicated account manager'],
+            perks: ['VIP lounge access', 'Annual gift', 'Never-expire points', 'Custom experiences', 'NFT badges']
         }
     ];
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/20 to-blue-50/30 flex">
-            <aside className={cn("fixed md:relative inset-y-0 left-0 z-50 w-64 bg-white border-r flex flex-col h-screen md:h-auto transform transition-transform",
-                mobileMenuOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0")}>
-                <div className="h-16 flex items-center justify-between border-b px-4">
-                    <div className="flex items-center gap-2">
-                        <Trophy className="h-6 w-6 text-purple-600" />
-                        <span className="font-bold">Loyalty Portal</span>
-                    </div>
-                    <button onClick={() => setMobileMenuOpen(false)} className="md:hidden">
-                        <X className="h-5 w-5" />
-                    </button>
-                </div>
-
-                <div className="p-4 border-b bg-purple-50">
-                    <p className="text-xs text-slate-600">Organization</p>
-                    <p className="font-semibold">{session.organization_name}</p>
-                    <Badge className="mt-2 capitalize">{session.subscription_tier}</Badge>
-                </div>
-
-                <nav className="flex-1 p-4 space-y-2">
-                    <a href="/LoyaltyCustomerPortal" className="block px-3 py-2 rounded-lg hover:bg-slate-50">Overview</a>
-                    <a href="/LoyaltyAchievements" className="block px-3 py-2 rounded-lg hover:bg-slate-50">Badges & Achievements</a>
-                    <a href="/LoyaltyTierManagement" className="block px-3 py-2 rounded-lg bg-purple-50 text-purple-700 font-medium">
-                        <Crown className="h-4 w-4 inline mr-2" />Tier Management
-                    </a>
-                    <a href="/LoyaltyEarningRules" className="block px-3 py-2 rounded-lg hover:bg-slate-50">Earning Rules</a>
-                </nav>
-            </aside>
+            <CustomerPortalSidebar 
+                session={session}
+                currentPage="/LoyaltyTierManagement"
+                mobileMenuOpen={mobileMenuOpen}
+                setMobileMenuOpen={setMobileMenuOpen}
+            />
 
             {mobileMenuOpen && <div className="fixed inset-0 bg-black/50 z-40 md:hidden" onClick={() => setMobileMenuOpen(false)} />}
 
@@ -144,28 +144,56 @@ export default function LoyaltyTierManagement() {
                             return (
                                 <Card key={tier.key} className={cn("border-2", tier.color)}>
                                     <CardHeader>
-                                        <div className="flex items-center gap-3">
-                                            <Icon className="h-8 w-8" />
-                                            <div>
-                                                <CardTitle>{tier.name} Tier</CardTitle>
-                                                <p className="text-sm text-slate-600">{tier.description}</p>
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-3">
+                                                <Icon className="h-8 w-8" />
+                                                <div>
+                                                    <CardTitle>{tier.name} Tier</CardTitle>
+                                                    <p className="text-sm text-slate-600">{tier.description}</p>
+                                                </div>
                                             </div>
+                                            <Badge className="bg-blue-100 text-blue-800">{tier.multiplier}x</Badge>
                                         </div>
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="mb-4">
-                                            <div className="flex items-center justify-between mb-2">
-                                                <span className="text-sm font-medium">Current Members</span>
+                                        <div className="mb-4 space-y-2">
+                                            <div className="flex items-center justify-between">
+                                                <span className="text-sm font-medium">Members</span>
                                                 <Badge className={tier.color}>{tierStats[tier.key]}</Badge>
                                             </div>
+                                            <div className="flex items-center justify-between text-sm">
+                                                <span className="text-slate-600">Threshold</span>
+                                                <span className="font-medium">{tier.threshold.toLocaleString()} points</span>
+                                            </div>
+                                            <div className="flex items-center justify-between text-sm">
+                                                <span className="text-slate-600">Earn Rate</span>
+                                                <span className="font-medium text-purple-600">{tier.multiplier}x</span>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <h4 className="font-semibold mb-2 text-sm">Benefits</h4>
+                                        <div className="mb-3">
+                                            <h4 className="font-semibold mb-2 text-sm flex items-center gap-1">
+                                                <Sparkles className="h-3 w-3 text-purple-600" />
+                                                Core Benefits
+                                            </h4>
                                             <ul className="space-y-1">
                                                 {tier.benefits.map((benefit, idx) => (
-                                                    <li key={idx} className="text-sm text-slate-600 flex items-start gap-2">
+                                                    <li key={idx} className="text-xs text-slate-600 flex items-start gap-2">
                                                         <span className="text-green-600 mt-0.5">✓</span>
                                                         {benefit}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                        <div>
+                                            <h4 className="font-semibold mb-2 text-sm flex items-center gap-1">
+                                                <Gift className="h-3 w-3 text-blue-600" />
+                                                Exclusive Perks
+                                            </h4>
+                                            <ul className="space-y-1">
+                                                {tier.perks.map((perk, idx) => (
+                                                    <li key={idx} className="text-xs text-slate-600 flex items-start gap-2">
+                                                        <span className="text-blue-600 mt-0.5">•</span>
+                                                        {perk}
                                                     </li>
                                                 ))}
                                             </ul>

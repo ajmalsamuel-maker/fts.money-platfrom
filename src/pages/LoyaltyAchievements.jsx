@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
-import { Trophy, Menu, X, Plus, Award, Pencil, Trash2 } from 'lucide-react';
+import CustomerPortalSidebar from '@/components/loyalty/CustomerPortalSidebar';
+import { Trophy, Menu, Plus, Award, Pencil, Trash2, Sparkles, Coins } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { toast } from 'sonner';
 
@@ -24,6 +27,11 @@ export default function LoyaltyAchievements() {
         description: '',
         badge_image_url: '',
         bonus_points_awarded: 0,
+        trigger_condition: {},
+        rarity: 'common',
+        nft_enabled: false,
+        nft_contract_address: '',
+        display_order: 0,
         is_active: true
     });
     const queryClient = useQueryClient();
@@ -92,6 +100,11 @@ export default function LoyaltyAchievements() {
             description: '',
             badge_image_url: '',
             bonus_points_awarded: 0,
+            trigger_condition: {},
+            rarity: 'common',
+            nft_enabled: false,
+            nft_contract_address: '',
+            display_order: 0,
             is_active: true
         });
     };
@@ -104,6 +117,11 @@ export default function LoyaltyAchievements() {
             description: achievement.description || '',
             badge_image_url: achievement.badge_image_url || '',
             bonus_points_awarded: achievement.bonus_points_awarded || 0,
+            trigger_condition: achievement.trigger_condition || {},
+            rarity: achievement.rarity || 'common',
+            nft_enabled: achievement.nft_enabled || false,
+            nft_contract_address: achievement.nft_contract_address || '',
+            display_order: achievement.display_order || 0,
             is_active: achievement.is_active
         });
         setAchievementDialog(true);
@@ -129,34 +147,12 @@ export default function LoyaltyAchievements() {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/20 to-blue-50/30 flex">
-            <aside className={cn("fixed md:relative inset-y-0 left-0 z-50 w-64 bg-white border-r flex flex-col h-screen md:h-auto transform transition-transform",
-                mobileMenuOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0")}>
-                <div className="h-16 flex items-center justify-between border-b px-4">
-                    <div className="flex items-center gap-2">
-                        <Trophy className="h-6 w-6 text-purple-600" />
-                        <span className="font-bold">Loyalty Portal</span>
-                    </div>
-                    <button onClick={() => setMobileMenuOpen(false)} className="md:hidden">
-                        <X className="h-5 w-5" />
-                    </button>
-                </div>
-
-                <div className="p-4 border-b bg-purple-50">
-                    <p className="text-xs text-slate-600">Organization</p>
-                    <p className="font-semibold">{session.organization_name}</p>
-                    <Badge className="mt-2 capitalize">{session.subscription_tier}</Badge>
-                </div>
-
-                <nav className="flex-1 p-4 space-y-2">
-                    <a href="/LoyaltyCustomerPortal" className="block px-3 py-2 rounded-lg hover:bg-slate-50">Overview</a>
-                    <a href="/LoyaltyAchievements" className="block px-3 py-2 rounded-lg bg-purple-50 text-purple-700 font-medium">
-                        <Award className="h-4 w-4 inline mr-2" />Badges & Achievements
-                    </a>
-                    <a href="/LoyaltyTierManagement" className="block px-3 py-2 rounded-lg hover:bg-slate-50">Tier Management</a>
-                    <a href="/LoyaltyEarningRules" className="block px-3 py-2 rounded-lg hover:bg-slate-50">Earning Rules</a>
-                    <a href="/LoyaltyRewardsCatalog" className="block px-3 py-2 rounded-lg hover:bg-slate-50">Rewards Catalog</a>
-                </nav>
-            </aside>
+            <CustomerPortalSidebar 
+                session={session}
+                currentPage="/LoyaltyAchievements"
+                mobileMenuOpen={mobileMenuOpen}
+                setMobileMenuOpen={setMobileMenuOpen}
+            />
 
             {mobileMenuOpen && <div className="fixed inset-0 bg-black/50 z-40 md:hidden" onClick={() => setMobileMenuOpen(false)} />}
 
@@ -222,44 +218,130 @@ export default function LoyaltyAchievements() {
             </div>
 
             <Dialog open={achievementDialog} onOpenChange={setAchievementDialog}>
-                <DialogContent className="max-w-md">
+                <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
                     <DialogHeader>
-                        <DialogTitle>{editingAchievement ? 'Edit' : 'Create'} Badge</DialogTitle>
+                        <DialogTitle>{editingAchievement ? 'Edit' : 'Create'} Achievement Badge</DialogTitle>
+                        <CardDescription>Design collectible badges with NFT capabilities</CardDescription>
                     </DialogHeader>
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        <div>
-                            <Label>Badge Name</Label>
-                            <Input value={formData.achievement_name} onChange={(e) => setFormData({...formData, achievement_name: e.target.value})} placeholder="e.g., First Event" required />
-                        </div>
-                        <div>
-                            <Label>Type</Label>
-                            <Select value={formData.achievement_type} onValueChange={(v) => setFormData({...formData, achievement_type: v})}>
-                                <SelectTrigger>
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="milestone">Milestone</SelectItem>
-                                    <SelectItem value="streak">Streak</SelectItem>
-                                    <SelectItem value="challenge">Challenge</SelectItem>
-                                    <SelectItem value="special">Special</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div>
-                            <Label>Description</Label>
-                            <Textarea value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} rows={3} />
-                        </div>
-                        <div>
-                            <Label>Badge Icon (emoji or URL)</Label>
-                            <Input value={formData.badge_image_url} onChange={(e) => setFormData({...formData, badge_image_url: e.target.value})} placeholder="🏆 or https://..." />
-                        </div>
-                        <div>
-                            <Label>Bonus Points</Label>
-                            <Input type="number" value={formData.bonus_points_awarded} onChange={(e) => setFormData({...formData, bonus_points_awarded: Number(e.target.value)})} />
-                        </div>
-                        <div className="flex gap-3">
+                    <form onSubmit={handleSubmit}>
+                        <Tabs defaultValue="basic" className="w-full">
+                            <TabsList className="grid w-full grid-cols-3">
+                                <TabsTrigger value="basic">Basic</TabsTrigger>
+                                <TabsTrigger value="unlock">Unlock Conditions</TabsTrigger>
+                                <TabsTrigger value="blockchain">Blockchain</TabsTrigger>
+                            </TabsList>
+
+                            <TabsContent value="basic" className="space-y-4 mt-4">
+                                <div>
+                                    <Label>Achievement Name</Label>
+                                    <Input value={formData.achievement_name} onChange={(e) => setFormData({...formData, achievement_name: e.target.value})} placeholder="First Marathon Completed" required />
+                                </div>
+                                <div>
+                                    <Label>Type</Label>
+                                    <Select value={formData.achievement_type} onValueChange={(v) => setFormData({...formData, achievement_type: v})}>
+                                        <SelectTrigger>
+                                            <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="milestone">🎯 Milestone</SelectItem>
+                                            <SelectItem value="streak">🔥 Streak</SelectItem>
+                                            <SelectItem value="challenge">⚡ Challenge</SelectItem>
+                                            <SelectItem value="special">⭐ Special</SelectItem>
+                                            <SelectItem value="first_time">🎊 First Time</SelectItem>
+                                            <SelectItem value="mastery">👑 Mastery</SelectItem>
+                                            <SelectItem value="social">👥 Social</SelectItem>
+                                            <SelectItem value="community">🌍 Community</SelectItem>
+                                            <SelectItem value="impact">🌱 Impact</SelectItem>
+                                            <SelectItem value="seasonal">🎃 Seasonal</SelectItem>
+                                            <SelectItem value="limited_edition">💎 Limited Edition</SelectItem>
+                                            <SelectItem value="legendary">🏆 Legendary</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div>
+                                    <Label>Rarity</Label>
+                                    <Select value={formData.rarity} onValueChange={(v) => setFormData({...formData, rarity: v})}>
+                                        <SelectTrigger>
+                                            <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="common">⚪ Common</SelectItem>
+                                            <SelectItem value="rare">🔵 Rare</SelectItem>
+                                            <SelectItem value="epic">🟣 Epic</SelectItem>
+                                            <SelectItem value="legendary">🟠 Legendary</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div>
+                                    <Label>Description</Label>
+                                    <Textarea value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} rows={3} />
+                                </div>
+                                <div>
+                                    <Label>Badge Icon (emoji or URL)</Label>
+                                    <Input value={formData.badge_image_url} onChange={(e) => setFormData({...formData, badge_image_url: e.target.value})} placeholder="🏆 or https://..." />
+                                </div>
+                                <div>
+                                    <Label>Bonus Points</Label>
+                                    <Input type="number" value={formData.bonus_points_awarded} onChange={(e) => setFormData({...formData, bonus_points_awarded: Number(e.target.value)})} />
+                                </div>
+                            </TabsContent>
+
+                            <TabsContent value="unlock" className="space-y-4 mt-4">
+                                <div>
+                                    <Label>Unlock Condition (JSON)</Label>
+                                    <Textarea 
+                                        placeholder='{"activity_count": 10, "specific_activity": "marathon", "min_points": 1000}'
+                                        value={JSON.stringify(formData.trigger_condition, null, 2)}
+                                        onChange={(e) => {
+                                            try {
+                                                setFormData({...formData, trigger_condition: JSON.parse(e.target.value)});
+                                            } catch {}
+                                        }}
+                                        rows={6}
+                                        className="font-mono text-xs"
+                                    />
+                                    <p className="text-xs text-slate-500 mt-1">Define conditions to unlock this achievement</p>
+                                </div>
+                                <div>
+                                    <Label>Display Order</Label>
+                                    <Input type="number" value={formData.display_order} onChange={(e) => setFormData({...formData, display_order: Number(e.target.value)})} />
+                                    <p className="text-xs text-slate-500 mt-1">Lower numbers appear first</p>
+                                </div>
+                            </TabsContent>
+
+                            <TabsContent value="blockchain" className="space-y-4 mt-4">
+                                <div className="flex items-center justify-between p-3 border rounded-lg">
+                                    <div>
+                                        <Label>Mint as NFT</Label>
+                                        <p className="text-xs text-slate-500">Create on-chain NFT badge</p>
+                                    </div>
+                                    <Switch 
+                                        checked={formData.nft_enabled}
+                                        onCheckedChange={(checked) => setFormData({...formData, nft_enabled: checked})}
+                                    />
+                                </div>
+                                {formData.nft_enabled && (
+                                    <div>
+                                        <Label>NFT Contract Address</Label>
+                                        <Input value={formData.nft_contract_address} onChange={(e) => setFormData({...formData, nft_contract_address: e.target.value})} placeholder="0x..." />
+                                    </div>
+                                )}
+                                <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                                    <Sparkles className="h-5 w-5 text-purple-600 mb-2" />
+                                    <h4 className="font-semibold text-sm mb-1">NFT Badge Benefits</h4>
+                                    <ul className="text-xs text-slate-600 space-y-1">
+                                        <li>• Truly owned by users on blockchain</li>
+                                        <li>• Tradeable on NFT marketplaces</li>
+                                        <li>• Verifiable proof of achievement</li>
+                                        <li>• Cross-platform utility</li>
+                                    </ul>
+                                </div>
+                            </TabsContent>
+                        </Tabs>
+
+                        <div className="flex gap-3 mt-6">
                             <Button type="button" variant="outline" onClick={() => setAchievementDialog(false)} className="flex-1">Cancel</Button>
-                            <Button type="submit" className="flex-1 bg-purple-600">{editingAchievement ? 'Update' : 'Create'}</Button>
+                            <Button type="submit" className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600">{editingAchievement ? 'Update' : 'Create'} Badge</Button>
                         </div>
                     </form>
                 </DialogContent>
