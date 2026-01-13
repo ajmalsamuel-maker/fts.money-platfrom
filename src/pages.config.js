@@ -380,6 +380,8 @@ import ParticipantDashboard from './pages/ParticipantDashboard';
 import ParticipantRewards from './pages/ParticipantRewards';
 import PartnerLogin from './pages/PartnerLogin';
 import PartnerDashboard from './pages/PartnerDashboard';
+import ParticipantActivities from './pages/ParticipantActivities';
+import ParticipantChallenges from './pages/ParticipantChallenges';
 import __Layout from './Layout.jsx';
 
 
@@ -766,6 +768,8 @@ export const PAGES = {
     "ParticipantRewards": ParticipantRewards,
     "PartnerLogin": PartnerLogin,
     "PartnerDashboard": PartnerDashboard,
+    "ParticipantActivities": ParticipantActivities,
+    "ParticipantChallenges": ParticipantChallenges,
 }
 
 export const pagesConfig = {
