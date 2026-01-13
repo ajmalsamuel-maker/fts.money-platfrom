@@ -1067,7 +1067,7 @@ Content-Type: application/json
                     <p className="text-sm text-blue-900">
                         <strong>Need Help?</strong> Contact our support team at <code className="bg-blue-100 px-2 py-1 rounded">support@loyalty.fts.money</code> or visit the Developer Portal at <code className="bg-blue-100 px-2 py-1 rounded">dev.loyalty.fts.money</code>
                     </p>
-                    <p className="text-xs text-blue-800 mt-3">Documentation Last Updated: January 13, 2026 | Version 1.0</p>
+                    <p className="text-xs text-blue-800 mt-3">Documentation Last Updated: January 13, 2026 | Version 2.0.0 | Status: Production | Format: FTS Standard Documentation</p>
                 </div>
             </div>
         </div>
