@@ -122,11 +122,11 @@ export default function BusinessEInvoiceOnboarding({ onSuccess }) {
     };
 
     const handleNextFromOrgInfo = () => {
-        if (!orgData.org_name || !orgData.business_email || !orgData.country) {
-            toast.error('Please fill all required fields');
-            return;
-        }
-        setStep(STEP_2_LEI);
+      if (!orgData.org_name || !orgData.business_email || !orgData.country || !orgData.tax_submission_standards) {
+          toast.error('Please fill all required fields');
+          return;
+      }
+      setStep(STEP_2_LEI);
     };
 
     const handleNextFromLei = async () => {
