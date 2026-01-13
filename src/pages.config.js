@@ -168,6 +168,7 @@ import LoyaltyCustomerLogin from './pages/LoyaltyCustomerLogin';
 import LoyaltyCustomerOnboarding from './pages/LoyaltyCustomerOnboarding';
 import LoyaltyCustomerPortal from './pages/LoyaltyCustomerPortal';
 import LoyaltyEarningRules from './pages/LoyaltyEarningRules';
+import LoyaltyFAQManager from './pages/LoyaltyFAQManager';
 import LoyaltyImpactIndex from './pages/LoyaltyImpactIndex';
 import LoyaltyImpactKPIs from './pages/LoyaltyImpactKPIs';
 import LoyaltyLeaderboards from './pages/LoyaltyLeaderboards';
@@ -290,6 +291,7 @@ import PSPWholesaleMarketplace from './pages/PSPWholesaleMarketplace';
 import ParticipantActivities from './pages/ParticipantActivities';
 import ParticipantChallenges from './pages/ParticipantChallenges';
 import ParticipantDashboard from './pages/ParticipantDashboard';
+import ParticipantHelp from './pages/ParticipantHelp';
 import ParticipantLogin from './pages/ParticipantLogin';
 import ParticipantRegister from './pages/ParticipantRegister';
 import ParticipantRewards from './pages/ParticipantRewards';
@@ -382,8 +384,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import ParticipantHelp from './pages/ParticipantHelp';
-import LoyaltyFAQManager from './pages/LoyaltyFAQManager';
 import __Layout from './Layout.jsx';
 
 
@@ -558,6 +558,7 @@ export const PAGES = {
     "LoyaltyCustomerOnboarding": LoyaltyCustomerOnboarding,
     "LoyaltyCustomerPortal": LoyaltyCustomerPortal,
     "LoyaltyEarningRules": LoyaltyEarningRules,
+    "LoyaltyFAQManager": LoyaltyFAQManager,
     "LoyaltyImpactIndex": LoyaltyImpactIndex,
     "LoyaltyImpactKPIs": LoyaltyImpactKPIs,
     "LoyaltyLeaderboards": LoyaltyLeaderboards,
@@ -680,6 +681,7 @@ export const PAGES = {
     "ParticipantActivities": ParticipantActivities,
     "ParticipantChallenges": ParticipantChallenges,
     "ParticipantDashboard": ParticipantDashboard,
+    "ParticipantHelp": ParticipantHelp,
     "ParticipantLogin": ParticipantLogin,
     "ParticipantRegister": ParticipantRegister,
     "ParticipantRewards": ParticipantRewards,
@@ -772,8 +774,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "ParticipantHelp": ParticipantHelp,
-    "LoyaltyFAQManager": LoyaltyFAQManager,
 }
 
 export const pagesConfig = {

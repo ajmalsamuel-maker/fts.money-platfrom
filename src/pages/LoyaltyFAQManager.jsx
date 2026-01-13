@@ -16,6 +16,8 @@ import CustomerPortalSidebar from '@/components/loyalty/CustomerPortalSidebar';
 
 export default function LoyaltyFAQManager() {
     const [session] = useState(() => JSON.parse(localStorage.getItem('loyalty_customer_session') || '{}'));
+    const [programs, setPrograms] = useState([]);
+    const [selectedProgramId, setSelectedProgramId] = useState('');
     const [dialogOpen, setDialogOpen] = useState(false);
     const [editingFAQ, setEditingFAQ] = useState(null);
     const [formData, setFormData] = useState({
@@ -28,20 +30,35 @@ export default function LoyaltyFAQManager() {
     });
     const queryClient = useQueryClient();
 
-    if (!session.program_id) {
+    if (!session.customer_code && !session.admin_email) {
         window.location.href = '/LoyaltyCustomerLogin';
         return null;
     }
 
+    // Fetch customer's programs
+    React.useEffect(() => {
+        const fetchPrograms = async () => {
+            const customerPrograms = await base44.entities.LoyaltyProgram.filter({ admin_email: session.admin_email });
+            setPrograms(customerPrograms);
+            if (customerPrograms.length > 0) {
+                setSelectedProgramId(customerPrograms[0].id);
+            }
+        };
+        if (session.admin_email) {
+            fetchPrograms();
+        }
+    }, [session.admin_email]);
+
     const { data: faqs = [], isLoading } = useQuery({
-        queryKey: ['faqs', session.program_id],
-        queryFn: () => base44.entities.FAQ.filter({ program_id: session.program_id })
+        queryKey: ['faqs', selectedProgramId],
+        queryFn: () => base44.entities.FAQ.filter({ program_id: selectedProgramId }),
+        enabled: !!selectedProgramId
     });
 
     const createMutation = useMutation({
         mutationFn: (data) => base44.entities.FAQ.create({
             ...data,
-            program_id: session.program_id
+            program_id: selectedProgramId
         }),
         onSuccess: () => {
             toast.success('FAQ created successfully');
@@ -129,6 +146,23 @@ export default function LoyaltyFAQManager() {
                                 FAQ Manager
                             </h1>
                             <p className="text-gray-600 mt-1">Manage help content for participants and partners</p>
+                            {programs.length > 0 && (
+                                <div className="mt-4">
+                                    <Label className="text-sm">Select Program</Label>
+                                    <Select value={selectedProgramId} onValueChange={setSelectedProgramId}>
+                                        <SelectTrigger className="w-64">
+                                            <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {programs.map(program => (
+                                                <SelectItem key={program.id} value={program.id}>
+                                                    {program.program_name}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            )}
                         </div>
                         <Button onClick={() => setDialogOpen(true)}>
                             <Plus className="h-4 w-4 mr-2" />
