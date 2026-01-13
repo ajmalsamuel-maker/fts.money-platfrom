@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Coins, ShoppingBag, Menu } from 'lucide-react';
+import { Gift, Coins, ShoppingBag, Menu, X, Trophy, TrendingUp, Target, LogOut, HelpCircle } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { toast } from 'sonner';
 import ParticipantSidebar from '@/components/participant/ParticipantSidebar';
