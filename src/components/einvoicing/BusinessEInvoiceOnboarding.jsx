@@ -128,15 +128,20 @@ export default function BusinessEInvoiceOnboarding({ onSuccess }) {
     const handleNextFromLei = async () => {
         if (lei.trim()) {
             // Verify LEI format
-            const result = await verifyLeiMutation.mutateAsync(lei);
-            if (!result.valid) {
-                toast.error('Invalid LEI format');
+            try {
+                const result = await verifyLeiMutation.mutateAsync(lei);
+                if (!result.valid) {
+                    toast.error('Invalid LEI format');
+                    return;
+                }
+            } catch (err) {
+                toast.error('Failed to verify LEI');
                 return;
             }
             // LEI provided - skip to AML/KYB
             setStep(STEP_3_AML_KYB);
         } else {
-            // No LEI - create org with grace period
+            // No LEI - skip AML/KYB and go to admin step
             await createOrgMutation.mutateAsync({ lei: null, grace_period_days: gracePeriodDays });
         }
     };
