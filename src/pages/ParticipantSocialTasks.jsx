@@ -1,13 +1,12 @@
 import React, { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { LogOut, Flame, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
-import { cn } from "@/lib/utils";
+import { Card, CardContent } from "@/components/ui/card";
+import { Flame } from 'lucide-react';
 import SocialTaskCard from '@/components/social/SocialTaskCard';
 import SocialLeaderboard from '@/components/social/SocialLeaderboard';
+import ParticipantSidebar from '@/components/participant/ParticipantSidebar';
 import { toast } from 'sonner';
 
 export default function ParticipantSocialTasks() {
