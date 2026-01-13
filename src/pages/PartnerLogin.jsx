@@ -21,11 +21,12 @@ export default function PartnerLogin() {
                 contact_email: email
             });
 
-            if (partners.length > 0) {
+            if (partners.length > 0 && password) {
                 localStorage.setItem('partner_session', JSON.stringify(partners[0]));
+                toast.success('Login successful!');
                 window.location.href = '/PartnerDashboard';
             } else {
-                toast.error('Invalid credentials');
+                toast.error('Invalid email or password');
             }
         } catch (err) {
             toast.error('Login failed');
