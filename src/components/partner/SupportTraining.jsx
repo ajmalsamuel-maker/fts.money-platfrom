@@ -5,8 +5,10 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { HelpCircle, Book, Video, MessageCircle, Send, Phone } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { HelpCircle, Book, Video, MessageCircle, Send, Phone, FileText } from 'lucide-react';
 import { toast } from 'sonner';
+import PartnerDocumentation from './PartnerDocumentation';
 
 export default function SupportTraining({ partnerId }) {
     const [ticketTitle, setTicketTitle] = useState('');
@@ -38,9 +40,28 @@ export default function SupportTraining({ partnerId }) {
 
     return (
         <div className="space-y-6">
-            <h2 className="text-2xl font-bold">Support & Training</h2>
+            <div className="flex items-center justify-between mb-4">
+                <h2 className="text-2xl font-bold">Support & Training</h2>
+            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Tabs defaultValue="support-center" className="w-full">
+                <TabsList className="grid w-full grid-cols-2 mb-6">
+                    <TabsTrigger value="support-center">
+                        <HelpCircle className="h-4 w-4 mr-2" />
+                        Support Center
+                    </TabsTrigger>
+                    <TabsTrigger value="documentation">
+                        <FileText className="h-4 w-4 mr-2" />
+                        User Manual & Documentation
+                    </TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="documentation">
+                    <PartnerDocumentation />
+                </TabsContent>
+
+                <TabsContent value="support-center" className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <Card>
                     <CardContent className="p-6 text-center">
                         <MessageCircle className="h-10 w-10 text-green-600 mx-auto mb-3" />
@@ -159,6 +180,8 @@ export default function SupportTraining({ partnerId }) {
                     </Button>
                 </CardContent>
             </Card>
+                </TabsContent>
+            </Tabs>
         </div>
     );
 }
