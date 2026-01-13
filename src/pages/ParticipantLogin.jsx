@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Trophy } from 'lucide-react';
 import { toast } from 'sonner';
 import { createPageUrl } from '@/utils';
+import ParticipantFAQ from '@/components/participant/ParticipantFAQ';
 
 export default function ParticipantLogin() {
     const navigate = useNavigate();
@@ -39,7 +40,7 @@ export default function ParticipantLogin() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-slate-50 flex items-center justify-center p-4">
+        <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-slate-50 flex flex-col items-center justify-center p-4 gap-4">
             <Card className="w-full max-w-md">
                 <CardHeader className="text-center">
                     <div className="mx-auto mb-4 w-16 h-16 bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl flex items-center justify-center">
@@ -66,6 +67,10 @@ export default function ParticipantLogin() {
                     </form>
                 </CardContent>
             </Card>
+            
+            <div className="w-full max-w-md">
+                <ParticipantFAQ />
+            </div>
         </div>
     );
 }
