@@ -55,6 +55,7 @@ export default function BusinessEInvoiceOnboarding({ onSuccess }) {
                 business_email: orgData.business_email,
                 country: orgData.country,
                 tax_id: orgData.tax_id,
+                tax_submission_standards: orgData.tax_submission_standards,
                 lei: data.lei || null,
                 lei_status: data.lei ? 'verified' : 'grace_period',
                 grace_period_end: data.lei ? null : gracePeriodEnd.toISOString(),
