@@ -175,7 +175,6 @@ import LoyaltyEarningRules from './pages/LoyaltyEarningRules';
 import LoyaltyFAQManager from './pages/LoyaltyFAQManager';
 import LoyaltyImpactIndex from './pages/LoyaltyImpactIndex';
 import LoyaltyImpactKPIs from './pages/LoyaltyImpactKPIs';
-import LoyaltyImpactPlatformDocumentation from './pages/LoyaltyImpactPlatformDocumentation';
 import LoyaltyLeaderboards from './pages/LoyaltyLeaderboards';
 import LoyaltyPlatformDashboard from './pages/LoyaltyPlatformDashboard';
 import LoyaltyPortalSettings from './pages/LoyaltyPortalSettings';
@@ -571,7 +570,6 @@ export const PAGES = {
     "LoyaltyFAQManager": LoyaltyFAQManager,
     "LoyaltyImpactIndex": LoyaltyImpactIndex,
     "LoyaltyImpactKPIs": LoyaltyImpactKPIs,
-    "LoyaltyImpactPlatformDocumentation": LoyaltyImpactPlatformDocumentation,
     "LoyaltyLeaderboards": LoyaltyLeaderboards,
     "LoyaltyPlatformDashboard": LoyaltyPlatformDashboard,
     "LoyaltyPortalSettings": LoyaltyPortalSettings,
