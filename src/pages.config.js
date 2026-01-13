@@ -175,6 +175,7 @@ import LoyaltyEarningRules from './pages/LoyaltyEarningRules';
 import LoyaltyFAQManager from './pages/LoyaltyFAQManager';
 import LoyaltyImpactIndex from './pages/LoyaltyImpactIndex';
 import LoyaltyImpactKPIs from './pages/LoyaltyImpactKPIs';
+import LoyaltyImpactPlatformDocumentation from './pages/LoyaltyImpactPlatformDocumentation';
 import LoyaltyLeaderboards from './pages/LoyaltyLeaderboards';
 import LoyaltyPlatformDashboard from './pages/LoyaltyPlatformDashboard';
 import LoyaltyPortalSettings from './pages/LoyaltyPortalSettings';
@@ -389,7 +390,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import LoyaltyImpactPlatformDocumentation from './pages/LoyaltyImpactPlatformDocumentation';
 import __Layout from './Layout.jsx';
 
 
@@ -571,6 +571,7 @@ export const PAGES = {
     "LoyaltyFAQManager": LoyaltyFAQManager,
     "LoyaltyImpactIndex": LoyaltyImpactIndex,
     "LoyaltyImpactKPIs": LoyaltyImpactKPIs,
+    "LoyaltyImpactPlatformDocumentation": LoyaltyImpactPlatformDocumentation,
     "LoyaltyLeaderboards": LoyaltyLeaderboards,
     "LoyaltyPlatformDashboard": LoyaltyPlatformDashboard,
     "LoyaltyPortalSettings": LoyaltyPortalSettings,
@@ -785,7 +786,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "LoyaltyImpactPlatformDocumentation": LoyaltyImpactPlatformDocumentation,
 }
 
 export const pagesConfig = {

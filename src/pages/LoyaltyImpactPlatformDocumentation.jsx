@@ -30,9 +30,12 @@ export default function LoyaltyImpactPlatformDocumentation() {
                     <h1 className="text-4xl font-bold text-slate-900 mb-2">Loyalty & IMPACT Platform Documentation</h1>
                     <p className="text-slate-600 text-lg">Complete technical guide for implementation, integration, and operations</p>
                     <div className="flex gap-2 mt-4">
-                        <Badge className="bg-emerald-100 text-emerald-800">v1.0</Badge>
+                        <Badge className="bg-emerald-100 text-emerald-800">v2.0.0</Badge>
                         <Badge className="bg-blue-100 text-blue-800">Production Ready</Badge>
                         <Badge className="bg-purple-100 text-purple-800">Multi-Tenant</Badge>
+                    </div>
+                    <div className="text-xs text-slate-500 mt-2">
+                        Last Updated: January 13, 2026
                     </div>
                 </div>
 
