@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Menu, X, LogOut, ArrowLeft, Flame } from 'lucide-react';
+import { Menu, X, LogOut, ArrowLeft, Flame, ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import SocialTaskCard from '@/components/social/SocialTaskCard';
 import SocialLeaderboard from '@/components/social/SocialLeaderboard';
@@ -11,7 +11,7 @@ import { toast } from 'sonner';
 
 export default function ParticipantSocialTasks() {
     const [session] = useState(() => JSON.parse(localStorage.getItem('participant_session') || '{}'));
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [sidebarOpen, setSidebarOpen] = useState(true);
     const queryClient = useQueryClient();
 
     if (!session.id) {
