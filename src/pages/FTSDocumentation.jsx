@@ -406,6 +406,13 @@ export default function FTSDocumentation() {
             title: '🌱 Sustainability',
             documents: [
                 {
+                    id: 'loyalty-impact',
+                    title: 'Loyalty & IMPACT Platform',
+                    icon: Trophy,
+                    content: LoyaltyImpactPlatformDoc,
+                    description: 'Comprehensive gamified loyalty & sustainability integration - programs, gamification, impact tracking'
+                },
+                {
                     id: 'fix-score',
                     title: 'FIX Score System',
                     icon: Shield,
