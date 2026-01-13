@@ -38,7 +38,9 @@ import {
     Rocket,
     ArrowRight,
     CheckCircle2,
-    Clock
+    Clock,
+    Receipt,
+    Trophy
 } from 'lucide-react';
 import VATMetricsCard from '@/components/dashboard/VATMetricsCard';
 import EInvoicingMetricsCard from '@/components/dashboard/EInvoicingMetricsCard';
@@ -118,6 +120,16 @@ export default function FTSMoneyPlatform() {
     const { data: rwaCustomers = [] } = useQuery({
         queryKey: ['rwa-customers'],
         queryFn: () => base44.entities.RWAWhiteLabelCustomer.list()
+    });
+
+    const { data: loyaltyPrograms = [] } = useQuery({
+        queryKey: ['loyalty-programs'],
+        queryFn: () => base44.entities.LoyaltyProgram.list()
+    });
+
+    const { data: invoices = [] } = useQuery({
+        queryKey: ['invoices'],
+        queryFn: () => base44.entities.Invoice.list()
     });
     
     if (loading) {
@@ -362,41 +374,101 @@ export default function FTSMoneyPlatform() {
                             </Card>
 
                             {/* RWA Platform */}
-                            <Card className="border-2 border-emerald-200 hover:border-emerald-400 hover:shadow-lg transition-all group">
-                                <CardContent className="p-4">
-                                    <div className="flex items-center gap-2 mb-3">
-                                        <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center">
-                                            <Rocket className="h-5 w-5 text-emerald-600" />
-                                        </div>
-                                        <div>
-                                            <p className="font-semibold text-slate-900 text-sm">{t('platform:services.rwa')}</p>
-                                            <Badge variant="outline" className="text-xs">
-                                                {rwaCustomers.filter(c => c.status === 'active').length} {t('platform:dashboard.active')}
-                                            </Badge>
-                                        </div>
-                                    </div>
-                                    <div className="space-y-2 mb-3">
-                                        <div className="flex justify-between text-xs">
-                                            <span className="text-slate-600">{t('common:labels.customers')}</span>
-                                            <span className="font-semibold">{rwaCustomers.length}</span>
-                                        </div>
-                                        <div className="flex justify-between text-xs">
-                                            <span className="text-slate-600">AUM</span>
-                                            <span className="font-semibold">${(rwaCustomers.reduce((sum, c) => sum + (c.total_value_locked || 0), 0) / 1000000).toFixed(1)}M</span>
-                                        </div>
-                                    </div>
-                                    <div className="flex gap-2">
-                                        <Button size="sm" className="flex-1 text-xs h-7 bg-emerald-600 hover:bg-emerald-700" onClick={() => window.location.href = createPageUrl('RWAWhiteLabelProvisioning')}>
-                                            {t('common:actions.manage')}
-                                        </Button>
-                                        <Button size="sm" variant="outline" className="text-xs h-7" onClick={() => window.location.href = createPageUrl('RWAPlatform')}>
-                                            {t('platform:pages.dashboard.contracts')}
-                                        </Button>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </div>
-                    </div>
+                             <Card className="border-2 border-emerald-200 hover:border-emerald-400 hover:shadow-lg transition-all group">
+                                 <CardContent className="p-4">
+                                     <div className="flex items-center gap-2 mb-3">
+                                         <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center">
+                                             <Rocket className="h-5 w-5 text-emerald-600" />
+                                         </div>
+                                         <div>
+                                             <p className="font-semibold text-slate-900 text-sm">{t('platform:services.rwa')}</p>
+                                             <Badge variant="outline" className="text-xs">
+                                                 {rwaCustomers.filter(c => c.status === 'active').length} {t('platform:dashboard.active')}
+                                             </Badge>
+                                         </div>
+                                     </div>
+                                     <div className="space-y-2 mb-3">
+                                         <div className="flex justify-between text-xs">
+                                             <span className="text-slate-600">{t('common:labels.customers')}</span>
+                                             <span className="font-semibold">{rwaCustomers.length}</span>
+                                         </div>
+                                         <div className="flex justify-between text-xs">
+                                             <span className="text-slate-600">AUM</span>
+                                             <span className="font-semibold">${(rwaCustomers.reduce((sum, c) => sum + (c.total_value_locked || 0), 0) / 1000000).toFixed(1)}M</span>
+                                         </div>
+                                     </div>
+                                     <div className="flex gap-2">
+                                         <Button size="sm" className="flex-1 text-xs h-7 bg-emerald-600 hover:bg-emerald-700" onClick={() => window.location.href = createPageUrl('RWAWhiteLabelProvisioning')}>
+                                             {t('common:actions.manage')}
+                                         </Button>
+                                         <Button size="sm" variant="outline" className="text-xs h-7" onClick={() => window.location.href = createPageUrl('RWAPlatform')}>
+                                             {t('platform:pages.dashboard.contracts')}
+                                         </Button>
+                                     </div>
+                                 </CardContent>
+                             </Card>
+
+                             {/* E-Invoicing VAT/TAX Management */}
+                             <Card className="border-2 border-orange-200 hover:border-orange-400 hover:shadow-lg transition-all group">
+                                 <CardContent className="p-4">
+                                     <div className="flex items-center gap-2 mb-3">
+                                         <div className="w-8 h-8 rounded-lg bg-orange-100 flex items-center justify-center">
+                                             <Receipt className="h-5 w-5 text-orange-600" />
+                                         </div>
+                                         <div>
+                                             <p className="font-semibold text-slate-900 text-sm">E-Invoicing & VAT</p>
+                                             <Badge variant="outline" className="text-xs">
+                                                 {invoices.filter(i => i.status === 'submitted').length} Pending
+                                             </Badge>
+                                         </div>
+                                     </div>
+                                     <div className="space-y-2 mb-3">
+                                         <div className="flex justify-between text-xs">
+                                             <span className="text-slate-600">Invoices</span>
+                                             <span className="font-semibold">{invoices.length}</span>
+                                         </div>
+                                         <div className="flex justify-between text-xs">
+                                             <span className="text-slate-600">Service</span>
+                                             <span className="font-semibold text-emerald-600">Live</span>
+                                         </div>
+                                     </div>
+                                     <Button size="sm" className="w-full text-xs h-7 bg-orange-600 hover:bg-orange-700" onClick={() => window.location.href = createPageUrl('TaxManagement')}>
+                                         {t('common:actions.manage')}
+                                     </Button>
+                                 </CardContent>
+                             </Card>
+
+                             {/* Impact Loyalty Program */}
+                             <Card className="border-2 border-rose-200 hover:border-rose-400 hover:shadow-lg transition-all group">
+                                 <CardContent className="p-4">
+                                     <div className="flex items-center gap-2 mb-3">
+                                         <div className="w-8 h-8 rounded-lg bg-rose-100 flex items-center justify-center">
+                                             <Trophy className="h-5 w-5 text-rose-600" />
+                                         </div>
+                                         <div>
+                                             <p className="font-semibold text-slate-900 text-sm">Impact Loyalty</p>
+                                             <Badge variant="outline" className="text-xs">
+                                                 {loyaltyPrograms.filter(p => p.status === 'active').length} {t('platform:dashboard.active')}
+                                             </Badge>
+                                         </div>
+                                     </div>
+                                     <div className="space-y-2 mb-3">
+                                         <div className="flex justify-between text-xs">
+                                             <span className="text-slate-600">Programs</span>
+                                             <span className="font-semibold">{loyaltyPrograms.length}</span>
+                                         </div>
+                                         <div className="flex justify-between text-xs">
+                                             <span className="text-slate-600">Total Participants</span>
+                                             <span className="font-semibold">{loyaltyPrograms.reduce((sum, p) => sum + (p.total_participants || 0), 0).toLocaleString()}</span>
+                                         </div>
+                                     </div>
+                                     <Button size="sm" className="w-full text-xs h-7 bg-rose-600 hover:bg-rose-700" onClick={() => window.location.href = createPageUrl('LoyaltyPlatformDashboard')}>
+                                         {t('common:actions.manage')}
+                                     </Button>
+                                 </CardContent>
+                             </Card>
+                            </div>
+                            </div>
 
                     {/* Quick Actions */}
                     <div className="mb-6">
