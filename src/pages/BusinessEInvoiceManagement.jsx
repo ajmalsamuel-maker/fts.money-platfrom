@@ -13,8 +13,10 @@ import { toast } from 'sonner';
 import OnboardingWizard from '@/components/einvoicing/BusinessEInvoiceOnboarding';
 import { createPageUrl } from '@/utils';
 import { GLOBAL_EINVOICING_STANDARDS } from '@/components/utils/globalEInvoicingRegistry';
+import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
 
 export default function BusinessEInvoiceManagement() {
+    const { platformUser, loading: authLoading } = usePlatformAuth();
     const [searchTerm, setSearchTerm] = useState('');
     const [openDialog, setOpenDialog] = useState(false);
     const [editingOrg, setEditingOrg] = useState(null);
@@ -119,6 +121,17 @@ export default function BusinessEInvoiceManagement() {
         onboarding: organizations.filter(o => o.status === 'onboarding').length,
         inactive: organizations.filter(o => o.status === 'inactive').length
     };
+
+    if (authLoading) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <div className="text-center">
+                    <div className="animate-spin h-8 w-8 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4"></div>
+                    <p className="text-slate-600">Verifying authentication...</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-[#F9FAFB] p-4 md:p-6">
