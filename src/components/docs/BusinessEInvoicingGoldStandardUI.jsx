@@ -836,8 +836,8 @@ graph TB
 ### **Typography**
 
 **Font Family**: 
-- Primary: `Inter` (Google Fonts)
-- Monospace: `JetBrains Mono` (Code, invoice numbers)
+- Primary: Inter (Google Fonts)
+- Monospace: JetBrains Mono (Code, invoice numbers)
 
 **Font Sizes**:
 - H1: 32px (Page titles)
