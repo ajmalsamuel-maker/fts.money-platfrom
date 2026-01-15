@@ -75,6 +75,7 @@ import HumanResourcesSOPs from '@/components/docs/HumanResourcesSOPs';
 import MermaidDiagram from '@/components/docs/MermaidDiagram';
 import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 import ExportDialog from '@/components/docs/ExportDialog';
+import BusinessEInvoicingGoldStandardUI from '@/components/docs/BusinessEInvoicingGoldStandardUI';
 
 export default function FTSDocumentation() {
     const { platformUser, loading } = usePlatformAuth();
@@ -364,6 +365,13 @@ export default function FTSDocumentation() {
                     icon: FileText,
                     content: InvoicingSystemDoc,
                     description: 'Multi-standard e-invoicing and global VAT compliance'
+                },
+                {
+                    id: 'business-einvoicing-ui',
+                    title: 'Business E-Invoicing Gold Standard UI',
+                    icon: FileText,
+                    content: BusinessEInvoicingGoldStandardUI,
+                    description: 'Comprehensive market research & gold standard interface design for white-label e-invoicing'
                 }
             ]
         },
