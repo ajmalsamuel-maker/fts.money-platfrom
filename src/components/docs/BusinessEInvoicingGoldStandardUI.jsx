@@ -814,22 +814,22 @@ graph TB
 ### **Color Palette**
 
 **Primary Colors**:
-- Primary Blue: `#3B82F6` (Action buttons, links)
-- Primary Dark: `#1E40AF` (Hover states)
-- Primary Light: `#DBEAFE` (Backgrounds, highlights)
+- Primary Blue: \`#3B82F6\` (Action buttons, links)
+- Primary Dark: \`#1E40AF\` (Hover states)
+- Primary Light: \`#DBEAFE\` (Backgrounds, highlights)
 
 **Status Colors**:
-- Success Green: `#10B981` (Paid, compliant)
-- Warning Yellow: `#F59E0B` (Pending, attention needed)
-- Error Red: `#EF4444` (Overdue, critical)
-- Info Blue: `#06B6D4` (Informational)
+- Success Green: \`#10B981\` (Paid, compliant)
+- Warning Yellow: \`#F59E0B\` (Pending, attention needed)
+- Error Red: \`#EF4444\` (Overdue, critical)
+- Info Blue: \`#06B6D4\` (Informational)
 
 **Neutral Colors**:
-- Text Primary: `#1F2937` (Headings, main content)
-- Text Secondary: `#6B7280` (Subtitles, labels)
-- Border: `#E5E7EB` (Dividers, outlines)
-- Background: `#F9FAFB` (Page background)
-- White: `#FFFFFF` (Cards, modals)
+- Text Primary: \`#1F2937\` (Headings, main content)
+- Text Secondary: \`#6B7280\` (Subtitles, labels)
+- Border: \`#E5E7EB\` (Dividers, outlines)
+- Background: \`#F9FAFB\` (Page background)
+- White: \`#FFFFFF\` (Cards, modals)
 
 ---
 
