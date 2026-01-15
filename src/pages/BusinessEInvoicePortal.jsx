@@ -49,7 +49,7 @@ export default function BusinessEInvoicePortal() {
     return (
         <div className="min-h-screen bg-slate-50 flex">
             {/* Sidebar */}
-            <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200 transform transition-transform duration-200 ease-in-out ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}>
+            <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200 flex flex-col transform transition-transform duration-200 ease-in-out ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}>
                 <div className="h-16 flex items-center justify-between px-6 border-b border-slate-200">
                     <div className="flex items-center gap-2">
                         <Building2 className="h-6 w-6 text-blue-600" />
@@ -60,11 +60,14 @@ export default function BusinessEInvoicePortal() {
                     </Button>
                 </div>
                 
-                <nav className="p-4 space-y-1">
+                <nav className="p-4 space-y-1 overflow-y-auto flex-1">
                     {navigationItems.map((item) => (
                         <button
                             key={item.label}
-                            onClick={() => window.location.href = createPageUrl(item.path)}
+                            onClick={() => {
+                                setSidebarOpen(false);
+                                window.location.href = createPageUrl(item.path);
+                            }}
                             className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
                                 item.active 
                                     ? 'bg-blue-50 text-blue-700 font-medium' 
