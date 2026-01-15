@@ -12,6 +12,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Plus, Check, AlertCircle, Lock } from 'lucide-react';
 import { toast } from 'sonner';
 import { COUNTRIES } from '@/components/utils/countries';
+import { GLOBAL_EINVOICING_STANDARDS } from '@/components/utils/globalEInvoicingRegistry';
 
 const STEP_1_ORG_INFO = 'org_info';
 const STEP_2_LEI = 'lei';
@@ -236,13 +237,15 @@ export default function BusinessEInvoiceOnboarding({ onSuccess }) {
                                                 <SelectTrigger>
                                                     <SelectValue placeholder="Select standard" />
                                                 </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectItem value="PEPPOL">PEPPOL</SelectItem>
-                                                    <SelectItem value="UBL">UBL 2.1</SelectItem>
-                                                    <SelectItem value="SAF-T">SAF-T</SelectItem>
-                                                    <SelectItem value="XRechnung">XRechnung</SelectItem>
-                                                    <SelectItem value="FatturaPA">FatturaPA</SelectItem>
-                                                    <SelectItem value="other">Other</SelectItem>
+                                                <SelectContent className="max-h-64">
+                                                    {Object.values(GLOBAL_EINVOICING_STANDARDS).map((standard) => (
+                                                        <SelectItem key={standard.code} value={standard.code}>
+                                                            <div className="flex flex-col">
+                                                                <span className="font-medium">{standard.name}</span>
+                                                                <span className="text-xs text-slate-500">{standard.format}</span>
+                                                            </div>
+                                                        </SelectItem>
+                                                    ))}
                                                 </SelectContent>
                                             </Select>
                                         </div>
