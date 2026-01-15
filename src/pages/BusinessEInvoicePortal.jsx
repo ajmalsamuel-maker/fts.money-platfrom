@@ -32,7 +32,7 @@ export default function BusinessEInvoicePortal() {
         { icon: Activity, label: 'Dashboard', path: 'BusinessEInvoicePortal', active: true },
         { icon: FileText, label: 'Invoices', path: 'BusinessInvoiceList' },
         { icon: Users, label: 'Customers', path: 'BusinessEInvoicePortal' },
-        { icon: Shield, label: 'Compliance', path: 'BusinessEInvoicePortal' },
+        { icon: Shield, label: 'Compliance', path: 'BusinessEInvoiceComplianceDashboard' },
         { icon: BarChart3, label: 'Reports', path: 'BusinessEInvoicePortal' },
         { icon: Settings, label: 'Settings', path: 'BusinessEInvoicePortal' }
     ];

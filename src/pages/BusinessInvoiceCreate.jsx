@@ -6,7 +6,8 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { ArrowLeft, Calculator, FileText, Send, Loader2, CheckCircle } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { ArrowLeft, Calculator, FileText, Send, Loader2, CheckCircle, Sparkles, AlertTriangle, Info } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import { base44 } from '@/api/base44Client';
 import { getStandardsArray } from '@/components/utils/globalEInvoicingRegistry';
@@ -14,9 +15,19 @@ import { getStandardsArray } from '@/components/utils/globalEInvoicingRegistry';
 export default function BusinessInvoiceCreate() {
     const [step, setStep] = useState(1);
     const [loading, setLoading] = useState(false);
+    const [aiGenerating, setAiGenerating] = useState(false);
     const [taxResult, setTaxResult] = useState(null);
     const [validationResult, setValidationResult] = useState(null);
     const [submissionResult, setSubmissionResult] = useState(null);
+    const [aiGenerated, setAiGenerated] = useState(false);
+    const [businessSession, setBusinessSession] = useState(null);
+
+    React.useEffect(() => {
+        const session = localStorage.getItem('business_einvoice_session');
+        if (session) {
+            setBusinessSession(JSON.parse(session));
+        }
+    }, []);
 
     const [formData, setFormData] = useState({
         standard: '',
@@ -27,7 +38,8 @@ export default function BusinessInvoiceCreate() {
         customer_tax_id: '',
         amount: '',
         currency: 'USD',
-        description: ''
+        description: '',
+        line_items: []
     });
 
     const standards = getStandardsArray();
@@ -51,21 +63,66 @@ export default function BusinessInvoiceCreate() {
         }
     };
 
+    const generateWithAI = async () => {
+        setAiGenerating(true);
+        try {
+            const response = await base44.functions.invoke('generateInvoiceAI', {
+                basicDetails: {
+                    customer_name: formData.customer_name,
+                    description: formData.description,
+                    amount: parseFloat(formData.amount)
+                },
+                standard: formData.standard,
+                country: formData.customer_country,
+                businessInfo: {
+                    name: businessSession?.company_name,
+                    tax_id: businessSession?.tax_id,
+                    country: businessSession?.country
+                }
+            });
+
+            const generated = response.data.invoice;
+            setFormData({
+                ...formData,
+                invoice_number: generated.invoice_number,
+                issue_date: generated.invoice_date,
+                customer_tax_id: generated.customer?.tax_id || formData.customer_tax_id,
+                line_items: generated.line_items || [],
+                amount: generated.total_amount?.toString() || formData.amount
+            });
+            setTaxResult({
+                tax_rate: (generated.tax_amount / generated.subtotal * 100).toFixed(2),
+                tax_amount: generated.tax_amount,
+                currency: generated.currency
+            });
+            setAiGenerated(true);
+        } catch (error) {
+            console.error('AI generation error:', error);
+        } finally {
+            setAiGenerating(false);
+        }
+    };
+
     const validateInvoice = async () => {
         setLoading(true);
         try {
-            const response = await base44.functions.invoke('validateEInvoiceData', {
+            const response = await base44.functions.invoke('validateInvoiceAI', {
+                invoiceData: {
+                    invoice_number: formData.invoice_number,
+                    invoice_date: formData.issue_date,
+                    customer_tax_id: formData.customer_tax_id,
+                    customer_name: formData.customer_name,
+                    customer_country: formData.customer_country,
+                    line_items: formData.line_items,
+                    subtotal: parseFloat(formData.amount),
+                    tax_amount: taxResult?.tax_amount || 0,
+                    total_amount: parseFloat(formData.amount) + (taxResult?.tax_amount || 0),
+                    currency: formData.currency
+                },
                 standard: formData.standard,
-                data: {
-                    InvoiceNumber: formData.invoice_number,
-                    IssueDate: formData.issue_date,
-                    BuyerTaxID: formData.customer_tax_id,
-                    TotalAmount: parseFloat(formData.amount),
-                    TaxAmount: taxResult?.tax_amount || 0,
-                    Currency: formData.currency
-                }
+                country: formData.customer_country
             });
-            setValidationResult(response.data);
+            setValidationResult(response.data.validation);
             setStep(3);
         } catch (error) {
             console.error('Validation error:', error);
@@ -211,9 +268,28 @@ export default function BusinessInvoiceCreate() {
                                 />
                             </div>
 
-                            <Button onClick={calculateTax} disabled={loading || !formData.standard} className="w-full">
-                                {loading ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Calculating...</> : <><Calculator className="h-4 w-4 mr-2" /> Calculate Tax</>}
-                            </Button>
+                            {aiGenerated && (
+                                <Alert className="bg-blue-50 border-blue-200">
+                                    <Sparkles className="h-4 w-4 text-blue-600" />
+                                    <AlertDescription className="text-blue-800">
+                                        AI generated this invoice with compliant tax codes and formatting. Review and proceed to validation.
+                                    </AlertDescription>
+                                </Alert>
+                            )}
+
+                            <div className="grid md:grid-cols-2 gap-3">
+                                <Button 
+                                    onClick={generateWithAI} 
+                                    disabled={aiGenerating || !formData.standard || !formData.customer_name || !formData.amount}
+                                    variant="outline"
+                                    className="border-blue-300 text-blue-700 hover:bg-blue-50"
+                                >
+                                    {aiGenerating ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Generating...</> : <><Sparkles className="h-4 w-4 mr-2" /> Generate with AI</>}
+                                </Button>
+                                <Button onClick={calculateTax} disabled={loading || !formData.standard} className="bg-blue-600 hover:bg-blue-700">
+                                    {loading ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Calculating...</> : <><Calculator className="h-4 w-4 mr-2" /> Calculate Tax</>}
+                                </Button>
+                            </div>
                         </CardContent>
                     </Card>
                 )}
@@ -245,15 +321,87 @@ export default function BusinessInvoiceCreate() {
                     <Card>
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
-                                {validationResult.valid ? <CheckCircle className="h-6 w-6 text-green-600" /> : null}
-                                Validation {validationResult.valid ? 'Passed' : 'Failed'}
+                                {validationResult.is_valid ? (
+                                    <CheckCircle className="h-6 w-6 text-green-600" />
+                                ) : (
+                                    <AlertTriangle className="h-6 w-6 text-red-600" />
+                                )}
+                                AI Validation {validationResult.is_valid ? 'Passed' : 'Failed'}
                             </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-4">
-                            {validationResult.valid && (
+                            {/* Compliance Score */}
+                            <div className="p-4 bg-slate-50 rounded-lg">
+                                <div className="flex items-center justify-between mb-2">
+                                    <div className="text-sm text-slate-600">Compliance Score</div>
+                                    <div className="text-2xl font-bold text-blue-600">{validationResult.compliance_score}/100</div>
+                                </div>
+                                <div className="text-sm text-slate-700">{validationResult.summary}</div>
+                            </div>
+
+                            {/* Errors */}
+                            {validationResult.errors && validationResult.errors.length > 0 && (
+                                <div className="space-y-2">
+                                    <h4 className="font-semibold text-slate-900">Issues Found</h4>
+                                    {validationResult.errors.map((err, idx) => (
+                                        <Alert key={idx} className={
+                                            err.severity === 'critical' ? 'bg-red-50 border-red-200' :
+                                            err.severity === 'warning' ? 'bg-yellow-50 border-yellow-200' :
+                                            'bg-blue-50 border-blue-200'
+                                        }>
+                                            <div className="flex items-start gap-3">
+                                                {err.severity === 'critical' ? <AlertTriangle className="h-5 w-5 text-red-600 mt-0.5" /> :
+                                                 err.severity === 'warning' ? <AlertTriangle className="h-5 w-5 text-yellow-600 mt-0.5" /> :
+                                                 <Info className="h-5 w-5 text-blue-600 mt-0.5" />}
+                                                <div className="flex-1">
+                                                    <div className="flex items-center gap-2 mb-1">
+                                                        <Badge className={
+                                                            err.severity === 'critical' ? 'bg-red-100 text-red-700' :
+                                                            err.severity === 'warning' ? 'bg-yellow-100 text-yellow-700' :
+                                                            'bg-blue-100 text-blue-700'
+                                                        }>
+                                                            {err.severity}
+                                                        </Badge>
+                                                        <span className="font-medium text-slate-900">{err.field}</span>
+                                                    </div>
+                                                    <AlertDescription className="text-sm">{err.message}</AlertDescription>
+                                                    {err.suggestion && (
+                                                        <div className="mt-2 text-sm text-slate-600 bg-white p-2 rounded border border-slate-200">
+                                                            <strong>Suggestion:</strong> {err.suggestion}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </Alert>
+                                    ))}
+                                </div>
+                            )}
+
+                            {/* Warnings */}
+                            {validationResult.warnings && validationResult.warnings.length > 0 && (
+                                <div className="space-y-2">
+                                    <h4 className="font-semibold text-slate-900">Warnings</h4>
+                                    {validationResult.warnings.map((warning, idx) => (
+                                        <div key={idx} className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+                                            {warning}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            {validationResult.is_valid ? (
                                 <Button onClick={submitInvoice} disabled={loading} className="w-full bg-green-600 hover:bg-green-700">
                                     {loading ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Submitting...</> : <><Send className="h-4 w-4 mr-2" /> Submit Invoice</>}
                                 </Button>
+                            ) : (
+                                <div className="flex gap-3">
+                                    <Button onClick={() => setStep(1)} variant="outline" className="flex-1">
+                                        Go Back to Edit
+                                    </Button>
+                                    <Button onClick={submitInvoice} disabled={loading} className="flex-1 bg-yellow-600 hover:bg-yellow-700">
+                                        {loading ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Submitting...</> : <>Submit Anyway</>}
+                                    </Button>
+                                </div>
                             )}
                         </CardContent>
                     </Card>
