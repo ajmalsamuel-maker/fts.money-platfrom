@@ -140,58 +140,6 @@ export default function BusinessInvoiceReports() {
                     </CardContent>
                 </Card>
             </div>
-
-            {/* Customer Dialog */}
-            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>{editingCustomer ? 'Edit Customer' : 'Add Customer'}</DialogTitle>
-                    </DialogHeader>
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        <div>
-                            <Label>Customer Name *</Label>
-                            <Input
-                                value={formData.name}
-                                onChange={(e) => setFormData({...formData, name: e.target.value})}
-                                required
-                            />
-                        </div>
-                        <div>
-                            <Label>Email</Label>
-                            <Input
-                                type="email"
-                                value={formData.email}
-                                onChange={(e) => setFormData({...formData, email: e.target.value})}
-                            />
-                        </div>
-                        <div>
-                            <Label>Tax ID *</Label>
-                            <Input
-                                value={formData.tax_id}
-                                onChange={(e) => setFormData({...formData, tax_id: e.target.value})}
-                                required
-                            />
-                        </div>
-                        <div>
-                            <Label>Country *</Label>
-                            <Input
-                                value={formData.country}
-                                onChange={(e) => setFormData({...formData, country: e.target.value})}
-                                maxLength={2}
-                                required
-                            />
-                        </div>
-                        <div className="flex gap-3 pt-4">
-                            <Button type="button" variant="outline" onClick={() => setDialogOpen(false)} className="flex-1">
-                                Cancel
-                            </Button>
-                            <Button type="submit" className="flex-1 bg-blue-600">
-                                {editingCustomer ? 'Update' : 'Create'}
-                            </Button>
-                        </div>
-                    </form>
-                </DialogContent>
-            </Dialog>
         </div>
     );
 }
