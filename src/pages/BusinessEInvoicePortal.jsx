@@ -31,10 +31,10 @@ export default function BusinessEInvoicePortal() {
     const navigationItems = [
         { icon: Activity, label: 'Dashboard', path: 'BusinessEInvoicePortal', active: true },
         { icon: FileText, label: 'Invoices', path: 'BusinessInvoiceList' },
-        { icon: Users, label: 'Customers', path: 'BusinessEInvoicePortal' },
+        { icon: Users, label: 'Customers', path: 'BusinessInvoiceCustomers' },
         { icon: Shield, label: 'Compliance', path: 'BusinessEInvoiceComplianceDashboard' },
-        { icon: BarChart3, label: 'Reports', path: 'BusinessEInvoicePortal' },
-        { icon: Settings, label: 'Settings', path: 'BusinessEInvoicePortal' }
+        { icon: BarChart3, label: 'Reports', path: 'BusinessInvoiceReports' },
+        { icon: Settings, label: 'Settings', path: 'BusinessEInvoiceSettings' }
     ];
 
     const getComplianceStatus = () => {

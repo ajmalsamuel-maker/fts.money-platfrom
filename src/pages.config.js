@@ -390,6 +390,9 @@ import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
 import BusinessEInvoiceComplianceDashboard from './pages/BusinessEInvoiceComplianceDashboard';
+import BusinessInvoiceCustomers from './pages/BusinessInvoiceCustomers';
+import BusinessInvoiceReports from './pages/BusinessInvoiceReports';
+import BusinessEInvoiceSettings from './pages/BusinessEInvoiceSettings';
 import __Layout from './Layout.jsx';
 
 
@@ -786,6 +789,9 @@ export const PAGES = {
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
     "BusinessEInvoiceComplianceDashboard": BusinessEInvoiceComplianceDashboard,
+    "BusinessInvoiceCustomers": BusinessInvoiceCustomers,
+    "BusinessInvoiceReports": BusinessInvoiceReports,
+    "BusinessEInvoiceSettings": BusinessEInvoiceSettings,
 }
 
 export const pagesConfig = {
