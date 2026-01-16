@@ -39,6 +39,7 @@ export default function ComprehensiveAuditLogs() {
         queryKey: ['audit-logs', categoryFilter, severityFilter, dateFilter],
         queryFn: async () => {
             const logs = await base44.asServiceRole.entities.AuditLog.list('-created_date', 1000);
+            console.log('Fetched audit logs:', logs.length);
             
             let filtered = logs;
             
@@ -243,7 +244,7 @@ export default function ComprehensiveAuditLogs() {
         setSearchQuery('');
         setCategoryFilter('all');
         setSeverityFilter('all');
-        setDateFilter('7days');
+        setDateFilter('30days');
         setStatusFilter('all');
         setEventTypeFilter('');
     };
@@ -313,7 +314,10 @@ export default function ComprehensiveAuditLogs() {
                             <Download className="h-4 w-4 mr-2" />
                             {isExporting ? 'Exporting...' : 'Export CSV'}
                         </Button>
-                        <Button variant="outline" onClick={() => refetch()} size="sm">
+                        <Button variant="outline" onClick={() => {
+                            refetch();
+                            toast.success('Audit logs refreshed');
+                        }} size="sm">
                             <RefreshCw className="h-4 w-4 mr-2" />
                             Refresh
                         </Button>
