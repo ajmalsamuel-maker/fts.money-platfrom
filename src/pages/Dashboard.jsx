@@ -126,10 +126,13 @@ export default function Dashboard() {
         return null; // Don't show anything while redirecting
     }
 
+    const totalVolume = transactions.reduce((sum, t) => sum + (t.amount || 0), 0);
+    const activeMerchants = merchants.filter(m => m.status === 'active').length;
+
     const stats = [
         {
             label: t('todaysVolume'),
-            value: "$2,458,320",
+            value: `$${totalVolume.toLocaleString()}`,
             change: "+12.5%",
             changeType: "positive",
             icon: DollarSign,
@@ -138,7 +141,7 @@ export default function Dashboard() {
         },
         {
             label: t('totalTransactions'),
-            value: "12,847",
+            value: transactions.length.toLocaleString(),
             change: "+8.3%",
             changeType: "positive",
             icon: ArrowLeftRight,
@@ -165,7 +168,7 @@ export default function Dashboard() {
         },
         {
             label: t('activeMerchants'),
-            value: merchants.filter(m => m.status === 'active').length || "156",
+            value: activeMerchants,
             change: "+3",
             changeType: "positive",
             icon: Store,
