@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Trophy } from 'lucide-react';
 import { toast } from 'sonner';
+import AuditLogger from '@/components/audit/AuditLogger';
 
 export default function LoyaltyCustomerLogin() {
     const [email, setEmail] = useState('');
@@ -24,11 +25,41 @@ export default function LoyaltyCustomerLogin() {
 
             if (customers.length > 0) {
                 localStorage.setItem('loyalty_customer_session', JSON.stringify(customers[0]));
+                
+                // Audit log successful login
+                await AuditLogger.logLogin(
+                    customers[0].admin_email,
+                    customers[0].id,
+                    'loyalty_customer',
+                    'client',
+                    'success'
+                );
+                
                 window.location.href = '/LoyaltyCustomerPortal';
             } else {
+                // Audit log failed login
+                await AuditLogger.logLogin(
+                    email,
+                    null,
+                    'loyalty_customer',
+                    'client',
+                    'failure',
+                    'Invalid credentials'
+                );
+                
                 toast.error('Invalid credentials');
             }
         } catch (err) {
+            // Audit log failed login
+            await AuditLogger.logLogin(
+                email,
+                null,
+                'loyalty_customer',
+                'client',
+                'failure',
+                err.message
+            );
+            
             toast.error('Login failed');
         } finally {
             setLoading(false);

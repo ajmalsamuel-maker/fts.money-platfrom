@@ -10,6 +10,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { FTS_LOGOS } from '@/components/community/FTSBrandColors';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 import { MinimalComplianceFooter } from '@/components/compliance/ComplianceFooter';
+import AuditLogger from '@/components/audit/AuditLogger';
 
 export default function RWAProviderLogin() {
     const navigate = useNavigate();
@@ -25,9 +26,28 @@ export default function RWAProviderLogin() {
         try {
             const { data } = await base44.functions.invoke('rwaProviderAuth', credentials);
             
+            // Audit log successful login
+            await AuditLogger.logLogin(
+                data.provider_email || credentials.provider_code,
+                data.provider_id,
+                'rwa_provider',
+                'client',
+                'success'
+            );
+            
             localStorage.setItem('rwa_provider_session', JSON.stringify(data));
             navigate(createPageUrl('RWAProviderDashboard'));
         } catch (err) {
+            // Audit log failed login
+            await AuditLogger.logLogin(
+                credentials.provider_code,
+                null,
+                'rwa_provider',
+                'client',
+                'failure',
+                err.message
+            );
+            
             setError('Invalid provider code or password');
         } finally {
             setLoading(false);

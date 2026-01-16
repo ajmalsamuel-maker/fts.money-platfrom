@@ -9,6 +9,7 @@ import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 import ComplianceFooter from '@/components/compliance/ComplianceFooter';
 import { Shield, Mail, Lock } from 'lucide-react';
 import { createPageUrl } from '@/utils';
+import AuditLogger from '@/components/audit/AuditLogger';
 
 export default function InvestorLogin() {
     const [email, setEmail] = useState('');
@@ -32,8 +33,28 @@ export default function InvestorLogin() {
             };
 
             localStorage.setItem('rwa_investor_session', JSON.stringify(mockInvestor));
+            
+            // Audit log successful login
+            await AuditLogger.logLogin(
+                email,
+                mockInvestor.investor_id,
+                'rwa_investor',
+                'client',
+                'success'
+            );
+            
             window.location.href = createPageUrl('InvestorMarketplace');
         } catch (err) {
+            // Audit log failed login
+            await AuditLogger.logLogin(
+                email,
+                null,
+                'rwa_investor',
+                'client',
+                'failure',
+                err.message
+            );
+            
             setError(err.message || 'Login failed');
         } finally {
             setLoading(false);

@@ -9,6 +9,7 @@ import StrigaDisclaimer from '@/components/crypto/StrigaDisclaimer';
 import { Wallet, ArrowRight } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
+import AuditLogger from '@/components/audit/AuditLogger';
 
 export default function CryptoGatewayLogin() {
     const [credentials, setCredentials] = useState({ email: '', password: '' });
@@ -30,11 +31,41 @@ export default function CryptoGatewayLogin() {
                     customer_id: data.customer_id,
                     timestamp: Date.now()
                 }));
+                
+                // Audit log successful login
+                await AuditLogger.logLogin(
+                    credentials.email,
+                    data.customer_id,
+                    'crypto_gateway_customer',
+                    'client',
+                    'success'
+                );
+                
                 window.location.href = '/CryptoGatewayDashboard';
             } else {
+                // Audit log failed login
+                await AuditLogger.logLogin(
+                    credentials.email,
+                    null,
+                    'crypto_gateway_customer',
+                    'client',
+                    'failure',
+                    data.message || 'Invalid credentials'
+                );
+                
                 setError(data.message || 'Invalid credentials');
             }
         } catch (err) {
+            // Audit log failed login
+            await AuditLogger.logLogin(
+                credentials.email,
+                null,
+                'crypto_gateway_customer',
+                'client',
+                'failure',
+                err.message
+            );
+            
             setError('Login failed. Please try again.');
         } finally {
             setLoading(false);

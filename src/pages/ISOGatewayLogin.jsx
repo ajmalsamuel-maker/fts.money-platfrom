@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Zap } from 'lucide-react';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
+import AuditLogger from '@/components/audit/AuditLogger';
 
 export default function ISOGatewayLogin() {
     const [email, setEmail] = useState('');
@@ -37,11 +38,41 @@ export default function ISOGatewayLogin() {
                     email: data.customer.contact_email,
                     company_name: data.customer.company_name
                 }));
+                
+                // Audit log successful login
+                await AuditLogger.logLogin(
+                    data.customer.contact_email,
+                    data.customer.id,
+                    'iso_gateway_customer',
+                    'client',
+                    'success'
+                );
+                
                 window.location.href = '/ISOGatewayCustomerPortal';
             } else {
+                // Audit log failed login
+                await AuditLogger.logLogin(
+                    email,
+                    null,
+                    'iso_gateway_customer',
+                    'client',
+                    'failure',
+                    data.error || 'Login failed'
+                );
+                
                 setError(data.error || 'Login failed');
             }
         } catch (err) {
+            // Audit log failed login
+            await AuditLogger.logLogin(
+                email,
+                null,
+                'iso_gateway_customer',
+                'client',
+                'failure',
+                err.message
+            );
+            
             setError('Login error: ' + err.message);
         }
         setLoading(false);

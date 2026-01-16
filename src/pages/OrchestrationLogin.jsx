@@ -8,6 +8,7 @@ import { GitBranch, Zap, ArrowRight, Loader2 } from 'lucide-react';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 import { FTS_COLORS, FTS_GRADIENTS, FTS_LOGOS } from '@/components/community/FTSBrandColors';
 import ComplianceFooter from '@/components/compliance/ComplianceFooter';
+import AuditLogger from '@/components/audit/AuditLogger';
 
 export default function OrchestrationLogin() {
     const [email, setEmail] = useState('');
@@ -36,11 +37,41 @@ export default function OrchestrationLogin() {
 
             if (data.success) {
                 localStorage.setItem('orchestration_session', JSON.stringify(data.customer));
+                
+                // Audit log successful login
+                await AuditLogger.logLogin(
+                    data.customer.contact_email,
+                    data.customer.id,
+                    'orchestration_customer',
+                    'client',
+                    'success'
+                );
+                
                 window.location.href = '/OrchestrationPortal';
             } else {
+                // Audit log failed login
+                await AuditLogger.logLogin(
+                    email,
+                    null,
+                    'orchestration_customer',
+                    'client',
+                    'failure',
+                    data.error || 'Login failed'
+                );
+                
                 setError(data.error || 'Login failed');
             }
         } catch (err) {
+            // Audit log failed login
+            await AuditLogger.logLogin(
+                email,
+                null,
+                'orchestration_customer',
+                'client',
+                'failure',
+                err.message
+            );
+            
             setError(err.message || 'Login failed');
         } finally {
             setLoading(false);
