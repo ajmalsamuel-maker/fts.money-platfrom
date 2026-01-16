@@ -49,12 +49,15 @@ Deno.serve(async (req) => {
                 }
 
                 case 'listMerchants': {
-                    // Fetch merchants from Base44 entity system with PSP isolation
-                    const merchants = await base44.asServiceRole.entities.Merchant.filter({ psp_code });
+                    const result = await client.query(`
+                        SELECT * FROM merchants 
+                        WHERE psp_code = $1
+                        ORDER BY created_date DESC
+                    `, [psp_code]);
                     
                     return Response.json({ 
                         success: true, 
-                        data: merchants 
+                        data: result.rows 
                     });
                 }
 
@@ -83,25 +86,60 @@ Deno.serve(async (req) => {
 
                 case 'createMerchant': {
                     const { merchantData } = await req.json();
-                    
-                    // Create merchant in Base44 entity system
-                    const merchant = await base44.asServiceRole.entities.Merchant.create(merchantData);
+                    const result = await client.query(`
+                        INSERT INTO merchants (
+                            psp_code, merchant_code, business_name, trading_name, 
+                            contact_email, contact_phone, contact_name, country, 
+                            category, website, currency, status, risk_level, created_by
+                        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+                        RETURNING *
+                    `, [
+                        psp_code,
+                        merchantData.merchant_code,
+                        merchantData.business_name,
+                        merchantData.trading_name,
+                        merchantData.contact_email,
+                        merchantData.contact_phone,
+                        merchantData.contact_name,
+                        merchantData.country,
+                        merchantData.category,
+                        merchantData.website,
+                        merchantData.currency || 'USD',
+                        merchantData.status || 'pending',
+                        merchantData.risk_level || 'medium',
+                        merchantData.created_by
+                    ]);
                     
                     return Response.json({ 
                         success: true, 
-                        merchant 
+                        merchant: result.rows[0] 
                     });
                 }
 
                 case 'updateMerchant': {
                     const { merchantId, updates } = await req.json();
-                    
-                    // Update merchant in Base44 entity system
-                    const merchant = await base44.asServiceRole.entities.Merchant.update(merchantId, updates);
+                    const setClauses = [];
+                    const values = [psp_code, merchantId];
+                    let paramIndex = 3;
+
+                    for (const [key, value] of Object.entries(updates)) {
+                        setClauses.push(`${key} = $${paramIndex}`);
+                        values.push(value);
+                        paramIndex++;
+                    }
+
+                    setClauses.push('updated_date = NOW()');
+
+                    const result = await client.query(`
+                        UPDATE merchants 
+                        SET ${setClauses.join(', ')}
+                        WHERE psp_code = $1 AND id = $2
+                        RETURNING *
+                    `, values);
                     
                     return Response.json({ 
                         success: true, 
-                        merchant 
+                        merchant: result.rows[0] 
                     });
                 }
 
