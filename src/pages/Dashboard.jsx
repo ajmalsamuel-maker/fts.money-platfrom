@@ -129,6 +129,10 @@ export default function Dashboard() {
     const totalVolume = transactions.reduce((sum, t) => sum + (t.amount || 0), 0);
     const activeMerchants = merchants.filter(m => m.status === 'active').length;
 
+    // Calculate real success rate
+    const approvedTransactions = transactions.filter(t => t.status === 'approved' || t.status === 'accepted' || t.status === 'settled').length;
+    const successRate = transactions.length > 0 ? ((approvedTransactions / transactions.length) * 100).toFixed(2) : 0;
+
     const stats = [
         {
             label: t('todaysVolume'),
@@ -150,7 +154,7 @@ export default function Dashboard() {
         },
         {
             label: t('successRate'),
-            value: "98.7%",
+            value: `${successRate}%`,
             change: "+0.5%",
             changeType: "positive",
             icon: TrendingUp,
@@ -256,7 +260,7 @@ export default function Dashboard() {
                         <RecurringRevenueCard />
                         <SubscriptionHealthCard />
                         <AIPerformanceCard />
-                        <TPSCounter />
+                        <TPSCounter transactions={transactions} />
                     </div>
 
                     {/* New Services Metrics: VAT, E-Invoicing, RWA, VASP */}
@@ -276,7 +280,7 @@ export default function Dashboard() {
                             <SuccessRateChart />
                         </div>
                         <div className="md:col-span-1">
-                            <BusinessMetrics />
+                            <BusinessMetrics transactions={transactions} />
                         </div>
                     </div>
 
@@ -286,7 +290,7 @@ export default function Dashboard() {
                             <TransactionTable transactions={transactions} />
                         </div>
                         <div className="space-y-3 sm:space-y-4">
-                            <TopMerchants />
+                            <TopMerchants merchants={merchants} transactions={transactions} />
                             <CryptoAnalyticsCard />
                         </div>
                     </div>
