@@ -12,6 +12,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { getPaymentMethodLogo, getPaymentMethodDisplayName } from '@/components/utils/paymentLogos';
 import { cn } from "@/lib/utils";
+import { useAuditLogger } from '@/components/audit/useAuditLogger';
 
 const defaultTiers = [
     { id: 'starter', name: 'Starter', price: 2000, revenue_share: 30, icon: Rocket, limits: { max_payment_providers: 1, max_merchants: 100 } },
