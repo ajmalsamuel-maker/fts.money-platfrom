@@ -49,14 +49,12 @@ Deno.serve(async (req) => {
                 }
 
                 case 'listMerchants': {
-                    const result = await client.query(`
-                        SELECT * FROM merchants 
-                        ORDER BY created_date DESC
-                    `);
+                    // Fetch merchants from Base44 entity system with PSP isolation
+                    const merchants = await base44.asServiceRole.entities.Merchant.filter({ psp_code });
                     
                     return Response.json({ 
                         success: true, 
-                        data: result.rows 
+                        data: merchants 
                     });
                 }
 
@@ -85,30 +83,25 @@ Deno.serve(async (req) => {
 
                 case 'createMerchant': {
                     const { merchantData } = await req.json();
-                    const result = await client.query(`
-                        INSERT INTO merchants (data) 
-                        VALUES ($1) 
-                        RETURNING *
-                    `, [JSON.stringify(merchantData)]);
+                    
+                    // Create merchant in Base44 entity system
+                    const merchant = await base44.asServiceRole.entities.Merchant.create(merchantData);
                     
                     return Response.json({ 
                         success: true, 
-                        merchant: result.rows[0] 
+                        merchant 
                     });
                 }
 
                 case 'updateMerchant': {
                     const { merchantId, updates } = await req.json();
-                    const result = await client.query(`
-                        UPDATE merchants 
-                        SET data = data || $1::jsonb 
-                        WHERE id = $2 
-                        RETURNING *
-                    `, [JSON.stringify(updates), merchantId]);
+                    
+                    // Update merchant in Base44 entity system
+                    const merchant = await base44.asServiceRole.entities.Merchant.update(merchantId, updates);
                     
                     return Response.json({ 
                         success: true, 
-                        merchant: result.rows[0] 
+                        merchant 
                     });
                 }
 
