@@ -71,6 +71,20 @@ export default function PSPInstanceConfig() {
         enabled: !!pspId
     });
 
+    const { data: paymentGateways = [] } = useQuery({
+        queryKey: ['payment-gateways', psp?.psp_code],
+        queryFn: async () => {
+            if (!psp?.psp_code) return [];
+            const allGateways = await base44.entities.PaymentGateway.list();
+            // Filter for GP-PAY system gateways or PSP-specific gateways
+            return allGateways.filter(g => 
+                g.merchant_id === 'GP-PAY-SYSTEM' || 
+                g.merchant_id === psp.psp_code
+            );
+        },
+        enabled: !!psp?.psp_code
+    });
+
     const { data: payoutRoutes = [] } = useQuery({
         queryKey: ['payout-routes'],
         queryFn: () => base44.entities.PayoutRoute.list(),
@@ -723,7 +737,96 @@ export default function PSPInstanceConfig() {
                                 <CardTitle>Payment Methods</CardTitle>
                                 <CardDescription>Enable payment methods for this PSP instance</CardDescription>
                             </CardHeader>
-                            <CardContent className="space-y-3">
+                            <CardContent className="space-y-6">
+                                {/* Mock/Test Payment Gateways Section */}
+                                {paymentGateways.length > 0 && (
+                                    <div className="space-y-3">
+                                        <div className="flex items-center justify-between mb-3">
+                                            <div>
+                                                <h3 className="font-semibold text-slate-900">Mock Payment Gateways</h3>
+                                                <p className="text-xs text-slate-600">Test payment gateways for development and testing</p>
+                                            </div>
+                                            <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-300">
+                                                {paymentGateways.length} Available
+                                            </Badge>
+                                        </div>
+                                        {paymentGateways.map((gateway) => {
+                                            const methods = gateway.supported_methods || [];
+                                            const displayName = gateway.metadata?.display_name || gateway.gateway_name;
+                                            const isAnyEnabled = methods.some(m => config.enabled_payment_methods?.includes(m));
+                                            
+                                            return (
+                                                <div 
+                                                    key={gateway.id} 
+                                                    className={cn(
+                                                        "border-2 rounded-lg p-4 transition-all",
+                                                        isAnyEnabled 
+                                                            ? "border-blue-500 bg-blue-50" 
+                                                            : "border-slate-200 hover:border-blue-300"
+                                                    )}
+                                                >
+                                                    <div className="flex items-center justify-between mb-3">
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="w-12 h-12 rounded-lg bg-white border border-slate-200 flex items-center justify-center">
+                                                                <CreditCard className="h-6 w-6 text-slate-600" />
+                                                            </div>
+                                                            <div>
+                                                                <p className="font-semibold text-slate-900">{displayName}</p>
+                                                                <p className="text-xs text-slate-600">
+                                                                    {gateway.status === 'active' ? '🟢 Active' : '⚪ Inactive'} • 
+                                                                    {gateway.gateway_mode === 'test' ? ' Test Mode' : ' Live Mode'}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                        <Badge className={isAnyEnabled ? "bg-blue-600" : "bg-slate-200 text-slate-600"}>
+                                                            {methods.filter(m => config.enabled_payment_methods?.includes(m)).length}/{methods.length} Methods
+                                                        </Badge>
+                                                    </div>
+                                                    
+                                                    <div className="grid grid-cols-2 gap-2">
+                                                        {methods.map((method) => {
+                                                            const isEnabled = config.enabled_payment_methods?.includes(method);
+                                                            const displayMethodName = getPaymentMethodDisplayName(method);
+                                                            const logoUrl = getPaymentMethodLogo(method);
+                                                            
+                                                            return (
+                                                                <div 
+                                                                    key={method}
+                                                                    className={cn(
+                                                                        "flex items-center justify-between p-2 rounded border",
+                                                                        isEnabled ? "border-blue-500 bg-blue-100" : "border-slate-200 bg-white"
+                                                                    )}
+                                                                >
+                                                                    <div className="flex items-center gap-2">
+                                                                        <div className="w-8 h-5 rounded flex items-center justify-center bg-white border border-slate-200">
+                                                                            {logoUrl ? (
+                                                                                <img src={logoUrl} alt={displayMethodName} className="max-w-full max-h-full object-contain" />
+                                                                            ) : (
+                                                                                <CreditCard className="h-3 w-3 text-slate-400" />
+                                                                            )}
+                                                                        </div>
+                                                                        <span className="text-xs font-medium">{displayMethodName}</span>
+                                                                    </div>
+                                                                    <Switch
+                                                                        checked={isEnabled}
+                                                                        onCheckedChange={(checked) => {
+                                                                            const methods = checked
+                                                                                ? [...(config.enabled_payment_methods || []), method]
+                                                                                : (config.enabled_payment_methods || []).filter(m => m !== method);
+                                                                            setConfig({...config, enabled_payment_methods: methods});
+                                                                        }}
+                                                                    />
+                                                                </div>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+
+                                {/* Standard Payment Methods Section */}
                                 {paymentProviders.length === 0 ? (
                                     <div className="text-center py-8 text-slate-500">
                                         <CreditCard className="h-12 w-12 mx-auto mb-2 text-slate-400" />
@@ -732,6 +835,12 @@ export default function PSPInstanceConfig() {
                                     </div>
                                 ) : (
                                     <div className="space-y-3">
+                                        <div className="flex items-center justify-between mb-3">
+                                            <div>
+                                                <h3 className="font-semibold text-slate-900">Standard Payment Methods</h3>
+                                                <p className="text-xs text-slate-600">Production payment methods and alternative payment options</p>
+                                            </div>
+                                        </div>
                                         {['visa', 'mastercard', 'amex', 'discover', 'unionpay', 'diners_club', 'jcb', 'alipay', 'wechat', 'apple_pay', 'google_pay', 'paypal', 'ach', 'sepa', 'faster_payments', 'bitcoin', 'ethereum', 'usdt', 'usdc', 'bitcoin_cash', 'litecoin', 'ideal', 'sofort', 'giropay', 'bancontact', 'multibanco', 'p24', 'eps', 'sezzle', 'afterpay'].map((method) => {
                                             const isEnabled = config.enabled_payment_methods?.includes(method);
                                             const displayName = getPaymentMethodDisplayName(method);
