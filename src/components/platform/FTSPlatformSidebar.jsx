@@ -240,6 +240,14 @@ const menuSections = [
         ]
     },
     {
+        id: 'testing',
+        title: 'Testing & Simulation',
+        defaultOpen: false,
+        items: [
+            { label: 'Load Testing Dashboard', description: 'Generate transaction load & monitor TPS', path: 'LoadTestingDashboard', icon: Target, priority: true }
+        ]
+    },
+    {
         id: 'pci-compliance',
         title: 'PCI DSS Compliance',
         defaultOpen: true,
