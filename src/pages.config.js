@@ -170,6 +170,7 @@ import LEIComplianceDashboard from './pages/LEIComplianceDashboard';
 import LEIGLEIFTestReport from './pages/LEIGLEIFTestReport';
 import LEIPhase1Testing from './pages/LEIPhase1Testing';
 import LaunchServices from './pages/LaunchServices';
+import LoadTestingDashboard from './pages/LoadTestingDashboard';
 import LoyaltyAchievements from './pages/LoyaltyAchievements';
 import LoyaltyChallenges from './pages/LoyaltyChallenges';
 import LoyaltyCustomerBlockchain from './pages/LoyaltyCustomerBlockchain';
@@ -248,6 +249,7 @@ import MerchantVirtualTerminal from './pages/MerchantVirtualTerminal';
 import MerchantVirtualTerminals from './pages/MerchantVirtualTerminals';
 import MerchantWebhooks from './pages/MerchantWebhooks';
 import Merchants from './pages/Merchants';
+import MockGatewayManager from './pages/MockGatewayManager';
 import ModuleCatalogTest from './pages/ModuleCatalogTest';
 import MyAllServices from './pages/MyAllServices';
 import MyPSPInstances from './pages/MyPSPInstances';
@@ -394,8 +396,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import LoadTestingDashboard from './pages/LoadTestingDashboard';
-import MockGatewayManager from './pages/MockGatewayManager';
 import __Layout from './Layout.jsx';
 
 
@@ -572,6 +572,7 @@ export const PAGES = {
     "LEIGLEIFTestReport": LEIGLEIFTestReport,
     "LEIPhase1Testing": LEIPhase1Testing,
     "LaunchServices": LaunchServices,
+    "LoadTestingDashboard": LoadTestingDashboard,
     "LoyaltyAchievements": LoyaltyAchievements,
     "LoyaltyChallenges": LoyaltyChallenges,
     "LoyaltyCustomerBlockchain": LoyaltyCustomerBlockchain,
@@ -650,6 +651,7 @@ export const PAGES = {
     "MerchantVirtualTerminals": MerchantVirtualTerminals,
     "MerchantWebhooks": MerchantWebhooks,
     "Merchants": Merchants,
+    "MockGatewayManager": MockGatewayManager,
     "ModuleCatalogTest": ModuleCatalogTest,
     "MyAllServices": MyAllServices,
     "MyPSPInstances": MyPSPInstances,
@@ -796,8 +798,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "LoadTestingDashboard": LoadTestingDashboard,
-    "MockGatewayManager": MockGatewayManager,
 }
 
 export const pagesConfig = {

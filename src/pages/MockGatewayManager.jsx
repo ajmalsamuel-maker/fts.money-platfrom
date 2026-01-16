@@ -45,6 +45,54 @@ const mockGateways = [
             simulate_delay: 150,
             simulate_success_rate: 93
         }
+    },
+    {
+        id: 'mock_paypal',
+        name: 'Mock PayPal',
+        provider: 'PayPal (Test)',
+        icon: '💰',
+        description: 'Simulates PayPal payment gateway for testing',
+        function_name: 'mockPayPal',
+        default_config: {
+            simulate_delay: 120,
+            simulate_success_rate: 96
+        }
+    },
+    {
+        id: 'mock_alipay',
+        name: 'Mock AliPay',
+        provider: 'AliPay (Test)',
+        icon: '🇨🇳',
+        description: 'Simulates AliPay payment gateway for testing',
+        function_name: 'mockAliPay',
+        default_config: {
+            simulate_delay: 90,
+            simulate_success_rate: 97
+        }
+    },
+    {
+        id: 'mock_wechat',
+        name: 'Mock WeChat Pay',
+        provider: 'WeChat Pay (Test)',
+        icon: '💬',
+        description: 'Simulates WeChat Pay gateway for testing',
+        function_name: 'mockWeChat',
+        default_config: {
+            simulate_delay: 95,
+            simulate_success_rate: 96
+        }
+    },
+    {
+        id: 'mock_skrill',
+        name: 'Mock Skrill',
+        provider: 'Skrill (Test)',
+        icon: '🎯',
+        description: 'Simulates Skrill payment gateway for testing',
+        function_name: 'mockSkrill',
+        default_config: {
+            simulate_delay: 110,
+            simulate_success_rate: 94
+        }
     }
 ];
 
