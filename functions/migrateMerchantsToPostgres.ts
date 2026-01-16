@@ -40,19 +40,16 @@ Deno.serve(async (req) => {
 
                 const insertQuery = `
                     INSERT INTO merchants (
-                        merchant_code, merchant_id, business_name, 
-                        trading_name, status, category, mcc_code, country, 
-                        currency, timezone, contact_name, contact_email, 
+                        business_name, trading_name, status, category, mcc_code, 
+                        country, currency, timezone, contact_name, contact_email, 
                         contact_phone, address, website, processing_volume, 
                         fee_rate, settlement_period, risk_level, created_by
-                    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, 
-                             $13, $14, $15, $16, $17, $18, $19, $20, $21)
-                    ON CONFLICT (merchant_code) DO NOTHING
+                    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 
+                             $11, $12, $13, $14, $15, $16, $17, $18)
+                    ON CONFLICT DO NOTHING
                 `;
 
                 await client.query(insertQuery, [
-                    merchant.data?.merchant_code || merchant.id,
-                    merchant.data?.merchant_id || null,
                     merchant.data?.business_name,
                     merchant.data?.trading_name,
                     merchant.data?.status || 'pending',
