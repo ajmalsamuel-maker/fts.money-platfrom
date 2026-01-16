@@ -35,13 +35,12 @@ Deno.serve(async (req) => {
 
             // Migrate each merchant to PostgreSQL
             for (const merchant of merchants) {
-                await client.query(`
-                    SET search_path TO "${schemaName}"
-                `);
+                // First set schema
+                await client.query(`SET search_path TO "${schemaName}"`);
 
-                await client.query(`
+                const insertQuery = `
                     INSERT INTO merchants (
-                        psp_code, merchant_code, merchant_id, business_name, 
+                        merchant_code, merchant_id, business_name, 
                         trading_name, status, category, mcc_code, country, 
                         currency, timezone, contact_name, contact_email, 
                         contact_phone, address, website, processing_volume, 
@@ -49,8 +48,9 @@ Deno.serve(async (req) => {
                     ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, 
                              $13, $14, $15, $16, $17, $18, $19, $20, $21)
                     ON CONFLICT (merchant_code) DO NOTHING
-                `, [
-                    psp_code,
+                `;
+
+                await client.query(insertQuery, [
                     merchant.data?.merchant_code || merchant.id,
                     merchant.data?.merchant_id || null,
                     merchant.data?.business_name,
