@@ -217,8 +217,7 @@ const menuSections = [
             { label: 'Carbon Dashboard', description: 'Track & offset carbon footprint', path: 'CarbonDashboard', icon: Leaf, priority: true },
             { label: 'ESG Reporting', description: 'Environmental & sustainability analytics', path: 'ESGReportingDashboard', icon: TrendingUp, priority: true },
             { labelKey: 'complianceTesting', descKey: 'complianceTestingDesc', path: 'FTSComplianceTesting', icon: TestTube2 },
-            { labelKey: 'platformAuditLogs', descKey: 'platformAuditLogsDesc', path: 'PlatformAuditLogs', icon: FileText, priority: true },
-            { labelKey: 'accessLogs', descKey: 'accessLogsDesc', path: 'EnhancedAuditLogs', icon: FileText },
+            { label: 'Audit & Compliance Logs', description: 'PCI DSS, SOC 2 & GDPR compliant audit trail with analytics', path: 'ComprehensiveAuditLogs', icon: Shield, priority: true },
             { labelKey: 'policyManagement', descKey: 'policyManagementDesc', path: 'FTSCompliance', icon: Shield },
             { labelKey: 'workflows', descKey: 'workflowsDesc', path: 'WorkflowManagement', icon: GitBranch },
             { labelKey: 'dataRetention', descKey: 'dataRetentionDesc', path: 'DataRetentionManagement', icon: Database }
