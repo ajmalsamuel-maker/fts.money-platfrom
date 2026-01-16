@@ -29,6 +29,8 @@ const mockGateways = [
         icon: '💳',
         description: 'Simulates Stripe payment gateway for testing',
         function_name: 'mockStripe',
+        payment_method: 'visa',
+        currency: 'USD',
         default_config: {
             simulate_delay: 100,
             simulate_success_rate: 95
@@ -41,6 +43,8 @@ const mockGateways = [
         icon: '🔷',
         description: 'Simulates Adyen payment gateway for testing',
         function_name: 'mockAdyen',
+        payment_method: 'visa',
+        currency: 'USD',
         default_config: {
             simulate_delay: 150,
             simulate_success_rate: 93
@@ -53,6 +57,8 @@ const mockGateways = [
         icon: '💰',
         description: 'Simulates PayPal payment gateway for testing',
         function_name: 'mockPayPal',
+        payment_method: 'paypal',
+        currency: 'USD',
         default_config: {
             simulate_delay: 120,
             simulate_success_rate: 96
@@ -65,6 +71,8 @@ const mockGateways = [
         icon: '🇨🇳',
         description: 'Simulates AliPay payment gateway for testing',
         function_name: 'mockAliPay',
+        payment_method: 'alipay',
+        currency: 'CNY',
         default_config: {
             simulate_delay: 90,
             simulate_success_rate: 97
@@ -77,6 +85,8 @@ const mockGateways = [
         icon: '💬',
         description: 'Simulates WeChat Pay gateway for testing',
         function_name: 'mockWeChat',
+        payment_method: 'wechat',
+        currency: 'CNY',
         default_config: {
             simulate_delay: 95,
             simulate_success_rate: 96
@@ -89,6 +99,8 @@ const mockGateways = [
         icon: '🎯',
         description: 'Simulates Skrill payment gateway for testing',
         function_name: 'mockSkrill',
+        payment_method: 'skrill',
+        currency: 'EUR',
         default_config: {
             simulate_delay: 110,
             simulate_success_rate: 94
@@ -165,8 +177,8 @@ export default function MockGatewayManager() {
         try {
             const { data } = await base44.functions.invoke(gateway.function_name, {
                 amount: 100,
-                currency: 'USD',
-                payment_method: 'visa',
+                currency: gateway.currency,
+                payment_method: gateway.payment_method,
                 merchant_id: 'test_merchant',
                 ...gateway.default_config
             });
