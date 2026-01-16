@@ -8,8 +8,10 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
 import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
+import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { 
     Zap, 
     CheckCircle2, 
@@ -18,7 +20,12 @@ import {
     Pause,
     RefreshCw,
     AlertCircle,
-    Activity
+    Activity,
+    TrendingUp,
+    Clock,
+    XCircle,
+    Download,
+    Calendar
 } from 'lucide-react';
 
 const mockGateways = [
@@ -113,12 +120,32 @@ export default function MockGatewayManager() {
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [testingGateway, setTestingGateway] = useState(null);
     const [testResult, setTestResult] = useState(null);
+    const [dateRange, setDateRange] = useState({
+        start: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        end: new Date().toISOString().split('T')[0]
+    });
     const queryClient = useQueryClient();
 
     // Fetch existing payment providers
     const { data: providers = [] } = useQuery({
         queryKey: ['payment-providers'],
         queryFn: () => base44.entities.PaymentProvider.list()
+    });
+
+    // Fetch transactions for analytics
+    const { data: transactions = [] } = useQuery({
+        queryKey: ['mock-transactions', dateRange],
+        queryFn: async () => {
+            const startDate = new Date(dateRange.start);
+            const endDate = new Date(dateRange.end);
+            endDate.setHours(23, 59, 59, 999);
+            
+            const allTransactions = await base44.entities.Transaction.list();
+            return allTransactions.filter(t => {
+                const txDate = new Date(t.created_date);
+                return txDate >= startDate && txDate <= endDate;
+            });
+        }
     });
 
     // Check which mock gateways are registered as providers
@@ -197,6 +224,78 @@ export default function MockGatewayManager() {
         }
     };
 
+    // Calculate analytics
+    const getGatewayAnalytics = () => {
+        const analytics = mockGateways.map(gateway => {
+            const gatewayTxns = transactions.filter(t => 
+                t.connector_txn_no?.includes(gateway.id) || 
+                t.remarks?.includes(gateway.name)
+            );
+
+            const successful = gatewayTxns.filter(t => t.status === 'approved' || t.status === 'accepted').length;
+            const failed = gatewayTxns.filter(t => t.status === 'declined' || t.status === 'failed').length;
+            const total = gatewayTxns.length;
+
+            const failureReasons = gatewayTxns
+                .filter(t => t.status === 'declined' || t.status === 'failed')
+                .reduce((acc, t) => {
+                    const reason = t.response_message || 'Unknown';
+                    acc[reason] = (acc[reason] || 0) + 1;
+                    return acc;
+                }, {});
+
+            const avgProcessingTime = gatewayTxns.length > 0
+                ? gatewayTxns.reduce((sum, t) => {
+                    const created = new Date(t.created_date);
+                    const completed = t.complete_time ? new Date(t.complete_time) : new Date();
+                    return sum + (completed - created);
+                }, 0) / gatewayTxns.length
+                : gateway.default_config.simulate_delay;
+
+            return {
+                gateway: gateway.name,
+                icon: gateway.icon,
+                total,
+                successful,
+                failed,
+                successRate: total > 0 ? ((successful / total) * 100).toFixed(2) : gateway.default_config.simulate_success_rate,
+                failureReasons: Object.entries(failureReasons).map(([reason, count]) => ({ reason, count })),
+                avgProcessingTime: Math.round(avgProcessingTime),
+                volume: gatewayTxns.reduce((sum, t) => sum + (t.amount || 0), 0)
+            };
+        });
+
+        return analytics;
+    };
+
+    const analytics = getGatewayAnalytics();
+
+    // Generate report
+    const generateReport = () => {
+        const reportData = {
+            dateRange: `${dateRange.start} to ${dateRange.end}`,
+            generated: new Date().toISOString(),
+            summary: {
+                totalTransactions: transactions.length,
+                totalVolume: transactions.reduce((sum, t) => sum + (t.amount || 0), 0),
+                avgSuccessRate: (analytics.reduce((sum, a) => sum + parseFloat(a.successRate), 0) / analytics.length).toFixed(2)
+            },
+            gateways: analytics
+        };
+
+        const blob = new Blob([JSON.stringify(reportData, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `mock-gateway-report-${dateRange.start}-to-${dateRange.end}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    };
+
+    const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'];
+
     return (
         <div className="flex h-screen bg-slate-50">
             <FTSPlatformSidebar open={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
@@ -217,6 +316,206 @@ export default function MockGatewayManager() {
                             <strong>Testing Flow:</strong> Register mock gateways here → They appear in Payment Providers → Provision to PSPs for realistic testing
                         </AlertDescription>
                     </Alert>
+
+                    <Tabs defaultValue="gateways" className="mb-6">
+                        <TabsList>
+                            <TabsTrigger value="gateways">Gateway Management</TabsTrigger>
+                            <TabsTrigger value="analytics">Analytics Dashboard</TabsTrigger>
+                        </TabsList>
+
+                        <TabsContent value="analytics" className="space-y-6">
+                            {/* Date Range Selector */}
+                            <Card>
+                                <CardHeader>
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <CardTitle className="flex items-center gap-2">
+                                                <Calendar className="h-5 w-5" />
+                                                Report Period
+                                            </CardTitle>
+                                            <CardDescription>Select date range for analytics and reports</CardDescription>
+                                        </div>
+                                        <Button onClick={generateReport} className="bg-green-600 hover:bg-green-700">
+                                            <Download className="h-4 w-4 mr-2" />
+                                            Generate Report
+                                        </Button>
+                                    </div>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="flex gap-4 items-end">
+                                        <div className="flex-1">
+                                            <Label>Start Date</Label>
+                                            <Input
+                                                type="date"
+                                                value={dateRange.start}
+                                                onChange={(e) => setDateRange({ ...dateRange, start: e.target.value })}
+                                            />
+                                        </div>
+                                        <div className="flex-1">
+                                            <Label>End Date</Label>
+                                            <Input
+                                                type="date"
+                                                value={dateRange.end}
+                                                onChange={(e) => setDateRange({ ...dateRange, end: e.target.value })}
+                                            />
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+
+                            {/* Summary Cards */}
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <Card>
+                                    <CardContent className="pt-6">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="text-sm text-slate-600">Total Transactions</p>
+                                                <p className="text-3xl font-bold">{transactions.length}</p>
+                                            </div>
+                                            <Activity className="h-8 w-8 text-blue-500" />
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                                <Card>
+                                    <CardContent className="pt-6">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="text-sm text-slate-600">Avg Success Rate</p>
+                                                <p className="text-3xl font-bold">
+                                                    {analytics.length > 0 
+                                                        ? (analytics.reduce((sum, a) => sum + parseFloat(a.successRate), 0) / analytics.length).toFixed(1)
+                                                        : '0'}%
+                                                </p>
+                                            </div>
+                                            <TrendingUp className="h-8 w-8 text-green-500" />
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                                <Card>
+                                    <CardContent className="pt-6">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="text-sm text-slate-600">Avg Processing Time</p>
+                                                <p className="text-3xl font-bold">
+                                                    {analytics.length > 0 
+                                                        ? Math.round(analytics.reduce((sum, a) => sum + a.avgProcessingTime, 0) / analytics.length)
+                                                        : '0'}ms
+                                                </p>
+                                            </div>
+                                            <Clock className="h-8 w-8 text-orange-500" />
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </div>
+
+                            {/* Success Rate Chart */}
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Gateway Success Rates</CardTitle>
+                                    <CardDescription>Comparison of transaction success rates across gateways</CardDescription>
+                                </CardHeader>
+                                <CardContent>
+                                    <ResponsiveContainer width="100%" height={300}>
+                                        <BarChart data={analytics}>
+                                            <CartesianGrid strokeDasharray="3 3" />
+                                            <XAxis dataKey="gateway" />
+                                            <YAxis />
+                                            <Tooltip />
+                                            <Legend />
+                                            <Bar dataKey="successRate" fill="#10b981" name="Success Rate %" />
+                                        </BarChart>
+                                    </ResponsiveContainer>
+                                </CardContent>
+                            </Card>
+
+                            {/* Processing Time Chart */}
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Average Processing Times</CardTitle>
+                                    <CardDescription>Response time performance by gateway</CardDescription>
+                                </CardHeader>
+                                <CardContent>
+                                    <ResponsiveContainer width="100%" height={300}>
+                                        <LineChart data={analytics}>
+                                            <CartesianGrid strokeDasharray="3 3" />
+                                            <XAxis dataKey="gateway" />
+                                            <YAxis />
+                                            <Tooltip />
+                                            <Legend />
+                                            <Line type="monotone" dataKey="avgProcessingTime" stroke="#3b82f6" strokeWidth={2} name="Avg Time (ms)" />
+                                        </LineChart>
+                                    </ResponsiveContainer>
+                                </CardContent>
+                            </Card>
+
+                            {/* Transaction Distribution */}
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Transaction Distribution</CardTitle>
+                                    <CardDescription>Volume distribution across gateways</CardDescription>
+                                </CardHeader>
+                                <CardContent>
+                                    <ResponsiveContainer width="100%" height={300}>
+                                        <PieChart>
+                                            <Pie
+                                                data={analytics}
+                                                dataKey="total"
+                                                nameKey="gateway"
+                                                cx="50%"
+                                                cy="50%"
+                                                outerRadius={100}
+                                                label
+                                            >
+                                                {analytics.map((entry, index) => (
+                                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                                ))}
+                                            </Pie>
+                                            <Tooltip />
+                                            <Legend />
+                                        </PieChart>
+                                    </ResponsiveContainer>
+                                </CardContent>
+                            </Card>
+
+                            {/* Failure Reasons Table */}
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle className="flex items-center gap-2">
+                                        <XCircle className="h-5 w-5 text-red-500" />
+                                        Failure Analysis
+                                    </CardTitle>
+                                    <CardDescription>Common failure reasons by gateway</CardDescription>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="space-y-4">
+                                        {analytics.map((gateway, idx) => (
+                                            <div key={idx} className="border rounded-lg p-4">
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <span className="text-2xl">{gateway.icon}</span>
+                                                    <h3 className="font-semibold">{gateway.gateway}</h3>
+                                                    <Badge variant={gateway.failed > 0 ? "destructive" : "secondary"}>
+                                                        {gateway.failed} failures
+                                                    </Badge>
+                                                </div>
+                                                {gateway.failureReasons.length > 0 ? (
+                                                    <div className="grid grid-cols-2 gap-2 mt-2">
+                                                        {gateway.failureReasons.map((reason, ridx) => (
+                                                            <div key={ridx} className="text-sm bg-slate-50 p-2 rounded">
+                                                                <span className="font-medium">{reason.reason}:</span> {reason.count}
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                ) : (
+                                                    <p className="text-sm text-slate-600">No failures in selected period</p>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
+
+                        <TabsContent value="gateways" className="space-y-6">
 
                     {/* Registered Mock Gateways */}
                     <div className="mb-6">
@@ -362,6 +661,8 @@ export default function MockGatewayManager() {
                             </div>
                         </div>
                     )}
+                        </TabsContent>
+                    </Tabs>
                 </div>
             </div>
         </div>
