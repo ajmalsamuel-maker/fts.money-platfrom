@@ -26,7 +26,7 @@ export default function ComprehensiveAuditLogs() {
     const [searchQuery, setSearchQuery] = useState('');
     const [categoryFilter, setCategoryFilter] = useState('all');
     const [severityFilter, setSeverityFilter] = useState('all');
-    const [dateFilter, setDateFilter] = useState('7days');
+    const [dateFilter, setDateFilter] = useState('30days');
     const [statusFilter, setStatusFilter] = useState('all');
     const [eventTypeFilter, setEventTypeFilter] = useState('');
     const [selectedLog, setSelectedLog] = useState(null);
@@ -249,7 +249,7 @@ export default function ComprehensiveAuditLogs() {
     };
 
     const hasActiveFilters = searchQuery || categoryFilter !== 'all' || severityFilter !== 'all' || 
-                            dateFilter !== '7days' || statusFilter !== 'all' || eventTypeFilter;
+                            dateFilter !== '30days' || statusFilter !== 'all' || eventTypeFilter;
 
     const getSeverityIcon = (severity) => {
         switch (severity) {
