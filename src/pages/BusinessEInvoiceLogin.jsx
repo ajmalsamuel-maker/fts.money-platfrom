@@ -7,6 +7,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { createPageUrl } from '@/utils';
 import { Building2, Lock, Mail } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import AuditLogger from '@/components/audit/AuditLogger';
 
 export default function BusinessEInvoiceLogin() {
     const [email, setEmail] = useState('');
@@ -28,11 +29,51 @@ export default function BusinessEInvoiceLogin() {
 
             if (response.data.success) {
                 localStorage.setItem('business_einvoice_session', JSON.stringify(response.data.business));
+                
+                // Audit log successful login
+                await AuditLogger.log({
+                    event_type: 'user_login',
+                    category: 'authentication',
+                    severity: 'info',
+                    user_email: email,
+                    user_role: 'business_admin',
+                    action: 'login',
+                    description: `Business e-invoice user ${email} logged in`,
+                    status: 'success',
+                    retention_period: '3_years'
+                });
+                
                 window.location.href = createPageUrl('BusinessEInvoicePortal');
             } else {
+                // Audit log failed login
+                await AuditLogger.log({
+                    event_type: 'user_login_failed',
+                    category: 'authentication',
+                    severity: 'warning',
+                    user_email: email,
+                    action: 'login',
+                    description: `Failed business e-invoice login attempt for ${email}`,
+                    status: 'failure',
+                    error_message: response.data.error,
+                    retention_period: '3_years'
+                });
+                
                 setError(response.data.error || 'Login failed');
             }
         } catch (err) {
+            // Audit log failed login
+            await AuditLogger.log({
+                event_type: 'user_login_failed',
+                category: 'authentication',
+                severity: 'warning',
+                user_email: email,
+                action: 'login',
+                description: `Failed business e-invoice login attempt for ${email}`,
+                status: 'failure',
+                error_message: err.message,
+                retention_period: '3_years'
+            });
+            
             setError('Login failed. Please check your credentials.');
         } finally {
             setLoading(false);

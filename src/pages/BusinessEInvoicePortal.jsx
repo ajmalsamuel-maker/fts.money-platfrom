@@ -8,6 +8,7 @@ import {
     TrendingUp, DollarSign, Shield, Menu, X, Settings, LogOut, BarChart3,
     Users, Globe, ChevronRight, Activity
 } from 'lucide-react';
+import AuditLogger from '@/components/audit/AuditLogger';
 
 export default function BusinessEInvoicePortal() {
     const [businessSession, setBusinessSession] = useState(null);
@@ -88,7 +89,19 @@ export default function BusinessEInvoicePortal() {
                     <Button 
                         variant="outline" 
                         className="w-full justify-start"
-                        onClick={() => {
+                        onClick={async () => {
+                            // Audit log logout
+                            await AuditLogger.log({
+                                event_type: 'user_logout',
+                                category: 'authentication',
+                                severity: 'info',
+                                user_email: businessSession?.business_email,
+                                user_role: 'business_admin',
+                                action: 'logout',
+                                description: `Business e-invoice user ${businessSession?.business_email} logged out`,
+                                retention_period: '1_year'
+                            });
+                            
                             localStorage.removeItem('business_einvoice_session');
                             window.location.href = createPageUrl('BusinessEInvoiceLogin');
                         }}

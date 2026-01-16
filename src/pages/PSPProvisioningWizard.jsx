@@ -41,6 +41,7 @@ export default function PSPProvisioningWizard() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const { platformUser } = usePlatformAuth();
+    const { logEntityCreated } = useAuditLogger(platformUser);
     const [step, setStep] = useState(1);
     const [selectedTier, setSelectedTier] = useState('professional');
     const [provisioning, setProvisioning] = useState(false);
@@ -147,10 +148,18 @@ export default function PSPProvisioningWizard() {
             
             return psp;
         },
-        onSuccess: () => {
+        onSuccess: (psp) => {
             setProvisioningComplete(true);
             queryClient.invalidateQueries(['provisioned-psps']);
             queryClient.invalidateQueries(['approval-requests']);
+            
+            // Audit log PSP creation
+            logEntityCreated('ProvisionedPSP', psp.id, {
+                psp_code: psp.psp_code,
+                psp_name: psp.psp_name,
+                tier: psp.tier,
+                status: psp.status
+            });
         }
     });
 

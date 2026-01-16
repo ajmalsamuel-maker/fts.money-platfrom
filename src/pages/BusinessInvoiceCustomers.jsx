@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Plus, Building2, Mail, MapPin, Hash, Edit2, Trash2, Search } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import { toast } from 'sonner';
+import AuditLogger from '@/components/audit/AuditLogger';
 
 export default function BusinessInvoiceCustomers() {
     const [businessSession, setBusinessSession] = useState(null);
@@ -46,8 +47,24 @@ export default function BusinessInvoiceCustomers() {
 
     const createMutation = useMutation({
         mutationFn: (data) => base44.entities.Customer.create(data),
-        onSuccess: () => {
+        onSuccess: (customer) => {
             queryClient.invalidateQueries({ queryKey: ['customers'] });
+            
+            // Audit log customer creation
+            AuditLogger.log({
+                event_type: 'merchant_created',
+                category: 'merchant',
+                severity: 'info',
+                user_email: businessSession?.business_email,
+                user_role: 'business_admin',
+                target_entity: 'Customer',
+                target_id: customer.id,
+                action: 'create_customer',
+                description: `Customer ${customer.name} created`,
+                new_value: customer,
+                retention_period: '3_years'
+            });
+            
             setDialogOpen(false);
             resetForm();
             toast.success('Customer created');
@@ -67,8 +84,27 @@ export default function BusinessInvoiceCustomers() {
 
     const deleteMutation = useMutation({
         mutationFn: (id) => base44.entities.Customer.delete(id),
-        onSuccess: () => {
+        onSuccess: (_, deletedId) => {
             queryClient.invalidateQueries({ queryKey: ['customers'] });
+            
+            // Audit log customer deletion
+            const deletedCustomer = customers.find(c => c.id === deletedId);
+            if (deletedCustomer) {
+                AuditLogger.log({
+                    event_type: 'merchant_deleted',
+                    category: 'merchant',
+                    severity: 'critical',
+                    user_email: businessSession?.business_email,
+                    user_role: 'business_admin',
+                    target_entity: 'Customer',
+                    target_id: deletedId,
+                    action: 'delete_customer',
+                    description: `Customer ${deletedCustomer.name} deleted`,
+                    old_value: deletedCustomer,
+                    retention_period: '7_years'
+                });
+            }
+            
             toast.success('Customer deleted');
         }
     });
