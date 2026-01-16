@@ -83,6 +83,35 @@ Deno.serve(async (req) => {
                     });
                 }
 
+                case 'createMerchant': {
+                    const { merchantData } = await req.json();
+                    const result = await client.query(`
+                        INSERT INTO merchants (data) 
+                        VALUES ($1) 
+                        RETURNING *
+                    `, [JSON.stringify(merchantData)]);
+                    
+                    return Response.json({ 
+                        success: true, 
+                        merchant: result.rows[0] 
+                    });
+                }
+
+                case 'updateMerchant': {
+                    const { merchantId, updates } = await req.json();
+                    const result = await client.query(`
+                        UPDATE merchants 
+                        SET data = data || $1::jsonb 
+                        WHERE id = $2 
+                        RETURNING *
+                    `, [JSON.stringify(updates), merchantId]);
+                    
+                    return Response.json({ 
+                        success: true, 
+                        merchant: result.rows[0] 
+                    });
+                }
+
                 case 'auditLog': {
                     const { user_email, action_type, details, ip_address } = await req.json();
                     
