@@ -51,9 +51,8 @@ Deno.serve(async (req) => {
                 case 'listMerchants': {
                     const result = await client.query(`
                         SELECT * FROM merchants 
-                        WHERE psp_code = $1
                         ORDER BY created_date DESC
-                    `, [psp_code]);
+                    `);
                     
                     return Response.json({ 
                         success: true, 
