@@ -31,13 +31,17 @@ import BankMIDs from './pages/BankMIDs';
 import BlockchainConnectors from './pages/BlockchainConnectors';
 import BlockchainNetworkDashboard from './pages/BlockchainNetworkDashboard';
 import BlockchainProcessFlow from './pages/BlockchainProcessFlow';
+import BusinessEInvoiceComplianceDashboard from './pages/BusinessEInvoiceComplianceDashboard';
 import BusinessEInvoiceLogin from './pages/BusinessEInvoiceLogin';
 import BusinessEInvoiceManagement from './pages/BusinessEInvoiceManagement';
 import BusinessEInvoicePortal from './pages/BusinessEInvoicePortal';
 import BusinessEInvoiceRegister from './pages/BusinessEInvoiceRegister';
+import BusinessEInvoiceSettings from './pages/BusinessEInvoiceSettings';
 import BusinessInvoiceCreate from './pages/BusinessInvoiceCreate';
+import BusinessInvoiceCustomers from './pages/BusinessInvoiceCustomers';
 import BusinessInvoiceImport from './pages/BusinessInvoiceImport';
 import BusinessInvoiceList from './pages/BusinessInvoiceList';
+import BusinessInvoiceReports from './pages/BusinessInvoiceReports';
 import BusinessOnboarding from './pages/BusinessOnboarding';
 import BuyRates from './pages/BuyRates';
 import CarbonDashboard from './pages/CarbonDashboard';
@@ -101,9 +105,9 @@ import EInvoiceGenerator from './pages/EInvoiceGenerator';
 import EInvoicingDashboard from './pages/EInvoicingDashboard';
 import EInvoicingServiceConfig from './pages/EInvoicingServiceConfig';
 import ESGReportingDashboard from './pages/ESGReportingDashboard';
+import FATFCompliance from './pages/FATFCompliance';
 import EnhancedAuditLogs from './pages/EnhancedAuditLogs';
 import ExchangeIntegrations from './pages/ExchangeIntegrations';
-import FATFCompliance from './pages/FATFCompliance';
 import FTSAnalytics from './pages/FTSAnalytics';
 import FTSArchitectureDoc from './pages/FTSArchitectureDoc';
 import FTSAuditLogs from './pages/FTSAuditLogs';
@@ -313,8 +317,8 @@ import Payouts from './pages/Payouts';
 import PlatformAdminLogin from './pages/PlatformAdminLogin';
 import PlatformAdminRegister from './pages/PlatformAdminRegister';
 import PlatformAuditLogs from './pages/PlatformAuditLogs';
-import PlatformBlockchainProvisioning from './pages/PlatformBlockchainProvisioning';
 import PlatformFIXManagement from './pages/PlatformFIXManagement';
+import PlatformBlockchainProvisioning from './pages/PlatformBlockchainProvisioning';
 import PlatformLanguageManagement from './pages/PlatformLanguageManagement';
 import PlatformPricingConfiguration from './pages/PlatformPricingConfiguration';
 import PlatformUserManagement from './pages/PlatformUserManagement';
@@ -389,10 +393,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import BusinessEInvoiceComplianceDashboard from './pages/BusinessEInvoiceComplianceDashboard';
-import BusinessInvoiceCustomers from './pages/BusinessInvoiceCustomers';
-import BusinessInvoiceReports from './pages/BusinessInvoiceReports';
-import BusinessEInvoiceSettings from './pages/BusinessEInvoiceSettings';
 import __Layout from './Layout.jsx';
 
 
@@ -430,13 +430,17 @@ export const PAGES = {
     "BlockchainConnectors": BlockchainConnectors,
     "BlockchainNetworkDashboard": BlockchainNetworkDashboard,
     "BlockchainProcessFlow": BlockchainProcessFlow,
+    "BusinessEInvoiceComplianceDashboard": BusinessEInvoiceComplianceDashboard,
     "BusinessEInvoiceLogin": BusinessEInvoiceLogin,
     "BusinessEInvoiceManagement": BusinessEInvoiceManagement,
     "BusinessEInvoicePortal": BusinessEInvoicePortal,
     "BusinessEInvoiceRegister": BusinessEInvoiceRegister,
+    "BusinessEInvoiceSettings": BusinessEInvoiceSettings,
     "BusinessInvoiceCreate": BusinessInvoiceCreate,
+    "BusinessInvoiceCustomers": BusinessInvoiceCustomers,
     "BusinessInvoiceImport": BusinessInvoiceImport,
     "BusinessInvoiceList": BusinessInvoiceList,
+    "BusinessInvoiceReports": BusinessInvoiceReports,
     "BusinessOnboarding": BusinessOnboarding,
     "BuyRates": BuyRates,
     "CarbonDashboard": CarbonDashboard,
@@ -500,9 +504,9 @@ export const PAGES = {
     "EInvoicingDashboard": EInvoicingDashboard,
     "EInvoicingServiceConfig": EInvoicingServiceConfig,
     "ESGReportingDashboard": ESGReportingDashboard,
+    "FATFCompliance": FATFCompliance,
     "EnhancedAuditLogs": EnhancedAuditLogs,
     "ExchangeIntegrations": ExchangeIntegrations,
-    "FATFCompliance": FATFCompliance,
     "FTSAnalytics": FTSAnalytics,
     "FTSArchitectureDoc": FTSArchitectureDoc,
     "FTSAuditLogs": FTSAuditLogs,
@@ -712,8 +716,8 @@ export const PAGES = {
     "PlatformAdminLogin": PlatformAdminLogin,
     "PlatformAdminRegister": PlatformAdminRegister,
     "PlatformAuditLogs": PlatformAuditLogs,
-    "PlatformBlockchainProvisioning": PlatformBlockchainProvisioning,
     "PlatformFIXManagement": PlatformFIXManagement,
+    "PlatformBlockchainProvisioning": PlatformBlockchainProvisioning,
     "PlatformLanguageManagement": PlatformLanguageManagement,
     "PlatformPricingConfiguration": PlatformPricingConfiguration,
     "PlatformUserManagement": PlatformUserManagement,
@@ -788,10 +792,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "BusinessEInvoiceComplianceDashboard": BusinessEInvoiceComplianceDashboard,
-    "BusinessInvoiceCustomers": BusinessInvoiceCustomers,
-    "BusinessInvoiceReports": BusinessInvoiceReports,
-    "BusinessEInvoiceSettings": BusinessEInvoiceSettings,
 }
 
 export const pagesConfig = {

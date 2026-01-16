@@ -36,12 +36,14 @@ import {
 } from 'lucide-react';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
+import { useAuditLogger } from '@/components/audit/useAuditLogger';
 
 export default function PSPProvisioning() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const { platformUser, loading } = usePlatformAuth();
     const { t } = useI18n();
+    const { logEntityCreated, logEntityUpdated, logEntityDeleted } = useAuditLogger(platformUser);
     const [search, setSearch] = useState('');
     const [workflowCompliance, setWorkflowCompliance] = useState(null);
     const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);

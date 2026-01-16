@@ -42,6 +42,7 @@ import {
 } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useI18n } from '@/components/i18n/I18nextProvider';
+import AuditLogger from '@/components/audit/AuditLogger';
 
 // Flatten subsections for rendering
 const flattenMenuSections = (sections) => {
@@ -486,7 +487,17 @@ export default function FTSPlatformSidebar({ currentPage, userRole, userEmail, i
             {/* Footer */}
             <div className="border-t border-slate-200 p-4 space-y-3">
                 <button
-                    onClick={() => {
+                    onClick={async () => {
+                        const session = localStorage.getItem('platform_admin_session');
+                        if (session) {
+                            const user = JSON.parse(session);
+                            await AuditLogger.logLogout(
+                                user.email,
+                                user.id,
+                                user.platform_role,
+                                'client'
+                            );
+                        }
                         localStorage.removeItem('platform_admin_session');
                         window.location.href = '/PlatformAdminLogin';
                     }}

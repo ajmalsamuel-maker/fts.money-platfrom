@@ -12,6 +12,7 @@ import { Shield, Lock, ArrowRight } from 'lucide-react';
 import { PLATFORM_ROLES, getRoleLabel } from '@/components/auth/usePlatformAuth';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 import ComplianceFooter, { MinimalComplianceFooter } from '@/components/compliance/ComplianceFooter';
+import AuditLogger from '@/components/audit/AuditLogger';
 
 export default function PlatformAdminLogin() {
     const [email, setEmail] = useState('');
@@ -40,12 +41,43 @@ export default function PlatformAdminLogin() {
                     ...response.data.user,
                     login_time: new Date().toISOString()
                 }));
+                
+                // Audit log successful login
+                await AuditLogger.logLogin(
+                    response.data.user.email,
+                    response.data.user.id,
+                    response.data.user.platform_role,
+                    'client',
+                    'success'
+                );
+                
                 window.location.href = createPageUrl('FTSMoneyPlatform');
             } else {
+                // Audit log failed login
+                await AuditLogger.logLogin(
+                    email,
+                    null,
+                    null,
+                    'client',
+                    'failure',
+                    response.data.error || 'Login failed'
+                );
+                
                 setError(response.data.error || 'Login failed');
             }
         } catch (error) {
             console.error('Login error:', error);
+            
+            // Audit log failed login attempt
+            await AuditLogger.logLogin(
+                email,
+                null,
+                null,
+                'client',
+                'failure',
+                error.message
+            );
+            
             setError('Login failed: ' + error.message);
         }
     };
