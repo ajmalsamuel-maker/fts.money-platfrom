@@ -14,36 +14,68 @@ import {
     Bar,
 } from 'recharts';
 
-const generateData = (period) => {
+const generateData = (period, transactions = []) => {
     const data = [];
     const points = period === '24h' ? 24 : period === '7d' ? 7 : period === '30d' ? 30 : 12;
     
+    // Group transactions by time period
+    const now = new Date();
     for (let i = 0; i < points; i++) {
-        const base = 100000 + Math.random() * 150000;
-        const cryptoVolume = Math.round(base * 0.08); // 8% crypto volume
+        let startDate, endDate, label;
+        
+        if (period === '24h') {
+            startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), i, 0, 0);
+            endDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), i + 1, 0, 0);
+            label = `${i}:00`;
+        } else if (period === '7d') {
+            startDate = new Date(now);
+            startDate.setDate(now.getDate() - (6 - i));
+            startDate.setHours(0, 0, 0, 0);
+            endDate = new Date(startDate);
+            endDate.setDate(startDate.getDate() + 1);
+            label = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][startDate.getDay()];
+        } else if (period === '30d') {
+            startDate = new Date(now);
+            startDate.setDate(now.getDate() - (29 - i));
+            startDate.setHours(0, 0, 0, 0);
+            endDate = new Date(startDate);
+            endDate.setDate(startDate.getDate() + 1);
+            label = `Day ${i + 1}`;
+        } else {
+            startDate = new Date(now.getFullYear(), i, 1);
+            endDate = new Date(now.getFullYear(), i + 1, 1);
+            label = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][i];
+        }
+        
+        // Filter transactions for this period
+        const periodTxns = transactions.filter(t => {
+            const txnDate = new Date(t.created_date);
+            return txnDate >= startDate && txnDate < endDate;
+        });
+        
+        // Calculate volumes
+        const cryptoTxns = periodTxns.filter(t => t.crypto_asset || t.payment_method === 'crypto_currency' || t.payment_method === 'bitcoin');
+        const cryptoVolume = cryptoTxns.reduce((sum, t) => sum + (t.amount || 0), 0);
+        const totalVolume = periodTxns.reduce((sum, t) => sum + (t.amount || 0), 0);
+        const fiatVolume = totalVolume - cryptoVolume;
+        
         data.push({
-            label: period === '24h' 
-                ? `${i}:00` 
-                : period === '7d' 
-                    ? ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][i % 7]
-                    : period === '30d'
-                        ? `Day ${i + 1}`
-                        : ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][i],
-            volume: Math.round(base),
-            fiat: Math.round(base - cryptoVolume),
-            crypto: cryptoVolume,
-            transactions: Math.round(base / 50),
-            approved: Math.round((base / 50) * 0.95),
-            declined: Math.round((base / 50) * 0.05),
+            label,
+            volume: Math.round(totalVolume),
+            fiat: Math.round(fiatVolume),
+            crypto: Math.round(cryptoVolume),
+            transactions: periodTxns.length,
+            approved: periodTxns.filter(t => t.status === 'approved' || t.status === 'accepted' || t.status === 'settled').length,
+            declined: periodTxns.filter(t => t.status === 'declined' || t.status === 'rejected' || t.status === 'failed').length,
         });
     }
     return data;
 };
 
-export default function VolumeChart() {
+export default function VolumeChart({ transactions = [] }) {
     const [period, setPeriod] = useState('7d');
     const [chartType, setChartType] = useState('area');
-    const data = generateData(period);
+    const data = generateData(period, transactions);
 
     const CustomTooltip = ({ active, payload, label }) => {
         if (active && payload && payload.length) {
