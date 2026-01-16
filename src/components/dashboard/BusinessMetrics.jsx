@@ -14,34 +14,44 @@ import {
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
 
-export default function BusinessMetrics() {
+export default function BusinessMetrics({ transactions = [] }) {
+    // Calculate real metrics from transactions
+    const totalTxns = transactions.length;
+    const chargebacks = transactions.filter(t => t.type === 'chargeback').length;
+    const declined = transactions.filter(t => t.status === 'declined' || t.status === 'rejected' || t.status === 'failed').length;
+    const fraudulent = transactions.filter(t => t.fraud_control_status === 'flagged' || t.fraud_control_status === 'blocked').length;
+    
+    const chargebackRatio = totalTxns > 0 ? ((chargebacks / totalTxns) * 100).toFixed(2) : '0.00';
+    const declineRate = totalTxns > 0 ? ((declined / totalTxns) * 100).toFixed(1) : '0.0';
+    const fraudRate = totalTxns > 0 ? ((fraudulent / totalTxns) * 100).toFixed(2) : '0.00';
+    
     const metrics = [
         {
             label: 'Chargeback Ratio',
-            value: '0.42%',
+            value: `${chargebackRatio}%`,
             target: '< 1%',
-            status: 'good',
-            progress: 42,
+            status: parseFloat(chargebackRatio) < 1 ? 'good' : 'warning',
+            progress: Math.min(100, parseFloat(chargebackRatio) * 100),
             icon: Shield,
             description: 'Below Visa/MC threshold'
         },
         {
             label: 'Decline Rate',
-            value: '3.2%',
+            value: `${declineRate}%`,
             target: '< 5%',
-            status: 'good',
-            progress: 64,
+            status: parseFloat(declineRate) < 5 ? 'good' : 'warning',
+            progress: Math.min(100, (parseFloat(declineRate) / 5) * 100),
             icon: CreditCard,
             description: 'Industry average: 4.5%'
         },
         {
             label: 'Fraud Rate',
-            value: '0.08%',
+            value: `${fraudRate}%`,
             target: '< 0.1%',
-            status: 'warning',
-            progress: 80,
+            status: parseFloat(fraudRate) < 0.1 ? 'good' : 'warning',
+            progress: Math.min(100, (parseFloat(fraudRate) / 0.1) * 100),
             icon: AlertTriangle,
-            description: 'Approaching threshold'
+            description: parseFloat(fraudRate) < 0.1 ? 'Within threshold' : 'Approaching threshold'
         },
         {
             label: 'Avg Settlement Time',

@@ -5,15 +5,37 @@ import { Button } from "@/components/ui/button";
 import { ExternalLink, TrendingUp, TrendingDown } from 'lucide-react';
 import { cn } from "@/lib/utils";
 
-const merchants = [
-    { name: 'TechCorp Ltd', volume: 458320, transactions: 2341, change: 12.5, status: 'active' },
-    { name: 'Global Retail Inc', volume: 325100, transactions: 1892, change: 8.3, status: 'active' },
-    { name: 'Digital Services', volume: 289450, transactions: 1654, change: -2.1, status: 'active' },
-    { name: 'E-Commerce Plus', volume: 234800, transactions: 1423, change: 15.7, status: 'active' },
-    { name: 'PaySmart Solutions', volume: 198650, transactions: 1187, change: 5.2, status: 'pending' },
-];
-
-export default function TopMerchants() {
+export default function TopMerchants({ merchants: merchantsData = [], transactions = [] }) {
+    // Calculate merchant stats from real data
+    const merchantStats = React.useMemo(() => {
+        const stats = {};
+        
+        transactions.forEach(txn => {
+            if (!txn.merchant_id) return;
+            
+            if (!stats[txn.merchant_id]) {
+                stats[txn.merchant_id] = {
+                    merchant_id: txn.merchant_id,
+                    name: txn.merchant_name || 'Unknown Merchant',
+                    volume: 0,
+                    transactions: 0,
+                    status: 'active'
+                };
+            }
+            
+            stats[txn.merchant_id].volume += txn.amount || 0;
+            stats[txn.merchant_id].transactions += 1;
+        });
+        
+        return Object.values(stats)
+            .sort((a, b) => b.volume - a.volume)
+            .slice(0, 5)
+            .map(m => ({ ...m, change: Math.random() * 20 - 5 })); // Mock change % for now
+    }, [transactions]);
+    
+    const merchants = merchantStats.length > 0 ? merchantStats : [
+        { name: 'No merchant data', volume: 0, transactions: 0, change: 0, status: 'active' }
+    ];
     return (
         <Card className="h-full">
             <CardHeader className="flex flex-row items-center justify-between pb-2 pt-4">

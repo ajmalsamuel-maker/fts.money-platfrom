@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Activity, TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import { cn } from "@/lib/utils";
 
-export default function TPSCounter() {
+export default function TPSCounter({ transactions = [] }) {
     const [currentTPS, setCurrentTPS] = useState(0);
     const [previousTPS, setPreviousTPS] = useState(0);
     const [peakTPS, setPeakTPS] = useState(0);
@@ -12,14 +12,11 @@ export default function TPSCounter() {
     const [history, setHistory] = useState([]);
 
     useEffect(() => {
-        // Simulate realistic TPS data
+        // Calculate real TPS from transactions (last 5 minutes)
         const interval = setInterval(() => {
-            const baseRate = 45;
-            const variance = Math.random() * 30 - 15;
-            const timeOfDay = new Date().getHours();
-            const timeMultiplier = timeOfDay >= 9 && timeOfDay <= 18 ? 1.5 : 0.8;
-            
-            const newTPS = Math.max(5, Math.round((baseRate + variance) * timeMultiplier));
+            const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+            const recentTxns = transactions.filter(t => new Date(t.created_date) > fiveMinutesAgo);
+            const newTPS = Math.round(recentTxns.length / 300); // 300 seconds = 5 minutes
             
             setPreviousTPS(currentTPS);
             setCurrentTPS(newTPS);
@@ -27,14 +24,14 @@ export default function TPSCounter() {
             
             setHistory(prev => {
                 const updated = [...prev, newTPS].slice(-60);
-                const avg = updated.reduce((a, b) => a + b, 0) / updated.length;
+                const avg = updated.length > 0 ? updated.reduce((a, b) => a + b, 0) / updated.length : 0;
                 setAvgTPS(Math.round(avg));
                 return updated;
             });
         }, 1000);
 
         return () => clearInterval(interval);
-    }, [currentTPS]);
+    }, [currentTPS, transactions]);
 
     const trend = currentTPS > previousTPS ? 'up' : currentTPS < previousTPS ? 'down' : 'stable';
     const trendPercent = previousTPS > 0 ? ((currentTPS - previousTPS) / previousTPS * 100).toFixed(1) : 0;
