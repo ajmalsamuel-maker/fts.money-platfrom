@@ -63,10 +63,9 @@ Deno.serve(async (req) => {
                     aml_status VARCHAR(50) DEFAULT 'clear',
                     created_date TIMESTAMP DEFAULT NOW(),
                     updated_date TIMESTAMP DEFAULT NOW(),
-                    created_by VARCHAR(255),
-                    CONSTRAINT psp_code_check CHECK (psp_code = $1)
+                    created_by VARCHAR(255)
                 )
-            `, [psp_code]);
+            `);
 
             // Transactions table
             await client.query(`
@@ -91,10 +90,9 @@ Deno.serve(async (req) => {
                     response_code VARCHAR(50),
                     response_message TEXT,
                     complete_time TIMESTAMP,
-                    created_date TIMESTAMP DEFAULT NOW(),
-                    CONSTRAINT psp_code_check CHECK (psp_code = $1)
+                    created_date TIMESTAMP DEFAULT NOW()
                 )
-            `, [psp_code]);
+            `);
 
             // Settlements table
             await client.query(`
@@ -115,10 +113,9 @@ Deno.serve(async (req) => {
                     currency VARCHAR(3) DEFAULT 'USD',
                     transaction_count INTEGER,
                     payout_date DATE,
-                    created_date TIMESTAMP DEFAULT NOW(),
-                    CONSTRAINT psp_code_check CHECK (psp_code = $1)
+                    created_date TIMESTAMP DEFAULT NOW()
                 )
-            `, [psp_code]);
+            `);
 
             // Chargebacks table
             await client.query(`
@@ -136,10 +133,9 @@ Deno.serve(async (req) => {
                     currency VARCHAR(3) DEFAULT 'USD',
                     chargeback_date DATE,
                     response_due_date DATE,
-                    created_date TIMESTAMP DEFAULT NOW(),
-                    CONSTRAINT psp_code_check CHECK (psp_code = $1)
+                    created_date TIMESTAMP DEFAULT NOW()
                 )
-            `, [psp_code]);
+            `);
 
             // Audit logs table
             await client.query(`
@@ -159,10 +155,9 @@ Deno.serve(async (req) => {
                     new_value JSONB,
                     ip_address VARCHAR(50),
                     status VARCHAR(20) DEFAULT 'success',
-                    created_date TIMESTAMP DEFAULT NOW(),
-                    CONSTRAINT psp_code_check CHECK (psp_code = $1)
+                    created_date TIMESTAMP DEFAULT NOW()
                 )
-            `, [psp_code]);
+            `);
 
             // Create indexes for performance
             await client.query(`CREATE INDEX IF NOT EXISTS idx_merchants_code ON merchants(merchant_code)`);
