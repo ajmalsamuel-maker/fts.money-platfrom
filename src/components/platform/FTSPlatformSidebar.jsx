@@ -244,6 +244,7 @@ const menuSections = [
         title: 'Testing & Simulation',
         defaultOpen: false,
         items: [
+            { label: 'Mock Gateway Manager', description: 'Configure mock payment gateways', path: 'MockGatewayManager', icon: Settings, priority: true },
             { label: 'Load Testing Dashboard', description: 'Generate transaction load & monitor TPS', path: 'LoadTestingDashboard', icon: Target, priority: true }
         ]
     },
