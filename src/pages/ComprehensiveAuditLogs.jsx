@@ -34,11 +34,11 @@ export default function ComprehensiveAuditLogs() {
     const [anomalyThreshold, setAnomalyThreshold] = useState(70);
     const [activeTab, setActiveTab] = useState('overview');
 
-    // Fetch audit logs with real-time subscription
+    // Fetch audit logs with auto-refresh every 10 seconds
     const { data: logs = [], isLoading: logsLoading, refetch } = useQuery({
         queryKey: ['audit-logs', categoryFilter, severityFilter, dateFilter],
         queryFn: async () => {
-            const logs = await base44.asServiceRole.entities.AuditLog.list('-created_date', 1000);
+            const logs = await base44.entities.AuditLog.list('-created_date', 1000);
             console.log('Fetched audit logs:', logs.length);
             
             let filtered = logs;
@@ -60,23 +60,9 @@ export default function ComprehensiveAuditLogs() {
             
             return filtered;
         },
-        enabled: !loading
+        enabled: !loading,
+        refetchInterval: 10000 // Auto-refresh every 10 seconds for real-time updates
     });
-
-    // Real-time subscription for new audit logs
-    React.useEffect(() => {
-        if (loading) return;
-        
-        const unsubscribe = base44.asServiceRole.entities.AuditLog.subscribe((event) => {
-            console.log('Real-time audit log event:', event.type);
-            if (event.type === 'create') {
-                queryClient.invalidateQueries({ queryKey: ['audit-logs'] });
-                toast.success('New audit log entry detected');
-            }
-        });
-        
-        return () => unsubscribe();
-    }, [loading, queryClient]);
 
     // Fetch anomaly detection results
     const { data: anomalies = [], refetch: refetchAnomalies } = useQuery({
