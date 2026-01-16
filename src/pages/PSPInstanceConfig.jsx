@@ -229,7 +229,7 @@ export default function PSPInstanceConfig() {
             console.log('✅ Save successful:', result);
             return result;
         },
-        onSuccess: async (updatedPSP) => {
+        onSuccess: async (updatedPSP, variables) => {
             console.log('✅ Update successful, returned PSP:', {
                 enabled_payment_methods: updatedPSP.enabled_payment_methods,
                 enabled_payout_methods: updatedPSP.enabled_payout_methods,
@@ -247,18 +247,74 @@ export default function PSPInstanceConfig() {
             
             toast.success('PSP configuration saved successfully!');
             
-            // Log audit action (skip if it fails)
+            // Comprehensive audit logging for compliance
             try {
                 const session = JSON.parse(localStorage.getItem('platform_admin_session') || '{}');
                 if (session.email) {
-                    await logAuditAction({
-                        psp_id: pspId,
-                        psp_code: psp?.psp_code,
-                        action: 'configuration_changed',
-                        field_changed: 'PSP Configuration',
-                        user_email: session.email,
-                        user_role: session.platform_role || 'platform_admin'
-                    });
+                    // Log each configuration change separately for detailed audit trail
+                    const changes = [];
+                    
+                    if (activeTab === 'services' && variables.enabled_services) {
+                        changes.push({
+                            field: 'enabled_services',
+                            action: 'services_updated',
+                            new_value: JSON.stringify(variables.enabled_services)
+                        });
+                    }
+                    
+                    if (activeTab === 'appearance' && variables.branding) {
+                        changes.push({
+                            field: 'branding',
+                            action: 'branding_updated',
+                            new_value: JSON.stringify(variables.branding)
+                        });
+                    }
+                    
+                    if (activeTab === 'fees' && variables.transaction_fees) {
+                        changes.push({
+                            field: 'transaction_fees',
+                            action: 'fees_updated',
+                            new_value: JSON.stringify(variables.transaction_fees)
+                        });
+                    }
+                    
+                    if (activeTab === 'payments' && variables.enabled_payment_methods) {
+                        changes.push({
+                            field: 'enabled_payment_methods',
+                            action: 'payment_methods_updated',
+                            new_value: JSON.stringify(variables.enabled_payment_methods)
+                        });
+                    }
+                    
+                    if (activeTab === 'payouts' && variables.enabled_payout_methods) {
+                        changes.push({
+                            field: 'enabled_payout_methods',
+                            action: 'payout_methods_updated',
+                            new_value: JSON.stringify(variables.enabled_payout_methods)
+                        });
+                    }
+                    
+                    if (activeTab === 'regions' && variables.region_settings) {
+                        changes.push({
+                            field: 'region_settings',
+                            action: 'regional_settings_updated',
+                            new_value: JSON.stringify(variables.region_settings)
+                        });
+                    }
+                    
+                    // Log all changes
+                    for (const change of changes) {
+                        await logAuditAction({
+                            psp_id: pspId,
+                            psp_code: psp?.psp_code,
+                            action: change.action,
+                            field_changed: change.field,
+                            new_value: change.new_value,
+                            user_email: session.email,
+                            user_role: session.platform_role || 'platform_admin',
+                            metadata: { tab: activeTab, timestamp: new Date().toISOString() }
+                        });
+                    }
                 }
             } catch (auditError) {
                 console.warn('Audit logging failed, but save was successful:', auditError);

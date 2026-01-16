@@ -65,6 +65,7 @@ import CompanyLeaderboard from './pages/CompanyLeaderboard';
 import Compliance from './pages/Compliance';
 import ComplianceFramework from './pages/ComplianceFramework';
 import ComplianceMonitoringDashboard from './pages/ComplianceMonitoringDashboard';
+import ComprehensiveAuditLogs from './pages/ComprehensiveAuditLogs';
 import ConsumerHome from './pages/ConsumerHome';
 import ConsumerLogin from './pages/ConsumerLogin';
 import CredentialPresentation from './pages/CredentialPresentation';
@@ -104,8 +105,8 @@ import Documentation from './pages/Documentation';
 import EInvoiceGenerator from './pages/EInvoiceGenerator';
 import EInvoicingDashboard from './pages/EInvoicingDashboard';
 import EInvoicingServiceConfig from './pages/EInvoicingServiceConfig';
-import ESGReportingDashboard from './pages/ESGReportingDashboard';
 import FATFCompliance from './pages/FATFCompliance';
+import ESGReportingDashboard from './pages/ESGReportingDashboard';
 import EnhancedAuditLogs from './pages/EnhancedAuditLogs';
 import ExchangeIntegrations from './pages/ExchangeIntegrations';
 import FTSAnalytics from './pages/FTSAnalytics';
@@ -317,8 +318,8 @@ import Payouts from './pages/Payouts';
 import PlatformAdminLogin from './pages/PlatformAdminLogin';
 import PlatformAdminRegister from './pages/PlatformAdminRegister';
 import PlatformAuditLogs from './pages/PlatformAuditLogs';
-import PlatformFIXManagement from './pages/PlatformFIXManagement';
 import PlatformBlockchainProvisioning from './pages/PlatformBlockchainProvisioning';
+import PlatformFIXManagement from './pages/PlatformFIXManagement';
 import PlatformLanguageManagement from './pages/PlatformLanguageManagement';
 import PlatformPricingConfiguration from './pages/PlatformPricingConfiguration';
 import PlatformUserManagement from './pages/PlatformUserManagement';
@@ -393,7 +394,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import ComprehensiveAuditLogs from './pages/ComprehensiveAuditLogs';
 import __Layout from './Layout.jsx';
 
 
@@ -465,6 +465,7 @@ export const PAGES = {
     "Compliance": Compliance,
     "ComplianceFramework": ComplianceFramework,
     "ComplianceMonitoringDashboard": ComplianceMonitoringDashboard,
+    "ComprehensiveAuditLogs": ComprehensiveAuditLogs,
     "ConsumerHome": ConsumerHome,
     "ConsumerLogin": ConsumerLogin,
     "CredentialPresentation": CredentialPresentation,
@@ -504,8 +505,8 @@ export const PAGES = {
     "EInvoiceGenerator": EInvoiceGenerator,
     "EInvoicingDashboard": EInvoicingDashboard,
     "EInvoicingServiceConfig": EInvoicingServiceConfig,
-    "ESGReportingDashboard": ESGReportingDashboard,
     "FATFCompliance": FATFCompliance,
+    "ESGReportingDashboard": ESGReportingDashboard,
     "EnhancedAuditLogs": EnhancedAuditLogs,
     "ExchangeIntegrations": ExchangeIntegrations,
     "FTSAnalytics": FTSAnalytics,
@@ -717,8 +718,8 @@ export const PAGES = {
     "PlatformAdminLogin": PlatformAdminLogin,
     "PlatformAdminRegister": PlatformAdminRegister,
     "PlatformAuditLogs": PlatformAuditLogs,
-    "PlatformFIXManagement": PlatformFIXManagement,
     "PlatformBlockchainProvisioning": PlatformBlockchainProvisioning,
+    "PlatformFIXManagement": PlatformFIXManagement,
     "PlatformLanguageManagement": PlatformLanguageManagement,
     "PlatformPricingConfiguration": PlatformPricingConfiguration,
     "PlatformUserManagement": PlatformUserManagement,
@@ -793,7 +794,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "ComprehensiveAuditLogs": ComprehensiveAuditLogs,
 }
 
 export const pagesConfig = {
