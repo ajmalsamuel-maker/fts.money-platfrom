@@ -247,7 +247,6 @@ export default function TopHeader({ onToggleSidebar, collapsed }) {
                             <Badge className={cn("text-xs", roleConfig.bgColor, roleConfig.textColor)}>
                                 {roleConfig.label}
                             </Badge>
-                            <p className="text-xs text-slate-500 mt-1">{roleConfig.description}</p>
                         </div>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem>
