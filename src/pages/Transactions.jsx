@@ -212,18 +212,22 @@ export default function Transactions() {
                 currentPage="Transactions"
             />
             
-            <div className="lg:ml-20">
+            <div className={cn(
+                "transition-all duration-300",
+                "lg:ml-[25.75rem]",
+                sidebarCollapsed && "ml-0"
+            )}>
                 <TopHeader 
                     onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
                     collapsed={sidebarCollapsed}
                 />
-                
-                <main className="p-6">
+
+                <main className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
                     {/* Page Header */}
-                    <div className="flex items-center justify-between mb-6">
-                        <div>
-                            <h1 className="text-2xl font-bold text-slate-900">Transactions</h1>
-                            <p className="text-slate-500">View and manage all payment transactions</p>
+                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                         <div>
+                             <h1 className="text-xl sm:text-2xl font-bold text-slate-900">Transactions</h1>
+                             <p className="text-sm sm:text-base text-slate-500">View and manage all payment transactions</p>
                         </div>
                         <PermissionGate permission="EXPORT_REPORTS">
                             <Button className="gap-2 bg-blue-600 hover:bg-blue-700">
