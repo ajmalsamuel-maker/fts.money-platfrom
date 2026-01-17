@@ -27,18 +27,13 @@ export default function Layout({ children, currentPageName }) {
         );
     }
     
-    // Default layout for non-PSP pages
+    // Default layout for non-PSP pages (login, public pages, etc.)
     return (
         <I18nextProvider>
             <AccessibilityProvider>
-                <SkipNavigation targetId="main-content" />
-                <div className="min-h-screen bg-slate-50 flex flex-col">
-                    <FintechNewsTicker />
-                    <main id="main-content" className="flex-1">
-                        {children}
-                    </main>
-                    <ComplianceFooter />
-                </div>
+                <main id="main-content" className="flex-1">
+                    {children}
+                </main>
             </AccessibilityProvider>
         </I18nextProvider>
     );
