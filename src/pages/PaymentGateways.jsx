@@ -49,6 +49,17 @@ export default function PaymentGateways() {
     });
 
     const queryClient = useQueryClient();
+    const pspCode = JSON.parse(localStorage.getItem('staff_session') || '{}').psp_code;
+
+    // Get assigned connectors from platform
+    const { data: assignedConnectors = [] } = useQuery({
+        queryKey: ['assigned-connectors', pspCode],
+        queryFn: async () => {
+            if (!pspCode) return [];
+            return await base44.entities.PSPConnectorAssignment.filter({ psp_code: pspCode });
+        },
+        enabled: !!pspCode
+    });
 
     const { data: gateways = [], isLoading } = useQuery({
         queryKey: ['payment-gateways'],
@@ -163,12 +174,60 @@ export default function PaymentGateways() {
                                 <CreditCard className="h-6 w-6 text-blue-600" />
                                 Payment Gateways
                             </h1>
-                            <p className="text-slate-500">Integrate with Stripe, PayPal, Adyen, and more</p>
+                            <p className="text-slate-500">Configure assigned connectors for your merchants</p>
                         </div>
-                        <Button onClick={() => setShowDialog(true)} className="gap-2 bg-blue-600 hover:bg-blue-700">
-                            <Plus className="h-4 w-4" /> Connect Gateway
+                        <Button onClick={() => setShowDialog(true)} className="gap-2 bg-blue-600 hover:bg-blue-700" disabled={assignedConnectors.length === 0}>
+                            <Plus className="h-4 w-4" /> Configure Gateway
                         </Button>
                     </div>
+
+                    {/* Assigned Connectors Info */}
+                    {assignedConnectors.length === 0 && (
+                        <Card className="mb-6 border-blue-200 bg-blue-50">
+                            <CardContent className="p-6">
+                                <div className="flex items-start gap-3">
+                                    <AlertTriangle className="h-5 w-5 text-blue-600 mt-0.5" />
+                                    <div>
+                                        <p className="font-medium text-blue-900 mb-1">No Connectors Assigned</p>
+                                        <p className="text-sm text-blue-700">
+                                            Payment connectors must be assigned to your PSP by the FTS Platform Administrator before you can configure them.
+                                            Contact your FTS account manager to request connector access.
+                                        </p>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    )}
+
+                    {/* Available Connectors */}
+                    {assignedConnectors.length > 0 && (
+                        <Card className="mb-6">
+                            <CardHeader>
+                                <CardTitle className="text-lg">Assigned Connectors</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="grid grid-cols-3 gap-4">
+                                    {assignedConnectors.map(assignment => (
+                                        <div key={assignment.id} className="p-4 border rounded-lg bg-white">
+                                            <div className="flex items-center justify-between mb-2">
+                                                <p className="font-medium capitalize">{assignment.connector_name}</p>
+                                                <Badge className={
+                                                    assignment.enabled_by_psp ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-700'
+                                                }>
+                                                    {assignment.enabled_by_psp ? 'Enabled' : 'Available'}
+                                                </Badge>
+                                            </div>
+                                            {assignment.usage_limits?.monthly_volume_limit && (
+                                                <p className="text-xs text-slate-500">
+                                                    Limit: ${(assignment.usage_limits.monthly_volume_limit / 1000).toFixed(0)}K/month
+                                                </p>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            </CardContent>
+                        </Card>
+                    )}
 
                     {/* Stats */}
                     <div className="grid grid-cols-4 gap-4 mb-6">
@@ -308,8 +367,13 @@ export default function PaymentGateways() {
             <Dialog open={showDialog} onOpenChange={setShowDialog}>
                 <DialogContent className="max-w-lg">
                     <DialogHeader>
-                        <DialogTitle>{editingGateway ? 'Edit' : 'Connect'} Payment Gateway</DialogTitle>
+                        <DialogTitle>{editingGateway ? 'Edit' : 'Configure'} Assigned Gateway</DialogTitle>
                     </DialogHeader>
+                    <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg mb-4">
+                        <p className="text-sm text-blue-700">
+                            You can only configure connectors that have been assigned to your PSP by the FTS Platform.
+                        </p>
+                    </div>
                     <div className="space-y-4 py-4">
                         <div className="space-y-2">
                             <Label>Merchant</Label>
@@ -326,18 +390,17 @@ export default function PaymentGateways() {
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
-                                <Label>Gateway</Label>
+                                <Label>Gateway (Assigned by FTS)</Label>
                                 <Select value={formData.gateway_name} onValueChange={(val) => setFormData({...formData, gateway_name: val})}>
                                     <SelectTrigger>
-                                        <SelectValue />
+                                        <SelectValue placeholder="Select assigned connector" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="stripe">Stripe</SelectItem>
-                                        <SelectItem value="paypal">PayPal</SelectItem>
-                                        <SelectItem value="adyen">Adyen</SelectItem>
-                                        <SelectItem value="square">Square</SelectItem>
-                                        <SelectItem value="braintree">Braintree</SelectItem>
-                                        <SelectItem value="authorize_net">Authorize.Net</SelectItem>
+                                        {assignedConnectors.map(assignment => (
+                                            <SelectItem key={assignment.id} value={assignment.connector_name}>
+                                                {assignment.connector_name}
+                                            </SelectItem>
+                                        ))}
                                     </SelectContent>
                                 </Select>
                             </div>
@@ -363,36 +426,7 @@ export default function PaymentGateways() {
                                 placeholder="Enter API key"
                             />
                         </div>
-                        {(formData.gateway_name === 'paypal' || formData.gateway_name === 'braintree') && (
-                            <div className="space-y-2">
-                                <Label>API Secret</Label>
-                                <Input 
-                                    type="password"
-                                    value={formData.api_secret}
-                                    onChange={(e) => setFormData({...formData, api_secret: e.target.value})}
-                                    placeholder="Enter API secret"
-                                />
-                            </div>
-                        )}
-                        {formData.gateway_name === 'adyen' && (
-                            <div className="space-y-2">
-                                <Label>Merchant Account ID</Label>
-                                <Input 
-                                    value={formData.merchant_account_id}
-                                    onChange={(e) => setFormData({...formData, merchant_account_id: e.target.value})}
-                                    placeholder="Enter merchant account ID"
-                                />
-                            </div>
-                        )}
-                        <div className="space-y-2">
-                            <Label>Webhook Secret (Optional)</Label>
-                            <Input 
-                                type="password"
-                                value={formData.webhook_secret}
-                                onChange={(e) => setFormData({...formData, webhook_secret: e.target.value})}
-                                placeholder="Enter webhook secret"
-                            />
-                        </div>
+
                     </div>
                     <DialogFooter>
                         <Button variant="outline" onClick={resetForm}>Cancel</Button>
