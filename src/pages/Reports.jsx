@@ -234,12 +234,16 @@ PaymentHub Finance Team`
     return (
         <div className="min-h-screen bg-slate-50">
             <Sidebar collapsed={sidebarCollapsed} currentPage="Reports" />
-            <div className={cn("transition-all duration-300", "ml-64")}>
-                <TopHeader onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} />
-                <main className="p-6">
-                    <div className="flex items-center justify-between mb-6">
-                        <div><h1 className="text-2xl font-bold">Reports</h1><p className="text-slate-500">PSP and merchant-level reporting with contract terms</p></div>
-                        <div className="flex gap-2">
+            <div className={cn(
+                "transition-all duration-300",
+                "lg:ml-[25.75rem]",
+                sidebarCollapsed && "ml-0"
+            )}>
+                <TopHeader onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} collapsed={sidebarCollapsed} />
+                <main className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                        <div><h1 className="text-xl sm:text-2xl font-bold">Reports</h1><p className="text-sm sm:text-base text-slate-500">PSP and merchant-level reporting with contract terms</p></div>
+                        <div className="flex flex-col sm:flex-row gap-2">
                             <Button variant="outline" onClick={() => setShowTermsDialog(true)} className="gap-2"><Settings className="h-4 w-4" />Terms & Conditions</Button>
                             <Button onClick={() => setShowScheduleDialog(true)} className="gap-2"><Plus className="h-4 w-4" />Schedule Report</Button>
                         </div>
