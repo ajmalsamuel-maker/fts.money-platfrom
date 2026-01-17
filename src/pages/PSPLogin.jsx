@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
+import { I18nextProvider } from '@/components/i18n/I18nextProvider';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,7 +11,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { FTS_COLORS, FTS_GRADIENTS, FTS_LOGOS } from '@/components/community/FTSBrandColors';
 import { Building2, AlertCircle, ArrowRight, Loader2 } from 'lucide-react';
 
-export default function PSPLogin() {
+function PSPLoginContent() {
     const navigate = useNavigate();
     const [pspCode, setPspCode] = useState('');
     const [email, setEmail] = useState('');
@@ -196,5 +197,13 @@ export default function PSPLogin() {
             </div>
             
         </div>
+    );
+}
+
+export default function PSPLogin() {
+    return (
+        <I18nextProvider>
+            <PSPLoginContent />
+        </I18nextProvider>
     );
 }
