@@ -400,6 +400,7 @@ import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
 import MerchantCheckout from './pages/MerchantCheckout';
 import RealTimeMonitoringDashboard from './pages/RealTimeMonitoringDashboard';
+import DeveloperTools from './pages/DeveloperTools';
 import __Layout from './Layout.jsx';
 
 
@@ -806,6 +807,7 @@ export const PAGES = {
     "XeroIntegration": XeroIntegration,
     "MerchantCheckout": MerchantCheckout,
     "RealTimeMonitoringDashboard": RealTimeMonitoringDashboard,
+    "DeveloperTools": DeveloperTools,
 }
 
 export const pagesConfig = {
