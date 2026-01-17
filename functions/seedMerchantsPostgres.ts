@@ -34,40 +34,49 @@ Deno.serve(async (req) => {
             // Fetch merchants from Base44
             const merchants = await base44.asServiceRole.entities.Merchant.filter({ psp_code });
 
+            console.log(`Found ${merchants.length} merchants in Base44 for ${psp_code}`);
+
             let migratedCount = 0;
 
             for (const merchant of merchants) {
                 const m = merchant.data;
                 
-                const result = await client.query(`
-                    INSERT INTO merchants (
-                        psp_code, merchant_code, business_name, status, 
-                        country, currency, timezone, contact_name, contact_email, 
-                        contact_phone, address, website, fee_rate, 
-                        settlement_period, risk_level, created_by
-                    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
-                    ON CONFLICT (merchant_code) DO NOTHING
-                `, [
-                    psp_code,
-                    m?.merchant_code || merchant.id,
-                    m?.business_name,
-                    m?.status || 'pending',
-                    m?.country,
-                    m?.currency || 'USD',
-                    m?.timezone || 'UTC',
-                    m?.contact_name,
-                    m?.contact_email,
-                    m?.contact_phone,
-                    m?.address,
-                    m?.website,
-                    m?.fee_rate,
-                    m?.settlement_period || 'T+1',
-                    m?.risk_level || 'medium',
-                    merchant.created_by
-                ]);
+                try {
+                    const result = await client.query(`
+                        INSERT INTO merchants (
+                            psp_code, merchant_code, business_name, status, 
+                            trading_name, category, mcc_code, country, currency, timezone, 
+                            contact_name, contact_email, contact_phone, address, website, 
+                            fee_rate, settlement_period, risk_level, created_by
+                        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
+                        ON CONFLICT (merchant_code) DO NOTHING
+                    `, [
+                        psp_code,
+                        m?.merchant_code || merchant.id,
+                        m?.business_name,
+                        m?.status || 'pending',
+                        m?.trading_name || null,
+                        m?.category || null,
+                        m?.mcc_code || null,
+                        m?.country || null,
+                        m?.currency || 'USD',
+                        m?.timezone || 'UTC',
+                        m?.contact_name || null,
+                        m?.contact_email || null,
+                        m?.contact_phone || null,
+                        m?.address || null,
+                        m?.website || null,
+                        m?.fee_rate || null,
+                        m?.settlement_period || 'T+1',
+                        m?.risk_level || 'medium',
+                        merchant.created_by
+                    ]);
 
-                if (result.rowCount > 0) {
-                    migratedCount++;
+                    if (result.rowCount > 0) {
+                        migratedCount++;
+                    }
+                } catch (insertError) {
+                    console.error(`Failed to insert merchant ${m?.merchant_code}:`, insertError.message);
                 }
             }
 
