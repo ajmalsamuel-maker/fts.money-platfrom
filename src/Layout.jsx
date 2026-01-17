@@ -15,7 +15,7 @@ const pspPortalPages = [
 ];
 
 export default function Layout({ children, currentPageName }) {
-    if (pspPortalPages.includes(currentPageName)) {
+    if (pspPortalPages.includes(currentPageName) && currentPageName !== 'PSPLogin') {
         return (
             <I18nextProvider>
                 <AccessibilityProvider>
