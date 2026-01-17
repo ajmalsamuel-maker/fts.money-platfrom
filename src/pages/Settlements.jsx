@@ -77,10 +77,7 @@ export default function Settlements() {
                 currentPage="Settlements"
             />
             
-            <div className={cn(
-                "transition-all duration-300",
-                sidebarCollapsed ? "ml-20" : "ml-64"
-            )}>
+            <div className={cn("transition-all duration-300", sidebarCollapsed ? "ml-20" : "lg:ml-64 ml-40")}>
                 <TopHeader 
                     onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
                     collapsed={sidebarCollapsed}

@@ -184,7 +184,7 @@ export default function Disputes() {
         <div className="min-h-screen bg-slate-50">
             <Sidebar collapsed={sidebarCollapsed} currentPage="Disputes" />
             
-            <div className={cn("transition-all duration-300", sidebarCollapsed ? "ml-20" : "ml-64")}>
+            <div className={cn("transition-all duration-300", sidebarCollapsed ? "ml-20" : "lg:ml-64 ml-40")}>
                 <TopHeader onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} />
                 
                 <main className="p-6">
