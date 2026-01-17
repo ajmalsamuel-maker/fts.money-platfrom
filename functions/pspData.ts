@@ -38,7 +38,7 @@ Deno.serve(async (req) => {
                 case 'listTransactions': {
                     const result = await client.query(`
                         SELECT * FROM transactions 
-                        ORDER BY created_at DESC 
+                        ORDER BY created_date DESC 
                         LIMIT $1
                     `, [limit || 10]);
                     
@@ -51,7 +51,7 @@ Deno.serve(async (req) => {
                 case 'listMerchants': {
                     const result = await client.query(`
                         SELECT * FROM merchants 
-                        ORDER BY created_at DESC
+                        ORDER BY created_date DESC
                     `);
                     
                     return Response.json({ 
@@ -127,7 +127,7 @@ Deno.serve(async (req) => {
                         paramIndex++;
                     }
 
-                    setClauses.push('updated_at = NOW()');
+                    setClauses.push('updated_date = NOW()');
 
                     const result = await client.query(`
                         UPDATE merchants 
