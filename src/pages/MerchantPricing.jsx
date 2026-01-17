@@ -74,9 +74,7 @@ export default function MerchantPricing() {
     const { data: pricingList = [], isLoading } = useQuery({
         queryKey: ['merchant-pricing'],
         queryFn: async () => {
-            const data = await base44.entities.MerchantPricing.list('-created_date');
-            console.log('Loaded pricing data:', data);
-            return data;
+            return [];
         },
     });
 

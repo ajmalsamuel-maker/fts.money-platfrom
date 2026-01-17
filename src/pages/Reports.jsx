@@ -80,34 +80,7 @@ export default function Reports() {
     });
 
     // Mock PSP-level reports with merchant breakdown
-    const pspReports = [
-        {
-            psp_id: 'psp_stripe', psp_name: 'Stripe', period: 'January 2024',
-            total_volume: 1450000, total_fees: 37700, total_transactions: 10430,
-            merchants: [
-                { merchant_id: 'm1', name: 'TechCorp Solutions', volume: 520000, fees: 13520, transactions: 3420, status: 'sent' },
-                { merchant_id: 'm2', name: 'Global Retail Inc', volume: 435000, fees: 11310, transactions: 2890, status: 'generated' },
-                { merchant_id: 'm3', name: 'GameZone Entertainment', volume: 495000, fees: 12870, transactions: 4120, status: 'pending' },
-            ]
-        },
-        {
-            psp_id: 'psp_adyen', psp_name: 'Adyen', period: 'January 2024',
-            total_volume: 1010000, total_fees: 26260, total_transactions: 6640,
-            merchants: [
-                { merchant_id: 'm1', name: 'TechCorp Solutions', volume: 320000, fees: 8320, transactions: 2100, status: 'sent' },
-                { merchant_id: 'm4', name: 'Fashion Forward', volume: 355000, fees: 9230, transactions: 2340, status: 'sent' },
-                { merchant_id: 'm5', name: 'Digital Services Ltd', volume: 335000, fees: 8710, transactions: 2200, status: 'generated' },
-            ]
-        },
-        {
-            psp_id: 'psp_checkout', psp_name: 'Checkout.com', period: 'January 2024',
-            total_volume: 735000, total_fees: 19110, total_transactions: 4840,
-            merchants: [
-                { merchant_id: 'm2', name: 'Global Retail Inc', volume: 395000, fees: 10270, transactions: 2600, status: 'sent' },
-                { merchant_id: 'm6', name: 'Euro Commerce GmbH', volume: 340000, fees: 8840, transactions: 2240, status: 'pending' },
-            ]
-        },
-    ];
+    const pspReports = [];
 
     const togglePSP = (pspId) => setExpandedPSPs(prev => ({ ...prev, [pspId]: !prev[pspId] }));
 

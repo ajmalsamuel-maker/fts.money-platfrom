@@ -556,7 +556,7 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                                                 }
                                             >
                                                 <item.icon className="h-4 w-4 flex-shrink-0" />
-                                                <span>{t(item.label)}</span>
+                                                <span>{t(item.label) || item.label.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()).trim()}</span>
                                             </Link>
                                         ) : (
                                             <div
@@ -569,7 +569,7 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                                                 }
                                             >
                                                 <item.icon className="h-4 w-4 flex-shrink-0" />
-                                                <span className="font-semibold">{t(item.label)}</span>
+                                                <span className="font-semibold">{t(item.label) || item.label.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()).trim()}</span>
                                             </div>
                                         )}
                                         
@@ -591,7 +591,7 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                                                             }
                                                         >
                                                             <subItem.icon className="h-3 w-3 flex-shrink-0" />
-                                                            <span>{t(subItem.label)}</span>
+                                                            <span>{t(subItem.label) || subItem.label.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()).trim()}</span>
                                                         </Link>
                                                     );
                                                 })}

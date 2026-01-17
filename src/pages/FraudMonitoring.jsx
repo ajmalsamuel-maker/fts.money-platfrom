@@ -64,7 +64,7 @@ export default function FraudMonitoring() {
 
     const { data: alerts = [], isLoading } = useQuery({
         queryKey: ['risk-alerts'],
-        queryFn: () => base44.entities.RiskAlert.list('-created_date', 100),
+        queryFn: () => Promise.resolve([]),
     });
 
     const { data: merchants = [] } = useQuery({
