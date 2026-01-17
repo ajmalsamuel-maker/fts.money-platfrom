@@ -211,7 +211,7 @@ export default function Dashboard() {
                     collapsed={sidebarCollapsed}
                 />
                 
-                <main className="p-3 sm:p-6">
+                <main className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
                     {/* Page Header */}
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                         <div>
