@@ -307,17 +307,13 @@ export default function PSPMerchantPricing() {
                 currentPage="PSPMerchantPricing"
             />
             
-            <div className={cn(
-                "transition-all duration-300",
-                "lg:ml-20",
-                sidebarCollapsed && "ml-0"
-            )}>
+            <div className={cn("transition-all duration-300", sidebarCollapsed ? "ml-20" : "lg:ml-64 ml-40")}>
                 <TopHeader 
                     onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
                     collapsed={sidebarCollapsed}
                 />
 
-                <main className="p-6">
+                <main className="p-6 lg:p-6">
                     <div className="mb-6">
                         <h2 className="text-2xl font-bold text-slate-900">Merchant Pricing Engine</h2>
                         <p className="text-sm text-slate-600">Set pricing rules for your merchants</p>
