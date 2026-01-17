@@ -38,7 +38,8 @@ import {
     Rocket,
     Menu,
     X,
-    Target
+    Target,
+    Plug
 } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useI18n } from '@/components/i18n/I18nextProvider';
@@ -132,6 +133,7 @@ const menuSections = [
         items: [
             { label: 'Service Publication Manager', description: 'Go-to-Market rollout control', path: 'ServicePublicationManager', icon: Rocket, priority: true },
             { labelKey: 'serviceCatalog', descKey: 'serviceCatalogDesc', path: 'FTSServiceManager', icon: Package, priority: true },
+            { label: 'Connector Management', description: 'Platform connectors & PSP assignments', path: 'FTSConnectorManagement', icon: Plug, priority: true },
             { label: 'Payment Providers', description: 'Provider pool', path: 'PaymentProviderManagement', icon: Database, priority: true },
             { labelKey: 'globalStandards', descKey: 'globalStandardsDesc', path: 'GlobalStandardsRegistry', icon: Globe, priority: true },
             { labelKey: 'isoGateway', descKey: 'isoGatewayDesc', path: 'ISOGatewayCustomers', icon: Code, priority: true },
