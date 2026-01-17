@@ -436,7 +436,7 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
             >
                 {/* Main Menu Column */}
                 <aside 
-                    className="h-full flex flex-col w-20"
+                    className="h-full flex flex-col w-40"
                     style={{ backgroundColor: sidebarBg }}
                 >
                 {/* Branding - Lighter Background */}
@@ -477,7 +477,7 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                                     title={t(group.group)}
                                 >
                                     <GroupIcon className="h-5 w-5" />
-                                    <span className="text-[9px] mt-1 text-center leading-tight">{formatLabel(group.group)}</span>
+                                    <span className="text-xs mt-1 text-center leading-tight">{formatLabel(group.group)}</span>
                                 </button>
                             );
                         })}
