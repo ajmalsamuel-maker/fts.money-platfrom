@@ -151,11 +151,11 @@ export default function Analytics() {
                              <h1 className="text-xl sm:text-2xl font-bold text-slate-900">Analytics</h1>
                              <p className="text-sm sm:text-base text-slate-500">Comprehensive payment insights and trends</p>
                         </div>
-                        <div className="flex items-center gap-3">
-                            <Select value={merchantFilter} onValueChange={setMerchantFilter}>
-                                <SelectTrigger className="w-48">
-                                    <SelectValue placeholder="All Merchants" />
-                                </SelectTrigger>
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                             <Select value={merchantFilter} onValueChange={setMerchantFilter}>
+                                 <SelectTrigger className="w-full sm:w-48">
+                                     <SelectValue placeholder="All Merchants" />
+                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="all">All Merchants</SelectItem>
                                     {merchants.map(m => (
