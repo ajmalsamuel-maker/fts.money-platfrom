@@ -61,7 +61,7 @@ export default function Payouts() {
                 <Sidebar collapsed={sidebarCollapsed} currentPage="Payouts" />
                 <div className={cn(
                     "transition-all duration-300",
-                    "lg:ml-[25.75rem]",
+                    "lg:ml-64",
                     sidebarCollapsed && "ml-0"
                 )}>
                     <TopHeader onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} collapsed={sidebarCollapsed} />
