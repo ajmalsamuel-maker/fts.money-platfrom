@@ -22,8 +22,7 @@ import SubscriptionHealthCard from '@/components/dashboard/SubscriptionHealthCar
 import CryptoAnalyticsCard from '@/components/dashboard/CryptoAnalyticsCard';
 import VATMetricsCard from '@/components/dashboard/VATMetricsCard';
 import EInvoicingMetricsCard from '@/components/dashboard/EInvoicingMetricsCard';
-import RWAMetricsCard from '@/components/dashboard/RWAMetricsCard';
-import VASPComplianceCard from '@/components/dashboard/VASPComplianceCard';
+
 
 // Suppress MetaMask connection errors if wallet not installed
 if (typeof window !== 'undefined' && !window.ethereum) {
@@ -207,7 +206,7 @@ export default function Dashboard() {
                     collapsed={sidebarCollapsed}
                 />
                 
-                <main className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
+                <main className="p-4 sm:p-6 lg:p-6">
                     {/* Page Header */}
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                         <div>
@@ -259,12 +258,10 @@ export default function Dashboard() {
                         <TPSCounter transactions={transactions} />
                     </div>
 
-                    {/* New Services Metrics: VAT, E-Invoicing, RWA, VASP */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mt-3 sm:mt-4">
+                    {/* New Services Metrics: VAT, E-Invoicing */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mt-3 sm:mt-4">
                         <VATMetricsCard />
                         <EInvoicingMetricsCard />
-                        <RWAMetricsCard />
-                        <VASPComplianceCard />
                     </div>
 
                     {/* Charts and Business Metrics Row */}
