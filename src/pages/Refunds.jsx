@@ -94,19 +94,23 @@ export default function Refunds() {
 
     return (
         <div className="min-h-screen bg-slate-50">
-            <Sidebar collapsed={sidebarCollapsed} currentPage="Refunds" />
-            <div className={cn("transition-all duration-300", sidebarCollapsed ? "ml-20" : "ml-64")}>
-                <TopHeader onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} collapsed={sidebarCollapsed} />
-                
-                <main className="p-6">
-                    <div className="flex items-center justify-between mb-6">
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">
-                                <RotateCcw className="h-5 w-5 text-white" />
-                            </div>
-                            <div>
-                                <h1 className="text-2xl font-bold">Refunds</h1>
-                                <p className="text-slate-500">Manage payment refunds and reversals</p>
+                <Sidebar collapsed={sidebarCollapsed} currentPage="Refunds" />
+                <div className={cn(
+                    "transition-all duration-300",
+                    "lg:ml-[25.75rem]",
+                    sidebarCollapsed && "ml-0"
+                )}>
+                    <TopHeader onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} collapsed={sidebarCollapsed} />
+
+                    <main className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                             <div className="flex items-center gap-3">
+                                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">
+                                     <RotateCcw className="h-5 w-5 text-white" />
+                                 </div>
+                                 <div>
+                                     <h1 className="text-xl sm:text-2xl font-bold">Refunds</h1>
+                                     <p className="text-sm sm:text-base text-slate-500">Manage payment refunds and reversals</p>
                             </div>
                         </div>
                         <Button onClick={() => setShowDialog(true)} className="gap-2 bg-orange-600 hover:bg-orange-700">
