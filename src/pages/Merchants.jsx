@@ -280,11 +280,7 @@ export default function Merchants() {
                 currentPage="Merchants"
             />
             
-            <div className={cn(
-                "transition-all duration-300",
-                "lg:ml-64",
-                sidebarCollapsed && "ml-0"
-            )}>
+            <div className={cn("transition-all duration-300", sidebarCollapsed ? "ml-20" : "ml-64")}>
                 <TopHeader 
                     onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
                     collapsed={sidebarCollapsed}

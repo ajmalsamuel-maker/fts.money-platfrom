@@ -95,11 +95,7 @@ export default function Refunds() {
     return (
         <div className="min-h-screen bg-slate-50">
                 <Sidebar collapsed={sidebarCollapsed} currentPage="Refunds" />
-                <div className={cn(
-                    "transition-all duration-300",
-                    "lg:ml-64",
-                    sidebarCollapsed && "ml-0"
-                )}>
+                <div className={cn("transition-all duration-300", sidebarCollapsed ? "ml-20" : "ml-64")}>
                     <TopHeader onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} collapsed={sidebarCollapsed} />
 
                     <main className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
