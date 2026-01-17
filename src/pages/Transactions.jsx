@@ -199,19 +199,20 @@ export default function Transactions() {
     };
 
     return (
-                    {/* Page Header */}
-                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                         <div>
-                             <h1 className="text-xl sm:text-2xl font-bold text-slate-900">Transactions</h1>
-                             <p className="text-sm sm:text-base text-slate-500">View and manage all payment transactions</p>
-                        </div>
-                        <PermissionGate permission="EXPORT_REPORTS">
-                            <Button className="gap-2 bg-blue-600 hover:bg-blue-700">
-                                <Download className="h-4 w-4" />
-                                Export
-                            </Button>
-                        </PermissionGate>
-                    </div>
+        <>
+            {/* Page Header */}
+             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                 <div>
+                     <h1 className="text-xl sm:text-2xl font-bold text-slate-900">Transactions</h1>
+                     <p className="text-sm sm:text-base text-slate-500">View and manage all payment transactions</p>
+                </div>
+                <PermissionGate permission="EXPORT_REPORTS">
+                    <Button className="gap-2 bg-blue-600 hover:bg-blue-700">
+                        <Download className="h-4 w-4" />
+                        Export
+                    </Button>
+                </PermissionGate>
+            </div>
 
                     {/* Advanced Search Panel */}
                     <AdvancedSearchPanel 
@@ -437,5 +438,6 @@ export default function Transactions() {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
+        </>
     );
 }

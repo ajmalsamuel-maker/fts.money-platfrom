@@ -71,17 +71,18 @@ export default function Settlements() {
     const totalCompleted = settlements.filter(s => s.status === 'completed').reduce((sum, s) => sum + (s.net_amount || 0), 0);
 
     return (
-                    {/* Page Header */}
-                    <div className="flex items-center justify-between mb-6">
-                        <div>
-                            <h1 className="text-2xl font-bold text-slate-900">Settlements</h1>
-                            <p className="text-slate-500">Track merchant payouts and settlements</p>
-                        </div>
-                        <Button className="gap-2 bg-blue-600 hover:bg-blue-700">
-                            <Download className="h-4 w-4" />
-                            Export Report
-                        </Button>
-                    </div>
+        <>
+            {/* Page Header */}
+            <div className="flex items-center justify-between mb-6">
+                <div>
+                    <h1 className="text-2xl font-bold text-slate-900">Settlements</h1>
+                    <p className="text-slate-500">Track merchant payouts and settlements</p>
+                </div>
+                <Button className="gap-2 bg-blue-600 hover:bg-blue-700">
+                    <Download className="h-4 w-4" />
+                    Export Report
+                </Button>
+            </div>
 
                     {/* Stats Cards */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">

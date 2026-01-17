@@ -300,10 +300,11 @@ export default function PSPMerchantPricing() {
     if (!isReady) return null;
 
     return (
-                    <div className="mb-6">
-                        <h2 className="text-2xl font-bold text-slate-900">Merchant Pricing Engine</h2>
-                        <p className="text-sm text-slate-600">Set pricing rules for your merchants</p>
-                    </div>
+        <>
+            <div className="mb-6">
+                <h2 className="text-2xl font-bold text-slate-900">Merchant Pricing Engine</h2>
+                <p className="text-sm text-slate-600">Set pricing rules for your merchants</p>
+            </div>
 
                     {/* Stats */}
                     <div className="grid grid-cols-4 gap-4 mb-6">
@@ -1050,5 +1051,6 @@ export default function PSPMerchantPricing() {
                     </div>
                 </DialogContent>
             </Dialog>
+        </>
     );
 }

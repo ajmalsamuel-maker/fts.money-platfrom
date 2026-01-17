@@ -196,20 +196,21 @@ export default function PaymentOrchestration() {
     const cascadeRulesCount = allRules.filter(r => r.rule_type === 'cascading').length;
 
     return (
-                    {/* Header */}
-                    <div className="flex items-center justify-between mb-6">
-                        <div>
-                            <h1 className="text-2xl font-bold text-slate-900">Payment Orchestration</h1>
-                            <p className="text-slate-500">Configure routing rules, cascading, and processor management</p>
-                        </div>
-                        <Button 
-                            className="gap-2 bg-blue-600 hover:bg-blue-700"
-                            onClick={() => setShowRuleDialog(true)}
-                        >
-                            <Plus className="h-4 w-4" />
-                            Create Rule
-                        </Button>
-                    </div>
+        <>
+            {/* Header */}
+            <div className="flex items-center justify-between mb-6">
+                <div>
+                    <h1 className="text-2xl font-bold text-slate-900">Payment Orchestration</h1>
+                    <p className="text-slate-500">Configure routing rules, cascading, and processor management</p>
+                </div>
+                <Button 
+                    className="gap-2 bg-blue-600 hover:bg-blue-700"
+                    onClick={() => setShowRuleDialog(true)}
+                >
+                    <Plus className="h-4 w-4" />
+                    Create Rule
+                </Button>
+            </div>
 
                     {/* Stats */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">

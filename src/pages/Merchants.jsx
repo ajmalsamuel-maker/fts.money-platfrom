@@ -267,43 +267,44 @@ export default function Merchants() {
     });
 
     return (
-                    {/* Page Header */}
-                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                         <div>
-                             <h1 className="text-xl sm:text-2xl font-bold text-slate-900">Merchants</h1>
-                             <p className="text-sm sm:text-base text-slate-500">Manage your merchant accounts</p>
-                         </div>
-                         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
-                            <PermissionGate permission="CREATE_MERCHANTS">
-                                <Button 
-                                    variant="outline" 
-                                    className="gap-2"
-                                    onClick={() => setShowAddDialog(true)}
-                                >
-                                    <Plus className="h-4 w-4" />
-                                    Quick Add
-                                </Button>
-                            </PermissionGate>
-                            <PermissionGate permission="CREATE_MERCHANTS">
-                                <Button 
-                                    variant="outline" 
-                                    className="gap-2"
-                                    onClick={() => setShowOnboardingLinkDialog(true)}
-                                >
-                                    <Link2 className="h-4 w-4" />
-                                    Generate Onboarding Link
-                                </Button>
-                            </PermissionGate>
-                            <PermissionGate permission="CREATE_MERCHANTS">
-                                <Link to={createPageUrl('MerchantOnboarding')}>
-                                    <Button className="gap-2 bg-blue-600 hover:bg-blue-700">
-                                        <Plus className="h-4 w-4" />
-                                        Add Merchant
-                                    </Button>
-                                </Link>
-                            </PermissionGate>
-                        </div>
-                    </div>
+        <>
+            {/* Page Header */}
+             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                 <div>
+                     <h1 className="text-xl sm:text-2xl font-bold text-slate-900">Merchants</h1>
+                     <p className="text-sm sm:text-base text-slate-500">Manage your merchant accounts</p>
+                 </div>
+                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                    <PermissionGate permission="CREATE_MERCHANTS">
+                        <Button 
+                            variant="outline" 
+                            className="gap-2"
+                            onClick={() => setShowAddDialog(true)}
+                        >
+                            <Plus className="h-4 w-4" />
+                            Quick Add
+                        </Button>
+                    </PermissionGate>
+                    <PermissionGate permission="CREATE_MERCHANTS">
+                        <Button 
+                            variant="outline" 
+                            className="gap-2"
+                            onClick={() => setShowOnboardingLinkDialog(true)}
+                        >
+                            <Link2 className="h-4 w-4" />
+                            Generate Onboarding Link
+                        </Button>
+                    </PermissionGate>
+                    <PermissionGate permission="CREATE_MERCHANTS">
+                        <Link to={createPageUrl('MerchantOnboarding')}>
+                            <Button className="gap-2 bg-blue-600 hover:bg-blue-700">
+                                <Plus className="h-4 w-4" />
+                                Add Merchant
+                            </Button>
+                        </Link>
+                    </PermissionGate>
+                </div>
+            </div>
                     
                     <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
                         <DialogContent className="max-w-2xl">
@@ -609,5 +610,6 @@ export default function Merchants() {
                 onSave={handleSaveMerchant}
                 mode={onboardingMode}
             />
+        </>
     );
 }

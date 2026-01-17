@@ -127,36 +127,37 @@ export default function Analytics() {
         : 0;
 
     return (
-                    {/* Header */}
-                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                         <div>
-                             <h1 className="text-xl sm:text-2xl font-bold text-slate-900">Analytics</h1>
-                             <p className="text-sm sm:text-base text-slate-500">Comprehensive payment insights and trends</p>
-                        </div>
-                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-                             <Select value={merchantFilter} onValueChange={setMerchantFilter}>
-                                 <SelectTrigger className="w-full sm:w-48">
-                                     <SelectValue placeholder="All Merchants" />
-                                 </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="all">All Merchants</SelectItem>
-                                    {merchants.map(m => (
-                                        <SelectItem key={m.id} value={m.id}>{m.business_name}</SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                            <Tabs value={period} onValueChange={setPeriod}>
-                                <TabsList>
-                                    <TabsTrigger value="7d">7D</TabsTrigger>
-                                    <TabsTrigger value="30d">30D</TabsTrigger>
-                                    <TabsTrigger value="90d">90D</TabsTrigger>
-                                </TabsList>
-                            </Tabs>
-                            <Button variant="outline" size="icon">
-                                <Download className="h-4 w-4" />
-                            </Button>
-                        </div>
-                    </div>
+        <>
+            {/* Header */}
+             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                 <div>
+                     <h1 className="text-xl sm:text-2xl font-bold text-slate-900">Analytics</h1>
+                     <p className="text-sm sm:text-base text-slate-500">Comprehensive payment insights and trends</p>
+                </div>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                     <Select value={merchantFilter} onValueChange={setMerchantFilter}>
+                         <SelectTrigger className="w-full sm:w-48">
+                             <SelectValue placeholder="All Merchants" />
+                         </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="all">All Merchants</SelectItem>
+                            {merchants.map(m => (
+                                <SelectItem key={m.id} value={m.id}>{m.business_name}</SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                    <Tabs value={period} onValueChange={setPeriod}>
+                        <TabsList>
+                            <TabsTrigger value="7d">7D</TabsTrigger>
+                            <TabsTrigger value="30d">30D</TabsTrigger>
+                            <TabsTrigger value="90d">90D</TabsTrigger>
+                        </TabsList>
+                    </Tabs>
+                    <Button variant="outline" size="icon">
+                        <Download className="h-4 w-4" />
+                    </Button>
+                </div>
+            </div>
 
                     {/* KPI Cards - Row 1 */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">

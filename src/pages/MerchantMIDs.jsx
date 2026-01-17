@@ -381,16 +381,16 @@ export default function MerchantMIDs() {
     };
 
     return (
-                    <div className="flex items-center justify-between mb-6">
-                        <div>
-                            <h1 className="text-2xl font-bold text-slate-900">Merchant MIDs</h1>
-                            <p className="text-slate-500">Manage Merchant Identifiers mapped to payment methods and terminals</p>
-                        </div>
-                        <Button onClick={() => setShowDialog(true)} className="gap-2 bg-blue-600 hover:bg-blue-700">
-                            <Plus className="h-4 w-4" /> Add MID
-                        </Button>
-                    </div>
-
+        <>
+            <div className="flex items-center justify-between mb-6">
+                <div>
+                    <h1 className="text-2xl font-bold text-slate-900">Merchant MIDs</h1>
+                    <p className="text-slate-500">Manage Merchant Identifiers mapped to payment methods and terminals</p>
+                </div>
+                <Button onClick={() => setShowDialog(true)} className="gap-2 bg-blue-600 hover:bg-blue-700">
+                    <Plus className="h-4 w-4" /> Add MID
+                </Button>
+            </div>
                     {/* Stats */}
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                         <Card className="p-4">
@@ -773,5 +773,6 @@ export default function MerchantMIDs() {
                         </DialogFooter>
                     </DialogContent>
                 </Dialog>
+        </>
     );
 }
