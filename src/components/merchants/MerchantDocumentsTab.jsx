@@ -147,7 +147,7 @@ export default function MerchantDocumentsTab({ merchant }) {
                                         </Badge>
                                     </TableCell>
                                     <TableCell>
-                                        {doc?.expiry_date ? (
+                                        {doc && doc.expiry_date ? (
                                             <span className={cn(
                                                 "text-sm",
                                                 isExpired ? "text-red-600 font-medium" : "text-slate-600"
