@@ -299,7 +299,7 @@ export default function Dashboard() {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mt-3 sm:mt-4">
                         <RiskAlertsCard />
                         <ExchangeRates />
-                        <PaymentMethodsChart />
+                        <PaymentMethodsChart transactions={transactions} />
                     </div>
 
                     {/* Help Panel */}
