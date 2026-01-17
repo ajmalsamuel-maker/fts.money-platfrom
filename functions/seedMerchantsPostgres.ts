@@ -39,8 +39,6 @@ Deno.serve(async (req) => {
             let migratedCount = 0;
 
             for (const merchant of merchants) {
-                const m = merchant.data;
-                
                 try {
                     const result = await client.query(`
                         INSERT INTO merchants (
@@ -49,34 +47,51 @@ Deno.serve(async (req) => {
                             contact_name, contact_email, contact_phone, address, website, 
                             fee_rate, settlement_period, risk_level, created_by
                         ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
-                        ON CONFLICT (merchant_code) DO NOTHING
+                        ON CONFLICT (merchant_code) DO UPDATE SET
+                            business_name = EXCLUDED.business_name,
+                            status = EXCLUDED.status,
+                            trading_name = EXCLUDED.trading_name,
+                            category = EXCLUDED.category,
+                            mcc_code = EXCLUDED.mcc_code,
+                            country = EXCLUDED.country,
+                            currency = EXCLUDED.currency,
+                            timezone = EXCLUDED.timezone,
+                            contact_name = EXCLUDED.contact_name,
+                            contact_email = EXCLUDED.contact_email,
+                            contact_phone = EXCLUDED.contact_phone,
+                            address = EXCLUDED.address,
+                            website = EXCLUDED.website,
+                            fee_rate = EXCLUDED.fee_rate,
+                            settlement_period = EXCLUDED.settlement_period,
+                            risk_level = EXCLUDED.risk_level
                     `, [
                         psp_code,
-                        m?.merchant_code || merchant.id,
-                        m?.business_name,
-                        m?.status || 'pending',
-                        m?.trading_name || null,
-                        m?.category || null,
-                        m?.mcc_code || null,
-                        m?.country || null,
-                        m?.currency || 'USD',
-                        m?.timezone || 'UTC',
-                        m?.contact_name || null,
-                        m?.contact_email || null,
-                        m?.contact_phone || null,
-                        m?.address || null,
-                        m?.website || null,
-                        m?.fee_rate || null,
-                        m?.settlement_period || 'T+1',
-                        m?.risk_level || 'medium',
+                        merchant.merchant_code || merchant.id,
+                        merchant.business_name,
+                        merchant.status || 'pending',
+                        merchant.trading_name || null,
+                        merchant.category || null,
+                        merchant.mcc_code || null,
+                        merchant.country || null,
+                        merchant.currency || 'USD',
+                        merchant.timezone || 'UTC',
+                        merchant.contact_name || null,
+                        merchant.contact_email || null,
+                        merchant.contact_phone || null,
+                        merchant.address || null,
+                        merchant.website || null,
+                        merchant.fee_rate || null,
+                        merchant.settlement_period || 'T+1',
+                        merchant.risk_level || 'medium',
                         merchant.created_by
                     ]);
 
                     if (result.rowCount > 0) {
                         migratedCount++;
                     }
+                    console.log(`Inserted/Updated merchant: ${merchant.merchant_code || merchant.id}`);
                 } catch (insertError) {
-                    console.error(`Failed to insert merchant ${m?.merchant_code}:`, insertError.message);
+                    console.error(`Failed to insert merchant ${merchant.merchant_code}:`, insertError.message);
                 }
             }
 
