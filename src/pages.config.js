@@ -402,6 +402,7 @@ import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
 import AuditManagement from './pages/AuditManagement';
+import PerformanceOptimization from './pages/PerformanceOptimization';
 import __Layout from './Layout.jsx';
 
 
@@ -810,6 +811,7 @@ export const PAGES = {
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
     "AuditManagement": AuditManagement,
+    "PerformanceOptimization": PerformanceOptimization,
 }
 
 export const pagesConfig = {
