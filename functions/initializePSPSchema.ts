@@ -33,39 +33,63 @@ Deno.serve(async (req) => {
             await client.query(`CREATE SCHEMA IF NOT EXISTS "${schemaName}"`);
             await client.query(`SET search_path TO "${schemaName}"`);
 
-            // Merchants table
-            await client.query(`
-                CREATE TABLE IF NOT EXISTS merchants (
-                    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-                    psp_code VARCHAR(20) NOT NULL,
-                    merchant_code VARCHAR(50) NOT NULL UNIQUE,
-                    merchant_id VARCHAR(100),
-                    business_name VARCHAR(255) NOT NULL,
-                    trading_name VARCHAR(255),
-                    status VARCHAR(20) DEFAULT 'pending',
-                    category VARCHAR(50),
-                    mcc_code VARCHAR(10),
-                    country VARCHAR(2),
-                    currency VARCHAR(3) DEFAULT 'USD',
-                    timezone VARCHAR(50) DEFAULT 'UTC',
-                    contact_name VARCHAR(255),
-                    contact_email VARCHAR(255),
-                    contact_phone VARCHAR(20),
-                    address TEXT,
-                    website VARCHAR(500),
-                    processing_volume DECIMAL(15,2),
-                    fee_rate DECIMAL(5,3),
-                    settlement_period VARCHAR(10) DEFAULT 'T+1',
-                    risk_level VARCHAR(20) DEFAULT 'medium',
-                    total_transactions INTEGER DEFAULT 0,
-                    total_volume DECIMAL(15,2) DEFAULT 0,
-                    kyb_status VARCHAR(50) DEFAULT 'not_started',
-                    aml_status VARCHAR(50) DEFAULT 'clear',
-                    created_date TIMESTAMP DEFAULT NOW(),
-                    updated_date TIMESTAMP DEFAULT NOW(),
-                    created_by VARCHAR(255)
-                )
+            // Merchants table - First check if it exists
+            const tableCheck = await client.query(`
+                SELECT column_name 
+                FROM information_schema.columns 
+                WHERE table_schema = '${schemaName}' 
+                AND table_name = 'merchants'
             `);
+            
+            if (tableCheck.rows.length === 0) {
+                // Table doesn't exist, create it
+                await client.query(`
+                    CREATE TABLE merchants (
+                        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                        psp_code VARCHAR(20) NOT NULL,
+                        merchant_code VARCHAR(50) NOT NULL UNIQUE,
+                        merchant_id VARCHAR(100),
+                        business_name VARCHAR(255) NOT NULL,
+                        trading_name VARCHAR(255),
+                        status VARCHAR(20) DEFAULT 'pending',
+                        category VARCHAR(50),
+                        mcc_code VARCHAR(10),
+                        country VARCHAR(2),
+                        currency VARCHAR(3) DEFAULT 'USD',
+                        timezone VARCHAR(50) DEFAULT 'UTC',
+                        contact_name VARCHAR(255),
+                        contact_email VARCHAR(255),
+                        contact_phone VARCHAR(20),
+                        address TEXT,
+                        website VARCHAR(500),
+                        processing_volume DECIMAL(15,2),
+                        fee_rate DECIMAL(5,3),
+                        settlement_period VARCHAR(10) DEFAULT 'T+1',
+                        risk_level VARCHAR(20) DEFAULT 'medium',
+                        total_transactions INTEGER DEFAULT 0,
+                        total_volume DECIMAL(15,2) DEFAULT 0,
+                        kyb_status VARCHAR(50) DEFAULT 'not_started',
+                        aml_status VARCHAR(50) DEFAULT 'clear',
+                        created_date TIMESTAMP DEFAULT NOW(),
+                        updated_date TIMESTAMP DEFAULT NOW(),
+                        created_by VARCHAR(255)
+                    )
+                `);
+            } else {
+                // Table exists, add missing columns
+                const existingCols = new Set(tableCheck.rows.map(r => r.column_name));
+                const columnsToAdd = [
+                    { name: 'trading_name', def: 'VARCHAR(255)' },
+                    { name: 'category', def: 'VARCHAR(50)' },
+                    { name: 'mcc_code', def: 'VARCHAR(10)' }
+                ];
+                
+                for (const col of columnsToAdd) {
+                    if (!existingCols.has(col.name)) {
+                        await client.query(`ALTER TABLE merchants ADD COLUMN ${col.name} ${col.def}`);
+                    }
+                }
+            }
 
             // Transactions table
             await client.query(`
