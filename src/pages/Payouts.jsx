@@ -58,13 +58,17 @@ export default function Payouts() {
 
     return (
         <div className="min-h-screen bg-slate-50">
-            <Sidebar collapsed={sidebarCollapsed} currentPage="Payouts" />
-            <div className={cn("transition-all duration-300", sidebarCollapsed ? "ml-16" : "ml-56")}>
-                <TopHeader onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} />
-                <main className="p-6">
-                    <div className="flex items-center justify-between mb-6">
-                        <div><h1 className="text-2xl font-bold">Payouts</h1><p className="text-slate-500">PSP and merchant-level settlement management</p></div>
-                        <div className="flex gap-2">
+                <Sidebar collapsed={sidebarCollapsed} currentPage="Payouts" />
+                <div className={cn(
+                    "transition-all duration-300",
+                    "lg:ml-[25.75rem]",
+                    sidebarCollapsed && "ml-0"
+                )}>
+                    <TopHeader onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} collapsed={sidebarCollapsed} />
+                    <main className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                            <div><h1 className="text-xl sm:text-2xl font-bold">Payouts</h1><p className="text-sm sm:text-base text-slate-500">PSP and merchant-level settlement management</p></div>
+                            <div className="flex flex-col sm:flex-row gap-2">
                             <Button variant="outline" className="gap-2"><Download className="h-4 w-4" />Export</Button>
                             <Button onClick={() => setShowCreateDialog(true)} className="gap-2"><Plus className="h-4 w-4" />Create Payout</Button>
                         </div>
