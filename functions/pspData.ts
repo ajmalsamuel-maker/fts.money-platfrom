@@ -12,7 +12,8 @@ const pool = new Pool({
 Deno.serve(async (req) => {
     try {
         const base44 = createClientFromRequest(req);
-        const { action, psp_code, entity, filters, limit, sort } = await req.json();
+        const body = await req.json();
+        const { action, psp_code, entity, filters, limit, sort } = body;
 
         if (!psp_code) {
             return Response.json({ error: 'PSP code required' }, { status: 400 });
@@ -84,7 +85,7 @@ Deno.serve(async (req) => {
                 }
 
                 case 'createMerchant': {
-                    const { merchantData } = await req.json();
+                    const { merchantData } = body;
                     const result = await client.query(`
                         INSERT INTO merchants (
                             psp_code, merchant_code, business_name, trading_name, 
@@ -116,7 +117,7 @@ Deno.serve(async (req) => {
                 }
 
                 case 'updateMerchant': {
-                    const { merchantId, updates } = await req.json();
+                    const { merchantId, updates } = body;
                     const setClauses = [];
                     const values = [psp_code, merchantId];
                     let paramIndex = 3;
@@ -143,7 +144,7 @@ Deno.serve(async (req) => {
                 }
 
                 case 'auditLog': {
-                    const { user_email, action_type, details, ip_address } = await req.json();
+                    const { user_email, action_type, details, ip_address } = body;
                     
                     await client.query(`
                         INSERT INTO audit_logs (action, user_email, ip_address, details)
@@ -166,7 +167,7 @@ Deno.serve(async (req) => {
                 }
 
                 case 'createMerchantMID': {
-                    const { midData } = await req.json();
+                    const { midData } = body;
                     const result = await client.query(`
                         INSERT INTO merchant_mids (
                             merchant_id, merchant_name, mid, provider_id, 
@@ -195,7 +196,7 @@ Deno.serve(async (req) => {
                 }
 
                 case 'updateMerchantMID': {
-                    const { midId, updates } = await req.json();
+                    const { midId, updates } = body;
                     const setClauses = [];
                     const values = [midId];
                     let paramIndex = 2;
@@ -227,7 +228,7 @@ Deno.serve(async (req) => {
                 }
 
                 case 'deleteMerchantMID': {
-                    const { midId } = await req.json();
+                    const { midId } = body;
                     await client.query(`
                         DELETE FROM merchant_mids 
                         WHERE id = $1
