@@ -56,6 +56,7 @@ import ISOComplianceBadge from '@/components/transaction/ISOComplianceBadge';
 import { validateCurrency, validateCountry } from '@/components/utils/isoValidator';
 import AdvancedSearchPanel from '@/components/transaction/AdvancedSearchPanel';
 import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
+import { cn } from "@/lib/utils";
 
 const statusConfig = {
     approved: { label: 'Approved', className: 'bg-emerald-100 text-emerald-700 border-emerald-200' },
@@ -358,8 +359,6 @@ export default function Transactions() {
                             </div>
                         </CardContent>
                     </Card>
-                </main>
-            </div>
 
             {/* View Details Dialog */}
             {selectedTransaction && (
