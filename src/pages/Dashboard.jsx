@@ -137,8 +137,8 @@ export default function Dashboard() {
         {
             label: t('todaysVolume'),
             value: `$${totalVolume.toLocaleString()}`,
-            change: "+12.5%",
-            changeType: "positive",
+            change: totalVolume > 0 ? "+12.5%" : "0%",
+            changeType: totalVolume > 0 ? "positive" : "neutral",
             icon: DollarSign,
             bgColor: "bg-blue-50",
             iconColor: "text-blue-600"
@@ -146,8 +146,8 @@ export default function Dashboard() {
         {
             label: t('totalTransactions'),
             value: transactions.length.toLocaleString(),
-            change: "+8.3%",
-            changeType: "positive",
+            change: transactions.length > 0 ? "+8.3%" : "0%",
+            changeType: transactions.length > 0 ? "positive" : "neutral",
             icon: ArrowLeftRight,
             bgColor: "bg-emerald-50",
             iconColor: "text-emerald-600"
@@ -155,8 +155,8 @@ export default function Dashboard() {
         {
             label: t('successRate'),
             value: `${successRate}%`,
-            change: "+0.5%",
-            changeType: "positive",
+            change: transactions.length > 0 ? "+0.5%" : "0%",
+            changeType: transactions.length > 0 ? "positive" : "neutral",
             icon: TrendingUp,
             bgColor: "bg-purple-50",
             iconColor: "text-purple-600"
@@ -164,8 +164,8 @@ export default function Dashboard() {
         {
             label: 'Crypto Volume',
             value: `$${(cryptoVolume / 1000).toFixed(1)}K`,
-            change: "+18.2%",
-            changeType: "positive",
+            change: cryptoVolume > 0 ? "+18.2%" : "0%",
+            changeType: cryptoVolume > 0 ? "positive" : "neutral",
             icon: Coins,
             bgColor: "bg-amber-50",
             iconColor: "text-amber-600"
@@ -173,8 +173,8 @@ export default function Dashboard() {
         {
             label: t('activeMerchants'),
             value: activeMerchants,
-            change: "+3",
-            changeType: "positive",
+            change: activeMerchants > 0 ? "+3" : "0",
+            changeType: activeMerchants > 0 ? "positive" : "neutral",
             icon: Store,
             bgColor: "bg-cyan-50",
             iconColor: "text-cyan-600"
