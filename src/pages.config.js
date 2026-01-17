@@ -99,16 +99,17 @@ import DataRetentionManagement from './pages/DataRetentionManagement';
 import DatabaseMigration from './pages/DatabaseMigration';
 import DatabaseSchemaValidation from './pages/DatabaseSchemaValidation';
 import DatabaseSetup from './pages/DatabaseSetup';
+import DeveloperTools from './pages/DeveloperTools';
 import DigitalIdentityWallet from './pages/DigitalIdentityWallet';
 import Disputes from './pages/Disputes';
 import Documentation from './pages/Documentation';
 import EInvoiceGenerator from './pages/EInvoiceGenerator';
 import EInvoicingDashboard from './pages/EInvoicingDashboard';
 import EInvoicingServiceConfig from './pages/EInvoicingServiceConfig';
-import FATFCompliance from './pages/FATFCompliance';
 import ESGReportingDashboard from './pages/ESGReportingDashboard';
 import EnhancedAuditLogs from './pages/EnhancedAuditLogs';
 import ExchangeIntegrations from './pages/ExchangeIntegrations';
+import FATFCompliance from './pages/FATFCompliance';
 import FTSAnalytics from './pages/FTSAnalytics';
 import FTSArchitectureDoc from './pages/FTSArchitectureDoc';
 import FTSAuditLogs from './pages/FTSAuditLogs';
@@ -204,18 +205,19 @@ import MerchantBankInfo from './pages/MerchantBankInfo';
 import MerchantBatchReports from './pages/MerchantBatchReports';
 import MerchantChangePassword from './pages/MerchantChangePassword';
 import MerchantChargebackReport from './pages/MerchantChargebackReport';
+import MerchantCheckout from './pages/MerchantCheckout';
 import MerchantCodeRecovery from './pages/MerchantCodeRecovery';
 import MerchantCredentials from './pages/MerchantCredentials';
 import MerchantCryptoDashboard from './pages/MerchantCryptoDashboard';
 import MerchantCustomerAnalytics from './pages/MerchantCustomerAnalytics';
 import MerchantCustomers from './pages/MerchantCustomers';
+import MerchantInfo from './pages/MerchantInfo';
 import MerchantDashboard from './pages/MerchantDashboard';
 import MerchantDataTransactions from './pages/MerchantDataTransactions';
 import MerchantDisputeManagement from './pages/MerchantDisputeManagement';
 import MerchantEmailTemplates from './pages/MerchantEmailTemplates';
 import MerchantFIXDashboard from './pages/MerchantFIXDashboard';
 import MerchantHelpCenter from './pages/MerchantHelpCenter';
-import MerchantInfo from './pages/MerchantInfo';
 import MerchantInvoiceGenerator from './pages/MerchantInvoiceGenerator';
 import MerchantInvoicePortal from './pages/MerchantInvoicePortal';
 import MerchantInvoices from './pages/MerchantInvoices';
@@ -353,6 +355,7 @@ import RWAProviderUserManagement from './pages/RWAProviderUserManagement';
 import RWATokenizationServiceConfig from './pages/RWATokenizationServiceConfig';
 import RWAWhiteLabelProvisioning from './pages/RWAWhiteLabelProvisioning';
 import RealTimeMonitor from './pages/RealTimeMonitor';
+import RealTimeMonitoringDashboard from './pages/RealTimeMonitoringDashboard';
 import Reconciliation from './pages/Reconciliation';
 import Refunds from './pages/Refunds';
 import Reports from './pages/Reports';
@@ -398,9 +401,7 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import MerchantCheckout from './pages/MerchantCheckout';
-import RealTimeMonitoringDashboard from './pages/RealTimeMonitoringDashboard';
-import DeveloperTools from './pages/DeveloperTools';
+import AuditManagement from './pages/AuditManagement';
 import __Layout from './Layout.jsx';
 
 
@@ -506,16 +507,17 @@ export const PAGES = {
     "DatabaseMigration": DatabaseMigration,
     "DatabaseSchemaValidation": DatabaseSchemaValidation,
     "DatabaseSetup": DatabaseSetup,
+    "DeveloperTools": DeveloperTools,
     "DigitalIdentityWallet": DigitalIdentityWallet,
     "Disputes": Disputes,
     "Documentation": Documentation,
     "EInvoiceGenerator": EInvoiceGenerator,
     "EInvoicingDashboard": EInvoicingDashboard,
     "EInvoicingServiceConfig": EInvoicingServiceConfig,
-    "FATFCompliance": FATFCompliance,
     "ESGReportingDashboard": ESGReportingDashboard,
     "EnhancedAuditLogs": EnhancedAuditLogs,
     "ExchangeIntegrations": ExchangeIntegrations,
+    "FATFCompliance": FATFCompliance,
     "FTSAnalytics": FTSAnalytics,
     "FTSArchitectureDoc": FTSArchitectureDoc,
     "FTSAuditLogs": FTSAuditLogs,
@@ -611,18 +613,19 @@ export const PAGES = {
     "MerchantBatchReports": MerchantBatchReports,
     "MerchantChangePassword": MerchantChangePassword,
     "MerchantChargebackReport": MerchantChargebackReport,
+    "MerchantCheckout": MerchantCheckout,
     "MerchantCodeRecovery": MerchantCodeRecovery,
     "MerchantCredentials": MerchantCredentials,
     "MerchantCryptoDashboard": MerchantCryptoDashboard,
     "MerchantCustomerAnalytics": MerchantCustomerAnalytics,
     "MerchantCustomers": MerchantCustomers,
+    "MerchantInfo": MerchantInfo,
     "MerchantDashboard": MerchantDashboard,
     "MerchantDataTransactions": MerchantDataTransactions,
     "MerchantDisputeManagement": MerchantDisputeManagement,
     "MerchantEmailTemplates": MerchantEmailTemplates,
     "MerchantFIXDashboard": MerchantFIXDashboard,
     "MerchantHelpCenter": MerchantHelpCenter,
-    "MerchantInfo": MerchantInfo,
     "MerchantInvoiceGenerator": MerchantInvoiceGenerator,
     "MerchantInvoicePortal": MerchantInvoicePortal,
     "MerchantInvoices": MerchantInvoices,
@@ -760,6 +763,7 @@ export const PAGES = {
     "RWATokenizationServiceConfig": RWATokenizationServiceConfig,
     "RWAWhiteLabelProvisioning": RWAWhiteLabelProvisioning,
     "RealTimeMonitor": RealTimeMonitor,
+    "RealTimeMonitoringDashboard": RealTimeMonitoringDashboard,
     "Reconciliation": Reconciliation,
     "Refunds": Refunds,
     "Reports": Reports,
@@ -805,9 +809,7 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "MerchantCheckout": MerchantCheckout,
-    "RealTimeMonitoringDashboard": RealTimeMonitoringDashboard,
-    "DeveloperTools": DeveloperTools,
+    "AuditManagement": AuditManagement,
 }
 
 export const pagesConfig = {
