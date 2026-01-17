@@ -201,7 +201,7 @@ export default function Dashboard() {
                 portalType="psp"
             />
             
-            <div className={cn("transition-all duration-300", sidebarCollapsed ? "ml-20" : "ml-64")}>
+            <div className={cn("transition-all duration-300", sidebarCollapsed ? "ml-16" : "lg:ml-64 ml-40")}>
                 <TopHeader 
                     onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
                     collapsed={sidebarCollapsed}
