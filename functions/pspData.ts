@@ -51,7 +51,7 @@ Deno.serve(async (req) => {
                 case 'listMerchants': {
                     const result = await client.query(`
                         SELECT * FROM merchants 
-                        ORDER BY created_date DESC
+                        ORDER BY created_at DESC
                     `);
                     
                     return Response.json({ 
