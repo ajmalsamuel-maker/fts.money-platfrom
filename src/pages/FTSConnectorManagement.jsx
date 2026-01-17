@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Plug, Plus, Settings, TrendingUp, DollarSign, Activity, CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
+import { Plug, Plus, Settings, TrendingUp, DollarSign, Activity, CheckCircle, XCircle, Clock } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 
