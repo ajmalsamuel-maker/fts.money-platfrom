@@ -396,8 +396,9 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
         staffLogout();
     };
 
-    const sidebarBg = '#0f172a';
-    const sidebarText = '#94a3b8';
+    const sidebarBg = '#ffffff';
+    const sidebarText = '#64748b';
+    const headerBg = '#f8fafc';
     const primaryColor = pspSettings?.branding?.primary_color || '#3b82f6';
     const secondaryColor = pspSettings?.branding?.secondary_color || '#06b6d4';
     const companyName = pspSettings?.psp_name || pspSettings?.branding?.company_name || 'PaymentHub';
@@ -442,7 +443,7 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                 {/* Branding - Lighter Background */}
                 <div 
                    className="h-16 flex items-center justify-center border-b"
-                   style={{ backgroundColor: '#374151', borderColor: 'rgba(255,255,255,0.1)' }}
+                   style={{ backgroundColor: headerBg, borderColor: 'rgba(0,0,0,0.1)' }}
                 >
                    {logoUrl ? (
                        <img src={logoUrl} alt="Logo" className="h-12 w-12 object-contain rounded-lg" />
@@ -471,9 +472,9 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                                         "w-full flex flex-col items-center justify-center py-3 px-1 rounded-lg transition-all",
                                         (isHovered || isCurrentGroup)
                                             ? "text-white" 
-                                            : "hover:bg-white/10"
+                                            : "hover:bg-black/5"
                                     )}
-                                    style={(isHovered || isCurrentGroup) ? { backgroundColor: '#4b5563' } : { color: sidebarText }}
+                                    style={(isHovered || isCurrentGroup) ? { backgroundColor: primaryColor } : { color: sidebarText }}
                                     title={t(group.group)}
                                 >
                                     <GroupIcon className="h-5 w-5" />
@@ -485,10 +486,10 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                 </nav>
 
                 {/* Bottom Actions */}
-                <div className="border-t p-2 space-y-1" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
+                <div className="border-t p-2 space-y-1" style={{ borderColor: 'rgba(0,0,0,0.1)' }}>
                     <button
                         onClick={() => setHelpOpen(true)}
-                        className="w-full flex items-center justify-center py-2 rounded-lg hover:bg-white/10 transition-all"
+                        className="w-full flex items-center justify-center py-2 rounded-lg hover:bg-black/5 transition-all"
                         style={{ color: sidebarText }}
                         title="Help"
                     >
@@ -510,12 +511,12 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
             {activeGroupData && (
                 <aside 
                     className="h-full w-64 border-r flex flex-col"
-                    style={{ backgroundColor: '#1e293b', borderColor: 'rgba(255,255,255,0.1)' }}
+                    style={{ backgroundColor: '#ffffff', borderColor: 'rgba(0,0,0,0.1)' }}
                 >
                     {/* Group Header */}
                     <div 
                         className="h-16 flex items-center px-4 border-b"
-                        style={{ backgroundColor: '#374151', borderColor: 'rgba(255,255,255,0.1)' }}
+                        style={{ backgroundColor: headerBg, borderColor: 'rgba(0,0,0,0.1)' }}
                     >
                         <div>
                             <h2 className="font-semibold text-white text-sm">{companyName}</h2>
@@ -525,7 +526,7 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
 
                     {/* Role Badge */}
                     {user && (
-                        <div className="px-3 py-2 border-b" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
+                        <div className="px-3 py-2 border-b" style={{ borderColor: 'rgba(0,0,0,0.1)' }}>
                             <Badge className={cn("text-[10px]", roleConfig.bgColor, roleConfig.textColor)}>
                                 {roleConfig.label}
                             </Badge>
@@ -559,7 +560,7 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                                                     "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-sm"
                                                 )}
                                                 style={isActive 
-                                                    ? { backgroundColor: '#4b5563', color: '#ffffff' }
+                                                    ? { backgroundColor: primaryColor, color: '#ffffff' }
                                                     : { color: sidebarText }
                                                 }
                                             >
@@ -572,7 +573,7 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                                                     "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-sm cursor-default"
                                                 )}
                                                 style={(isActive || isSubmenuActive)
-                                                    ? { backgroundColor: '#4b5563', color: '#ffffff' }
+                                                    ? { backgroundColor: primaryColor, color: '#ffffff' }
                                                     : { color: sidebarText }
                                                 }
                                             >
@@ -588,15 +589,15 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                                                     const isSubActive = currentPage === subItem.path;
                                                     return (
                                                         <Link
-                                                            key={subItem.path}
-                                                            to={createPageUrl(subItem.path)}
-                                                            className={cn(
-                                                                "flex items-center gap-2 px-3 py-2 rounded-lg text-xs transition-all hover:bg-white/5"
-                                                            )}
-                                                            style={isSubActive 
-                                                                ? { backgroundColor: '#4b5563', color: '#ffffff' }
-                                                                : { color: sidebarText }
-                                                            }
+                                                             key={subItem.path}
+                                                             to={createPageUrl(subItem.path)}
+                                                             className={cn(
+                                                                 "flex items-center gap-2 px-3 py-2 rounded-lg text-xs transition-all hover:bg-black/5"
+                                                             )}
+                                                             style={isSubActive 
+                                                                 ? { backgroundColor: primaryColor, color: '#ffffff' }
+                                                                 : { color: sidebarText }
+                                                             }
                                                         >
                                                             <subItem.icon className="h-3 w-3 flex-shrink-0" />
                                                             <span>{formatLabel(subItem.label)}</span>
