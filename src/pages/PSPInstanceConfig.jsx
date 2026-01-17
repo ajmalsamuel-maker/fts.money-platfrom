@@ -427,6 +427,10 @@ export default function PSPInstanceConfig() {
                             <Globe className="h-4 w-4" />
                             Regional Settings
                         </TabsTrigger>
+                        <TabsTrigger value="premium" className="gap-2">
+                            <Shield className="h-4 w-4" />
+                            Premium Features
+                        </TabsTrigger>
                     </TabsList>
 
                     {/* Services Tab */}
@@ -1021,6 +1025,76 @@ export default function PSPInstanceConfig() {
                                                 <SelectItem value="fr">French</SelectItem>
                                             </SelectContent>
                                         </Select>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </TabsContent>
+
+                    {/* Premium Features Tab */}
+                    <TabsContent value="premium">
+                        <Card className="bg-white border-slate-200">
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2">
+                                    <Shield className="h-5 w-5 text-amber-600" />
+                                    Premium Features
+                                </CardTitle>
+                                <CardDescription>Enable enterprise-grade premium features for this PSP (additional charges apply)</CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-4">
+                                <Card className="border-2 border-amber-200 bg-amber-50">
+                                    <CardContent className="p-4">
+                                        <div className="flex items-start justify-between">
+                                            <div className="flex-1">
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <h3 className="font-semibold text-slate-900">Direct Acquirer Connection</h3>
+                                                    <Badge className="bg-amber-600 text-white">Enterprise</Badge>
+                                                </div>
+                                                <p className="text-sm text-slate-700 mb-3">
+                                                    Allow this PSP to configure their own acquirer and bank connections directly, 
+                                                    bypassing FTS-assigned connectors for full autonomy over payment processing infrastructure.
+                                                </p>
+                                                <div className="space-y-1 text-xs text-slate-600">
+                                                    <p>✓ Configure own acquiring banks and processors</p>
+                                                    <p>✓ Access to Bank MID management menu</p>
+                                                    <p>✓ Custom MID routing configuration</p>
+                                                    <p>✓ Direct settlement control</p>
+                                                </div>
+                                                <div className="mt-3 p-3 bg-white border border-amber-200 rounded">
+                                                    <p className="text-xs font-semibold text-amber-900 mb-1">Pricing</p>
+                                                    <p className="text-xs text-slate-700">Additional $2,500/month + 0.15% transaction fee</p>
+                                                </div>
+                                            </div>
+                                            <div className="ml-4 flex flex-col items-end gap-2">
+                                                <Switch
+                                                    checked={psp?.allow_direct_acquirer_connection || false}
+                                                    onCheckedChange={(checked) => {
+                                                        updateMutation.mutate({
+                                                            ...config,
+                                                            allow_direct_acquirer_connection: checked
+                                                        });
+                                                    }}
+                                                />
+                                                {psp?.allow_direct_acquirer_connection ? (
+                                                    <Badge className="bg-emerald-600">Enabled</Badge>
+                                                ) : (
+                                                    <Badge variant="outline" className="text-slate-600">Disabled</Badge>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+
+                                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                                    <div className="flex items-start gap-3">
+                                        <Shield className="h-5 w-5 text-blue-600 mt-0.5" />
+                                        <div>
+                                            <p className="font-medium text-blue-900 mb-1">Premium Feature Management</p>
+                                            <p className="text-sm text-blue-700">
+                                                Premium features are billed separately and require approval from FTS Finance. 
+                                                Toggle the switch to enable/disable features instantly. Changes are logged for compliance.
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
                             </CardContent>
