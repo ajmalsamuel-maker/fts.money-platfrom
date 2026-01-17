@@ -4,21 +4,16 @@ import { base44 } from '@/api/base44Client';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
-export default function PaymentMethodsChart() {
-    const { data: transactions = [] } = useQuery({
-        queryKey: ['transactions-methods'],
-        queryFn: () => base44.entities.Transaction.list('-created_date', 500),
-    });
-
+export default function PaymentMethodsChart({ transactions = [] }) {
     const cryptoCount = transactions.filter(t => t.crypto_asset || t.payment_method === 'crypto_currency' || t.payment_method === 'bitcoin' || t.payment_method === 'bitcoin_cash').length;
 
     const data = [
-        { name: 'Visa', value: transactions.filter(t => t.card_brand === 'visa').length || 4520, color: '#1a1f71' },
-        { name: 'Mastercard', value: transactions.filter(t => t.card_brand === 'mastercard').length || 3280, color: '#eb001b' },
-        { name: 'Amex', value: transactions.filter(t => t.card_brand === 'amex').length || 890, color: '#006fcf' },
-        { name: 'Bank Transfer', value: transactions.filter(t => t.payment_method === 'bank_transfer').length || 1240, color: '#10b981' },
-        { name: 'Wallet', value: transactions.filter(t => t.payment_method === 'wallet' || t.payment_method === 'e_wallet').length || 670, color: '#8b5cf6' },
-        { name: 'Crypto', value: cryptoCount || 400, color: '#f59e0b' },
+        { name: 'Visa', value: transactions.filter(t => t.card_brand === 'visa').length, color: '#1a1f71' },
+        { name: 'Mastercard', value: transactions.filter(t => t.card_brand === 'mastercard').length, color: '#eb001b' },
+        { name: 'Amex', value: transactions.filter(t => t.card_brand === 'amex').length, color: '#006fcf' },
+        { name: 'Bank Transfer', value: transactions.filter(t => t.payment_method === 'bank_transfer').length, color: '#10b981' },
+        { name: 'Wallet', value: transactions.filter(t => t.payment_method === 'wallet' || t.payment_method === 'e_wallet').length, color: '#8b5cf6' },
+        { name: 'Crypto', value: cryptoCount, color: '#f59e0b' },
     ];
     return (
         <Card>
