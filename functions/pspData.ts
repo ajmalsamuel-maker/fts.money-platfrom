@@ -153,6 +153,90 @@ Deno.serve(async (req) => {
                     return Response.json({ success: true });
                 }
 
+                case 'listMerchantMIDs': {
+                    const result = await client.query(`
+                        SELECT * FROM merchant_mids 
+                        ORDER BY created_date DESC
+                    `);
+                    
+                    return Response.json({ 
+                        success: true, 
+                        data: result.rows 
+                    });
+                }
+
+                case 'createMerchantMID': {
+                    const { midData } = await req.json();
+                    const result = await client.query(`
+                        INSERT INTO merchant_mids (
+                            psp_code, merchant_id, merchant_name, mid, provider_id, 
+                            provider_name, account_type, transaction_types, currency, 
+                            status, activation_date, notes
+                        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+                        RETURNING *
+                    `, [
+                        psp_code,
+                        midData.merchant_id,
+                        midData.merchant_name,
+                        midData.mid,
+                        midData.provider_id,
+                        midData.provider_name,
+                        midData.account_type,
+                        JSON.stringify(midData.transaction_types || []),
+                        midData.currency || 'USD',
+                        midData.status || 'pending',
+                        midData.activation_date,
+                        midData.notes
+                    ]);
+                    
+                    return Response.json({ 
+                        success: true, 
+                        mid: result.rows[0] 
+                    });
+                }
+
+                case 'updateMerchantMID': {
+                    const { midId, updates } = await req.json();
+                    const setClauses = [];
+                    const values = [psp_code, midId];
+                    let paramIndex = 3;
+
+                    for (const [key, value] of Object.entries(updates)) {
+                        if (key === 'transaction_types') {
+                            setClauses.push(`${key} = $${paramIndex}`);
+                            values.push(JSON.stringify(value));
+                        } else {
+                            setClauses.push(`${key} = $${paramIndex}`);
+                            values.push(value);
+                        }
+                        paramIndex++;
+                    }
+
+                    setClauses.push('updated_date = NOW()');
+
+                    const result = await client.query(`
+                        UPDATE merchant_mids 
+                        SET ${setClauses.join(', ')}
+                        WHERE psp_code = $1 AND id = $2
+                        RETURNING *
+                    `, values);
+                    
+                    return Response.json({ 
+                        success: true, 
+                        mid: result.rows[0] 
+                    });
+                }
+
+                case 'deleteMerchantMID': {
+                    const { midId } = await req.json();
+                    await client.query(`
+                        DELETE FROM merchant_mids 
+                        WHERE psp_code = $1 AND id = $2
+                    `, [psp_code, midId]);
+                    
+                    return Response.json({ success: true });
+                }
+
                 default:
                     return Response.json({ error: 'Invalid action' }, { status: 400 });
             }
