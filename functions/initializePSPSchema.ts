@@ -199,8 +199,8 @@ Deno.serve(async (req) => {
                     status VARCHAR(20) DEFAULT 'pending',
                     activation_date DATE,
                     notes TEXT,
-                    created_date TIMESTAMP DEFAULT NOW(),
-                    updated_date TIMESTAMP DEFAULT NOW()
+                    created_at TIMESTAMP DEFAULT NOW(),
+                    updated_at TIMESTAMP DEFAULT NOW()
                 )
             `);
 
