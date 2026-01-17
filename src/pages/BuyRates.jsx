@@ -49,7 +49,7 @@ const regionLabels = {
 };
 
 export default function BuyRates() {
-    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
     const [searchQuery, setSearchQuery] = useState('');
     const [providerFilter, setProviderFilter] = useState('all');
     const [txnTypeFilter, setTxnTypeFilter] = useState('all');

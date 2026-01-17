@@ -50,7 +50,7 @@ const statusConfig = {
 };
 
 export default function Settlements() {
-    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
     const [searchQuery, setSearchQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
 
@@ -71,19 +71,6 @@ export default function Settlements() {
     const totalCompleted = settlements.filter(s => s.status === 'completed').reduce((sum, s) => sum + (s.net_amount || 0), 0);
 
     return (
-        <div className="min-h-screen bg-slate-50">
-            <Sidebar 
-                collapsed={sidebarCollapsed} 
-                currentPage="Settlements"
-            />
-            
-            <div className={cn("transition-all duration-300", sidebarCollapsed ? "ml-20" : "lg:ml-64 ml-40")}>
-                <TopHeader 
-                    onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
-                    collapsed={sidebarCollapsed}
-                />
-                
-                <main className="p-6">
                     {/* Page Header */}
                     <div className="flex items-center justify-between mb-6">
                         <div>
@@ -277,8 +264,6 @@ export default function Settlements() {
                             </div>
                         </CardContent>
                     </Card>
-                </main>
-            </div>
-        </div>
+
     );
 }

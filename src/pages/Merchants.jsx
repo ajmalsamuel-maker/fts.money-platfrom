@@ -84,7 +84,7 @@ const riskConfig = {
 
 export default function Merchants() {
     const { t } = useI18n();
-    const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
+
     const [searchQuery, setSearchQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
     const [showAddDialog, setShowAddDialog] = useState(false);
@@ -267,26 +267,6 @@ export default function Merchants() {
     });
 
     return (
-        <div className="min-h-screen bg-slate-50">
-            {!sidebarCollapsed && (
-                <div 
-                    className="fixed inset-0 bg-black/50 z-30 lg:hidden"
-                    onClick={() => setSidebarCollapsed(true)}
-                />
-            )}
-            
-            <Sidebar 
-                collapsed={sidebarCollapsed} 
-                currentPage="Merchants"
-            />
-            
-            <div className={cn("transition-all duration-300", sidebarCollapsed ? "ml-20" : "lg:ml-64 ml-40")}>
-                <TopHeader 
-                    onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
-                    collapsed={sidebarCollapsed}
-                />
-                
-                <main className="p-6">
                     {/* Page Header */}
                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                          <div>
@@ -611,9 +591,6 @@ export default function Merchants() {
                             </div>
                         </CardContent>
                     </Card>
-                </main>
-            </div>
-
             <SelfOnboardingUrlGenerator 
                 open={showOnboardingLinkDialog}
                 onOpenChange={setShowOnboardingLinkDialog}
@@ -632,6 +609,5 @@ export default function Merchants() {
                 onSave={handleSaveMerchant}
                 mode={onboardingMode}
             />
-        </div>
     );
 }

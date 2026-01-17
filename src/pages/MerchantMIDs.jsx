@@ -60,7 +60,7 @@ const statusConfig = {
 };
 
 export default function MerchantMIDs() {
-    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
     const [searchQuery, setSearchQuery] = useState('');
     const [merchantFilter, setMerchantFilter] = useState('all');
     const [statusFilter, setStatusFilter] = useState('all');
@@ -381,12 +381,6 @@ export default function MerchantMIDs() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50">
-            <Sidebar collapsed={sidebarCollapsed} currentPage="MerchantMIDs" />
-            <div className={cn("transition-all duration-300", sidebarCollapsed ? "ml-20" : "lg:ml-64 ml-40")}>
-                <TopHeader onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} collapsed={sidebarCollapsed} />
-                
-                <main className="p-6">
                     <div className="flex items-center justify-between mb-6">
                         <div>
                             <h1 className="text-2xl font-bold text-slate-900">Merchant MIDs</h1>
@@ -637,151 +631,147 @@ export default function MerchantMIDs() {
                             </div>
                         )}
                     </Card>
-                </main>
-            </div>
-
-            {/* Add/Edit Dialog */}
-            <Dialog open={showDialog} onOpenChange={(open) => { if (!open) resetForm(); else setShowDialog(true); }}>
-                <DialogContent className="max-w-lg">
-                    <DialogHeader>
-                        <DialogTitle>{editingMID ? 'Edit MID' : 'Add Merchant MID'}</DialogTitle>
-                        <DialogDescription>Map a MID to a merchant, provider, and terminal type</DialogDescription>
-                    </DialogHeader>
-                    <div className="space-y-4 py-4">
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                               <Label>Merchant *</Label>
-                               <Select value={formData.merchant_id || ""} onValueChange={handleMerchantChange}>
-                                   <SelectTrigger>
-                                       <SelectValue placeholder="Select merchant" />
-                                   </SelectTrigger>
-                                   <SelectContent>
-                                       {merchants.map(m => <SelectItem key={m.id} value={m.id}>{m.business_name}</SelectItem>)}
-                                   </SelectContent>
-                               </Select>
+                {/* Add/Edit Dialog */}
+                <Dialog open={showDialog} onOpenChange={(open) => { if (!open) resetForm(); else setShowDialog(true); }}>
+                    <DialogContent className="max-w-lg">
+                        <DialogHeader>
+                            <DialogTitle>{editingMID ? 'Edit MID' : 'Add Merchant MID'}</DialogTitle>
+                            <DialogDescription>Map a MID to a merchant, provider, and terminal type</DialogDescription>
+                        </DialogHeader>
+                        <div className="space-y-4 py-4">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                   <Label>Merchant *</Label>
+                                   <Select value={formData.merchant_id || ""} onValueChange={handleMerchantChange}>
+                                       <SelectTrigger>
+                                           <SelectValue placeholder="Select merchant" />
+                                       </SelectTrigger>
+                                       <SelectContent>
+                                           {merchants.map(m => <SelectItem key={m.id} value={m.id}>{m.business_name}</SelectItem>)}
+                                       </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>MID *</Label>
+                                    <div className="flex gap-2">
+                                        <Input value={formData.mid} onChange={(e) => setFormData({...formData, mid: e.target.value})} placeholder="e.g., 1234567890" />
+                                        <Button 
+                                           type="button"
+                                           variant="outline" 
+                                           size="icon"
+                                           onClick={suggestMID}
+                                           disabled={!formData.provider_name || !formData.account_type || isSuggestingMID}
+                                           title="Auto-suggest MID"
+                                        >
+                                           {isSuggestingMID ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+                                        </Button>
+                                        </div>
+                                        {formData.provider_name && formData.account_type && (
+                                        <p className="text-xs text-slate-500">Click sparkle icon to auto-generate available MID</p>
+                                        )}
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                   <Label>Provider *</Label>
+                                   <Select value={formData.provider_name || ""} onValueChange={handleProviderChange}>
+                                      <SelectTrigger>
+                                          <SelectValue placeholder="Select provider" />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                          {providers.map(p => <SelectItem key={p.name} value={p.name}>{p.name}</SelectItem>)}
+                                      </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Account Type *</Label>
+                                    <Select value={formData.account_type} onValueChange={(val) => setFormData({...formData, account_type: val})}>
+                                        <SelectTrigger><SelectValue /></SelectTrigger>
+                                        <SelectContent>
+                                            {Object.entries(accountTypeLabels).map(([key, label]) => (
+                                                <SelectItem key={key} value={key}>{label}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
                             </div>
                             <div className="space-y-2">
-                                <Label>MID *</Label>
-                                <div className="flex gap-2">
-                                    <Input value={formData.mid} onChange={(e) => setFormData({...formData, mid: e.target.value})} placeholder="e.g., 1234567890" />
-                                    <Button 
-                                       type="button"
-                                       variant="outline" 
-                                       size="icon"
-                                       onClick={suggestMID}
-                                       disabled={!formData.provider_name || !formData.account_type || isSuggestingMID}
-                                       title="Auto-suggest MID"
-                                    >
-                                       {isSuggestingMID ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-                                    </Button>
-                                    </div>
-                                    {formData.provider_name && formData.account_type && (
-                                    <p className="text-xs text-slate-500">Click sparkle icon to auto-generate available MID</p>
-                                    )}
+                               <Label>Transaction Types</Label>
+                               <p className="text-xs text-slate-500 mb-2">
+                                   Select all transaction types this MID can process. Flexible configuration allows mixing payment types.
+                               </p>
+                               <div className="grid grid-cols-2 gap-2 p-3 border rounded-md">
+                                   {Object.entries(transactionTypeLabels).map(([key, label]) => (
+                                       <div key={key} className="flex items-center space-x-2">
+                                           <Checkbox 
+                                               id={key} 
+                                               checked={(formData.transaction_types || []).includes(key)}
+                                               onCheckedChange={() => toggleTransactionType(key)}
+                                           />
+                                           <label htmlFor={key} className="text-sm cursor-pointer">{label}</label>
+                                       </div>
+                                   ))}
+                               </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label>Currency</Label>
+                                    <Select value={formData.currency} onValueChange={(val) => setFormData({...formData, currency: val})}>
+                                        <SelectTrigger><SelectValue /></SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="USD">USD - US Dollar</SelectItem>
+                                            <SelectItem value="EUR">EUR - Euro</SelectItem>
+                                            <SelectItem value="GBP">GBP - British Pound</SelectItem>
+                                            <SelectItem value="SGD">SGD - Singapore Dollar</SelectItem>
+                                            <SelectItem value="BTC">BTC - Bitcoin</SelectItem>
+                                            <SelectItem value="ETH">ETH - Ethereum</SelectItem>
+                                            <SelectItem value="USDT">USDT - Tether</SelectItem>
+                                            <SelectItem value="USDC">USDC - USD Coin</SelectItem>
+                                            <SelectItem value="BNB">BNB - Binance Coin</SelectItem>
+                                            <SelectItem value="XRP">XRP - Ripple</SelectItem>
+                                            <SelectItem value="SOL">SOL - Solana</SelectItem>
+                                            <SelectItem value="ADA">ADA - Cardano</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Status</Label>
+                                    <Select value={formData.status} onValueChange={(val) => setFormData({...formData, status: val})}>
+                                        <SelectTrigger><SelectValue /></SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="active">Active</SelectItem>
+                                            <SelectItem value="pending">Pending</SelectItem>
+                                            <SelectItem value="inactive">Inactive</SelectItem>
+                                            <SelectItem value="suspended">Suspended</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Notes</Label>
+                                <Input value={formData.notes} onChange={(e) => setFormData({...formData, notes: e.target.value})} placeholder="Additional notes..." />
                             </div>
                         </div>
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                               <Label>Provider *</Label>
-                               <Select value={formData.provider_name || ""} onValueChange={handleProviderChange}>
-                                  <SelectTrigger>
-                                      <SelectValue placeholder="Select provider" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                      {providers.map(p => <SelectItem key={p.name} value={p.name}>{p.name}</SelectItem>)}
-                                  </SelectContent>
-                               </Select>
-                            </div>
-                            <div className="space-y-2">
-                                <Label>Account Type *</Label>
-                                <Select value={formData.account_type} onValueChange={(val) => setFormData({...formData, account_type: val})}>
-                                    <SelectTrigger><SelectValue /></SelectTrigger>
-                                    <SelectContent>
-                                        {Object.entries(accountTypeLabels).map(([key, label]) => (
-                                            <SelectItem key={key} value={key}>{label}</SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                        </div>
-                        <div className="space-y-2">
-                           <Label>Transaction Types</Label>
-                           <p className="text-xs text-slate-500 mb-2">
-                               Select all transaction types this MID can process. Flexible configuration allows mixing payment types.
-                           </p>
-                           <div className="grid grid-cols-2 gap-2 p-3 border rounded-md">
-                               {Object.entries(transactionTypeLabels).map(([key, label]) => (
-                                   <div key={key} className="flex items-center space-x-2">
-                                       <Checkbox 
-                                           id={key} 
-                                           checked={(formData.transaction_types || []).includes(key)}
-                                           onCheckedChange={() => toggleTransactionType(key)}
-                                       />
-                                       <label htmlFor={key} className="text-sm cursor-pointer">{label}</label>
-                                   </div>
-                               ))}
-                           </div>
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <Label>Currency</Label>
-                                <Select value={formData.currency} onValueChange={(val) => setFormData({...formData, currency: val})}>
-                                    <SelectTrigger><SelectValue /></SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="USD">USD - US Dollar</SelectItem>
-                                        <SelectItem value="EUR">EUR - Euro</SelectItem>
-                                        <SelectItem value="GBP">GBP - British Pound</SelectItem>
-                                        <SelectItem value="SGD">SGD - Singapore Dollar</SelectItem>
-                                        <SelectItem value="BTC">BTC - Bitcoin</SelectItem>
-                                        <SelectItem value="ETH">ETH - Ethereum</SelectItem>
-                                        <SelectItem value="USDT">USDT - Tether</SelectItem>
-                                        <SelectItem value="USDC">USDC - USD Coin</SelectItem>
-                                        <SelectItem value="BNB">BNB - Binance Coin</SelectItem>
-                                        <SelectItem value="XRP">XRP - Ripple</SelectItem>
-                                        <SelectItem value="SOL">SOL - Solana</SelectItem>
-                                        <SelectItem value="ADA">ADA - Cardano</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            <div className="space-y-2">
-                                <Label>Status</Label>
-                                <Select value={formData.status} onValueChange={(val) => setFormData({...formData, status: val})}>
-                                    <SelectTrigger><SelectValue /></SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="active">Active</SelectItem>
-                                        <SelectItem value="pending">Pending</SelectItem>
-                                        <SelectItem value="inactive">Inactive</SelectItem>
-                                        <SelectItem value="suspended">Suspended</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                        </div>
-                        <div className="space-y-2">
-                            <Label>Notes</Label>
-                            <Input value={formData.notes} onChange={(e) => setFormData({...formData, notes: e.target.value})} placeholder="Additional notes..." />
-                        </div>
-                    </div>
-                    <DialogFooter>
-                        <Button variant="outline" onClick={resetForm} disabled={createMutation.isPending || updateMutation.isPending}>Cancel</Button>
-                        <Button 
-                            onClick={() => {
-                                console.log('Button clicked! Current formData:', formData);
-                                console.log('Button disabled?', !formData.merchant_id || !formData.mid || !formData.provider_id);
-                                handleSubmit();
-                            }}
-                        >
-                            {(createMutation.isPending || updateMutation.isPending) ? (
-                                <>
-                                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                                    {editingMID ? 'Updating...' : 'Creating...'}
-                                </>
-                            ) : (
-                                editingMID ? 'Update MID' : 'Create MID'
-                            )}
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
-        </div>
+                        <DialogFooter>
+                            <Button variant="outline" onClick={resetForm} disabled={createMutation.isPending || updateMutation.isPending}>Cancel</Button>
+                            <Button 
+                                onClick={() => {
+                                    console.log('Button clicked! Current formData:', formData);
+                                    console.log('Button disabled?', !formData.merchant_id || !formData.mid || !formData.provider_id);
+                                    handleSubmit();
+                                }}
+                            >
+                                {(createMutation.isPending || updateMutation.isPending) ? (
+                                    <>
+                                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                        {editingMID ? 'Updating...' : 'Creating...'}
+                                    </>
+                                ) : (
+                                    editingMID ? 'Update MID' : 'Create MID'
+                                )}
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
     );
 }

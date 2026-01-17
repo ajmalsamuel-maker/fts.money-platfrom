@@ -7,7 +7,6 @@ import { getStaffSession } from '@/components/auth/useStaffAuth';
 export default function PSPLayout({ children, currentPage }) {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
     
-    // Redirect if session is invalid
     useEffect(() => {
         const session = getStaffSession();
         if (!session) {
@@ -17,12 +16,6 @@ export default function PSPLayout({ children, currentPage }) {
 
     return (
         <div className="min-h-screen bg-slate-50">
-            {!sidebarCollapsed && (
-                <div 
-                    className="fixed inset-0 bg-black/50 z-30 lg:hidden"
-                    onClick={() => setSidebarCollapsed(true)}
-                />
-            )}
             <Sidebar 
                 collapsed={sidebarCollapsed} 
                 currentPage={currentPage}

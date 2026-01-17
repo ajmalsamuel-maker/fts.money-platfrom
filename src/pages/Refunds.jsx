@@ -17,7 +17,7 @@ import { DollarSign, Search, RotateCcw } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function Refunds() {
-    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
     const [searchQuery, setSearchQuery] = useState('');
     const [merchantFilter, setMerchantFilter] = useState('all');
     const [showDialog, setShowDialog] = useState(false);
@@ -93,12 +93,7 @@ export default function Refunds() {
     const successRate = refunds.length > 0 ? ((successfulRefunds / refunds.length) * 100).toFixed(1) : 0;
 
     return (
-        <div className="min-h-screen bg-slate-50">
-                <Sidebar collapsed={sidebarCollapsed} currentPage="Refunds" />
-                <div className={cn("transition-all duration-300", sidebarCollapsed ? "ml-20" : "lg:ml-64 ml-40")}>
-                    <TopHeader onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} collapsed={sidebarCollapsed} />
-
-                    <main className="p-6">
+        <>
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                              <div className="flex items-center gap-3">
                                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">
@@ -221,97 +216,94 @@ export default function Refunds() {
                             </Table>
                         </CardContent>
                     </Card>
-                </main>
-            </div>
-
-            <Dialog open={showDialog} onOpenChange={setShowDialog}>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Process Refund</DialogTitle>
-                    </DialogHeader>
-                    <div className="space-y-4">
-                        <div className="space-y-2">
-                            <Label>Merchant *</Label>
-                            <Select value={formData.merchant_id} onValueChange={(id) => {
-                                const merchant = merchants.find(m => m.id === id);
-                                setFormData({...formData, merchant_id: id, merchant_name: merchant?.business_name || ''});
-                            }}>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Select merchant" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {merchants.map(m => (
-                                        <SelectItem key={m.id} value={m.id}>{m.business_name}</SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div className="space-y-2">
-                            <Label>Transaction ID *</Label>
-                            <Input 
-                                value={formData.transaction_id} 
-                                onChange={(e) => setFormData({...formData, transaction_id: e.target.value})} 
-                                placeholder="txn_..." 
-                            />
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
+                <Dialog open={showDialog} onOpenChange={setShowDialog}>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Process Refund</DialogTitle>
+                        </DialogHeader>
+                        <div className="space-y-4">
                             <div className="space-y-2">
-                                <Label>Refund Amount *</Label>
-                                <Input 
-                                    type="number" 
-                                    step="0.01"
-                                    value={formData.amount} 
-                                    onChange={(e) => setFormData({...formData, amount: e.target.value})} 
-                                    placeholder="100.00" 
-                                />
+                                <Label>Merchant *</Label>
+                                <Select value={formData.merchant_id} onValueChange={(id) => {
+                                    const merchant = merchants.find(m => m.id === id);
+                                    setFormData({...formData, merchant_id: id, merchant_name: merchant?.business_name || ''});
+                                }}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select merchant" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {merchants.map(m => (
+                                            <SelectItem key={m.id} value={m.id}>{m.business_name}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
                             </div>
                             <div className="space-y-2">
-                                <Label>Original Amount</Label>
+                                <Label>Transaction ID *</Label>
                                 <Input 
-                                    type="number" 
-                                    step="0.01"
-                                    value={formData.original_amount} 
-                                    onChange={(e) => setFormData({...formData, original_amount: e.target.value})} 
-                                    placeholder="100.00" 
+                                    value={formData.transaction_id} 
+                                    onChange={(e) => setFormData({...formData, transaction_id: e.target.value})} 
+                                    placeholder="txn_..." 
+                                />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label>Refund Amount *</Label>
+                                    <Input 
+                                        type="number" 
+                                        step="0.01"
+                                        value={formData.amount} 
+                                        onChange={(e) => setFormData({...formData, amount: e.target.value})} 
+                                        placeholder="100.00" 
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Original Amount</Label>
+                                    <Input 
+                                        type="number" 
+                                        step="0.01"
+                                        value={formData.original_amount} 
+                                        onChange={(e) => setFormData({...formData, original_amount: e.target.value})} 
+                                        placeholder="100.00" 
+                                    />
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Reason *</Label>
+                                <Select value={formData.reason} onValueChange={(val) => setFormData({...formData, reason: val})}>
+                                    <SelectTrigger>
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="requested_by_customer">Requested by customer</SelectItem>
+                                        <SelectItem value="duplicate">Duplicate payment</SelectItem>
+                                        <SelectItem value="fraudulent">Fraudulent</SelectItem>
+                                        <SelectItem value="product_not_received">Product not received</SelectItem>
+                                        <SelectItem value="product_defective">Product defective</SelectItem>
+                                        <SelectItem value="other">Other</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Notes</Label>
+                                <Textarea 
+                                    value={formData.notes} 
+                                    onChange={(e) => setFormData({...formData, notes: e.target.value})} 
+                                    placeholder="Optional notes..."
                                 />
                             </div>
                         </div>
-                        <div className="space-y-2">
-                            <Label>Reason *</Label>
-                            <Select value={formData.reason} onValueChange={(val) => setFormData({...formData, reason: val})}>
-                                <SelectTrigger>
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="requested_by_customer">Requested by customer</SelectItem>
-                                    <SelectItem value="duplicate">Duplicate payment</SelectItem>
-                                    <SelectItem value="fraudulent">Fraudulent</SelectItem>
-                                    <SelectItem value="product_not_received">Product not received</SelectItem>
-                                    <SelectItem value="product_defective">Product defective</SelectItem>
-                                    <SelectItem value="other">Other</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div className="space-y-2">
-                            <Label>Notes</Label>
-                            <Textarea 
-                                value={formData.notes} 
-                                onChange={(e) => setFormData({...formData, notes: e.target.value})} 
-                                placeholder="Optional notes..."
-                            />
-                        </div>
-                    </div>
-                    <DialogFooter>
-                        <Button variant="outline" onClick={() => setShowDialog(false)}>Cancel</Button>
-                        <Button 
-                            onClick={handleSubmit} 
-                            disabled={!formData.merchant_id || !formData.transaction_id || !formData.amount}
-                        >
-                            Process Refund
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
-        </div>
+                        <DialogFooter>
+                            <Button variant="outline" onClick={() => setShowDialog(false)}>Cancel</Button>
+                            <Button 
+                                onClick={handleSubmit} 
+                                disabled={!formData.merchant_id || !formData.transaction_id || !formData.amount}
+                            >
+                                Process Refund
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
+                </>
     );
 }

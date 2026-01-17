@@ -103,7 +103,7 @@ const ruleTypeConfig = {
 const defaultRules = [];
 
 export default function PaymentOrchestration() {
-    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
     const [activeTab, setActiveTab] = useState('rules');
     const [showRuleDialog, setShowRuleDialog] = useState(false);
     const [editingRule, setEditingRule] = useState(null);
@@ -196,13 +196,6 @@ export default function PaymentOrchestration() {
     const cascadeRulesCount = allRules.filter(r => r.rule_type === 'cascading').length;
 
     return (
-        <div className="min-h-screen bg-slate-50">
-            <Sidebar collapsed={sidebarCollapsed} currentPage="PaymentOrchestration" />
-            
-            <div className={cn("transition-all duration-300", sidebarCollapsed ? "ml-20" : "lg:ml-64 ml-40")}>
-                <TopHeader onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} />
-                
-                <main className="p-6">
                     {/* Header */}
                     <div className="flex items-center justify-between mb-6">
                         <div>
@@ -902,8 +895,6 @@ export default function PaymentOrchestration() {
                             </DialogFooter>
                         </DialogContent>
                     </Dialog>
-                </main>
-            </div>
-        </div>
+
     );
 }

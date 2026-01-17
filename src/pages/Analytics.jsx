@@ -54,7 +54,7 @@ import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function Analytics() {
     const { t } = useI18n();
-    const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
+
     const [period, setPeriod] = useState('30d');
     const [merchantFilter, setMerchantFilter] = useState('all');
 
@@ -127,20 +127,6 @@ export default function Analytics() {
         : 0;
 
     return (
-        <div className="min-h-screen bg-slate-50">
-            {!sidebarCollapsed && (
-                <div 
-                    className="fixed inset-0 bg-black/50 z-30 lg:hidden"
-                    onClick={() => setSidebarCollapsed(true)}
-                />
-            )}
-            
-            <Sidebar collapsed={sidebarCollapsed} currentPage="Analytics" />
-            
-            <div className={cn("transition-all duration-300", sidebarCollapsed ? "ml-20" : "lg:ml-64 ml-40")}>
-                <TopHeader onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} collapsed={sidebarCollapsed} />
-
-                <main className="p-6">
                     {/* Header */}
                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                          <div>
@@ -384,8 +370,6 @@ export default function Analytics() {
                             </div>
                         </CardContent>
                     </Card>
-                </main>
-            </div>
-        </div>
+
     );
 }

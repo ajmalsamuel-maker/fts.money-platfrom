@@ -80,7 +80,7 @@ const typeConfig = {
 
 export default function Transactions() {
     const { t } = useI18n();
-    const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
+
     const [searchQuery, setSearchQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
     const [typeFilter, setTypeFilter] = useState('all');
@@ -199,26 +199,6 @@ export default function Transactions() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50">
-            {!sidebarCollapsed && (
-                <div 
-                    className="fixed inset-0 bg-black/50 z-30 lg:hidden"
-                    onClick={() => setSidebarCollapsed(true)}
-                />
-            )}
-            
-            <Sidebar 
-                collapsed={sidebarCollapsed} 
-                currentPage="Transactions"
-            />
-            
-            <div className={cn("transition-all duration-300", sidebarCollapsed ? "ml-20" : "lg:ml-64 ml-40")}>
-               <TopHeader 
-                   onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
-                   collapsed={sidebarCollapsed}
-               />
-
-               <main className="p-6">
                     {/* Page Header */}
                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                          <div>
@@ -379,9 +359,6 @@ export default function Transactions() {
                             </div>
                         </CardContent>
                     </Card>
-                </main>
-            </div>
-
             {/* View Details Dialog */}
             {selectedTransaction && (
                 <TransactionDetailsDialog
@@ -460,6 +437,5 @@ export default function Transactions() {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
-        </div>
     );
 }

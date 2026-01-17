@@ -124,7 +124,7 @@ const stageConfig = {
 };
 
 export default function Disputes() {
-    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
     const [searchQuery, setSearchQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
     const [networkFilter, setNetworkFilter] = useState('all');
@@ -181,13 +181,6 @@ export default function Disputes() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50">
-            <Sidebar collapsed={sidebarCollapsed} currentPage="Disputes" />
-            
-            <div className={cn("transition-all duration-300", sidebarCollapsed ? "ml-20" : "lg:ml-64 ml-40")}>
-                <TopHeader onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} />
-                
-                <main className="p-6">
                     {/* Header */}
                     <div className="flex items-center justify-between mb-6">
                         <div>
@@ -441,8 +434,6 @@ export default function Disputes() {
                             </DialogFooter>
                         </DialogContent>
                     </Dialog>
-                </main>
-            </div>
-        </div>
+
     );
 }

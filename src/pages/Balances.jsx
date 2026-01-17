@@ -23,7 +23,7 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 
 
 export default function Balances() {
-    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
     const [expandedPSPs, setExpandedPSPs] = useState({});
     const [activeView, setActiveView] = useState('psp');
 
@@ -163,8 +163,6 @@ export default function Balances() {
                             </div>
                         </CardContent>
                     </Card>
-                </main>
-            </div>
-        </div>
+
     );
 }

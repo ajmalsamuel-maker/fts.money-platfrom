@@ -21,7 +21,7 @@ import { toast } from 'sonner';
 import { format } from 'date-fns';
 
 export default function PayoutOrchestration() {
-    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
     const [showRouteDialog, setShowRouteDialog] = useState(false);
     const [showScheduleDialog, setShowScheduleDialog] = useState(false);
     const [selectedRoute, setSelectedRoute] = useState(null);
