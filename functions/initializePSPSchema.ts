@@ -183,6 +183,27 @@ Deno.serve(async (req) => {
                 )
             `);
 
+            // Merchant MIDs table
+            await client.query(`
+                CREATE TABLE IF NOT EXISTS merchant_mids (
+                    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                    psp_code VARCHAR(20) NOT NULL,
+                    merchant_id UUID REFERENCES merchants(id),
+                    merchant_name VARCHAR(255),
+                    mid VARCHAR(100) NOT NULL,
+                    provider_id UUID,
+                    provider_name VARCHAR(255),
+                    account_type VARCHAR(50),
+                    transaction_types JSONB,
+                    currency VARCHAR(3) DEFAULT 'USD',
+                    status VARCHAR(20) DEFAULT 'pending',
+                    activation_date DATE,
+                    notes TEXT,
+                    created_date TIMESTAMP DEFAULT NOW(),
+                    updated_date TIMESTAMP DEFAULT NOW()
+                )
+            `);
+
             // Create indexes for performance
             await client.query(`CREATE INDEX IF NOT EXISTS idx_merchants_code ON merchants(merchant_code)`);
             await client.query(`CREATE INDEX IF NOT EXISTS idx_merchants_status ON merchants(status)`);
@@ -190,6 +211,8 @@ Deno.serve(async (req) => {
             await client.query(`CREATE INDEX IF NOT EXISTS idx_transactions_status ON transactions(status)`);
             await client.query(`CREATE INDEX IF NOT EXISTS idx_settlements_merchant ON settlements(merchant_id)`);
             await client.query(`CREATE INDEX IF NOT EXISTS idx_audit_logs_user ON audit_logs(user_email)`);
+            await client.query(`CREATE INDEX IF NOT EXISTS idx_merchant_mids_merchant ON merchant_mids(merchant_id)`);
+            await client.query(`CREATE INDEX IF NOT EXISTS idx_merchant_mids_status ON merchant_mids(status)`);
 
             return Response.json({
                 success: true,
