@@ -371,6 +371,6 @@ export default function Analytics() {
                             </div>
                         </CardContent>
                     </Card>
-
+        </>
     );
 }
