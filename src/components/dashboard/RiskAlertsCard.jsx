@@ -5,47 +5,8 @@ import { Button } from "@/components/ui/button";
 import { AlertTriangle, ShieldAlert, TrendingUp, AlertCircle, RefreshCw } from 'lucide-react';
 import { useI18n } from '@/components/i18n/I18nextProvider';
 
-const mockAlerts = [
-    {
-        id: 1,
-        type: 'high',
-        category: 'Velocity',
-        message: 'Unusual transaction velocity detected',
-        merchant: 'TechCorp Ltd',
-        time: '5 min ago',
-        count: 3
-    },
-    {
-        id: 2,
-        type: 'medium',
-        category: 'Chargeback',
-        message: 'Chargeback rate above threshold',
-        merchant: 'E-Shop Pro',
-        time: '12 min ago',
-        count: 1
-    },
-    {
-        id: 3,
-        type: 'low',
-        category: 'Geographic',
-        message: 'Multiple countries in short time',
-        merchant: 'Global Retail',
-        time: '23 min ago',
-        count: 2
-    },
-    {
-        id: 4,
-        type: 'medium',
-        category: 'Card Testing',
-        message: 'Potential card testing pattern',
-        merchant: 'Fashion Store',
-        time: '45 min ago',
-        count: 1
-    }
-];
-
 export default function RiskAlertsCard() {
-    const [alerts, setAlerts] = useState(mockAlerts);
+    const [alerts, setAlerts] = useState([]);
     const [isRefreshing, setIsRefreshing] = useState(false);
     const { language } = useI18n();
 
@@ -102,54 +63,62 @@ export default function RiskAlertsCard() {
                 </Button>
             </CardHeader>
             <CardContent>
-                <div className="space-y-3">
-                    {alerts.map((alert) => {
-                        const config = severityConfig[alert.type];
-                        const Icon = config.icon;
-                        
-                        return (
-                            <div key={alert.id} className="flex items-start gap-3 p-3 rounded-lg border border-slate-200 hover:border-slate-300 transition-colors">
-                                <div className={`p-2 rounded-lg ${config.bg} mt-0.5`}>
-                                    <Icon className={`h-4 w-4 ${config.color}`} />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <div className="flex items-start justify-between gap-2 mb-1">
-                                        <div className="flex items-center gap-2 flex-wrap">
-                                            <Badge variant="outline" className={`text-xs ${config.badge}`}>
-                                                {alert.category}
-                                            </Badge>
-                                            {alert.count > 1 && (
-                                                <Badge variant="secondary" className="text-xs">
-                                                    {alert.count}x
-                                                </Badge>
-                                            )}
+                {alerts.length > 0 ? (
+                    <>
+                        <div className="space-y-3">
+                            {alerts.map((alert) => {
+                                const config = severityConfig[alert.type];
+                                const Icon = config.icon;
+                                
+                                return (
+                                    <div key={alert.id} className="flex items-start gap-3 p-3 rounded-lg border border-slate-200 hover:border-slate-300 transition-colors">
+                                        <div className={`p-2 rounded-lg ${config.bg} mt-0.5`}>
+                                            <Icon className={`h-4 w-4 ${config.color}`} />
                                         </div>
-                                        <span className="text-xs text-slate-500 whitespace-nowrap">{alert.time}</span>
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex items-start justify-between gap-2 mb-1">
+                                                <div className="flex items-center gap-2 flex-wrap">
+                                                    <Badge variant="outline" className={`text-xs ${config.badge}`}>
+                                                        {alert.category}
+                                                    </Badge>
+                                                    {alert.count > 1 && (
+                                                        <Badge variant="secondary" className="text-xs">
+                                                            {alert.count}x
+                                                        </Badge>
+                                                    )}
+                                                </div>
+                                                <span className="text-xs text-slate-500 whitespace-nowrap">{alert.time}</span>
+                                            </div>
+                                            <p className="text-sm text-slate-900 mb-1">{alert.message}</p>
+                                            <p className="text-xs text-slate-500">{alert.merchant}</p>
+                                        </div>
                                     </div>
-                                    <p className="text-sm text-slate-900 mb-1">{alert.message}</p>
-                                    <p className="text-xs text-slate-500">{alert.merchant}</p>
-                                </div>
-                            </div>
-                        );
-                    })}
-                </div>
+                                );
+                            })}
+                        </div>
 
-                <div className="mt-4 pt-3 border-t border-slate-200">
-                    <div className="flex items-center justify-between text-xs">
-                        <span className="text-slate-500">
-                            {language === 'es' ? '4 alertas activas' :
-                             language === 'fr' ? '4 alertes actives' :
-                             language === 'zh' ? '4个活跃警报' :
-                             '4 active alerts'}
-                        </span>
-                        <Button variant="link" size="sm" className="h-auto p-0 text-xs">
-                            {language === 'es' ? 'Ver todas' :
-                             language === 'fr' ? 'Voir tout' :
-                             language === 'zh' ? '查看全部' :
-                             'View all'}
-                        </Button>
+                        <div className="mt-4 pt-3 border-t border-slate-200">
+                            <div className="flex items-center justify-between text-xs">
+                                <span className="text-slate-500">
+                                    {language === 'es' ? `${alerts.length} alertas activas` :
+                                     language === 'fr' ? `${alerts.length} alertes actives` :
+                                     language === 'zh' ? `${alerts.length}个活跃警报` :
+                                     `${alerts.length} active alerts`}
+                                </span>
+                                <Button variant="link" size="sm" className="h-auto p-0 text-xs">
+                                    {language === 'es' ? 'Ver todas' :
+                                     language === 'fr' ? 'Voir tout' :
+                                     language === 'zh' ? '查看全部' :
+                                     'View all'}
+                                </Button>
+                            </div>
+                        </div>
+                    </>
+                ) : (
+                    <div className="py-8 text-center text-slate-400 text-sm">
+                        No risk alerts - all systems operational
                     </div>
-                </div>
+                )}
             </CardContent>
         </Card>
     );

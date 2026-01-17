@@ -55,21 +55,21 @@ export default function BusinessMetrics({ transactions = [] }) {
         },
         {
             label: 'Avg Settlement Time',
-            value: '1.2 days',
+            value: totalTxns > 0 ? '1.2 days' : '-',
             target: 'T+1',
             status: 'good',
-            progress: 100,
+            progress: totalTxns > 0 ? 100 : 0,
             icon: Clock,
-            description: 'Within SLA'
+            description: totalTxns > 0 ? 'Within SLA' : 'No data'
         }
     ];
 
-    const networkHealth = [
+    const networkHealth = totalTxns > 0 ? [
         { network: 'Visa', status: 'operational', latency: '45ms' },
         { network: 'Mastercard', status: 'operational', latency: '52ms' },
         { network: 'Amex', status: 'operational', latency: '68ms' },
         { network: 'Discover', status: 'degraded', latency: '124ms' },
-    ];
+    ] : [];
 
     return (
         <Card className="p-4 h-full">
@@ -123,23 +123,25 @@ export default function BusinessMetrics({ transactions = [] }) {
                 })}
             </div>
 
-            <div className="border-t pt-3">
-                <h4 className="text-xs font-medium text-slate-700 mb-2">Network Status</h4>
-                <div className="grid grid-cols-2 gap-1.5">
-                    {networkHealth.map((network, idx) => (
-                        <div key={idx} className="flex items-center justify-between p-1.5 bg-slate-50 rounded">
-                            <div className="flex items-center gap-1.5">
-                                <div className={cn(
-                                    "w-1.5 h-1.5 rounded-full",
-                                    network.status === 'operational' ? "bg-emerald-500" : "bg-amber-500"
-                                )} />
-                                <span className="text-xs text-slate-700">{network.network}</span>
+            {networkHealth.length > 0 && (
+                <div className="border-t pt-3">
+                    <h4 className="text-xs font-medium text-slate-700 mb-2">Network Status</h4>
+                    <div className="grid grid-cols-2 gap-1.5">
+                        {networkHealth.map((network, idx) => (
+                            <div key={idx} className="flex items-center justify-between p-1.5 bg-slate-50 rounded">
+                                <div className="flex items-center gap-1.5">
+                                    <div className={cn(
+                                        "w-1.5 h-1.5 rounded-full",
+                                        network.status === 'operational' ? "bg-emerald-500" : "bg-amber-500"
+                                    )} />
+                                    <span className="text-xs text-slate-700">{network.network}</span>
+                                </div>
+                                <span className="text-[10px] text-slate-500">{network.latency}</span>
                             </div>
-                            <span className="text-[10px] text-slate-500">{network.latency}</span>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
-            </div>
+            )}
         </Card>
     );
 }

@@ -277,7 +277,7 @@ export default function Dashboard() {
                             <VolumeChart transactions={transactions} />
                         </div>
                         <div className="md:col-span-1">
-                            <SuccessRateChart />
+                            <SuccessRateChart transactions={transactions} />
                         </div>
                         <div className="md:col-span-1">
                             <BusinessMetrics transactions={transactions} />
