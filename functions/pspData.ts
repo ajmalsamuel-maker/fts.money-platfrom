@@ -170,16 +170,15 @@ Deno.serve(async (req) => {
                     const { midData } = body;
                     const result = await client.query(`
                         INSERT INTO merchant_mids (
-                            merchant_id, merchant_name, mid, provider_id, 
-                            provider_name, account_type, transaction_types, currency, 
+                            merchant_id, merchant_name, mid, provider_name, 
+                            account_type, transaction_types, currency, 
                             status, activation_date, notes
-                        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+                        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
                         RETURNING *
                     `, [
                         midData.merchant_id,
                         midData.merchant_name,
                         midData.mid,
-                        midData.provider_id,
                         midData.provider_name,
                         midData.account_type,
                         JSON.stringify(midData.transaction_types || []),
@@ -201,7 +200,13 @@ Deno.serve(async (req) => {
                     const values = [midId];
                     let paramIndex = 2;
 
-                    for (const [key, value] of Object.entries(updates)) {
+                    // Filter out psp_code and provider_id if present
+                    const filteredUpdates = { ...updates };
+                    delete filteredUpdates.psp_code;
+                    delete filteredUpdates.provider_id;
+                    delete filteredUpdates.id;
+
+                    for (const [key, value] of Object.entries(filteredUpdates)) {
                         if (key === 'transaction_types') {
                             setClauses.push(`${key} = $${paramIndex}`);
                             values.push(JSON.stringify(value));
@@ -210,6 +215,13 @@ Deno.serve(async (req) => {
                             values.push(value);
                         }
                         paramIndex++;
+                    }
+
+                    if (setClauses.length === 0) {
+                        return Response.json({ 
+                            success: true, 
+                            mid: {} 
+                        });
                     }
 
                     setClauses.push('updated_at = NOW()');

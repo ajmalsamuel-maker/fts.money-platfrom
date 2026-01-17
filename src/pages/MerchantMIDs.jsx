@@ -74,7 +74,7 @@ export default function MerchantMIDs() {
     const [userPspCode, setUserPspCode] = useState(null);
     const [formData, setFormData] = useState({
         merchant_id: '', merchant_name: '', mid: '',
-        provider_id: '', provider_name: '', account_type: 'ecommerce',
+        provider_name: '', account_type: 'ecommerce',
         transaction_types: [], currency: 'USD', status: 'pending',
         activation_date: '', notes: ''
     });
@@ -224,7 +224,6 @@ export default function MerchantMIDs() {
             merchant_id: '', 
             merchant_name: '', 
             mid: '',
-            provider_id: '', 
             provider_name: '', 
             account_type: 'ecommerce',
             transaction_types: [], 
@@ -254,7 +253,6 @@ export default function MerchantMIDs() {
             merchant_id: mid.merchant_id || '',
             merchant_name: mid.merchant_name || '',
             mid: mid.mid || '',
-            provider_id: mid.provider_id || '',
             provider_name: mid.provider_name || '',
             account_type: mid.account_type || 'ecommerce',
             transaction_types: transactionTypes,
@@ -278,28 +276,25 @@ export default function MerchantMIDs() {
         setFormData(newFormData);
     };
 
-    const handleProviderChange = (providerId) => {
-        console.log('Provider changed:', providerId);
-        const provider = providers.find(p => p.id === providerId);
+    const handleProviderChange = (providerName) => {
+        console.log('Provider changed:', providerName);
         setFormData(prev => ({
             ...prev,
-            provider_id: providerId,
-            provider_name: provider?.name || ''
+            provider_name: providerName
         }));
     };
 
     const suggestMID = async () => {
-        if (!formData.provider_id || !formData.account_type) return;
+        if (!formData.provider_name || !formData.account_type) return;
         
         setIsSuggestingMID(true);
         try {
-            const provider = providers.find(p => p.id === formData.provider_id);
             const existingMIDs = mids
-                .filter(m => m.provider_id === formData.provider_id && m.account_type === formData.account_type)
+                .filter(m => m.provider_name === formData.provider_name && m.account_type === formData.account_type)
                 .map(m => m.mid);
             
             // Generate smart MID suggestion
-            const providerPrefix = provider?.name?.substring(0, 3).toUpperCase() || 'MID';
+            const providerPrefix = formData.provider_name?.substring(0, 3).toUpperCase() || 'MID';
             const accountPrefix = formData.account_type === 'ecommerce' ? 'EC' : 
                                    formData.account_type === 'virtual_terminal' ? 'VT' :
                                    formData.account_type === 'soft_pos' ? 'SP' :
@@ -333,22 +328,25 @@ export default function MerchantMIDs() {
     const handleSubmit = () => {
         console.log('=== SUBMIT CLICKED ===');
         console.log('Form data:', formData);
-        console.log('Validation - merchant_id:', formData.merchant_id);
-        console.log('Validation - mid:', formData.mid);
-        console.log('Validation - provider_id:', formData.provider_id);
         
         // Validate required fields
-        if (!formData.merchant_id || !formData.mid || !formData.provider_id) {
+        if (!formData.merchant_id || !formData.mid || !formData.provider_name) {
             toast.error('Please fill in all required fields (Merchant, MID, Provider)');
             return;
         }
         
-        // Ensure transaction_types is an array
+        // Clean data for submission - remove provider_id, only use provider_name
         const submitData = {
-            ...formData,
-            transaction_types: Array.isArray(formData.transaction_types) 
-                ? formData.transaction_types 
-                : []
+            merchant_id: formData.merchant_id,
+            merchant_name: formData.merchant_name,
+            mid: formData.mid,
+            provider_name: formData.provider_name,
+            account_type: formData.account_type,
+            transaction_types: Array.isArray(formData.transaction_types) ? formData.transaction_types : [],
+            currency: formData.currency,
+            status: formData.status,
+            activation_date: formData.activation_date,
+            notes: formData.notes
         };
         
         console.log('Submit data:', submitData);
@@ -671,13 +669,13 @@ export default function MerchantMIDs() {
                                        variant="outline" 
                                        size="icon"
                                        onClick={suggestMID}
-                                       disabled={!formData.provider_id || !formData.account_type || isSuggestingMID}
+                                       disabled={!formData.provider_name || !formData.account_type || isSuggestingMID}
                                        title="Auto-suggest MID"
                                     >
                                        {isSuggestingMID ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
                                     </Button>
                                     </div>
-                                    {formData.provider_id && formData.account_type && (
+                                    {formData.provider_name && formData.account_type && (
                                     <p className="text-xs text-slate-500">Click sparkle icon to auto-generate available MID</p>
                                     )}
                             </div>
@@ -685,12 +683,12 @@ export default function MerchantMIDs() {
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
                                <Label>Provider *</Label>
-                               <Select value={formData.provider_id || ""} onValueChange={handleProviderChange}>
+                               <Select value={formData.provider_name || ""} onValueChange={handleProviderChange}>
                                   <SelectTrigger>
                                       <SelectValue placeholder="Select provider" />
                                   </SelectTrigger>
                                   <SelectContent>
-                                      {providers.map(p => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}
+                                      {providers.map(p => <SelectItem key={p.name} value={p.name}>{p.name}</SelectItem>)}
                                   </SelectContent>
                                </Select>
                             </div>
