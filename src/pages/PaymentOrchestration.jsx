@@ -83,14 +83,7 @@ import { validateCurrency, validateCountry } from '@/components/utils/isoValidat
 const countries = getAllCountries();
 const currencies = Object.keys(ISO4217_CURRENCIES).slice(0, 50);
 
-const processors = [
-    { id: 'stripe', name: 'Stripe', type: 'gateway', status: 'active', successRate: 98.5, avgLatency: 245, fee: 2.9, networks: ['visa', 'mastercard', 'amex'] },
-    { id: 'adyen', name: 'Adyen', type: 'psp', status: 'active', successRate: 97.8, avgLatency: 320, fee: 2.5, networks: ['visa', 'mastercard', 'amex', 'discover'] },
-    { id: 'worldpay', name: 'Worldpay', type: 'acquirer', status: 'active', successRate: 96.2, avgLatency: 380, fee: 2.2, networks: ['visa', 'mastercard'] },
-    { id: 'checkout', name: 'Checkout.com', type: 'gateway', status: 'active', successRate: 97.5, avgLatency: 290, fee: 2.7, networks: ['visa', 'mastercard', 'amex'] },
-    { id: 'braintree', name: 'Braintree', type: 'gateway', status: 'degraded', successRate: 94.1, avgLatency: 420, fee: 2.9, networks: ['visa', 'mastercard'] },
-    { id: 'paypal', name: 'PayPal', type: 'psp', status: 'active', successRate: 99.1, avgLatency: 280, fee: 3.4, networks: ['visa', 'mastercard', 'amex'] },
-];
+const processors = [];
 
 const statusConfig = {
     active: { label: 'Active', className: 'bg-emerald-100 text-emerald-700', icon: CheckCircle },
@@ -107,13 +100,7 @@ const ruleTypeConfig = {
     split: { label: 'Traffic Split', icon: Shuffle, color: 'text-emerald-600 bg-emerald-50' },
 };
 
-const defaultRules = [
-    { id: '1', rule_id: 'RULE-001', name: 'High Value Transactions', description: 'Route transactions above $1000 to premium processor', rule_type: 'routing', status: 'active', priority: 10, primary_processor: 'adyen', fallback_processors: ['stripe', 'checkout'], min_amount: 1000, card_networks: ['visa', 'mastercard', 'amex'] },
-    { id: '2', rule_id: 'RULE-002', name: 'EU Traffic Routing', description: 'Route EU transactions to local acquirer', rule_type: 'routing', status: 'active', priority: 20, primary_processor: 'worldpay', fallback_processors: ['adyen'], countries: ['DE', 'FR', 'IT', 'ES', 'NL'], card_networks: ['visa', 'mastercard'] },
-    { id: '3', rule_id: 'RULE-003', name: 'Decline Recovery Cascade', description: 'Retry declined transactions through cascade', rule_type: 'cascading', status: 'active', priority: 30, primary_processor: 'stripe', fallback_processors: ['adyen', 'checkout', 'worldpay'], retry_attempts: 3 },
-    { id: '4', rule_id: 'RULE-004', name: 'Cost Optimization Split', description: 'Split traffic to optimize processing costs', rule_type: 'split', status: 'testing', priority: 40, primary_processor: 'stripe', split_config: { stripe: 40, adyen: 35, worldpay: 25 } },
-    { id: '5', rule_id: 'RULE-005', name: 'AMEX Dedicated Route', description: 'Route all AMEX transactions to specialized processor', rule_type: 'routing', status: 'active', priority: 5, primary_processor: 'paypal', card_networks: ['amex'] },
-];
+const defaultRules = [];
 
 export default function PaymentOrchestration() {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);

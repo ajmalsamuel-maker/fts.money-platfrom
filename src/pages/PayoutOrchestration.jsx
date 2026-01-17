@@ -286,18 +286,8 @@ export default function PayoutOrchestration() {
                                         <CardTitle className="text-lg">Real-Time Balance</CardTitle>
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="space-y-4">
-                                            <div className="p-4 bg-blue-50 rounded-lg">
-                                                <p className="text-sm text-blue-600 mb-1">Available Balance</p>
-                                                <p className="text-3xl font-bold text-blue-900">$125,430.50</p>
-                                            </div>
-                                            <div className="p-4 bg-amber-50 rounded-lg">
-                                                <p className="text-sm text-amber-600 mb-1">Pending Payouts</p>
-                                                <p className="text-3xl font-bold text-amber-900">$12,540.00</p>
-                                            </div>
-                                            <Button className="w-full gap-2">
-                                                <RefreshCw className="h-4 w-4" /> Refresh Balance
-                                            </Button>
+                                        <div className="text-center py-8 text-slate-400">
+                                            Balance monitoring available after payouts are configured
                                         </div>
                                     </CardContent>
                                 </Card>
@@ -307,17 +297,23 @@ export default function PayoutOrchestration() {
                                         <CardTitle className="text-lg">Route Performance</CardTitle>
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="space-y-3">
-                                            {routes.slice(0, 5).map(route => (
-                                                <div key={route.id} className="flex items-center justify-between">
-                                                    <div className="flex items-center gap-2">
-                                                        <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
-                                                        <span className="text-sm">{route.route_name}</span>
+                                        {routes.length === 0 ? (
+                                            <div className="text-center py-8 text-slate-400">
+                                                No routes configured yet
+                                            </div>
+                                        ) : (
+                                            <div className="space-y-3">
+                                                {routes.slice(0, 5).map(route => (
+                                                    <div key={route.id} className="flex items-center justify-between">
+                                                        <div className="flex items-center gap-2">
+                                                            <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
+                                                            <span className="text-sm">{route.route_name}</span>
+                                                        </div>
+                                                        <span className="text-sm font-medium">{route.success_rate || 95}%</span>
                                                     </div>
-                                                    <span className="text-sm font-medium">{route.success_rate || 95}%</span>
-                                                </div>
-                                            ))}
-                                        </div>
+                                                ))}
+                                            </div>
+                                        )}
                                     </CardContent>
                                 </Card>
                             </div>

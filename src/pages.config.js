@@ -116,6 +116,7 @@ import FTSBlockchainIntegration from './pages/FTSBlockchainIntegration';
 import FTSClients from './pages/FTSClients';
 import FTSCompliance from './pages/FTSCompliance';
 import FTSComplianceTesting from './pages/FTSComplianceTesting';
+import FTSConnectorManagement from './pages/FTSConnectorManagement';
 import FTSDocumentation from './pages/FTSDocumentation';
 import FTSDomainManagement from './pages/FTSDomainManagement';
 import FTSFeeTemplates from './pages/FTSFeeTemplates';
@@ -396,7 +397,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import FTSConnectorManagement from './pages/FTSConnectorManagement';
 import __Layout from './Layout.jsx';
 
 
@@ -519,6 +519,7 @@ export const PAGES = {
     "FTSClients": FTSClients,
     "FTSCompliance": FTSCompliance,
     "FTSComplianceTesting": FTSComplianceTesting,
+    "FTSConnectorManagement": FTSConnectorManagement,
     "FTSDocumentation": FTSDocumentation,
     "FTSDomainManagement": FTSDomainManagement,
     "FTSFeeTemplates": FTSFeeTemplates,
@@ -799,7 +800,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "FTSConnectorManagement": FTSConnectorManagement,
 }
 
 export const pagesConfig = {

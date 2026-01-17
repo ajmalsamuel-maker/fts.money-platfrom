@@ -121,7 +121,7 @@ const defaultMenuItems = [
             { icon: Brain, label: 'aiSmartRouting', path: 'SmartOrchestration', permission: 'VIEW_ROUTING' },
             { icon: Zap, label: 'routingRules', path: 'PaymentOrchestration', permission: 'VIEW_ORCHESTRATION' },
             { icon: ArrowUpDown, label: 'midRouting', path: 'MIDRouting', permission: 'VIEW_BALANCES' },
-            { icon: Landmark, label: 'bankMIDs', path: 'BankMIDs', permission: 'VIEW_BALANCES' },
+            { icon: Landmark, label: 'bankMIDs', path: 'BankMIDs', permission: 'VIEW_BALANCES', premiumFeature: 'allow_direct_acquirer_connection' },
         ]
     },
     {
