@@ -30,7 +30,7 @@ import { cn } from "@/lib/utils";
 
 export default function PSPMerchantPricing() {
     const queryClient = useQueryClient();
-
+    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const [activeTab, setActiveTab] = useState('rules');
     const [showDialog, setShowDialog] = useState(false);
     const [dialogType, setDialogType] = useState('');
@@ -300,11 +300,24 @@ export default function PSPMerchantPricing() {
     if (!isReady) return null;
 
     return (
-        <>
-            <div className="mb-6">
-                <h2 className="text-2xl font-bold text-slate-900">Merchant Pricing Engine</h2>
-                <p className="text-sm text-slate-600">Set pricing rules for your merchants</p>
-            </div>
+        <div className="min-h-screen bg-slate-50">
+            <Sidebar 
+                collapsed={sidebarCollapsed} 
+                onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
+                currentPage="PSPMerchantPricing"
+            />
+            
+            <div className={cn("transition-all duration-300", sidebarCollapsed ? "ml-20" : "lg:ml-64 ml-40")}>
+                <TopHeader 
+                    onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
+                    collapsed={sidebarCollapsed}
+                />
+
+                <main className="p-6 lg:p-6">
+                    <div className="mb-6">
+                        <h2 className="text-2xl font-bold text-slate-900">Merchant Pricing Engine</h2>
+                        <p className="text-sm text-slate-600">Set pricing rules for your merchants</p>
+                    </div>
 
                     {/* Stats */}
                     <div className="grid grid-cols-4 gap-4 mb-6">
@@ -638,6 +651,9 @@ export default function PSPMerchantPricing() {
                             </Card>
                         </TabsContent>
                     </Tabs>
+                </main>
+            </div>
+
             {/* Dialog for creating/editing pricing rules */}
             <Dialog open={showDialog && dialogType === 'rule'} onOpenChange={setShowDialog}>
                 <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -1051,6 +1067,6 @@ export default function PSPMerchantPricing() {
                     </div>
                 </DialogContent>
             </Dialog>
-        </>
+        </div>
     );
 }

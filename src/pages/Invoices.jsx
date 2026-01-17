@@ -26,7 +26,7 @@ import {
 import { FileText, Download, Search, Filter, Calendar, DollarSign } from 'lucide-react';
 
 export default function Invoices() {
-
+    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
     const [merchantFilter, setMerchantFilter] = useState('all');

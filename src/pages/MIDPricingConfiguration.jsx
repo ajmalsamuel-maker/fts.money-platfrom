@@ -33,7 +33,7 @@ import { toast } from 'sonner';
 
 export default function MIDPricingConfiguration() {
     const navigate = useNavigate();
-
+    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const [selectedMerchant, setSelectedMerchant] = useState('');
     const [selectedMID, setSelectedMID] = useState('');
     const queryClient = useQueryClient();
@@ -776,6 +776,7 @@ export default function MIDPricingConfiguration() {
                                 </div>
                             </TabsContent>
                         </Tabs>
+                        </>
                     )}
                 </main>
             </div>

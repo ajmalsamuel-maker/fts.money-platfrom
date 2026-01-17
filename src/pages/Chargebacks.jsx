@@ -124,7 +124,7 @@ const monthlyTrendData = [
 ];
 
 export default function Chargebacks() {
-
+    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const [activeTab, setActiveTab] = useState('all');
     const [searchQuery, setSearchQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
@@ -165,24 +165,30 @@ export default function Chargebacks() {
     };
 
     return (
-        <>
-            {/* Header */}
-            <div className="flex items-center justify-between mb-6">
-                <div>
-                    <h1 className="text-2xl font-bold text-slate-900">Chargeback Management</h1>
-                    <p className="text-slate-500">Monitor, respond, and track chargebacks across all networks</p>
-                </div>
-                <div className="flex gap-2">
-                    <Button variant="outline" className="gap-2">
-                        <Download className="h-4 w-4" />
-                        Export
-                    </Button>
-                    <Button className="gap-2 bg-blue-600 hover:bg-blue-700">
-                        <RefreshCw className="h-4 w-4" />
-                        Sync Cases
-                    </Button>
-                </div>
-            </div>
+        <div className="min-h-screen bg-slate-50">
+            <Sidebar collapsed={sidebarCollapsed} currentPage="Chargebacks" />
+            
+            <div className={cn("transition-all duration-300", sidebarCollapsed ? "ml-20" : "lg:ml-64 ml-40")}>
+                <TopHeader onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} />
+                
+                <main className="p-6">
+                    {/* Header */}
+                    <div className="flex items-center justify-between mb-6">
+                        <div>
+                            <h1 className="text-2xl font-bold text-slate-900">Chargeback Management</h1>
+                            <p className="text-slate-500">Monitor, respond, and track chargebacks across all networks</p>
+                        </div>
+                        <div className="flex gap-2">
+                            <Button variant="outline" className="gap-2">
+                                <Download className="h-4 w-4" />
+                                Export
+                            </Button>
+                            <Button className="gap-2 bg-blue-600 hover:bg-blue-700">
+                                <RefreshCw className="h-4 w-4" />
+                                Sync Cases
+                            </Button>
+                        </div>
+                    </div>
 
                     {/* Stats */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 mb-6">
@@ -572,6 +578,8 @@ export default function Chargebacks() {
                             </DialogFooter>
                         </DialogContent>
                     </Dialog>
-        </>
+                </main>
+            </div>
+        </div>
     );
 }

@@ -124,7 +124,7 @@ const stageConfig = {
 };
 
 export default function Disputes() {
-
+    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
     const [networkFilter, setNetworkFilter] = useState('all');
@@ -181,18 +181,24 @@ export default function Disputes() {
     };
 
     return (
-        <>
-            {/* Header */}
-            <div className="flex items-center justify-between mb-6">
-                <div>
-                    <h1 className="text-2xl font-bold text-slate-900">Dispute Management</h1>
-                    <p className="text-slate-500">Handle chargebacks per Visa/Mastercard network rules</p>
-                </div>
-                <Button className="gap-2 bg-blue-600 hover:bg-blue-700">
-                    <Download className="h-4 w-4" />
-                    Export Report
-                </Button>
-            </div>
+        <div className="min-h-screen bg-slate-50">
+            <Sidebar collapsed={sidebarCollapsed} currentPage="Disputes" />
+            
+            <div className={cn("transition-all duration-300", sidebarCollapsed ? "ml-20" : "lg:ml-64 ml-40")}>
+                <TopHeader onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} />
+                
+                <main className="p-6">
+                    {/* Header */}
+                    <div className="flex items-center justify-between mb-6">
+                        <div>
+                            <h1 className="text-2xl font-bold text-slate-900">Dispute Management</h1>
+                            <p className="text-slate-500">Handle chargebacks per Visa/Mastercard network rules</p>
+                        </div>
+                        <Button className="gap-2 bg-blue-600 hover:bg-blue-700">
+                            <Download className="h-4 w-4" />
+                            Export Report
+                        </Button>
+                    </div>
 
                     {/* Stats */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
@@ -435,6 +441,8 @@ export default function Disputes() {
                             </DialogFooter>
                         </DialogContent>
                     </Dialog>
-        </>
+                </main>
+            </div>
+        </div>
     );
 }

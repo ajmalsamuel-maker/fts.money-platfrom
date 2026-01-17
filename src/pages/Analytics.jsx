@@ -54,7 +54,7 @@ import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 
 export default function Analytics() {
     const { t } = useI18n();
-
+    const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
     const [period, setPeriod] = useState('30d');
     const [merchantFilter, setMerchantFilter] = useState('all');
 
@@ -127,37 +127,50 @@ export default function Analytics() {
         : 0;
 
     return (
-        <>
-            {/* Header */}
-             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                 <div>
-                     <h1 className="text-xl sm:text-2xl font-bold text-slate-900">Analytics</h1>
-                     <p className="text-sm sm:text-base text-slate-500">Comprehensive payment insights and trends</p>
-                </div>
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-                     <Select value={merchantFilter} onValueChange={setMerchantFilter}>
-                         <SelectTrigger className="w-full sm:w-48">
-                             <SelectValue placeholder="All Merchants" />
-                         </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="all">All Merchants</SelectItem>
-                            {merchants.map(m => (
-                                <SelectItem key={m.id} value={m.id}>{m.business_name}</SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                    <Tabs value={period} onValueChange={setPeriod}>
-                        <TabsList>
-                            <TabsTrigger value="7d">7D</TabsTrigger>
-                            <TabsTrigger value="30d">30D</TabsTrigger>
-                            <TabsTrigger value="90d">90D</TabsTrigger>
-                        </TabsList>
-                    </Tabs>
-                    <Button variant="outline" size="icon">
-                        <Download className="h-4 w-4" />
-                    </Button>
-                </div>
-            </div>
+        <div className="min-h-screen bg-slate-50">
+            {!sidebarCollapsed && (
+                <div 
+                    className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+                    onClick={() => setSidebarCollapsed(true)}
+                />
+            )}
+            
+            <Sidebar collapsed={sidebarCollapsed} currentPage="Analytics" />
+            
+            <div className={cn("transition-all duration-300", sidebarCollapsed ? "ml-20" : "lg:ml-64 ml-40")}>
+                <TopHeader onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} collapsed={sidebarCollapsed} />
+
+                <main className="p-6">
+                    {/* Header */}
+                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                         <div>
+                             <h1 className="text-xl sm:text-2xl font-bold text-slate-900">Analytics</h1>
+                             <p className="text-sm sm:text-base text-slate-500">Comprehensive payment insights and trends</p>
+                        </div>
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                             <Select value={merchantFilter} onValueChange={setMerchantFilter}>
+                                 <SelectTrigger className="w-full sm:w-48">
+                                     <SelectValue placeholder="All Merchants" />
+                                 </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">All Merchants</SelectItem>
+                                    {merchants.map(m => (
+                                        <SelectItem key={m.id} value={m.id}>{m.business_name}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            <Tabs value={period} onValueChange={setPeriod}>
+                                <TabsList>
+                                    <TabsTrigger value="7d">7D</TabsTrigger>
+                                    <TabsTrigger value="30d">30D</TabsTrigger>
+                                    <TabsTrigger value="90d">90D</TabsTrigger>
+                                </TabsList>
+                            </Tabs>
+                            <Button variant="outline" size="icon">
+                                <Download className="h-4 w-4" />
+                            </Button>
+                        </div>
+                    </div>
 
                     {/* KPI Cards - Row 1 */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
@@ -371,6 +384,8 @@ export default function Analytics() {
                             </div>
                         </CardContent>
                     </Card>
-        </>
+                </main>
+            </div>
+        </div>
     );
 }
