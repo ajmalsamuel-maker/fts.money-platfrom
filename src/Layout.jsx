@@ -3,6 +3,7 @@
  * @version 1.2.0
  */
 import React from 'react';
+import { useLocation } from 'react-router-dom';
 import { I18nextProvider } from '@/components/i18n/I18nextProvider';
 import { AccessibilityProvider } from '@/components/accessibility/AccessibilityProvider';
 import { SkipNavigation } from '@/components/accessibility/AccessibleComponents';
