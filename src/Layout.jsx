@@ -9,7 +9,15 @@ import { SkipNavigation } from '@/components/accessibility/AccessibleComponents'
 import FintechNewsTicker from '@/components/dashboard/FintechNewsTicker';
 import ComplianceFooter from '@/components/compliance/ComplianceFooter';
 
-export default function Layout({ children }) {
+export default function Layout({ children, currentPageName }) {
+    // Auth pages that should not have layout wrapper
+    const authPages = ['PSPLogin', 'MerchantLogin', 'BusinessEInvoiceLogin', 'CryptoGatewayLogin', 'ISOGatewayLogin', 'AssetIssuerLogin', 'InvestorLogin', 'OrchestrationLogin', 'QSAPortalLogin', 'RWAProviderLogin', 'CommunityPortalLogin', 'VirtualTerminalLogin'];
+    
+    // If this is an auth page, render children without layout wrapper
+    if (authPages.includes(currentPageName)) {
+        return children;
+    }
+    
     // Check if this is a custom auth session - bypass Base44 auth
     const staffSession = localStorage.getItem('staff_session');
     const merchantSession = localStorage.getItem('merchantSession');
