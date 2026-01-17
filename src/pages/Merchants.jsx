@@ -292,12 +292,12 @@ export default function Merchants() {
                 
                 <main className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
                     {/* Page Header */}
-                    <div className="flex items-center justify-between mb-6">
-                        <div>
-                            <h1 className="text-2xl font-bold text-slate-900">Merchants</h1>
-                            <p className="text-slate-500">Manage your merchant accounts</p>
-                        </div>
-                        <div className="flex items-center gap-2">
+                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                         <div>
+                             <h1 className="text-xl sm:text-2xl font-bold text-slate-900">Merchants</h1>
+                             <p className="text-sm sm:text-base text-slate-500">Manage your merchant accounts</p>
+                         </div>
+                         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
                             <PermissionGate permission="CREATE_MERCHANTS">
                                 <Button 
                                     variant="outline" 
