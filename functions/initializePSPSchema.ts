@@ -183,20 +183,36 @@ Deno.serve(async (req) => {
                 )
             `);
 
-            // Merchant MIDs table (no psp_code needed - schema isolation)
+            // Drop and recreate merchant_mids table with correct schema
+            await client.query(`DROP TABLE IF EXISTS merchant_mids CASCADE`);
             await client.query(`
-                CREATE TABLE IF NOT EXISTS merchant_mids (
+                CREATE TABLE merchant_mids (
                     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                     merchant_id UUID REFERENCES merchants(id),
                     merchant_name VARCHAR(255),
                     mid VARCHAR(100) NOT NULL,
                     provider_id UUID,
                     provider_name VARCHAR(255),
+                    description TEXT,
                     account_type VARCHAR(50),
                     transaction_types JSONB,
+                    supported_card_brands JSONB,
+                    supported_apms JSONB,
+                    supports_bank_transfer BOOLEAN DEFAULT false,
                     currency VARCHAR(3) DEFAULT 'USD',
+                    mcc_code VARCHAR(10),
+                    daily_limit NUMERIC,
+                    monthly_limit NUMERIC,
+                    per_transaction_limit NUMERIC,
+                    min_transaction_amount NUMERIC,
+                    fee_percentage NUMERIC,
+                    fee_fixed NUMERIC,
+                    risk_level VARCHAR(20) DEFAULT 'medium',
+                    risk_settings JSONB,
                     status VARCHAR(20) DEFAULT 'pending',
                     activation_date DATE,
+                    total_volume NUMERIC DEFAULT 0,
+                    total_transactions INTEGER DEFAULT 0,
                     notes TEXT,
                     created_at TIMESTAMP DEFAULT NOW(),
                     updated_at TIMESTAMP DEFAULT NOW()
