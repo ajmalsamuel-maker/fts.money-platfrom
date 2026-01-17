@@ -10,12 +10,15 @@ import { SkipNavigation } from '@/components/accessibility/AccessibleComponents'
 import FintechNewsTicker from '@/components/dashboard/FintechNewsTicker';
 import ComplianceFooter from '@/components/compliance/ComplianceFooter';
 
-export default function Layout({ children, currentPageName }) {
+export default function Layout({ children }) {
+    const location = useLocation();
+    const pathname = location?.pathname || '';
+    
     // Auth pages that should not have layout wrapper
-    const authPages = ['PSPLogin', 'MerchantLogin', 'BusinessEInvoiceLogin', 'CryptoGatewayLogin', 'ISOGatewayLogin', 'AssetIssuerLogin', 'InvestorLogin', 'OrchestrationLogin', 'QSAPortalLogin', 'RWAProviderLogin', 'CommunityPortalLogin', 'VirtualTerminalLogin'];
+    const authPages = ['/PSPLogin', '/MerchantLogin', '/BusinessEInvoiceLogin', '/CryptoGatewayLogin', '/ISOGatewayLogin', '/AssetIssuerLogin', '/InvestorLogin', '/OrchestrationLogin', '/QSAPortalLogin', '/RWAProviderLogin', '/CommunityPortalLogin', '/VirtualTerminalLogin'];
     
     // If this is an auth page, render children without layout wrapper
-    if (authPages.includes(currentPageName)) {
+    if (authPages.some(page => pathname.includes(page))) {
         return children;
     }
     
