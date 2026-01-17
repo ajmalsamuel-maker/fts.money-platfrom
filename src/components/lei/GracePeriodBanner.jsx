@@ -74,7 +74,7 @@ export default function GracePeriodBanner({ entityType, entityId, onDismiss }) {
                                 year: 'numeric', 
                                 month: 'long', 
                                 day: 'numeric' 
-                            })}</strong>
+                            }) : 'N/A'}</strong>
                         </p>
 
                         {isCritical && (
