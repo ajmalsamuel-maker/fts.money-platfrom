@@ -55,6 +55,14 @@ import {
     BookOpen
 } from 'lucide-react';
 
+// Helper to format camelCase labels to Title Case
+const formatLabel = (label) => {
+    return label
+        .replace(/([A-Z])/g, ' $1')
+        .replace(/^./, str => str.toUpperCase())
+        .trim();
+};
+
 // Map icon strings to actual icon components
 const iconMap = {
     LayoutDashboard, ArrowLeftRight, Store, CreditCard, Wallet, FileText,
@@ -556,7 +564,7 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                                                 }
                                             >
                                                 <item.icon className="h-4 w-4 flex-shrink-0" />
-                                                <span>{t(item.label) || item.label.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()).trim()}</span>
+                                                <span>{formatLabel(item.label)}</span>
                                             </Link>
                                         ) : (
                                             <div
@@ -569,7 +577,7 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                                                 }
                                             >
                                                 <item.icon className="h-4 w-4 flex-shrink-0" />
-                                                <span className="font-semibold">{t(item.label) || item.label.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()).trim()}</span>
+                                                <span className="font-semibold">{formatLabel(item.label)}</span>
                                             </div>
                                         )}
                                         
@@ -591,7 +599,7 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                                                             }
                                                         >
                                                             <subItem.icon className="h-3 w-3 flex-shrink-0" />
-                                                            <span>{t(subItem.label) || subItem.label.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()).trim()}</span>
+                                                            <span>{formatLabel(subItem.label)}</span>
                                                         </Link>
                                                     );
                                                 })}
