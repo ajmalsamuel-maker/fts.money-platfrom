@@ -109,8 +109,7 @@ const defaultMenuItems = [
             { icon: Store, label: 'merchantOnboarding', path: 'MerchantOnboarding', permission: 'VIEW_ONBOARDING' },
             { icon: Globe, label: 'selfServicePortal', path: 'MerchantSelfOnboarding', permission: 'VIEW_ONBOARDING' },
             { icon: CreditCard, label: 'paymentGateways', path: 'PaymentGateways', permission: 'VIEW_SETTINGS' },
-            { icon: Landmark, label: 'acquirersAndBanks', path: 'AcquirerOnboarding', permission: 'VIEW_ONBOARDING' },
-            { icon: Smartphone, label: 'alternativePayments', path: 'APMOnboarding', permission: 'VIEW_ONBOARDING' },
+            { icon: Landmark, label: 'acquirersAndBanks', path: 'AcquirerOnboarding', permission: 'VIEW_ONBOARDING', premiumFeature: 'allow_direct_acquirer_connection' },
             { icon: TrendingUp, label: 'cryptoExchanges', path: 'ExchangeIntegrations', permission: 'VIEW_SETTINGS' },
             { icon: Coins, label: 'blockchainNodes', path: 'BlockchainConnectors', permission: 'VIEW_SETTINGS' },
         ]
@@ -357,9 +356,19 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
         })
         .map(group => ({
             ...group,
-            items: group.items.filter(item => 
-                !item.permission || hasPermission(userRole, item.permission)
-            ).map(item => {
+            items: group.items.filter(item => {
+                // Check permission
+                if (item.permission && !hasPermission(userRole, item.permission)) {
+                    return false;
+                }
+                
+                // Check premium feature flag
+                if (item.premiumFeature && pspRecord) {
+                    return pspRecord[item.premiumFeature] === true;
+                }
+                
+                return true;
+            }).map(item => {
                 const filteredSubmenu = item.submenu ? item.submenu.filter(sub => 
                     !sub.permission || hasPermission(userRole, sub.permission)
                 ) : undefined;
