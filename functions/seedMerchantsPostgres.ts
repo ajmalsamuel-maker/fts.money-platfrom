@@ -67,7 +67,7 @@ Deno.serve(async (req) => {
                     `, [
                         psp_code,
                         merchant.merchant_code || merchant.id,
-                        merchant.business_name,
+                        merchant.business_name || merchant.trading_name || `Merchant ${merchant.merchant_code || merchant.id}`,
                         merchant.status || 'pending',
                         merchant.trading_name || null,
                         merchant.category || null,
