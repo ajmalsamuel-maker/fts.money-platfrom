@@ -125,17 +125,24 @@ export default function Merchants() {
         }
     }, []);
 
-    const { data: merchants = [], isLoading } = useQuery({
+    const { data: merchants = [], isLoading, error } = useQuery({
         queryKey: ['merchants', userPspCode],
         queryFn: async () => {
+            console.log('Fetching merchants for PSP:', userPspCode);
             const response = await base44.functions.invoke('pspData', {
                 action: 'listMerchants',
                 psp_code: userPspCode
             });
+            console.log('Merchant data response:', response.data);
             return response.data.data || [];
         },
         enabled: !!userPspCode
     });
+
+    React.useEffect(() => {
+        if (error) console.error('Query error:', error);
+        console.log('Merchants loaded:', merchants.length);
+    }, [merchants, error]);
 
     const updateStatusMutation = useMutation({
         mutationFn: async ({ merchantId, newStatus, merchant }) => {
