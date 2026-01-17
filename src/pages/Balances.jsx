@@ -69,7 +69,7 @@ export default function Balances() {
     return (
         <div className="min-h-screen bg-slate-50">
             <Sidebar collapsed={sidebarCollapsed} currentPage="Balances" />
-            <div className={cn("transition-all duration-300", sidebarCollapsed ? "ml-16" : "ml-56")}>
+            <div className={cn("transition-all duration-300", sidebarCollapsed ? "ml-20" : "ml-64")}>
                 <TopHeader onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} />
                 <main className="p-6">
                     <div className="flex items-center justify-between mb-6">
