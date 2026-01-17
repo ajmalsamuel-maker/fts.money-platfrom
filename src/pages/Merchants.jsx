@@ -280,13 +280,17 @@ export default function Merchants() {
                 currentPage="Merchants"
             />
             
-            <div className="lg:ml-20">
+            <div className={cn(
+                "transition-all duration-300",
+                "lg:ml-[25.75rem]",
+                sidebarCollapsed && "ml-0"
+            )}>
                 <TopHeader 
                     onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
                     collapsed={sidebarCollapsed}
                 />
                 
-                <main className="p-6">
+                <main className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
                     {/* Page Header */}
                     <div className="flex items-center justify-between mb-6">
                         <div>
