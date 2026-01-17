@@ -90,24 +90,23 @@ Deno.serve(async (req) => {
                         INSERT INTO merchants (
                             psp_code, merchant_code, business_name, trading_name, 
                             contact_email, contact_phone, contact_name, country, 
-                            category, website, currency, status, risk_level, created_by
-                        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+                            category, website, currency, status, risk_level
+                        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
                         RETURNING *
                     `, [
                         psp_code,
                         merchantData.merchant_code,
                         merchantData.business_name,
-                        merchantData.trading_name,
+                        merchantData.trading_name || '',
                         merchantData.contact_email,
-                        merchantData.contact_phone,
-                        merchantData.contact_name,
-                        merchantData.country,
-                        merchantData.category,
-                        merchantData.website,
+                        merchantData.contact_phone || '',
+                        merchantData.contact_name || '',
+                        merchantData.country || '',
+                        merchantData.category || '',
+                        merchantData.website || '',
                         merchantData.currency || 'USD',
                         merchantData.status || 'pending',
-                        merchantData.risk_level || 'medium',
-                        merchantData.created_by
+                        merchantData.risk_level || 'medium'
                     ]);
                     
                     return Response.json({ 
@@ -119,13 +118,26 @@ Deno.serve(async (req) => {
                 case 'updateMerchant': {
                     const { merchantId, updates } = body;
                     const setClauses = [];
-                    const values = [psp_code, merchantId];
-                    let paramIndex = 3;
+                    const values = [merchantId];
+                    let paramIndex = 2;
 
-                    for (const [key, value] of Object.entries(updates)) {
+                    // Filter out unwanted fields
+                    const filteredUpdates = { ...updates };
+                    delete filteredUpdates.id;
+                    delete filteredUpdates.created_date;
+                    delete filteredUpdates.updated_date;
+
+                    for (const [key, value] of Object.entries(filteredUpdates)) {
                         setClauses.push(`${key} = $${paramIndex}`);
                         values.push(value);
                         paramIndex++;
+                    }
+
+                    if (setClauses.length === 0) {
+                        return Response.json({ 
+                            success: true, 
+                            merchant: {} 
+                        });
                     }
 
                     setClauses.push('updated_date = NOW()');
@@ -133,7 +145,7 @@ Deno.serve(async (req) => {
                     const result = await client.query(`
                         UPDATE merchants 
                         SET ${setClauses.join(', ')}
-                        WHERE psp_code = $1 AND id = $2
+                        WHERE id = $1
                         RETURNING *
                     `, values);
                     
