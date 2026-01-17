@@ -183,11 +183,10 @@ Deno.serve(async (req) => {
                 )
             `);
 
-            // Merchant MIDs table
+            // Merchant MIDs table (no psp_code needed - schema isolation)
             await client.query(`
                 CREATE TABLE IF NOT EXISTS merchant_mids (
                     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-                    psp_code VARCHAR(20) NOT NULL,
                     merchant_id UUID REFERENCES merchants(id),
                     merchant_name VARCHAR(255),
                     mid VARCHAR(100) NOT NULL,
