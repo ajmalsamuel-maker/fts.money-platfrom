@@ -165,6 +165,6 @@ export default function Payouts() {
                              </DialogFooter>
                          </DialogContent>
                      </Dialog>
-                 </>
-     );
+        </>
+    );
 }

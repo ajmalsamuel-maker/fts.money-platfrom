@@ -776,8 +776,9 @@ export default function MIDPricingConfiguration() {
                                 </div>
                             </TabsContent>
                         </Tabs>
-                        </>
                     )}
-
+                </main>
+            </div>
+        </div>
     );
 }

@@ -435,6 +435,6 @@ export default function Disputes() {
                             </DialogFooter>
                         </DialogContent>
                     </Dialog>
-
+        </>
     );
 }

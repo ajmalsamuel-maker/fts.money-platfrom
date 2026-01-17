@@ -572,6 +572,6 @@ export default function Chargebacks() {
                             </DialogFooter>
                         </DialogContent>
                     </Dialog>
-
+        </>
     );
 }

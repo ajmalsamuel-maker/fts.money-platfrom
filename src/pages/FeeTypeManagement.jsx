@@ -470,6 +470,8 @@ export default function FeeTypeManagement() {
                             </Table>
                         </CardContent>
                     </Card>
-
-    );
-}
+                    </main>
+                    </div>
+                    </div>
+                    );
+                    }

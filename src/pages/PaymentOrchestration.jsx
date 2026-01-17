@@ -896,6 +896,6 @@ export default function PaymentOrchestration() {
                             </DialogFooter>
                         </DialogContent>
                     </Dialog>
-
+        </>
     );
 }

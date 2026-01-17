@@ -226,6 +226,8 @@ export default function Invoices() {
                             </Table>
                         </CardContent>
                     </Card>
-
+                </main>
+            </div>
+        </div>
     );
 }

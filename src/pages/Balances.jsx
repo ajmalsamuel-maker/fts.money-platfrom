@@ -149,20 +149,22 @@ export default function Balances() {
 
                     {/* PSP & Merchant Breakdown */}
                     <Card>
-                        <CardHeader>
-                            <div className="flex items-center justify-between">
-                                <CardTitle>PSP & Merchant Breakdown</CardTitle>
-                                <Tabs value={activeView} onValueChange={setActiveView}>
-                                    <TabsList><TabsTrigger value="psp">By PSP</TabsTrigger><TabsTrigger value="merchant">By Merchant</TabsTrigger></TabsList>
-                                </Tabs>
-                            </div>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="py-12 text-center text-slate-400">
-                                No balance data - connect PSPs and process transactions to see balances
-                            </div>
-                        </CardContent>
+                       <CardHeader>
+                           <div class="flex items-center justify-between">
+                               <CardTitle>PSP & Merchant Breakdown</CardTitle>
+                               <Tabs value={activeView} onValueChange={setActiveView}>
+                                   <TabsList><TabsTrigger value="psp">By PSP</TabsTrigger><TabsTrigger value="merchant">By Merchant</TabsTrigger></TabsList>
+                               </Tabs>
+                           </div>
+                       </CardHeader>
+                       <CardContent>
+                           <div class="py-12 text-center text-slate-400">
+                               No balance data - connect PSPs and process transactions to see balances
+                           </div>
+                       </CardContent>
                     </Card>
-
-    );
-}
+                    </main>
+                    </div>
+                    </div>
+                    );
+                    }

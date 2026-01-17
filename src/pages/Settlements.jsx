@@ -265,6 +265,8 @@ export default function Settlements() {
                             </div>
                         </CardContent>
                     </Card>
-
+                </main>
+            </div>
+        </div>
     );
 }
