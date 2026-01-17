@@ -105,7 +105,7 @@ export default function Merchants() {
     });
 
     const queryClient = useQueryClient();
-    const { can } = usePermissions();
+    const { hasPermission } = usePermissions();
 
     // Get PSP code from staff session
     React.useEffect(() => {
@@ -571,7 +571,7 @@ export default function Merchants() {
                                                                     <Eye className="h-4 w-4 mr-2" />
                                                                     View Details
                                                                 </DropdownMenuItem>
-                                                                {can('EDIT_MERCHANTS') && (
+                                                                {hasPermission('EDIT_MERCHANTS') && (
                                                                     <>
                                                                         <DropdownMenuItem onClick={() => handleEditMerchant(merchant)}>
                                                                             <Edit className="h-4 w-4 mr-2" />
@@ -591,7 +591,7 @@ export default function Merchants() {
                                                                         )}
                                                                     </>
                                                                 )}
-                                                                {can('DELETE_MERCHANTS') && (
+                                                                {hasPermission('DELETE_MERCHANTS') && (
                                                                     <>
                                                                         <DropdownMenuSeparator />
                                                                         <DropdownMenuItem className="text-red-600">
