@@ -1,6 +1,9 @@
-import postgres from 'npm:postgres@3.4.5';
+import pg from 'npm:pg@8.11.3';
+const { Pool } = pg;
 
-const sql = postgres(Deno.env.get('DATABASE_URL'));
+const pool = new Pool({
+    connectionString: Deno.env.get('DATABASE_URL'),
+});
 
 const mockProviders = [
     { name: 'Stripe', prefix: 'acct_' },
@@ -30,6 +33,8 @@ function generateMID(provider) {
 }
 
 Deno.serve(async (req) => {
+    const client = await pool.connect();
+    
     try {
         const { psp_code, count = 20 } = await req.json();
 
@@ -40,33 +45,33 @@ Deno.serve(async (req) => {
         const schemaName = `psp_${psp_code.toLowerCase().replace(/-/g, '_')}`;
 
         // Check if schema exists
-        const schemaCheck = await sql`
-            SELECT schema_name FROM information_schema.schemata 
-            WHERE schema_name = ${schemaName}
-        `;
+        const schemaCheck = await client.query(
+            `SELECT schema_name FROM information_schema.schemata WHERE schema_name = $1`,
+            [schemaName]
+        );
 
-        if (schemaCheck.length === 0) {
+        if (schemaCheck.rows.length === 0) {
             return Response.json({ 
                 error: `Schema ${schemaName} does not exist` 
             }, { status: 404 });
         }
 
         // Set search path
-        await sql`SET search_path TO ${sql(schemaName)}, public`;
+        await client.query(`SET search_path TO ${schemaName}, public`);
 
         // Get existing merchants
-        const merchants = await sql`
-            SELECT id, business_name FROM merchants 
-            WHERE psp_code = ${psp_code}
-            LIMIT 50
-        `;
+        const merchantsResult = await client.query(
+            `SELECT id, business_name FROM merchants WHERE psp_code = $1 LIMIT 50`,
+            [psp_code]
+        );
 
-        if (merchants.length === 0) {
+        if (merchantsResult.rows.length === 0) {
             return Response.json({ 
                 error: 'No merchants found. Please create merchants first.' 
             }, { status: 404 });
         }
 
+        const merchants = merchantsResult.rows;
         const createdMIDs = [];
         
         for (let i = 0; i < count; i++) {
@@ -78,7 +83,7 @@ Deno.serve(async (req) => {
             const currency = currencies[Math.floor(Math.random() * currencies.length)];
             const status = statuses[Math.floor(Math.random() * statuses.length)];
 
-            const result = await sql`
+            const result = await client.query(`
                 INSERT INTO merchant_mids (
                     psp_code,
                     merchant_id,
@@ -91,23 +96,23 @@ Deno.serve(async (req) => {
                     status,
                     activation_date,
                     notes
-                ) VALUES (
-                    ${psp_code},
-                    ${merchant.id},
-                    ${merchant.business_name},
-                    ${mid},
-                    ${provider.name},
-                    ${accountType},
-                    ${JSON.stringify(txTypes)},
-                    ${currency},
-                    ${status},
-                    ${new Date().toISOString().split('T')[0]},
-                    ${'Auto-generated test MID for ' + provider.name}
-                )
+                ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
                 RETURNING *
-            `;
+            `, [
+                psp_code,
+                merchant.id,
+                merchant.business_name,
+                mid,
+                provider.name,
+                accountType,
+                JSON.stringify(txTypes),
+                currency,
+                status,
+                new Date().toISOString().split('T')[0],
+                'Auto-generated test MID for ' + provider.name
+            ]);
 
-            createdMIDs.push(result[0]);
+            createdMIDs.push(result.rows[0]);
         }
 
         return Response.json({
@@ -121,5 +126,7 @@ Deno.serve(async (req) => {
         return Response.json({ 
             error: error.message 
         }, { status: 500 });
+    } finally {
+        client.release();
     }
 });
