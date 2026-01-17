@@ -35,6 +35,10 @@ Deno.serve(async (req) => {
             const merchants = await base44.asServiceRole.entities.Merchant.filter({ psp_code });
 
             console.log(`Found ${merchants.length} merchants in Base44 for ${psp_code}`);
+            
+            if (merchants.length > 0) {
+                console.log('Sample merchant structure:', JSON.stringify(merchants[0], null, 2));
+            }
 
             let migratedCount = 0;
 
