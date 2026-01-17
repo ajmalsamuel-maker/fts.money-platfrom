@@ -212,7 +212,7 @@ Deno.serve(async (req) => {
                         paramIndex++;
                     }
 
-                    setClauses.push('updated_date = NOW()');
+                    setClauses.push('updated_at = NOW()');
 
                     const result = await client.query(`
                         UPDATE merchant_mids 
