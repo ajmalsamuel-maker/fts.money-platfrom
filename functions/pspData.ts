@@ -169,13 +169,12 @@ Deno.serve(async (req) => {
                     const { midData } = await req.json();
                     const result = await client.query(`
                         INSERT INTO merchant_mids (
-                            psp_code, merchant_id, merchant_name, mid, provider_id, 
+                            merchant_id, merchant_name, mid, provider_id, 
                             provider_name, account_type, transaction_types, currency, 
                             status, activation_date, notes
-                        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+                        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
                         RETURNING *
                     `, [
-                        psp_code,
                         midData.merchant_id,
                         midData.merchant_name,
                         midData.mid,
@@ -198,8 +197,8 @@ Deno.serve(async (req) => {
                 case 'updateMerchantMID': {
                     const { midId, updates } = await req.json();
                     const setClauses = [];
-                    const values = [psp_code, midId];
-                    let paramIndex = 3;
+                    const values = [midId];
+                    let paramIndex = 2;
 
                     for (const [key, value] of Object.entries(updates)) {
                         if (key === 'transaction_types') {
@@ -217,7 +216,7 @@ Deno.serve(async (req) => {
                     const result = await client.query(`
                         UPDATE merchant_mids 
                         SET ${setClauses.join(', ')}
-                        WHERE psp_code = $1 AND id = $2
+                        WHERE id = $1
                         RETURNING *
                     `, values);
                     
@@ -231,8 +230,8 @@ Deno.serve(async (req) => {
                     const { midId } = await req.json();
                     await client.query(`
                         DELETE FROM merchant_mids 
-                        WHERE psp_code = $1 AND id = $2
-                    `, [psp_code, midId]);
+                        WHERE id = $1
+                    `, [midId]);
                     
                     return Response.json({ success: true });
                 }
