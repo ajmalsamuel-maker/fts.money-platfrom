@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import Sidebar from '@/components/dashboard/Sidebar';
-import TopHeader from '@/components/dashboard/TopHeader';
-import { cn } from "@/lib/utils";
+import PSPPageWrapper from '@/components/layout/PSPPageWrapper';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -127,20 +125,7 @@ export default function Analytics() {
         : 0;
 
     return (
-        <div className="min-h-screen bg-slate-50">
-            {!sidebarCollapsed && (
-                <div 
-                    className="fixed inset-0 bg-black/50 z-30 lg:hidden"
-                    onClick={() => setSidebarCollapsed(true)}
-                />
-            )}
-            
-            <Sidebar collapsed={sidebarCollapsed} currentPage="Analytics" />
-            
-            <div className={cn("transition-all duration-300", sidebarCollapsed ? "ml-20" : "lg:ml-64 ml-40")}>
-                <TopHeader onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} collapsed={sidebarCollapsed} />
-
-                <main className="p-6">
+        <PSPPageWrapper currentPage="Analytics">
                     {/* Header */}
                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                          <div>
@@ -384,8 +369,6 @@ export default function Analytics() {
                             </div>
                         </CardContent>
                     </Card>
-                </main>
-            </div>
-        </div>
+        </PSPPageWrapper>
     );
 }

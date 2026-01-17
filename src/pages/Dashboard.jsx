@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import UnifiedCommandPalette from '@/components/system/UnifiedCommandPalette';
-import Sidebar from '@/components/dashboard/Sidebar';
-import TopHeader from '@/components/dashboard/TopHeader';
+import PSPPageWrapper from '@/components/layout/PSPPageWrapper';
 import StatsCards from '@/components/dashboard/StatsCards';
 import TransactionTable from '@/components/dashboard/TransactionTable';
 import VolumeChart from '@/components/dashboard/VolumeChart';
@@ -181,32 +180,12 @@ export default function Dashboard() {
     ];
 
     return (
-        <div className="min-h-screen bg-slate-50">
-            {!sidebarCollapsed && (
-                <div 
-                    className="fixed inset-0 bg-black/50 z-30 lg:hidden"
-                    onClick={() => setSidebarCollapsed(true)}
-                />
-            )}
-            
-            <Sidebar 
-                collapsed={sidebarCollapsed} 
-                onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
-                currentPage="Dashboard"
-            />
+        <PSPPageWrapper currentPage="Dashboard">
             <UnifiedCommandPalette 
                 open={commandPaletteOpen} 
                 onOpenChange={setCommandPaletteOpen}
                 portalType="psp"
             />
-            
-            <div className={cn("transition-all duration-300", sidebarCollapsed ? "ml-16" : "lg:ml-64 ml-40")}>
-                <TopHeader 
-                    onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
-                    collapsed={sidebarCollapsed}
-                />
-                
-                <main className="p-4 sm:p-6 lg:p-6">
                     {/* Page Header */}
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                         <div>
@@ -295,10 +274,8 @@ export default function Dashboard() {
                         <PaymentMethodsChart transactions={transactions} />
                     </div>
 
-                    {/* Help Panel */}
-                    <HelpPanel open={helpOpen} onOpenChange={setHelpOpen} />
-                </main>
-            </div>
-        </div>
+            {/* Help Panel */}
+            <HelpPanel open={helpOpen} onOpenChange={setHelpOpen} />
+        </PSPPageWrapper>
     );
 }
