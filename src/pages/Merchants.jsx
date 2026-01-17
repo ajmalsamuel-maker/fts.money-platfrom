@@ -111,9 +111,16 @@ export default function Merchants() {
     React.useEffect(() => {
         const sessionData = localStorage.getItem('staff_session');
         if (sessionData) {
-            const session = JSON.parse(sessionData);
-            setUserPspCode(session.psp_code);
+            try {
+                const session = JSON.parse(sessionData);
+                console.log('Session found:', session);
+                setUserPspCode(session.psp_code);
+            } catch (error) {
+                console.error('Failed to parse session:', error);
+                window.location.href = '/PSPLogin';
+            }
         } else {
+            console.log('No staff session found, redirecting to login');
             window.location.href = '/PSPLogin';
         }
     }, []);
