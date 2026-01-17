@@ -38,7 +38,7 @@ Deno.serve(async (req) => {
                 case 'listTransactions': {
                     const result = await client.query(`
                         SELECT * FROM transactions 
-                        ORDER BY created_date DESC 
+                        ORDER BY created_at DESC 
                         LIMIT $1
                     `, [limit || 10]);
                     
