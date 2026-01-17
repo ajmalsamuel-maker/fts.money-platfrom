@@ -327,6 +327,7 @@ import PlatformLanguageManagement from './pages/PlatformLanguageManagement';
 import PlatformPricingConfiguration from './pages/PlatformPricingConfiguration';
 import PlatformUserManagement from './pages/PlatformUserManagement';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import ProcessPayment from './pages/ProcessPayment';
 import ProductTemplateLibrary from './pages/ProductTemplateLibrary';
 import Products from './pages/Products';
 import ProjectDAO from './pages/ProjectDAO';
@@ -397,7 +398,7 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import ProcessPayment from './pages/ProcessPayment';
+import MerchantCheckout from './pages/MerchantCheckout';
 import __Layout from './Layout.jsx';
 
 
@@ -731,6 +732,7 @@ export const PAGES = {
     "PlatformPricingConfiguration": PlatformPricingConfiguration,
     "PlatformUserManagement": PlatformUserManagement,
     "PrivacyPolicy": PrivacyPolicy,
+    "ProcessPayment": ProcessPayment,
     "ProductTemplateLibrary": ProductTemplateLibrary,
     "Products": Products,
     "ProjectDAO": ProjectDAO,
@@ -801,7 +803,7 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "ProcessPayment": ProcessPayment,
+    "MerchantCheckout": MerchantCheckout,
 }
 
 export const pagesConfig = {
