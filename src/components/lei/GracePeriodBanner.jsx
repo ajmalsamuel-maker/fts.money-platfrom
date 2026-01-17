@@ -70,7 +70,7 @@ export default function GracePeriodBanner({ entityType, entityId, onDismiss }) {
                         
                         <p className="text-sm mb-2">
                             <strong>Time Remaining:</strong> <span className="font-bold">{daysRemaining} days</span> until{' '}
-                            <strong>{new Date(gracePeriodInfo.grace_period_end).toLocaleDateString('en-US', { 
+                            <strong>{gracePeriodInfo?.grace_period_end ? new Date(gracePeriodInfo.grace_period_end).toLocaleDateString('en-US', { 
                                 year: 'numeric', 
                                 month: 'long', 
                                 day: 'numeric' 
