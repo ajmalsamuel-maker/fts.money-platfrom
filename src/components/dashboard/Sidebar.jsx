@@ -477,7 +477,7 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                                     title={t(group.group)}
                                 >
                                     <GroupIcon className="h-5 w-5" />
-                                    <span className="text-[9px] mt-1 text-center leading-tight">{t(group.group)}</span>
+                                    <span className="text-[9px] mt-1 text-center leading-tight">{formatLabel(group.group)}</span>
                                 </button>
                             );
                         })}
@@ -519,7 +519,7 @@ export default function Sidebar({ collapsed, onToggle, currentPage }) {
                     >
                         <div>
                             <h2 className="font-semibold text-white text-sm">{companyName}</h2>
-                            <p className="text-[10px]" style={{ color: sidebarText }}>{t(activeGroup)}</p>
+                            <p className="text-[10px]" style={{ color: sidebarText }}>{formatLabel(activeGroup)}</p>
                         </div>
                     </div>
 
