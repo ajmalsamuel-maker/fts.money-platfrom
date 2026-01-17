@@ -114,8 +114,8 @@ export default function MerchantDocumentsTab({ merchant }) {
                     </TableHeader>
                     <TableBody>
                         {documents.map((doc, index) => {
-                            const StatusIcon = verificationStatus[doc.status]?.icon || Clock;
-                            const isExpired = doc.expiry_date && new Date(doc.expiry_date) < new Date();
+                            const StatusIcon = verificationStatus[doc?.status]?.icon || Clock;
+                            const isExpired = doc?.expiry_date && new Date(doc.expiry_date) < new Date();
                             
                             return (
                                 <TableRow key={index}>
@@ -147,7 +147,7 @@ export default function MerchantDocumentsTab({ merchant }) {
                                         </Badge>
                                     </TableCell>
                                     <TableCell>
-                                        {doc.expiry_date ? (
+                                        {doc?.expiry_date ? (
                                             <span className={cn(
                                                 "text-sm",
                                                 isExpired ? "text-red-600 font-medium" : "text-slate-600"

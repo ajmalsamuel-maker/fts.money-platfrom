@@ -30,7 +30,7 @@ export default function GracePeriodBanner({ entityType, entityId, onDismiss }) {
                 entity_id: entityId
             });
 
-            if (data.in_grace_period) {
+            if (data?.in_grace_period) {
                 setGracePeriodInfo(data);
             }
         } catch (error) {
@@ -42,7 +42,7 @@ export default function GracePeriodBanner({ entityType, entityId, onDismiss }) {
 
     if (loading || !gracePeriodInfo) return null;
 
-    const daysRemaining = gracePeriodInfo.days_remaining;
+    const daysRemaining = gracePeriodInfo?.days_remaining || 0;
     const isCritical = daysRemaining <= 7;
     const isUrgent = daysRemaining <= 30;
     const entityLabel = ENTITY_TYPE_LABELS[entityType] || 'Account';
