@@ -75,7 +75,7 @@ export default function Payouts() {
                     </div>
 
                     {/* Stats */}
-                    <div className="grid md:grid-cols-4 gap-4 mb-6">
+                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                         <Card className="p-4 bg-gradient-to-br from-blue-500 to-blue-600 text-white">
                             <p className="text-sm opacity-80">Total Payouts</p>
                             <p className="text-3xl font-bold">$0</p>
