@@ -46,35 +46,7 @@ export default function Payouts() {
     const { data: merchants = [] } = useQuery({ queryKey: ['merchants'], queryFn: () => base44.entities.Merchant.list() });
     const { data: processors = [] } = useQuery({ queryKey: ['payment-processors'], queryFn: () => base44.entities.PaymentProcessor.list() });
 
-    // Mock PSP-level payouts with merchant breakdown
-    const pspPayouts = [
-        {
-            psp_id: 'psp_stripe', psp_name: 'Stripe', currency: 'USD',
-            total_amount: 285000, total_pending: 45000, total_completed: 240000,
-            merchants: [
-                { merchant_id: 'm1', name: 'TechCorp Solutions', amount: 95000, status: 'completed', method: 'bank_transfer', date: new Date(Date.now() - 86400000), settlement_terms: 'T+1' },
-                { merchant_id: 'm2', name: 'Global Retail Inc', amount: 78000, status: 'processing', method: 'bank_transfer', date: new Date(), settlement_terms: 'T+2' },
-                { merchant_id: 'm3', name: 'GameZone Entertainment', amount: 112000, status: 'completed', method: 'bank_transfer', date: new Date(Date.now() - 172800000), settlement_terms: 'T+1' },
-            ]
-        },
-        {
-            psp_id: 'psp_adyen', psp_name: 'Adyen', currency: 'USD',
-            total_amount: 198000, total_pending: 32000, total_completed: 166000,
-            merchants: [
-                { merchant_id: 'm1', name: 'TechCorp Solutions', amount: 65000, status: 'completed', method: 'sepa', date: new Date(Date.now() - 86400000), settlement_terms: 'T+1' },
-                { merchant_id: 'm4', name: 'Fashion Forward', amount: 72000, status: 'pending', method: 'bank_transfer', date: new Date(), settlement_terms: 'T+3' },
-                { merchant_id: 'm5', name: 'Digital Services Ltd', amount: 61000, status: 'completed', method: 'bank_transfer', date: new Date(Date.now() - 259200000), settlement_terms: 'T+2' },
-            ]
-        },
-        {
-            psp_id: 'psp_crypto', psp_name: 'CryptoPayments', currency: 'USDT',
-            total_amount: 125000, total_pending: 25000, total_completed: 100000,
-            merchants: [
-                { merchant_id: 'm7', name: 'Crypto Exchange Co', amount: 75000, status: 'completed', method: 'crypto', date: new Date(Date.now() - 3600000), settlement_terms: 'T+0' },
-                { merchant_id: 'm8', name: 'Web3 Services', amount: 50000, status: 'pending', method: 'crypto', date: new Date(), settlement_terms: 'T+0' },
-            ]
-        },
-    ];
+    const pspPayouts = [];
 
     const togglePSP = (pspId) => setExpandedPSPs(prev => ({ ...prev, [pspId]: !prev[pspId] }));
 
@@ -102,20 +74,20 @@ export default function Payouts() {
                     <div className="grid md:grid-cols-4 gap-4 mb-6">
                         <Card className="p-4 bg-gradient-to-br from-blue-500 to-blue-600 text-white">
                             <p className="text-sm opacity-80">Total Payouts</p>
-                            <p className="text-3xl font-bold">${(totalAmount / 1000).toFixed(0)}K</p>
-                            <p className="text-xs opacity-70 mt-1">Across {pspPayouts.length} PSPs</p>
+                            <p className="text-3xl font-bold">$0</p>
+                            <p className="text-xs opacity-70 mt-1">No payouts yet</p>
                         </Card>
                         <Card className="p-4">
                             <p className="text-sm text-slate-500">Pending</p>
-                            <p className="text-2xl font-bold text-amber-600">${(totalPending / 1000).toFixed(0)}K</p>
+                            <p className="text-2xl font-bold text-amber-600">$0</p>
                         </Card>
                         <Card className="p-4">
                             <p className="text-sm text-slate-500">Completed</p>
-                            <p className="text-2xl font-bold text-emerald-600">${(totalCompleted / 1000).toFixed(0)}K</p>
+                            <p className="text-2xl font-bold text-emerald-600">$0</p>
                         </Card>
                         <Card className="p-4">
                             <p className="text-sm text-slate-500">Active PSPs</p>
-                            <p className="text-2xl font-bold">{pspPayouts.length}</p>
+                            <p className="text-2xl font-bold">0</p>
                         </Card>
                     </div>
 
@@ -136,74 +108,10 @@ export default function Payouts() {
                                 </Tabs>
                             </div>
                         </CardHeader>
-                        <CardContent className="p-0">
-                            {activeView === 'psp' ? (
-                                <div className="divide-y">
-                                    {pspPayouts.map((psp) => (
-                                        <Collapsible key={psp.psp_id} open={expandedPSPs[psp.psp_id]} onOpenChange={() => togglePSP(psp.psp_id)}>
-                                            <CollapsibleTrigger className="w-full">
-                                                <div className="flex items-center justify-between p-4 hover:bg-slate-50">
-                                                    <div className="flex items-center gap-3">
-                                                        {expandedPSPs[psp.psp_id] ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-                                                        <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center"><Building2 className="h-5 w-5 text-blue-600" /></div>
-                                                        <div className="text-left">
-                                                            <p className="font-semibold">{psp.psp_name}</p>
-                                                            <p className="text-xs text-slate-500">{psp.merchants.length} merchants · {psp.currency}</p>
-                                                        </div>
-                                                    </div>
-                                                    <div className="flex items-center gap-6 text-right">
-                                                        <div><p className="text-xs text-slate-500">Total</p><p className="font-semibold">{getCurrencySymbol(psp.currency)}{psp.total_amount.toLocaleString()}</p></div>
-                                                        <div><p className="text-xs text-slate-500">Pending</p><p className="font-semibold text-amber-600">{getCurrencySymbol(psp.currency)}{psp.total_pending.toLocaleString()}</p></div>
-                                                        <div><p className="text-xs text-slate-500">Completed</p><p className="font-semibold text-emerald-600">{getCurrencySymbol(psp.currency)}{psp.total_completed.toLocaleString()}</p></div>
-                                                    </div>
-                                                </div>
-                                            </CollapsibleTrigger>
-                                            <CollapsibleContent>
-                                                <div className="bg-slate-50 border-t">
-                                                    <Table>
-                                                        <TableHeader>
-                                                            <TableRow className="bg-slate-100"><TableHead>Merchant</TableHead><TableHead className="text-right">Amount</TableHead><TableHead>Method</TableHead><TableHead>Terms</TableHead><TableHead>Status</TableHead><TableHead>Date</TableHead></TableRow>
-                                                        </TableHeader>
-                                                        <TableBody>
-                                                            {psp.merchants.map((m) => {
-                                                                const StatusIcon = payoutStatuses[m.status]?.icon || Clock;
-                                                                return (
-                                                                    <TableRow key={m.merchant_id}>
-                                                                        <TableCell><div className="flex items-center gap-2"><Store className="h-4 w-4 text-slate-400" /><span className="font-medium">{m.name}</span></div></TableCell>
-                                                                        <TableCell className="text-right font-semibold">{getCurrencySymbol(psp.currency)}{m.amount.toLocaleString()}</TableCell>
-                                                                        <TableCell className="capitalize">{m.method.replace('_', ' ')}</TableCell>
-                                                                        <TableCell><Badge variant="outline">{m.settlement_terms}</Badge></TableCell>
-                                                                        <TableCell><Badge className={cn("gap-1", payoutStatuses[m.status]?.className)}><StatusIcon className={cn("h-3 w-3", m.status === 'processing' && "animate-spin")} />{payoutStatuses[m.status]?.label}</Badge></TableCell>
-                                                                        <TableCell className="text-slate-500">{format(m.date, 'MMM d, HH:mm')}</TableCell>
-                                                                    </TableRow>
-                                                                );
-                                                            })}
-                                                        </TableBody>
-                                                    </Table>
-                                                </div>
-                                            </CollapsibleContent>
-                                        </Collapsible>
-                                    ))}
-                                </div>
-                            ) : (
-                                <Table>
-                                    <TableHeader><TableRow><TableHead>Merchant</TableHead><TableHead>PSPs</TableHead><TableHead className="text-right">Total Amount</TableHead><TableHead>Settlement Terms</TableHead></TableRow></TableHeader>
-                                    <TableBody>
-                                        {[...new Set(pspPayouts.flatMap(p => p.merchants.map(m => m.name)))].map((merchantName) => {
-                                            const merchantData = pspPayouts.flatMap(p => p.merchants.filter(m => m.name === merchantName).map(m => ({ ...m, psp: p.psp_name, currency: p.currency })));
-                                            const terms = [...new Set(merchantData.map(m => m.settlement_terms))];
-                                            return (
-                                                <TableRow key={merchantName}>
-                                                    <TableCell><div className="flex items-center gap-2"><Store className="h-4 w-4 text-slate-400" /><span className="font-medium">{merchantName}</span></div></TableCell>
-                                                    <TableCell><div className="flex gap-1">{merchantData.map(m => <Badge key={m.psp} variant="outline" className="text-xs">{m.psp}</Badge>)}</div></TableCell>
-                                                    <TableCell className="text-right font-semibold">${merchantData.reduce((s, m) => s + m.amount, 0).toLocaleString()}</TableCell>
-                                                    <TableCell><div className="flex gap-1">{terms.map(t => <Badge key={t} variant="secondary" className="text-xs">{t}</Badge>)}</div></TableCell>
-                                                </TableRow>
-                                            );
-                                        })}
-                                    </TableBody>
-                                </Table>
-                            )}
+                        <CardContent>
+                            <div className="py-12 text-center text-slate-400">
+                                No payout data - process transactions and settlements to see payouts
+                            </div>
                         </CardContent>
                     </Card>
 

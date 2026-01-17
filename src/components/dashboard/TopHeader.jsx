@@ -151,17 +151,7 @@ export default function TopHeader({ onToggleSidebar, collapsed }) {
             </div>
 
             <div className="flex items-center gap-1 sm:gap-2">
-                {/* Quick Stats - Hidden on mobile/tablet */}
-                <div className="hidden xl:flex items-center gap-4 mr-4 pr-4 border-r border-slate-200">
-                    <div className="text-right">
-                        <p className="text-xs text-slate-500">Today's Volume</p>
-                        <p className="text-sm font-semibold text-slate-900">$2,458,320</p>
-                    </div>
-                    <div className="text-right">
-                        <p className="text-xs text-slate-500">Success Rate</p>
-                        <p className="text-sm font-semibold text-emerald-600">98.7%</p>
-                    </div>
-                </div>
+
 
                 {/* Help Button - Hidden on mobile */}
                 <Button 
@@ -205,29 +195,15 @@ export default function TopHeader({ onToggleSidebar, collapsed }) {
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon" className="text-slate-600 relative">
                             <Bell className="h-5 w-5" />
-                            <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-80">
-                        <DropdownMenuLabel className="flex justify-between">
+                        <DropdownMenuLabel>
                             Notifications
-                            <Badge variant="secondary">3 new</Badge>
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem className="flex-col items-start py-3">
-                            <p className="font-medium text-sm">High-risk transaction detected</p>
-                            <p className="text-xs text-slate-500">Transaction #TXN-2024-001234 flagged</p>
-                            <p className="text-xs text-slate-400 mt-1">2 minutes ago</p>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem className="flex-col items-start py-3">
-                            <p className="font-medium text-sm">Settlement completed</p>
-                            <p className="text-xs text-slate-500">$125,430 settled to Merchant XYZ</p>
-                            <p className="text-xs text-slate-400 mt-1">1 hour ago</p>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem className="flex-col items-start py-3">
-                            <p className="font-medium text-sm">New merchant onboarded</p>
-                            <p className="text-xs text-slate-500">TechCorp Ltd is now active</p>
-                            <p className="text-xs text-slate-400 mt-1">3 hours ago</p>
+                        <DropdownMenuItem className="py-8 text-center text-slate-400">
+                            No new notifications
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>

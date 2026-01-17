@@ -23,22 +23,14 @@ export default function RealTimeMonitor() {
         refetchInterval: 5000
     });
 
-    useEffect(() => {
-        const now = new Date();
-        const newPoint = {
-            time: now.toLocaleTimeString(),
-            tps: Math.floor(Math.random() * 50) + 20,
-            volume: Math.floor(Math.random() * 10000) + 5000,
-            successRate: Math.floor(Math.random() * 5) + 95
-        };
-        setLiveData(prev => [...prev.slice(-19), newPoint]);
-    }, [transactions]);
+    const approved = transactions.filter(t => t.status === 'approved' || t.status === 'accepted' || t.status === 'settled').length;
+    const successRate = transactions.length > 0 ? ((approved / transactions.length) * 100).toFixed(1) : '0.0';
 
     const stats = {
-        currentTPS: liveData[liveData.length - 1]?.tps || 0,
-        avgSuccessRate: liveData.length > 0 ? (liveData.reduce((acc, d) => acc + d.successRate, 0) / liveData.length).toFixed(1) : 0,
+        currentTPS: 0,
+        avgSuccessRate: successRate,
         totalVolume: transactions.reduce((sum, t) => sum + (t.amount || 0), 0),
-        activeProcessors: 5
+        activeProcessors: 0
     };
 
     return (
@@ -117,15 +109,9 @@ export default function RealTimeMonitor() {
                                 <CardTitle className="text-lg">Transactions Per Second</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <ResponsiveContainer width="100%" height={200}>
-                                    <LineChart data={liveData}>
-                                        <CartesianGrid strokeDasharray="3 3" />
-                                        <XAxis dataKey="time" />
-                                        <YAxis />
-                                        <Tooltip />
-                                        <Line type="monotone" dataKey="tps" stroke="#3b82f6" strokeWidth={2} />
-                                    </LineChart>
-                                </ResponsiveContainer>
+                                <div className="h-52 flex items-center justify-center text-slate-400">
+                                    Real-time TPS monitoring available during active processing
+                                </div>
                             </CardContent>
                         </Card>
 
@@ -134,15 +120,9 @@ export default function RealTimeMonitor() {
                                 <CardTitle className="text-lg">Success Rate</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <ResponsiveContainer width="100%" height={200}>
-                                    <AreaChart data={liveData}>
-                                        <CartesianGrid strokeDasharray="3 3" />
-                                        <XAxis dataKey="time" />
-                                        <YAxis domain={[90, 100]} />
-                                        <Tooltip />
-                                        <Area type="monotone" dataKey="successRate" stroke="#10b981" fill="#10b981" fillOpacity={0.3} />
-                                    </AreaChart>
-                                </ResponsiveContainer>
+                                <div className="h-52 flex items-center justify-center text-slate-400">
+                                    Success rate trend available during active processing
+                                </div>
                             </CardContent>
                         </Card>
                     </div>
