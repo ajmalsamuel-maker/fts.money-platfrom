@@ -25,7 +25,7 @@ export default function PSPPageWrapper({ children, currentPage }) {
     }, []);
 
     return (
-        <div className="min-h-screen bg-slate-50 flex">
+        <div className="min-h-screen bg-slate-50">
             {!sidebarCollapsed && (
                 <div 
                     className="fixed inset-0 bg-black/50 z-30 lg:hidden"
@@ -39,13 +39,17 @@ export default function PSPPageWrapper({ children, currentPage }) {
                 onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
             />
             
-            <div className="flex-1 flex flex-col min-h-screen">
+            <div className={cn(
+                "transition-all duration-300",
+                "lg:ml-64 md:ml-40",
+                sidebarCollapsed ? "ml-0" : "ml-40 lg:ml-64"
+            )}>
                 <TopHeader 
                     onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
                     collapsed={sidebarCollapsed}
                 />
                 
-                <main className="flex-1 p-4 sm:p-6 overflow-auto">
+                <main className="min-h-[calc(100vh-64px)] p-4 sm:p-6">
                     {children}
                 </main>
             </div>
