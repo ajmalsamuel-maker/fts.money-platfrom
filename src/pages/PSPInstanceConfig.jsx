@@ -347,7 +347,18 @@ export default function PSPInstanceConfig() {
             enabled_payout_methods: config.enabled_payout_methods,
             enabled_services: config.enabled_services
         });
-        updateMutation.mutate(config);
+        
+        // Preserve existing PSP data and only update config fields
+        const updateData = {
+            ...config,
+            // Explicitly ensure arrays are preserved
+            enabled_payment_methods: config.enabled_payment_methods || [],
+            enabled_payout_methods: config.enabled_payout_methods || [],
+            enabled_services: config.enabled_services || []
+        };
+        
+        console.log('📤 Final update data:', updateData);
+        updateMutation.mutate(updateData);
     };
 
     if (isLoading) {
