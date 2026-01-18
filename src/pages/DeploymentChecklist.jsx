@@ -3,10 +3,14 @@ import PlatformLayout from '@/components/platform/PlatformLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
 import { CheckCircle2, Circle, AlertCircle, Loader2, Play } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
 export default function DeploymentChecklist() {
+  const [pspList, setPspList] = useState([]);
+  const [selectedPsp, setSelectedPsp] = useState('');
   const [checks, setChecks] = useState([
     { id: 'db', name: 'Database Connection', status: 'pending', message: '' },
     { id: 'schema', name: 'Database Schema', status: 'pending', message: '' },
@@ -17,7 +21,27 @@ export default function DeploymentChecklist() {
   ]);
   const [testing, setTesting] = useState(false);
 
+  useEffect(() => {
+    loadPSPs();
+  }, []);
+
+  const loadPSPs = async () => {
+    try {
+      const psps = await base44.entities.ProvisionedPSP.list();
+      setPspList(psps);
+      if (psps.length > 0) {
+        setSelectedPsp(psps[0].psp_code);
+      }
+    } catch (error) {
+      console.error('Error loading PSPs:', error);
+    }
+  };
+
   const runDeploymentTests = async () => {
+    if (!selectedPsp) {
+      alert('Please select a PSP to test');
+      return;
+    }
     setTesting(true);
     
     // Test Database Connection
@@ -52,7 +76,7 @@ export default function DeploymentChecklist() {
 
   const testDatabase = async () => {
     try {
-      const response = await base44.functions.invoke('testDatabaseConnection', {});
+      const response = await base44.functions.invoke('testDatabaseConnection', { psp_code: selectedPsp });
       if (response.data.success) {
         updateCheck('db', 'success', 'Connected successfully');
       } else {
@@ -65,7 +89,7 @@ export default function DeploymentChecklist() {
 
   const testSchema = async () => {
     try {
-      const response = await base44.functions.invoke('validateDatabaseSchema', {});
+      const response = await base44.functions.invoke('validateDatabaseSchema', { psp_code: selectedPsp });
       if (response.data.valid) {
         updateCheck('schema', 'success', `${response.data.tables?.length || 0} tables validated`);
       } else {
@@ -78,8 +102,8 @@ export default function DeploymentChecklist() {
 
   const testEntities = async () => {
     try {
-      const merchants = await base44.entities.Merchant.list();
-      const transactions = await base44.entities.Transaction.list();
+      const merchants = await base44.entities.Merchant.filter({ psp_code: selectedPsp });
+      const transactions = await base44.entities.Transaction.filter({ psp_code: selectedPsp });
       updateCheck('entities', 'success', `Merchants: ${merchants.length}, Transactions: ${transactions.length}`);
     } catch (error) {
       updateCheck('entities', 'error', error.message);
@@ -101,9 +125,9 @@ export default function DeploymentChecklist() {
 
   const testPSPSettings = async () => {
     try {
-      const settings = await base44.entities.PSPSettings.list();
-      if (settings.length > 0) {
-        updateCheck('psp_settings', 'success', `${settings.length} PSP(s) configured`);
+      const response = await base44.functions.invoke('getPSPSettings', { psp_code: selectedPsp });
+      if (response.data.success && response.data.settings) {
+        updateCheck('psp_settings', 'success', `PSP "${selectedPsp}" configured`);
       } else {
         updateCheck('psp_settings', 'warning', 'No PSP settings found');
       }
@@ -114,7 +138,7 @@ export default function DeploymentChecklist() {
 
   const testConnectors = async () => {
     try {
-      const connectors = await base44.entities.ProcessorConnectorConfig.list();
+      const connectors = await base44.entities.ProcessorConnectorConfig.filter({ psp_code: selectedPsp });
       updateCheck('connectors', 'success', `${connectors.length} connector(s) configured`);
     } catch (error) {
       updateCheck('connectors', 'error', error.message);
@@ -151,9 +175,32 @@ export default function DeploymentChecklist() {
 
         <Card>
           <CardHeader>
+            <CardTitle>Select PSP to Test</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              <Label>PSP Instance</Label>
+              <Select value={selectedPsp} onValueChange={setSelectedPsp}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a PSP" />
+                </SelectTrigger>
+                <SelectContent>
+                  {pspList.map((psp) => (
+                    <SelectItem key={psp.psp_code} value={psp.psp_code}>
+                      {psp.psp_name} ({psp.psp_code})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle>System Health Checks</CardTitle>
-              <Button onClick={runDeploymentTests} disabled={testing}>
+              <Button onClick={runDeploymentTests} disabled={testing || !selectedPsp}>
                 {testing ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
