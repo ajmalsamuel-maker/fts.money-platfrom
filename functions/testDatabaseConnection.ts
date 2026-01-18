@@ -1,6 +1,7 @@
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
+import { Client } from 'https://deno.land/x/postgres@v0.17.0/mod.ts';
 
 Deno.serve(async (req) => {
+    let client;
     try {
         const databaseUrl = Deno.env.get('DATABASE_URL');
         
@@ -11,36 +12,25 @@ Deno.serve(async (req) => {
             });
         }
 
-        // Parse connection string
-        const url = new URL(databaseUrl);
-        const supabaseUrl = `https://${url.hostname}`;
-        const supabaseKey = url.searchParams.get('apikey') || Deno.env.get('SUPABASE_KEY');
-        
-        if (!supabaseKey) {
-            return Response.json({ 
-                success: false, 
-                error: 'Database key not found in connection string' 
-            });
-        }
+        // Create PostgreSQL client
+        client = new Client(databaseUrl);
+        await client.connect();
 
-        // Test connection
-        const supabase = createClient(supabaseUrl, supabaseKey);
-        const { data, error } = await supabase.from('ProvisionedPSP').select('psp_code').limit(1);
+        // Test query
+        const result = await client.queryObject('SELECT COUNT(*) as count FROM "ProvisionedPSP"');
         
-        if (error) {
-            return Response.json({ 
-                success: false, 
-                error: error.message 
-            });
-        }
+        await client.end();
 
         return Response.json({ 
             success: true,
             message: 'Database connection successful',
-            testQuery: 'Queried ProvisionedPSP table'
+            psps: result.rows[0]?.count || 0
         });
 
     } catch (error) {
+        if (client) {
+            try { await client.end(); } catch {}
+        }
         return Response.json({ 
             success: false, 
             error: error.message 

@@ -1,19 +1,15 @@
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
+import { Client } from 'https://deno.land/x/postgres@v0.17.0/mod.ts';
 
 Deno.serve(async (req) => {
+    let client;
     try {
-        const { psp_code } = await req.json();
-        
         const databaseUrl = Deno.env.get('DATABASE_URL');
         if (!databaseUrl) {
             return Response.json({ valid: false, error: 'DATABASE_URL not configured' });
         }
 
-        const url = new URL(databaseUrl);
-        const supabaseUrl = `https://${url.hostname}`;
-        const supabaseKey = url.searchParams.get('apikey') || Deno.env.get('SUPABASE_KEY');
-
-        const supabase = createClient(supabaseUrl, supabaseKey);
+        client = new Client(databaseUrl);
+        await client.connect();
 
         // Check critical tables
         const criticalTables = [
@@ -26,13 +22,15 @@ Deno.serve(async (req) => {
 
         const tableChecks = [];
         for (const table of criticalTables) {
-            const { data, error } = await supabase.from(table).select('*').limit(1);
-            tableChecks.push({
-                table,
-                exists: !error,
-                error: error?.message
-            });
+            try {
+                await client.queryObject(`SELECT 1 FROM "${table}" LIMIT 1`);
+                tableChecks.push({ table, exists: true });
+            } catch (error) {
+                tableChecks.push({ table, exists: false, error: error.message });
+            }
         }
+
+        await client.end();
 
         const allValid = tableChecks.every(check => check.exists);
 
@@ -44,6 +42,9 @@ Deno.serve(async (req) => {
         });
 
     } catch (error) {
+        if (client) {
+            try { await client.end(); } catch {}
+        }
         return Response.json({ 
             valid: false, 
             error: error.message 
