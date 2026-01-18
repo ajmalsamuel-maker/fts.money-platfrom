@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { query, queryOne, execute, closeConnection } from './db/postgresClient.js';
 
 /**
  * Reconciliation Engine
@@ -7,24 +7,25 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
  */
 Deno.serve(async (req) => {
     try {
-        const base44 = createClientFromRequest(req);
         const { batch_id, bank_items } = await req.json();
 
         console.log(`🔍 Reconciliation: Processing batch ${batch_id}`);
 
-        const batch = (await base44.asServiceRole.entities.ReconciliationBatch.filter({
-            batch_id
-        }))?.[0];
+        const batch = await queryOne(
+            `SELECT * FROM reconciliation_batch WHERE batch_id = $1`,
+            [batch_id]
+        );
 
         if (!batch) {
+            await closeConnection();
             return Response.json({ success: false, error: 'Batch not found' }, { status: 404 });
         }
 
         // Get internal transaction records
-        const internalItems = await base44.asServiceRole.entities.ReconciliationItem.filter({
-            reconciliation_batch_id: batch.id,
-            status: 'pending'
-        });
+        const internalItems = await query(
+            `SELECT * FROM reconciliation_item WHERE transaction_id IN (SELECT id FROM transaction WHERE batch_id = $1) AND status = 'pending'`,
+            [batch_id]
+        );
 
         let matched = 0;
         let unmatched = 0;
@@ -67,13 +68,10 @@ Deno.serve(async (req) => {
 
             if (bestMatch && bestScore > 50) {
                 // Good match
-                await base44.asServiceRole.entities.ReconciliationItem.update(bestMatch.id, {
-                    bank_reference: bankItem.reference,
-                    posted_date: bankItem.date,
-                    status: 'matched',
-                    match_type: bestScore > 90 ? 'exact' : 'fuzzy',
-                    confidence_score: Math.min(bestScore / 100, 1)
-                });
+                await execute(
+                    `UPDATE reconciliation_item SET bank_reference = $1, posted_date = $2, status = 'matched', match_type = $3, confidence_score = $4 WHERE id = $5`,
+                    [bankItem.reference, bankItem.date, bestScore > 90 ? 'exact' : 'fuzzy', Math.min(bestScore / 100, 1), bestMatch.id]
+                );
 
                 matched++;
                 console.log(`✓ Matched: ${bankItem.reference} - ${bankItem.amount}`);
@@ -106,12 +104,12 @@ Deno.serve(async (req) => {
         const status = discrepancies.length === 0 ? 'reconciled' : 'discrepancy';
         const totalDiscrepancy = discrepancies.reduce((sum, d) => sum + d.amount, 0);
 
-        await base44.asServiceRole.entities.ReconciliationBatch.update(batch.id, {
-            reconciliation_status: status,
-            discrepancy_amount: totalDiscrepancy,
-            discrepancy_notes: discrepancies.length > 0 ? JSON.stringify(discrepancies) : null
-        });
+        await execute(
+            `UPDATE reconciliation_batch SET reconciliation_status = $1, discrepancy_amount = $2, discrepancy_notes = $3 WHERE id = $4`,
+            [status, totalDiscrepancy, discrepancies.length > 0 ? JSON.stringify(discrepancies) : null, batch.id]
+        );
 
+        await closeConnection();
         console.log(`📊 Reconciliation complete: ${matched} matched, ${unmatched} unmatched, ${discrepancies.length} discrepancies`);
 
         return Response.json({
@@ -125,6 +123,7 @@ Deno.serve(async (req) => {
         });
 
     } catch (error) {
+        await closeConnection();
         console.error('Reconciliation error:', error);
         return Response.json({
             success: false,

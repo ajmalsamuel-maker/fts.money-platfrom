@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { query, queryOne, execute, closeConnection } from './db/postgresClient.js';
 
 /**
  * Settlement Orchestrator
@@ -7,16 +7,15 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
  */
 Deno.serve(async (req) => {
     try {
-        const base44 = createClientFromRequest(req);
         const { psp_code, trigger = 'manual' } = await req.json();
 
         console.log(`🔄 Settlement Orchestrator: Running for ${psp_code} (${trigger})`);
 
         // 1. Get all active merchants for this PSP
-        const merchants = await base44.asServiceRole.entities.Merchant.filter({
-            psp_code,
-            status: 'active'
-        });
+        const merchants = await query(
+            `SELECT * FROM merchant WHERE psp_code = $1 AND status = 'active'`,
+            [psp_code]
+        );
 
         console.log(`📋 Found ${merchants.length} merchants`);
 
@@ -26,18 +25,21 @@ Deno.serve(async (req) => {
         for (const merchant of merchants) {
             try {
                 // Get merchant's settlement config
-                const configRecords = await base44.asServiceRole.entities.MerchantSettlementConfig.filter({
-                    merchant_id: merchant.id,
-                    psp_code
-                });
+                const config = await queryOne(
+                    `SELECT * FROM merchant_settlement_config WHERE merchant_id = $1 AND psp_code = $2`,
+                    [merchant.id, psp_code]
+                );
 
-                const config = configRecords?.[0] || {
+                const settlementConfig = config || {
                     settlement_frequency: merchant.settlement_period || 'T+1',
-                    auto_payout_enabled: true
+                    auto_payout_enabled: true,
+                    hold_period_days: 0,
+                    payout_method: 'bank_transfer',
+                    minimum_settlement_amount: 0
                 };
 
                 // Check if settlement is due
-                const isDue = checkIfSettlementDue(config);
+                const isDue = checkIfSettlementDue(settlementConfig);
 
                 if (!isDue && trigger === 'manual') {
                     console.log(`⏭️ Settlement not due for merchant ${merchant.id}`);
@@ -46,17 +48,19 @@ Deno.serve(async (req) => {
 
                 console.log(`✓ Settlement due for merchant ${merchant.id}`);
 
+                // Get last settlement date
+                const lastBatch = await queryOne(
+                    `SELECT settlement_date FROM reconciliation_batch WHERE merchant_id = $1 AND psp_code = $2 AND reconciliation_status = 'reconciled' ORDER BY created_date DESC LIMIT 1`,
+                    [merchant.id, psp_code]
+                );
+
+                const since = lastBatch?.settlement_date ? new Date(lastBatch.settlement_date) : new Date(0);
+
                 // Get approved transactions since last settlement
-                const lastSettlement = await getLastSettlement(base44, merchant.id, psp_code);
-                const since = lastSettlement?.settlement_date ? new Date(lastSettlement.settlement_date) : new Date(0);
-
-                const transactions = await base44.asServiceRole.entities.Transaction.filter({
-                    merchant_id: merchant.id,
-                    psp_code,
-                    status: 'approved'
-                });
-
-                const unsettled = transactions.filter(t => new Date(t.created_date) > since);
+                const unsettled = await query(
+                    `SELECT * FROM transaction WHERE merchant_id = $1 AND psp_code = $2 AND status = 'approved' AND created_date > $3`,
+                    [merchant.id, psp_code, since.toISOString()]
+                );
 
                 if (unsettled.length === 0) {
                     console.log(`  No new transactions for settlement`);
@@ -72,36 +76,26 @@ Deno.serve(async (req) => {
                 const netAmount = grossAmount - totalFees - chargebacks - refunds;
 
                 // Check minimum amount threshold
-                const minAmount = config.minimum_settlement_amount || 0;
-                if (netAmount < minAmount) {
-                    console.log(`  Net amount ${netAmount} below minimum ${minAmount}`);
+                if (netAmount < settlementConfig.minimum_settlement_amount) {
+                    console.log(`  Net amount ${netAmount} below minimum ${settlementConfig.minimum_settlement_amount}`);
                     continue;
                 }
 
                 // Create settlement batch
-                const batch = await base44.asServiceRole.entities.ReconciliationBatch.create({
-                    psp_code,
-                    merchant_id: merchant.id,
-                    batch_id: `SETTLE-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-                    settlement_period_start: since.toISOString().split('T')[0],
-                    settlement_period_end: new Date().toISOString().split('T')[0],
-                    status: config.hold_period_days > 0 ? 'hold' : 'pending',
-                    gross_amount: grossAmount,
-                    fees: totalFees,
-                    chargebacks,
-                    refunds,
-                    net_amount: netAmount,
-                    currency: merchant.currency || 'USD',
-                    transaction_count: unsettled.length,
-                    hold_period_days: config.hold_period_days || 0,
-                    payout_method: config.payout_method || 'bank_transfer',
-                    reconciliation_status: 'pending'
-                });
+                const batchId = `SETTLE-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+                const periodStart = since.toISOString().split('T')[0];
+                const periodEnd = new Date().toISOString().split('T')[0];
 
-                console.log(`✅ Settlement created: ${batch.batch_id}`);
+                await execute(
+                    `INSERT INTO reconciliation_batch (psp_code, merchant_id, batch_id, settlement_period_start, settlement_period_end, status, gross_amount, fees, chargebacks, refunds, net_amount, currency, transaction_count, hold_period_days, payout_method, reconciliation_status)
+                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)`,
+                    [psp_code, merchant.id, batchId, periodStart, periodEnd, settlementConfig.hold_period_days > 0 ? 'hold' : 'pending', grossAmount, totalFees, chargebacks, refunds, netAmount, merchant.currency || 'USD', unsettled.length, settlementConfig.hold_period_days || 0, settlementConfig.payout_method || 'bank_transfer', 'pending']
+                );
+
+                console.log(`✅ Settlement created: ${batchId}`);
 
                 settlements.push({
-                    batch_id: batch.batch_id,
+                    batch_id: batchId,
                     merchant_id: merchant.id,
                     amount: netAmount,
                     transactions: unsettled.length
@@ -109,16 +103,11 @@ Deno.serve(async (req) => {
 
                 // Create reconciliation items
                 for (const txn of unsettled) {
-                    await base44.asServiceRole.entities.ReconciliationItem.create({
-                        psp_code,
-                        reconciliation_batch_id: batch.id,
-                        transaction_id: txn.id,
-                        amount: txn.amount,
-                        currency: txn.currency,
-                        posted_date: new Date().toISOString().split('T')[0],
-                        status: 'pending',
-                        match_type: 'exact'
-                    });
+                    await execute(
+                        `INSERT INTO reconciliation_item (psp_code, transaction_id, amount, currency, posted_date, status, match_type)
+                         VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+                        [psp_code, txn.id, txn.amount, txn.currency, new Date().toISOString().split('T')[0], 'pending', 'exact']
+                    );
                 }
 
             } catch (merchantError) {
@@ -126,6 +115,7 @@ Deno.serve(async (req) => {
             }
         }
 
+        await closeConnection();
         console.log(`🎉 Settlement orchestration complete: ${settlements.length} batches created`);
 
         return Response.json({
@@ -136,6 +126,7 @@ Deno.serve(async (req) => {
         });
 
     } catch (error) {
+        await closeConnection();
         console.error('Orchestration error:', error);
         return Response.json({
             success: false,
@@ -149,14 +140,4 @@ function checkIfSettlementDue(config) {
     const now = new Date();
     const hour = now.getHours();
     return hour === 0; // Due at midnight
-}
-
-async function getLastSettlement(base44, merchantId, pspCode) {
-    const batches = await base44.asServiceRole.entities.ReconciliationBatch.filter({
-        merchant_id: merchantId,
-        psp_code: pspCode,
-        status: 'completed'
-    });
-
-    return batches?.[0];
 }
