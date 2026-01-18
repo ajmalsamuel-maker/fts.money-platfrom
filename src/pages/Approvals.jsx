@@ -33,7 +33,12 @@ export default function Approvals() {
 
     const updateRequest = useMutation({
         mutationFn: ({ id, data }) => base44.entities.ApprovalRequest.update(id, data),
-        onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['approval-requests'] }); setSelectedRequest(null); setReviewComment(''); }
+        onSuccess: () => { 
+            queryClient.invalidateQueries({ queryKey: ['approval-requests'] });
+            queryClient.invalidateQueries({ queryKey: ['merchants'] });
+            setSelectedRequest(null);
+            setReviewComment('');
+        }
     });
 
     const handleApprove = async () => {
