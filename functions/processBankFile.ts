@@ -1,5 +1,3 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
-
 /**
  * Bank File Processor
  * Parses uploaded bank files (CSV, CAMT.053, ISO 20022)
@@ -7,7 +5,6 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
  */
 Deno.serve(async (req) => {
     try {
-        const base44 = createClientFromRequest(req);
         const body = await req.json();
         const { file_content, file_name, batch_id } = body;
 
@@ -46,21 +43,14 @@ Deno.serve(async (req) => {
 
         console.log(`✓ Validated ${validItems.length} items`);
 
-        // Run reconciliation
-        const reconResult = await base44.functions.invoke('reconciliationEngine', {
-            batch_id,
-            bank_items: validItems
-        });
-
-        console.log(`🔄 Reconciliation result:`, reconResult.data);
-
         return Response.json({
             success: true,
             file_name,
             file_format: format,
             items_parsed: items.length,
             items_valid: validItems.length,
-            reconciliation: reconResult.data,
+            batch_id,
+            items: validItems,
             timestamp: new Date().toISOString()
         });
 

@@ -1,5 +1,3 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
-
 /**
  * Connector Adapter - Base class for processor integrations
  * Routes to specific adapter based on connector_name
@@ -7,7 +5,6 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
  */
 Deno.serve(async (req) => {
     try {
-        const base44 = createClientFromRequest(req);
         const {
             connector_name,
             action, // 'charge', 'refund', 'verify', 'test'
@@ -17,65 +14,35 @@ Deno.serve(async (req) => {
             card_token,
             customer_email,
             customer_name,
-            description,
-            merchant_id,
-            psp_code,
-            webhook_secret
+            description
         } = await req.json();
 
         console.log(`🔌 Adapter: Processing ${action} via ${connector_name}`);
 
-        // Route to appropriate adapter
         let result;
 
         switch (connector_name.toLowerCase()) {
             case 'stripe':
                 result = await stripeAdapter({
-                    action,
-                    amount,
-                    currency,
-                    payment_method,
-                    card_token,
-                    customer_email,
-                    description,
-                    webhook_secret
+                    action, amount, currency, payment_method, card_token, customer_email, description
                 });
                 break;
 
             case 'adyen':
                 result = await adyenAdapter({
-                    action,
-                    amount,
-                    currency,
-                    payment_method,
-                    card_token,
-                    customer_email,
-                    description,
-                    webhook_secret
+                    action, amount, currency, payment_method, card_token, customer_email, description
                 });
                 break;
 
             case 'paypal':
                 result = await paypalAdapter({
-                    action,
-                    amount,
-                    currency,
-                    payment_method,
-                    customer_email,
-                    description,
-                    webhook_secret
+                    action, amount, currency, payment_method, customer_email, description
                 });
                 break;
 
             case 'mock':
-                // For testing without real connector
                 result = await mockAdapter({
-                    action,
-                    amount,
-                    currency,
-                    payment_method,
-                    customer_email,
-                    description
+                    action, amount, currency, payment_method, customer_email, description
                 });
                 break;
 
@@ -98,168 +65,79 @@ Deno.serve(async (req) => {
     }
 });
 
-/**
- * STRIPE ADAPTER
- */
-async function stripeAdapter({ action, amount, currency, payment_method, card_token, customer_email, description, webhook_secret }) {
-    // TODO: Implement actual Stripe API calls
-    // For now, return mock successful response
-    
+async function stripeAdapter({ action, amount, currency, payment_method, card_token, customer_email, description }) {
     console.log(`📱 Stripe Adapter: ${action} - $${amount} ${currency}`);
 
     if (action === 'test') {
-        return {
-            success: true,
-            connector: 'stripe',
-            status: 'connected',
-            supported_methods: ['card', 'bank_transfer', 'wallet']
-        };
+        return { success: true, connector: 'stripe', status: 'connected', supported_methods: ['card', 'bank_transfer', 'wallet'] };
     }
 
     if (action === 'charge') {
         return {
-            success: true,
-            connector: 'stripe',
-            transaction_id: `stripe_${Date.now()}`,
-            reference_id: `ch_${Math.random().toString(36).substr(2, 9)}`,
-            status: 'approved',
-            amount,
-            currency,
-            payment_method,
-            customer_email,
-            timestamp: new Date().toISOString(),
-            processor_response: {
-                code: '00',
-                message: 'Transaction Approved'
-            }
+            success: true, connector: 'stripe', transaction_id: `stripe_${Date.now()}`,
+            reference_id: `ch_${Math.random().toString(36).substr(2, 9)}`, status: 'approved',
+            amount, currency, payment_method, customer_email, timestamp: new Date().toISOString(),
+            processor_response: { code: '00', message: 'Transaction Approved' }
         };
     }
 
-    return {
-        success: false,
-        error: `Unknown action: ${action}`
-    };
+    return { success: false, error: `Unknown action: ${action}` };
 }
 
-/**
- * ADYEN ADAPTER
- */
-async function adyenAdapter({ action, amount, currency, payment_method, card_token, customer_email, description, webhook_secret }) {
+async function adyenAdapter({ action, amount, currency, payment_method, card_token, customer_email, description }) {
     console.log(`🔷 Adyen Adapter: ${action} - $${amount} ${currency}`);
 
     if (action === 'test') {
-        return {
-            success: true,
-            connector: 'adyen',
-            status: 'connected',
-            supported_methods: ['card', 'bank_transfer', 'wallet', 'crypto']
-        };
+        return { success: true, connector: 'adyen', status: 'connected', supported_methods: ['card', 'bank_transfer', 'wallet', 'crypto'] };
     }
 
     if (action === 'charge') {
         return {
-            success: true,
-            connector: 'adyen',
-            transaction_id: `adyen_${Date.now()}`,
-            psp_reference: `${Math.random().toString(36).substr(2, 13).toUpperCase()}`,
-            status: 'approved',
-            amount,
-            currency,
-            payment_method,
-            customer_email,
-            timestamp: new Date().toISOString(),
-            processor_response: {
-                resultCode: 'Authorised',
-                message: 'Transaction approved'
-            }
+            success: true, connector: 'adyen', transaction_id: `adyen_${Date.now()}`,
+            psp_reference: `${Math.random().toString(36).substr(2, 13).toUpperCase()}`, status: 'approved',
+            amount, currency, payment_method, customer_email, timestamp: new Date().toISOString(),
+            processor_response: { resultCode: 'Authorised', message: 'Transaction approved' }
         };
     }
 
-    return {
-        success: false,
-        error: `Unknown action: ${action}`
-    };
+    return { success: false, error: `Unknown action: ${action}` };
 }
 
-/**
- * PAYPAL ADAPTER
- */
-async function paypalAdapter({ action, amount, currency, payment_method, customer_email, description, webhook_secret }) {
+async function paypalAdapter({ action, amount, currency, payment_method, customer_email, description }) {
     console.log(`🅿️ PayPal Adapter: ${action} - $${amount} ${currency}`);
 
     if (action === 'test') {
-        return {
-            success: true,
-            connector: 'paypal',
-            status: 'connected',
-            supported_methods: ['paypal_wallet', 'card', 'bank_transfer']
-        };
+        return { success: true, connector: 'paypal', status: 'connected', supported_methods: ['paypal_wallet', 'card', 'bank_transfer'] };
     }
 
     if (action === 'charge') {
         return {
-            success: true,
-            connector: 'paypal',
-            transaction_id: `paypal_${Date.now()}`,
-            order_id: `ORD-${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
-            status: 'approved',
-            amount,
-            currency,
-            payment_method,
-            customer_email,
-            timestamp: new Date().toISOString(),
-            processor_response: {
-                status: 'APPROVED',
-                message: 'Order confirmed'
-            }
+            success: true, connector: 'paypal', transaction_id: `paypal_${Date.now()}`,
+            order_id: `ORD-${Math.random().toString(36).substr(2, 9).toUpperCase()}`, status: 'approved',
+            amount, currency, payment_method, customer_email, timestamp: new Date().toISOString(),
+            processor_response: { status: 'APPROVED', message: 'Order confirmed' }
         };
     }
 
-    return {
-        success: false,
-        error: `Unknown action: ${action}`
-    };
+    return { success: false, error: `Unknown action: ${action}` };
 }
 
-/**
- * MOCK ADAPTER - For testing
- */
 async function mockAdapter({ action, amount, currency, payment_method, customer_email, description }) {
     console.log(`🧪 Mock Adapter: ${action} - $${amount} ${currency}`);
 
     if (action === 'test') {
-        return {
-            success: true,
-            connector: 'mock',
-            status: 'connected',
-            supported_methods: ['card', 'bank_transfer', 'wallet']
-        };
+        return { success: true, connector: 'mock', status: 'connected', supported_methods: ['card', 'bank_transfer', 'wallet'] };
     }
 
     if (action === 'charge') {
-        // Randomly succeed or fail for testing failover
-        const shouldSucceed = Math.random() > 0.1; // 90% success rate
-
+        const shouldSucceed = Math.random() > 0.1;
         return {
-            success: shouldSucceed,
-            connector: 'mock',
-            transaction_id: `mock_${Date.now()}`,
-            reference_id: `TEST-${Math.random().toString(36).substr(2, 9)}`,
-            status: shouldSucceed ? 'approved' : 'declined',
-            amount,
-            currency,
-            payment_method,
-            customer_email,
-            timestamp: new Date().toISOString(),
-            processor_response: {
-                code: shouldSucceed ? '00' : '05',
-                message: shouldSucceed ? 'Transaction Approved' : 'Transaction Declined'
-            }
+            success: shouldSucceed, connector: 'mock', transaction_id: `mock_${Date.now()}`,
+            reference_id: `TEST-${Math.random().toString(36).substr(2, 9)}`, status: shouldSucceed ? 'approved' : 'declined',
+            amount, currency, payment_method, customer_email, timestamp: new Date().toISOString(),
+            processor_response: { code: shouldSucceed ? '00' : '05', message: shouldSucceed ? 'Transaction Approved' : 'Transaction Declined' }
         };
     }
 
-    return {
-        success: false,
-        error: `Unknown action: ${action}`
-    };
+    return { success: false, error: `Unknown action: ${action}` };
 }
