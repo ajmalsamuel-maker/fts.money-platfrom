@@ -1,0 +1,149 @@
+import React from 'react';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Download, FileText, FileSpreadsheet } from 'lucide-react';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+
+export default function ReportGenerator({ testResults, config }) {
+    if (!testResults) return null;
+
+    const generateCSV = () => {
+        const headers = ['Metric', 'Value'];
+        const rows = [
+            ['Test Name', 'Load Test Report'],
+            ['Date', new Date().toISOString()],
+            ['PSP Code', config.psp_code],
+            ['Merchants Tested', config.merchant_ids.length],
+            ['Target TPS', testResults.summary.target_tps],
+            ['Actual TPS', testResults.summary.actual_tps],
+            ['Duration (ms)', testResults.summary.duration_ms],
+            ['Total Transactions', testResults.summary.transactions_generated],
+            ['Successful', testResults.summary.successful],
+            ['Failed', testResults.summary.failed],
+            ['Success Rate', testResults.summary.success_rate],
+            ['', ''],
+            ['Scenario Breakdown', ''],
+        ];
+
+        if (testResults.summary.scenario_breakdown) {
+            Object.entries(testResults.summary.scenario_breakdown).forEach(([scenario, count]) => {
+                rows.push([scenario.replace(/_/g, ' '), count]);
+            });
+        }
+
+        const csvContent = [
+            headers.join(','),
+            ...rows.map(row => row.join(','))
+        ].join('\n');
+
+        const blob = new Blob([csvContent], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `load-test-report-${Date.now()}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        a.remove();
+    };
+
+    const generatePDF = () => {
+        const doc = new jsPDF();
+        
+        // Header
+        doc.setFontSize(20);
+        doc.text('Load Test Report', 14, 20);
+        
+        doc.setFontSize(10);
+        doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 28);
+        doc.text(`PSP Code: ${config.psp_code}`, 14, 34);
+        
+        // Summary Table
+        doc.setFontSize(14);
+        doc.text('Test Summary', 14, 45);
+        
+        const summaryData = [
+            ['Target TPS', testResults.summary.target_tps],
+            ['Actual TPS', testResults.summary.actual_tps],
+            ['Duration (ms)', testResults.summary.duration_ms],
+            ['Total Transactions', testResults.summary.transactions_generated],
+            ['Successful', testResults.summary.successful],
+            ['Failed', testResults.summary.failed],
+            ['Success Rate', testResults.summary.success_rate]
+        ];
+        
+        doc.autoTable({
+            startY: 50,
+            head: [['Metric', 'Value']],
+            body: summaryData,
+            theme: 'grid',
+            headStyles: { fillColor: [59, 130, 246] }
+        });
+
+        // Scenario Breakdown
+        if (testResults.summary.scenario_breakdown) {
+            doc.setFontSize(14);
+            doc.text('Scenario Breakdown', 14, doc.lastAutoTable.finalY + 15);
+            
+            const scenarioData = Object.entries(testResults.summary.scenario_breakdown).map(([scenario, count]) => [
+                scenario.replace(/_/g, ' '),
+                count,
+                `${((count / testResults.summary.transactions_generated) * 100).toFixed(1)}%`
+            ]);
+            
+            doc.autoTable({
+                startY: doc.lastAutoTable.finalY + 20,
+                head: [['Scenario', 'Count', 'Percentage']],
+                body: scenarioData,
+                theme: 'striped',
+                headStyles: { fillColor: [16, 185, 129] }
+            });
+        }
+
+        // Performance Analysis
+        doc.setFontSize(14);
+        doc.text('Performance Analysis', 14, doc.lastAutoTable.finalY + 15);
+        
+        doc.setFontSize(10);
+        const yPos = doc.lastAutoTable.finalY + 25;
+        doc.text(`• Test achieved ${testResults.summary.actual_tps} TPS (${((testResults.summary.actual_tps / testResults.summary.target_tps) * 100).toFixed(1)}% of target)`, 14, yPos);
+        doc.text(`• Success rate: ${testResults.summary.success_rate}`, 14, yPos + 6);
+        doc.text(`• Total duration: ${(testResults.summary.duration_ms / 1000).toFixed(2)} seconds`, 14, yPos + 12);
+        
+        const successRate = parseFloat(testResults.summary.success_rate);
+        const recommendation = successRate >= 99 ? 'Excellent performance' : 
+                              successRate >= 95 ? 'Good performance' : 
+                              'Performance needs improvement';
+        doc.text(`• Recommendation: ${recommendation}`, 14, yPos + 18);
+
+        // Footer
+        doc.setFontSize(8);
+        doc.text('Generated by Load Testing & Simulation Module', 14, 285);
+
+        doc.save(`load-test-report-${Date.now()}.pdf`);
+    };
+
+    return (
+        <Card>
+            <CardHeader>
+                <CardTitle className="text-sm">Export Report</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <div className="flex gap-3">
+                    <Button onClick={generateCSV} variant="outline" className="flex-1">
+                        <FileSpreadsheet className="h-4 w-4 mr-2" />
+                        Export CSV
+                    </Button>
+                    <Button onClick={generatePDF} variant="outline" className="flex-1">
+                        <FileText className="h-4 w-4 mr-2" />
+                        Export PDF
+                    </Button>
+                </div>
+                <p className="text-xs text-slate-500 mt-3">
+                    Download detailed test results including metrics, scenario breakdown, and performance analysis
+                </p>
+            </CardContent>
+        </Card>
+    );
+}

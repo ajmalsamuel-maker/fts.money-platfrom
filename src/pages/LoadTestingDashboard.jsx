@@ -13,6 +13,8 @@ import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
 import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
 import TestScenarioLibrary from '@/components/loadtest/TestScenarioLibrary';
 import RealTimeMonitor from '@/components/loadtest/RealTimeMonitor';
+import AdvancedAnalytics from '@/components/loadtest/AdvancedAnalytics';
+import ReportGenerator from '@/components/loadtest/ReportGenerator';
 import { 
     Zap, 
     Play, 
@@ -131,6 +133,7 @@ export default function LoadTestingDashboard() {
                         <TabsList>
                             <TabsTrigger value="quicktest">Quick Test</TabsTrigger>
                             <TabsTrigger value="scenarios">Test Scenarios</TabsTrigger>
+                            <TabsTrigger value="analytics">Analytics & Reports</TabsTrigger>
                             <TabsTrigger value="schedule">Schedule Tests</TabsTrigger>
                         </TabsList>
 
@@ -468,6 +471,28 @@ export default function LoadTestingDashboard() {
                                     )}
                                 </CardContent>
                             </Card>
+                        </TabsContent>
+
+                        <TabsContent value="analytics">
+                            {testResults ? (
+                                <div className="space-y-6">
+                                    <div className="flex justify-between items-center">
+                                        <div>
+                                            <h2 className="text-2xl font-bold">Advanced Analytics</h2>
+                                            <p className="text-slate-600">Detailed performance metrics and insights</p>
+                                        </div>
+                                        <ReportGenerator testResults={testResults} config={config} />
+                                    </div>
+                                    <AdvancedAnalytics testResults={testResults} />
+                                </div>
+                            ) : (
+                                <Card>
+                                    <CardContent className="py-12 text-center">
+                                        <BarChart3 className="h-16 w-16 text-slate-300 mx-auto mb-4" />
+                                        <p className="text-slate-500">Run a test to view analytics and generate reports</p>
+                                    </CardContent>
+                                </Card>
+                            )}
                         </TabsContent>
 
                         <TabsContent value="schedule">
