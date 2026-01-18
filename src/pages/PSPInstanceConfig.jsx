@@ -202,8 +202,11 @@ export default function PSPInstanceConfig() {
 
     const updateMutation = useMutation({
         mutationFn: async (data) => {
+            console.log('🚀 Mutation started with data:', data);
+            
             // Permission check - only platform admins can modify PSP config
             if (!platformUser?.email) {
+                console.error('❌ No user session found');
                 throw new Error('Unauthorized: No active session');
             }
             
@@ -213,10 +216,13 @@ export default function PSPInstanceConfig() {
             const userRole = platformUser?.platform_role || platformUser?.role;
             
             if (!allowedRoles.includes(userRole)) {
+                console.error('❌ Insufficient permissions:', userRole);
                 throw new Error(`Unauthorized: Role "${userRole}" cannot modify PSP configuration. Allowed roles: ${allowedRoles.join(', ')}`);
             }
             
-            console.log('💾 Saving config:', data);
+            console.log('💾 Saving config for PSP ID:', pspId);
+            console.log('💾 Config data:', data);
+            
             // Ensure arrays are properly formatted (not stringified)
             const pspUpdateData = {
                 branding: data.branding,
@@ -229,19 +235,17 @@ export default function PSPInstanceConfig() {
                 enabled_payout_methods: Array.isArray(data.enabled_payout_methods) ? data.enabled_payout_methods : [],
                 enabled_services: Array.isArray(data.enabled_services) ? data.enabled_services : []
             };
-            console.log('💾 Sending to database:', {
-                enabled_payment_methods: pspUpdateData.enabled_payment_methods,
-                enabled_payment_methods_length: pspUpdateData.enabled_payment_methods?.length,
-                enabled_payout_methods: pspUpdateData.enabled_payout_methods,
-                enabled_payout_methods_length: pspUpdateData.enabled_payout_methods?.length,
-                enabled_services: pspUpdateData.enabled_services,
-                enabled_services_length: pspUpdateData.enabled_services?.length,
-                user: platformUser?.email,
-                role: platformUser?.platform_role
-            });
-            const result = await base44.entities.ProvisionedPSP.update(pspId, pspUpdateData);
-            console.log('✅ Save successful:', result);
-            return result;
+            
+            console.log('📤 Sending to database:', JSON.stringify(pspUpdateData, null, 2));
+            
+            try {
+                const result = await base44.entities.ProvisionedPSP.update(pspId, pspUpdateData);
+                console.log('✅ Database update successful:', result);
+                return result;
+            } catch (dbError) {
+                console.error('❌ Database update failed:', dbError);
+                throw dbError;
+            }
         },
         onSuccess: async (updatedPSP, variables) => {
             console.log('✅ Update successful, returned PSP:', {
