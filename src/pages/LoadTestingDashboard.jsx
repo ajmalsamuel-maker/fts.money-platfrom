@@ -8,8 +8,11 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
 import { usePlatformAuth } from '@/components/auth/usePlatformAuth';
+import TestScenarioLibrary from '@/components/loadtest/TestScenarioLibrary';
+import RealTimeMonitor from '@/components/loadtest/RealTimeMonitor';
 import { 
     Zap, 
     Play, 
@@ -23,7 +26,9 @@ import {
     CreditCard,
     BarChart3,
     AlertCircle,
-    Loader2
+    Loader2,
+    Calendar,
+    Repeat
 } from 'lucide-react';
 
 export default function LoadTestingDashboard() {
@@ -41,7 +46,15 @@ export default function LoadTestingDashboard() {
         payment_methods: ['visa', 'mastercard', 'amex'],
         transaction_types: ['sale'],
         amount_min: 10,
-        amount_max: 1000
+        amount_max: 1000,
+        test_scenarios: ['successful_payment'],
+        scenario_distribution: { successful_payment: 100 }
+    });
+
+    const [scheduleConfig, setScheduleConfig] = useState({
+        schedule_type: 'one_time',
+        scheduled_time: '',
+        recurrence_pattern: 'daily'
     });
 
     // Fetch PSPs and Merchants for selection
@@ -70,7 +83,9 @@ export default function LoadTestingDashboard() {
                 amount_range: {
                     min: parseFloat(config.amount_min),
                     max: parseFloat(config.amount_max)
-                }
+                },
+                test_scenarios: config.test_scenarios,
+                scenario_distribution: config.scenario_distribution
             });
             return data;
         },
@@ -112,9 +127,17 @@ export default function LoadTestingDashboard() {
                         <p className="text-slate-600 mt-1">Generate realistic transaction load for PSP testing</p>
                     </div>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        {/* Configuration Panel */}
-                        <Card className="lg:col-span-1">
+                    <Tabs defaultValue="quicktest" className="mb-6">
+                        <TabsList>
+                            <TabsTrigger value="quicktest">Quick Test</TabsTrigger>
+                            <TabsTrigger value="scenarios">Test Scenarios</TabsTrigger>
+                            <TabsTrigger value="schedule">Schedule Tests</TabsTrigger>
+                        </TabsList>
+
+                        <TabsContent value="quicktest">
+                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                                {/* Configuration Panel */}
+                                <Card className="lg:col-span-1">
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
                                     <Activity className="h-5 w-5" />
@@ -273,8 +296,9 @@ export default function LoadTestingDashboard() {
                             </CardContent>
                         </Card>
 
-                        {/* Results Panel */}
-                        <div className="lg:col-span-2 space-y-6">
+                                {/* Results Panel */}
+                                <div className="lg:col-span-2 space-y-6">
+                                    <RealTimeMonitor testRunning={testRunning} />
                             {testResults && (
                                 <>
                                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -344,6 +368,19 @@ export default function LoadTestingDashboard() {
                                                     <span className="text-sm text-slate-600">Success Rate</span>
                                                     <Badge className="bg-green-600">{testResults.summary.success_rate}</Badge>
                                                 </div>
+                                                {testResults.summary.scenario_breakdown && (
+                                                    <div className="p-3 bg-slate-50 rounded-lg">
+                                                        <span className="text-sm font-semibold text-slate-700 block mb-2">Scenario Distribution</span>
+                                                        <div className="space-y-1">
+                                                            {Object.entries(testResults.summary.scenario_breakdown).map(([scenario, count]) => (
+                                                                <div key={scenario} className="flex justify-between text-xs">
+                                                                    <span className="text-slate-600">{scenario.replace(/_/g, ' ')}</span>
+                                                                    <span className="font-medium">{count}</span>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                )}
                                                 <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
                                                     <span className="text-sm text-slate-600">Duration</span>
                                                     <Badge variant="outline">{testResults.summary.duration_ms}ms</Badge>
@@ -361,16 +398,149 @@ export default function LoadTestingDashboard() {
                                 </>
                             )}
 
-                            {!testResults && !testRunning && (
-                                <Card>
-                                    <CardContent className="py-12 text-center">
-                                        <Zap className="h-16 w-16 text-slate-300 mx-auto mb-4" />
-                                        <p className="text-slate-500">Configure test parameters and click "Start Load Test"</p>
-                                    </CardContent>
-                                </Card>
-                            )}
-                        </div>
-                    </div>
+                                    {!testResults && !testRunning && (
+                                        <Card>
+                                            <CardContent className="py-12 text-center">
+                                                <Zap className="h-16 w-16 text-slate-300 mx-auto mb-4" />
+                                                <p className="text-slate-500">Configure test parameters and click "Start Load Test"</p>
+                                            </CardContent>
+                                        </Card>
+                                    )}
+                                </div>
+                            </div>
+                        </TabsContent>
+
+                        <TabsContent value="scenarios">
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Payment Test Scenario Library</CardTitle>
+                                    <p className="text-sm text-slate-600">Select realistic payment scenarios based on ISO 8583 standards and industry best practices</p>
+                                </CardHeader>
+                                <CardContent>
+                                    <TestScenarioLibrary 
+                                        selectedScenarios={config.test_scenarios}
+                                        onToggle={(scenario) => {
+                                            const isSelected = config.test_scenarios.includes(scenario);
+                                            if (isSelected) {
+                                                const updated = config.test_scenarios.filter(s => s !== scenario);
+                                                const newDist = {...config.scenario_distribution};
+                                                delete newDist[scenario];
+                                                setConfig({...config, test_scenarios: updated, scenario_distribution: newDist});
+                                            } else {
+                                                const updated = [...config.test_scenarios, scenario];
+                                                const evenDist = Math.floor(100 / (updated.length));
+                                                const newDist = {};
+                                                updated.forEach(s => newDist[s] = evenDist);
+                                                setConfig({...config, test_scenarios: updated, scenario_distribution: newDist});
+                                            }
+                                        }}
+                                    />
+                                    
+                                    {config.test_scenarios.length > 0 && (
+                                        <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                                            <h4 className="font-semibold text-sm mb-3">Scenario Distribution (%)</h4>
+                                            <div className="space-y-2">
+                                                {config.test_scenarios.map(scenario => (
+                                                    <div key={scenario} className="flex items-center gap-3">
+                                                        <Label className="w-48 text-xs">{scenario.replace(/_/g, ' ')}</Label>
+                                                        <Input 
+                                                            type="number"
+                                                            min="0"
+                                                            max="100"
+                                                            value={config.scenario_distribution[scenario] || 0}
+                                                            onChange={(e) => {
+                                                                const val = parseInt(e.target.value) || 0;
+                                                                setConfig({
+                                                                    ...config,
+                                                                    scenario_distribution: {
+                                                                        ...config.scenario_distribution,
+                                                                        [scenario]: val
+                                                                    }
+                                                                });
+                                                            }}
+                                                            className="w-20"
+                                                        />
+                                                        <span className="text-xs text-slate-600">%</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
+
+                        <TabsContent value="schedule">
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle className="flex items-center gap-2">
+                                        <Calendar className="h-5 w-5" />
+                                        Schedule Load Tests
+                                    </CardTitle>
+                                    <p className="text-sm text-slate-600">Automate load testing at specific times or intervals</p>
+                                </CardHeader>
+                                <CardContent className="space-y-4">
+                                    <div>
+                                        <Label>Schedule Type</Label>
+                                        <Select 
+                                            value={scheduleConfig.schedule_type}
+                                            onValueChange={(value) => setScheduleConfig({...scheduleConfig, schedule_type: value})}
+                                        >
+                                            <SelectTrigger>
+                                                <SelectValue />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="one_time">One-Time</SelectItem>
+                                                <SelectItem value="recurring">Recurring</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+
+                                    {scheduleConfig.schedule_type === 'one_time' && (
+                                        <div>
+                                            <Label>Scheduled Time</Label>
+                                            <Input 
+                                                type="datetime-local"
+                                                value={scheduleConfig.scheduled_time}
+                                                onChange={(e) => setScheduleConfig({...scheduleConfig, scheduled_time: e.target.value})}
+                                            />
+                                        </div>
+                                    )}
+
+                                    {scheduleConfig.schedule_type === 'recurring' && (
+                                        <div>
+                                            <Label>Recurrence Pattern</Label>
+                                            <Select 
+                                                value={scheduleConfig.recurrence_pattern}
+                                                onValueChange={(value) => setScheduleConfig({...scheduleConfig, recurrence_pattern: value})}
+                                            >
+                                                <SelectTrigger>
+                                                    <SelectValue />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="hourly">Hourly</SelectItem>
+                                                    <SelectItem value="daily">Daily</SelectItem>
+                                                    <SelectItem value="weekly">Weekly</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                    )}
+
+                                    <Alert className="bg-yellow-50 border-yellow-200">
+                                        <AlertCircle className="h-4 w-4 text-yellow-600" />
+                                        <AlertDescription className="text-yellow-900">
+                                            Scheduled tests will use your current test configuration (PSP, merchants, TPS, scenarios)
+                                        </AlertDescription>
+                                    </Alert>
+
+                                    <Button className="w-full">
+                                        <Repeat className="h-4 w-4 mr-2" />
+                                        Create Scheduled Test
+                                    </Button>
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
+                    </Tabs>
                 </div>
             </div>
         </div>
