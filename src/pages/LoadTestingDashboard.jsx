@@ -50,10 +50,12 @@ export default function LoadTestingDashboard() {
         queryFn: () => base44.entities.ProvisionedPSP.list()
     });
 
-    const { data: merchants = [] } = useQuery({
+    const { data: merchants = [], refetch: refetchMerchants } = useQuery({
         queryKey: ['merchants', config.psp_code],
         queryFn: () => base44.entities.Merchant.filter({ psp_code: config.psp_code }),
-        enabled: !!config.psp_code
+        enabled: !!config.psp_code,
+        staleTime: 0,
+        cacheTime: 0
     });
 
     const runLoadTestMutation = useMutation({
