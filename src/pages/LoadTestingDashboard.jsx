@@ -234,7 +234,7 @@ export default function LoadTestingDashboard() {
                                         Merchants 
                                         <Badge variant="secondary" className="ml-auto">{config.merchant_ids.length} selected</Badge>
                                     </Label>
-                                    <div className="border-2 rounded-lg p-3 max-h-52 overflow-y-auto bg-slate-50 space-y-2"
+                                    <div className="border-2 rounded-lg p-3 max-h-52 overflow-y-auto bg-slate-50 space-y-2">
                                         {!config.psp_code ? (
                                             <p className="text-sm text-slate-500">Select PSP first</p>
                                         ) : merchants.length === 0 ? (
