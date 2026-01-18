@@ -35,7 +35,7 @@ export default function LoadTestingDashboard() {
     // Test Configuration
     const [config, setConfig] = useState({
         psp_code: '',
-        merchant_id: '',
+        merchant_ids: [],
         target_tps: 10,
         duration_seconds: 60,
         payment_methods: ['visa', 'mastercard', 'amex'],
@@ -59,7 +59,7 @@ export default function LoadTestingDashboard() {
     const runLoadTestMutation = useMutation({
         mutationFn: async () => {
             const { data } = await base44.functions.invoke('loadTestOrchestrator', {
-                merchant_id: config.merchant_id,
+                merchant_ids: config.merchant_ids,
                 psp_code: config.psp_code,
                 target_tps: parseInt(config.target_tps),
                 duration_seconds: parseInt(config.duration_seconds),
@@ -83,8 +83,8 @@ export default function LoadTestingDashboard() {
     });
 
     const handleStartTest = () => {
-        if (!config.psp_code || !config.merchant_id) {
-            alert('Please select PSP and Merchant');
+        if (!config.psp_code || config.merchant_ids.length === 0) {
+            alert('Please select PSP and at least one Merchant');
             return;
         }
         setTestRunning(true);
@@ -124,7 +124,7 @@ export default function LoadTestingDashboard() {
                                     <Label>PSP Instance</Label>
                                     <Select 
                                         value={config.psp_code} 
-                                        onValueChange={(value) => setConfig({...config, psp_code: value, merchant_id: ''})}
+                                        onValueChange={(value) => setConfig({...config, psp_code: value, merchant_ids: []})}
                                     >
                                         <SelectTrigger>
                                             <SelectValue placeholder="Select PSP" />
@@ -140,23 +140,47 @@ export default function LoadTestingDashboard() {
                                 </div>
 
                                 <div>
-                                    <Label>Merchant</Label>
-                                    <Select 
-                                        value={config.merchant_id} 
-                                        onValueChange={(value) => setConfig({...config, merchant_id: value})}
-                                        disabled={!config.psp_code}
-                                    >
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Select Merchant" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {merchants.map(merchant => (
-                                                <SelectItem key={merchant.id} value={merchant.id}>
-                                                    {merchant.business_name}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
+                                    <Label>Merchants ({config.merchant_ids.length} selected)</Label>
+                                    <div className="border rounded-lg p-3 max-h-48 overflow-y-auto bg-white space-y-2">
+                                        {!config.psp_code ? (
+                                            <p className="text-sm text-slate-500">Select PSP first</p>
+                                        ) : merchants.length === 0 ? (
+                                            <p className="text-sm text-slate-500">No merchants found</p>
+                                        ) : (
+                                            <>
+                                                <label className="flex items-center gap-2 p-2 hover:bg-slate-50 rounded cursor-pointer">
+                                                    <input 
+                                                        type="checkbox"
+                                                        checked={config.merchant_ids.length === merchants.length}
+                                                        onChange={(e) => {
+                                                            if (e.target.checked) {
+                                                                setConfig({...config, merchant_ids: merchants.map(m => m.id)});
+                                                            } else {
+                                                                setConfig({...config, merchant_ids: []});
+                                                            }
+                                                        }}
+                                                    />
+                                                    <span className="text-sm font-semibold">Select All</span>
+                                                </label>
+                                                {merchants.map(merchant => (
+                                                    <label key={merchant.id} className="flex items-center gap-2 p-2 hover:bg-slate-50 rounded cursor-pointer">
+                                                        <input 
+                                                            type="checkbox"
+                                                            checked={config.merchant_ids.includes(merchant.id)}
+                                                            onChange={(e) => {
+                                                                if (e.target.checked) {
+                                                                    setConfig({...config, merchant_ids: [...config.merchant_ids, merchant.id]});
+                                                                } else {
+                                                                    setConfig({...config, merchant_ids: config.merchant_ids.filter(id => id !== merchant.id)});
+                                                                }
+                                                            }}
+                                                        />
+                                                        <span className="text-sm">{merchant.business_name}</span>
+                                                    </label>
+                                                ))}
+                                            </>
+                                        )}
+                                    </div>
                                 </div>
 
                                 <div>
