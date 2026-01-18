@@ -208,6 +208,8 @@ const defaultMenuItems = [
             { icon: Palette, label: 'appearance', path: 'Appearance', permission: 'VIEW_APPEARANCE' },
             { icon: FileCheck, label: 'isoStandards', path: 'ISOConfiguration', permission: 'VIEW_SETTINGS' },
             { icon: Database, label: 'databaseTools', path: 'DatabaseSetup', permission: 'VIEW_SETTINGS' },
+            { icon: CheckSquare, label: 'deploymentChecklist', path: 'DeploymentChecklist', permission: 'VIEW_SETTINGS' },
+            { icon: Activity, label: 'transactionTests', path: 'TransactionTestSuite', permission: 'VIEW_SETTINGS' },
             { icon: Settings, label: 'generalSettings', path: 'Settings', permission: 'VIEW_SETTINGS' },
             { 
                 icon: FileText, 
