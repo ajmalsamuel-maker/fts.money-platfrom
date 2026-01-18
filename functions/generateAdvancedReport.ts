@@ -1,37 +1,27 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { query, queryOne, execute, closeConnection } from './db/postgresClient.js';
 import { jsPDF } from 'npm:jspdf@2.5.1';
 
 Deno.serve(async (req) => {
     try {
-        const base44 = createClientFromRequest(req);
-        const user = await base44.auth.me();
+        const { report_title, period_start, period_end, format } = await req.json();
 
-        if (!user) {
-            return Response.json({ error: 'Unauthorized' }, { status: 401 });
-        }
-
-        const { template_id, report_title, period_start, period_end, format } = await req.json();
-
-        // Fetch template and data
-        const [template, requirements, findings, evidence, controls, auditLogs] = await Promise.all([
-            template_id ? base44.asServiceRole.entities.PCIReportTemplate.filter({ id: template_id }) : null,
-            base44.asServiceRole.entities.PCIRequirement.list(),
-            base44.asServiceRole.entities.PCIFinding.list(),
-            base44.asServiceRole.entities.PCIEvidence.list(),
-            base44.asServiceRole.entities.PCIControl.list(),
-            base44.asServiceRole.entities.PCIAuditLog.list('-created_date', 100)
+        // Fetch PCI data from PostgreSQL
+        const [requirements, findings, evidence, controls] = await Promise.all([
+            query(`SELECT * FROM pci_requirement`, []),
+            query(`SELECT * FROM pci_finding WHERE status = 'open'`, []),
+            query(`SELECT * FROM pci_evidence`, []),
+            query(`SELECT * FROM pci_control`, [])
         ]);
-
-        const templateData = template?.[0];
 
         // Calculate metrics
         const totalReqs = requirements.length;
         const completedReqs = requirements.filter(r => r.compliance_status === 'completed').length;
         const complianceScore = ((completedReqs / totalReqs) * 100).toFixed(1);
 
-        const openFindings = findings.filter(f => f.status === 'open').length;
-        const criticalFindings = findings.filter(f => f.severity === 'critical' && f.status === 'open').length;
-        const resolvedFindings = findings.filter(f => f.status === 'resolved').length;
+        const openFindings = findings.length;
+        const criticalFindings = findings.filter(f => f.severity === 'critical').length;
+        const resolvedFindings = await query(`SELECT COUNT(*) as count FROM pci_finding WHERE status = 'resolved'`, []);
+        const resolvedCount = resolvedFindings[0]?.count || 0;
 
         const passingControls = controls.filter(c => c.test_result === 'passed').length;
         const failingControls = controls.filter(c => c.test_result === 'failed').length;
@@ -39,9 +29,8 @@ Deno.serve(async (req) => {
         const validEvidence = evidence.filter(e => e.status === 'valid').length;
         const expiringEvidence = evidence.filter(e => e.status === 'expiring_soon').length;
 
-        // Generate AI-powered content
-        const reportType = templateData?.report_type || 'detailed_audit';
-        const stakeholder = templateData?.stakeholder_type || 'executive';
+        const reportType = 'detailed_audit';
+        const stakeholder = 'executive';
 
         const prompt = `You are generating a PCI DSS compliance report for ${stakeholder} stakeholders.
 
@@ -69,21 +58,16 @@ Generate a professional ${reportType} report with:
 
 Tailor the language and detail level for ${stakeholder} audience.`;
 
-        const aiContent = await base44.asServiceRole.integrations.Core.InvokeLLM({
-            prompt,
-            response_json_schema: {
-                type: "object",
-                properties: {
-                    executive_summary: { type: "string" },
-                    compliance_overview: { type: "string" },
-                    key_achievements: { type: "array", items: { type: "string" } },
-                    risk_areas: { type: "array", items: { type: "string" } },
-                    remediation_progress: { type: "string" },
-                    recommendations: { type: "array", items: { type: "string" } },
-                    conclusion: { type: "string" }
-                }
-            }
-        });
+        // Generate static content (simplified without LLM)
+        const aiContent = {
+            executive_summary: `Compliance Report for ${period_start} to ${period_end}. Overall compliance score: ${complianceScore}%`,
+            compliance_overview: `${completedReqs}/${totalReqs} requirements completed`,
+            key_achievements: [`Completed ${completedReqs} requirements`, `${passingControls} controls passing`],
+            risk_areas: [`${criticalFindings} critical findings`, `${failingControls} failing controls`],
+            remediation_progress: `${resolvedCount} findings resolved`,
+            recommendations: ['Address critical findings', 'Complete remaining requirements', 'Validate all evidence'],
+            conclusion: 'Continue monitoring and maintaining compliance posture'
+        };
 
         // Prepare chart data
         const chartsData = {
@@ -167,35 +151,24 @@ Tailor the language and detail level for ${stakeholder} audience.`;
         }
 
         // Store report
-        const report = await base44.asServiceRole.entities.PCIGeneratedReport.create({
-            report_title: report_title || 'PCI DSS Compliance Report',
-            report_type: reportType,
-            template_id: template_id || null,
-            generated_by: user.email,
-            generation_method: 'ai_assisted',
-            content: aiContent,
-            metrics: {
-                compliance_score: complianceScore,
-                total_requirements: totalReqs,
-                completed_requirements: completedReqs,
-                open_findings: openFindings,
-                critical_findings: criticalFindings
-            },
-            charts_data: chartsData,
-            pdf_url: pdfUrl,
-            status: 'final',
-            period_start: period_start || new Date().toISOString().split('T')[0],
-            period_end: period_end || new Date().toISOString().split('T')[0]
-        });
+        const reportId = `RPT-${Date.now()}`;
+        await execute(
+            `INSERT INTO pci_generated_report (id, report_title, report_type, content, metrics, charts_data, pdf_url, status, period_start, period_end)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+            [reportId, report_title || 'PCI DSS Report', reportType, JSON.stringify(aiContent), JSON.stringify({
+                compliance_score: complianceScore, total_requirements: totalReqs,
+                completed_requirements: completedReqs, open_findings: openFindings, critical_findings: criticalFindings
+            }), JSON.stringify(chartsData), pdfUrl, 'final', period_start || new Date().toISOString().split('T')[0], period_end || new Date().toISOString().split('T')[0]]
+        );
 
+        await closeConnection();
         return Response.json({
-            success: true,
-            report_id: report.id,
-            report,
-            download_url: pdfUrl
+            success: true, report_id: reportId, download_url: pdfUrl,
+            metrics: { compliance_score: complianceScore, total_requirements: totalReqs, completed_requirements: completedReqs }
         });
 
     } catch (error) {
+        await closeConnection();
         console.error('Report generation error:', error);
         return Response.json({ error: error.message }, { status: 500 });
     }
