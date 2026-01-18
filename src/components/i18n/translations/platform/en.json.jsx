@@ -68,7 +68,7 @@ export default {
       "compliance": "Compliance & Security",
       "pci-compliance": "PCI DSS Compliance",
       "infrastructure": "Infrastructure",
-      "testing": "Testing & Simulation",
+      "testing-simulation": "Testing & Simulation",
       "documentation": "Documentation",
       "identity": "Digital Identity",
       "loyalty-platform": "Loyalty & Impact Platform",
