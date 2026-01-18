@@ -12,8 +12,9 @@ export default function DeploymentChecklist() {
   const [pspList, setPspList] = useState([]);
   const [selectedPsp, setSelectedPsp] = useState('');
   const [checks, setChecks] = useState([
-    { id: 'db', name: 'Database Connection', status: 'pending', message: '' },
-    { id: 'schema', name: 'Database Schema', status: 'pending', message: '' },
+    { id: 'setup', name: 'Database Setup', status: 'pending', message: '', fn: 'createPostgreSQLSchema' },
+    { id: 'db', name: 'Database Connection', status: 'pending', message: '', fn: 'testDatabaseConnection' },
+    { id: 'schema', name: 'Database Schema', status: 'pending', message: '', fn: 'validateDatabaseSchema' },
     { id: 'entities', name: 'Entity Validation', status: 'pending', message: '' },
     { id: 'auth', name: 'Authentication System', status: 'pending', message: '' },
     { id: 'psp_settings', name: 'PSP Settings', status: 'pending', message: '' },
@@ -44,6 +45,10 @@ export default function DeploymentChecklist() {
     }
     setTesting(true);
     
+    // Setup Database
+    await testSetup();
+    await new Promise(r => setTimeout(r, 500));
+    
     // Test Database Connection
     await testDatabase();
     await new Promise(r => setTimeout(r, 500));
@@ -72,6 +77,20 @@ export default function DeploymentChecklist() {
 
   const updateCheck = (id, status, message) => {
     setChecks(prev => prev.map(c => c.id === id ? { ...c, status, message } : c));
+  };
+
+  const testSetup = async () => {
+    try {
+      updateCheck('setup', 'running', 'Creating tables...');
+      const response = await base44.functions.invoke('createPostgreSQLSchema', {});
+      if (response.data.success) {
+        updateCheck('setup', 'success', `${response.data.tables?.length || 0} tables created`);
+      } else {
+        updateCheck('setup', 'error', response.data.error || 'Setup failed');
+      }
+    } catch (error) {
+      updateCheck('setup', 'error', error.message);
+    }
   };
 
   const testDatabase = async () => {

@@ -100,6 +100,7 @@ import DataRetentionManagement from './pages/DataRetentionManagement';
 import DatabaseMigration from './pages/DatabaseMigration';
 import DatabaseSchemaValidation from './pages/DatabaseSchemaValidation';
 import DatabaseSetup from './pages/DatabaseSetup';
+import DeploymentChecklist from './pages/DeploymentChecklist';
 import DeveloperTools from './pages/DeveloperTools';
 import DigitalIdentityWallet from './pages/DigitalIdentityWallet';
 import Disputes from './pages/Disputes';
@@ -210,15 +211,15 @@ import MerchantCheckout from './pages/MerchantCheckout';
 import MerchantCodeRecovery from './pages/MerchantCodeRecovery';
 import MerchantCredentials from './pages/MerchantCredentials';
 import MerchantCryptoDashboard from './pages/MerchantCryptoDashboard';
-import MerchantCustomerAnalytics from './pages/MerchantCustomerAnalytics';
-import MerchantInfo from './pages/MerchantInfo';
 import MerchantCustomers from './pages/MerchantCustomers';
+import MerchantCustomerAnalytics from './pages/MerchantCustomerAnalytics';
 import MerchantDashboard from './pages/MerchantDashboard';
 import MerchantDataTransactions from './pages/MerchantDataTransactions';
 import MerchantDisputeManagement from './pages/MerchantDisputeManagement';
 import MerchantEmailTemplates from './pages/MerchantEmailTemplates';
 import MerchantFIXDashboard from './pages/MerchantFIXDashboard';
 import MerchantHelpCenter from './pages/MerchantHelpCenter';
+import MerchantInfo from './pages/MerchantInfo';
 import MerchantInvoiceGenerator from './pages/MerchantInvoiceGenerator';
 import MerchantInvoicePortal from './pages/MerchantInvoicePortal';
 import MerchantInvoices from './pages/MerchantInvoices';
@@ -390,6 +391,7 @@ import Terminals from './pages/Terminals';
 import TermsOfService from './pages/TermsOfService';
 import TestPSPOwnership from './pages/TestPSPOwnership';
 import ThreeDSecure from './pages/ThreeDSecure';
+import TransactionTestSuite from './pages/TransactionTestSuite';
 import Transactions from './pages/Transactions';
 import UnifiedBillingDashboard from './pages/UnifiedBillingDashboard';
 import UsageMeteringEngine from './pages/UsageMeteringEngine';
@@ -403,8 +405,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import DeploymentChecklist from './pages/DeploymentChecklist';
-import TransactionTestSuite from './pages/TransactionTestSuite';
 import __Layout from './Layout.jsx';
 
 
@@ -511,6 +511,7 @@ export const PAGES = {
     "DatabaseMigration": DatabaseMigration,
     "DatabaseSchemaValidation": DatabaseSchemaValidation,
     "DatabaseSetup": DatabaseSetup,
+    "DeploymentChecklist": DeploymentChecklist,
     "DeveloperTools": DeveloperTools,
     "DigitalIdentityWallet": DigitalIdentityWallet,
     "Disputes": Disputes,
@@ -621,15 +622,15 @@ export const PAGES = {
     "MerchantCodeRecovery": MerchantCodeRecovery,
     "MerchantCredentials": MerchantCredentials,
     "MerchantCryptoDashboard": MerchantCryptoDashboard,
-    "MerchantCustomerAnalytics": MerchantCustomerAnalytics,
-    "MerchantInfo": MerchantInfo,
     "MerchantCustomers": MerchantCustomers,
+    "MerchantCustomerAnalytics": MerchantCustomerAnalytics,
     "MerchantDashboard": MerchantDashboard,
     "MerchantDataTransactions": MerchantDataTransactions,
     "MerchantDisputeManagement": MerchantDisputeManagement,
     "MerchantEmailTemplates": MerchantEmailTemplates,
     "MerchantFIXDashboard": MerchantFIXDashboard,
     "MerchantHelpCenter": MerchantHelpCenter,
+    "MerchantInfo": MerchantInfo,
     "MerchantInvoiceGenerator": MerchantInvoiceGenerator,
     "MerchantInvoicePortal": MerchantInvoicePortal,
     "MerchantInvoices": MerchantInvoices,
@@ -801,6 +802,7 @@ export const PAGES = {
     "TermsOfService": TermsOfService,
     "TestPSPOwnership": TestPSPOwnership,
     "ThreeDSecure": ThreeDSecure,
+    "TransactionTestSuite": TransactionTestSuite,
     "Transactions": Transactions,
     "UnifiedBillingDashboard": UnifiedBillingDashboard,
     "UsageMeteringEngine": UsageMeteringEngine,
@@ -814,8 +816,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "DeploymentChecklist": DeploymentChecklist,
-    "TransactionTestSuite": TransactionTestSuite,
 }
 
 export const pagesConfig = {
