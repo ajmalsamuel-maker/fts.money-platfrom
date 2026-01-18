@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 // Inline branding constants
-const FTS_LOGOS = { symbol: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"%3E%3Ccircle cx="100" cy="100" r="95" fill="%230066CC" opacity="0.1" stroke="%230066CC" stroke-width="2"/%3E%3Ctext x="100" y="115" font-size="80" font-weight="bold" text-anchor="middle" fill="%230066CC" font-family="Montserrat, sans-serif"%3EFTS%3C/text%3E%3Ctext x="100" y="135" font-size="16" text-anchor="middle" fill="%2300BFFF" font-family="Montserrat, sans-serif" letter-spacing="2"%3E.Money%3C/text%3E%3C/svg%3E' };
+const FTS_LOGOS = { symbol: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6931510c4507988f66a42ca8/8b91de683_FTSMoney-Symbol-logo-RGB.png' };
 const FTS_COLORS = { aqua: '#00BFFF' };
 const FTS_GRADIENTS = { dark1: 'linear-gradient(135deg, #0066CC, #00BFFF)' };
 import { Building2, AlertCircle, ArrowRight, Loader2 } from 'lucide-react';
