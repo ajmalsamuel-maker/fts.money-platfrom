@@ -15,7 +15,7 @@ Deno.serve(async (req) => {
 
         const payload = await req.json();
         const { 
-            merchant_id,
+            merchant_ids = [],
             psp_code,
             target_tps = 10,
             duration_seconds = 60,
@@ -23,6 +23,10 @@ Deno.serve(async (req) => {
             transaction_types = ['sale'],
             amount_range = { min: 10, max: 1000 }
         } = payload;
+
+        if (!merchant_ids || merchant_ids.length === 0) {
+            return Response.json({ error: 'At least one merchant required' }, { status: 400 });
+        }
 
         // Calculate transactions to generate
         const totalTransactions = target_tps * duration_seconds;
@@ -42,10 +46,13 @@ Deno.serve(async (req) => {
             const amount = Math.floor(Math.random() * (amount_range.max - amount_range.min) + amount_range.min);
             const paymentMethod = payment_methods[Math.floor(Math.random() * payment_methods.length)];
             const transactionType = transaction_types[Math.floor(Math.random() * transaction_types.length)];
+            
+            // Randomly select merchant from the list
+            const selectedMerchantId = merchant_ids[Math.floor(Math.random() * merchant_ids.length)];
 
             const transaction = {
                 psp_code: psp_code,
-                merchant_id: merchant_id,
+                merchant_id: selectedMerchantId,
                 type: transactionType,
                 amount: amount,
                 currency: 'USD',
