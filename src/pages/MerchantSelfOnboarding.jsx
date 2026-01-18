@@ -51,7 +51,7 @@ export default function MerchantSelfOnboarding() {
             // Generate merchant code
             const merchantCode = `MERCH${Date.now().toString().slice(-8)}`;
 
-            return base44.entities.Merchant.create({
+            const merchantData = {
                 ...data,
                 psp_code: pspCode,
                 merchant_code: merchantCode,
@@ -68,10 +68,28 @@ export default function MerchantSelfOnboarding() {
                 aml_status: 'clear',
                 aml_provider: 'amlwatcher',
                 documents: []
+            };
+
+            // Create merchant
+            const merchant = await base44.entities.Merchant.create(merchantData);
+
+            // Create approval request so it shows in Approvals page
+            await base44.entities.ApprovalRequest.create({
+                request_type: 'merchant_onboarding',
+                entity_type: 'Merchant',
+                entity_id: merchant.id,
+                entity_data: merchant,
+                submitted_by: staffSession.email || 'admin',
+                submitted_by_name: staffSession.full_name || 'Admin',
+                priority: 'normal',
+                status: 'pending'
             });
+
+            return merchant;
         },
         onSuccess: () => {
             queryClient.invalidateQueries(['merchants']);
+            queryClient.invalidateQueries(['approval-requests']);
             toast.success('Merchant application submitted successfully!');
             window.location.href = createPageUrl('Merchants');
         },
