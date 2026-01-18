@@ -11,9 +11,9 @@ Deno.serve(async (req) => {
         client = new Client(databaseUrl);
         await client.connect();
 
-        // Create ProvisionedPSP table
+        // Create provisioned_psp table
         await client.queryObject(`
-            CREATE TABLE IF NOT EXISTS "ProvisionedPSP" (
+            CREATE TABLE IF NOT EXISTS provisioned_psp (
                 id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
                 created_date TIMESTAMP DEFAULT NOW(),
                 updated_date TIMESTAMP DEFAULT NOW(),
@@ -28,9 +28,9 @@ Deno.serve(async (req) => {
             )
         `);
 
-        // Create Merchant table
+        // Create merchants table
         await client.queryObject(`
-            CREATE TABLE IF NOT EXISTS "Merchant" (
+            CREATE TABLE IF NOT EXISTS merchants (
                 id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
                 created_date TIMESTAMP DEFAULT NOW(),
                 updated_date TIMESTAMP DEFAULT NOW(),
@@ -47,9 +47,9 @@ Deno.serve(async (req) => {
             )
         `);
 
-        // Create Transaction table
+        // Create transactions table
         await client.queryObject(`
-            CREATE TABLE IF NOT EXISTS "Transaction" (
+            CREATE TABLE IF NOT EXISTS transactions (
                 id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
                 created_date TIMESTAMP DEFAULT NOW(),
                 updated_date TIMESTAMP DEFAULT NOW(),
@@ -66,9 +66,9 @@ Deno.serve(async (req) => {
             )
         `);
 
-        // Create ProcessorConnectorConfig table
+        // Create processor_connector_config table
         await client.queryObject(`
-            CREATE TABLE IF NOT EXISTS "ProcessorConnectorConfig" (
+            CREATE TABLE IF NOT EXISTS processor_connector_config (
                 id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
                 created_date TIMESTAMP DEFAULT NOW(),
                 updated_date TIMESTAMP DEFAULT NOW(),
@@ -82,9 +82,9 @@ Deno.serve(async (req) => {
             )
         `);
 
-        // Create MerchantMID table
+        // Create merchant_mids table
         await client.queryObject(`
-            CREATE TABLE IF NOT EXISTS "MerchantMID" (
+            CREATE TABLE IF NOT EXISTS merchant_mids (
                 id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
                 created_date TIMESTAMP DEFAULT NOW(),
                 updated_date TIMESTAMP DEFAULT NOW(),
@@ -99,16 +99,16 @@ Deno.serve(async (req) => {
         `);
 
         // Create indexes for performance
-        await client.queryObject(`CREATE INDEX IF NOT EXISTS idx_merchant_psp_code ON "Merchant"(psp_code)`);
-        await client.queryObject(`CREATE INDEX IF NOT EXISTS idx_transaction_psp_code ON "Transaction"(psp_code)`);
-        await client.queryObject(`CREATE INDEX IF NOT EXISTS idx_transaction_merchant ON "Transaction"(merchant_id)`);
+        await client.queryObject(`CREATE INDEX IF NOT EXISTS idx_merchant_psp_code ON merchants(psp_code)`);
+        await client.queryObject(`CREATE INDEX IF NOT EXISTS idx_transaction_psp_code ON transactions(psp_code)`);
+        await client.queryObject(`CREATE INDEX IF NOT EXISTS idx_transaction_merchant ON transactions(merchant_id)`);
 
         // Verify tables were created
         const verifyResult = await client.queryObject(`
             SELECT table_name 
             FROM information_schema.tables 
             WHERE table_schema = 'public' 
-            AND table_name IN ('ProvisionedPSP', 'Merchant', 'Transaction', 'ProcessorConnectorConfig', 'MerchantMID')
+            AND table_name IN ('provisioned_psp', 'merchants', 'transactions', 'processor_connector_config', 'merchant_mids')
         `);
 
         await client.end();
@@ -116,7 +116,7 @@ Deno.serve(async (req) => {
         return Response.json({ 
             success: true, 
             message: 'PostgreSQL schema created successfully',
-            tables: ['ProvisionedPSP', 'Merchant', 'Transaction', 'ProcessorConnectorConfig', 'MerchantMID'],
+            tables: ['provisioned_psp', 'merchants', 'transactions', 'processor_connector_config', 'merchant_mids'],
             verified: verifyResult.rows.map(r => r.table_name),
             database_url: databaseUrl.split('@')[1] // show host only for debugging
         });
