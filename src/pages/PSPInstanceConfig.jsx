@@ -346,7 +346,7 @@ export default function PSPInstanceConfig() {
         },
         onError: (error) => {
             console.error('❌ Save failed:', error);
-            alert(`❌ Failed to save: ${error.message}`);
+            toast.error(`Failed to save: ${error.message}`);
         }
     });
 
