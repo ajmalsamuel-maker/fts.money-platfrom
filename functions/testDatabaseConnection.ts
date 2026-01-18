@@ -18,6 +18,11 @@ Deno.serve(async (req) => {
 
         // Test basic connection with simple query
         const versionResult = await client.queryObject('SELECT version()');
+        const version = versionResult.rows[0]?.version || 'Unknown';
+        
+        // Get database info
+        const dbInfoResult = await client.queryObject('SELECT current_database(), current_user');
+        const dbInfo = dbInfoResult.rows[0] || {};
         
         // Check if tables exist
         const tablesResult = await client.queryObject(`
@@ -30,10 +35,16 @@ Deno.serve(async (req) => {
         
         await client.end();
 
+        // Parse database URL to get host info (remove credentials)
+        const urlParts = databaseUrl.split('@');
+        const hostPart = urlParts[1]?.split('/')[0] || 'unknown';
+
         return Response.json({ 
             success: true,
             message: 'PostgreSQL database connection successful',
-            version: versionResult.rows[0]?.version,
+            version: version.split(' ')[0] + ' ' + version.split(' ')[1],
+            host: hostPart,
+            database: dbInfo.current_database || 'unknown',
             tables_count: tablesResult.rows.length,
             tables: tablesResult.rows.map(r => r.table_name)
         });
