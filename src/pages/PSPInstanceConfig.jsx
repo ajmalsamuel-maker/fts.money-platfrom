@@ -225,6 +225,7 @@ export default function PSPInstanceConfig() {
             
             // Ensure arrays are properly formatted (not stringified)
             const pspUpdateData = {
+                psp_name: data.branding?.company_name || psp?.psp_name,
                 branding: data.branding,
                 transaction_fees: data.transaction_fees,
                 currency: data.region_settings?.default_currency,
