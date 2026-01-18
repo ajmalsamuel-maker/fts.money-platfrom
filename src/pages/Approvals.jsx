@@ -64,10 +64,11 @@ export default function Approvals() {
 
                     // Update merchant status in PostgreSQL (PSP schema)
                     if (pspCode) {
+                        const merchantId = merchant.merchant_id || merchant.id;
                         await base44.functions.invoke('pspData', {
                             action: 'updateMerchant',
                             psp_code: pspCode,
-                            merchantId: merchant.id,
+                            merchantId: merchantId,
                             updates: { status: 'active' }
                         });
                     }
