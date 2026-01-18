@@ -58,9 +58,21 @@ export default function Approvals() {
             try {
                 const merchants = await base44.entities.Merchant.filter({ id: selectedRequest.entity_id });
                 const merchant = merchants[0];
-                
+
                 if (merchant) {
-                    // Update merchant status to active
+                    const pspCode = JSON.parse(localStorage.getItem('staff_session') || '{}').psp_code;
+
+                    // Update merchant status in PostgreSQL (PSP schema)
+                    if (pspCode) {
+                        await base44.functions.invoke('pspData', {
+                            action: 'updateMerchant',
+                            psp_code: pspCode,
+                            merchantId: merchant.id,
+                            updates: { status: 'active' }
+                        });
+                    }
+
+                    // Also update Base44 entity for consistency
                     await base44.entities.Merchant.update(merchant.id, { status: 'active' });
                     
                     // Generate API keys for sandbox and production
