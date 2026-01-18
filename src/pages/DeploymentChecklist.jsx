@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import PSPPageWrapper from '@/components/layout/PSPPageWrapper';
+import { PlatformLayout } from '@/components/platform/PlatformLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -142,7 +142,7 @@ export default function DeploymentChecklist() {
   };
 
   return (
-    <PSPPageWrapper>
+    <PlatformLayout>
       <div className="max-w-4xl mx-auto p-6 space-y-6">
         <div>
           <h1 className="text-3xl font-bold">Deployment Checklist</h1>
@@ -206,6 +206,6 @@ export default function DeploymentChecklist() {
           </CardContent>
         </Card>
       </div>
-    </PSPPageWrapper>
+    </PlatformLayout>
   );
 }

@@ -39,7 +39,8 @@ import {
     Menu,
     X,
     Target,
-    Plug
+    Plug,
+    CheckSquare
 } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useI18n } from '@/components/i18n/I18nextProvider';
@@ -246,6 +247,8 @@ const menuSections = [
         title: 'Testing & Simulation',
         defaultOpen: false,
         items: [
+            { label: 'Deployment Checklist', description: 'Validate PSP readiness & health checks', path: 'DeploymentChecklist', icon: CheckSquare, priority: true },
+            { label: 'Transaction Test Suite', description: 'End-to-end payment testing', path: 'TransactionTestSuite', icon: Activity, priority: true },
             { label: 'Mock Gateway Manager', description: 'Configure mock payment gateways', path: 'MockGatewayManager', icon: Settings, priority: true },
             { label: 'Load Testing Dashboard', description: 'Generate transaction load & monitor TPS', path: 'LoadTestingDashboard', icon: Target, priority: true }
         ]
