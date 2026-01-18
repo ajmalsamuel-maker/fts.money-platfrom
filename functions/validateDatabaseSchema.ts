@@ -1,18 +1,11 @@
-import { Client } from 'https://deno.land/x/postgres@v0.17.0/mod.ts';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 Deno.serve(async (req) => {
-    let client;
     try {
-        const databaseUrl = Deno.env.get('DATABASE_URL');
-        if (!databaseUrl) {
-            return Response.json({ valid: false, error: 'DATABASE_URL not configured' });
-        }
+        const base44 = createClientFromRequest(req);
 
-        client = new Client(databaseUrl);
-        await client.connect();
-
-        // Check critical tables
-        const criticalTables = [
+        // Check critical entities
+        const criticalEntities = [
             'ProvisionedPSP',
             'Merchant',
             'Transaction',
@@ -21,16 +14,14 @@ Deno.serve(async (req) => {
         ];
 
         const tableChecks = [];
-        for (const table of criticalTables) {
+        for (const entity of criticalEntities) {
             try {
-                await client.queryObject(`SELECT 1 FROM "${table}" LIMIT 1`);
-                tableChecks.push({ table, exists: true });
+                await base44.asServiceRole.entities[entity].list();
+                tableChecks.push({ table: entity, exists: true });
             } catch (error) {
-                tableChecks.push({ table, exists: false, error: error.message });
+                tableChecks.push({ table: entity, exists: false, error: error.message });
             }
         }
-
-        await client.end();
 
         const allValid = tableChecks.every(check => check.exists);
 
@@ -42,12 +33,9 @@ Deno.serve(async (req) => {
         });
 
     } catch (error) {
-        if (client) {
-            try { await client.end(); } catch {}
-        }
         return Response.json({ 
             valid: false, 
             error: error.message 
-        }, { status: 500 });
+        });
     }
 });

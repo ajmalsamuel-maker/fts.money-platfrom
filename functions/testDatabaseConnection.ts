@@ -1,39 +1,23 @@
-import { Client } from 'https://deno.land/x/postgres@v0.17.0/mod.ts';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 Deno.serve(async (req) => {
-    let client;
     try {
-        const databaseUrl = Deno.env.get('DATABASE_URL');
+        const base44 = createClientFromRequest(req);
         
-        if (!databaseUrl) {
-            return Response.json({ 
-                success: false, 
-                error: 'DATABASE_URL not configured' 
-            });
-        }
-
-        // Create PostgreSQL client
-        client = new Client(databaseUrl);
-        await client.connect();
-
-        // Test query
-        const result = await client.queryObject('SELECT COUNT(*) as count FROM "ProvisionedPSP"');
+        // Test database by querying entities
+        const psps = await base44.asServiceRole.entities.ProvisionedPSP.list();
         
-        await client.end();
-
         return Response.json({ 
             success: true,
             message: 'Database connection successful',
-            psps: result.rows[0]?.count || 0
+            psps: psps.length
         });
 
     } catch (error) {
-        if (client) {
-            try { await client.end(); } catch {}
-        }
         return Response.json({ 
             success: false, 
-            error: error.message 
-        }, { status: 500 });
+            error: error.message,
+            details: error.toString()
+        });
     }
 });
