@@ -11,6 +11,13 @@ Deno.serve(async (req) => {
         client = new Client(databaseUrl);
         await client.connect();
 
+        // Drop old PascalCase tables if they exist (to avoid conflicts)
+        await client.queryObject(`DROP TABLE IF EXISTS "Merchant" CASCADE`);
+        await client.queryObject(`DROP TABLE IF EXISTS "Transaction" CASCADE`);
+        await client.queryObject(`DROP TABLE IF EXISTS "ProvisionedPSP" CASCADE`);
+        await client.queryObject(`DROP TABLE IF EXISTS "ProcessorConnectorConfig" CASCADE`);
+        await client.queryObject(`DROP TABLE IF EXISTS "MerchantMID" CASCADE`);
+
         // Create provisioned_psp table
         await client.queryObject(`
             CREATE TABLE IF NOT EXISTS provisioned_psp (
