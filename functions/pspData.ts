@@ -89,9 +89,8 @@ Deno.serve(async (req) => {
                     const result = await client.query(`
                         INSERT INTO merchants (
                             psp_code, merchant_code, business_name, trading_name, 
-                            contact_email, contact_phone, contact_name, country, 
-                            category, website, currency, status, risk_level
-                        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+                            contact_email, country, category, website, currency, status, risk_level
+                        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
                         RETURNING *
                     `, [
                         psp_code,
@@ -99,8 +98,6 @@ Deno.serve(async (req) => {
                         merchantData.business_name,
                         merchantData.trading_name || '',
                         merchantData.contact_email,
-                        merchantData.contact_phone || '',
-                        merchantData.contact_name || '',
                         merchantData.country || '',
                         merchantData.category || '',
                         merchantData.website || '',
