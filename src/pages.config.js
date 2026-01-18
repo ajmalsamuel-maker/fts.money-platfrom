@@ -11,6 +11,7 @@ import APMOnboarding from './pages/APMOnboarding';
 import AccountUpdater from './pages/AccountUpdater';
 import AccountingIntegrations from './pages/AccountingIntegrations';
 import AcquirerOnboarding from './pages/AcquirerOnboarding';
+import AdminDashboard from './pages/AdminDashboard';
 import AdvancedReports from './pages/AdvancedReports';
 import Analytics from './pages/Analytics';
 import Appearance from './pages/Appearance';
@@ -211,8 +212,8 @@ import MerchantCheckout from './pages/MerchantCheckout';
 import MerchantCodeRecovery from './pages/MerchantCodeRecovery';
 import MerchantCredentials from './pages/MerchantCredentials';
 import MerchantCryptoDashboard from './pages/MerchantCryptoDashboard';
-import MerchantCustomers from './pages/MerchantCustomers';
 import MerchantCustomerAnalytics from './pages/MerchantCustomerAnalytics';
+import MerchantCustomers from './pages/MerchantCustomers';
 import MerchantDashboard from './pages/MerchantDashboard';
 import MerchantDataTransactions from './pages/MerchantDataTransactions';
 import MerchantDisputeManagement from './pages/MerchantDisputeManagement';
@@ -405,7 +406,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import AdminDashboard from './pages/AdminDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -423,6 +423,7 @@ export const PAGES = {
     "AccountUpdater": AccountUpdater,
     "AccountingIntegrations": AccountingIntegrations,
     "AcquirerOnboarding": AcquirerOnboarding,
+    "AdminDashboard": AdminDashboard,
     "AdvancedReports": AdvancedReports,
     "Analytics": Analytics,
     "Appearance": Appearance,
@@ -623,8 +624,8 @@ export const PAGES = {
     "MerchantCodeRecovery": MerchantCodeRecovery,
     "MerchantCredentials": MerchantCredentials,
     "MerchantCryptoDashboard": MerchantCryptoDashboard,
-    "MerchantCustomers": MerchantCustomers,
     "MerchantCustomerAnalytics": MerchantCustomerAnalytics,
+    "MerchantCustomers": MerchantCustomers,
     "MerchantDashboard": MerchantDashboard,
     "MerchantDataTransactions": MerchantDataTransactions,
     "MerchantDisputeManagement": MerchantDisputeManagement,
@@ -817,7 +818,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "AdminDashboard": AdminDashboard,
 }
 
 export const pagesConfig = {
