@@ -243,7 +243,7 @@ const menuSections = [
         ]
     },
     {
-        id: 'testing',
+        id: 'testing-simulation',
         title: 'Testing & Simulation',
         defaultOpen: false,
         items: [
