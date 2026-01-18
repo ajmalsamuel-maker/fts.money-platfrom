@@ -1,13 +1,7 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
-
-/**
- * Tax Calculation Engine
- * Calculates VAT/GST/Sales Tax for transactions across all services
- */
+import { query, queryOne, execute, closeConnection } from './db/postgresClient.js';
 
 Deno.serve(async (req) => {
     try {
-        const base44 = createClientFromRequest(req);
         const payload = await req.json();
         const {
             amount,
@@ -27,14 +21,13 @@ Deno.serve(async (req) => {
         } = payload;
 
         // 1. Check if VAT is enabled for this service/entity
-        const taxConfig = await base44.asServiceRole.entities.TaxConfiguration.filter({
-            service_type,
-            psp_code,
-            status: 'active',
-            vat_enabled: true
-        });
+        const taxConfig = await queryOne(
+            `SELECT * FROM tax_configuration WHERE service_type = $1 AND psp_code = $2 AND status = 'active' AND vat_enabled = true`,
+            [service_type, psp_code]
+        );
 
-        if (!taxConfig || taxConfig.length === 0) {
+        if (!taxConfig) {
+            await closeConnection();
             return Response.json({
                 success: true,
                 vat_enabled: false,
@@ -45,7 +38,7 @@ Deno.serve(async (req) => {
             });
         }
 
-        const config = taxConfig[0];
+        const config = taxConfig;
 
         // 2. Determine buyer jurisdiction
         let finalJurisdiction = override_jurisdiction;
@@ -69,14 +62,14 @@ Deno.serve(async (req) => {
         }
 
         // 3. Check if jurisdiction requires tax
-        const jurisdiction = await base44.asServiceRole.entities.TaxJurisdiction.filter({
-            jurisdiction_code: finalJurisdiction,
-            status: 'active'
-        });
+        const jurisdiction = await queryOne(
+            `SELECT * FROM tax_jurisdiction WHERE jurisdiction_code = $1 AND status = 'active'`,
+            [finalJurisdiction]
+        );
 
-        if (!jurisdiction || jurisdiction.length === 0) {
+        if (!jurisdiction) {
             // No tax configuration for this jurisdiction
-            await logCalculation(base44, {
+            await logCalculation({
                 amount,
                 tax_amount: 0,
                 gross_amount: amount,
@@ -87,6 +80,7 @@ Deno.serve(async (req) => {
                 customer_id
             });
 
+            await closeConnection();
             return Response.json({
                 success: true,
                 vat_enabled: true,
@@ -98,7 +92,7 @@ Deno.serve(async (req) => {
             });
         }
 
-        const jurisdictionData = jurisdiction[0];
+        const jurisdictionData = jurisdiction;
 
         // 4. Check B2B reverse charge (EU)
         if (is_b2b && jurisdictionData.reverse_charge_b2b && buyer_tax_id) {
@@ -106,7 +100,7 @@ Deno.serve(async (req) => {
             const validVatId = await validateVATID(buyer_tax_id, finalJurisdiction);
             
             if (validVatId) {
-                await logCalculation(base44, {
+                await logCalculation({
                     amount,
                     tax_amount: 0,
                     gross_amount: amount,
@@ -120,6 +114,7 @@ Deno.serve(async (req) => {
                     customer_id
                 });
 
+                await closeConnection();
                 return Response.json({
                     success: true,
                     vat_enabled: true,
@@ -134,16 +129,16 @@ Deno.serve(async (req) => {
         }
 
         // 5. Get tax category and rate
-        const categoryData = await base44.asServiceRole.entities.TaxCategory.filter({
-            category_code: tax_category,
-            status: 'active'
-        });
+        const categoryData = await queryOne(
+            `SELECT * FROM tax_category WHERE category_code = $1 AND status = 'active'`,
+            [tax_category]
+        );
 
         let rateType = 'standard';
         let taxRate = jurisdictionData.standard_rate;
 
-        if (categoryData && categoryData.length > 0) {
-            const category = categoryData[0];
+        if (categoryData) {
+            const category = categoryData;
             rateType = category.default_rate_type || 'standard';
 
             // Check jurisdiction-specific overrides
@@ -192,7 +187,7 @@ Deno.serve(async (req) => {
             : amount + taxAmount;
 
         // 7. Log calculation
-        const logId = await logCalculation(base44, {
+        const logId = await logCalculation({
             net_amount: netAmount,
             tax_amount: taxAmount,
             gross_amount: grossAmount,
@@ -213,6 +208,7 @@ Deno.serve(async (req) => {
             currency
         });
 
+        await closeConnection();
         return Response.json({
             success: true,
             vat_enabled: true,
@@ -235,6 +231,7 @@ Deno.serve(async (req) => {
         });
 
     } catch (error) {
+        await closeConnection();
         console.error('Tax calculation error:', error);
         return Response.json({ 
             success: false, 
@@ -243,13 +240,14 @@ Deno.serve(async (req) => {
     }
 });
 
-async function logCalculation(base44, data) {
-    const log = await base44.asServiceRole.entities.TaxCalculationLog.create({
-        ...data,
-        calculation_timestamp: new Date().toISOString(),
-        calculation_method: 'automatic'
-    });
-    return log.id;
+async function logCalculation(data) {
+    const logId = `TAX-LOG-${Date.now()}`;
+    await execute(
+        `INSERT INTO tax_calculation_log (log_id, net_amount, tax_amount, gross_amount, calculation_timestamp)
+         VALUES ($1, $2, $3, $4, NOW())`,
+        [logId, data.net_amount, data.tax_amount, data.gross_amount]
+    );
+    return logId;
 }
 
 async function detectCountryFromIP(ip) {
