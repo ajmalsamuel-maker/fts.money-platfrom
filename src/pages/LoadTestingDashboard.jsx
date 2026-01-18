@@ -15,6 +15,8 @@ import TestScenarioLibrary from '@/components/loadtest/TestScenarioLibrary';
 import RealTimeMonitor from '@/components/loadtest/RealTimeMonitor';
 import AdvancedAnalytics from '@/components/loadtest/AdvancedAnalytics';
 import ReportGenerator from '@/components/loadtest/ReportGenerator';
+import TestDataManager from '@/components/loadtest/TestDataManager';
+import ChaosEngineeringPanel from '@/components/loadtest/ChaosEngineeringPanel';
 import { 
     Zap, 
     Play, 
@@ -50,7 +52,12 @@ export default function LoadTestingDashboard() {
         amount_min: 10,
         amount_max: 1000,
         test_scenarios: ['successful_payment'],
-        scenario_distribution: { successful_payment: 100 }
+        scenario_distribution: { successful_payment: 100 },
+        chaos_scenarios: [],
+        chaos_intensity: 0,
+        chaos_latency_ms: 500,
+        chaos_outage_duration: 10,
+        test_data_set_id: null
     });
 
     const [scheduleConfig, setScheduleConfig] = useState({
@@ -87,7 +94,12 @@ export default function LoadTestingDashboard() {
                     max: parseFloat(config.amount_max)
                 },
                 test_scenarios: config.test_scenarios,
-                scenario_distribution: config.scenario_distribution
+                scenario_distribution: config.scenario_distribution,
+                chaos_scenarios: config.chaos_scenarios,
+                chaos_intensity: config.chaos_intensity,
+                chaos_latency_ms: config.chaos_latency_ms,
+                chaos_outage_duration: config.chaos_outage_duration,
+                test_data_set_id: config.test_data_set_id
             });
             return data;
         },
@@ -140,7 +152,16 @@ export default function LoadTestingDashboard() {
                         <TabsContent value="quicktest">
                             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                                 {/* Configuration Panel */}
-                                <Card className="lg:col-span-1">
+                                <div className="lg:col-span-1 space-y-4">
+                                    <TestDataManager 
+                                        pspCode={config.psp_code}
+                                        onSelectDataset={(dataset) => setConfig({...config, test_data_set_id: dataset.id})}
+                                    />
+                                    <ChaosEngineeringPanel 
+                                        config={config}
+                                        onChange={setConfig}
+                                    />
+                                    <Card className="lg:col-span-1">
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
                                     <Activity className="h-5 w-5" />
@@ -492,6 +513,7 @@ export default function LoadTestingDashboard() {
                                         <p className="text-slate-500">Run a test to view analytics and generate reports</p>
                                     </CardContent>
                                 </Card>
+                                </div>
                             )}
                         </TabsContent>
 
