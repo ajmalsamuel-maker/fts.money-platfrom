@@ -404,6 +404,7 @@ import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
 import DeploymentChecklist from './pages/DeploymentChecklist';
+import TransactionTestSuite from './pages/TransactionTestSuite';
 import __Layout from './Layout.jsx';
 
 
@@ -814,6 +815,7 @@ export const PAGES = {
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
     "DeploymentChecklist": DeploymentChecklist,
+    "TransactionTestSuite": TransactionTestSuite,
 }
 
 export const pagesConfig = {
