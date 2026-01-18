@@ -35,7 +35,7 @@ export default function Approvals() {
         mutationFn: ({ id, data }) => base44.entities.ApprovalRequest.update(id, data),
         onSuccess: () => { 
             queryClient.invalidateQueries({ queryKey: ['approval-requests'] });
-            queryClient.invalidateQueries({ queryKey: ['merchants'] });
+            queryClient.invalidateQueries({ queryKey: ['merchants'] }, { exact: false });
             setSelectedRequest(null);
             setReviewComment('');
         }
