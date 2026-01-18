@@ -68,7 +68,15 @@ export default function PaymentGateways() {
 
     const { data: merchants = [] } = useQuery({
         queryKey: ['merchants'],
-        queryFn: () => base44.entities.Merchant.list()
+        queryFn: async () => {
+            if (!pspCode) return [];
+            const response = await base44.functions.invoke('pspData', {
+                action: 'listMerchants',
+                psp_code: pspCode
+            });
+            return response.data?.data || [];
+        },
+        enabled: !!pspCode
     });
 
     const createMutation = useMutation({
