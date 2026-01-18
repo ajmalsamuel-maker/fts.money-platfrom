@@ -273,7 +273,10 @@ export default function PSPInstanceConfig() {
             await queryClient.invalidateQueries(['psp-config', pspId]);
             await queryClient.refetchQueries(['psp-config', pspId]);
             
-            toast.success('✅ Configuration saved successfully!');
+            toast.success('✅ Configuration saved successfully!', {
+                duration: 3000,
+                position: 'top-center'
+            });
             
             // Comprehensive audit logging for compliance
             try {
