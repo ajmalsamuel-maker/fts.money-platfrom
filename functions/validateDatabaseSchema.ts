@@ -1,25 +1,8 @@
-import { Client } from 'https://deno.land/x/postgres@v0.17.0/mod.ts';
+import { listTables, closeConnection } from './db/postgresClient.js';
 
 Deno.serve(async (req) => {
-    let client;
     try {
-        const databaseUrl = Deno.env.get('DATABASE_URL');
-        if (!databaseUrl) {
-            return Response.json({ valid: false, error: 'DATABASE_URL environment variable not set' });
-        }
-
-        client = new Client(databaseUrl);
-        await client.connect();
-
-        // Get all existing tables
-        const allTablesResult = await client.queryObject(`
-            SELECT table_name 
-            FROM information_schema.tables 
-            WHERE table_schema = 'public' 
-            AND table_type = 'BASE TABLE'
-        `);
-        
-        const existingTables = allTablesResult.rows.map(r => r.table_name);
+        const existingTables = await listTables();
 
         // Check critical PostgreSQL tables (match actual database table names)
         const criticalTables = [
@@ -35,7 +18,7 @@ Deno.serve(async (req) => {
             exists: existingTables.includes(table)
         }));
 
-        await client.end();
+        await closeConnection();
 
         const allValid = tableChecks.every(check => check.exists);
 
@@ -50,9 +33,7 @@ Deno.serve(async (req) => {
         });
 
     } catch (error) {
-        if (client) {
-            try { await client.end(); } catch {}
-        }
+        await closeConnection();
         return Response.json({ 
             valid: false, 
             error: `PostgreSQL schema validation failed: ${error.message}`
