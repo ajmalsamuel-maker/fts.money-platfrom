@@ -103,12 +103,22 @@ Deno.serve(async (req) => {
         await client.queryObject(`CREATE INDEX IF NOT EXISTS idx_transaction_psp_code ON "Transaction"(psp_code)`);
         await client.queryObject(`CREATE INDEX IF NOT EXISTS idx_transaction_merchant ON "Transaction"(merchant_id)`);
 
+        // Verify tables were created
+        const verifyResult = await client.queryObject(`
+            SELECT table_name 
+            FROM information_schema.tables 
+            WHERE table_schema = 'public' 
+            AND table_name IN ('ProvisionedPSP', 'Merchant', 'Transaction', 'ProcessorConnectorConfig', 'MerchantMID')
+        `);
+
         await client.end();
 
         return Response.json({ 
             success: true, 
             message: 'PostgreSQL schema created successfully',
-            tables: ['ProvisionedPSP', 'Merchant', 'Transaction', 'ProcessorConnectorConfig', 'MerchantMID']
+            tables: ['ProvisionedPSP', 'Merchant', 'Transaction', 'ProcessorConnectorConfig', 'MerchantMID'],
+            verified: verifyResult.rows.map(r => r.table_name),
+            database_url: databaseUrl.split('@')[1] // show host only for debugging
         });
 
     } catch (error) {
