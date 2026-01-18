@@ -27,25 +27,6 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'PSP code required' }, { status: 400 });
         }
 
-        // CRITICAL: Check platform LEI is mandatory before provisioning any PSP (vLEI/OOR/ECR have grace periods)
-        let platformLEIs = [];
-        try {
-            platformLEIs = await base44.asServiceRole.entities.PlatformLEI.list();
-        } catch (err) {
-            console.log('[PROVISION] Could not check platform LEI - continuing without validation');
-        }
-
-        if (platformLEIs && platformLEIs.length > 0) {
-            const platformLEI = platformLEIs[0];
-            if (!platformLEI.lei || platformLEI.lei.length !== 20) {
-                return Response.json({
-                    success: false,
-                    error: 'PLATFORM_LEI_INVALID',
-                    message: 'Platform LEI must be a valid 20-character identifier before provisioning PSPs'
-                }, { status: 403 });
-            }
-        }
-
         const schemaName = `psp_${psp_code.toLowerCase().replace(/-/g, '_')}`;
         const client = await pool.connect();
 
@@ -313,31 +294,13 @@ Deno.serve(async (req) => {
             `);
             console.log('[PROVISION] app_users dropped after table creation');
 
-            // Copy PSP settings from ProvisionedPSP entity
-            try {
-                const pspData = await base44.asServiceRole.entities.ProvisionedPSP.filter({ psp_code });
-                if (pspData && pspData.length > 0) {
-                    const psp = pspData[0];
-                    await client.query(`
-                        INSERT INTO psp_settings (psp_code, psp_name, branding, settings)
-                        VALUES ($1, $2, $3, $4)
-                        ON CONFLICT (psp_code) DO UPDATE
-                        SET psp_name = $2, branding = $3, settings = $4, updated_date = CURRENT_TIMESTAMP
-                    `, [
-                        psp.psp_code,
-                        psp.psp_name,
-                        JSON.stringify(psp.branding || {}),
-                        JSON.stringify({
-                            tier: psp.tier,
-                            status: psp.status,
-                            domain: psp.domain,
-                            subdomain: psp.subdomain
-                        })
-                    ]);
-                }
-            } catch (err) {
-                console.log('[PROVISION] Could not copy PSP settings - continuing without');
-            }
+            // Insert PSP settings
+            await client.query(`
+                INSERT INTO psp_settings (psp_code, psp_name)
+                VALUES ($1, $2)
+                ON CONFLICT (psp_code) DO UPDATE
+                SET updated_date = CURRENT_TIMESTAMP
+            `, [psp_code, psp_code]);
 
             // If template_psp_code provided, copy configuration data (not customer data)
             if (template_psp_code) {
@@ -417,39 +380,11 @@ Deno.serve(async (req) => {
                 console.log('[PROVISION] ✓ app_users completely removed');
             }
 
-            // Log schema creation in audit log with full compliance framework
+            // Log schema creation
             await client.query(`
                 INSERT INTO "${schemaName}".audit_logs (action, user_email, details)
                 VALUES ($1, $2, $3)
-            `, ['SCHEMA_CREATED', user?.email || 'system', JSON.stringify({ 
-                psp_code, 
-                template_source: template_psp_code,
-                compliance_framework: [
-                    'PCI DSS Level 1',
-                    'GDPR Article 32',
-                    'ISO 27001',
-                    'SOC 2 Type II',
-                    'PSD2',
-                    'AML/CFT (FATF)',
-                    'ISO 22301',
-                    'ISO 20000',
-                    'OWASP ASVS Level 3',
-                    'FIPS 140-3',
-                    'NIST CSF',
-                    'eIDAS',
-                    'CCPA/LGPD/PIPEDA',
-                    'Open Banking Standards',
-                    'CSA STAR'
-                ],
-                technical_controls: {
-                    encryption: 'AES-256-GCM',
-                    transport_security: 'TLS 1.3',
-                    authentication: 'MFA + FIDO2',
-                    key_management: 'HSM-backed',
-                    network: 'Zero Trust'
-                },
-                timestamp: new Date().toISOString()
-            })]);
+            `, ['SCHEMA_CREATED', 'system', JSON.stringify({ psp_code, timestamp: new Date().toISOString() })]);
 
             return Response.json({
                 success: true,
