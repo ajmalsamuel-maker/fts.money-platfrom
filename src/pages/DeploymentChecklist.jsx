@@ -11,6 +11,7 @@ import { base44 } from '@/api/base44Client';
 export default function DeploymentChecklist() {
   const [pspList, setPspList] = useState([]);
   const [selectedPsp, setSelectedPsp] = useState('');
+  const [dbInfo, setDbInfo] = useState(null);
   const [checks, setChecks] = useState([
     { id: 'setup', name: 'Database Setup', status: 'pending', message: '', fn: 'createPostgreSQLSchema' },
     { id: 'db', name: 'Database Connection', status: 'pending', message: '', fn: 'testDatabaseConnection' },
@@ -45,6 +46,10 @@ export default function DeploymentChecklist() {
     }
     setTesting(true);
     
+    // Get database info first
+    await getDatabaseInfo();
+    await new Promise(r => setTimeout(r, 500));
+    
     // Setup Database
     await testSetup();
     await new Promise(r => setTimeout(r, 500));
@@ -77,6 +82,22 @@ export default function DeploymentChecklist() {
 
   const updateCheck = (id, status, message) => {
     setChecks(prev => prev.map(c => c.id === id ? { ...c, status, message } : c));
+  };
+
+  const getDatabaseInfo = async () => {
+    try {
+      const response = await base44.functions.invoke('testDatabaseConnection', {});
+      if (response.data.success) {
+        setDbInfo({
+          version: response.data.version,
+          host: response.data.host || 'N/A',
+          database: response.data.database || 'N/A',
+          tables: response.data.tables || []
+        });
+      }
+    } catch (error) {
+      console.error('Failed to get database info:', error);
+    }
   };
 
   const testSetup = async () => {
@@ -214,6 +235,32 @@ export default function DeploymentChecklist() {
             </div>
           </CardContent>
         </Card>
+
+        {dbInfo && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Database Information</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <div className="flex items-center justify-between p-3 bg-slate-50 rounded">
+                <span className="font-medium text-sm">PostgreSQL Version</span>
+                <span className="font-mono text-sm">{dbInfo.version}</span>
+              </div>
+              <div className="flex items-center justify-between p-3 bg-slate-50 rounded">
+                <span className="font-medium text-sm">Host</span>
+                <span className="font-mono text-sm text-slate-600">{dbInfo.host}</span>
+              </div>
+              <div className="flex items-center justify-between p-3 bg-slate-50 rounded">
+                <span className="font-medium text-sm">Database</span>
+                <span className="font-mono text-sm text-slate-600">{dbInfo.database}</span>
+              </div>
+              <div className="flex items-center justify-between p-3 bg-slate-50 rounded">
+                <span className="font-medium text-sm">Tables Found</span>
+                <span className="font-mono text-sm">{dbInfo.tables.length}</span>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         <Card>
           <CardHeader>

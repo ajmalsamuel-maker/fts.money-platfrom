@@ -11,12 +11,22 @@ Deno.serve(async (req) => {
         client = new Client(databaseUrl);
         await client.connect();
 
-        // Drop old PascalCase tables if they exist (to avoid conflicts)
+        // First, check all existing tables and drop indexes
+        await client.queryObject(`DROP INDEX IF EXISTS idx_merchant_psp_code CASCADE`);
+        await client.queryObject(`DROP INDEX IF EXISTS idx_transaction_psp_code CASCADE`);
+        await client.queryObject(`DROP INDEX IF EXISTS idx_transaction_merchant CASCADE`);
+
+        // Drop old tables (both PascalCase and lowercase versions)
         await client.queryObject(`DROP TABLE IF EXISTS "Merchant" CASCADE`);
         await client.queryObject(`DROP TABLE IF EXISTS "Transaction" CASCADE`);
         await client.queryObject(`DROP TABLE IF EXISTS "ProvisionedPSP" CASCADE`);
         await client.queryObject(`DROP TABLE IF EXISTS "ProcessorConnectorConfig" CASCADE`);
         await client.queryObject(`DROP TABLE IF EXISTS "MerchantMID" CASCADE`);
+        await client.queryObject(`DROP TABLE IF EXISTS merchant_mids CASCADE`);
+        await client.queryObject(`DROP TABLE IF EXISTS processor_connector_config CASCADE`);
+        await client.queryObject(`DROP TABLE IF EXISTS transactions CASCADE`);
+        await client.queryObject(`DROP TABLE IF EXISTS merchants CASCADE`);
+        await client.queryObject(`DROP TABLE IF EXISTS provisioned_psp CASCADE`);
 
         // Create provisioned_psp table
         await client.queryObject(`
