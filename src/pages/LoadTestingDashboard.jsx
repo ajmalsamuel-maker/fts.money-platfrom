@@ -161,7 +161,7 @@ export default function LoadTestingDashboard() {
                                         config={config}
                                         onChange={setConfig}
                                     />
-                                    <Card className="lg:col-span-1">
+                                    <Card>
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
                                     <Activity className="h-5 w-5" />
@@ -319,6 +319,7 @@ export default function LoadTestingDashboard() {
                                 </Button>
                             </CardContent>
                         </Card>
+                                </div>
 
                                 {/* Results Panel */}
                                 <div className="lg:col-span-2 space-y-6">
@@ -513,7 +514,6 @@ export default function LoadTestingDashboard() {
                                         <p className="text-slate-500">Run a test to view analytics and generate reports</p>
                                     </CardContent>
                                 </Card>
-                                </div>
                             )}
                         </TabsContent>
 
