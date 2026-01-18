@@ -250,16 +250,26 @@ export default function PSPInstanceConfig() {
                 enabled_services: updatedPSP.enabled_services
             });
             
-            // Invalidate all related queries
-            await queryClient.invalidateQueries(['psp-config']);
-            await queryClient.invalidateQueries(['provisioned-psps']);
-            await queryClient.invalidateQueries(['psp-subscriptions']);
-            await queryClient.invalidateQueries(['psp-instance']);
+            // Update local state immediately
+            setConfig({
+                branding: updatedPSP.branding || config.branding,
+                transaction_fees: updatedPSP.transaction_fees || config.transaction_fees,
+                region_settings: {
+                    default_currency: updatedPSP.currency || config.region_settings?.default_currency,
+                    timezone: updatedPSP.timezone || config.region_settings?.timezone,
+                    region: updatedPSP.country || config.region_settings?.region,
+                    language: config.region_settings?.language || 'en'
+                },
+                enabled_payment_methods: updatedPSP.enabled_payment_methods || [],
+                enabled_payout_methods: updatedPSP.enabled_payout_methods || [],
+                enabled_services: updatedPSP.enabled_services || []
+            });
             
-            // Force immediate refetch
-            await refetch();
+            // Invalidate and refetch
+            await queryClient.invalidateQueries(['psp-config', pspId]);
+            await queryClient.refetchQueries(['psp-config', pspId]);
             
-            toast.success('PSP configuration saved successfully!');
+            toast.success('✅ Configuration saved successfully!');
             
             // Comprehensive audit logging for compliance
             try {
