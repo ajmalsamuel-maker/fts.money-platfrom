@@ -54,27 +54,40 @@ export default function Approvals() {
         });
         
         // If it's a merchant onboarding approval, generate API credentials
-        if (selectedRequest.request_type === 'merchant_onboarding' && selectedRequest.entity_id) {
-            try {
-                const merchants = await base44.entities.Merchant.filter({ id: selectedRequest.entity_id });
-                const merchant = merchants[0];
+         if (selectedRequest.request_type === 'merchant_onboarding' && selectedRequest.entity_id) {
+             try {
+                 const merchants = await base44.entities.Merchant.filter({ id: selectedRequest.entity_id });
+                 const merchant = merchants[0];
 
-                if (merchant) {
-                    const pspCode = JSON.parse(localStorage.getItem('staff_session') || '{}').psp_code;
+                 if (merchant) {
+                     const pspCode = JSON.parse(localStorage.getItem('staff_session') || '{}').psp_code;
 
-                    // Update merchant status in PostgreSQL (PSP schema)
-                    if (pspCode) {
-                        const merchantId = merchant.merchant_id || merchant.id;
-                        await base44.functions.invoke('pspData', {
-                            action: 'updateMerchant',
-                            psp_code: pspCode,
-                            merchantId: merchantId,
-                            updates: { status: 'active' }
-                        });
-                    }
+                     // Sync merchant to PostgreSQL and activate
+                     if (pspCode) {
+                         // Create merchant in PostgreSQL if it doesn't exist
+                         const merchantResponse = await base44.functions.invoke('pspData', {
+                             action: 'createMerchant',
+                             psp_code: pspCode,
+                             merchantData: {
+                                 merchant_id: merchant.merchant_id || `MID-${merchant.id?.slice(0, 8)}`,
+                                 merchant_code: merchant.merchant_code || `MC-${Date.now()}`,
+                                 business_name: merchant.business_name,
+                                 trading_name: merchant.trading_name || '',
+                                 contact_email: merchant.contact_email,
+                                 contact_phone: merchant.contact_phone || '',
+                                 contact_name: merchant.contact_name || '',
+                                 country: merchant.country || '',
+                                 category: merchant.category || '',
+                                 website: merchant.website || '',
+                                 currency: merchant.currency || 'USD',
+                                 status: 'active',
+                                 risk_level: merchant.risk_level || 'medium'
+                             }
+                         });
+                     }
 
-                    // Also update Base44 entity for consistency
-                    await base44.entities.Merchant.update(merchant.id, { status: 'active' });
+                     // Also update Base44 entity for consistency
+                     await base44.entities.Merchant.update(merchant.id, { status: 'active' });
                     
                     // Generate API keys for sandbox and production
                     const environments = ['sandbox', 'production'];
