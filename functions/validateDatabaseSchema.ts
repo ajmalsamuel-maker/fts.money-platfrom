@@ -11,6 +11,16 @@ Deno.serve(async (req) => {
         client = new Client(databaseUrl);
         await client.connect();
 
+        // Get all existing tables
+        const allTablesResult = await client.queryObject(`
+            SELECT table_name 
+            FROM information_schema.tables 
+            WHERE table_schema = 'public' 
+            AND table_type = 'BASE TABLE'
+        `);
+        
+        const existingTables = allTablesResult.rows.map(r => r.table_name);
+
         // Check critical PostgreSQL tables
         const criticalTables = [
             'ProvisionedPSP',
@@ -20,15 +30,10 @@ Deno.serve(async (req) => {
             'MerchantMID'
         ];
 
-        const tableChecks = [];
-        for (const table of criticalTables) {
-            try {
-                await client.queryObject(`SELECT 1 FROM "${table}" LIMIT 1`);
-                tableChecks.push({ table, exists: true });
-            } catch (error) {
-                tableChecks.push({ table, exists: false, error: error.message });
-            }
-        }
+        const tableChecks = criticalTables.map(table => ({
+            table,
+            exists: existingTables.includes(table)
+        }));
 
         await client.end();
 
@@ -38,7 +43,10 @@ Deno.serve(async (req) => {
             valid: allValid,
             tables: tableChecks.filter(c => c.exists).map(c => c.table),
             issues: tableChecks.filter(c => !c.exists),
-            message: allValid ? `All ${tableChecks.filter(c => c.exists).length} critical PostgreSQL tables validated` : 'Some tables are missing or inaccessible'
+            all_tables: existingTables,
+            message: allValid 
+                ? `All ${tableChecks.filter(c => c.exists).length}/5 critical tables exist` 
+                : `Missing tables - found ${existingTables.length} total tables in database`
         });
 
     } catch (error) {

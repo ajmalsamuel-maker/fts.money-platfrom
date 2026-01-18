@@ -16,15 +16,26 @@ Deno.serve(async (req) => {
         client = new Client(databaseUrl);
         await client.connect();
 
-        // Test query
-        const result = await client.queryObject('SELECT COUNT(*) as count FROM "ProvisionedPSP"');
+        // Test basic connection with simple query
+        const versionResult = await client.queryObject('SELECT version()');
+        
+        // Check if tables exist
+        const tablesResult = await client.queryObject(`
+            SELECT table_name 
+            FROM information_schema.tables 
+            WHERE table_schema = 'public' 
+            AND table_type = 'BASE TABLE'
+            ORDER BY table_name
+        `);
         
         await client.end();
 
         return Response.json({ 
             success: true,
             message: 'PostgreSQL database connection successful',
-            psps: result.rows[0]?.count || 0
+            version: versionResult.rows[0]?.version,
+            tables_count: tablesResult.rows.length,
+            tables: tablesResult.rows.map(r => r.table_name)
         });
 
     } catch (error) {
