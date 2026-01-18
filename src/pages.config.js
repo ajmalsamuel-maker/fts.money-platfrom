@@ -24,6 +24,7 @@ import AssetIssuerLogin from './pages/AssetIssuerLogin';
 import AssetIssuerSettings from './pages/AssetIssuerSettings';
 import AssetIssuerTokenize from './pages/AssetIssuerTokenize';
 import AuditLogs from './pages/AuditLogs';
+import AuditManagement from './pages/AuditManagement';
 import AutomatedPayouts from './pages/AutomatedPayouts';
 import BINTable from './pages/BINTable';
 import Balances from './pages/Balances';
@@ -210,8 +211,8 @@ import MerchantCodeRecovery from './pages/MerchantCodeRecovery';
 import MerchantCredentials from './pages/MerchantCredentials';
 import MerchantCryptoDashboard from './pages/MerchantCryptoDashboard';
 import MerchantCustomerAnalytics from './pages/MerchantCustomerAnalytics';
-import MerchantCustomers from './pages/MerchantCustomers';
 import MerchantInfo from './pages/MerchantInfo';
+import MerchantCustomers from './pages/MerchantCustomers';
 import MerchantDashboard from './pages/MerchantDashboard';
 import MerchantDataTransactions from './pages/MerchantDataTransactions';
 import MerchantDisputeManagement from './pages/MerchantDisputeManagement';
@@ -320,6 +321,7 @@ import PaymentProviderManagement from './pages/PaymentProviderManagement';
 import PaymentProviders from './pages/PaymentProviders';
 import PayoutOrchestration from './pages/PayoutOrchestration';
 import Payouts from './pages/Payouts';
+import PerformanceOptimization from './pages/PerformanceOptimization';
 import PlatformAdminLogin from './pages/PlatformAdminLogin';
 import PlatformAdminRegister from './pages/PlatformAdminRegister';
 import PlatformAuditLogs from './pages/PlatformAuditLogs';
@@ -401,8 +403,7 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import AuditManagement from './pages/AuditManagement';
-import PerformanceOptimization from './pages/PerformanceOptimization';
+import DeploymentChecklist from './pages/DeploymentChecklist';
 import __Layout from './Layout.jsx';
 
 
@@ -433,6 +434,7 @@ export const PAGES = {
     "AssetIssuerSettings": AssetIssuerSettings,
     "AssetIssuerTokenize": AssetIssuerTokenize,
     "AuditLogs": AuditLogs,
+    "AuditManagement": AuditManagement,
     "AutomatedPayouts": AutomatedPayouts,
     "BINTable": BINTable,
     "Balances": Balances,
@@ -619,8 +621,8 @@ export const PAGES = {
     "MerchantCredentials": MerchantCredentials,
     "MerchantCryptoDashboard": MerchantCryptoDashboard,
     "MerchantCustomerAnalytics": MerchantCustomerAnalytics,
-    "MerchantCustomers": MerchantCustomers,
     "MerchantInfo": MerchantInfo,
+    "MerchantCustomers": MerchantCustomers,
     "MerchantDashboard": MerchantDashboard,
     "MerchantDataTransactions": MerchantDataTransactions,
     "MerchantDisputeManagement": MerchantDisputeManagement,
@@ -729,6 +731,7 @@ export const PAGES = {
     "PaymentProviders": PaymentProviders,
     "PayoutOrchestration": PayoutOrchestration,
     "Payouts": Payouts,
+    "PerformanceOptimization": PerformanceOptimization,
     "PlatformAdminLogin": PlatformAdminLogin,
     "PlatformAdminRegister": PlatformAdminRegister,
     "PlatformAuditLogs": PlatformAuditLogs,
@@ -810,8 +813,7 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "AuditManagement": AuditManagement,
-    "PerformanceOptimization": PerformanceOptimization,
+    "DeploymentChecklist": DeploymentChecklist,
 }
 
 export const pagesConfig = {
