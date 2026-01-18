@@ -21,18 +21,18 @@ Deno.serve(async (req) => {
         
         const existingTables = allTablesResult.rows.map(r => r.table_name);
 
-        // Check critical PostgreSQL tables (Base44 uses lowercase naming)
+        // Check critical PostgreSQL tables (match actual database table names)
         const criticalTables = [
             'provisioned_psp',
-            'merchant',
-            'transaction',
+            'merchants',
+            'transactions',
             'processor_connector_config',
-            'merchant_mid'
+            'merchant_mids'
         ];
 
         const tableChecks = criticalTables.map(table => ({
             table,
-            exists: existingTables.map(t => t.toLowerCase()).includes(table.toLowerCase())
+            exists: existingTables.includes(table)
         }));
 
         await client.end();
