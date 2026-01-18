@@ -51,28 +51,30 @@ function PSPLoginContent() {
         setError('');
         
         try {
-            const { data } = await base44.functions.invoke('pspAuth', {
+            const response = await base44.functions.invoke('pspAuth', {
                 action: 'login',
                 email: email,
                 password: password,
                 psp_code: pspCode.trim()
             });
 
-            if (data.success) {
+            const result = response.data || response;
+
+            if (result.success) {
                 const sessionData = {
-                    email: data.session.email,
-                    full_name: data.session.full_name,
-                    role: data.session.role,
-                    user_id: data.session.user_id,
+                    email: result.session.email,
+                    full_name: result.session.full_name,
+                    role: result.session.role,
+                    user_id: result.session.user_id,
                     psp_code: pspCode.toUpperCase().trim(),
-                    schema: data.session.schema
+                    schema: result.session.schema
                 };
 
                 localStorage.setItem('staff_session', JSON.stringify(sessionData));
-                navigate('/Dashboard', { replace: true });
+                window.location.href = '/Dashboard';
                 return;
             } else {
-                setError(data.error || 'Login failed');
+                setError(result.error || 'Login failed');
             }
         } catch (err) {
             setError('Login error: ' + err.message);
