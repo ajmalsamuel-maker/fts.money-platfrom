@@ -24,6 +24,7 @@ Deno.serve(async (req) => {
             psp_code: psp_code,
             merchant_id: psp_code, // Link to the PSP
             gateway_name: provider.name,
+            api_key: `test_${provider.name.toLowerCase().replace(/\s+/g, '_')}_${Date.now()}`,
             status: provider.status || 'active',
             gateway_mode: 'test', // Default to test mode
             supported_methods: [
