@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 // Inline branding constants
-const FTS_LOGOS = { symbol: 'https://img.icons8.com/color/256/000000/bank.png' };
+const FTS_LOGOS = { symbol: 'https://img.icons8.com/fluency/256/000000/services.png' };
 const FTS_COLORS = { aqua: '#00BFFF' };
 const FTS_GRADIENTS = { dark1: 'linear-gradient(135deg, #0066CC, #00BFFF)' };
 import { Building2, AlertCircle, ArrowRight, Loader2 } from 'lucide-react';
