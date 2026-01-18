@@ -8,8 +8,9 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Database, Plus, Trash2, Download, Sparkles, Tag } from 'lucide-react';
+import { Database, Plus, Trash2, Download, Sparkles, Tag, Upload } from 'lucide-react';
 import { Switch } from "@/components/ui/switch";
+import { toast } from "sonner";
 
 export default function TestDataManager({ pspCode, onSelectDataset }) {
     const queryClient = useQueryClient();
@@ -20,6 +21,8 @@ export default function TestDataManager({ pspCode, onSelectDataset }) {
         purge_after_test: true
     });
     const [dialogOpen, setDialogOpen] = useState(false);
+    const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+    const [uploading, setUploading] = useState(false);
 
     const { data: datasets = [] } = useQuery({
         queryKey: ['testDataSets', pspCode],
@@ -84,6 +87,32 @@ export default function TestDataManager({ pspCode, onSelectDataset }) {
         onSuccess: () => queryClient.invalidateQueries(['testDataSets'])
     });
 
+    const handleFileUpload = async (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setUploading(true);
+        try {
+            // Upload file
+            const { data: uploadData } = await base44.integrations.Core.UploadFile({ file });
+            
+            // Process the log
+            const { data: result } = await base44.functions.invoke('processTransactionLog', {
+                file_url: uploadData.file_url,
+                psp_code: pspCode,
+                dataset_name: `Log Upload - ${file.name}`
+            });
+
+            toast.success(`Processed ${result.records_processed} transactions`);
+            queryClient.invalidateQueries(['testDataSets']);
+            setUploadDialogOpen(false);
+        } catch (error) {
+            toast.error('Failed to process log file: ' + error.message);
+        } finally {
+            setUploading(false);
+        }
+    };
+
     const exportDataset = (dataset) => {
         const dataStr = JSON.stringify(dataset.data, null, 2);
         const blob = new Blob([dataStr], { type: 'application/json' });
@@ -105,13 +134,40 @@ export default function TestDataManager({ pspCode, onSelectDataset }) {
                         <Database className="h-4 w-4" />
                         Test Data Manager
                     </CardTitle>
-                    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                        <DialogTrigger asChild>
-                            <Button size="sm">
-                                <Plus className="h-4 w-4 mr-2" />
-                                Create Dataset
-                            </Button>
-                        </DialogTrigger>
+                    <div className="flex gap-2">
+                        <Dialog open={uploadDialogOpen} onOpenChange={setUploadDialogOpen}>
+                            <DialogTrigger asChild>
+                                <Button size="sm" variant="outline">
+                                    <Upload className="h-4 w-4 mr-2" />
+                                    Upload Logs
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                                <DialogHeader>
+                                    <DialogTitle>Upload Transaction Logs</DialogTitle>
+                                </DialogHeader>
+                                <div className="space-y-4">
+                                    <p className="text-sm text-slate-600">
+                                        Upload anonymized transaction logs (CSV or JSON) to generate realistic test data
+                                    </p>
+                                    <Input 
+                                        type="file"
+                                        accept=".csv,.json"
+                                        onChange={handleFileUpload}
+                                        disabled={uploading}
+                                    />
+                                    {uploading && <p className="text-sm text-blue-600">Processing...</p>}
+                                </div>
+                            </DialogContent>
+                        </Dialog>
+                        
+                        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                            <DialogTrigger asChild>
+                                <Button size="sm">
+                                    <Plus className="h-4 w-4 mr-2" />
+                                    Generate Dataset
+                                </Button>
+                            </DialogTrigger>
                         <DialogContent>
                             <DialogHeader>
                                 <DialogTitle>Generate Synthetic Test Data</DialogTitle>
@@ -160,6 +216,7 @@ export default function TestDataManager({ pspCode, onSelectDataset }) {
                             </div>
                         </DialogContent>
                     </Dialog>
+                    </div>
                 </div>
             </CardHeader>
             <CardContent>

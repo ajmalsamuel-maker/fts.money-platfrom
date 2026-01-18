@@ -17,6 +17,8 @@ import AdvancedAnalytics from '@/components/loadtest/AdvancedAnalytics';
 import ReportGenerator from '@/components/loadtest/ReportGenerator';
 import TestDataManager from '@/components/loadtest/TestDataManager';
 import ChaosEngineeringPanel from '@/components/loadtest/ChaosEngineeringPanel';
+import RegressionComparison from '@/components/loadtest/RegressionComparison';
+import PaymentFlowLibrary from '@/components/loadtest/PaymentFlowLibrary';
 import { 
     Zap, 
     Play, 
@@ -145,7 +147,9 @@ export default function LoadTestingDashboard() {
                         <TabsList>
                             <TabsTrigger value="quicktest">Quick Test</TabsTrigger>
                             <TabsTrigger value="scenarios">Test Scenarios</TabsTrigger>
+                            <TabsTrigger value="flows">Payment Flows</TabsTrigger>
                             <TabsTrigger value="analytics">Analytics & Reports</TabsTrigger>
+                            <TabsTrigger value="regression">Regression</TabsTrigger>
                             <TabsTrigger value="schedule">Schedule Tests</TabsTrigger>
                         </TabsList>
 
@@ -495,6 +499,29 @@ export default function LoadTestingDashboard() {
                             </Card>
                         </TabsContent>
 
+                        <TabsContent value="flows">
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Complex Payment Flow Library</CardTitle>
+                                    <p className="text-sm text-slate-600">Pre-configured multi-step payment sequences for advanced testing</p>
+                                </CardHeader>
+                                <CardContent>
+                                    <PaymentFlowLibrary 
+                                        onSelectFlow={(flowKey, flow) => {
+                                            setConfig({
+                                                ...config,
+                                                test_scenarios: flow.scenarios,
+                                                scenario_distribution: flow.scenarios.reduce((acc, s) => {
+                                                    acc[s] = Math.floor(100 / flow.scenarios.length);
+                                                    return acc;
+                                                }, {})
+                                            });
+                                        }}
+                                    />
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
+
                         <TabsContent value="analytics">
                             {testResults ? (
                                 <div className="space-y-6">
@@ -515,6 +542,18 @@ export default function LoadTestingDashboard() {
                                     </CardContent>
                                 </Card>
                             )}
+                        </TabsContent>
+
+                        <TabsContent value="regression">
+                            <div className="space-y-4">
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>Performance Regression Tracking</CardTitle>
+                                        <p className="text-sm text-slate-600">Compare test runs to detect performance degradation</p>
+                                    </CardHeader>
+                                </Card>
+                                <RegressionComparison pspCode={config.psp_code} />
+                            </div>
                         </TabsContent>
 
                         <TabsContent value="schedule">
