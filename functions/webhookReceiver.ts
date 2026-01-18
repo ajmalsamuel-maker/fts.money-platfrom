@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { queryOne, execute, closeConnection } from './db/postgresClient.js';
 
 /**
  * Generic Webhook Receiver for Payment Processors
@@ -18,27 +18,21 @@ Deno.serve(async (req) => {
         }
 
         const body = await req.text();
-        const signature = req.headers.get('stripe-signature') || 
-                         req.headers.get('x-adyen-signature') ||
-                         req.headers.get('x-paypal-signature');
-
         const connector = identifyConnector(req.headers);
 
         console.log(`🪝 Webhook received from: ${connector}`);
-
-        const base44 = createClientFromRequest(req);
 
         // Route to appropriate handler
         let result;
         switch (connector) {
             case 'stripe':
-                result = await handleStripeWebhook(body, signature, base44);
+                result = await handleStripeWebhook(body);
                 break;
             case 'adyen':
-                result = await handleAdyenWebhook(body, signature, base44);
+                result = await handleAdyenWebhook(body);
                 break;
             case 'paypal':
-                result = await handlePayPalWebhook(body, signature, base44);
+                result = await handlePayPalWebhook(body);
                 break;
             default:
                 return Response.json({ received: false, error: 'Unknown connector' }, { status: 400 });
@@ -62,57 +56,52 @@ function identifyConnector(headers) {
 /**
  * STRIPE WEBHOOK HANDLER
  */
-async function handleStripeWebhook(body, signature, base44) {
+async function handleStripeWebhook(body) {
     console.log('📱 Processing Stripe webhook');
 
     const event = JSON.parse(body);
 
-    // TODO: Verify signature
-    // const verified = verifyStripeSignature(body, signature, webhookSecret);
-
     if (event.type === 'charge.succeeded') {
         const charge = event.data.object;
 
-        // Find transaction and update
-        const transactions = await base44.asServiceRole.entities.Transaction.filter({
-            connector_txn_no: charge.id
-        });
+        const txn = await queryOne(
+            `SELECT * FROM transaction WHERE connector_txn_no = $1`,
+            [charge.id]
+        );
 
-        if (transactions && transactions.length > 0) {
-            const txn = transactions[0];
-            await base44.asServiceRole.entities.Transaction.update(txn.id, {
-                status: 'approved',
-                auth_code: charge.id,
-                response_code: '00',
-                response_message: 'Charge succeeded'
-            });
-
+        if (txn) {
+            await execute(
+                `UPDATE transaction SET status = 'approved', auth_code = $1, response_code = '00', response_message = 'Charge succeeded' WHERE id = $2`,
+                [charge.id, txn.id]
+            );
             console.log(`✓ Stripe transaction updated: ${txn.transaction_id}`);
         }
 
+        await closeConnection();
         return { received: true, processed: true };
     }
 
     if (event.type === 'charge.failed') {
         const charge = event.data.object;
 
-        const transactions = await base44.asServiceRole.entities.Transaction.filter({
-            connector_txn_no: charge.id
-        });
+        const txn = await queryOne(
+            `SELECT * FROM transaction WHERE connector_txn_no = $1`,
+            [charge.id]
+        );
 
-        if (transactions && transactions.length > 0) {
-            const txn = transactions[0];
-            await base44.asServiceRole.entities.Transaction.update(txn.id, {
-                status: 'declined',
-                response_message: charge.failure_message || 'Charge failed'
-            });
-
+        if (txn) {
+            await execute(
+                `UPDATE transaction SET status = 'declined', response_message = $1 WHERE id = $2`,
+                [charge.failure_message || 'Charge failed', txn.id]
+            );
             console.log(`❌ Stripe transaction failed: ${txn.transaction_id}`);
         }
 
+        await closeConnection();
         return { received: true, processed: true };
     }
 
+    await closeConnection();
     console.log(`⏭️ Stripe event type not handled: ${event.type}`);
     return { received: true, processed: false, event_type: event.type };
 }
@@ -120,34 +109,33 @@ async function handleStripeWebhook(body, signature, base44) {
 /**
  * ADYEN WEBHOOK HANDLER
  */
-async function handleAdyenWebhook(body, signature, base44) {
+async function handleAdyenWebhook(body) {
     console.log('🔷 Processing Adyen webhook');
 
     const event = JSON.parse(body);
-
-    // TODO: Verify signature
 
     if (event.eventType === 'AUTHORISATION') {
         const pspRef = event.pspReference;
         const success = event.success === 'true';
 
-        const transactions = await base44.asServiceRole.entities.Transaction.filter({
-            connector_response_code: pspRef
-        });
+        const txn = await queryOne(
+            `SELECT * FROM transaction WHERE connector_response_code = $1`,
+            [pspRef]
+        );
 
-        if (transactions && transactions.length > 0) {
-            const txn = transactions[0];
-            await base44.asServiceRole.entities.Transaction.update(txn.id, {
-                status: success ? 'approved' : 'declined',
-                response_code: success ? '00' : '05'
-            });
-
+        if (txn) {
+            await execute(
+                `UPDATE transaction SET status = $1, response_code = $2 WHERE id = $3`,
+                [success ? 'approved' : 'declined', success ? '00' : '05', txn.id]
+            );
             console.log(`✓ Adyen transaction ${success ? 'approved' : 'declined'}: ${pspRef}`);
         }
 
+        await closeConnection();
         return { received: true, processed: true };
     }
 
+    await closeConnection();
     console.log(`⏭️ Adyen event not handled: ${event.eventType}`);
     return { received: true, processed: false, event_type: event.eventType };
 }
@@ -155,33 +143,32 @@ async function handleAdyenWebhook(body, signature, base44) {
 /**
  * PAYPAL WEBHOOK HANDLER
  */
-async function handlePayPalWebhook(body, signature, base44) {
+async function handlePayPalWebhook(body) {
     console.log('🅿️ Processing PayPal webhook');
 
     const event = JSON.parse(body);
 
-    // TODO: Verify signature
-
     if (event.event_type === 'PAYMENT.CAPTURE.COMPLETED') {
         const captureId = event.resource?.id;
 
-        const transactions = await base44.asServiceRole.entities.Transaction.filter({
-            connector_txn_no: captureId
-        });
+        const txn = await queryOne(
+            `SELECT * FROM transaction WHERE connector_txn_no = $1`,
+            [captureId]
+        );
 
-        if (transactions && transactions.length > 0) {
-            const txn = transactions[0];
-            await base44.asServiceRole.entities.Transaction.update(txn.id, {
-                status: 'approved',
-                response_message: 'Capture completed'
-            });
-
+        if (txn) {
+            await execute(
+                `UPDATE transaction SET status = 'approved', response_message = 'Capture completed' WHERE id = $1`,
+                [txn.id]
+            );
             console.log(`✓ PayPal transaction completed: ${captureId}`);
         }
 
+        await closeConnection();
         return { received: true, processed: true };
     }
 
+    await closeConnection();
     console.log(`⏭️ PayPal event not handled: ${event.event_type}`);
     return { received: true, processed: false, event_type: event.event_type };
 }

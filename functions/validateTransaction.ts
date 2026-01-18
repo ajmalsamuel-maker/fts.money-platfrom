@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { queryOne, query, closeConnection } from './db/postgresClient.js';
 
 /**
  * Validates transaction before processing
@@ -6,7 +6,6 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
  */
 Deno.serve(async (req) => {
     try {
-        const base44 = createClientFromRequest(req);
         const { 
             merchant_id, 
             psp_code, 
@@ -28,19 +27,18 @@ Deno.serve(async (req) => {
         const warnings = [];
 
         // 1. Validate merchant exists and is active
-        const merchants = await base44.asServiceRole.entities.Merchant.filter({
-            id: merchant_id,
-            psp_code: psp_code
-        });
+        const merchant = await queryOne(
+            `SELECT * FROM merchant WHERE id = $1 AND psp_code = $2`,
+            [merchant_id, psp_code]
+        );
 
-        if (!merchants || merchants.length === 0) {
+        if (!merchant) {
+            await closeConnection();
             return Response.json({ 
                 valid: false, 
                 errors: ['Merchant not found'] 
             }, { status: 404 });
         }
-
-        const merchant = merchants[0];
 
         if (merchant.status !== 'active') {
             errors.push(`Merchant status is ${merchant.status}, must be active`);
@@ -63,21 +61,19 @@ Deno.serve(async (req) => {
         const today = new Date().toISOString().split('T')[0];
         const thisMonth = today.substring(0, 7);
 
-        const dailyTransactions = await base44.asServiceRole.entities.Transaction.filter({
-            merchant_id: merchant_id,
-            psp_code: psp_code,
-            status: 'approved'
-        });
+        const dailyTransactions = await query(
+            `SELECT amount FROM transaction WHERE merchant_id = $1 AND psp_code = $2 AND status = 'approved' AND DATE(created_date) = $3`,
+            [merchant_id, psp_code, today]
+        );
 
-        const dailyVolume = dailyTransactions
-            .filter(t => t.created_date?.startsWith(today))
-            .reduce((sum, t) => sum + (t.amount || 0), 0);
+        const monthlyTransactions = await query(
+            `SELECT amount FROM transaction WHERE merchant_id = $1 AND psp_code = $2 AND status = 'approved' AND DATE_TRUNC('month', created_date)::DATE = $3`,
+            [merchant_id, psp_code, thisMonth + '-01']
+        );
 
-        const monthlyVolume = dailyTransactions
-            .filter(t => t.created_date?.startsWith(thisMonth))
-            .reduce((sum, t) => sum + (t.amount || 0), 0);
+        const dailyVolume = dailyTransactions.reduce((sum, t) => sum + (t.amount || 0), 0);
+        const monthlyVolume = monthlyTransactions.reduce((sum, t) => sum + (t.amount || 0), 0);
 
-        // Check if adding this transaction would exceed limits
         if (merchant.daily_limit && (dailyVolume + amount) > merchant.daily_limit) {
             errors.push(`Daily volume limit exceeded. Current: ${dailyVolume}, Limit: ${merchant.daily_limit}`);
         }
@@ -92,18 +88,20 @@ Deno.serve(async (req) => {
         }
 
         // 5. Validate payment method
-        const checkoutConfig = await base44.asServiceRole.entities.MerchantCheckoutConfig.filter({
-            merchant_id: merchant_id,
-            psp_code: psp_code
-        });
+        const config = await queryOne(
+            `SELECT accepted_payment_methods, allowed_currencies FROM merchant_checkout_config WHERE merchant_id = $1 AND psp_code = $2`,
+            [merchant_id, psp_code]
+        );
 
-        if (checkoutConfig && checkoutConfig.length > 0) {
-            const config = checkoutConfig[0];
-            if (!config.accepted_payment_methods?.includes(payment_method)) {
-                errors.push(`Payment method '${payment_method}' not accepted. Allowed: ${config.accepted_payment_methods?.join(', ')}`);
+        if (config) {
+            const acceptedMethods = config.accepted_payment_methods || [];
+            const allowedCurrencies = config.allowed_currencies || [];
+            
+            if (!acceptedMethods.includes(payment_method)) {
+                errors.push(`Payment method '${payment_method}' not accepted. Allowed: ${acceptedMethods.join(', ')}`);
             }
-            if (!config.allowed_currencies?.includes(currency)) {
-                errors.push(`Currency '${currency}' not supported. Allowed: ${config.allowed_currencies?.join(', ')}`);
+            if (!allowedCurrencies.includes(currency)) {
+                errors.push(`Currency '${currency}' not supported. Allowed: ${allowedCurrencies.join(', ')}`);
             }
         }
 
@@ -128,6 +126,8 @@ Deno.serve(async (req) => {
 
         const valid = errors.length === 0;
 
+        await closeConnection();
+
         return Response.json({
             valid,
             merchant_id,
@@ -141,6 +141,7 @@ Deno.serve(async (req) => {
         });
 
     } catch (error) {
+        await closeConnection();
         console.error('Validation error:', error);
         return Response.json({ 
             valid: false, 

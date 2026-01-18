@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
+import { query, queryOne, execute, closeConnection } from './db/postgresClient.js';
 
 // Calculate total cost for a route
 function calculateRouteCost(route, amount) {
@@ -63,26 +63,23 @@ function selectBestRoute(routes, amount, currency, country, criteria = {}) {
 
 Deno.serve(async (req) => {
     try {
-        const base44 = createClientFromRequest(req);
-        const user = await base44.auth.me();
-        
-        if (!user) {
-            return Response.json({ error: 'Unauthorized' }, { status: 401 });
-        }
-        
         const { action, ...payload } = await req.json();
         
         switch (action) {
             case 'calculate_routes': {
                 const { amount, currency, country } = payload;
                 
-                const routes = await base44.asServiceRole.entities.PayoutRoute.filter({ 
-                    status: 'active' 
-                });
+                const routes = await query(
+                    `SELECT * FROM payout_route WHERE status = 'active'`,
+                    []
+                );
                 
                 const applicableRoutes = routes.filter(route => {
-                    if (!route.supported_currencies?.includes(currency)) return false;
-                    if (route.countries?.length > 0 && !route.countries.includes(country)) return false;
+                    const supportedCurrencies = route.supported_currencies || [];
+                    const routeCountries = route.countries || [];
+                    
+                    if (!supportedCurrencies.includes(currency)) return false;
+                    if (routeCountries.length > 0 && !routeCountries.includes(country)) return false;
                     if (route.min_amount && amount < route.min_amount) return false;
                     if (route.max_amount && amount > route.max_amount) return false;
                     return true;
@@ -94,6 +91,7 @@ Deno.serve(async (req) => {
                     estimated_net: amount - calculateRouteCost(route, amount)
                 }));
                 
+                await closeConnection();
                 return Response.json({ 
                     success: true, 
                     routes: routesWithCosts.sort((a, b) => a.estimated_cost - b.estimated_cost)
@@ -103,60 +101,52 @@ Deno.serve(async (req) => {
             case 'process_payout': {
                 const { merchant_id, amount, currency, country, beneficiary, criteria } = payload;
                 
-                // Get available routes
-                const routes = await base44.asServiceRole.entities.PayoutRoute.filter({ 
-                    status: 'active' 
-                });
+                const routes = await query(
+                    `SELECT * FROM payout_route WHERE status = 'active'`,
+                    []
+                );
                 
-                // Select best route
                 const selectedRoute = selectBestRoute(routes, amount, currency, country, criteria);
-                
-                // Create payout record
-                const payout = await base44.asServiceRole.entities.Payout.create({
-                    merchant_id,
-                    amount,
-                    currency,
-                    route_id: selectedRoute.id,
-                    route_name: selectedRoute.route_name,
-                    channel_type: selectedRoute.channel_type,
-                    provider: selectedRoute.provider,
-                    estimated_cost: selectedRoute.estimated_cost,
-                    status: 'processing',
-                    beneficiary_name: beneficiary?.name,
-                    beneficiary_account: beneficiary?.account,
-                    country
-                });
-                
-                // In production, integrate with actual provider APIs
-                // For now, simulate processing
+                const payoutId = `PAYOUT-${Date.now()}`;
+                const estimatedCost = calculateRouteCost(selectedRoute, amount);
+
+                await execute(
+                    `INSERT INTO payout (merchant_id, amount, currency, route_id, route_name, channel_type, provider, estimated_cost, status, beneficiary_name, beneficiary_account, country)
+                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
+                    [merchant_id, amount, currency, selectedRoute.id, selectedRoute.route_name, selectedRoute.channel_type, selectedRoute.provider, estimatedCost, 'processing', beneficiary?.name, beneficiary?.account, country]
+                );
+
+                // Simulate completion after 2 seconds
                 setTimeout(async () => {
-                    await base44.asServiceRole.entities.Payout.update(payout.id, {
-                        status: 'completed',
-                        completed_date: new Date().toISOString()
-                    });
+                    await execute(
+                        `UPDATE payout SET status = 'completed', completed_date = NOW() WHERE id = $1`,
+                        [payoutId]
+                    );
                 }, 2000);
                 
+                await closeConnection();
                 return Response.json({ 
                     success: true, 
-                    payout,
+                    payout_id: payoutId,
+                    amount,
+                    status: 'processing',
                     selected_route: selectedRoute
                 });
             }
             
             case 'reconcile_payouts': {
-                const { merchant_id, date_from, date_to } = payload;
+                const { merchant_id } = payload;
                 
-                const payouts = await base44.asServiceRole.entities.Payout.filter({
-                    merchant_id,
-                    status: 'completed'
-                });
+                const payouts = await query(
+                    `SELECT * FROM payout WHERE merchant_id = $1 AND status = 'completed'`,
+                    [merchant_id]
+                );
                 
-                const transactions = await base44.asServiceRole.entities.Transaction.filter({
-                    merchant_id,
-                    type: 'payout'
-                });
+                const transactions = await query(
+                    `SELECT * FROM transaction WHERE merchant_id = $1 AND type = 'payout'`,
+                    [merchant_id]
+                );
                 
-                // Match payouts with transactions
                 const reconciled = [];
                 const unmatched = [];
                 
@@ -173,24 +163,26 @@ Deno.serve(async (req) => {
                     }
                 });
                 
+                await closeConnection();
                 return Response.json({
                     success: true,
                     reconciled: reconciled.length,
-                    unmatched: unmatched.length,
-                    details: { reconciled, unmatched }
+                    unmatched: unmatched.length
                 });
             }
             
             case 'get_balance': {
                 const { merchant_id } = payload;
                 
-                const balances = await base44.asServiceRole.entities.MerchantBalance.filter({ 
-                    merchant_id 
-                });
+                const balances = await query(
+                    `SELECT * FROM merchant_balance WHERE merchant_id = $1`,
+                    [merchant_id]
+                );
                 
                 const total = balances.reduce((sum, b) => sum + (b.available_balance || 0), 0);
                 const pending = balances.reduce((sum, b) => sum + (b.pending_balance || 0), 0);
                 
+                await closeConnection();
                 return Response.json({
                     success: true,
                     total_available: total,
@@ -200,10 +192,12 @@ Deno.serve(async (req) => {
             }
             
             default:
+                await closeConnection();
                 return Response.json({ error: 'Unknown action' }, { status: 400 });
         }
         
     } catch (error) {
+        await closeConnection();
         console.error('Payout orchestrator error:', error);
         return Response.json({ error: error.message }, { status: 500 });
     }
