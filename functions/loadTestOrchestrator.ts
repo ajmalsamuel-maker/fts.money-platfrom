@@ -1,4 +1,5 @@
 import { query, execute, closeConnection } from './db/postgresClient.js';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 /**
  * Load Test Orchestrator
@@ -6,6 +7,14 @@ import { query, execute, closeConnection } from './db/postgresClient.js';
  */
 Deno.serve(async (req) => {
     try {
+        // Authenticate request
+        const base44 = createClientFromRequest(req);
+        const user = await base44.auth.me();
+        
+        if (!user) {
+            return Response.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
         const body = await req.json();
         console.log('📥 Received request body:', JSON.stringify(body));
         
