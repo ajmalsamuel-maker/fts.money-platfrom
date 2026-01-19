@@ -38,7 +38,8 @@ Deno.serve(async (req) => {
         const start_time = Date.now();
         const end_time = start_time + (duration_seconds * 1000);
 
-        // Create test run record
+        // Create test run record (optional - continue even if fails)
+        let testRunCreated = false;
         try {
             await execute(
                 `INSERT INTO load_test_run (run_id, psp_code, test_type, status, started_at)
@@ -46,13 +47,10 @@ Deno.serve(async (req) => {
                 [run_id, psp_code, 'load_test', 'running']
             );
             console.log('✅ Test run record created:', run_id);
+            testRunCreated = true;
         } catch (tableError) {
-            console.error('❌ Failed to create test run record:', tableError);
-            console.error('Table might not exist. Run createLoadTestTable function first.');
-            return Response.json({ 
-                error: 'Load test tracking table not found. Please run createLoadTestTable function first.',
-                details: tableError.message 
-            }, { status: 500 });
+            console.warn('⚠️ Could not create test run record (table may not exist):', tableError.message);
+            // Continue anyway - we'll still run the load test
         }
 
         let successful = 0;
