@@ -88,12 +88,12 @@ Deno.serve(async (req) => {
                     const { merchantData } = body;
                     const result = await client.query(`
                         INSERT INTO merchants (
-                            psp_code, merchant_code, business_name, trading_name, 
+                            merchant_id, psp_code, merchant_code, business_name, trading_name, 
                             contact_email, contact_name, contact_phone, country, category, 
                             mcc_code, address, website, currency, timezone, status, risk_level,
                             settlement_period, processing_volume, fee_rate, lei, vlei, lei_status,
                             kyb_status, kyb_provider, aml_status, aml_provider, total_transactions, total_volume
-                        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28)
+                        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29)
                         ON CONFLICT (merchant_code) DO UPDATE SET
                             business_name = EXCLUDED.business_name,
                             trading_name = EXCLUDED.trading_name,
@@ -112,6 +112,7 @@ Deno.serve(async (req) => {
                             aml_status = EXCLUDED.aml_status
                         RETURNING *
                     `, [
+                        merchantData.merchant_id,
                         psp_code,
                         merchantData.merchant_code,
                         merchantData.business_name,
@@ -141,6 +142,8 @@ Deno.serve(async (req) => {
                         merchantData.total_transactions || 0,
                         merchantData.total_volume || 0
                     ]);
+                    
+                    console.log('✅ Merchant created in PostgreSQL:', result.rows[0]);
                     
                     return Response.json({ 
                         success: true, 
