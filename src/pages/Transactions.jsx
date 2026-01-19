@@ -104,8 +104,12 @@ export default function Transactions() {
         queryKey: ['all-transactions', userPspCode],
         queryFn: async () => {
             if (!userPspCode) return [];
-            // Use service role to see all transactions including those from virtual terminals
-            return await base44.asServiceRole.entities.Transaction.filter({ psp_code: userPspCode });
+            // Fetch from PostgreSQL via pspData function
+            const { data } = await base44.functions.invoke('pspData', {
+                action: 'list_transactions',
+                psp_code: userPspCode
+            });
+            return data?.transactions || [];
         },
         enabled: !!userPspCode
     });
