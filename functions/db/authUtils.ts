@@ -114,49 +114,22 @@ export async function queryMerchantUser(email, merchantCode) {
  * Create auth user
  */
 export async function createAuthUser(data) {
-    const sql = getPool();
+    const client = new Client({
+        connectionString: Deno.env.get('DATABASE_URL'),
+        ssl: { rejectUnauthorized: false }
+    });
     try {
-        const result = await sql`
-            INSERT INTO auth_users (
-                email, full_name, password_hash, account_type, 
-                platform_role, community_role, status, created_date
-            ) VALUES (
-                ${data.email}, ${data.full_name}, ${data.password_hash}, 
-                ${data.account_type}, ${data.platform_role || null}, 
-                ${data.community_role || null}, 'active', CURRENT_TIMESTAMP
-            )
-            RETURNING id, email, full_name, account_type, platform_role, community_role
-        `;
-        return result[0];
+        await client.connect();
+        const result = await client.query(
+            'INSERT INTO auth_users (email, full_name, password_hash, account_type, platform_role, community_role, status, created_date) VALUES ($1, $2, $3, $4, $5, $6, $7, CURRENT_TIMESTAMP) RETURNING id, email, full_name, account_type, platform_role, community_role',
+            [data.email, data.full_name, data.password_hash, data.account_type, data.platform_role || null, data.community_role || null, 'active']
+        );
+        return result.rows[0];
     } catch (error) {
         console.error('Create auth user error:', error);
         throw error;
-    }
-}
-
-/**
- * Update auth user
- */
-export async function updateAuthUser(userId, data) {
-    const sql = getPool();
-    try {
-        const setClauses = Object.keys(data)
-            .map((key, idx) => `${key} = $${idx + 1}`)
-            .join(', ');
-        
-        const values = Object.values(data);
-        values.push(userId);
-
-        const result = await sql`
-            UPDATE auth_users 
-            SET ${sql(Object.keys(data).map(k => `${k} = ${data[k]}`))}
-            WHERE id = ${userId}
-            RETURNING *
-        `;
-        return result[0];
-    } catch (error) {
-        console.error('Update auth user error:', error);
-        throw error;
+    } finally {
+        await client.end();
     }
 }
 
@@ -164,17 +137,22 @@ export async function updateAuthUser(userId, data) {
  * Update PSP staff user last login
  */
 export async function updatePSPStaffLastLogin(userId, ipAddress = null) {
-    const sql = getPool();
+    const client = new Client({
+        connectionString: Deno.env.get('DATABASE_URL'),
+        ssl: { rejectUnauthorized: false }
+    });
     try {
-        const query = await sql`
-            UPDATE psp_staff_users 
-            SET last_login = CURRENT_TIMESTAMP, last_login_ip = ${ipAddress}
-            WHERE id = ${userId}
-        `;
-        return query.count || 0;
+        await client.connect();
+        const result = await client.query(
+            'UPDATE psp_staff_users SET last_login = CURRENT_TIMESTAMP, last_login_ip = $1 WHERE id = $2',
+            [ipAddress, userId]
+        );
+        return result.rowCount || 0;
     } catch (error) {
         console.error('Update PSP staff last login error:', error);
         throw error;
+    } finally {
+        await client.end();
     }
 }
 
@@ -182,17 +160,22 @@ export async function updatePSPStaffLastLogin(userId, ipAddress = null) {
  * Update merchant user last login
  */
 export async function updateMerchantUserLastLogin(userId, ipAddress = null) {
-    const sql = getPool();
+    const client = new Client({
+        connectionString: Deno.env.get('DATABASE_URL'),
+        ssl: { rejectUnauthorized: false }
+    });
     try {
-        const query = await sql`
-            UPDATE merchant_users 
-            SET last_login = CURRENT_TIMESTAMP, last_login_ip = ${ipAddress}
-            WHERE id = ${userId}
-        `;
-        return query.count || 0;
+        await client.connect();
+        const result = await client.query(
+            'UPDATE merchant_users SET last_login = CURRENT_TIMESTAMP, last_login_ip = $1 WHERE id = $2',
+            [ipAddress, userId]
+        );
+        return result.rowCount || 0;
     } catch (error) {
         console.error('Update merchant user last login error:', error);
         throw error;
+    } finally {
+        await client.end();
     }
 }
 
