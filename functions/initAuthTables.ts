@@ -21,16 +21,12 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'DATABASE_URL not set' }, { status: 500 });
         }
 
-        client = new Client({
-            connectionString: dbUrl,
-            ssl: false
-        });
-        await client.connect();
+        const sql = postgres(dbUrl, { ssl: 'require' });
 
         console.log('Creating auth tables...');
 
         // Auth Users table
-        await client.query(`
+        await sql`
             CREATE TABLE IF NOT EXISTS auth_users (
                 id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                 email VARCHAR(255) UNIQUE NOT NULL,
