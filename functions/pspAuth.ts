@@ -1,4 +1,4 @@
-import { Client } from 'npm:pg@17.1.0';
+import postgres from 'npm:postgres@3.4.4';
 
 async function hashPassword(password, salt = 'fts_salt_2025') {
     const encoder = new TextEncoder();
