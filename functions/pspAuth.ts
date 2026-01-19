@@ -1,12 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
-import pg from 'npm:pg@8.11.3';
-
-const { Pool } = pg;
-
-const pool = new Pool({
-    connectionString: Deno.env.get("DATABASE_URL"),
-    ssl: { rejectUnauthorized: false }
-});
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 Deno.serve(async (req) => {
     try {
