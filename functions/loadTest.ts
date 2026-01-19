@@ -1,8 +1,18 @@
 import { query, execute, closeConnection } from './db/postgresClient.js';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 Deno.serve(async (req) => {
     try {
-        const { test_type, duration_seconds = 60, rps = 100 } = await req.json();
+        const base44 = createClientFromRequest(req);
+        const { test_type, duration_seconds = 60, rps = 100, psp_code, merchant_id } = await req.json();
+        
+        if (!psp_code) {
+            return Response.json({ error: 'psp_code is required' }, { status: 400 });
+        }
+        
+        if (!merchant_id) {
+            return Response.json({ error: 'merchant_id is required' }, { status: 400 });
+        }
 
         if (test_type === 'run_load_test') {
             const run_id = `LOAD-${Date.now()}`;
@@ -13,7 +23,7 @@ Deno.serve(async (req) => {
             await execute(
                 `INSERT INTO load_test_run (run_id, psp_code, test_type, status, started_at)
                  VALUES ($1, $2, $3, $4, NOW())`,
-                [run_id, 'PSP-001', 'ramp_up', 'running']
+                [run_id, psp_code, 'ramp_up', 'running']
             );
 
             const start_time = Date.now();
@@ -24,22 +34,26 @@ Deno.serve(async (req) => {
                 const txn_start = Date.now();
 
                 try {
-                    // Simulate transaction
-                    await execute(
-                        `INSERT INTO transaction (transaction_id, merchant_id, psp_code, amount, type, status, created_date)
-                         VALUES ($1, $2, $3, $4, $5, $6, NOW())`,
-                        [
-                            `TXN-LOAD-${Date.now()}-${Math.random()}`,
-                            'MERCHANT-001',
-                            'PSP-001',
-                            Math.random() * 1000,
-                            'sale',
-                            'approved'
-                        ]
-                    );
+                    const txnId = `TXN-LOAD-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+                    const amount = parseFloat((Math.random() * 500 + 10).toFixed(2));
+                    
+                    // Create in Base44 entities so it shows in PSP portal
+                    await base44.asServiceRole.entities.Transaction.create({
+                        transaction_id: txnId,
+                        merchant_id: merchant_id,
+                        psp_code: psp_code,
+                        amount: amount,
+                        currency: 'USD',
+                        type: 'sale',
+                        status: 'approved',
+                        payment_method: 'visa',
+                        card_last_four: Math.floor(1000 + Math.random() * 9000).toString(),
+                        description: 'Load test transaction'
+                    });
 
                     success_count++;
                 } catch (e) {
+                    console.error('Transaction creation error:', e);
                     error_count++;
                 }
 
@@ -107,19 +121,26 @@ Deno.serve(async (req) => {
             const spike_start = Date.now();
 
             for (let i = 0; i < 100; i++) {
-                await execute(
-                    `INSERT INTO transaction (transaction_id, merchant_id, psp_code, amount, type, status, created_at)
-                     VALUES ($1, $2, $3, $4, $5, $6, NOW())`,
-                    [
-                        `TXN-SPIKE-${Date.now()}-${i}`,
-                        'MERCHANT-001',
-                        'PSP-001',
-                        Math.random() * 1000,
-                        'sale',
-                        'approved'
-                    ]
-                );
-                spike_success++;
+                try {
+                    const txnId = `TXN-SPIKE-${Date.now()}-${i}`;
+                    const amount = parseFloat((Math.random() * 500 + 10).toFixed(2));
+                    
+                    await base44.asServiceRole.entities.Transaction.create({
+                        transaction_id: txnId,
+                        merchant_id: merchant_id,
+                        psp_code: psp_code,
+                        amount: amount,
+                        currency: 'USD',
+                        type: 'sale',
+                        status: 'approved',
+                        payment_method: 'mastercard',
+                        card_last_four: Math.floor(1000 + Math.random() * 9000).toString(),
+                        description: 'Spike test transaction'
+                    });
+                    spike_success++;
+                } catch (e) {
+                    console.error('Spike transaction error:', e);
+                }
             }
 
             await closeConnection();
