@@ -60,7 +60,7 @@ Deno.serve(async (req) => {
         `;
 
         // Merchant Users table
-        await client.query(`
+        await sql`
             CREATE TABLE IF NOT EXISTS merchant_users (
                 id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                 merchant_id VARCHAR(100),
@@ -79,7 +79,7 @@ Deno.serve(async (req) => {
                 updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 UNIQUE(merchant_code, email)
             )
-        `);
+        `;
 
         // Audit Logs table
         await client.query(`
