@@ -192,16 +192,23 @@ async function executeTransaction(scenario, psp_code, merchant_id, payment_metho
     
     // Get merchant info for proper attribution
     let merchant_name = 'Load Test Merchant';
+    let actual_merchant_id = merchant_id;
     try {
+        // Try to fetch merchant by merchant_code first, then by id
         const merchantResult = await query(
-            `SELECT business_name FROM "${psp_code}".merchant WHERE id = $1 LIMIT 1`,
+            `SELECT id, business_name FROM "${psp_code}".merchant 
+             WHERE merchant_code = $1 OR id = $1 
+             LIMIT 1`,
             [merchant_id]
         );
         if (merchantResult.rows.length > 0) {
             merchant_name = merchantResult.rows[0].business_name;
+            actual_merchant_id = merchantResult.rows[0].id;
+        } else {
+            console.warn(`⚠️ Merchant not found: ${merchant_id}`);
         }
     } catch (e) {
-        console.log('Could not fetch merchant name:', e.message);
+        console.error('Could not fetch merchant:', e.message);
     }
 
     try {
@@ -210,7 +217,7 @@ async function executeTransaction(scenario, psp_code, merchant_id, payment_metho
                 await execute(
                     `INSERT INTO "${psp_code}".transaction (transaction_id, merchant_id, merchant_name, psp_code, amount, currency, type, status, payment_method, card_last_four, created_date)
                      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, NOW())`,
-                    [txn_id, merchant_id, merchant_name, psp_code, amount, 'USD', 'sale', 'approved', payment_method, Math.floor(1000 + Math.random() * 9000).toString()]
+                    [txn_id, actual_merchant_id, merchant_name, psp_code, amount, 'USD', 'sale', 'approved', payment_method, Math.floor(1000 + Math.random() * 9000).toString()]
                 );
                 return { success: true };
 
@@ -218,7 +225,7 @@ async function executeTransaction(scenario, psp_code, merchant_id, payment_metho
                 await execute(
                     `INSERT INTO "${psp_code}".transaction (transaction_id, merchant_id, merchant_name, psp_code, amount, currency, type, status, payment_method, response_code, response_message, card_last_four, created_date)
                      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, NOW())`,
-                    [txn_id, merchant_id, merchant_name, psp_code, amount, 'USD', 'sale', 'declined', payment_method, '05', 'Do not honor', Math.floor(1000 + Math.random() * 9000).toString()]
+                    [txn_id, actual_merchant_id, merchant_name, psp_code, amount, 'USD', 'sale', 'declined', payment_method, '05', 'Do not honor', Math.floor(1000 + Math.random() * 9000).toString()]
                 );
                 return { success: true };
 
@@ -226,7 +233,7 @@ async function executeTransaction(scenario, psp_code, merchant_id, payment_metho
                 await execute(
                     `INSERT INTO "${psp_code}".transaction (transaction_id, merchant_id, merchant_name, psp_code, amount, currency, type, status, payment_method, response_code, response_message, card_last_four, created_date)
                      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, NOW())`,
-                    [txn_id, merchant_id, merchant_name, psp_code, 9999, 'USD', 'sale', 'declined', payment_method, '51', 'Insufficient funds', Math.floor(1000 + Math.random() * 9000).toString()]
+                    [txn_id, actual_merchant_id, merchant_name, psp_code, 9999, 'USD', 'sale', 'declined', payment_method, '51', 'Insufficient funds', Math.floor(1000 + Math.random() * 9000).toString()]
                 );
                 return { success: true };
 
@@ -235,7 +242,7 @@ async function executeTransaction(scenario, psp_code, merchant_id, payment_metho
                 await execute(
                     `INSERT INTO "${psp_code}".transaction (transaction_id, merchant_id, merchant_name, psp_code, amount, currency, type, status, payment_method, risk_score, card_last_four, created_date)
                      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, NOW())`,
-                    [txn_id, merchant_id, merchant_name, psp_code, amount, 'USD', 'sale', 'pending', payment_method, risk_score, Math.floor(1000 + Math.random() * 9000).toString()]
+                    [txn_id, actual_merchant_id, merchant_name, psp_code, amount, 'USD', 'sale', 'pending', payment_method, risk_score, Math.floor(1000 + Math.random() * 9000).toString()]
                 );
                 return { success: true };
 
@@ -243,7 +250,7 @@ async function executeTransaction(scenario, psp_code, merchant_id, payment_metho
                 await execute(
                     `INSERT INTO "${psp_code}".transaction (transaction_id, merchant_id, merchant_name, psp_code, amount, currency, type, status, payment_method, is_3ds, card_last_four, created_date)
                      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, NOW())`,
-                    [txn_id, merchant_id, merchant_name, psp_code, amount, 'USD', 'sale', 'pending', payment_method, true, Math.floor(1000 + Math.random() * 9000).toString()]
+                    [txn_id, actual_merchant_id, merchant_name, psp_code, amount, 'USD', 'sale', 'pending', payment_method, true, Math.floor(1000 + Math.random() * 9000).toString()]
                 );
                 return { success: true };
 
@@ -252,7 +259,7 @@ async function executeTransaction(scenario, psp_code, merchant_id, payment_metho
                 await execute(
                     `INSERT INTO "${psp_code}".transaction (transaction_id, merchant_id, merchant_name, psp_code, amount, currency, type, status, payment_method, response_code, response_message, card_last_four, created_date)
                      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, NOW())`,
-                    [txn_id, merchant_id, merchant_name, psp_code, amount, 'USD', 'sale', 'failed', payment_method, '99', 'Request timeout', Math.floor(1000 + Math.random() * 9000).toString()]
+                    [txn_id, actual_merchant_id, merchant_name, psp_code, amount, 'USD', 'sale', 'failed', payment_method, '99', 'Request timeout', Math.floor(1000 + Math.random() * 9000).toString()]
                 );
                 return { success: false };
 
@@ -260,7 +267,7 @@ async function executeTransaction(scenario, psp_code, merchant_id, payment_metho
                 await execute(
                     `INSERT INTO "${psp_code}".transaction (transaction_id, merchant_id, merchant_name, psp_code, amount, currency, type, status, payment_method, response_message, card_last_four, created_date)
                      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, NOW())`,
-                    [txn_id, merchant_id, merchant_name, psp_code, amount, 'USD', 'sale', 'failed', payment_method, 'Network connection failed', Math.floor(1000 + Math.random() * 9000).toString()]
+                    [txn_id, actual_merchant_id, merchant_name, psp_code, amount, 'USD', 'sale', 'failed', payment_method, 'Network connection failed', Math.floor(1000 + Math.random() * 9000).toString()]
                 );
                 return { success: false };
 
@@ -268,7 +275,7 @@ async function executeTransaction(scenario, psp_code, merchant_id, payment_metho
                 await execute(
                     `INSERT INTO "${psp_code}".transaction (transaction_id, merchant_id, merchant_name, psp_code, amount, currency, type, status, payment_method, card_last_four, created_date)
                      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, NOW())`,
-                    [txn_id, merchant_id, merchant_name, psp_code, amount, 'USD', 'sale', 'approved', payment_method, Math.floor(1000 + Math.random() * 9000).toString()]
+                    [txn_id, actual_merchant_id, merchant_name, psp_code, amount, 'USD', 'sale', 'approved', payment_method, Math.floor(1000 + Math.random() * 9000).toString()]
                 );
                 return { success: true };
 
