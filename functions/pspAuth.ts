@@ -1,7 +1,28 @@
-import { queryPSPStaffUser, verifyPassword, updatePSPStaffLastLogin, getClientIP, createAuditLog } from './db/authUtils.js';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+
+async function hashPassword(password, salt = 'fts_salt_2025') {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password + salt);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    return Array.from(new Uint8Array(hashBuffer))
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('');
+}
+
+async function verifyPassword(password, hash, salt = 'fts_salt_2025') {
+    const computed = await hashPassword(password, salt);
+    return computed === hash;
+}
+
+function getClientIP(req) {
+    return req.headers.get('x-forwarded-for')?.split(',')[0].trim() || 
+           req.headers.get('x-real-ip') || 
+           'unknown';
+}
 
 Deno.serve(async (req) => {
     try {
+        const base44 = createClientFromRequest(req);
         const { action, psp_code, email, password } = await req.json();
 
         if (action === 'login') {
