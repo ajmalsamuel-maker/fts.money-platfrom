@@ -280,13 +280,13 @@ export default function Merchants() {
                 currentPage="Merchants"
             />
             
-            <div className={cn("transition-all duration-300 lg:ml-20", sidebarCollapsed && "ml-0")}>
+            <div className="transition-all duration-300 lg:ml-20">
                 <TopHeader 
                     onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
                     collapsed={sidebarCollapsed}
                 />
                 
-                <main className="p-4 sm:p-6">
+                <main className="p-4 sm:p-6 max-w-full overflow-x-hidden">
                     {/* Page Header */}
                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                          <div>
