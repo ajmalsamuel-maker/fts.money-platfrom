@@ -39,7 +39,7 @@ Deno.serve(async (req) => {
                 created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
-        `);
+        `;
 
         // PSP Staff Users table
         await sql`
