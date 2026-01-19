@@ -248,7 +248,7 @@ export default function LoadTestingDashboard() {
                                                         checked={config.merchant_ids.length === merchants.length}
                                                         onChange={(e) => {
                                                             if (e.target.checked) {
-                                                                setConfig({...config, merchant_ids: merchants.map(m => m.id)});
+                                                                setConfig({...config, merchant_ids: merchants.map(m => m.merchant_code || m.id)});
                                                             } else {
                                                                 setConfig({...config, merchant_ids: []});
                                                             }
@@ -262,16 +262,17 @@ export default function LoadTestingDashboard() {
                                                         <input 
                                                             type="checkbox"
                                                             className="w-4 h-4"
-                                                            checked={config.merchant_ids.includes(merchant.id)}
+                                                            checked={config.merchant_ids.includes(merchant.merchant_code || merchant.id)}
                                                             onChange={(e) => {
+                                                                const merchantIdentifier = merchant.merchant_code || merchant.id;
                                                                 if (e.target.checked) {
-                                                                    setConfig({...config, merchant_ids: [...config.merchant_ids, merchant.id]});
+                                                                    setConfig({...config, merchant_ids: [...config.merchant_ids, merchantIdentifier]});
                                                                 } else {
-                                                                    setConfig({...config, merchant_ids: config.merchant_ids.filter(id => id !== merchant.id)});
+                                                                    setConfig({...config, merchant_ids: config.merchant_ids.filter(id => id !== merchantIdentifier)});
                                                                 }
                                                             }}
                                                         />
-                                                        <span className="text-sm">{merchant.business_name}</span>
+                                                        <span className="text-sm">{merchant.business_name} ({merchant.merchant_code || merchant.id})</span>
                                                     </label>
                                                 ))}
                                             </>
