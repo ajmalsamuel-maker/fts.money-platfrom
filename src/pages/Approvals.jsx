@@ -64,7 +64,7 @@ export default function Approvals() {
 
                      // Sync merchant to PostgreSQL and activate
                      if (pspCode) {
-                         // Create merchant in PostgreSQL if it doesn't exist
+                         // Create merchant in PostgreSQL with all fields
                          const merchantResponse = await base44.functions.invoke('pspData', {
                              action: 'createMerchant',
                              psp_code: pspCode,
@@ -73,12 +73,33 @@ export default function Approvals() {
                                  business_name: merchant.business_name,
                                  trading_name: merchant.trading_name || '',
                                  contact_email: merchant.contact_email,
+                                 contact_name: merchant.contact_name || '',
+                                 contact_phone: merchant.contact_phone || '',
                                  country: merchant.country || '',
                                  category: merchant.category || '',
+                                 mcc_code: merchant.mcc_code || '',
+                                 address: merchant.address || '',
                                  website: merchant.website || '',
                                  currency: merchant.currency || 'USD',
+                                 timezone: merchant.timezone || 'UTC',
                                  status: 'active',
-                                 risk_level: merchant.risk_level || 'medium'
+                                 risk_level: merchant.risk_level || 'medium',
+                                 settlement_period: merchant.settlement_period || 'T+1',
+                                 processing_volume: merchant.processing_volume || null,
+                                 fee_rate: merchant.fee_rate || null,
+                                 lei: merchant.lei || null,
+                                 vlei: merchant.vlei || null,
+                                 lei_status: merchant.lei_status || 'pending',
+                                 kyb_status: merchant.kyb_status || 'not_started',
+                                 kyb_provider: merchant.kyb_provider || 'thekyb',
+                                 kyb_reference_id: merchant.kyb_reference_id || null,
+                                 aml_status: merchant.aml_status || 'clear',
+                                 aml_provider: merchant.aml_provider || 'amlwatcher',
+                                 aml_last_check: merchant.aml_last_check || null,
+                                 aml_risk_score: merchant.aml_risk_score || null,
+                                 total_transactions: merchant.total_transactions || 0,
+                                 total_volume: merchant.total_volume || 0,
+                                 logo_url: merchant.logo_url || null
                              }
                          });
                      }
