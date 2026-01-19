@@ -94,5 +94,9 @@ Deno.serve(async (req) => {
             success: false,
             error: error.message
         }, { status: 500 });
+    } finally {
+        if (client) {
+            await client.end();
+        }
     }
 });
