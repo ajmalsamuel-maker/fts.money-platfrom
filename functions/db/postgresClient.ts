@@ -45,7 +45,8 @@ export async function queryOne(sql, params = []) {
 export async function execute(sql, params = []) {
     const client = await getConnection();
     try {
-        await client.queryObject(sql, params);
+        const result = await client.queryObject(sql, params);
+        return result;
     } catch (error) {
         console.error('Execute error:', error);
         throw error;
