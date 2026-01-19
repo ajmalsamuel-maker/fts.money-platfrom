@@ -130,8 +130,8 @@ Deno.serve(async (req) => {
             error: error.message
         }, { status: 500 });
     } finally {
-        if (client) {
-            await client.end();
+        if (sql) {
+            await sql.end();
         }
     }
 });
