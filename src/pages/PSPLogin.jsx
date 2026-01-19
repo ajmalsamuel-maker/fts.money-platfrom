@@ -6,11 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Building2, AlertCircle, ArrowRight, Loader2 } from 'lucide-react';
+
 // Inline branding constants
 const FTS_LOGOS = { symbol: 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6931510c4507988f66a42ca8/8b91de683_FTSMoney-Symbol-logo-RGB.png' };
 const FTS_COLORS = { aqua: '#00BFFF' };
 const FTS_GRADIENTS = { dark1: 'linear-gradient(135deg, #0066CC, #00BFFF)' };
-import { Building2, AlertCircle, ArrowRight, Loader2 } from 'lucide-react';
 
 function PSPLoginContent() {
     const navigate = useNavigate();
