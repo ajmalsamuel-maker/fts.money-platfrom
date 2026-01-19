@@ -21,7 +21,7 @@ function getClientIP(req) {
 }
 
 Deno.serve(async (req) => {
-    let client = null;
+    let sql = null;
     try {
         const { action, psp_code, email, password } = await req.json();
 
@@ -33,26 +33,24 @@ Deno.serve(async (req) => {
                 }, { status: 400 });
             }
 
-            client = new Client({
-                connectionString: Deno.env.get('DATABASE_URL'),
-                ssl: false
-            });
-            await client.connect();
+            sql = postgres(Deno.env.get('DATABASE_URL'), { ssl: 'require' });
 
             // Query psp_staff_users
-            const result = await client.query(
-                'SELECT * FROM psp_staff_users WHERE psp_code = $1 AND email = $2 AND status = $3',
-                [psp_code.toUpperCase(), email, 'active']
-            );
+            const result = await sql`
+                SELECT * FROM psp_staff_users 
+                WHERE psp_code = ${psp_code.toUpperCase()} 
+                AND email = ${email} 
+                AND status = ${'active'}
+            `;
 
-            if (result.rows.length === 0) {
+            if (result.length === 0) {
                 return Response.json({
                     success: false,
                     error: 'Invalid credentials'
                 }, { status: 401 });
             }
 
-            const user = result.rows[0];
+            const user = result[0];
             const isValid = await verifyPassword(password, user.password_hash);
             
             if (!isValid) {
@@ -63,10 +61,11 @@ Deno.serve(async (req) => {
             }
 
             // Update last login
-            await client.query(
-                'UPDATE psp_staff_users SET last_login = NOW(), last_login_ip = $1 WHERE id = $2',
-                [getClientIP(req), user.id]
-            );
+            await sql`
+                UPDATE psp_staff_users 
+                SET last_login = NOW(), last_login_ip = ${getClientIP(req)} 
+                WHERE id = ${user.id}
+            `;
 
             return Response.json({
                 success: true,
