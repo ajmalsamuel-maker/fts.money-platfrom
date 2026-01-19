@@ -21,7 +21,12 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'DATABASE_URL not set' }, { status: 500 });
         }
 
-        const sql = postgres(dbUrl, { ssl: 'require' });
+        const sql = postgres(dbUrl, { 
+            ssl: 'require',
+            connection: {
+                timeout: 30000
+            }
+        });
 
         console.log('Creating auth tables...');
 
