@@ -69,6 +69,7 @@ export default function Approvals() {
                              action: 'createMerchant',
                              psp_code: pspCode,
                              merchantData: {
+                                 merchant_id: merchant.merchant_id || merchant.id,
                                  merchant_code: merchant.merchant_code,
                                  business_name: merchant.business_name,
                                  trading_name: merchant.trading_name || '',
@@ -90,6 +91,7 @@ export default function Approvals() {
                                  lei: merchant.lei || null,
                                  vlei: merchant.vlei || null,
                                  lei_status: merchant.lei_status || 'pending',
+                                 lei_verified_date: merchant.lei_verified_date || null,
                                  kyb_status: merchant.kyb_status || 'not_started',
                                  kyb_provider: merchant.kyb_provider || 'thekyb',
                                  kyb_reference_id: merchant.kyb_reference_id || null,
@@ -99,9 +101,13 @@ export default function Approvals() {
                                  aml_risk_score: merchant.aml_risk_score || null,
                                  total_transactions: merchant.total_transactions || 0,
                                  total_volume: merchant.total_volume || 0,
-                                 logo_url: merchant.logo_url || null
+                                 logo_url: merchant.logo_url || null,
+                                 onboarding_token: merchant.onboarding_token || null,
+                                 onboarding_url_expires: merchant.onboarding_url_expires || null
                              }
                          });
+
+                         console.log('✅ Merchant synced to PostgreSQL:', merchantResponse.data);
                      }
 
                      // Also update Base44 entity for consistency
