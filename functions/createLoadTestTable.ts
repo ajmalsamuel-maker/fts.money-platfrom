@@ -1,4 +1,5 @@
-import { Pool } from 'npm:pg@8.11.3';
+import pkg from 'npm:pg@8.11.3';
+const { Pool } = pkg;
 
 /**
  * Create load_test_run table for tracking load test executions
