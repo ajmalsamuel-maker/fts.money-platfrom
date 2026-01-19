@@ -21,7 +21,10 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'DATABASE_URL not set' }, { status: 500 });
         }
 
-        client = new Client(dbUrl);
+        client = new Client({
+            connectionString: dbUrl,
+            ssl: false
+        });
         await client.connect();
 
         console.log('Creating auth tables...');
