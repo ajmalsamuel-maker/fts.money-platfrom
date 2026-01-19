@@ -46,28 +46,21 @@ export async function verifyPassword(password, hash, salt = 'fts_salt_2025') {
  * Query user from auth_users table
  */
 export async function queryAuthUser(email, accountType = null) {
-    const sql = getPool();
+    const client = new Client({
+        connectionString: Deno.env.get('DATABASE_URL'),
+        ssl: { rejectUnauthorized: false }
+    });
     try {
-        let query;
-        if (accountType) {
-            query = await sql`
-                SELECT * FROM auth_users 
-                WHERE email = ${email} AND account_type = ${accountType}
-                ORDER BY created_date DESC
-                LIMIT 1
-            `;
-        } else {
-            query = await sql`
-                SELECT * FROM auth_users 
-                WHERE email = ${email}
-                ORDER BY created_date DESC
-                LIMIT 1
-            `;
-        }
-        return query.length > 0 ? query[0] : null;
+        await client.connect();
+        const query = accountType
+            ? await client.query('SELECT * FROM auth_users WHERE email = $1 AND account_type = $2 ORDER BY created_date DESC LIMIT 1', [email, accountType])
+            : await client.query('SELECT * FROM auth_users WHERE email = $1 ORDER BY created_date DESC LIMIT 1', [email]);
+        return query.rows.length > 0 ? query.rows[0] : null;
     } catch (error) {
         console.error('Query auth user error:', error);
         throw error;
+    } finally {
+        await client.end();
     }
 }
 
@@ -75,17 +68,22 @@ export async function queryAuthUser(email, accountType = null) {
  * Query PSP staff user
  */
 export async function queryPSPStaffUser(email, pspCode) {
-    const sql = getPool();
+    const client = new Client({
+        connectionString: Deno.env.get('DATABASE_URL'),
+        ssl: { rejectUnauthorized: false }
+    });
     try {
-        const query = await sql`
-            SELECT * FROM psp_staff_users 
-            WHERE email = ${email} AND psp_code = ${pspCode} AND status = 'active'
-            LIMIT 1
-        `;
-        return query.length > 0 ? query[0] : null;
+        await client.connect();
+        const query = await client.query(
+            'SELECT * FROM psp_staff_users WHERE email = $1 AND psp_code = $2 AND status = $3 LIMIT 1',
+            [email, pspCode, 'active']
+        );
+        return query.rows.length > 0 ? query.rows[0] : null;
     } catch (error) {
         console.error('Query PSP staff user error:', error);
         throw error;
+    } finally {
+        await client.end();
     }
 }
 
@@ -93,17 +91,22 @@ export async function queryPSPStaffUser(email, pspCode) {
  * Query merchant user
  */
 export async function queryMerchantUser(email, merchantCode) {
-    const sql = getPool();
+    const client = new Client({
+        connectionString: Deno.env.get('DATABASE_URL'),
+        ssl: { rejectUnauthorized: false }
+    });
     try {
-        const query = await sql`
-            SELECT * FROM merchant_users 
-            WHERE email = ${email} AND merchant_code = ${merchantCode} AND status = 'active'
-            LIMIT 1
-        `;
-        return query.length > 0 ? query[0] : null;
+        await client.connect();
+        const query = await client.query(
+            'SELECT * FROM merchant_users WHERE email = $1 AND merchant_code = $2 AND status = $3 LIMIT 1',
+            [email, merchantCode, 'active']
+        );
+        return query.rows.length > 0 ? query.rows[0] : null;
     } catch (error) {
         console.error('Query merchant user error:', error);
         throw error;
+    } finally {
+        await client.end();
     }
 }
 
