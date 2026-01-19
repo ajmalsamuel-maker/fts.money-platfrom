@@ -39,11 +39,21 @@ Deno.serve(async (req) => {
         const end_time = start_time + (duration_seconds * 1000);
 
         // Create test run record
-        await execute(
-            `INSERT INTO load_test_run (run_id, psp_code, test_type, status, started_at)
-             VALUES ($1, $2, $3, $4, NOW())`,
-            [run_id, psp_code, 'load_test', 'running']
-        );
+        try {
+            await execute(
+                `INSERT INTO load_test_run (run_id, psp_code, test_type, status, started_at)
+                 VALUES ($1, $2, $3, $4, NOW())`,
+                [run_id, psp_code, 'load_test', 'running']
+            );
+            console.log('✅ Test run record created:', run_id);
+        } catch (tableError) {
+            console.error('❌ Failed to create test run record:', tableError);
+            console.error('Table might not exist. Run createLoadTestTable function first.');
+            return Response.json({ 
+                error: 'Load test tracking table not found. Please run createLoadTestTable function first.',
+                details: tableError.message 
+            }, { status: 500 });
+        }
 
         let successful = 0;
         let failed = 0;
