@@ -181,20 +181,20 @@ export default function MerchantPortalBuilder() {
                 currentPage="MerchantPortalBuilder"
             />
             
-            <div className="lg:ml-20">
+            <div className={cn("transition-all duration-300 lg:ml-20", sidebarCollapsed && "ml-0")}>
                 <TopHeader 
                     onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
                     collapsed={sidebarCollapsed}
                 />
                 
-                <div className="p-6">
+                <div className="p-4 sm:p-6">
                     {/* Header */}
-                    <div className="flex items-center justify-between mb-6">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                         <div>
-                            <h2 className="text-2xl font-bold text-slate-900">Merchant Portal Builder</h2>
+                            <h2 className="text-xl sm:text-2xl font-bold text-slate-900">Merchant Portal Builder</h2>
                             <p className="text-sm text-slate-600">Design and customize your merchant portal</p>
                         </div>
-                        <div className="flex gap-2">
+                        <div className="flex flex-wrap gap-2">
                             <Button 
                                 variant="outline"
                                 onClick={() => setShowTemplateDialog(true)}
@@ -234,7 +234,7 @@ export default function MerchantPortalBuilder() {
                                 <CardDescription>Load a previously saved configuration</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <div className="grid grid-cols-4 gap-3">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                                     {configs.map(config => (
                                         <button
                                             key={config.id}
@@ -262,9 +262,9 @@ export default function MerchantPortalBuilder() {
                     )}
 
                     {/* Builder */}
-                    <div className="grid grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         {/* Left Panel - Configuration */}
-                        <div className="col-span-1">
+                        <div className="lg:col-span-1">
                             <Card>
                                 <CardHeader>
                                     <CardTitle>Configuration</CardTitle>
@@ -369,7 +369,7 @@ export default function MerchantPortalBuilder() {
                         </div>
 
                         {/* Right Panel - Preview */}
-                        <div className="col-span-2">
+                        <div className="lg:col-span-2">
                             <Card>
                                 <CardHeader>
                                     <CardTitle>Live Preview</CardTitle>

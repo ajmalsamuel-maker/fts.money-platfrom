@@ -272,11 +272,11 @@ export default function MerchantAnalytics() {
                     collapsed={sidebarCollapsed}
                 />
                 
-                <main className="p-6">
+                <main className="p-4 sm:p-6">
                     {/* Header */}
-                    <div className="flex items-center justify-between mb-6">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                         <div>
-                            <h1 className="text-2xl font-bold text-slate-900">Merchant Analytics</h1>
+                            <h1 className="text-xl sm:text-2xl font-bold text-slate-900">Merchant Analytics</h1>
                             <p className="text-slate-500">Performance metrics and insights</p>
                         </div>
                         <div className="flex items-center gap-2">
@@ -427,7 +427,7 @@ export default function MerchantAnalytics() {
                     </div>
 
                     {/* Distribution Charts */}
-                    <div className="grid lg:grid-cols-3 gap-6 mb-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
                         {/* Category Distribution */}
                         <Card>
                             <CardHeader>
@@ -533,7 +533,7 @@ export default function MerchantAnalytics() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="grid md:grid-cols-4 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                                 {feeAnalysis.map((fee, idx) => (
                                     <div key={idx} className="p-4 bg-slate-50 rounded-lg">
                                         <p className="text-sm text-slate-500">{fee.type}</p>
@@ -562,7 +562,7 @@ export default function MerchantAnalytics() {
                                 <Badge variant="secondary" className="ml-2">{filteredMerchants.length} merchants</Badge>
                             </CardTitle>
                         </CardHeader>
-                        <CardContent className="p-0">
+                        <CardContent className="p-0 overflow-x-auto">
                             <Table>
                                 <TableHeader>
                                     <TableRow className="bg-slate-50">
