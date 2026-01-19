@@ -82,7 +82,7 @@ Deno.serve(async (req) => {
         `;
 
         // Audit Logs table
-        await client.query(`
+        await sql`
             CREATE TABLE IF NOT EXISTS audit_logs (
                 id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                 event_type VARCHAR(100),
@@ -104,7 +104,7 @@ Deno.serve(async (req) => {
                 retention_period VARCHAR(50),
                 created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
-        `);
+        `;
 
         // Create indexes
         await client.query(`CREATE INDEX IF NOT EXISTS idx_auth_users_email ON auth_users(email)`);
