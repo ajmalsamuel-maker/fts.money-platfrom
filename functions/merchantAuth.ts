@@ -1,4 +1,5 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
+import { queryMerchantUser, verifyPassword, updateMerchantUserLastLogin, getClientIP, createAuditLog, hashPassword } from './db/authUtils.js';
+import postgres from 'npm:postgres@3.4.4';
 
 // Public endpoint - no authentication required
 Deno.serve(async (req) => {
@@ -14,152 +15,139 @@ Deno.serve(async (req) => {
     }
 
     try {
-        const base44 = createClientFromRequest(req);
+        const sql = postgres(Deno.env.get('DATABASE_URL'), { ssl: 'require' });
         const body = await req.json();
         const { action, email, password, user_id, new_password, merchant_code } = body;
+        const ipAddress = getClientIP(req);
 
         if (action === 'login') {
-            console.log('Login attempt for:', email, 'with merchant code:', merchant_code);
-            
-            // Query Base44 entities for merchant user
-            const users = await base44.asServiceRole.entities.MerchantUser.filter({
-                email: email,
-                merchant_code: merchant_code,
-                status: 'active'
-            });
+            if (!email || !password || !merchant_code) {
+                return Response.json({ 
+                    success: false, 
+                    error: 'Email, password, and merchant code required'
+                }, { status: 400 });
+            }
 
-            console.log('Query result:', users?.length || 0, 'users found');
+            const user = await queryMerchantUser(email, merchant_code);
 
-            if (!users || users.length === 0) {
-                console.log('User not found');
+            if (!user) {
+                await createAuditLog({
+                    event_type: 'user_login_failed',
+                    category: 'authentication',
+                    severity: 'warning',
+                    user_email: email,
+                    action: 'login',
+                    description: `Failed merchant login for ${email} on merchant ${merchant_code}`,
+                    ip_address: ipAddress,
+                    status: 'failure',
+                    error_message: 'User not found'
+                });
+
                 return Response.json({ 
                     success: false, 
                     error: 'Invalid credentials'
                 }, { status: 401 });
             }
 
-            const user = users[0];
-            console.log('User found:', user.email);
-
-            // Check password - try both temp_password and password_hash
-            const storedPassword = user.temp_password || user.password_hash;
-            console.log('Comparing password - stored:', storedPassword ? 'exists' : 'missing', 'provided:', password ? 'exists' : 'missing');
+            // Verify password
+            const isValid = await verifyPassword(password, user.password_hash);
             
-            // Direct comparison (plain text passwords)
-            if (storedPassword !== password) {
-                console.log('Password mismatch - stored:', storedPassword, 'provided:', password);
+            if (!isValid) {
+                await createAuditLog({
+                    event_type: 'user_login_failed',
+                    category: 'authentication',
+                    severity: 'warning',
+                    user_email: email,
+                    user_id: user.id,
+                    action: 'login',
+                    description: `Failed merchant login for ${email} - invalid password`,
+                    ip_address: ipAddress,
+                    status: 'failure',
+                    error_message: 'Invalid password'
+                });
+
                 return Response.json({ 
                     success: false, 
                     error: 'Invalid credentials'
                 }, { status: 401 });
             }
 
-            // Get client IP address
-            const ip = req.headers.get('x-forwarded-for')?.split(',')[0].trim() || 
-                       req.headers.get('x-real-ip') || 
-                       'unknown';
+            // Get PSP code from merchant
+            const merchantQuery = await sql`
+                SELECT psp_code FROM merchants 
+                WHERE merchant_code = ${merchant_code}
+                LIMIT 1
+            `;
 
-            // Update last login with IP
-            await base44.asServiceRole.entities.MerchantUser.update(user.id, {
-                last_login: new Date().toISOString(),
-                last_login_ip: ip
-            });
+            const pspCode = merchantQuery[0]?.psp_code || merchant_code.split(/[-_]/)[0];
 
-            // Get merchant record for PSP code - CRITICAL: Every merchant MUST have psp_code
-            const merchants = await base44.asServiceRole.entities.Merchant.filter({
-                merchant_id: user.merchant_id
-            });
-            const merchant = merchants?.[0];
-            
-            console.log('🔍 merchantAuth: Merchant lookup result:', {
-                merchant_id: user.merchant_id,
-                found: !!merchant,
-                psp_code: merchant?.psp_code || 'MISSING'
-            });
+            // Update last login
+            await updateMerchantUserLastLogin(user.id, ipAddress);
 
-            // Get PSP code (required for multi-tenancy)
-            let pspCode = merchant?.psp_code;
-            
-            if (!pspCode) {
-                // FALLBACK 1: Extract from merchant_code (format: PSP_MERCHANT or PSP-MERCHANT)
-                if (user.merchant_code) {
-                    const parts = user.merchant_code.split(/[-_]/);
-                    if (parts.length > 1) {
-                        pspCode = parts[0];
-                        console.log('⚠️ merchantAuth: Extracted PSP code from merchant_code (FALLBACK):', pspCode);
-                    }
-                }
-                
-                // FALLBACK 2: If still no PSP code, this is a critical error
-                if (!pspCode) {
-                    console.error('❌ CRITICAL: Merchant has no PSP code. Multi-tenancy broken!', {
-                        merchant_id: user.merchant_id,
-                        merchant_code: user.merchant_code,
-                        email: user.email
-                    });
-                    return Response.json({
-                        success: false,
-                        error: 'System configuration error. Please contact administrator.'
-                    }, { status: 500 });
-                }
-            }
-
-            // Create session token
-            const session = {
+            // Audit log
+            await createAuditLog({
+                event_type: 'user_login',
+                category: 'authentication',
+                severity: 'info',
+                user_email: email,
                 user_id: user.id,
-                merchant_id: user.merchant_id,
-                merchant_code: user.merchant_code,
-                merchant_name: user.merchant_name,
-                psp_code: pspCode,
-                email: user.email,
-                full_name: user.full_name,
-                role: user.role,
-                permissions: user.permissions,
-                must_change_password: user.must_change_password,
-                two_factor_enabled: user.two_factor_enabled,
-                timestamp: Date.now()
-            };
-            
-            console.log('🔑 merchantAuth: Session created with psp_code:', pspCode || 'STILL_MISSING');
+                user_role: user.role,
+                action: 'login',
+                description: `Merchant user ${email} logged in successfully`,
+                ip_address: ipAddress,
+                user_agent: req.headers.get('user-agent'),
+                status: 'success'
+            });
 
             return Response.json({
                 success: true,
-                session,
+                session: {
+                    user_id: user.id,
+                    merchant_id: user.merchant_id,
+                    merchant_code: merchant_code,
+                    merchant_name: user.merchant_name,
+                    psp_code: pspCode,
+                    email: user.email,
+                    full_name: user.full_name,
+                    role: user.role,
+                    permissions: user.permissions,
+                    must_change_password: user.must_change_password,
+                    timestamp: Date.now()
+                },
                 must_change_password: user.must_change_password
             });
         }
 
-        if (action === 'validate') {
-            // Validate session by email and merchant_code
-            const { email: session_email, merchant_code: session_merchant_code } = body;
-            const users = await base44.asServiceRole.entities.MerchantUser.filter({
-                email: session_email,
-                merchant_code: session_merchant_code,
-                status: 'active'
-            });
-
-            if (!users || users.length === 0) {
+        if (action === 'change_password') {
+            if (!user_id || !new_password) {
                 return Response.json({ 
                     success: false, 
-                    error: 'Session expired' 
-                }, { status: 401 });
+                    error: 'User ID and new password required'
+                }, { status: 400 });
             }
 
-            return Response.json({
-                success: true,
-                user: users[0]
-            });
-        }
+            const hashedPassword = await hashPassword(new_password);
+            
+            await sql`
+                UPDATE merchant_users 
+                SET password_hash = ${hashedPassword}, must_change_password = false
+                WHERE id = ${user_id}
+            `;
 
-        if (action === 'change_password') {
-            // Update password and clear must_change_password flag
-            await base44.asServiceRole.entities.MerchantUser.update(user_id, {
-                temp_password: new_password,
-                must_change_password: false
+            await createAuditLog({
+                event_type: 'user_password_changed',
+                category: 'security',
+                severity: 'info',
+                user_id: user_id,
+                action: 'change_password',
+                description: `Merchant user changed their password`,
+                status: 'success'
             });
 
             return Response.json({ success: true });
         }
+
+        await sql.end();
 
         return Response.json({ 
             success: false, 
