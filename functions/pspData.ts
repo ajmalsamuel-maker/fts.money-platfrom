@@ -103,22 +103,6 @@ Deno.serve(async (req) => {
                             settlement_period, processing_volume, fee_rate, lei, vlei, lei_status,
                             kyb_status, kyb_provider, aml_status, aml_provider, total_transactions, total_volume
                         ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29)
-                        ON CONFLICT (merchant_code) DO UPDATE SET
-                            business_name = EXCLUDED.business_name,
-                            trading_name = EXCLUDED.trading_name,
-                            contact_email = EXCLUDED.contact_email,
-                            contact_name = EXCLUDED.contact_name,
-                            contact_phone = EXCLUDED.contact_phone,
-                            country = EXCLUDED.country,
-                            category = EXCLUDED.category,
-                            address = EXCLUDED.address,
-                            website = EXCLUDED.website,
-                            currency = EXCLUDED.currency,
-                            status = EXCLUDED.status,
-                            risk_level = EXCLUDED.risk_level,
-                            lei_status = EXCLUDED.lei_status,
-                            kyb_status = EXCLUDED.kyb_status,
-                            aml_status = EXCLUDED.aml_status
                         RETURNING *
                     `, [
                         merchantData.merchant_id,
