@@ -42,7 +42,7 @@ Deno.serve(async (req) => {
         `);
 
         // PSP Staff Users table
-        await client.query(`
+        await sql`
             CREATE TABLE IF NOT EXISTS psp_staff_users (
                 id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                 psp_code VARCHAR(50) NOT NULL,
@@ -57,7 +57,7 @@ Deno.serve(async (req) => {
                 updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 UNIQUE(psp_code, email)
             )
-        `);
+        `;
 
         // Merchant Users table
         await client.query(`
