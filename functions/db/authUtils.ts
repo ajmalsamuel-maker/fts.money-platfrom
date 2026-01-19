@@ -3,7 +3,7 @@
  * Centralized auth functions for all platforms
  */
 
-import postgres from 'npm:postgres@3.4.4';
+import { Client } from 'npm:pg@17.1.0';
 
 let sqlPool = null;
 
@@ -12,12 +12,11 @@ function getPool() {
         const dbUrl = Deno.env.get('DATABASE_URL');
         if (!dbUrl) throw new Error('DATABASE_URL not set');
         
-        sqlPool = postgres(dbUrl, {
-            max: 10,
-            timeout: 30,
-            idle_timeout: 60,
-            max_lifetime: 3600,
-            ssl: 'require'
+        sqlPool = new Client({
+            connectionString: dbUrl,
+            ssl: {
+                rejectUnauthorized: false
+            }
         });
     }
     return sqlPool;
