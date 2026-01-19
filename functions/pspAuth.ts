@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+import { Client } from 'npm:pg@17.1.0';
 
 async function hashPassword(password, salt = 'fts_salt_2025') {
     const encoder = new TextEncoder();
@@ -21,8 +21,8 @@ function getClientIP(req) {
 }
 
 Deno.serve(async (req) => {
+    let client = null;
     try {
-        const base44 = createClientFromRequest(req);
         const { action, psp_code, email, password } = await req.json();
 
         if (action === 'login') {
@@ -33,21 +33,26 @@ Deno.serve(async (req) => {
                 }, { status: 400 });
             }
 
-            // Query Base44 PSPStaffUsers entity
-            const staffUsers = await base44.asServiceRole.entities.PSPStaffUsers.filter({
-                psp_code: psp_code.toUpperCase(),
-                email: email,
-                status: 'active'
+            client = new Client({
+                connectionString: Deno.env.get('DATABASE_URL'),
+                ssl: false
             });
+            await client.connect();
 
-            if (!staffUsers || staffUsers.length === 0) {
+            // Query psp_staff_users
+            const result = await client.query(
+                'SELECT * FROM psp_staff_users WHERE psp_code = $1 AND email = $2 AND status = $3',
+                [psp_code.toUpperCase(), email, 'active']
+            );
+
+            if (result.rows.length === 0) {
                 return Response.json({
                     success: false,
                     error: 'Invalid credentials'
                 }, { status: 401 });
             }
 
-            const user = staffUsers[0];
+            const user = result.rows[0];
             const isValid = await verifyPassword(password, user.password_hash);
             
             if (!isValid) {
@@ -58,10 +63,10 @@ Deno.serve(async (req) => {
             }
 
             // Update last login
-            await base44.asServiceRole.entities.PSPStaffUsers.update(user.id, {
-                last_login: new Date().toISOString(),
-                last_login_ip: getClientIP(req)
-            });
+            await client.query(
+                'UPDATE psp_staff_users SET last_login = NOW(), last_login_ip = $1 WHERE id = $2',
+                [getClientIP(req), user.id]
+            );
 
             return Response.json({
                 success: true,
