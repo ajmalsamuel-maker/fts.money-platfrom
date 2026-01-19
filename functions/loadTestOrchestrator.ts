@@ -19,6 +19,14 @@ Deno.serve(async (req) => {
             amount_range = { min: 10, max: 1000 }
         } = await req.json();
 
+        if (!psp_code) {
+            return Response.json({ error: 'psp_code is required' }, { status: 400 });
+        }
+
+        if (!merchant_ids || merchant_ids.length === 0) {
+            return Response.json({ error: 'At least one merchant required' }, { status: 400 });
+        }
+
         const run_id = `LOAD-${Date.now()}`;
         const start_time = Date.now();
         const end_time = start_time + (duration_seconds * 1000);
