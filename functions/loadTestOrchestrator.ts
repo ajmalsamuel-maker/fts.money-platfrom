@@ -38,6 +38,13 @@ Deno.serve(async (req) => {
         const start_time = Date.now();
         const end_time = start_time + (duration_seconds * 1000);
 
+        // Create test run record
+        await execute(
+            `INSERT INTO load_test_run (run_id, psp_code, test_type, status, started_at)
+             VALUES ($1, $2, $3, $4, NOW())`,
+            [run_id, psp_code, 'load_test', 'running']
+        );
+
         let successful = 0;
         let failed = 0;
         let total_generated = 0;
@@ -103,6 +110,30 @@ Deno.serve(async (req) => {
         const p95 = latencies[Math.floor(latencies.length * 0.95)];
         const p99 = latencies[Math.floor(latencies.length * 0.99)];
         const avg_latency = Math.round(latencies.reduce((a, b) => a + b, 0) / latencies.length);
+
+        // Update test run with results
+        await execute(
+            `UPDATE load_test_run 
+             SET status = $1, completed_at = NOW(), 
+                 successful = $2, failed = $3, total_requests = $4,
+                 avg_latency = $5, p50_latency = $6, p95_latency = $7, p99_latency = $8,
+                 actual_tps = $9, success_rate = $10, scenario_breakdown = $11
+             WHERE run_id = $12`,
+            [
+                'completed',
+                successful,
+                failed,
+                total_generated,
+                avg_latency,
+                p50,
+                p95,
+                p99,
+                parseFloat(actual_tps),
+                parseFloat(success_rate),
+                JSON.stringify(scenario_breakdown),
+                run_id
+            ]
+        );
 
         await closeConnection();
 
