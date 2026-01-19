@@ -14,6 +14,29 @@ export default function Layout({ children }) {
     const location = useLocation();
     const pathname = location?.pathname || '';
     
+    // Suppress MetaMask connection errors globally
+    React.useEffect(() => {
+        const originalError = console.error;
+        const originalInfo = console.info;
+        
+        console.error = (...args) => {
+            const msg = args.join(' ');
+            if (msg.includes('MetaMask')) return;
+            originalError.apply(console, args);
+        };
+        
+        console.info = (...args) => {
+            const msg = args.join(' ');
+            if (msg.includes('MetaMask')) return;
+            originalInfo.apply(console, args);
+        };
+        
+        return () => {
+            console.error = originalError;
+            console.info = originalInfo;
+        };
+    }, []);
+    
     // Auth pages that should not have layout wrapper
     const authPages = ['/PSPLogin', '/MerchantLogin', '/BusinessEInvoiceLogin', '/CryptoGatewayLogin', '/ISOGatewayLogin', '/AssetIssuerLogin', '/InvestorLogin', '/OrchestrationLogin', '/QSAPortalLogin', '/RWAProviderLogin', '/CommunityPortalLogin', '/VirtualTerminalLogin'];
     
