@@ -89,14 +89,13 @@ Deno.serve(async (req) => {
                     const result = await client.query(`
                         INSERT INTO merchants (
                             psp_code, merchant_code, business_name, trading_name, 
-                            contact_email, country, category, website, currency, status, risk_level
-                        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+                            contact_email, country, website, currency, status, risk_level
+                        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
                         ON CONFLICT (merchant_code) DO UPDATE SET
                             business_name = EXCLUDED.business_name,
                             trading_name = EXCLUDED.trading_name,
                             contact_email = EXCLUDED.contact_email,
                             country = EXCLUDED.country,
-                            category = EXCLUDED.category,
                             website = EXCLUDED.website,
                             currency = EXCLUDED.currency,
                             status = EXCLUDED.status,
@@ -109,7 +108,6 @@ Deno.serve(async (req) => {
                         merchantData.trading_name || '',
                         merchantData.contact_email,
                         merchantData.country || '',
-                        merchantData.category || '',
                         merchantData.website || '',
                         merchantData.currency || 'USD',
                         merchantData.status || 'pending',
