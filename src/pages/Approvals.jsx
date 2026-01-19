@@ -64,12 +64,23 @@ export default function Approvals() {
 
                      // Sync merchant to PostgreSQL and activate
                      if (pspCode) {
+                         // Ensure merchant_id is set - generate if missing
+                         const finalMerchantId = merchant.merchant_id || `MID-${Date.now()}-${merchant.id.slice(0, 8)}`;
+
+                         console.log('🔍 Syncing merchant to PostgreSQL:', {
+                             base44_id: merchant.id,
+                             merchant_id: finalMerchantId,
+                             merchant_code: merchant.merchant_code,
+                             business_name: merchant.business_name,
+                             psp_code: pspCode
+                         });
+
                          // Create merchant in PostgreSQL with all fields
                          const merchantResponse = await base44.functions.invoke('pspData', {
                              action: 'createMerchant',
                              psp_code: pspCode,
                              merchantData: {
-                                 merchant_id: merchant.merchant_id || merchant.id,
+                                 merchant_id: finalMerchantId,
                                  merchant_code: merchant.merchant_code,
                                  business_name: merchant.business_name,
                                  trading_name: merchant.trading_name || '',
@@ -108,10 +119,16 @@ export default function Approvals() {
                          });
 
                          console.log('✅ Merchant synced to PostgreSQL:', merchantResponse.data);
-                     }
 
-                     // Also update Base44 entity for consistency
-                     await base44.entities.Merchant.update(merchant.id, { status: 'active' });
+                         // Update Base44 entity with the final merchant_id
+                         await base44.entities.Merchant.update(merchant.id, { 
+                             status: 'active',
+                             merchant_id: finalMerchantId
+                         });
+                         } else {
+                         // No PSP code - just update Base44
+                         await base44.entities.Merchant.update(merchant.id, { status: 'active' });
+                         }
                     
                     // Generate API keys for sandbox and production
                     const environments = ['sandbox', 'production'];

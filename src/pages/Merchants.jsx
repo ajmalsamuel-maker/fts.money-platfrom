@@ -128,12 +128,16 @@ export default function Merchants() {
     const { data: merchants = [], isLoading, error } = useQuery({
         queryKey: ['merchants', userPspCode],
         queryFn: async () => {
-            console.log('Fetching merchants for PSP:', userPspCode);
+            console.log('🔍 Fetching merchants for PSP:', userPspCode);
             const response = await base44.functions.invoke('pspData', {
                 action: 'listMerchants',
                 psp_code: userPspCode
             });
-            console.log('Merchant data response:', response.data);
+            console.log('📦 Merchant data response:', {
+                success: response.data.success,
+                count: response.data.data?.length || 0,
+                merchants: response.data.data
+            });
             return response.data.data || [];
         },
         enabled: !!userPspCode

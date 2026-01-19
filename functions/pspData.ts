@@ -86,6 +86,15 @@ Deno.serve(async (req) => {
 
                 case 'createMerchant': {
                     const { merchantData } = body;
+                    
+                    console.log('📝 Creating merchant in PostgreSQL:', {
+                        merchant_id: merchantData.merchant_id,
+                        merchant_code: merchantData.merchant_code,
+                        business_name: merchantData.business_name,
+                        psp_code: psp_code,
+                        schema: schemaName
+                    });
+                    
                     const result = await client.query(`
                         INSERT INTO merchants (
                             merchant_id, psp_code, merchant_code, business_name, trading_name, 
@@ -143,7 +152,13 @@ Deno.serve(async (req) => {
                         merchantData.total_volume || 0
                     ]);
                     
-                    console.log('✅ Merchant created in PostgreSQL:', result.rows[0]);
+                    console.log('✅ Merchant created/updated in PostgreSQL:', {
+                        id: result.rows[0].id,
+                        merchant_id: result.rows[0].merchant_id,
+                        merchant_code: result.rows[0].merchant_code,
+                        business_name: result.rows[0].business_name,
+                        status: result.rows[0].status
+                    });
                     
                     return Response.json({ 
                         success: true, 
