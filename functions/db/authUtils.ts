@@ -192,28 +192,22 @@ export function getClientIP(req) {
  * Create audit log
  */
 export async function createAuditLog(data) {
-    const sql = getPool();
+    const client = new Client({
+        connectionString: Deno.env.get('DATABASE_URL'),
+        ssl: { rejectUnauthorized: false }
+    });
     try {
-        await sql`
-            INSERT INTO audit_logs (
-                event_type, category, severity, user_email, user_id, user_role,
-                action, description, status, error_message, ip_address, user_agent,
-                target_entity, target_id, old_value, new_value, retention_period,
-                created_date
-            ) VALUES (
-                ${data.event_type}, ${data.category}, ${data.severity}, 
-                ${data.user_email}, ${data.user_id || null}, ${data.user_role || null},
-                ${data.action}, ${data.description}, ${data.status || null}, 
-                ${data.error_message || null}, ${data.ip_address}, ${data.user_agent || null},
-                ${data.target_entity || null}, ${data.target_id || null},
-                ${data.old_value || null}, ${data.new_value || null}, 
-                ${data.retention_period || '3_years'}, CURRENT_TIMESTAMP
-            )
-        `;
+        await client.connect();
+        await client.query(
+            'INSERT INTO audit_logs (event_type, category, severity, user_email, user_id, user_role, action, description, status, error_message, ip_address, user_agent, target_entity, target_id, old_value, new_value, retention_period, created_date) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, CURRENT_TIMESTAMP)',
+            [data.event_type, data.category, data.severity, data.user_email, data.user_id || null, data.user_role || null, data.action, data.description, data.status || null, data.error_message || null, data.ip_address, data.user_agent || null, data.target_entity || null, data.target_id || null, data.old_value || null, data.new_value || null, data.retention_period || '3_years']
+        );
     } catch (error) {
         console.error('Create audit log error:', error);
         // Don't throw - audit logging should not break auth flow
+    } finally {
+        await client.end();
     }
 }
 
-export { postgres, getPool };
+export { Client };
