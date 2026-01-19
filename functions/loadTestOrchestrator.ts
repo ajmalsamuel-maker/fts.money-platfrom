@@ -6,6 +6,9 @@ import { query, execute, closeConnection } from './db/postgresClient.js';
  */
 Deno.serve(async (req) => {
     try {
+        const body = await req.json();
+        console.log('📥 Received request body:', JSON.stringify(body));
+        
         const {
             merchant_ids = [],
             psp_code,
@@ -17,14 +20,18 @@ Deno.serve(async (req) => {
             chaos_intensity = 0,
             payment_methods = ['visa', 'mastercard'],
             amount_range = { min: 10, max: 1000 }
-        } = await req.json();
+        } = body;
+
+        console.log('🔍 Parsed params:', { psp_code, merchant_ids, target_tps, duration_seconds });
 
         if (!psp_code) {
+            console.error('❌ Missing psp_code');
             return Response.json({ error: 'psp_code is required' }, { status: 400 });
         }
 
         if (!merchant_ids || merchant_ids.length === 0) {
-            return Response.json({ error: 'At least one merchant required' }, { status: 400 });
+            console.error('❌ Missing merchant_ids');
+            return Response.json({ error: 'At least one merchant required', received: merchant_ids }, { status: 400 });
         }
 
         const run_id = `LOAD-${Date.now()}`;
