@@ -107,14 +107,14 @@ Deno.serve(async (req) => {
         `;
 
         // Create indexes
-        await client.query(`CREATE INDEX IF NOT EXISTS idx_auth_users_email ON auth_users(email)`);
-        await client.query(`CREATE INDEX IF NOT EXISTS idx_auth_users_account_type ON auth_users(account_type)`);
-        await client.query(`CREATE INDEX IF NOT EXISTS idx_psp_staff_users_psp_code ON psp_staff_users(psp_code)`);
-        await client.query(`CREATE INDEX IF NOT EXISTS idx_psp_staff_users_email ON psp_staff_users(email)`);
-        await client.query(`CREATE INDEX IF NOT EXISTS idx_merchant_users_merchant_code ON merchant_users(merchant_code)`);
-        await client.query(`CREATE INDEX IF NOT EXISTS idx_merchant_users_email ON merchant_users(email)`);
-        await client.query(`CREATE INDEX IF NOT EXISTS idx_audit_logs_created_date ON audit_logs(created_date)`);
-        await client.query(`CREATE INDEX IF NOT EXISTS idx_audit_logs_user_email ON audit_logs(user_email)`);
+        await sql`CREATE INDEX IF NOT EXISTS idx_auth_users_email ON auth_users(email)`;
+        await sql`CREATE INDEX IF NOT EXISTS idx_auth_users_account_type ON auth_users(account_type)`;
+        await sql`CREATE INDEX IF NOT EXISTS idx_psp_staff_users_psp_code ON psp_staff_users(psp_code)`;
+        await sql`CREATE INDEX IF NOT EXISTS idx_psp_staff_users_email ON psp_staff_users(email)`;
+        await sql`CREATE INDEX IF NOT EXISTS idx_merchant_users_merchant_code ON merchant_users(merchant_code)`;
+        await sql`CREATE INDEX IF NOT EXISTS idx_merchant_users_email ON merchant_users(email)`;
+        await sql`CREATE INDEX IF NOT EXISTS idx_audit_logs_created_date ON audit_logs(created_date)`;
+        await sql`CREATE INDEX IF NOT EXISTS idx_audit_logs_user_email ON audit_logs(user_email)`;
 
         console.log('✅ Auth tables created successfully');
 
