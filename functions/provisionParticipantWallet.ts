@@ -25,15 +25,19 @@ Deno.serve(async (req) => {
             });
         }
 
-        // Generate new wallet
+        // Generate new wallet (server-side, no MetaMask needed)
         const wallet = ethers.Wallet.createRandom();
         const walletAddress = wallet.address;
         const privateKey = wallet.privateKey;
 
-        console.log(`Generated wallet for participant ${participant_id}: ${walletAddress}`);
+        console.log(`✅ Generated wallet for participant ${participant_id}: ${walletAddress}`);
 
-        // Store wallet info securely (in production, encrypt private keys)
-        // For now, we only store the address - participant can export/backup their key later
+        // Update TokenBalance with wallet address
+        if (existingBalances && existingBalances.length > 0) {
+            await base44.asServiceRole.entities.TokenBalance.update(existingBalances[0].id, {
+                wallet_address: walletAddress
+            });
+        }
         
         return Response.json({
             success: true,
@@ -44,7 +48,10 @@ Deno.serve(async (req) => {
         });
 
     } catch (error) {
-        console.error('Wallet provisioning error:', error);
-        return Response.json({ error: error.message }, { status: 500 });
+        console.error('❌ Wallet provisioning error:', error);
+        return Response.json({ 
+            success: false,
+            error: error.message 
+        }, { status: 500 });
     }
 });
