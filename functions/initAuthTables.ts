@@ -7,7 +7,7 @@ import postgres from 'npm:postgres@3.4.4';
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 Deno.serve(async (req) => {
-    let client = null;
+    let sql = null;
     try {
         const base44 = createClientFromRequest(req);
         const user = await base44.auth.me();
