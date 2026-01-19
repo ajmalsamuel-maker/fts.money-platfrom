@@ -161,8 +161,13 @@ Deno.serve(async (req) => {
 
     } catch (error) {
         await closeConnection();
-        console.error('Load test orchestrator error:', error);
-        return Response.json({ error: error.message }, { status: 500 });
+        console.error('💥 Load test error:', error);
+        console.error('Stack trace:', error.stack);
+        return Response.json({ 
+            error: error.message,
+            stack: error.stack,
+            details: 'Check function logs for more information'
+        }, { status: 500 });
     }
 });
 
