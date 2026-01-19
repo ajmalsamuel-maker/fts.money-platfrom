@@ -1,10 +1,12 @@
 import { query, execute, closeConnection } from './db/postgresClient.js';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 /**
  * Load Test Orchestrator
  * Coordinates load testing across merchants with transaction test suite integration
  */
 Deno.serve(async (req) => {
+    const base44 = createClientFromRequest(req);
     try {
         const {
             merchant_ids = [],
@@ -57,7 +59,8 @@ Deno.serve(async (req) => {
                         psp_code,
                         merchant_id,
                         payment_methods,
-                        amount_range
+                        amount_range,
+                        base44
                     );
 
                     if (result.success) {
@@ -165,85 +168,145 @@ function selectScenario(scenarios, distribution) {
     return scenarios[0];
 }
 
-async function executeTransaction(scenario, psp_code, merchant_id, payment_methods, amount_range) {
+async function executeTransaction(scenario, psp_code, merchant_id, payment_methods, amount_range, base44) {
     const txn_id = `TXN-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-    const amount = Math.random() * (amount_range.max - amount_range.min) + amount_range.min;
+    const amount = parseFloat((Math.random() * (amount_range.max - amount_range.min) + amount_range.min).toFixed(2));
     const payment_method = payment_methods[Math.floor(Math.random() * payment_methods.length)];
 
     try {
         switch (scenario) {
             case 'successful_payment':
-                await execute(
-                    `INSERT INTO transaction (transaction_id, merchant_id, psp_code, amount, type, status, payment_method, created_date)
-                     VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())`,
-                    [txn_id, merchant_id, psp_code, amount, 'sale', 'approved', payment_method]
-                );
+                // Create in Base44 entities so it appears in PSP portal
+                await base44.asServiceRole.entities.Transaction.create({
+                    transaction_id: txn_id,
+                    merchant_id: merchant_id,
+                    psp_code: psp_code,
+                    amount: amount,
+                    currency: 'USD',
+                    type: 'sale',
+                    status: 'approved',
+                    payment_method: payment_method,
+                    card_last_four: Math.floor(1000 + Math.random() * 9000).toString(),
+                    description: 'Load test - successful payment'
+                });
                 return { success: true };
 
             case 'declined_card':
-                await execute(
-                    `INSERT INTO transaction (transaction_id, merchant_id, psp_code, amount, type, status, response_code, payment_method, created_date)
-                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW())`,
-                    [txn_id, merchant_id, psp_code, amount, 'sale', 'declined', '05', payment_method]
-                );
+                await base44.asServiceRole.entities.Transaction.create({
+                    transaction_id: txn_id,
+                    merchant_id: merchant_id,
+                    psp_code: psp_code,
+                    amount: amount,
+                    currency: 'USD',
+                    type: 'sale',
+                    status: 'declined',
+                    payment_method: payment_method,
+                    response_code: '05',
+                    response_message: 'Do not honor',
+                    card_last_four: Math.floor(1000 + Math.random() * 9000).toString(),
+                    description: 'Load test - declined card'
+                });
                 return { success: true };
 
             case 'insufficient_funds':
-                await execute(
-                    `INSERT INTO transaction (transaction_id, merchant_id, psp_code, amount, type, status, response_code, payment_method, created_date)
-                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW())`,
-                    [txn_id, merchant_id, psp_code, 9999, 'sale', 'declined', '51', payment_method]
-                );
+                await base44.asServiceRole.entities.Transaction.create({
+                    transaction_id: txn_id,
+                    merchant_id: merchant_id,
+                    psp_code: psp_code,
+                    amount: 9999,
+                    currency: 'USD',
+                    type: 'sale',
+                    status: 'declined',
+                    payment_method: payment_method,
+                    response_code: '51',
+                    response_message: 'Insufficient funds',
+                    card_last_four: Math.floor(1000 + Math.random() * 9000).toString(),
+                    description: 'Load test - insufficient funds'
+                });
                 return { success: true };
 
             case 'fraud_detected':
                 const risk_score = 85;
-                await execute(
-                    `INSERT INTO transaction (transaction_id, merchant_id, psp_code, amount, type, status, risk_score, payment_method, created_date)
-                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW())`,
-                    [txn_id, merchant_id, psp_code, amount, 'sale', 'pending', risk_score, payment_method]
-                );
+                await base44.asServiceRole.entities.Transaction.create({
+                    transaction_id: txn_id,
+                    merchant_id: merchant_id,
+                    psp_code: psp_code,
+                    amount: amount,
+                    currency: 'USD',
+                    type: 'sale',
+                    status: 'pending',
+                    payment_method: payment_method,
+                    risk_score: risk_score,
+                    card_last_four: Math.floor(1000 + Math.random() * 9000).toString(),
+                    description: 'Load test - fraud detected'
+                });
                 return { success: true };
 
             case '3ds_required':
-                const challenge_id = `3DS-${Date.now()}`;
-                await execute(
-                    `INSERT INTO transaction (transaction_id, merchant_id, psp_code, amount, type, status, payment_method, created_date)
-                     VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())`,
-                    [txn_id, merchant_id, psp_code, amount, 'sale', 'pending', payment_method]
-                );
-                await execute(
-                    `INSERT INTO three_ds_challenge (challenge_id, transaction_id, psp_code, status, created_date)
-                     VALUES ($1, $2, $3, $4, NOW())`,
-                    [challenge_id, txn_id, psp_code, 'initiated']
-                );
+                await base44.asServiceRole.entities.Transaction.create({
+                    transaction_id: txn_id,
+                    merchant_id: merchant_id,
+                    psp_code: psp_code,
+                    amount: amount,
+                    currency: 'USD',
+                    type: 'sale',
+                    status: 'pending',
+                    payment_method: payment_method,
+                    is_3ds: true,
+                    card_last_four: Math.floor(1000 + Math.random() * 9000).toString(),
+                    description: 'Load test - 3DS required'
+                });
                 return { success: true };
 
             case 'timeout':
                 // Simulate timeout delay
                 await new Promise(resolve => setTimeout(resolve, 5000));
-                await execute(
-                    `INSERT INTO transaction (transaction_id, merchant_id, psp_code, amount, type, status, response_code, payment_method, created_date)
-                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW())`,
-                    [txn_id, merchant_id, psp_code, amount, 'sale', 'error', '99', payment_method]
-                );
+                await base44.asServiceRole.entities.Transaction.create({
+                    transaction_id: txn_id,
+                    merchant_id: merchant_id,
+                    psp_code: psp_code,
+                    amount: amount,
+                    currency: 'USD',
+                    type: 'sale',
+                    status: 'failed',
+                    payment_method: payment_method,
+                    response_code: '99',
+                    response_message: 'Request timeout',
+                    card_last_four: Math.floor(1000 + Math.random() * 9000).toString(),
+                    description: 'Load test - timeout'
+                });
                 return { success: false };
 
             case 'network_error':
-                await execute(
-                    `INSERT INTO transaction (transaction_id, merchant_id, psp_code, amount, type, status, response_message, payment_method, created_date)
-                     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW())`,
-                    [txn_id, merchant_id, psp_code, amount, 'sale', 'error', 'Network connection failed', payment_method]
-                );
+                await base44.asServiceRole.entities.Transaction.create({
+                    transaction_id: txn_id,
+                    merchant_id: merchant_id,
+                    psp_code: psp_code,
+                    amount: amount,
+                    currency: 'USD',
+                    type: 'sale',
+                    status: 'failed',
+                    payment_method: payment_method,
+                    response_message: 'Network connection failed',
+                    card_last_four: Math.floor(1000 + Math.random() * 9000).toString(),
+                    description: 'Load test - network error'
+                });
                 return { success: false };
 
             case 'duplicate':
-                // Insert same transaction twice
-                await execute(
-                    `INSERT INTO transaction (transaction_id, merchant_id, psp_code, amount, type, status, payment_method, created_date)
-                     VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())`,
-                    [txn_id, merchant_id, psp_code, amount, 'sale', 'approved', payment_method]
-                );
+                // Create duplicate transaction
+                await base44.asServiceRole.entities.Transaction.create({
+                    transaction_id: txn_id,
+                    merchant_id: merchant_id,
+                    psp_code: psp_code,
+                    amount: amount,
+                    currency: 'USD',
+                    type: 'sale',
+                    status: 'approved',
+                    payment_method: payment_method,
+                    card_last_four: Math.floor(1000 + Math.random() * 9000).toString(),
+                    description: 'Load test - duplicate'
+                });
                 return { success: true };
 
             default:
