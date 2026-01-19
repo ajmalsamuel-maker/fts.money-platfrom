@@ -3,7 +3,7 @@
  * Creates all required tables for authentication
  */
 
-import { Client } from 'npm:pg@17.1.0';
+import postgres from 'npm:postgres@3.4.4';
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 Deno.serve(async (req) => {
