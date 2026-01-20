@@ -76,6 +76,7 @@ import MermaidDiagram from '@/components/docs/MermaidDiagram';
 import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 import ExportDialog from '@/components/docs/ExportDialog';
 import BusinessEInvoicingGoldStandardUI from '@/components/docs/BusinessEInvoicingGoldStandardUI';
+import { PAYMENT_SWITCH_INTEGRATION_ARCHITECTURE } from '@/components/docs/PaymentSwitchIntegrationArchitecture';
 
 export default function FTSDocumentation() {
     const { platformUser, loading } = usePlatformAuth();
@@ -103,6 +104,13 @@ export default function FTSDocumentation() {
                     icon: Code,
                     content: ArchitectureDoc,
                     description: 'Technical infrastructure, system design, and security architecture'
+                },
+                {
+                    id: 'payment-switch',
+                    title: 'Payment Switch Integration',
+                    icon: GitBranch,
+                    content: PAYMENT_SWITCH_INTEGRATION_ARCHITECTURE,
+                    description: 'Multi-service payment routing architecture - PSP, ISO, Orchestration, Crypto, RWA, E-Invoicing, Loyalty integration patterns'
                 },
                 {
                     id: 'products',
