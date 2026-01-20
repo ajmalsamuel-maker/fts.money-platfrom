@@ -53,6 +53,7 @@ export default function MerchantSelfOnboarding() {
 
             const merchantData = {
                 ...data,
+                merchant_id: `MID-${Date.now()}`,
                 psp_code: pspCode,
                 merchant_code: merchantCode,
                 status: 'pending',
@@ -66,12 +67,17 @@ export default function MerchantSelfOnboarding() {
                 kyb_status: 'not_started',
                 kyb_provider: 'thekyb',
                 aml_status: 'clear',
-                aml_provider: 'amlwatcher',
-                documents: []
+                aml_provider: 'amlwatcher'
             };
 
-            // Create merchant
-            const merchant = await base44.entities.Merchant.create(merchantData);
+            // Create merchant in PostgreSQL via pspData function
+            const response = await base44.functions.invoke('pspData', {
+                action: 'createMerchant',
+                psp_code: pspCode,
+                merchantData: merchantData
+            });
+
+            const merchant = response.data.merchant;
 
             // Create approval request so it shows in Approvals page
             await base44.entities.ApprovalRequest.create({
