@@ -580,35 +580,28 @@ export default function Merchants() {
                                                                     <Eye className="h-4 w-4 mr-2" />
                                                                     View Details
                                                                 </DropdownMenuItem>
-                                                                {hasPermission('EDIT_MERCHANTS') && (
-                                                                    <>
-                                                                        <DropdownMenuItem onClick={() => handleEditMerchant(merchant)}>
-                                                                            <Edit className="h-4 w-4 mr-2" />
-                                                                            Edit
-                                                                        </DropdownMenuItem>
-                                                                        {merchant.status === 'pending' && (
-                                                                            <DropdownMenuItem
-                                                                                onClick={() => updateStatusMutation.mutate({
-                                                                                    merchantId: merchant.id,
-                                                                                    newStatus: 'active',
-                                                                                    merchant
-                                                                                })}
-                                                                            >
-                                                                                <Shield className="h-4 w-4 mr-2" />
-                                                                                Approve & Provision Users
-                                                                            </DropdownMenuItem>
-                                                                        )}
-                                                                    </>
+                                                                <DropdownMenuItem onClick={() => handleEditMerchant(merchant)}>
+                                                                    <Edit className="h-4 w-4 mr-2" />
+                                                                    Edit
+                                                                </DropdownMenuItem>
+                                                                {merchant.status === 'pending' && (
+                                                                    <DropdownMenuItem
+                                                                        onClick={() => updateStatusMutation.mutate({
+                                                                            merchantId: merchant.id,
+                                                                            newStatus: 'active',
+                                                                            merchant
+                                                                        })}
+                                                                        className="text-green-600"
+                                                                    >
+                                                                        <Shield className="h-4 w-4 mr-2" />
+                                                                        Activate Merchant
+                                                                    </DropdownMenuItem>
                                                                 )}
-                                                                {hasPermission('DELETE_MERCHANTS') && (
-                                                                    <>
-                                                                        <DropdownMenuSeparator />
-                                                                        <DropdownMenuItem className="text-red-600">
-                                                                            <Trash2 className="h-4 w-4 mr-2" />
-                                                                            Delete
-                                                                        </DropdownMenuItem>
-                                                                    </>
-                                                                )}
+                                                                <DropdownMenuSeparator />
+                                                                <DropdownMenuItem className="text-red-600">
+                                                                    <Trash2 className="h-4 w-4 mr-2" />
+                                                                    Delete
+                                                                </DropdownMenuItem>
                                                             </DropdownMenuContent>
                                                         </DropdownMenu>
                                                     </TableCell>
