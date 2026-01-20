@@ -390,6 +390,7 @@ import TenantManagement from './pages/TenantManagement';
 import TenantUserManagement from './pages/TenantUserManagement';
 import Terminals from './pages/Terminals';
 import TermsOfService from './pages/TermsOfService';
+import TestFunctionCall from './pages/TestFunctionCall';
 import TestPSPOwnership from './pages/TestPSPOwnership';
 import ThreeDSecure from './pages/ThreeDSecure';
 import TransactionTestSuite from './pages/TransactionTestSuite';
@@ -406,7 +407,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import TestFunctionCall from './pages/TestFunctionCall';
 import __Layout from './Layout.jsx';
 
 
@@ -803,6 +803,7 @@ export const PAGES = {
     "TenantUserManagement": TenantUserManagement,
     "Terminals": Terminals,
     "TermsOfService": TermsOfService,
+    "TestFunctionCall": TestFunctionCall,
     "TestPSPOwnership": TestPSPOwnership,
     "ThreeDSecure": ThreeDSecure,
     "TransactionTestSuite": TransactionTestSuite,
@@ -819,7 +820,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "TestFunctionCall": TestFunctionCall,
 }
 
 export const pagesConfig = {

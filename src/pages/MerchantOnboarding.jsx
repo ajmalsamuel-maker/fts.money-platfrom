@@ -95,6 +95,20 @@ export default function MerchantOnboarding() {
         pricing: {},
     });
 
+    const [userPspCode, setUserPspCode] = React.useState(null);
+
+    React.useEffect(() => {
+        const sessionData = localStorage.getItem('staff_session');
+        if (sessionData) {
+            try {
+                const session = JSON.parse(sessionData);
+                setUserPspCode(session.psp_code);
+            } catch (error) {
+                console.error('Failed to parse session:', error);
+            }
+        }
+    }, []);
+
     const createMerchantMutation = useMutation({
         mutationFn: async (data) => {
             // Workflow validation wrapper
@@ -137,9 +151,17 @@ export default function MerchantOnboarding() {
                 settlement_period: data.bank.settlement_period,
                 processing_volume: getVolumeValue(data.business.expected_volume),
                 fee_rate: 2.5,
+                psp_code: userPspCode
             };
             
-            const merchant = await base44.entities.Merchant.create(merchantData);
+            // Create merchant in PostgreSQL via pspData function
+            const response = await base44.functions.invoke('pspData', {
+                action: 'createMerchant',
+                psp_code: userPspCode,
+                merchantData: merchantData
+            });
+
+            const merchant = response.data.merchant;
             
             // Create approval request for compliance review
             await base44.entities.ApprovalRequest.create({
