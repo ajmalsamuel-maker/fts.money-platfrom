@@ -12,12 +12,12 @@ async function hashPassword(password, salt = 'fts_salt_2025') {
 Deno.serve(async (req) => {
     let client = null;
     try {
-        const { email, full_name, role, password } = await req.json();
+        const { email, full_name, role, password, psp_code } = await req.json();
 
-        if (!email || !password) {
+        if (!email || !password || !psp_code) {
             return Response.json({
                 success: false,
-                error: 'Email and password are required'
+                error: 'Email, password, and PSP code are required'
             }, { status: 400 });
         }
 
@@ -27,10 +27,10 @@ Deno.serve(async (req) => {
         const password_hash = await hashPassword(password);
 
         const result = await client.queryObject(`
-            INSERT INTO psp_staff_users (email, full_name, role, password_hash, status)
-            VALUES ($1, $2, $3, $4, $5)
-            RETURNING id, email, full_name, role, status, created_date
-        `, [email, full_name || 'Admin User', role || 'admin', password_hash, 'active']);
+            INSERT INTO psp_staff_users (psp_code, email, full_name, role, password_hash, status)
+            VALUES ($1, $2, $3, $4, $5, $6)
+            RETURNING id, psp_code, email, full_name, role, status, created_date
+        `, [psp_code.toUpperCase(), email, full_name || 'Admin User', role || 'admin', password_hash, 'active']);
 
         return Response.json({
             success: true,
