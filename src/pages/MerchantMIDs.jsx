@@ -270,6 +270,7 @@ export default function MerchantMIDs() {
         const newFormData = {
             ...formData,
             merchant_id: merchantId,
+            merchant_code: merchant?.merchant_code || '',
             merchant_name: merchant?.business_name || ''
         };
         console.log('New form data after merchant change:', newFormData);
@@ -766,7 +767,7 @@ export default function MerchantMIDs() {
                         <Button 
                             onClick={() => {
                                 console.log('Button clicked! Current formData:', formData);
-                                console.log('Button disabled?', !formData.merchant_id || !formData.mid || !formData.provider_id);
+                                console.log('Button disabled?', !formData.merchant_id || !formData.mid || !formData.provider_name);
                                 handleSubmit();
                             }}
                         >
