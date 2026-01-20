@@ -40,58 +40,74 @@ export default function MerchantSelfOnboarding() {
 
     const createMerchantMutation = useMutation({
         mutationFn: async (data) => {
-            // Get PSP code from session
-            const staffSession = JSON.parse(localStorage.getItem('staff_session') || '{}');
-            const pspCode = staffSession.psp_code;
+            try {
+                // Get PSP code from session
+                const staffSession = JSON.parse(localStorage.getItem('staff_session') || '{}');
+                const pspCode = staffSession.psp_code;
 
-            if (!pspCode) {
-                throw new Error('No PSP code found');
+                console.log('🔄 Submitting merchant application...', { pspCode, data });
+
+                if (!pspCode) {
+                    throw new Error('No PSP code found in session');
+                }
+
+                // Generate merchant code
+                const merchantCode = `MERCH${Date.now().toString().slice(-8)}`;
+
+                const merchantData = {
+                    ...data,
+                    merchant_id: `MID-${Date.now()}`,
+                    psp_code: pspCode,
+                    merchant_code: merchantCode,
+                    status: 'pending',
+                    currency: 'USD',
+                    timezone: 'UTC',
+                    settlement_period: 'T+1',
+                    risk_level: 'medium',
+                    total_transactions: 0,
+                    total_volume: 0,
+                    lei_status: 'pending',
+                    kyb_status: 'not_started',
+                    kyb_provider: 'thekyb',
+                    aml_status: 'clear',
+                    aml_provider: 'amlwatcher'
+                };
+
+                console.log('📤 Creating merchant in PostgreSQL...', merchantData);
+
+                // Create merchant in PostgreSQL via pspData function
+                const response = await base44.functions.invoke('pspData', {
+                    action: 'createMerchant',
+                    psp_code: pspCode,
+                    merchantData: merchantData
+                });
+
+                console.log('📥 Response from pspData:', response);
+
+                if (!response.data.success) {
+                    throw new Error(response.data.error || 'Failed to create merchant');
+                }
+
+                const merchant = response.data.merchant;
+                console.log('✅ Merchant created:', merchant);
+
+                // Create approval request so it shows in Approvals page
+                await base44.entities.ApprovalRequest.create({
+                    request_type: 'merchant_onboarding',
+                    entity_type: 'Merchant',
+                    entity_id: merchant.id,
+                    entity_data: merchant,
+                    submitted_by: staffSession.email || 'admin',
+                    submitted_by_name: staffSession.full_name || 'Admin',
+                    priority: 'normal',
+                    status: 'pending'
+                });
+
+                return merchant;
+            } catch (error) {
+                console.error('❌ Error creating merchant:', error);
+                throw error;
             }
-
-            // Generate merchant code
-            const merchantCode = `MERCH${Date.now().toString().slice(-8)}`;
-
-            const merchantData = {
-                ...data,
-                merchant_id: `MID-${Date.now()}`,
-                psp_code: pspCode,
-                merchant_code: merchantCode,
-                status: 'pending',
-                currency: 'USD',
-                timezone: 'UTC',
-                settlement_period: 'T+1',
-                risk_level: 'medium',
-                total_transactions: 0,
-                total_volume: 0,
-                lei_status: 'pending',
-                kyb_status: 'not_started',
-                kyb_provider: 'thekyb',
-                aml_status: 'clear',
-                aml_provider: 'amlwatcher'
-            };
-
-            // Create merchant in PostgreSQL via pspData function
-            const response = await base44.functions.invoke('pspData', {
-                action: 'createMerchant',
-                psp_code: pspCode,
-                merchantData: merchantData
-            });
-
-            const merchant = response.data.merchant;
-
-            // Create approval request so it shows in Approvals page
-            await base44.entities.ApprovalRequest.create({
-                request_type: 'merchant_onboarding',
-                entity_type: 'Merchant',
-                entity_id: merchant.id,
-                entity_data: merchant,
-                submitted_by: staffSession.email || 'admin',
-                submitted_by_name: staffSession.full_name || 'Admin',
-                priority: 'normal',
-                status: 'pending'
-            });
-
-            return merchant;
         },
         onSuccess: () => {
             queryClient.invalidateQueries(['merchants']);
@@ -100,6 +116,7 @@ export default function MerchantSelfOnboarding() {
             window.location.href = createPageUrl('Merchants');
         },
         onError: (error) => {
+            console.error('Mutation error:', error);
             toast.error('Failed to submit application: ' + error.message);
         }
     });
