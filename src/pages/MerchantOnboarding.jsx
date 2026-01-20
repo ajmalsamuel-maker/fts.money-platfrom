@@ -155,12 +155,19 @@ export default function MerchantOnboarding() {
             };
             
             // Create merchant in PostgreSQL via pspData function
+            console.log('🔄 Creating merchant in PostgreSQL:', {
+                psp_code: userPspCode,
+                merchant_code: merchantData.merchant_code,
+                business_name: merchantData.business_name
+            });
+            
             const response = await base44.functions.invoke('pspData', {
                 action: 'createMerchant',
                 psp_code: userPspCode,
                 merchantData: merchantData
             });
 
+            console.log('✅ Merchant created:', response.data);
             const merchant = response.data.merchant;
             
             // Create approval request for compliance review
