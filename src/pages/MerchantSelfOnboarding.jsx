@@ -84,8 +84,9 @@ export default function MerchantSelfOnboarding() {
 
                 console.log('📥 Response from pspData:', response);
 
-                if (!response.data.success) {
-                    throw new Error(response.data.error || 'Failed to create merchant');
+                // Response from base44.functions.invoke is already unwrapped (response.data is the actual data)
+                if (!response.data || !response.data.success) {
+                    throw new Error(response.data?.error || 'Failed to create merchant');
                 }
 
                 const merchant = response.data.merchant;
