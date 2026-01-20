@@ -26,9 +26,15 @@ Deno.serve(async (req) => {
 
         console.log('Creating auth tables...');
 
+        // Drop existing tables first
+        await client.queryObject`DROP TABLE IF EXISTS audit_logs CASCADE`;
+        await client.queryObject`DROP TABLE IF EXISTS merchant_users CASCADE`;
+        await client.queryObject`DROP TABLE IF EXISTS psp_staff_users CASCADE`;
+        await client.queryObject`DROP TABLE IF EXISTS auth_users CASCADE`;
+
         // Auth Users table
         await client.queryObject`
-            CREATE TABLE IF NOT EXISTS auth_users (
+            CREATE TABLE auth_users (
                 id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                 email VARCHAR(255) UNIQUE NOT NULL,
                 full_name VARCHAR(255),
@@ -44,7 +50,7 @@ Deno.serve(async (req) => {
 
         // PSP Staff Users table
         await client.queryObject`
-            CREATE TABLE IF NOT EXISTS psp_staff_users (
+            CREATE TABLE psp_staff_users (
                 id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                 psp_code VARCHAR(50) NOT NULL,
                 email VARCHAR(255) NOT NULL,
@@ -62,7 +68,7 @@ Deno.serve(async (req) => {
 
         // Merchant Users table
         await client.queryObject`
-            CREATE TABLE IF NOT EXISTS merchant_users (
+            CREATE TABLE merchant_users (
                 id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                 merchant_id VARCHAR(100),
                 merchant_code VARCHAR(100) NOT NULL,
@@ -84,7 +90,7 @@ Deno.serve(async (req) => {
 
         // Audit Logs table
         await client.queryObject`
-            CREATE TABLE IF NOT EXISTS audit_logs (
+            CREATE TABLE audit_logs (
                 id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                 event_type VARCHAR(100),
                 category VARCHAR(100),
