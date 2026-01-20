@@ -30,8 +30,8 @@ Deno.serve(async (req) => {
         console.log(`Creating merchants table in schema: ${schemaName}`);
 
         // Create merchants table
-        await client.queryObject`
-            CREATE TABLE IF NOT EXISTS "${schemaName}".merchants (
+        await client.queryObject(
+            `CREATE TABLE IF NOT EXISTS "${schemaName}".merchants (
                 id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                 merchant_id VARCHAR(100) UNIQUE NOT NULL,
                 psp_code VARCHAR(50) NOT NULL,
@@ -67,13 +67,13 @@ Deno.serve(async (req) => {
                 total_volume DECIMAL(20, 2) DEFAULT 0,
                 created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        `;
+            )`
+        );
 
         // Create indexes
-        await client.queryObject`CREATE INDEX IF NOT EXISTS idx_merchants_psp_code ON "${schemaName}".merchants(psp_code)`;
-        await client.queryObject`CREATE INDEX IF NOT EXISTS idx_merchants_merchant_code ON "${schemaName}".merchants(merchant_code)`;
-        await client.queryObject`CREATE INDEX IF NOT EXISTS idx_merchants_status ON "${schemaName}".merchants(status)`;
+        await client.queryObject(`CREATE INDEX IF NOT EXISTS idx_merchants_psp_code ON "${schemaName}".merchants(psp_code)`);
+        await client.queryObject(`CREATE INDEX IF NOT EXISTS idx_merchants_merchant_code ON "${schemaName}".merchants(merchant_code)`);
+        await client.queryObject(`CREATE INDEX IF NOT EXISTS idx_merchants_status ON "${schemaName}".merchants(status)`);
 
         console.log('✅ Merchants table created successfully');
 
