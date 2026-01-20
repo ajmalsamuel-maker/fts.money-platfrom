@@ -1,4 +1,4 @@
-import postgres from 'npm:postgres@3.4.4';
+import { Client } from 'https://deno.land/x/postgres@v0.17.0/mod.ts';
 
 async function hashPassword(password, salt = 'fts_salt_2025') {
     const encoder = new TextEncoder();
@@ -21,7 +21,7 @@ function getClientIP(req) {
 }
 
 Deno.serve(async (req) => {
-    let sql = null;
+    let client = null;
     try {
         const { action, psp_code, email, password } = await req.json();
 
@@ -33,24 +33,23 @@ Deno.serve(async (req) => {
                 }, { status: 400 });
             }
 
-            sql = postgres(Deno.env.get('DATABASE_URL'), { ssl: 'require' });
+            client = new Client(Deno.env.get('DATABASE_URL'));
+            await client.connect();
 
             // Query psp_staff_users
-            const result = await sql`
-                SELECT * FROM psp_staff_users 
-                WHERE psp_code = ${psp_code.toUpperCase()} 
-                AND email = ${email} 
-                AND status = ${'active'}
-            `;
+            const result = await client.queryObject(
+                'SELECT * FROM psp_staff_users WHERE psp_code = $1 AND email = $2 AND status = $3',
+                [psp_code.toUpperCase(), email, 'active']
+            );
 
-            if (result.length === 0) {
+            if (result.rows.length === 0) {
                 return Response.json({
                     success: false,
                     error: 'Invalid credentials'
                 }, { status: 401 });
             }
 
-            const user = result[0];
+            const user = result.rows[0];
             const isValid = await verifyPassword(password, user.password_hash);
             
             if (!isValid) {
@@ -61,11 +60,10 @@ Deno.serve(async (req) => {
             }
 
             // Update last login
-            await sql`
-                UPDATE psp_staff_users 
-                SET last_login = NOW(), last_login_ip = ${getClientIP(req)} 
-                WHERE id = ${user.id}
-            `;
+            await client.queryObject(
+                'UPDATE psp_staff_users SET last_login = NOW(), last_login_ip = $1 WHERE id = $2',
+                [getClientIP(req), user.id]
+            );
 
             return Response.json({
                 success: true,
@@ -94,8 +92,8 @@ Deno.serve(async (req) => {
             error: error.message
         }, { status: 500 });
     } finally {
-        if (sql) {
-            await sql.end();
+        if (client) {
+            await client.end();
         }
     }
 });
