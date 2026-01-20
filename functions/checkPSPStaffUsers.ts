@@ -1,70 +1,33 @@
-import pg from 'npm:pg@8.11.3';
-
-const { Pool } = pg;
-
-const pool = new Pool({
-    connectionString: Deno.env.get("DATABASE_URL"),
-    ssl: { rejectUnauthorized: false }
-});
+import { Client } from 'https://deno.land/x/postgres@v0.17.0/mod.ts';
 
 Deno.serve(async (req) => {
+    let client = null;
     try {
-        const { psp_code } = await req.json();
-        const schemaName = `psp_${psp_code.toLowerCase()}`;
-        
-        const client = await pool.connect();
-        try {
-            // Check if schema exists
-            const schemaCheck = await client.query(`
-                SELECT schema_name FROM information_schema.schemata WHERE schema_name = $1
-            `, [schemaName]);
+        const { email } = await req.json();
 
-            if (schemaCheck.rows.length === 0) {
-                return Response.json({
-                    success: false,
-                    error: 'Schema does not exist'
-                });
-            }
+        client = new Client(Deno.env.get('DATABASE_URL'));
+        await client.connect();
 
-            // Check if psp_staff_users table exists
-            const tableCheck = await client.query(`
-                SELECT table_name FROM information_schema.tables 
-                WHERE table_schema = $1 AND table_name = 'psp_staff_users'
-            `, [schemaName]);
+        const result = await client.queryObject(
+            'SELECT id, email, full_name, role, status, psp_code, created_date, password_hash FROM psp_staff_users WHERE email = $1',
+            [email || 'admin@gppay.com']
+        );
 
-            // Check for existing users
-            let users = [];
-            if (tableCheck.rows.length > 0) {
-                const usersResult = await client.query(`
-                    SELECT id, email, role, status FROM ${schemaName}.psp_staff_users
-                `);
-                users = usersResult.rows;
-            }
-
-            // Check constraints
-            const constraints = await client.query(`
-                SELECT constraint_name, constraint_type 
-                FROM information_schema.table_constraints 
-                WHERE table_schema = $1 AND table_name = 'psp_staff_users'
-            `, [schemaName]);
-
-            return Response.json({
-                success: true,
-                schema_exists: true,
-                table_exists: tableCheck.rows.length > 0,
-                users: users,
-                constraints: constraints.rows
-            });
-
-        } finally {
-            client.release();
-        }
+        return Response.json({
+            success: true,
+            users: result.rows,
+            count: result.rows.length
+        });
 
     } catch (error) {
+        console.error('Check users error:', error);
         return Response.json({
             success: false,
-            error: error.message,
-            stack: error.stack
+            error: error.message
         }, { status: 500 });
+    } finally {
+        if (client) {
+            await client.end();
+        }
     }
 });
