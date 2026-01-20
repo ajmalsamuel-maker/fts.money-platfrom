@@ -77,6 +77,7 @@ import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
 import ExportDialog from '@/components/docs/ExportDialog';
 import BusinessEInvoicingGoldStandardUI from '@/components/docs/BusinessEInvoicingGoldStandardUI';
 import { PAYMENT_SWITCH_INTEGRATION_ARCHITECTURE } from '@/components/docs/PaymentSwitchIntegrationArchitecture';
+import { PAYMENT_SWITCH_BUSINESS_MODEL } from '@/components/docs/PaymentSwitchBusinessModel';
 
 export default function FTSDocumentation() {
     const { platformUser, loading } = usePlatformAuth();
@@ -111,6 +112,13 @@ export default function FTSDocumentation() {
                     icon: GitBranch,
                     content: PAYMENT_SWITCH_INTEGRATION_ARCHITECTURE,
                     description: 'Multi-service payment routing architecture - PSP, ISO, Orchestration, Crypto, RWA, E-Invoicing, Loyalty integration patterns'
+                },
+                {
+                    id: 'payment-switch-business',
+                    title: 'Payment Switch Business Model',
+                    icon: DollarSign,
+                    content: PAYMENT_SWITCH_BUSINESS_MODEL,
+                    description: 'Three-tier monetization strategy - Infrastructure, White-Label Enterprise, Managed Service pricing and packaging'
                 },
                 {
                     id: 'products',
