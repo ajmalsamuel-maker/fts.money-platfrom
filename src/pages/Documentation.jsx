@@ -5,12 +5,13 @@ import { cn } from "@/lib/utils";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Download, FileText, Database, Code, Map, Shield } from 'lucide-react';
+import { Download, FileText, Database, Code, Map, Shield, Shuffle } from 'lucide-react';
 import { FULL_ARCHITECTURE_DOC } from '@/components/docs/FullArchitectureDoc';
 import { FULL_MIGRATION_PLAN } from '@/components/docs/FullMigrationPlan';
 import { FULL_API_SPEC } from '@/components/docs/FullAPISpec';
 import { FULL_SCHEMA_SCRIPT } from '@/components/docs/FullSchemaScript';
 import { ROLE_PERMISSIONS_DOC } from '@/components/docs/RolePermissionsDoc';
+import { PAYMENT_SWITCH_INTEGRATION_ARCHITECTURE } from '@/components/docs/PaymentSwitchIntegrationArchitecture';
 
 export default function Documentation() {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -43,8 +44,9 @@ export default function Documentation() {
                     </div>
 
                     <Tabs defaultValue="roles" className="w-full">
-                        <TabsList className="grid w-full grid-cols-5 mb-6">
+                        <TabsList className="grid w-full grid-cols-6 mb-6">
                             <TabsTrigger value="roles">Roles & Permissions</TabsTrigger>
+                            <TabsTrigger value="switch">Payment Switch</TabsTrigger>
                             <TabsTrigger value="architecture">Architecture</TabsTrigger>
                             <TabsTrigger value="migration">Migration Plan</TabsTrigger>
                             <TabsTrigger value="api">API Spec</TabsTrigger>
@@ -135,6 +137,84 @@ export default function Documentation() {
 
                                         <div className="text-sm text-slate-500">
                                             <strong>Management:</strong> Assign and manage user roles in System → User Management
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
+
+                        <TabsContent value="switch">
+                            <Card>
+                                <CardHeader className="border-b">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2">
+                                            <Shuffle className="h-5 w-5 text-purple-600" />
+                                            <CardTitle>Payment Switch Integration Architecture</CardTitle>
+                                        </div>
+                                        <Button onClick={() => downloadFile('PaymentSwitchArchitecture.md', PAYMENT_SWITCH_INTEGRATION_ARCHITECTURE)} className="gap-2">
+                                            <Download className="h-4 w-4" />
+                                            Download Documentation
+                                        </Button>
+                                    </div>
+                                </CardHeader>
+                                <CardContent className="p-6">
+                                    <div className="space-y-6">
+                                        <div>
+                                            <h3 className="font-semibold text-lg mb-2">Multi-Service Payment Routing & Orchestration</h3>
+                                            <p className="text-slate-600">
+                                                Comprehensive integration architecture defining how centralized payment providers route across PSP, ISO Gateway, Orchestration, Crypto, RWA, E-Invoicing, and Loyalty platforms.
+                                            </p>
+                                        </div>
+
+                                        <div className="grid grid-cols-3 gap-4">
+                                            <div className="border rounded-lg p-4">
+                                                <h4 className="font-medium mb-3">Integration Scenarios</h4>
+                                                <ul className="text-sm text-slate-600 space-y-1">
+                                                    <li>• PSP Payment Processing</li>
+                                                    <li>• ISO Gateway Bidirectional</li>
+                                                    <li>• Payment Orchestration</li>
+                                                    <li>• Crypto On/Off-Ramp</li>
+                                                    <li>• RWA Tokenization Flows</li>
+                                                    <li>• E-Invoicing Settlement</li>
+                                                    <li>• Loyalty Integration</li>
+                                                </ul>
+                                            </div>
+                                            <div className="border rounded-lg p-4">
+                                                <h4 className="font-medium mb-3">Advanced Patterns</h4>
+                                                <ul className="text-sm text-slate-600 space-y-1">
+                                                    <li>• Cascading Failover</li>
+                                                    <li>• Geographic Load Balancing</li>
+                                                    <li>• Cost Optimization Routing</li>
+                                                    <li>• Multi-Provider Split</li>
+                                                    <li>• Smart Retry Logic</li>
+                                                    <li>• Health Monitoring</li>
+                                                </ul>
+                                            </div>
+                                            <div className="border rounded-lg p-4">
+                                                <h4 className="font-medium mb-3">Documentation</h4>
+                                                <ul className="text-sm text-slate-600 space-y-1">
+                                                    <li>• 7 Mermaid diagrams</li>
+                                                    <li>• 15+ integration tables</li>
+                                                    <li>• Code examples</li>
+                                                    <li>• Cost analysis</li>
+                                                    <li>• Performance metrics</li>
+                                                    <li>• Implementation phases</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+
+                                        <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                                            <h4 className="font-medium text-purple-900 mb-2">Key Capabilities</h4>
+                                            <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm text-purple-800">
+                                                <div>✓ Configure once, route everywhere</div>
+                                                <div>✓ 20-30% cost reduction</div>
+                                                <div>✓ Bidirectional money flow</div>
+                                                <div>✓ 99.99% uptime via failover</div>
+                                                <div>✓ Multi-service interoperability</div>
+                                                <div>✓ Real-time settlement (ISO 20022)</div>
+                                                <div>✓ Service compatibility matrix</div>
+                                                <div>✓ 50,000+ TPS scalability</div>
+                                            </div>
                                         </div>
                                     </div>
                                 </CardContent>
