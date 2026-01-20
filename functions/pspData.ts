@@ -204,7 +204,7 @@ Deno.serve(async (req) => {
                 case 'listMerchantMIDs': {
                     const result = await client.query(`
                         SELECT * FROM merchant_mids 
-                        ORDER BY created_at DESC
+                        ORDER BY created_date DESC
                     `);
                     
                     return Response.json({ 
@@ -217,22 +217,24 @@ Deno.serve(async (req) => {
                     const { midData } = body;
                     const result = await client.query(`
                         INSERT INTO merchant_mids (
-                            merchant_id, merchant_name, mid, provider_name, 
-                            account_type, transaction_types, currency, 
-                            status, activation_date, notes
-                        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+                            psp_code, merchant_id, merchant_code, merchant_name, mid, 
+                            mid_type, processor, status, currency, country,
+                            priority, notes
+                        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
                         RETURNING *
                     `, [
+                        psp_code,
                         midData.merchant_id,
-                        midData.merchant_name,
+                        midData.merchant_code || '',
+                        midData.merchant_name || '',
                         midData.mid,
-                        midData.provider_name,
-                        midData.account_type,
-                        JSON.stringify(midData.transaction_types || []),
+                        midData.mid_type || 'standard',
+                        midData.processor || midData.provider_name || '',
+                        midData.status || 'active',
                         midData.currency || 'USD',
-                        midData.status || 'pending',
-                        midData.activation_date,
-                        midData.notes
+                        midData.country || '',
+                        midData.priority || 100,
+                        midData.notes || ''
                     ]);
                     
                     return Response.json({ 
@@ -271,7 +273,7 @@ Deno.serve(async (req) => {
                         });
                     }
 
-                    setClauses.push('updated_at = NOW()');
+                    setClauses.push('updated_date = NOW()');
 
                     const result = await client.query(`
                         UPDATE merchant_mids 
