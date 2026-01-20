@@ -298,6 +298,79 @@ Deno.serve(async (req) => {
                     return Response.json({ success: true });
                 }
 
+                case 'listVirtualTerminals': {
+                    const result = await client.query(`
+                        SELECT * FROM virtual_terminals 
+                        ORDER BY created_date DESC
+                    `);
+                    
+                    return Response.json({ 
+                        success: true, 
+                        data: result.rows 
+                    });
+                }
+
+                case 'createVirtualTerminal': {
+                    const { terminalData } = body;
+                    const result = await client.query(`
+                        INSERT INTO virtual_terminals (
+                            terminal_id, psp_code, merchant_id, merchant_name, name, 
+                            terminal_type, api_key, status, allowed_payment_methods, 
+                            allowed_currencies, daily_limit, per_transaction_limit, 
+                            requires_cvv, requires_avs, enable_3ds
+                        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+                        RETURNING *
+                    `, [
+                        terminalData.terminal_id,
+                        psp_code,
+                        terminalData.merchant_id,
+                        terminalData.merchant_name || '',
+                        terminalData.name,
+                        terminalData.terminal_type || 'web',
+                        terminalData.api_key,
+                        terminalData.status || 'active',
+                        JSON.stringify(terminalData.allowed_payment_methods || ['visa', 'mastercard']),
+                        JSON.stringify(terminalData.allowed_currencies || ['USD']),
+                        terminalData.daily_limit || 10000,
+                        terminalData.per_transaction_limit || 1000,
+                        terminalData.requires_cvv !== false,
+                        terminalData.requires_avs !== false,
+                        terminalData.enable_3ds !== false
+                    ]);
+                    
+                    return Response.json({ 
+                        success: true, 
+                        terminal: result.rows[0] 
+                    });
+                }
+
+                case 'createVirtualTerminalUser': {
+                    const { userData } = body;
+                    const result = await client.query(`
+                        INSERT INTO virtual_terminal_users (
+                            terminal_id, psp_code, merchant_id, email, full_name, 
+                            role, status, temp_password, must_change_password, permissions
+                        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+                        RETURNING *
+                    `, [
+                        userData.terminal_id,
+                        psp_code,
+                        userData.merchant_id,
+                        userData.email,
+                        userData.full_name,
+                        userData.role || 'operator',
+                        userData.status || 'active',
+                        userData.temp_password,
+                        userData.must_change_password !== false,
+                        JSON.stringify(userData.permissions || [])
+                    ]);
+                    
+                    return Response.json({ 
+                        success: true, 
+                        user: result.rows[0] 
+                    });
+                }
+
                 default:
                     return Response.json({ error: 'Invalid action' }, { status: 400 });
             }
