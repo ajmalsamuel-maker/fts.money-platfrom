@@ -3,11 +3,11 @@
  * Creates all required tables for authentication
  */
 
-import postgres from 'npm:postgres@3.4.4';
+import { Client } from 'https://deno.land/x/postgres@v0.17.0/mod.ts';
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 Deno.serve(async (req) => {
-    let sql = null;
+    let client = null;
     try {
         const base44 = createClientFromRequest(req);
         const user = await base44.auth.me();
@@ -21,17 +21,13 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'DATABASE_URL not set' }, { status: 500 });
         }
 
-        const sql = postgres(dbUrl, { 
-            ssl: 'require',
-            connection: {
-                timeout: 30000
-            }
-        });
+        client = new Client(dbUrl);
+        await client.connect();
 
         console.log('Creating auth tables...');
 
         // Auth Users table
-        await sql`
+        await client.queryObject`
             CREATE TABLE IF NOT EXISTS auth_users (
                 id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                 email VARCHAR(255) UNIQUE NOT NULL,
@@ -47,7 +43,7 @@ Deno.serve(async (req) => {
         `;
 
         // PSP Staff Users table
-        await sql`
+        await client.queryObject`
             CREATE TABLE IF NOT EXISTS psp_staff_users (
                 id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                 psp_code VARCHAR(50) NOT NULL,
@@ -65,7 +61,7 @@ Deno.serve(async (req) => {
         `;
 
         // Merchant Users table
-        await sql`
+        await client.queryObject`
             CREATE TABLE IF NOT EXISTS merchant_users (
                 id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                 merchant_id VARCHAR(100),
@@ -87,7 +83,7 @@ Deno.serve(async (req) => {
         `;
 
         // Audit Logs table
-        await sql`
+        await client.queryObject`
             CREATE TABLE IF NOT EXISTS audit_logs (
                 id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
                 event_type VARCHAR(100),
@@ -112,14 +108,14 @@ Deno.serve(async (req) => {
         `;
 
         // Create indexes
-        await sql`CREATE INDEX IF NOT EXISTS idx_auth_users_email ON auth_users(email)`;
-        await sql`CREATE INDEX IF NOT EXISTS idx_auth_users_account_type ON auth_users(account_type)`;
-        await sql`CREATE INDEX IF NOT EXISTS idx_psp_staff_users_psp_code ON psp_staff_users(psp_code)`;
-        await sql`CREATE INDEX IF NOT EXISTS idx_psp_staff_users_email ON psp_staff_users(email)`;
-        await sql`CREATE INDEX IF NOT EXISTS idx_merchant_users_merchant_code ON merchant_users(merchant_code)`;
-        await sql`CREATE INDEX IF NOT EXISTS idx_merchant_users_email ON merchant_users(email)`;
-        await sql`CREATE INDEX IF NOT EXISTS idx_audit_logs_created_date ON audit_logs(created_date)`;
-        await sql`CREATE INDEX IF NOT EXISTS idx_audit_logs_user_email ON audit_logs(user_email)`;
+        await client.queryObject`CREATE INDEX IF NOT EXISTS idx_auth_users_email ON auth_users(email)`;
+        await client.queryObject`CREATE INDEX IF NOT EXISTS idx_auth_users_account_type ON auth_users(account_type)`;
+        await client.queryObject`CREATE INDEX IF NOT EXISTS idx_psp_staff_users_psp_code ON psp_staff_users(psp_code)`;
+        await client.queryObject`CREATE INDEX IF NOT EXISTS idx_psp_staff_users_email ON psp_staff_users(email)`;
+        await client.queryObject`CREATE INDEX IF NOT EXISTS idx_merchant_users_merchant_code ON merchant_users(merchant_code)`;
+        await client.queryObject`CREATE INDEX IF NOT EXISTS idx_merchant_users_email ON merchant_users(email)`;
+        await client.queryObject`CREATE INDEX IF NOT EXISTS idx_audit_logs_created_date ON audit_logs(created_date)`;
+        await client.queryObject`CREATE INDEX IF NOT EXISTS idx_audit_logs_user_email ON audit_logs(user_email)`;
 
         console.log('✅ Auth tables created successfully');
 
@@ -135,8 +131,8 @@ Deno.serve(async (req) => {
             error: error.message
         }, { status: 500 });
     } finally {
-        if (sql) {
-            await sql.end();
+        if (client) {
+            await client.end();
         }
     }
 });
