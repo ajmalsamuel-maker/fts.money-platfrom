@@ -38,8 +38,8 @@ Deno.serve(async (req) => {
 
             // Query psp_staff_users
             const result = await client.queryObject(
-                'SELECT * FROM psp_staff_users WHERE psp_code = $1 AND email = $2 AND status = $3',
-                [psp_code.toUpperCase(), email, 'active']
+                'SELECT * FROM psp_staff_users WHERE email = $1 AND status = $2',
+                [email, 'active']
             );
 
             if (result.rows.length === 0) {
