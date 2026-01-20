@@ -3,7 +3,7 @@
  * Add a test PSP staff user to allow login
  */
 
-import { Client } from 'npm:pg@17.1.0';
+import { Client } from 'https://deno.land/x/postgres@v0.17.0/mod.ts';
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 // Simple SHA-256 hash
@@ -31,10 +31,7 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'DATABASE_URL not set' }, { status: 500 });
         }
 
-        client = new Client({
-            connectionString: dbUrl,
-            ssl: { rejectUnauthorized: false }
-        });
+        client = new Client(dbUrl);
         await client.connect();
 
         console.log('Seeding PSP staff user...');
@@ -42,7 +39,7 @@ Deno.serve(async (req) => {
         const hashedPassword = await hashPassword('password123');
 
         // Insert GP-PAY PSP staff user
-        const result = await client.query(
+        const result = await client.queryObject(
             'INSERT INTO psp_staff_users (psp_code, email, full_name, password_hash, role, status) VALUES ($1, $2, $3, $4, $5, $6) ON CONFLICT (psp_code, email) DO UPDATE SET password_hash = $4, status = $6 RETURNING id, psp_code, email, full_name',
             ['GP-PAY', 'ajmalsamuel@me.com', 'Ajmal Samuel', hashedPassword, 'admin', 'active']
         );
