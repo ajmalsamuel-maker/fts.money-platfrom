@@ -1,22 +1,26 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Switch } from "@/components/ui/switch";
-import { Plug, Plus, Shuffle, TrendingUp, DollarSign, Activity, CheckCircle, XCircle, Clock, Shield, Zap, BarChart3, AlertTriangle } from 'lucide-react';
+import { Textarea } from "@/components/ui/textarea";
+import { Plug, Plus, Shuffle, TrendingUp, DollarSign, Activity, CheckCircle, XCircle, Clock, Shield, Zap, BarChart3, AlertTriangle, CreditCard, Globe, Edit, Eye, EyeOff, Route, ArrowDown, RefreshCw, GitBranch, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
+import { cn } from "@/lib/utils";
 import FTSPlatformSidebar from '@/components/platform/FTSPlatformSidebar';
 import LanguageSwitcher from '@/components/i18n/LanguageSwitcher';
 import { useI18n } from '@/components/i18n/EnhancedLanguageProvider';
+import PaymentMethodSelector from '@/components/providers/PaymentMethodSelector';
+import { getPaymentMethodLogo, getPaymentMethodDisplayName } from '@/components/utils/paymentLogos';
 
 export default function FTSConnectorManagement() {
     const [platformUser] = useState(() => JSON.parse(localStorage.getItem('platform_admin_session') || '{}'));
@@ -49,6 +53,46 @@ export default function FTSConnectorManagement() {
         conditions: {},
         priority: 100,
         enabled: true
+    });
+
+    // Provider Form State (merged from PaymentProviderManagement)
+    const [showProviderDialog, setShowProviderDialog] = useState(false);
+    const [editingProvider, setEditingProvider] = useState(null);
+    const [showApiKey, setShowApiKey] = useState(false);
+    const [showMethodSelector, setShowMethodSelector] = useState(false);
+    const [providerForm, setProviderForm] = useState({
+        name: '',
+        provider_type: 'gateway',
+        logo_url: '',
+        merchant_id: '',
+        api_base_url: '',
+        api_key: '',
+        api_secret: '',
+        webhook_url: '',
+        supported_methods: [],
+        supported_currencies: ['USD', 'EUR', 'GBP'],
+        supported_regions: ['US', 'EU', 'APAC'],
+        status: 'active',
+        notes: ''
+    });
+
+    // Routing Rule Dialog State (merged from PaymentOrchestration)
+    const [showCreateRuleDialog, setShowCreateRuleDialog] = useState(false);
+    const [newRoutingRule, setNewRoutingRule] = useState({
+        name: '',
+        description: '',
+        rule_type: 'routing',
+        status: 'inactive',
+        priority: 100,
+        primary_processor: '',
+        fallback_processors: [],
+        card_networks: [],
+        countries: [],
+        currencies: [],
+        min_amount: null,
+        max_amount: null,
+        retry_attempts: 3,
+        cost_optimization: false
     });
 
     // Fetch all payment providers from Payment Provider Management
@@ -94,6 +138,18 @@ export default function FTSConnectorManagement() {
         queryFn: () => base44.entities.ConnectorUsageMetric.list('-created_date', 100)
     });
 
+    // Routing Rules (from PaymentOrchestration)
+    const { data: routingRules = [] } = useQuery({
+        queryKey: ['routing-rules'],
+        queryFn: () => base44.entities.RoutingRule.list('-priority')
+    });
+
+    // Master Pricing for provider pricing
+    const { data: masterPricing = [] } = useQuery({
+        queryKey: ['master-pricing'],
+        queryFn: () => base44.entities.MasterPricing.list()
+    });
+
     const assignProviderMutation = useMutation({
         mutationFn: (data) => {
             const provider = paymentProviders.find(p => p.id === data.payment_provider_id);
@@ -137,6 +193,143 @@ export default function FTSConnectorManagement() {
             toast.success('Provider status updated');
         }
     });
+
+    // Create Provider Mutation (merged from PaymentProviderManagement)
+    const createProviderMutation = useMutation({
+        mutationFn: async (data) => {
+            const provider = await base44.entities.PaymentProvider.create({
+                name: data.name,
+                type: data.provider_type,
+                logo_url: data.logo_url,
+                merchant_id: data.merchant_id,
+                api_base_url: data.api_base_url,
+                api_key: data.api_key,
+                api_secret: data.api_secret,
+                webhook_url: data.webhook_url,
+                supported_currencies: data.supported_currencies,
+                supported_regions: data.supported_regions,
+                supported_methods: data.supported_methods,
+                status: data.status,
+                notes: data.notes
+            });
+            return provider;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries(['payment-providers']);
+            setShowProviderDialog(false);
+            resetProviderForm();
+            toast.success('Payment provider created!');
+        },
+        onError: (error) => {
+            toast.error(`Failed to create provider: ${error.message}`);
+        }
+    });
+
+    // Update Provider Mutation
+    const updateProviderMutation = useMutation({
+        mutationFn: async ({ id, data }) => {
+            return base44.entities.PaymentProvider.update(id, data);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries(['payment-providers']);
+            setShowProviderDialog(false);
+            setEditingProvider(null);
+            resetProviderForm();
+            toast.success('Payment provider updated!');
+        }
+    });
+
+    // Delete Provider Mutation
+    const deleteProviderMutation = useMutation({
+        mutationFn: (id) => base44.entities.PaymentProvider.delete(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries(['payment-providers']);
+            toast.success('Provider deleted');
+        }
+    });
+
+    // Create Routing Rule Mutation (merged from PaymentOrchestration)
+    const createRoutingRuleMutation = useMutation({
+        mutationFn: (data) => base44.entities.RoutingRule.create(data),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['routing-rules'] });
+            setShowCreateRuleDialog(false);
+            resetRoutingRuleForm();
+            toast.success('Routing rule created!');
+        }
+    });
+
+    // Delete Routing Rule Mutation
+    const deleteRoutingRuleMutation = useMutation({
+        mutationFn: (id) => base44.entities.RoutingRule.delete(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['routing-rules'] });
+            toast.success('Routing rule deleted');
+        }
+    });
+
+    // Toggle Routing Rule Status
+    const toggleRoutingRuleMutation = useMutation({
+        mutationFn: ({ id, status }) => 
+            base44.entities.RoutingRule.update(id, { status }),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['routing-rules'] });
+            toast.success('Rule status updated');
+        }
+    });
+
+    const resetProviderForm = () => {
+        setProviderForm({
+            name: '',
+            provider_type: 'gateway',
+            logo_url: '',
+            merchant_id: '',
+            api_base_url: '',
+            api_key: '',
+            api_secret: '',
+            webhook_url: '',
+            supported_methods: [],
+            supported_currencies: ['USD', 'EUR', 'GBP'],
+            supported_regions: ['US', 'EU', 'APAC'],
+            status: 'active',
+            notes: ''
+        });
+        setEditingProvider(null);
+    };
+
+    const resetRoutingRuleForm = () => {
+        setNewRoutingRule({
+            name: '',
+            description: '',
+            rule_type: 'routing',
+            status: 'inactive',
+            priority: 100,
+            primary_processor: '',
+            fallback_processors: [],
+            card_networks: [],
+            countries: [],
+            currencies: [],
+            min_amount: null,
+            max_amount: null,
+            retry_attempts: 3,
+            cost_optimization: false
+        });
+    };
+
+    const handleSaveProvider = () => {
+        if (editingProvider) {
+            updateProviderMutation.mutate({ id: editingProvider.id, data: providerForm });
+        } else {
+            createProviderMutation.mutate(providerForm);
+        }
+    };
+
+    const ruleTypeConfig = {
+        routing: { label: 'Smart Routing', icon: Route, color: 'text-blue-600 bg-blue-50' },
+        cascading: { label: 'Cascading', icon: ArrowDown, color: 'text-purple-600 bg-purple-50' },
+        fallback: { label: 'Fallback', icon: RefreshCw, color: 'text-amber-600 bg-amber-50' },
+        split: { label: 'Traffic Split', icon: Shuffle, color: 'text-emerald-600 bg-emerald-50' }
+    };
 
     const resetAssignmentForm = () => {
         setAssignmentForm({
@@ -371,47 +564,170 @@ export default function FTSConnectorManagement() {
                             </Card>
                     </TabsContent>
 
-                        {/* Routing & Orchestration Tab */}
+                        {/* Routing & Orchestration Tab - MERGED FROM PaymentOrchestration */}
                         <TabsContent value="routing">
                             <Card>
                                 <CardHeader className="flex flex-row items-center justify-between">
-                                    <CardTitle>Smart Routing Rules</CardTitle>
-                                    <Button onClick={() => setShowRoutingDialog(true)} className="gap-2">
+                                    <div>
+                                        <CardTitle>Smart Routing Rules</CardTitle>
+                                        <CardDescription>Configure routing, cascading, failover, and split payment rules</CardDescription>
+                                    </div>
+                                    <Button onClick={() => setShowCreateRuleDialog(true)} className="gap-2">
                                         <Plus className="h-4 w-4" /> Create Routing Rule
                                     </Button>
                                 </CardHeader>
-                                <CardContent className="p-6">
-                                    <div className="space-y-4">
-                                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                                            <div className="flex items-start gap-3">
-                                                <Zap className="h-5 w-5 text-blue-600 mt-0.5" />
-                                                <div>
-                                                    <h4 className="font-semibold text-blue-900 mb-1">Payment Switch Routing Features</h4>
-                                                    <ul className="text-sm text-blue-800 space-y-1">
-                                                        <li>• <strong>Load Balancing:</strong> Distribute transactions across providers based on weight</li>
-                                                        <li>• <strong>Failover:</strong> Automatic fallback to backup providers on failure</li>
-                                                        <li>• <strong>Cost Optimization:</strong> Route to lowest-cost provider based on transaction type</li>
-                                                        <li>• <strong>Geographic Routing:</strong> Route based on customer location</li>
-                                                        <li>• <strong>Currency Routing:</strong> Optimal provider selection per currency</li>
-                                                        <li>• <strong>Volume Limits:</strong> Automatic switching when limits reached</li>
-                                                        <li>• <strong>Health Monitoring:</strong> Real-time provider health checks</li>
-                                                        <li>• <strong>Smart Retry:</strong> Intelligent retry logic with cascading fallback</li>
-                                                    </ul>
+                                <CardContent className="p-0">
+                                    {routingRules.length === 0 ? (
+                                        <div className="p-6">
+                                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                                                <div className="flex items-start gap-3">
+                                                    <Zap className="h-5 w-5 text-blue-600 mt-0.5" />
+                                                    <div>
+                                                        <h4 className="font-semibold text-blue-900 mb-1">Payment Switch Routing Features</h4>
+                                                        <ul className="text-sm text-blue-800 space-y-1">
+                                                            <li>• <strong>Load Balancing:</strong> Distribute transactions across providers based on weight</li>
+                                                            <li>• <strong>Failover:</strong> Automatic fallback to backup providers on failure</li>
+                                                            <li>• <strong>Cost Optimization:</strong> Route to lowest-cost provider based on transaction type</li>
+                                                            <li>• <strong>Geographic Routing:</strong> Route based on customer location</li>
+                                                            <li>• <strong>Smart Retry:</strong> Intelligent retry logic with cascading fallback</li>
+                                                        </ul>
+                                                    </div>
                                                 </div>
                                             </div>
+                                            <div className="text-center py-8 text-slate-500">
+                                                <Route className="h-12 w-12 mx-auto text-slate-400 mb-3" />
+                                                <p className="font-semibold mb-1">No routing rules configured</p>
+                                                <p className="text-sm mb-4">Create your first routing rule to optimize payment flows</p>
+                                                <Button onClick={() => setShowCreateRuleDialog(true)}>
+                                                    <Plus className="h-4 w-4 mr-2" /> Create First Rule
+                                                </Button>
+                                            </div>
                                         </div>
-                                        <p className="text-center text-slate-500 py-8">Routing rule builder coming soon</p>
-                                    </div>
+                                    ) : (
+                                        <Table>
+                                            <TableHeader>
+                                                <TableRow className="bg-slate-50">
+                                                    <TableHead className="w-16">Priority</TableHead>
+                                                    <TableHead>Rule</TableHead>
+                                                    <TableHead>Type</TableHead>
+                                                    <TableHead>Primary Provider</TableHead>
+                                                    <TableHead>Fallbacks</TableHead>
+                                                    <TableHead>Conditions</TableHead>
+                                                    <TableHead>Status</TableHead>
+                                                    <TableHead className="w-24">Actions</TableHead>
+                                                </TableRow>
+                                            </TableHeader>
+                                            <TableBody>
+                                                {routingRules.sort((a, b) => (a.priority || 100) - (b.priority || 100)).map((rule) => {
+                                                    const TypeIcon = ruleTypeConfig[rule.rule_type]?.icon || Route;
+                                                    return (
+                                                        <TableRow key={rule.id}>
+                                                            <TableCell>
+                                                                <Badge variant="outline" className="font-mono">
+                                                                    #{rule.priority || 100}
+                                                                </Badge>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <div>
+                                                                    <p className="font-medium">{rule.name}</p>
+                                                                    {rule.description && (
+                                                                        <p className="text-xs text-slate-500 truncate max-w-[200px]">{rule.description}</p>
+                                                                    )}
+                                                                </div>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <div className={cn("inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-xs font-medium", ruleTypeConfig[rule.rule_type]?.color)}>
+                                                                    <TypeIcon className="h-3.5 w-3.5" />
+                                                                    {ruleTypeConfig[rule.rule_type]?.label || rule.rule_type}
+                                                                </div>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <Badge variant="outline" className="capitalize">
+                                                                    {rule.primary_processor || '-'}
+                                                                </Badge>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <div className="flex items-center gap-1">
+                                                                    {rule.fallback_processors?.slice(0, 2).map((p, i) => (
+                                                                        <Badge key={i} variant="secondary" className="text-xs capitalize">
+                                                                            {p}
+                                                                        </Badge>
+                                                                    ))}
+                                                                    {rule.fallback_processors?.length > 2 && (
+                                                                        <Badge variant="secondary" className="text-xs">
+                                                                            +{rule.fallback_processors.length - 2}
+                                                                        </Badge>
+                                                                    )}
+                                                                </div>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <div className="flex flex-wrap gap-1">
+                                                                    {rule.card_networks?.length > 0 && (
+                                                                        <Badge variant="outline" className="text-xs">
+                                                                            <CreditCard className="h-3 w-3 mr-1" />
+                                                                            {rule.card_networks.length}
+                                                                        </Badge>
+                                                                    )}
+                                                                    {rule.countries?.length > 0 && (
+                                                                        <Badge variant="outline" className="text-xs">
+                                                                            <Globe className="h-3 w-3 mr-1" />
+                                                                            {rule.countries.length}
+                                                                        </Badge>
+                                                                    )}
+                                                                    {rule.min_amount && (
+                                                                        <Badge variant="outline" className="text-xs">
+                                                                            <DollarSign className="h-3 w-3" />
+                                                                            ≥${rule.min_amount}
+                                                                        </Badge>
+                                                                    )}
+                                                                </div>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <Switch
+                                                                    checked={rule.status === 'active'}
+                                                                    onCheckedChange={(checked) => 
+                                                                        toggleRoutingRuleMutation.mutate({ 
+                                                                            id: rule.id, 
+                                                                            status: checked ? 'active' : 'inactive' 
+                                                                        })
+                                                                    }
+                                                                />
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <Button 
+                                                                    variant="ghost" 
+                                                                    size="sm"
+                                                                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                                                    onClick={() => {
+                                                                        if (confirm('Delete this routing rule?')) {
+                                                                            deleteRoutingRuleMutation.mutate(rule.id);
+                                                                        }
+                                                                    }}
+                                                                >
+                                                                    <Trash2 className="h-4 w-4" />
+                                                                </Button>
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    );
+                                                })}
+                                            </TableBody>
+                                        </Table>
+                                    )}
                                 </CardContent>
                             </Card>
                     </TabsContent>
 
-                        {/* Provider Registry Tab */}
+                        {/* Provider Registry Tab - MERGED FROM PaymentProviderManagement */}
                         <TabsContent value="providers">
                             <Card>
-                                <CardHeader>
-                                    <CardTitle>Available Payment Providers</CardTitle>
-                                    <p className="text-sm text-slate-600">Configured in Payment Provider Management</p>
+                                <CardHeader className="flex flex-row items-center justify-between">
+                                    <div>
+                                        <CardTitle>Global Payment Provider Registry</CardTitle>
+                                        <CardDescription>Manage all payment providers, their credentials, and pricing</CardDescription>
+                                    </div>
+                                    <Button onClick={() => { resetProviderForm(); setShowProviderDialog(true); }} className="gap-2">
+                                        <Plus className="h-4 w-4" /> Add Provider
+                                    </Button>
                                 </CardHeader>
                                 <CardContent className="p-0">
                                     <Table>
@@ -420,34 +736,66 @@ export default function FTSConnectorManagement() {
                                                 <TableHead>Provider</TableHead>
                                                 <TableHead>Type</TableHead>
                                                 <TableHead>Payment Methods</TableHead>
+                                                <TableHead>Currencies</TableHead>
                                                 <TableHead>Status</TableHead>
                                                 <TableHead>Assigned To</TableHead>
                                                 <TableHead>Actions</TableHead>
                                             </TableRow>
                                         </TableHeader>
                                         <TableBody>
-                                            {paymentProviders.map(provider => {
+                                            {paymentProviders.length === 0 ? (
+                                                <TableRow>
+                                                    <TableCell colSpan={7} className="text-center py-12 text-slate-500">
+                                                        <CreditCard className="h-12 w-12 mx-auto text-slate-400 mb-3" />
+                                                        <p className="font-semibold mb-1">No payment providers configured</p>
+                                                        <p className="text-sm">Add your first payment provider to get started</p>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ) : paymentProviders.map(provider => {
                                                 const assignmentCount = assignments.filter(a => a.payment_provider_id === provider.id).length;
                                                 return (
                                                     <TableRow key={provider.id}>
                                                         <TableCell>
-                                                            <div className="flex items-center gap-2">
-                                                                <div className="w-10 h-10 rounded border flex items-center justify-center bg-white">
+                                                            <div className="flex items-center gap-3">
+                                                                <div className="w-12 h-12 rounded-lg border flex items-center justify-center bg-white">
                                                                     {provider.logo_url ? (
-                                                                        <img src={provider.logo_url} alt={provider.name} className="w-full h-full object-contain" />
-                                                                    ) : '💳'}
+                                                                        <img src={provider.logo_url} alt={provider.name} className="w-full h-full object-contain p-1" />
+                                                                    ) : <CreditCard className="h-6 w-6 text-slate-400" />}
                                                                 </div>
-                                                                <span className="font-medium">{provider.name}</span>
+                                                                <div>
+                                                                    <span className="font-medium">{provider.name}</span>
+                                                                    {provider.merchant_id && (
+                                                                        <p className="text-xs text-slate-500">MID: {provider.merchant_id}</p>
+                                                                    )}
+                                                                </div>
                                                             </div>
                                                         </TableCell>
-                                                        <TableCell className="capitalize">{provider.type?.replace('_', ' ')}</TableCell>
                                                         <TableCell>
-                                                            <div className="flex flex-wrap gap-1">
+                                                            <Badge variant="outline" className="capitalize">
+                                                                {provider.type?.replace('_', ' ')}
+                                                            </Badge>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <div className="flex flex-wrap gap-1 max-w-[200px]">
                                                                 {(provider.supported_methods || []).slice(0, 3).map(method => (
-                                                                    <Badge key={method} variant="outline" className="text-xs">{method}</Badge>
+                                                                    <Badge key={method} variant="secondary" className="text-xs">
+                                                                        {getPaymentMethodDisplayName(method)}
+                                                                    </Badge>
                                                                 ))}
                                                                 {(provider.supported_methods || []).length > 3 && (
-                                                                    <Badge variant="outline" className="text-xs">+{provider.supported_methods.length - 3}</Badge>
+                                                                    <Badge variant="secondary" className="text-xs">
+                                                                        +{provider.supported_methods.length - 3}
+                                                                    </Badge>
+                                                                )}
+                                                            </div>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <div className="flex flex-wrap gap-1">
+                                                                {(provider.supported_currencies || []).slice(0, 3).map(c => (
+                                                                    <Badge key={c} variant="outline" className="text-xs">{c}</Badge>
+                                                                ))}
+                                                                {(provider.supported_currencies || []).length > 3 && (
+                                                                    <span className="text-xs text-slate-500">+{provider.supported_currencies.length - 3}</span>
                                                                 )}
                                                             </div>
                                                         </TableCell>
@@ -460,16 +808,43 @@ export default function FTSConnectorManagement() {
                                                             <Badge variant="secondary">{assignmentCount} services</Badge>
                                                         </TableCell>
                                                         <TableCell>
-                                                            <Button 
-                                                                variant="outline" 
-                                                                size="sm"
-                                                                onClick={() => {
-                                                                    setAssignmentForm({ ...assignmentForm, payment_provider_id: provider.id });
-                                                                    setShowAssignDialog(true);
-                                                                }}
-                                                            >
-                                                                Assign
-                                                            </Button>
+                                                            <div className="flex gap-1">
+                                                                <Button 
+                                                                    variant="ghost" 
+                                                                    size="sm"
+                                                                    onClick={() => {
+                                                                        setEditingProvider(provider);
+                                                                        setProviderForm({
+                                                                            name: provider.name,
+                                                                            provider_type: provider.type,
+                                                                            logo_url: provider.logo_url || '',
+                                                                            merchant_id: provider.merchant_id || '',
+                                                                            api_base_url: provider.api_base_url || '',
+                                                                            api_key: provider.api_key || '',
+                                                                            api_secret: provider.api_secret || '',
+                                                                            webhook_url: provider.webhook_url || '',
+                                                                            supported_methods: provider.supported_methods || [],
+                                                                            supported_currencies: provider.supported_currencies || [],
+                                                                            supported_regions: provider.supported_regions || [],
+                                                                            status: provider.status,
+                                                                            notes: provider.notes || ''
+                                                                        });
+                                                                        setShowProviderDialog(true);
+                                                                    }}
+                                                                >
+                                                                    <Edit className="h-4 w-4" />
+                                                                </Button>
+                                                                <Button 
+                                                                    variant="outline" 
+                                                                    size="sm"
+                                                                    onClick={() => {
+                                                                        setAssignmentForm({ ...assignmentForm, payment_provider_id: provider.id });
+                                                                        setShowAssignDialog(true);
+                                                                    }}
+                                                                >
+                                                                    Assign
+                                                                </Button>
+                                                            </div>
                                                         </TableCell>
                                                     </TableRow>
                                                 );
@@ -569,6 +944,301 @@ export default function FTSConnectorManagement() {
                         </TabsContent>
                     </Tabs>
                 </div>
+
+                {/* Create/Edit Provider Dialog */}
+                <Dialog open={showProviderDialog} onOpenChange={setShowProviderDialog}>
+                    <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                        <DialogHeader>
+                            <DialogTitle>{editingProvider ? 'Edit Payment Provider' : 'Add Payment Provider'}</DialogTitle>
+                            <DialogDescription>Configure payment provider credentials and supported methods</DialogDescription>
+                        </DialogHeader>
+                        <div className="space-y-4 py-4">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label>Provider Name *</Label>
+                                    <Input
+                                        value={providerForm.name}
+                                        onChange={(e) => setProviderForm({...providerForm, name: e.target.value})}
+                                        placeholder="Stripe, PayPal, Adyen..."
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Provider Type</Label>
+                                    <Select 
+                                        value={providerForm.provider_type}
+                                        onValueChange={(v) => setProviderForm({...providerForm, provider_type: v})}
+                                    >
+                                        <SelectTrigger><SelectValue /></SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="gateway">Payment Gateway</SelectItem>
+                                            <SelectItem value="acquirer">Acquirer/Processor</SelectItem>
+                                            <SelectItem value="card_network">Card Network</SelectItem>
+                                            <SelectItem value="bank">Bank/PSP</SelectItem>
+                                            <SelectItem value="wallet">Digital Wallet</SelectItem>
+                                            <SelectItem value="crypto">Crypto Exchange</SelectItem>
+                                            <SelectItem value="apm">Alternative Payment</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label>Merchant ID / Bank MID</Label>
+                                    <Input
+                                        value={providerForm.merchant_id}
+                                        onChange={(e) => setProviderForm({...providerForm, merchant_id: e.target.value})}
+                                        placeholder="MID from provider"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Logo URL</Label>
+                                    <Input
+                                        value={providerForm.logo_url}
+                                        onChange={(e) => setProviderForm({...providerForm, logo_url: e.target.value})}
+                                        placeholder="https://..."
+                                    />
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <Label>API Base URL</Label>
+                                <Input
+                                    value={providerForm.api_base_url}
+                                    onChange={(e) => setProviderForm({...providerForm, api_base_url: e.target.value})}
+                                    placeholder="https://api.provider.com/v1"
+                                />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label>API Key</Label>
+                                    <div className="flex gap-2">
+                                        <Input
+                                            type={showApiKey ? 'text' : 'password'}
+                                            value={providerForm.api_key}
+                                            onChange={(e) => setProviderForm({...providerForm, api_key: e.target.value})}
+                                            placeholder="pk_live_..."
+                                        />
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            size="icon"
+                                            onClick={() => setShowApiKey(!showApiKey)}
+                                        >
+                                            {showApiKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                        </Button>
+                                    </div>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>API Secret</Label>
+                                    <Input
+                                        type="password"
+                                        value={providerForm.api_secret}
+                                        onChange={(e) => setProviderForm({...providerForm, api_secret: e.target.value})}
+                                        placeholder="sk_live_..."
+                                    />
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <div className="flex items-center justify-between">
+                                    <Label>Supported Payment Methods</Label>
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => setShowMethodSelector(true)}
+                                    >
+                                        <Globe className="h-4 w-4 mr-2" />
+                                        Select Methods ({providerForm.supported_methods.length})
+                                    </Button>
+                                </div>
+                                {providerForm.supported_methods.length > 0 && (
+                                    <div className="flex flex-wrap gap-2 p-3 bg-slate-50 rounded-lg">
+                                        {providerForm.supported_methods.map(method => (
+                                            <Badge key={method} variant="secondary" className="gap-1">
+                                                {getPaymentMethodDisplayName(method)}
+                                                <button
+                                                    onClick={() => setProviderForm({
+                                                        ...providerForm,
+                                                        supported_methods: providerForm.supported_methods.filter(m => m !== method)
+                                                    })}
+                                                    className="ml-1 hover:text-red-600"
+                                                >×</button>
+                                            </Badge>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Status</Label>
+                                <Select 
+                                    value={providerForm.status}
+                                    onValueChange={(v) => setProviderForm({...providerForm, status: v})}
+                                >
+                                    <SelectTrigger><SelectValue /></SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="active">Active</SelectItem>
+                                        <SelectItem value="inactive">Inactive</SelectItem>
+                                        <SelectItem value="pending">Pending</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Notes</Label>
+                                <Textarea
+                                    value={providerForm.notes}
+                                    onChange={(e) => setProviderForm({...providerForm, notes: e.target.value})}
+                                    placeholder="Additional information..."
+                                />
+                            </div>
+                        </div>
+                        <DialogFooter>
+                            <Button variant="outline" onClick={() => { setShowProviderDialog(false); resetProviderForm(); }}>Cancel</Button>
+                            <Button onClick={handleSaveProvider} disabled={createProviderMutation.isPending || updateProviderMutation.isPending}>
+                                {editingProvider ? 'Update Provider' : 'Create Provider'}
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
+
+                {/* Payment Method Selector */}
+                <PaymentMethodSelector
+                    open={showMethodSelector}
+                    onOpenChange={setShowMethodSelector}
+                    selectedMethods={providerForm.supported_methods}
+                    onSelectionChange={(methods) => setProviderForm({...providerForm, supported_methods: methods})}
+                />
+
+                {/* Create Routing Rule Dialog */}
+                <Dialog open={showCreateRuleDialog} onOpenChange={setShowCreateRuleDialog}>
+                    <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                        <DialogHeader>
+                            <DialogTitle>Create Routing Rule</DialogTitle>
+                            <DialogDescription>Define conditions and processors for this routing rule</DialogDescription>
+                        </DialogHeader>
+                        <div className="space-y-4 py-4">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label>Rule Name *</Label>
+                                    <Input 
+                                        value={newRoutingRule.name}
+                                        onChange={(e) => setNewRoutingRule({...newRoutingRule, name: e.target.value})}
+                                        placeholder="e.g., High Value EU Transactions"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Rule Type</Label>
+                                    <Select 
+                                        value={newRoutingRule.rule_type}
+                                        onValueChange={(v) => setNewRoutingRule({...newRoutingRule, rule_type: v})}
+                                    >
+                                        <SelectTrigger><SelectValue /></SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="routing">Smart Routing</SelectItem>
+                                            <SelectItem value="cascading">Cascading</SelectItem>
+                                            <SelectItem value="fallback">Fallback</SelectItem>
+                                            <SelectItem value="split">Traffic Split</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Description</Label>
+                                <Textarea 
+                                    value={newRoutingRule.description}
+                                    onChange={(e) => setNewRoutingRule({...newRoutingRule, description: e.target.value})}
+                                    placeholder="Describe when this rule should apply..."
+                                />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label>Primary Provider *</Label>
+                                    <Select 
+                                        value={newRoutingRule.primary_processor}
+                                        onValueChange={(v) => setNewRoutingRule({...newRoutingRule, primary_processor: v})}
+                                    >
+                                        <SelectTrigger><SelectValue placeholder="Select provider" /></SelectTrigger>
+                                        <SelectContent>
+                                            {paymentProviders.filter(p => p.status === 'active').map(p => (
+                                                <SelectItem key={p.id} value={p.name}>{p.name}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Priority</Label>
+                                    <Input 
+                                        type="number"
+                                        value={newRoutingRule.priority}
+                                        onChange={(e) => setNewRoutingRule({...newRoutingRule, priority: parseInt(e.target.value) || 100})}
+                                        placeholder="100"
+                                    />
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Card Networks</Label>
+                                <div className="flex flex-wrap gap-2 p-3 bg-slate-50 rounded-lg">
+                                    {['visa', 'mastercard', 'amex', 'discover', 'unionpay', 'jcb'].map(network => (
+                                        <label key={network} className="flex items-center gap-2 text-sm">
+                                            <input
+                                                type="checkbox"
+                                                checked={newRoutingRule.card_networks?.includes(network) || false}
+                                                onChange={(e) => {
+                                                    const current = newRoutingRule.card_networks || [];
+                                                    const updated = e.target.checked
+                                                        ? [...current, network]
+                                                        : current.filter(n => n !== network);
+                                                    setNewRoutingRule({ ...newRoutingRule, card_networks: updated });
+                                                }}
+                                                className="rounded"
+                                            />
+                                            <span className="capitalize">{network}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label>Min Amount ($)</Label>
+                                    <Input 
+                                        type="number"
+                                        value={newRoutingRule.min_amount || ''}
+                                        onChange={(e) => setNewRoutingRule({...newRoutingRule, min_amount: e.target.value ? parseFloat(e.target.value) : null})}
+                                        placeholder="0"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Max Amount ($)</Label>
+                                    <Input 
+                                        type="number"
+                                        value={newRoutingRule.max_amount || ''}
+                                        onChange={(e) => setNewRoutingRule({...newRoutingRule, max_amount: e.target.value ? parseFloat(e.target.value) : null})}
+                                        placeholder="No limit"
+                                    />
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-4">
+                                <div className="flex items-center gap-2">
+                                    <Switch 
+                                        checked={newRoutingRule.cost_optimization}
+                                        onCheckedChange={(checked) => setNewRoutingRule({...newRoutingRule, cost_optimization: checked})}
+                                    />
+                                    <Label>Cost Optimization</Label>
+                                </div>
+                            </div>
+                        </div>
+                        <DialogFooter>
+                            <Button variant="outline" onClick={() => { setShowCreateRuleDialog(false); resetRoutingRuleForm(); }}>Cancel</Button>
+                            <Button 
+                                onClick={() => createRoutingRuleMutation.mutate({
+                                    ...newRoutingRule,
+                                    rule_id: `RULE-${Date.now()}`
+                                })}
+                                disabled={!newRoutingRule.name || !newRoutingRule.primary_processor}
+                            >
+                                Create Rule
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
 
                 {/* Assign Provider to Service Dialog */}
                 <Dialog open={showAssignDialog} onOpenChange={setShowAssignDialog}>
