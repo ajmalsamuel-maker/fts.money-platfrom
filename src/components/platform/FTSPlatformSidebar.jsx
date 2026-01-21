@@ -250,7 +250,8 @@ const menuSections = [
             { label: 'Deployment Checklist', description: 'Validate PSP readiness & health checks', path: 'DeploymentChecklist', icon: CheckSquare, priority: true },
             { label: 'Transaction Test Suite', description: 'End-to-end payment testing', path: 'TransactionTestSuite', icon: Activity, priority: true },
             { label: 'Mock Gateway Manager', description: 'Configure mock payment gateways', path: 'MockGatewayManager', icon: Settings, priority: true },
-            { label: 'Load Testing Dashboard', description: 'Generate transaction load & monitor TPS', path: 'LoadTestingDashboard', icon: Target, priority: true }
+            { label: 'Load Testing Dashboard', description: 'Generate transaction load & monitor TPS', path: 'LoadTestingDashboard', icon: Target, priority: true },
+            { label: 'Migration Dashboard', description: 'Manage Payment Switch Migration', path: 'MigrationDashboard', icon: RefreshCw, priority: true }
         ]
     },
     {
