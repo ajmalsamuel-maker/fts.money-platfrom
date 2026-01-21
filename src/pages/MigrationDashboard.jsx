@@ -110,7 +110,7 @@ export default function MigrationDashboard() {
         addLog(`Starting ${dryRun ? 'Dry Run' : 'Full'} Migration...`, 'info');
 
         try {
-            const result = await base44.functions.invoke('executePaymentSwitchMigration', { dryRun });
+            const result = await base44.functions.invoke('executePaymentSwitchMigration', { dry_run: dryRun });
             
             if (result.data.success) {
                 addLog(`Migration ${dryRun ? 'Dry Run' : 'Execution'} completed successfully`, 'success');
