@@ -255,6 +255,7 @@ import MerchantVirtualTerminal from './pages/MerchantVirtualTerminal';
 import MerchantVirtualTerminals from './pages/MerchantVirtualTerminals';
 import MerchantWebhooks from './pages/MerchantWebhooks';
 import Merchants from './pages/Merchants';
+import MigrationDashboard from './pages/MigrationDashboard';
 import MockGatewayManager from './pages/MockGatewayManager';
 import ModuleCatalogTest from './pages/ModuleCatalogTest';
 import MyAllServices from './pages/MyAllServices';
@@ -407,7 +408,6 @@ import Webhooks from './pages/Webhooks';
 import WorkflowManagement from './pages/WorkflowManagement';
 import WorkflowTemplateLibrary from './pages/WorkflowTemplateLibrary';
 import XeroIntegration from './pages/XeroIntegration';
-import MigrationDashboard from './pages/MigrationDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -669,6 +669,7 @@ export const PAGES = {
     "MerchantVirtualTerminals": MerchantVirtualTerminals,
     "MerchantWebhooks": MerchantWebhooks,
     "Merchants": Merchants,
+    "MigrationDashboard": MigrationDashboard,
     "MockGatewayManager": MockGatewayManager,
     "ModuleCatalogTest": ModuleCatalogTest,
     "MyAllServices": MyAllServices,
@@ -821,7 +822,6 @@ export const PAGES = {
     "WorkflowManagement": WorkflowManagement,
     "WorkflowTemplateLibrary": WorkflowTemplateLibrary,
     "XeroIntegration": XeroIntegration,
-    "MigrationDashboard": MigrationDashboard,
 }
 
 export const pagesConfig = {

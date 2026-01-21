@@ -407,10 +407,8 @@ export default function FTSMoneyPlatform() {
                                      </div>
                                  </CardContent>
                              </Card>
-
-
-                            </div>
-                            </div>
+                        </div>
+                    </div>
 
                     {/* Quick Actions */}
                     <div className="mb-6">
