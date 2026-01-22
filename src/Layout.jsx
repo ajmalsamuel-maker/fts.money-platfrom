@@ -53,8 +53,9 @@ export default function Layout({ children }) {
     const rwaProviderSession = localStorage.getItem('rwa_provider_session');
     const assetIssuerSession = localStorage.getItem('asset_issuer_session');
     const investorSession = localStorage.getItem('rwa_investor_session');
-    
-    const isCustomAuthSession = !!(staffSession || merchantSession || platformSession || cryptoSession || rwaProviderSession || assetIssuerSession || investorSession);
+    const communitySession = localStorage.getItem('community_portal_session');
+
+    const isCustomAuthSession = !!(staffSession || merchantSession || platformSession || cryptoSession || rwaProviderSession || assetIssuerSession || investorSession || communitySession);
 
     // For custom auth sessions, skip Base44's AuthContext entirely
     return (
