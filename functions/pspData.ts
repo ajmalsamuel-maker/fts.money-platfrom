@@ -1,4 +1,5 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
+// PSP Data Handler v2.1 - Force redeploy
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 import pg from 'npm:pg@8.11.3';
 
 const { Pool } = pg;
