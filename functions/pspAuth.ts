@@ -1,4 +1,11 @@
-import { Client } from 'https://deno.land/x/postgres@v0.17.0/mod.ts';
+import pg from 'npm:pg@8.11.3';
+
+const { Pool } = pg;
+
+const pool = new Pool({
+    connectionString: Deno.env.get("DATABASE_URL"),
+    ssl: { rejectUnauthorized: false }
+});
 
 async function hashPassword(password, salt = 'fts_salt_2025') {
     const encoder = new TextEncoder();
@@ -21,7 +28,7 @@ function getClientIP(req) {
 }
 
 Deno.serve(async (req) => {
-    let client = null;
+    const client = await pool.connect();
     try {
         const { action, psp_code, email, password } = await req.json();
 
@@ -33,11 +40,26 @@ Deno.serve(async (req) => {
                 }, { status: 400 });
             }
 
-            client = new Client(Deno.env.get('DATABASE_URL'));
-            await client.connect();
+            // Set search path to the PSP's isolated schema
+            const schemaName = `psp_${psp_code.toLowerCase().replace(/-/g, '_')}`;
+            
+            // Check if schema exists
+            const schemaCheck = await client.query(
+                `SELECT schema_name FROM information_schema.schemata WHERE schema_name = $1`,
+                [schemaName]
+            );
+            
+            if (schemaCheck.rows.length === 0) {
+                return Response.json({
+                    success: false,
+                    error: `PSP ${psp_code} not found`
+                }, { status: 404 });
+            }
 
-            // Query psp_staff_users
-            const result = await client.queryObject(
+            // Set schema and query psp_staff_users from isolated schema
+            await client.query(`SET search_path TO "${schemaName}"`);
+            
+            const result = await client.query(
                 'SELECT * FROM psp_staff_users WHERE email = $1 AND status = $2',
                 [email, 'active']
             );
@@ -60,7 +82,7 @@ Deno.serve(async (req) => {
             }
 
             // Update last login
-            await client.queryObject(
+            await client.query(
                 'UPDATE psp_staff_users SET last_login = NOW(), last_login_ip = $1 WHERE id = $2',
                 [getClientIP(req), user.id]
             );
@@ -73,6 +95,7 @@ Deno.serve(async (req) => {
                     role: user.role,
                     user_id: user.id,
                     psp_code: psp_code.toUpperCase(),
+                    schema: schemaName,
                     timestamp: Date.now(),
                     expires: Date.now() + (24 * 60 * 60 * 1000)
                 },
@@ -92,8 +115,6 @@ Deno.serve(async (req) => {
             error: error.message
         }, { status: 500 });
     } finally {
-        if (client) {
-            await client.end();
-        }
+        client.release();
     }
 });
