@@ -371,6 +371,109 @@ Deno.serve(async (req) => {
                     });
                 }
 
+                case 'listMerchantUsers': {
+                    const result = await client.query(`
+                        SELECT * FROM merchant_users 
+                        ORDER BY created_date DESC
+                    `);
+                    
+                    return Response.json({ 
+                        success: true, 
+                        data: result.rows 
+                    });
+                }
+
+                case 'createMerchantUser': {
+                    const { userData } = body;
+                    console.log('📝 Creating merchant user in PostgreSQL:', {
+                        email: userData.email,
+                        merchant_id: userData.merchant_id,
+                        psp_code: psp_code
+                    });
+                    
+                    const result = await client.query(`
+                        INSERT INTO merchant_users (
+                            user_id, psp_code, merchant_id, merchant_code, merchant_name,
+                            email, full_name, role, status, phone, temp_password,
+                            must_change_password, two_factor_enabled, permissions
+                        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+                        RETURNING *
+                    `, [
+                        userData.user_id || `MU-${Date.now()}`,
+                        psp_code,
+                        userData.merchant_id,
+                        userData.merchant_code || '',
+                        userData.merchant_name || '',
+                        userData.email,
+                        userData.full_name,
+                        userData.role || 'operator',
+                        userData.status || 'pending',
+                        userData.phone || '',
+                        userData.temp_password || '',
+                        userData.must_change_password !== false,
+                        userData.two_factor_enabled || false,
+                        JSON.stringify(userData.permissions || [])
+                    ]);
+                    
+                    console.log('✅ Merchant user created in PostgreSQL:', result.rows[0]);
+                    
+                    return Response.json({ 
+                        success: true, 
+                        user: result.rows[0] 
+                    });
+                }
+
+                case 'updateMerchantUser': {
+                    const { userId, updates } = body;
+                    const setClauses = [];
+                    const values = [userId];
+                    let paramIndex = 2;
+
+                    const filteredUpdates = { ...updates };
+                    delete filteredUpdates.id;
+                    delete filteredUpdates.psp_code;
+                    delete filteredUpdates.created_date;
+
+                    for (const [key, value] of Object.entries(filteredUpdates)) {
+                        if (key === 'permissions' || key === 'allowed_terminals') {
+                            setClauses.push(`${key} = $${paramIndex}`);
+                            values.push(JSON.stringify(value));
+                        } else {
+                            setClauses.push(`${key} = $${paramIndex}`);
+                            values.push(value);
+                        }
+                        paramIndex++;
+                    }
+
+                    if (setClauses.length === 0) {
+                        return Response.json({ success: true, user: {} });
+                    }
+
+                    setClauses.push('updated_date = NOW()');
+
+                    const result = await client.query(`
+                        UPDATE merchant_users 
+                        SET ${setClauses.join(', ')}
+                        WHERE id = $1
+                        RETURNING *
+                    `, values);
+                    
+                    return Response.json({ 
+                        success: true, 
+                        user: result.rows[0] 
+                    });
+                }
+
+                case 'deleteMerchantUser': {
+                    const { userId } = body;
+                    await client.query(`
+                        DELETE FROM merchant_users 
+                        WHERE id = $1
+                    `, [userId]);
+                    
+                    return Response.json({ success: true });
+                }
+
                 default:
                     return Response.json({ error: 'Invalid action' }, { status: 400 });
             }
