@@ -38,7 +38,7 @@ export default function Layout({ children }) {
     }, []);
     
     // Auth pages that should not have layout wrapper
-    const authPages = ['/PSPLogin', '/MerchantLogin', '/BusinessEInvoiceLogin', '/CryptoGatewayLogin', '/ISOGatewayLogin', '/AssetIssuerLogin', '/InvestorLogin', '/OrchestrationLogin', '/QSAPortalLogin', '/RWAProviderLogin', '/CommunityPortalLogin', '/VirtualTerminalLogin'];
+    const authPages = ['/PSPLogin', '/MerchantLogin', '/BusinessEInvoiceLogin', '/CryptoGatewayLogin', '/ISOGatewayLogin', '/AssetIssuerLogin', '/InvestorLogin', '/OrchestrationLogin', '/QSAPortalLogin', '/RWAProviderLogin', '/CommunityPortalLogin', '/VirtualTerminalLogin', '/PlatformAdminLogin'];
     
     // If this is an auth page, render children without layout wrapper
     if (authPages.some(page => pathname.includes(page))) {
