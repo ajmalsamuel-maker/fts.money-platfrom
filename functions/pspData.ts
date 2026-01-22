@@ -475,7 +475,8 @@ Deno.serve(async (req) => {
                 }
 
                 default:
-                    return Response.json({ error: 'Invalid action' }, { status: 400 });
+                    console.error('Unknown action received:', action);
+                    return Response.json({ error: 'Invalid action', received_action: action }, { status: 400 });
             }
         } finally {
             client.release();
