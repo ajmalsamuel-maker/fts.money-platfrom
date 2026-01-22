@@ -24,9 +24,27 @@ Deno.serve(async (req) => {
         };
 
         // 1. Count records in deprecated entities
-        const paymentProcessors = await base44.asServiceRole.entities.PaymentProcessor.list();
-        const orchestrationRules = await base44.asServiceRole.entities.OrchestrationRule?.list() || [];
-        const processorConfigs = await base44.asServiceRole.entities.ProcessorConnectorConfig?.list() || [];
+        let paymentProcessors = [];
+        let orchestrationRules = [];
+        let processorConfigs = [];
+        
+        try {
+            paymentProcessors = await base44.asServiceRole.entities.PaymentProcessor.list();
+        } catch (err) {
+            console.log('PaymentProcessor entity not accessible:', err.message);
+        }
+        
+        try {
+            orchestrationRules = await base44.asServiceRole.entities.OrchestrationRule.list();
+        } catch (err) {
+            console.log('OrchestrationRule entity not accessible:', err.message);
+        }
+        
+        try {
+            processorConfigs = await base44.asServiceRole.entities.ProcessorConnectorConfig.list();
+        } catch (err) {
+            console.log('ProcessorConnectorConfig entity not accessible:', err.message);
+        }
 
         assessment.data_counts = {
             PaymentProcessor: paymentProcessors.length,
@@ -63,8 +81,20 @@ Deno.serve(async (req) => {
         }
 
         // 3. Check billing dependencies
-        const pricingConfigs = await base44.asServiceRole.entities.ServicePricingConfig?.list() || [];
-        const usageMetrics = await base44.asServiceRole.entities.ServiceUsageMetric?.list() || [];
+        let pricingConfigs = [];
+        let usageMetrics = [];
+        
+        try {
+            pricingConfigs = await base44.asServiceRole.entities.ServicePricingConfig.list();
+        } catch (err) {
+            console.log('ServicePricingConfig entity not accessible:', err.message);
+        }
+        
+        try {
+            usageMetrics = await base44.asServiceRole.entities.ServiceUsageMetric.list();
+        } catch (err) {
+            console.log('ServiceUsageMetric entity not accessible:', err.message);
+        }
 
         assessment.billing_dependencies = [
             {
