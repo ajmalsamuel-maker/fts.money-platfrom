@@ -1,8 +1,8 @@
 export const FULL_ARCHITECTURE_DOC = `# PSP Platform - Production Architecture Design
 
-**Version:** 1.0  
-**Date:** December 11, 2025  
-**Status:** Design Phase
+**Version:** 1.1  
+**Date:** January 23, 2026  
+**Status:** Production Ready
 
 ---
 
@@ -244,6 +244,280 @@ Scaling Policy:
 
 ---
 
+## LEI/vLEI Identity & Transaction Signing Architecture
+
+### Overview
+
+The Legal Entity Identifier (LEI) and verifiable LEI (vLEI) infrastructure provides cryptographic identity verification and transaction signing capabilities across the entire platform. This enables regulatory compliance, non-repudiation, and complete audit trails for all financial transactions.
+
+### LEI/vLEI Architecture Diagram
+
+\`\`\`
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                           GLEIF GLOBAL REGISTRY                              │
+│                    (authoritative LEI data source)                           │
+└─────────────────────────────────┬───────────────────────────────────────────┘
+                                  │ API Integration
+                                  ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                        FTS.MONEY LEI VERIFICATION SERVICE                    │
+│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐              │
+│  │  LEI Lookup     │  │  Status Check   │  │  Hierarchy      │              │
+│  │  Service        │  │  Service        │  │  Resolver       │              │
+│  └────────┬────────┘  └────────┬────────┘  └────────┬────────┘              │
+│           │                    │                    │                        │
+│           └────────────────────┼────────────────────┘                        │
+│                                ▼                                             │
+│  ┌─────────────────────────────────────────────────────────────────────┐    │
+│  │                    LEI CACHE (Redis Cluster)                         │    │
+│  │              TTL: 24 hours | Refresh: On-demand                      │    │
+│  └─────────────────────────────────────────────────────────────────────┘    │
+└─────────────────────────────────┬───────────────────────────────────────────┘
+                                  │
+        ┌─────────────────────────┼─────────────────────────┐
+        ▼                         ▼                         ▼
+┌───────────────┐         ┌───────────────┐         ┌───────────────┐
+│  PSP TENANT   │         │  PSP TENANT   │         │  PSP TENANT   │
+│  LEI: 5493..  │         │  LEI: 2138..  │         │  LEI: 9845..  │
+│               │         │               │         │               │
+│  ┌─────────┐  │         │  ┌─────────┐  │         │  ┌─────────┐  │
+│  │ vLEI    │  │         │  │ vLEI    │  │         │  │ vLEI    │  │
+│  │ Wallet  │  │         │  │ Wallet  │  │         │  │ Wallet  │  │
+│  └────┬────┘  │         │  └────┬────┘  │         │  └────┬────┘  │
+│       │       │         │       │       │         │       │       │
+│       ▼       │         │       ▼       │         │       ▼       │
+│  ┌─────────┐  │         │  ┌─────────┐  │         │  ┌─────────┐  │
+│  │Merchants│  │         │  │Merchants│  │         │  │Merchants│  │
+│  │(w/ LEI) │  │         │  │(w/ LEI) │  │         │  │(w/ LEI) │  │
+│  └─────────┘  │         │  └─────────┘  │         │  └─────────┘  │
+└───────────────┘         └───────────────┘         └───────────────┘
+\`\`\`
+
+### vLEI Credential Hierarchy
+
+\`\`\`
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         vLEI TRUST HIERARCHY                                 │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│    Level 0: GLEIF Root of Trust                                             │
+│    ┌─────────────────────────────────────────────────────────────────┐      │
+│    │  GLEIF Root Credential                                          │      │
+│    │  - Global authority for LEI system                              │      │
+│    │  - Issues credentials to Qualified vLEI Issuers (QVIs)          │      │
+│    └─────────────────────────────────────────────────────────────────┘      │
+│                                    │                                         │
+│                                    ▼                                         │
+│    Level 1: Qualified vLEI Issuer (QVI)                                     │
+│    ┌─────────────────────────────────────────────────────────────────┐      │
+│    │  QVI Credential                                                 │      │
+│    │  - Authorized to issue vLEI credentials                         │      │
+│    │  - Performs identity verification                               │      │
+│    └─────────────────────────────────────────────────────────────────┘      │
+│                                    │                                         │
+│                                    ▼                                         │
+│    Level 2: Legal Entity (FTS.Money Platform)                               │
+│    ┌─────────────────────────────────────────────────────────────────┐      │
+│    │  FTS.Money Platform vLEI                                        │      │
+│    │  - LEI: [Platform LEI]                                          │      │
+│    │  - Parent credential for all PSP tenants                        │      │
+│    │  - Signs PSP onboarding credentials                             │      │
+│    └─────────────────────────────────────────────────────────────────┘      │
+│                          │                   │                               │
+│                          ▼                   ▼                               │
+│    Level 3: PSP Tenant Credentials                                          │
+│    ┌─────────────────────────┐    ┌─────────────────────────┐               │
+│    │  PSP Alpha vLEI         │    │  PSP Beta vLEI          │               │
+│    │  LEI: 549300ABC...      │    │  LEI: 213800XYZ...      │               │
+│    │  Parent: FTS Platform   │    │  Parent: FTS Platform   │               │
+│    └────────────┬────────────┘    └────────────┬────────────┘               │
+│                 │                              │                              │
+│                 ▼                              ▼                              │
+│    Level 4: Merchant Credentials                                             │
+│    ┌───────────────┐  ┌───────────────┐  ┌───────────────┐                  │
+│    │ Merchant 1    │  │ Merchant 2    │  │ Merchant 3    │                  │
+│    │ LEI: 9845...  │  │ LEI: 7291...  │  │ LEI: 3847...  │                  │
+│    │ Parent: PSP α │  │ Parent: PSP α │  │ Parent: PSP β │                  │
+│    └───────────────┘  └───────────────┘  └───────────────┘                  │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+\`\`\`
+
+### Transaction Signing Flow
+
+\`\`\`
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    TRANSACTION SIGNING WORKFLOW                              │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  1. Transaction Initiated                                                    │
+│     ┌─────────────┐                                                         │
+│     │  Merchant   │ ──► POST /payments/process                              │
+│     │  System     │     { amount, currency, card_token, ... }               │
+│     └─────────────┘                                                         │
+│            │                                                                 │
+│            ▼                                                                 │
+│  2. LEI Verification                                                         │
+│     ┌─────────────────────────────────────────────────────────────────┐     │
+│     │  LEI Verification Service                                        │     │
+│     │  ┌───────────────────────────────────────────────────────────┐  │     │
+│     │  │ • Check merchant LEI status (verified/grace_period)       │  │     │
+│     │  │ • Check PSP LEI status                                    │  │     │
+│     │  │ • Validate credential chain integrity                     │  │     │
+│     │  │ • Cache lookup (Redis) → GLEIF fallback                   │  │     │
+│     │  └───────────────────────────────────────────────────────────┘  │     │
+│     └─────────────────────────────────────────────────────────────────┘     │
+│            │                                                                 │
+│            ▼                                                                 │
+│  3. Signature Generation                                                     │
+│     ┌─────────────────────────────────────────────────────────────────┐     │
+│     │  vLEI Signing Service                                            │     │
+│     │  ┌───────────────────────────────────────────────────────────┐  │     │
+│     │  │ Algorithm: EdDSA (Ed25519) or ECDSA-P256/P384             │  │     │
+│     │  │                                                           │  │     │
+│     │  │ Signed Payload:                                           │  │     │
+│     │  │ {                                                         │  │     │
+│     │  │   transaction_id: "TXN-123456",                           │  │     │
+│     │  │   merchant_lei: "549300ABC123456789XY",                   │  │     │
+│     │  │   psp_lei: "213800XYZ987654321AB",                        │  │     │
+│     │  │   amount: 150.00,                                         │  │     │
+│     │  │   currency: "USD",                                        │  │     │
+│     │  │   timestamp: "2026-01-23T12:00:00Z"                       │  │     │
+│     │  │ }                                                         │  │     │
+│     │  │                                                           │  │     │
+│     │  │ Output: Base64 signature + signing timestamp              │  │     │
+│     │  └───────────────────────────────────────────────────────────┘  │     │
+│     └─────────────────────────────────────────────────────────────────┘     │
+│            │                                                                 │
+│            ▼                                                                 │
+│  4. Transaction Record with Signature                                        │
+│     ┌─────────────────────────────────────────────────────────────────┐     │
+│     │  Transaction Database (PCI Scope)                                │     │
+│     │  ┌───────────────────────────────────────────────────────────┐  │     │
+│     │  │ transaction_id: "TXN-123456"                              │  │     │
+│     │  │ merchant_lei: "549300ABC123456789XY"                      │  │     │
+│     │  │ psp_lei: "213800XYZ987654321AB"                           │  │     │
+│     │  │ credential_chain: ["GLEIF", "QVI", "FTS", "PSP", "Merch"] │  │     │
+│     │  │ vlei_signature: "MEUCIQDx4r9y..."                         │  │     │
+│     │  │ signature_algorithm: "EdDSA"                              │  │     │
+│     │  │ signed_at: "2026-01-23T12:00:00.123Z"                     │  │     │
+│     │  │ chain_validated: true                                     │  │     │
+│     │  │ chain_validation_timestamp: "2026-01-23T12:00:00.100Z"    │  │     │
+│     │  └───────────────────────────────────────────────────────────┘  │     │
+│     └─────────────────────────────────────────────────────────────────┘     │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+\`\`\`
+
+### LEI Database Schema
+
+| Table | Column | Type | Description |
+|-------|--------|------|-------------|
+| **provisioned_psp** | lei | VARCHAR(20) | PSP Legal Entity Identifier |
+| | vlei_credential | TEXT | JSON-LD verifiable credential |
+| | parent_lei | VARCHAR(20) | FTS Platform LEI reference |
+| | lei_status | ENUM | pending, verified, grace_period, expired |
+| | lei_verified_date | TIMESTAMP | Last GLEIF verification |
+| | vlei_issued_date | TIMESTAMP | Credential issuance date |
+| | grace_period_start | TIMESTAMP | Grace period start |
+| | grace_period_end | TIMESTAMP | Grace period expiration |
+| **merchants** | lei | VARCHAR(20) | Merchant LEI |
+| | vlei | TEXT | Merchant vLEI credential |
+| | lei_status | ENUM | Status enum |
+| | lei_verified_date | DATE | Verification date |
+| **transactions** | psp_lei | VARCHAR(20) | PSP LEI for transaction |
+| | merchant_lei | VARCHAR(20) | Merchant LEI |
+| | customer_lei | VARCHAR(20) | Customer LEI (if applicable) |
+| | credential_chain | JSONB | Full trust chain array |
+| | vlei_signature | TEXT | Digital signature |
+| | signature_algorithm | ENUM | EdDSA, ECDSA-P256, ECDSA-P384 |
+| | signed_at | TIMESTAMP | Signing timestamp |
+| | chain_validated | BOOLEAN | Validation status |
+| | chain_validation_timestamp | TIMESTAMP | When validated |
+
+### LEI Verification API Endpoints
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| \`/lei/verify/{lei}\` | GET | Verify LEI against GLEIF |
+| \`/lei/lookup/{lei}\` | GET | Get full LEI entity details |
+| \`/lei/hierarchy/{lei}\` | GET | Get parent/child relationships |
+| \`/vlei/issue\` | POST | Issue vLEI credential |
+| \`/vlei/sign\` | POST | Sign transaction with vLEI |
+| \`/vlei/validate\` | POST | Validate credential chain |
+| \`/vlei/revoke/{credential_id}\` | DELETE | Revoke vLEI credential |
+
+### Grace Period Management
+
+\`\`\`
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                      LEI LIFECYCLE STATE MACHINE                             │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   ┌──────────┐    Verification    ┌──────────┐                              │
+│   │ PENDING  │ ─────────────────► │ VERIFIED │                              │
+│   └──────────┘                    └────┬─────┘                              │
+│        ▲                               │                                     │
+│        │                               │ LEI Expires                         │
+│        │                               ▼                                     │
+│        │                         ┌─────────────┐                            │
+│        │ Renewal                 │ GRACE_PERIOD│ ◄── Configurable           │
+│        │                         │ (30-90 days)│     (default: 30 days)     │
+│        │                         └──────┬──────┘                            │
+│        │                                │                                    │
+│        └────────────────────────────────┤                                    │
+│                                         │ Grace Period Expires               │
+│                                         ▼                                    │
+│                                   ┌──────────┐                              │
+│                                   │ EXPIRED  │ ──► Transactions Blocked     │
+│                                   └──────────┘                              │
+│                                                                              │
+│   Grace Period Actions:                                                      │
+│   • Warning emails at 30, 14, 7, 1 days before expiration                   │
+│   • Dashboard alerts for PSP admins                                          │
+│   • API responses include expiration warnings                                │
+│   • Transactions continue but flagged in audit logs                          │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+\`\`\`
+
+### Regulatory Compliance Matrix
+
+| Regulation | Jurisdiction | LEI Requirement | Implementation |
+|------------|--------------|-----------------|----------------|
+| **MiFID II/MiFIR** | EU | Mandatory for investment firms | Auto-validation on merchant onboarding |
+| **EMIR** | EU | All derivative counterparties | Stored in transaction records |
+| **Dodd-Frank** | USA | CFTC swap reporting | Included in ISO 20022 messages |
+| **SFTR** | EU | Securities financing | Credential chain in settlement |
+| **CSDR** | EU | Central securities depositories | RWA tokenization compliance |
+| **ISO 20022** | Global | LEI in payment messages | Native field mapping |
+| **DORA** | EU | Digital operational resilience | Audit trail with signatures |
+| **Travel Rule** | Global | FATF crypto requirements | vLEI for VASP identification |
+| **eIDAS 2.0** | EU | Digital identity framework | vLEI as qualified credential |
+
+### Performance Considerations
+
+| Operation | Target Latency | Caching Strategy |
+|-----------|---------------|------------------|
+| LEI Lookup (cached) | < 5ms | Redis, 24h TTL |
+| LEI Lookup (GLEIF) | < 500ms | Async refresh |
+| vLEI Signature | < 50ms | HSM-backed keys |
+| Chain Validation | < 100ms | Cached credentials |
+| Full Verification | < 200ms | Combined operations |
+
+### Security Controls for LEI/vLEI
+
+| Control | Implementation |
+|---------|----------------|
+| **Key Storage** | AWS KMS / HSM for signing keys |
+| **Key Rotation** | Automated 90-day rotation |
+| **Credential Revocation** | Real-time CRL checking |
+| **Audit Logging** | All LEI operations logged |
+| **Access Control** | Role-based vLEI management |
+| **Signature Verification** | Multi-party validation |
+
+---
+
 ## Disaster Recovery
 
 ### Backup Strategy
@@ -296,12 +570,15 @@ This architecture provides:
 ✅ Sub-200ms p99 latency  
 ✅ Cost-effective (~$2,500/mo starting)  
 ✅ Clear migration path from Base44  
+✅ LEI/vLEI identity infrastructure with GLEIF integration  
+✅ Cryptographic transaction signing for regulatory compliance  
+✅ Complete credential chain validation and audit trails  
 
 **Next Steps:** See MigrationPlan.md for implementation roadmap.
 
 ---
 
 **Document Maintained By:** Platform Engineering Team  
-**Last Updated:** December 11, 2025  
+**Last Updated:** January 23, 2026  
 **Review Cycle:** Quarterly
 `;

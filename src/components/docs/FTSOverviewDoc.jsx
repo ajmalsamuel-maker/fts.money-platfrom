@@ -1,9 +1,9 @@
 const FTSOverviewDoc = `# FTS.Money Platform Overview
 ## Enterprise Payment Infrastructure Ecosystem
 
-**Version:** 3.1  
+**Version:** 3.2  
 **Classification:** Public - Business & Technical  
-**Last Updated:** January 11, 2026  
+**Last Updated:** January 23, 2026  
 **Document Owner:** FTS.Money Product Team
 
 ---
@@ -29,6 +29,7 @@ FTS.Money is an **Enterprise Payment Infrastructure Provider** that delivers whi
 - ✅ **FIX Score System** - Merchant performance scoring (0-1000) with tier benefits and incentives
 - ✅ **NANO Marketplace** - Gamified sustainability platform with carbon offsets and eco-rewards
 - ✅ **Service Marketplace** - 150+ pre-integrated payment providers and compliance services
+- ✅ **LEI/vLEI Identity Infrastructure** - Legal Entity Identifier verification, vLEI credential management, and cryptographic transaction signing
 
 ### The Problem We Solve
 
@@ -50,7 +51,8 @@ Building the complete FTS.Money service ecosystem from scratch would require mas
 | **Service Marketplace** | $1.5M-$4M | 6-12 months | 8-15 engineers | $500K-$1M | 150+ provider integrations, ongoing maintenance |
 | **Digital Identity** | $1M-$3M | 6-9 months | 5-12 engineers | $400K-$800K | W3C VC implementation, DID infrastructure |
 | **NANO Sustainability** | $800K-$2M | 4-8 months | 5-10 engineers | $300K-$600K | Gamification, blockchain integration |
-| **TOTAL (All Services)** | **$55M-$132M** | **24-36 months** | **258-497 staff** | **$23M-$45M/year** | **Aggregated industry benchmarks** |
+| **LEI/vLEI Infrastructure** | $2M-$5M | 9-15 months | 10-25 engineers | $800K-$1.5M | GLEIF integration, vLEI credential issuance, cryptographic signing |
+| **TOTAL (All Services)** | **$57M-$137M** | **24-36 months** | **268-522 staff** | **$24M-$47M/year** | **Aggregated industry benchmarks** |
 
 **Additional Hidden Costs NOT Included Above:**
 - Payment network certifications (Visa, Mastercard): $250K-$500K
@@ -81,6 +83,126 @@ Building the complete FTS.Money service ecosystem from scratch would require mas
 11. **NANO Sustainability** - Gamified eco-platform with carbon offsets, green bonds, and merchant ESG scoring
 12. **Service Marketplace** - 150+ pre-integrated payment providers, KYC/AML services, fraud detection, and developer tools
 13. **FIX Score System** - Merchant performance scoring (0-1000 points) with tier benefits, fee discounts, and priority support
+14. **LEI/vLEI Identity Infrastructure** - Complete Legal Entity Identifier ecosystem with GLEIF integration, vLEI credential management, and cryptographic transaction signing for regulatory compliance
+
+---
+
+## LEI/vLEI Identity Infrastructure
+
+### What is LEI/vLEI?
+
+The **Legal Entity Identifier (LEI)** is a 20-character alphanumeric code that uniquely identifies legal entities participating in financial transactions worldwide. The **verifiable LEI (vLEI)** extends this with cryptographic credentials that enable digital signing and verification of entity identity.
+
+### Why LEI/vLEI Matters for Payment Infrastructure
+
+\`\`\`mermaid
+graph TD
+    subgraph "Traditional Identity Verification"
+        A[Manual KYB Process] --> B[Paper Documents]
+        B --> C[Manual Review]
+        C --> D[Days/Weeks Delay]
+        D --> E[No Cryptographic Proof]
+    end
+    
+    subgraph "LEI/vLEI Digital Identity"
+        F[LEI Lookup] --> G[GLEIF Verification]
+        G --> H[vLEI Credential Issue]
+        H --> I[Instant Verification]
+        I --> J[Cryptographic Proof]
+    end
+    
+    E -.->|"FTS.Money Enables"| F
+\`\`\`
+
+### LEI/vLEI Capabilities in FTS.Money
+
+| Capability | Description | Compliance Impact |
+|------------|-------------|-------------------|
+| **LEI Verification** | Real-time validation against GLEIF database | MiFID II, EMIR, Dodd-Frank compliance |
+| **vLEI Credential Issuance** | Issue verifiable credentials to merchants/PSPs | Digital identity portability |
+| **Transaction Signing** | Cryptographic signatures on all transactions | Non-repudiation, audit trail |
+| **Credential Chain Validation** | Verify complete trust chain (FTS → PSP → Merchant) | Regulatory provenance |
+| **Grace Period Management** | Track LEI expiration with configurable grace periods | Continuous compliance |
+| **Automated Renewal Alerts** | Proactive notifications before LEI expiration | Prevent service disruption |
+
+### LEI Hierarchy in FTS.Money Platform
+
+\`\`\`mermaid
+graph TB
+    subgraph "LEI Trust Hierarchy"
+        GLEIF[GLEIF<br/>Global LEI Foundation] --> QVI[Qualified vLEI Issuer<br/>QVI Organization]
+        QVI --> FTS[FTS.Money Platform LEI<br/>Parent Entity]
+        FTS --> PSP1[PSP Tenant LEI<br/>Payment Service Provider]
+        FTS --> PSP2[PSP Tenant LEI<br/>Another PSP]
+        PSP1 --> M1[Merchant LEI<br/>Business Entity]
+        PSP1 --> M2[Merchant LEI<br/>Another Merchant]
+        PSP2 --> M3[Merchant LEI<br/>Third Merchant]
+    end
+    
+    subgraph "Credential Chain"
+        FTS -.->|"Signs"| PSP1
+        PSP1 -.->|"Signs"| M1
+        M1 -.->|"Signs"| TX[Transaction]
+    end
+\`\`\`
+
+### Transaction Signing Flow
+
+Every transaction in FTS.Money can be cryptographically signed with vLEI credentials:
+
+\`\`\`mermaid
+sequenceDiagram
+    participant M as Merchant
+    participant PSP as PSP Platform
+    participant FTS as FTS.Money
+    participant GLEIF as GLEIF Registry
+    
+    M->>PSP: Initiate Transaction
+    PSP->>PSP: Retrieve Merchant vLEI
+    PSP->>GLEIF: Verify LEI Status
+    GLEIF-->>PSP: LEI Valid ✓
+    PSP->>PSP: Sign Transaction (EdDSA/ECDSA)
+    PSP->>FTS: Submit Signed Transaction
+    FTS->>FTS: Validate Credential Chain
+    FTS->>FTS: Record Signature + Timestamp
+    FTS-->>PSP: Transaction Confirmed
+    PSP-->>M: Success + Signature Hash
+\`\`\`
+
+### LEI Data Model
+
+| Field | Type | Description |
+|-------|------|-------------|
+| \`lei\` | String(20) | Legal Entity Identifier (ISO 17442) |
+| \`vlei_credential\` | String | vLEI verifiable credential (JSON-LD) |
+| \`parent_lei\` | String(20) | Parent entity LEI (for hierarchy) |
+| \`lei_status\` | Enum | pending, verified, grace_period, expired, required |
+| \`lei_verified_date\` | DateTime | Last GLEIF verification timestamp |
+| \`vlei_issued_date\` | DateTime | vLEI credential issuance date |
+| \`grace_period_start\` | DateTime | When grace period began |
+| \`grace_period_end\` | DateTime | Grace period expiration |
+| \`lei_application_id\` | String | GLEIF application reference |
+
+### Regulatory Compliance Coverage
+
+| Regulation | Jurisdiction | LEI Requirement | FTS.Money Support |
+|------------|--------------|-----------------|-------------------|
+| **MiFID II** | EU | Mandatory for OTC derivatives | ✅ Full compliance |
+| **EMIR** | EU | Required for all counterparties | ✅ Full compliance |
+| **Dodd-Frank** | USA | CFTC swap reporting | ✅ Full compliance |
+| **SFTR** | EU | Securities financing transactions | ✅ Full compliance |
+| **CSDR** | EU | Central securities depositories | ✅ Full compliance |
+| **ISO 20022** | Global | LEI in payment messages | ✅ Native support |
+| **DORA** | EU | Digital operational resilience | ✅ Full compliance |
+| **Travel Rule** | Global | FATF crypto requirements | ✅ Full compliance |
+
+### vLEI Signature Algorithms
+
+| Algorithm | Use Case | Security Level |
+|-----------|----------|----------------|
+| **EdDSA (Ed25519)** | High-performance signing | 128-bit |
+| **ECDSA-P256** | Broad compatibility | 128-bit |
+| **ECDSA-P384** | High-security environments | 192-bit |
 
 ---
 
@@ -159,6 +281,8 @@ Enterprises need payment infrastructure but face:
 - End-to-end TLS 1.3 encryption
 - Tokenization for sensitive card data
 - Hardware Security Modules (HSMs) for key management
+- LEI/vLEI identity verification and transaction signing
+- GLEIF-integrated credential chain validation
 
 ### API Architecture
 
@@ -175,6 +299,9 @@ Enterprises need payment infrastructure but face:
 - /iso/translate - ISO message format translation
 - /crypto/wallets - Crypto wallet operations
 - /tax/calculate - Real-time tax calculation
+- /lei/verify - LEI verification against GLEIF
+- /vlei/sign - vLEI transaction signing
+- /vlei/validate - Credential chain validation
 
 **SDK Support:**
 - JavaScript/TypeScript, Python, PHP, Java, Go
@@ -208,7 +335,7 @@ Enterprises need payment infrastructure but face:
 
 ---
 
-*Document Version: 3.1 | Last Updated: 2026-01-11*  
+*Document Version: 3.2 | Last Updated: 2026-01-23*  
 *See full 15,000+ word document in platform for exhaustive technical specifications, architecture diagrams, API references, and deployment guides.*
 
 © 2026 FTS.Money. All rights reserved.`;
